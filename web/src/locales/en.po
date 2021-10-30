@@ -1288,7 +1288,6 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Delete"
 msgstr "Delete"
@@ -1396,7 +1395,6 @@ msgstr "Device classes which can be used to authenticate."
 #~ msgstr "Device name"
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
 msgid "Device(s)"
 msgstr "Device(s)"
 
@@ -1617,7 +1615,6 @@ msgid "Enabling this toggle will create a group named after the user, with the u
 msgstr "Enabling this toggle will create a group named after the user, with the user as member."
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
 msgid "Enroll"
 msgstr "Enroll"
 
@@ -2503,7 +2500,6 @@ msgstr "Load servers"
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
 #: src/user/user-settings/sources/SourceSettings.ts
 #: src/utils.ts
 msgid "Loading"
@@ -2821,6 +2817,7 @@ msgstr "My applications"
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/mfa/MFADeviceForm.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Name"
 msgstr "Name"
@@ -4061,9 +4058,9 @@ msgstr "Something went wrong! Please try again later."
 msgid "Source linked"
 msgstr "Source linked"
 
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
-msgid "Source name"
-msgstr "Source name"
+#: 
+#~ msgid "Source name"
+#~ msgstr "Source name"
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
@@ -4436,9 +4433,9 @@ msgstr "Successfully updated certificate-key pair."
 msgid "Successfully updated details."
 msgstr "Successfully updated details."
 
-#: 
-#~ msgid "Successfully updated device."
-#~ msgstr "Successfully updated device."
+#: src/user/user-settings/mfa/MFADeviceForm.ts
+msgid "Successfully updated device."
+msgstr "Successfully updated device."
 
 #: src/pages/flows/FlowForm.ts
 msgid "Successfully updated flow."
@@ -5056,7 +5053,6 @@ msgstr "Up-to-date!"
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Update"
 msgstr "Update"
@@ -5075,7 +5071,6 @@ msgid "Update Certificate-Key Pair"
 msgstr "Update Certificate-Key Pair"
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
 msgid "Update Device"
 msgstr "Update Device"
 

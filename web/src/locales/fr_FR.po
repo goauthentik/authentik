@@ -1286,7 +1286,6 @@ msgstr "Définit les méthodes d'envoi des notifications aux utilisateurs, telle
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Delete"
 msgstr "Supprimer"
@@ -1386,7 +1385,6 @@ msgstr "Classe d'équipement qui peut être utilisé pour s'authentifier"
 #~ msgstr "Nom de l'équipement"
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
 msgid "Device(s)"
 msgstr ""
 
@@ -1603,7 +1601,6 @@ msgid "Enabling this toggle will create a group named after the user, with the u
 msgstr "Activer cette option va créer un groupe du même nom que l'utilisateur dont il sera membre."
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
 msgid "Enroll"
 msgstr ""
 
@@ -2484,7 +2481,6 @@ msgstr "Charger les serveurs"
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
 #: src/user/user-settings/sources/SourceSettings.ts
 #: src/utils.ts
 msgid "Loading"
@@ -2801,6 +2797,7 @@ msgstr "Mes applications"
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/mfa/MFADeviceForm.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Name"
 msgstr "Nom"
@@ -4021,9 +4018,9 @@ msgstr "Une erreur s'est produite ! Veuillez réessayer plus tard."
 msgid "Source linked"
 msgstr "Source liée"
 
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
-msgid "Source name"
-msgstr ""
+#: 
+#~ msgid "Source name"
+#~ msgstr ""
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
@@ -4392,9 +4389,9 @@ msgstr "Paire clé/certificat mise à jour avec succès."
 msgid "Successfully updated details."
 msgstr "Détails mis à jour avec succès"
 
-#: 
-#~ msgid "Successfully updated device."
-#~ msgstr "Appareil mis à jour avec succès"
+#: src/user/user-settings/mfa/MFADeviceForm.ts
+msgid "Successfully updated device."
+msgstr "Appareil mis à jour avec succès"
 
 #: src/pages/flows/FlowForm.ts
 msgid "Successfully updated flow."
@@ -4997,7 +4994,6 @@ msgstr "À jour !"
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Update"
 msgstr "Mettre à jour"
@@ -5016,7 +5012,6 @@ msgid "Update Certificate-Key Pair"
 msgstr "Mettre à jour la paire clé/certificat"
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceConnectionsPage.ts
 msgid "Update Device"
 msgstr ""
 
