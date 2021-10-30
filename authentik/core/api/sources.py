@@ -1,18 +1,21 @@
 """Source API Views"""
 from typing import Iterable
 
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
-from authentik.core.models import Source
+from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UserSettingSerializer
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.engine import PolicyEngine
@@ -113,3 +116,34 @@ class SourceViewSet(
                 LOGGER.warning(source_settings.errors)
             matching_sources.append(source_settings.validated_data)
         return Response(matching_sources)
+
+
+class UserSourceConnectionSerializer(SourceSerializer):
+    """OAuth Source Serializer"""
+
+    source = SourceSerializer(read_only=True)
+
+    class Meta:
+        model = UserSourceConnection
+        fields = [
+            "pk",
+            "user",
+            "source",
+        ]
+
+
+class UserSourceConnectionViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    UsedByMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
+    """User-source connection Viewset"""
+
+    queryset = UserSourceConnection.objects.all()
+    serializer_class = UserSourceConnectionSerializer
+    permission_classes = [OwnerPermissions]
+    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    ordering = ["pk"]

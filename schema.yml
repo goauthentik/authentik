@@ -13346,6 +13346,186 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /sources/user_connections/all/:
+    get:
+      operationId: sources_user_connections_all_list
+      description: User-source connection Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserSourceConnectionList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /sources/user_connections/all/{id}/:
+    get:
+      operationId: sources_user_connections_all_retrieve
+      description: User-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user source connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: sources_user_connections_all_update
+      description: User-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user source connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: sources_user_connections_all_partial_update
+      description: User-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user source connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSourceConnectionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: sources_user_connections_all_destroy
+      description: User-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user source connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /sources/user_connections/all/{id}/used_by/:
+    get:
+      operationId: sources_user_connections_all_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user source connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /sources/user_connections/oauth/:
     get:
       operationId: sources_user_connections_oauth_list
@@ -25616,6 +25796,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedUserSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSourceConnection'
+      required:
+      - pagination
+      - results
     PaginatedUserWriteStageList:
       type: object
       properties:
@@ -27555,6 +27770,12 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+    PatchedUserSourceConnectionRequest:
+      type: object
+      description: OAuth Source Serializer
+      properties:
+        user:
+          type: integer
     PatchedUserWriteStageRequest:
       type: object
       description: UserWriteStage Serializer
@@ -29323,6 +29544,40 @@ components:
       - slug
       - verbose_name
       - verbose_name_plural
+    SourceRequest:
+      type: object
+      description: Source Serializer
+      properties:
+        name:
+          type: string
+          description: Source's display Name.
+        slug:
+          type: string
+          description: Internal source name, used in URLs.
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when enrolling new users.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
+      required:
+      - name
+      - slug
     SourceType:
       type: object
       description: Serializer for SourceType
@@ -30275,6 +30530,32 @@ components:
       - component
       - object_uid
       - title
+    UserSourceConnection:
+      type: object
+      description: OAuth Source Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          type: integer
+        source:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+      required:
+      - pk
+      - source
+      - user
+    UserSourceConnectionRequest:
+      type: object
+      description: OAuth Source Serializer
+      properties:
+        user:
+          type: integer
+      required:
+      - user
     UserWriteStage:
       type: object
       description: UserWriteStage Serializer
