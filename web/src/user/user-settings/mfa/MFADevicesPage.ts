@@ -14,6 +14,7 @@ import "../../../elements/buttons/TokenCopyButton";
 import "../../../elements/forms/DeleteBulkForm";
 import "../../../elements/forms/ModalForm";
 import { Table, TableColumn } from "../../../elements/table/Table";
+import "./MFADeviceForm";
 
 export function stageToAuthenticatorName(stage: UserSetting): string {
     switch (stage.component) {
@@ -144,7 +145,7 @@ export class MFADevicesPage extends Table<Device> {
                 <ak-forms-modal>
                     <span slot="submit">${t`Update`}</span>
                     <span slot="header">${t`Update Device`}</span>
-                    <ak-user-token-form slot="form" .instancePk=${item.pk}> </ak-user-token-form>
+                    <ak-user-mfa-form slot="form" .instancePk=${item.pk}> </ak-user-mfa-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <i class="fas fa-edit"></i>
                     </button>
