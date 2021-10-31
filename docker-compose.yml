@@ -17,7 +17,7 @@ services:
     image: redis:alpine
     restart: unless-stopped
   server:
-    image: ${AUTHENTIK_IMAGE:-goauthentik.io/server}:${AUTHENTIK_TAG:-2021.10.1-rc3}
+    image: ${AUTHENTIK_IMAGE:-goauthentik.io/server}:${AUTHENTIK_TAG:-2021.10.1}
     restart: unless-stopped
     command: server
     environment:
@@ -38,7 +38,7 @@ services:
       - "0.0.0.0:9000:9000"
       - "0.0.0.0:9443:9443"
   worker:
-    image: ${AUTHENTIK_IMAGE:-goauthentik.io/server}:${AUTHENTIK_TAG:-2021.10.1-rc3}
+    image: ${AUTHENTIK_IMAGE:-goauthentik.io/server}:${AUTHENTIK_TAG:-2021.10.1}
     restart: unless-stopped
     command: worker
     environment:
