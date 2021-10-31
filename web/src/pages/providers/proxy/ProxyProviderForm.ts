@@ -356,19 +356,25 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                                         ordering: "scope_name",
                                     })
                                     .then((scopes) => {
-                                        return scopes.results.filter((scope) => {
-                                            return !scope.managed?.startsWith("goauthentik.io/providers");
-                                        }).map((scope) => {
-                                            const selected = (this.instance?.propertyMappings || []).some((su) => {
-                                                return su == scope.pk;
+                                        return scopes.results
+                                            .filter((scope) => {
+                                                return !scope.managed?.startsWith(
+                                                    "goauthentik.io/providers",
+                                                );
+                                            })
+                                            .map((scope) => {
+                                                const selected = (
+                                                    this.instance?.propertyMappings || []
+                                                ).some((su) => {
+                                                    return su == scope.pk;
+                                                });
+                                                return html`<option
+                                                    value=${ifDefined(scope.pk)}
+                                                    ?selected=${selected}
+                                                >
+                                                    ${scope.name}
+                                                </option>`;
                                             });
-                                            return html`<option
-                                                value=${ifDefined(scope.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${scope.name}
-                                            </option>`;
-                                        });
                                     }),
                                 html`<option>${t`Loading...`}</option>`,
                             )}
