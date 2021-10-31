@@ -76,8 +76,8 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                         <input
                             type="text"
                             name="code"
-                            inputmode="numeric"
-                            pattern="[0-9]*"
+                            inputmode="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static ? 'text' : 'numeric'}"
+                            pattern="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static ? '' : '[0-9]*'}"
                             placeholder="${t`Please enter your Code`}"
                             autofocus=""
                             autocomplete="one-time-code"
