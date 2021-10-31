@@ -380,7 +380,7 @@ DBBACKUP_CONNECTOR_MAPPING = {
     "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector",
 }
 DBBACKUP_TMP_DIR = gettempdir() if DEBUG else "/tmp"  # nosec
-if CONFIG.y("postgresql.s3_backup"):
+if CONFIG.y("postgresql.s3_backup.bucket", "") != "":
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     DBBACKUP_STORAGE_OPTIONS = {
         "access_key": CONFIG.y("postgresql.s3_backup.access_key"),
