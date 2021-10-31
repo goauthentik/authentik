@@ -81,6 +81,7 @@ class IdentificationStage(Stage):
     sources = models.ManyToManyField(
         Source, default=list, help_text=_("Specify which sources should be shown.")
     )
+    show_source_labels = models.BooleanField(default=False)
 
     @property
     def serializer(self) -> BaseSerializer:

@@ -605,6 +605,10 @@ msgstr "Build hash:"
 msgid "Built-in"
 msgstr "Built-in"
 
+#: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "By default, only icons are shown for sources. Enable this to show their full names."
+msgstr "By default, only icons are shown for sources. Enable this to show their full names."
+
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
@@ -4002,6 +4006,10 @@ msgstr "Show matched user"
 #: src/elements/Expand.ts
 msgid "Show more"
 msgstr "Show more"
+
+#: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "Show sources' labels"
+msgstr "Show sources' labels"
 
 #: src/pages/flows/FlowForm.ts
 msgid "Shown as the Title in Flow pages."

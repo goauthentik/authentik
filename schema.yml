@@ -16719,6 +16719,10 @@ paths:
         name: show_matched_user
         schema:
           type: boolean
+      - in: query
+        name: show_source_labels
+        schema:
+          type: boolean
       tags:
       - stages
       security:
@@ -21659,9 +21663,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LoginSource'
+        show_source_labels:
+          type: boolean
       required:
       - password_fields
       - primary_action
+      - show_source_labels
       - type
       - user_fields
     IdentificationChallengeResponseRequest:
@@ -21740,6 +21747,8 @@ components:
             type: string
             format: uuid
           description: Specify which sources should be shown.
+        show_source_labels:
+          type: boolean
       required:
       - component
       - name
@@ -21794,6 +21803,8 @@ components:
             type: string
             format: uuid
           description: Specify which sources should be shown.
+        show_source_labels:
+          type: boolean
       required:
       - name
     IntentEnum:
@@ -26705,6 +26716,8 @@ components:
             type: string
             format: uuid
           description: Specify which sources should be shown.
+        show_source_labels:
+          type: boolean
     PatchedInvitationRequest:
       type: object
       description: Invitation Serializer

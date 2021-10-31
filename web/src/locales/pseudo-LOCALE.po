@@ -601,6 +601,10 @@ msgstr ""
 msgid "Built-in"
 msgstr ""
 
+#: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "By default, only icons are shown for sources. Enable this to show their full names."
+msgstr ""
+
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr ""
@@ -3993,6 +3997,10 @@ msgstr ""
 
 #: src/elements/Expand.ts
 msgid "Show more"
+msgstr ""
+
+#: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "Show sources' labels"
 msgstr ""
 
 #: src/pages/flows/FlowForm.ts
