@@ -13,7 +13,7 @@ version: "3.5"
 
 services:
   authentik_proxy:
-    image: goauthentik.io/proxy:2021.10.1-rc3
+    image: goauthentik.io/proxy:2021.10.1
     # Optionally specify which networks the container should be
     # might be needed to reach the core authentik server
     # networks:
@@ -40,7 +40,7 @@ version: "3.5"
 
 services:
   authentik_ldap:
-    image: goauthentik.io/ldap:2021.10.1-rc3
+    image: goauthentik.io/ldap:2021.10.1
     # Optionally specify which networks the container should be
     # might be needed to reach the core authentik server
     # networks:
