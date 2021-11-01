@@ -63,5 +63,5 @@ The following placeholders will be used:
 Save, and you now have Apple as a source.
 
 :::note
-For more details on how-to have the new source display on the Login Page see the Sources page.
+For more details on how-to have the new source display on the Login Page see [here](../index).
 :::

@@ -36,7 +36,7 @@ module.exports = {
                 "providers/saml",
                 {
                     type: "category",
-                    label: "Proxy",
+                    label: "Proxy Provider",
                     items: [
                         "providers/proxy/proxy",
                         "providers/proxy/forward_auth",
@@ -71,8 +71,9 @@ module.exports = {
                     label: "as Source",
                     items: [
                         "integrations/sources/index",
-                        "integrations/sources/apple/index",
                         "integrations/sources/active-directory/index",
+                        "integrations/sources/apple/index",
+                        "integrations/sources/azure-ad/index",
                         "integrations/sources/discord/index",
                         "integrations/sources/freeipa/index",
                         "integrations/sources/github/index",
