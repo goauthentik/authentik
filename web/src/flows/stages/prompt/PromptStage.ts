@@ -99,8 +99,16 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     ?required=${prompt.required}>`;
             case PromptTypeEnum.Static:
                 return `<p>${prompt.placeholder}</p>`;
+            default:
+                return `<p>invalid type '${prompt.type}'</p>`;
         }
-        return "";
+    }
+
+    renderPromptHelpText(prompt: StagePrompt): TemplateResult {
+        if (prompt.subText === "") {
+            return html``;
+        }
+        return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
 
     render(): TemplateResult {
@@ -141,7 +149,10 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                             prompt.type === PromptTypeEnum.Hidden ||
                             prompt.type === PromptTypeEnum.Separator
                         ) {
-                            return unsafeHTML(this.renderPromptInner(prompt));
+                            return html`
+                                ${unsafeHTML(this.renderPromptInner(prompt))}
+                                ${this.renderPromptHelpText(prompt)}
+                            `;
                         }
                         return html`<ak-form-element
                             label="${prompt.label}"
@@ -150,7 +161,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                             .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
                         >
                             ${unsafeHTML(this.renderPromptInner(prompt))}
-                            <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
+                            ${this.renderPromptHelpText(prompt)}
                         </ak-form-element>`;
                     })}
                     ${"non_field_errors" in (this.challenge?.responseErrors || {})
