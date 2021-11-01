@@ -123,6 +123,7 @@ class TestIdentificationStage(APITestCase):
                         "name": "test",
                     }
                 ],
+                "show_source_labels": False,
                 "user_fields": ["email"],
             },
         )
@@ -158,6 +159,7 @@ class TestIdentificationStage(APITestCase):
                         {"code": "invalid", "string": "Failed to " "authenticate."}
                     ]
                 },
+                "show_source_labels": False,
                 "flow_info": {
                     "background": self.flow.background_url,
                     "cancel_url": reverse("authentik_flows:cancel"),
@@ -218,6 +220,7 @@ class TestIdentificationStage(APITestCase):
                     "authentik_core:if-flow",
                     kwargs={"flow_slug": "unique-enrollment-string"},
                 ),
+                "show_source_labels": False,
                 "primary_action": "Log in",
                 "flow_info": {
                     "background": flow.background_url,
@@ -267,6 +270,7 @@ class TestIdentificationStage(APITestCase):
                     "authentik_core:if-flow",
                     kwargs={"flow_slug": "unique-recovery-string"},
                 ),
+                "show_source_labels": False,
                 "primary_action": "Log in",
                 "flow_info": {
                     "background": flow.background_url,

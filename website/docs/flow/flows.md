@@ -1,5 +1,5 @@
 ---
-title: Flows
+title: Overview
 ---
 
 Flows are a method of describing a sequence of stages. A stage represents a single verification or logic step. They are used to authenticate users, enroll them, and more.

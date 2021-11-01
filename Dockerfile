@@ -11,7 +11,7 @@ RUN pip install pipenv && \
     pipenv lock -r --dev-only > requirements-dev.txt
 
 # Stage 2: Build website
-FROM docker.io/node as website-builder
+FROM docker.io/node:16 as website-builder
 
 COPY ./website /static/
 
@@ -19,7 +19,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build-docs-only
 
 # Stage 3: Build webui
-FROM docker.io/node as web-builder
+FROM docker.io/node:16 as web-builder
 
 COPY ./web /static/
 

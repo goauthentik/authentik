@@ -57,6 +57,7 @@ class IdentificationChallenge(Challenge):
     recovery_url = CharField(required=False)
     primary_action = CharField()
     sources = LoginSourceSerializer(many=True, required=False)
+    show_source_labels = BooleanField()
 
     component = CharField(default="ak-stage-identification")
 
@@ -152,6 +153,7 @@ class IdentificationStageView(ChallengeStageView):
                 "component": "ak-stage-identification",
                 "user_fields": current_stage.user_fields,
                 "password_fields": bool(current_stage.password_stage),
+                "show_source_labels": current_stage.show_source_labels,
             }
         )
         # If the user has been redirected to us whilst trying to access an

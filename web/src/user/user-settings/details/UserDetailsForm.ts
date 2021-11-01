@@ -7,21 +7,22 @@ import { until } from "lit/directives/until";
 
 import { CoreApi, UserSelf } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG, tenant } from "../../api/Config";
-import "../../elements/EmptyState";
-import "../../elements/forms/Form";
-import "../../elements/forms/FormElement";
-import "../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../elements/forms/ModelForm";
+import { DEFAULT_CONFIG, tenant } from "../../../api/Config";
+import { me } from "../../../api/Users";
+import "../../../elements/EmptyState";
+import "../../../elements/forms/Form";
+import "../../../elements/forms/FormElement";
+import "../../../elements/forms/HorizontalFormElement";
+import { ModelForm } from "../../../elements/forms/ModelForm";
 
-@customElement("ak-user-self-form")
-export class UserSelfForm extends ModelForm<UserSelf, number> {
+@customElement("ak-user-details-form")
+export class UserDetailsForm extends ModelForm<UserSelf, number> {
     viewportCheck = false;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     loadInstance(pk: number): Promise<UserSelf> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersMeRetrieve().then((su) => {
-            return su.user;
+        return me().then((user) => {
+            return user.user;
         });
     }
 

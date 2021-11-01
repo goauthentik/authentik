@@ -22,6 +22,9 @@ class PlexSourceConnectionSerializer(SourceSerializer):
             "identifier",
             "plex_token",
         ]
+        extra_kwargs = {
+            "user": {"read_only": True},
+        }
 
 
 class PlexSourceConnectionViewSet(

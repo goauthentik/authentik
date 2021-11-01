@@ -21,6 +21,9 @@ class UserOAuthSourceConnectionSerializer(SourceSerializer):
             "source",
             "identifier",
         ]
+        extra_kwargs = {
+            "user": {"read_only": True},
+        }
 
 
 class UserOAuthSourceConnectionViewSet(

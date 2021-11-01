@@ -59,11 +59,13 @@ class AuthNRequestParser:
     ) -> AuthNRequest:
         root = ElementTree.fromstring(decoded_xml)
 
+        # http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf
+        # `AssertionConsumerServiceURL` can be omitted, and we should fallback to the
+        # default ACS URL
         if "AssertionConsumerServiceURL" not in root.attrib:
-            msg = "Missing 'AssertionConsumerServiceURL' attribute"
-            LOGGER.warning(msg)
-            raise CannotHandleAssertion(msg)
-        request_acs_url = root.attrib["AssertionConsumerServiceURL"]
+            request_acs_url = self.provider.acs_url.lower()
+        else:
+            request_acs_url = root.attrib["AssertionConsumerServiceURL"]
 
         if self.provider.acs_url.lower() != request_acs_url.lower():
             msg = (

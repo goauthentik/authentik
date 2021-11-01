@@ -75,6 +75,7 @@ class AuthenticatorValidateStageTests(APITestCase):
                 },
                 "user_fields": ["username"],
                 "sources": [],
+                "show_source_labels": False,
             },
         )
 

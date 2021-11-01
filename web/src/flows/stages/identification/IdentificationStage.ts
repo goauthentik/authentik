@@ -57,6 +57,8 @@ export class IdentificationStage extends BaseStage<
                 .pf-c-login__main-footer-links-item button {
                     background-color: transparent;
                     border: 0;
+                    display: flex;
+                    align-items: stretch;
                 }
                 .pf-c-login__main-footer-links-item img {
                     fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
@@ -152,8 +154,10 @@ export class IdentificationStage extends BaseStage<
                     if (!this.host) return;
                     this.host.challenge = source.challenge;
                 }}
+                class=${this.challenge.showSourceLabels ? "pf-c-button pf-m-link" : ""}
             >
-                ${icon}
+                <span class="pf-c-button__icon pf-m-start">${icon}</span>
+                ${this.challenge.showSourceLabels ? source.name : ""}
             </button>
         </li>`;
     }

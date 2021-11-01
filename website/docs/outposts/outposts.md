@@ -1,5 +1,5 @@
 ---
-title: Outposts
+title: Overview
 ---
 
 An outpost is a single deployment of a authentik component, which can be deployed in a completely separate environment. Currently, Proxy Provider and LDAP are supported as outposts.

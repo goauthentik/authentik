@@ -15,10 +15,11 @@ from authentik.api.v3.sentry import SentryTunnelView
 from authentik.api.views import APIBrowserView
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
+from authentik.core.api.devices import DeviceViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.propertymappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
-from authentik.core.api.sources import SourceViewSet
+from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSet
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.users import UserViewSet
 from authentik.crypto.api import CertificateKeyPairViewSet
@@ -136,6 +137,7 @@ router.register("events/transports", NotificationTransportViewSet)
 router.register("events/rules", NotificationRuleViewSet)
 
 router.register("sources/all", SourceViewSet)
+router.register("sources/user_connections/all", UserSourceConnectionViewSet)
 router.register("sources/user_connections/oauth", UserOAuthSourceConnectionViewSet)
 router.register("sources/user_connections/plex", PlexSourceConnectionViewSet)
 router.register("sources/ldap", LDAPSourceViewSet)
@@ -169,6 +171,7 @@ router.register("propertymappings/saml", SAMLPropertyMappingViewSet)
 router.register("propertymappings/scope", ScopeMappingViewSet)
 router.register("propertymappings/notification", NotificationWebhookMappingViewSet)
 
+router.register("authenticators/all", DeviceViewSet, basename="device")
 router.register("authenticators/duo", DuoDeviceViewSet)
 router.register("authenticators/sms", SMSDeviceViewSet)
 router.register("authenticators/static", StaticDeviceViewSet)

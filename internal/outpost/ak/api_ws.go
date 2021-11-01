@@ -56,6 +56,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {
 	if err != nil {
 		ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithError(err).Warning("Failed to hello to authentik")
 	}
+	ac.lastWsReconnect = time.Now()
 }
 
 // Shutdown Gracefully stops all workers, disconnects from websocket
@@ -66,6 +67,20 @@ func (ac *APIController) Shutdown() {
 	if err != nil {
 		ac.logger.Println("write close:", err)
 		return
+	}
+}
+
+func (ac *APIController) startWSReConnector() {
+	for {
+		time.Sleep(time.Second * 5)
+		if ac.wsConn.IsConnected() {
+			continue
+		}
+		if time.Since(ac.lastWsReconnect).Seconds() > 30 {
+			ac.wsConn.CloseAndReconnect()
+			ac.logger.Info("Reconnecting websocket")
+			ac.lastWsReconnect = time.Now()
+		}
 	}
 }
 
@@ -80,8 +95,7 @@ func (ac *APIController) startWSHandler() {
 				"outpost_type": ac.Server.Type(),
 				"uuid":         ac.instanceUUID.String(),
 			}).Set(0)
-			logger.WithError(err).Warning("ws write error, reconnecting")
-			ac.wsConn.CloseAndReconnect()
+			logger.WithError(err).Warning("ws read error")
 			time.Sleep(time.Second * 5)
 			continue
 		}
@@ -126,8 +140,7 @@ func (ac *APIController) startWSHealth() {
 		err := ac.wsConn.WriteJSON(aliveMsg)
 		ac.logger.WithField("loop", "ws-health").Trace("hello'd")
 		if err != nil {
-			ac.logger.WithField("loop", "ws-health").WithError(err).Warning("ws write error, reconnecting")
-			ac.wsConn.CloseAndReconnect()
+			ac.logger.WithField("loop", "ws-health").WithError(err).Warning("ws write error")
 			time.Sleep(time.Second * 5)
 			continue
 		} else {
