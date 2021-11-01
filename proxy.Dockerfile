@@ -20,7 +20,7 @@ COPY --from=web-builder /static/authentik/ /work/web/authentik/
 RUN go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
-FROM gcr.io/distroless/base-debian10:debug
+FROM gcr.io/distroless/static-debian11
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH

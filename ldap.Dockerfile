@@ -8,7 +8,7 @@ COPY . .
 RUN go build -o /go/ldap ./cmd/ldap
 
 # Stage 2: Run
-FROM gcr.io/distroless/base-debian10:debug
+FROM gcr.io/distroless/static-debian11
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
