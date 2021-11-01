@@ -13,7 +13,12 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { PromptChallenge, PromptChallengeResponseRequest, StagePrompt } from "@goauthentik/api";
+import {
+    PromptChallenge,
+    PromptChallengeResponseRequest,
+    PromptTypeEnum,
+    StagePrompt,
+} from "@goauthentik/api";
 
 import "../../../elements/Divider";
 import "../../../elements/EmptyState";
@@ -28,7 +33,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
 
     renderPromptInner(prompt: StagePrompt): string {
         switch (prompt.type) {
-            case "text":
+            case PromptTypeEnum.Text:
                 return `<input
                     type="text"
                     name="${prompt.fieldKey}"
@@ -37,7 +42,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     class="pf-c-form-control"
                     ?required=${prompt.required}
                     value="">`;
-            case "username":
+            case PromptTypeEnum.Username:
                 return `<input
                     type="text"
                     name="${prompt.fieldKey}"
@@ -46,7 +51,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     class="pf-c-form-control"
                     ?required=${prompt.required}
                     value="">`;
-            case "email":
+            case PromptTypeEnum.Email:
                 return `<input
                     type="email"
                     name="${prompt.fieldKey}"
@@ -54,7 +59,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     class="pf-c-form-control"
                     ?required=${prompt.required}
                     value="">`;
-            case "password":
+            case PromptTypeEnum.Password:
                 return `<input
                     type="password"
                     name="${prompt.fieldKey}"
@@ -62,37 +67,37 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     autocomplete="new-password"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
-            case "number":
+            case PromptTypeEnum.Number:
                 return `<input
                     type="number"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
-            case "date":
+            case PromptTypeEnum.Date:
                 return `<input
                     type="date"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
-            case "date-time":
+            case PromptTypeEnum.DateTime:
                 return `<input
                     type="datetime"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
-            case "separator":
+            case PromptTypeEnum.Separator:
                 return `<ak-divider>${prompt.placeholder}</ak-divider>`;
-            case "hidden":
+            case PromptTypeEnum.Hidden:
                 return `<input
                     type="hidden"
                     name="${prompt.fieldKey}"
                     value="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
-            case "static":
+            case PromptTypeEnum.Static:
                 return `<p>${prompt.placeholder}</p>`;
         }
         return "";
@@ -114,7 +119,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                 >
                     ${this.challenge.fields.map((prompt) => {
                         // Checkbox is rendered differently
-                        if (prompt.type === "checkbox") {
+                        if (prompt.type === PromptTypeEnum.Checkbox) {
                             return html`<div class="pf-c-check">
                                 <input
                                     type="checkbox"
@@ -132,9 +137,9 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                         }
                         // Special types that aren't rendered in a wrapper
                         if (
-                            prompt.type === "static" ||
-                            prompt.type === "hidden" ||
-                            prompt.type === "separator"
+                            prompt.type === PromptTypeEnum.Static ||
+                            prompt.type === PromptTypeEnum.Hidden ||
+                            prompt.type === PromptTypeEnum.Separator
                         ) {
                             return unsafeHTML(this.renderPromptInner(prompt));
                         }
