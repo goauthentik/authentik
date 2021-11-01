@@ -477,11 +477,11 @@
         },
         "django-storages": {
             "hashes": [
-                "sha256:0013ebe4904521e2fa28f33591a03a7210304d73363e7eadd7cdcf81c12ba003",
-                "sha256:683b70617f4be9baa17b2d6d7df46cf6afe31b5eb17ece3ca82f773f555592a7"
+                "sha256:204a99f218b747c46edbfeeb1310d357f83f90fa6a6024d8d0a3f422570cee84",
+                "sha256:a475edb2f0f04c4f7e548919a751ecd50117270833956ed5bd585c0575d2a5e7"
             ],
             "index": "pypi",
-            "version": "==1.12.2"
+            "version": "==1.12.3"
         },
         "djangorestframework": {
             "hashes": [
