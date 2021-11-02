@@ -1,6 +1,6 @@
 import babel from "@rollup/plugin-babel";
-import replace from "@rollup/plugin-replace";
 import commonjs from "@rollup/plugin-commonjs";
+import replace from "@rollup/plugin-replace";
 import copy from "rollup-plugin-copy";
 import cssimport from "rollup-plugin-cssimport";
 import resolve from "rollup-plugin-node-resolve";
