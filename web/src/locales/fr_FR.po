@@ -207,6 +207,10 @@ msgstr "Préfixe DN utilisateurs"
 msgid "Additional group DN, prepended to the Base DN."
 msgstr "DN à préfixer au DN de base pour les groupes"
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Additional scope mappings, which are passed to the proxy."
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional settings"
 msgstr "Paramètres supplémentaire"
@@ -2131,6 +2135,7 @@ msgstr "Cacher les comptes de service"
 #: src/pages/events/RuleForm.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -2517,6 +2522,7 @@ msgstr "Chargement en cours"
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -3742,6 +3748,7 @@ msgstr "Portée que le client peut spécifier pour accéder à ces propriétés.
 #: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Scopes"
 msgstr "Portées"
 

@@ -176,6 +176,7 @@ SPECTACULAR_SETTINGS = {
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
+        "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "POSTPROCESSING_HOOKS": [

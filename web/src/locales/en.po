@@ -202,6 +202,10 @@ msgstr "Addition User DN"
 msgid "Additional group DN, prepended to the Base DN."
 msgstr "Additional group DN, prepended to the Base DN."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Additional scope mappings, which are passed to the proxy."
+msgstr "Additional scope mappings, which are passed to the proxy."
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional settings"
 msgstr "Additional settings"
@@ -2148,6 +2152,7 @@ msgstr "Hide service-accounts"
 #: src/pages/events/RuleForm.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -2536,6 +2541,7 @@ msgstr "Loading"
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -3774,6 +3780,7 @@ msgstr "Scope which the client can specify to access these properties."
 #: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Scopes"
 msgstr "Scopes"
 

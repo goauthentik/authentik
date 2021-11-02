@@ -1,14 +1,14 @@
 # Stage 1: Build
-FROM docker.io/golang:1.17.2 AS builder
+FROM docker.io/golang:1.17.2-bullseye AS builder
 
 WORKDIR /go/src/goauthentik.io
 
 COPY . .
-
+ENV CGO_ENABLED=0
 RUN go build -o /go/ldap ./cmd/ldap
 
 # Stage 2: Run
-FROM gcr.io/distroless/base-debian10:debug
+FROM gcr.io/distroless/static-debian11:debug
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
