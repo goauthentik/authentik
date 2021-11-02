@@ -1,6 +1,20 @@
+[tool.pyright]
+ignore = [
+  "**/migrations/**",
+  "**/node_modules/**"
+]
+
+reportMissingTypeStubs = false
+strictParameterNoneValue = true
+strictDictionaryInference = true
+strictListInference = true
+verboseOutput = false
+pythonVersion = "3.9"
+pythonPlatform = "Linux"
+
 [tool.black]
 line-length = 100
-target-version = ['py38']
+target-version = ['py39']
 exclude = 'node_modules'
 
 [tool.isort]
