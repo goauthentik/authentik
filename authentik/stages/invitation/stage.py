@@ -50,7 +50,12 @@ class InvitationStageView(StageView):
                 return self.executor.stage_ok()
             return self.executor.stage_invalid()
 
-        invite: Invitation = get_object_or_404(Invitation, pk=token)
+        invite: Invitation = Invitation.objects.filter(pk=token).first()
+        if not invite:
+            LOGGER.debug("invalid invitation", token=token)
+            if stage.continue_flow_without_invitation:
+                return self.executor.stage_ok()
+            return self.executor.stage_invalid()
         self.executor.plan.context[INVITATION_IN_EFFECT] = True
         self.executor.plan.context[INVITATION] = invite
 
