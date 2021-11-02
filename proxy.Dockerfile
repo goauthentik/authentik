@@ -7,7 +7,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build
 
 # Stage 2: Build
-FROM docker.io/golang:1.17.2 AS builder
+FROM docker.io/golang:1.17.2-bullseye AS builder
 
 WORKDIR /go/src/goauthentik.io
 
@@ -17,10 +17,11 @@ COPY --from=web-builder /static/security.txt /work/web/security.txt
 COPY --from=web-builder /static/dist/ /work/web/dist/
 COPY --from=web-builder /static/authentik/ /work/web/authentik/
 
+ENV CGO_ENABLED=0
 RUN go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
-FROM gcr.io/distroless/static-debian11
+FROM gcr.io/distroless/static-debian11:debug
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
