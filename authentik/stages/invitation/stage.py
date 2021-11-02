@@ -4,7 +4,6 @@ from typing import Optional
 from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
-from django.shortcuts import get_object_or_404
 from structlog.stdlib import get_logger
 
 from authentik.flows.models import in_memory_stage
