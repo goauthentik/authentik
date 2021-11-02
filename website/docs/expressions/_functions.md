@@ -32,7 +32,7 @@ return ak_is_group_member(request.user, name="test_group")
 
 Fetch a user matching `**filters`.
 
-Returns "None" if no user was found, otherwise [User](/docs/expressions/reference/user-object)
+Returns "None" if no user was found, otherwise [User](/docs/user-group/user)
 
 Example:
 

@@ -1,6 +1,6 @@
 """OAuth Clients"""
 from typing import Any, Optional
-from urllib.parse import urlencode
+from urllib.parse import quote, urlencode
 
 from django.http import HttpRequest
 from requests import Session
@@ -58,7 +58,7 @@ class BaseOAuthClient:
         args = self.get_redirect_args()
         additional = parameters or {}
         args.update(additional)
-        params = urlencode(args)
+        params = urlencode(args, quote_via=quote)
         LOGGER.info("redirect args", **args)
         authorization_url = self.source.type.authorization_url or ""
         if self.source.type.urls_customizable and self.source.authorization_url:

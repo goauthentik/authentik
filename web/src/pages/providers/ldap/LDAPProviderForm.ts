@@ -1,17 +1,17 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
 
 import {
-    FlowsApi,
-    ProvidersApi,
-    LDAPProvider,
     CoreApi,
-    FlowsInstancesListDesignationEnum,
     CryptoApi,
+    FlowsApi,
+    FlowsInstancesListDesignationEnum,
+    LDAPProvider,
+    ProvidersApi,
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG, tenant } from "../../../api/Config";

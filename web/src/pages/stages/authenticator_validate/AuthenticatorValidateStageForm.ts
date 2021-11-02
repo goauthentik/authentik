@@ -1,14 +1,14 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
 
 import {
     AuthenticatorValidateStage,
-    NotConfiguredActionEnum,
     DeviceClassesEnum,
+    NotConfiguredActionEnum,
     StagesApi,
 } from "@goauthentik/api";
 

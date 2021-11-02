@@ -1,7 +1,8 @@
 import { t } from "@lingui/macro";
 
-import { css, CSSResult, html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators";
+import { CSSResult, TemplateResult, css, html } from "lit";
+import { customElement, state } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
 
 import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -36,11 +37,12 @@ export class AuthenticatorValidateStage
 {
     flowSlug = "";
 
+    @state()
     _selectedDeviceChallenge?: DeviceChallenge;
 
-    @property({ attribute: false })
     set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
         this._selectedDeviceChallenge = value;
+        if (!value) return;
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
         new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
@@ -64,6 +66,9 @@ export class AuthenticatorValidateStage
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal].concat(css`
+            ul {
+                padding-top: 1rem;
+            }
             ul > li:not(:last-child) {
                 padding-bottom: 1rem;
             }
@@ -74,7 +79,7 @@ export class AuthenticatorValidateStage
             i {
                 font-size: 1.5rem;
                 padding: 1rem 0;
-                width: 5rem;
+                width: 3rem;
             }
             .right {
                 display: flex;
@@ -204,15 +209,34 @@ export class AuthenticatorValidateStage
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-                ${this.selectedDeviceChallenge
-                    ? ""
-                    : html`<p class="pf-c-login__main-header-desc">
-                          ${t`Select an authentication method.`}
-                      </p>`}
             </header>
             ${this.selectedDeviceChallenge
                 ? this.renderDeviceChallenge()
-                : html`<div class="pf-c-login__main-body">${this.renderDevicePicker()}</div>
+                : html`<div class="pf-c-login__main-body">
+                          <form class="pf-c-form">
+                              <ak-form-static
+                                  class="pf-c-form__group"
+                                  userAvatar="${this.challenge.pendingUserAvatar}"
+                                  user=${this.challenge.pendingUser}
+                              >
+                                  <div slot="link">
+                                      <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                                          >${t`Not you?`}</a
+                                      >
+                                  </div>
+                              </ak-form-static>
+                              <input
+                                  name="username"
+                                  autocomplete="username"
+                                  type="hidden"
+                                  value="${this.challenge.pendingUser}"
+                              />
+                              ${this.selectedDeviceChallenge
+                                  ? ""
+                                  : html`<p>${t`Select an authentication method.`}</p>`}
+                          </form>
+                          ${this.renderDevicePicker()}
+                      </div>
                       <footer class="pf-c-login__main-footer">
                           <ul class="pf-c-login__main-footer-links"></ul>
                       </footer>`}`;

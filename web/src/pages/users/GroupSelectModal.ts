@@ -7,7 +7,7 @@ import { CoreApi, Group } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { TableModal } from "../../elements/table/TableModal";
@@ -26,11 +26,11 @@ export class GroupSelectModal extends TableModal<Group> {
 
     order = "name";
 
-    apiEndpoint(page: number): Promise<AKResponse<Group>> {
+    async apiEndpoint(page: number): Promise<AKResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE / 2,
+            pageSize: (await uiConfig()).pagination.perPage / 2,
             search: this.search || "",
         });
     }

@@ -545,6 +545,7 @@ class TestFlowExecutor(APITestCase):
                 "password_fields": False,
                 "primary_action": "Log in",
                 "sources": [],
+                "show_source_labels": False,
                 "user_fields": [UserFields.E_MAIL],
             },
         )

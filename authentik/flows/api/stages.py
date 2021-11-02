@@ -1,6 +1,4 @@
 """Flow Stage API Views"""
-from typing import Iterable
-
 from django.urls.base import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
@@ -15,7 +13,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.api.flows import FlowSerializer
-from authentik.flows.models import Stage
+from authentik.flows.models import ConfigurableStage, Stage
 from authentik.lib.utils.reflection import all_subclasses
 
 LOGGER = get_logger()
@@ -86,9 +84,11 @@ class StageViewSet(
     @action(detail=False, pagination_class=None, filter_backends=[])
     def user_settings(self, request: Request) -> Response:
         """Get all stages the user can configure"""
-        _all_stages: Iterable[Stage] = Stage.objects.all().select_subclasses().order_by("name")
+        stages = []
+        for configurable_stage in all_subclasses(ConfigurableStage):
+            stages += list(configurable_stage.objects.all().order_by("name"))
         matching_stages: list[dict] = []
-        for stage in _all_stages:
+        for stage in stages:
             user_settings = stage.ui_user_settings
             if not user_settings:
                 continue

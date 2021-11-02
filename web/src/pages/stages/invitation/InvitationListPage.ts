@@ -1,13 +1,13 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import { Invitation, StagesApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../../api/Client";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { PAGE_SIZE } from "../../../constants";
+import { uiConfig } from "../../../common/config";
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
 import "../../../elements/forms/DeleteBulkForm";
@@ -39,11 +39,11 @@ export class InvitationListPage extends TablePage<Invitation> {
     @property()
     order = "expires";
 
-    apiEndpoint(page: number): Promise<AKResponse<Invitation>> {
+    async apiEndpoint(page: number): Promise<AKResponse<Invitation>> {
         return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
     }

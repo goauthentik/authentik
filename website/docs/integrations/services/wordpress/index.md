@@ -21,7 +21,7 @@ The following placeholders will be used:
 - `wp.company` is the FQDN of Wordpress.
 - `authentik.company` is the FQDN of authentik.
 
-### Step 1 - Authentik
+### Step 1 - authentik
 
 In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
 
@@ -63,7 +63,7 @@ Only settings that have been modified from default have been listed.
 Review each setting and choose the ones that you require for your installation.  Examples of popular settings are _Link Existing Users_, _Create user if does not exist_, and _Enforce Privacy_
 :::
 
-### Step 3 - Authentik
+### Step 3 - authentik
 
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 

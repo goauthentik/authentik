@@ -1,15 +1,15 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
-import { RefreshTokenModel, Oauth2Api, ExpiringBaseGrantModel } from "@goauthentik/api";
+import { ExpiringBaseGrantModel, Oauth2Api, RefreshTokenModel } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../forms/DeleteBulkForm";
 import { Table, TableColumn } from "../table/Table";
 
@@ -24,12 +24,12 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
         return super.styles.concat(PFFlex);
     }
 
-    apiEndpoint(page: number): Promise<AKResponse<RefreshTokenModel>> {
+    async apiEndpoint(page: number): Promise<AKResponse<RefreshTokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensList({
             user: this.userId,
             ordering: "expires",
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 

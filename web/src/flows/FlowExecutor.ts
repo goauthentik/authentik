@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { LitElement, html, TemplateResult, CSSResult, css } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { unsafeHTML } from "lit/directives/unsafe-html";
 import { until } from "lit/directives/until";
@@ -16,8 +16,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     ChallengeChoices,
-    CurrentTenant,
     ChallengeTypes,
+    CurrentTenant,
     FlowChallengeResponseRequest,
     FlowsApi,
     RedirectChallenge,
@@ -29,7 +29,6 @@ import { configureSentry } from "../api/Sentry";
 import { WebsocketClient } from "../common/ws";
 import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "../constants";
 import "../elements/LoadingOverlay";
-import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
 import { first } from "../utils";
 import "./FlowInspector";
 import "./access_denied/FlowAccessDenied";
@@ -385,11 +384,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                                         <header class="pf-c-login__header">
                                             <div class="pf-c-brand ak-brand">
                                                 <img
-                                                    src="${first(
-                                                        this.tenant?.brandingLogo,
-                                                        DefaultTenant.brandingLogo,
-                                                    )}"
-                                                    alt="authentik icon"
+                                                    src="${first(this.tenant?.brandingLogo, "")}"
                                                 />
                                             </div>
                                         </header>
@@ -411,7 +406,8 @@ export class FlowExecutor extends LitElement implements StageHost {
                                                 ${this.tenant?.brandingTitle != "authentik"
                                                     ? html`
                                                           <li>
-                                                              <a href="https://goauthentik.io"
+                                                              <a
+                                                                  href="https://goauthentik.io?utm_source=authentik&amp;utm_medium=flow"
                                                                   >${t`Powered by authentik`}</a
                                                               >
                                                           </li>
@@ -422,8 +418,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                                                 )
                                                     ? html`
                                                           <li>
-                                                              <a
-                                                                  href="https://unsplash.com/@introspectivedsgn"
+                                                              <a href="https://unsplash.com/@foxxmd"
                                                                   >${t`Background image`}</a
                                                               >
                                                           </li>

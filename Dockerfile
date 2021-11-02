@@ -1,5 +1,5 @@
 # Stage 1: Lock python dependencies
-FROM docker.io/python:3.9-slim-buster as locker
+FROM docker.io/python:3.9-bullseye as locker
 
 COPY ./Pipfile /app/
 COPY ./Pipfile.lock /app/
@@ -11,7 +11,7 @@ RUN pip install pipenv && \
     pipenv lock -r --dev-only > requirements-dev.txt
 
 # Stage 2: Build website
-FROM docker.io/node as website-builder
+FROM docker.io/node:16 as website-builder
 
 COPY ./website /static/
 
@@ -19,7 +19,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build-docs-only
 
 # Stage 3: Build webui
-FROM docker.io/node as web-builder
+FROM docker.io/node:16 as web-builder
 
 COPY ./web /static/
 
@@ -27,7 +27,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build
 
 # Stage 4: Build go proxy
-FROM docker.io/golang:1.17.2 AS builder
+FROM docker.io/golang:1.17.2-bullseye AS builder
 
 WORKDIR /work
 
@@ -47,7 +47,7 @@ COPY ./go.sum /work/go.sum
 RUN go build -o /work/authentik ./cmd/server/main.go
 
 # Stage 5: Run
-FROM docker.io/python:3.9-slim-buster
+FROM docker.io/python:3.9-bullseye
 
 WORKDIR /
 COPY --from=locker /app/requirements.txt /
@@ -59,7 +59,7 @@ ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates gnupg git runit && \
     curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-    echo "deb http://apt.postgresql.org/pub/repos/apt buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+    echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends libpq-dev postgresql-client build-essential libxmlsec1-dev pkg-config libmaxminddb0 && \
     pip install -r /requirements.txt --no-cache-dir && \

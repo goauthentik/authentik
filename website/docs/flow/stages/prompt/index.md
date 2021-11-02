@@ -11,7 +11,7 @@ The prompt can be any of the following types:
 | Type     | Description                                                       |
 | -------- | ----------------------------------------------------------------- |
 | text     | Arbitrary text. No client-side validation is done.                |
-| email    | Email input. Requires a valid email adress.                       |
+| email    | Email input. Requires a valid email address.                       |
 | password | Password input.                                                   |
 | number   | Number input. Any number is allowed.                              |
 | checkbox | Simple checkbox.                                                  |

@@ -4,7 +4,7 @@ from re import split
 from typing import Optional
 
 import ldap3
-import ldap3.core.exceptions
+from ldap3.core.exceptions import LDAPAttributeError
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
@@ -67,9 +67,9 @@ class LDAPPasswordChanger:
                 search_scope=ldap3.BASE,
                 attributes=["pwdProperties"],
             )
-        except ldap3.core.exceptions.LDAPAttributeError:
+            root_attrs = list(root_attrs)[0]
+        except (LDAPAttributeError, KeyError, IndexError):
             return False
-        root_attrs = list(root_attrs)[0]
         raw_pwd_properties = root_attrs.get("attributes", {}).get("pwdProperties", None)
         if raw_pwd_properties is None:
             return False
@@ -86,7 +86,10 @@ class LDAPPasswordChanger:
         if not user_dn:
             LOGGER.info(f"User has no {LDAP_DISTINGUISHED_NAME} set.")
             return
-        self._source.connection.extend.microsoft.modify_password(user_dn, password)
+        try:
+            self._source.connection.extend.microsoft.modify_password(user_dn, password)
+        except LDAPAttributeError:
+            self._source.connection.extend.standard.modify_password(user_dn, new_password=password)
 
     def _ad_check_password_existing(self, password: str, user_dn: str) -> bool:
         """Check if a password contains sAMAccount or displayName"""

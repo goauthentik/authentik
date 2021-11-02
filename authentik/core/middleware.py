@@ -10,6 +10,9 @@ SESSION_IMPERSONATE_USER = "authentik_impersonate_user"
 SESSION_IMPERSONATE_ORIGINAL_USER = "authentik_impersonate_original_user"
 LOCAL = local()
 RESPONSE_HEADER_ID = "X-authentik-id"
+KEY_AUTH_VIA = "auth_via"
+KEY_USER = "user"
+INTERNAL_HEADER_PREFIX = "X-authentik-internal-"
 
 
 class ImpersonateMiddleware:
@@ -50,15 +53,17 @@ class RequestIDMiddleware:
             }
         response = self.get_response(request)
         response[RESPONSE_HEADER_ID] = request.request_id
-        del LOCAL.authentik["request_id"]
-        del LOCAL.authentik["host"]
+        if auth_via := LOCAL.authentik.get(KEY_AUTH_VIA, None):
+            response[INTERNAL_HEADER_PREFIX + KEY_AUTH_VIA] = auth_via
+        response[INTERNAL_HEADER_PREFIX + KEY_USER] = request.user.username
+        for key in list(LOCAL.authentik.keys()):
+            del LOCAL.authentik[key]
         return response
 
 
 # pylint: disable=unused-argument
-def structlog_add_request_id(logger: Logger, method_name: str, event_dict):
+def structlog_add_request_id(logger: Logger, method_name: str, event_dict: dict):
     """If threadlocal has authentik defined, add request_id to log"""
     if hasattr(LOCAL, "authentik"):
-        event_dict["request_id"] = LOCAL.authentik.get("request_id", "")
-        event_dict["host"] = LOCAL.authentik.get("host", "")
+        event_dict.update(LOCAL.authentik)
     return event_dict

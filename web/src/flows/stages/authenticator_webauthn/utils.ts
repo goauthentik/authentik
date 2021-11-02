@@ -1,7 +1,5 @@
 import * as base64js from "base64-js";
 
-import { hexEncode } from "../../../utils";
-
 export function b64enc(buf: Uint8Array): string {
     return base64js.fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
@@ -33,9 +31,11 @@ export interface Assertion {
     id: string;
     rawId: string;
     type: string;
-    attObj: string;
-    clientData: string;
     registrationClientExtensions: string;
+    response: {
+        clientDataJSON: string;
+        attestationObject: string;
+    };
 }
 
 /**
@@ -55,9 +55,11 @@ export function transformNewAssertionForServer(newAssertion: PublicKeyCredential
         id: newAssertion.id,
         rawId: b64enc(rawId),
         type: newAssertion.type,
-        attObj: b64enc(attObj),
-        clientData: b64enc(clientDataJSON),
         registrationClientExtensions: JSON.stringify(registrationClientExtensions),
+        response: {
+            clientDataJSON: b64enc(clientDataJSON),
+            attestationObject: b64enc(attObj),
+        },
     };
 }
 
@@ -91,10 +93,13 @@ export interface AuthAssertion {
     id: string;
     rawId: string;
     type: string;
-    clientData: string;
-    authData: string;
-    signature: string;
     assertionClientExtensions: string;
+    response: {
+        clientDataJSON: string;
+        authenticatorData: string;
+        signature: string;
+        userHandle: string | null;
+    };
 }
 
 /**
@@ -113,9 +118,13 @@ export function transformAssertionForServer(newAssertion: PublicKeyCredential): 
         id: newAssertion.id,
         rawId: b64enc(rawId),
         type: newAssertion.type,
-        authData: b64RawEnc(authData),
-        clientData: b64RawEnc(clientDataJSON),
-        signature: hexEncode(sig),
         assertionClientExtensions: JSON.stringify(assertionClientExtensions),
+
+        response: {
+            clientDataJSON: b64RawEnc(clientDataJSON),
+            signature: b64RawEnc(sig),
+            authenticatorData: b64RawEnc(authData),
+            userHandle: null,
+        },
     };
 }

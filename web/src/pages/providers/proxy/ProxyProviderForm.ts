@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
-import { css, CSSResult } from "lit";
-import { html, TemplateResult } from "lit";
+import { CSSResult, css } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
@@ -14,6 +14,7 @@ import {
     CryptoApi,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    PropertymappingsApi,
     ProvidersApi,
     ProxyMode,
     ProxyProvider,
@@ -320,7 +321,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
             </ak-form-element-horizontal>
 
             <ak-form-group>
-                <span slot="header"> ${t`Advanced protocol settings`} </span>
+                <span slot="header">${t`Advanced protocol settings`}</span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${t`Certificate`} name="certificate">
                         <select class="pf-c-form-control">
@@ -346,6 +347,44 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                                 html`<option>${t`Loading...`}</option>`,
                             )}
                         </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Scopes`} name="propertyMappings">
+                        <select class="pf-c-form-control" multiple>
+                            ${until(
+                                new PropertymappingsApi(DEFAULT_CONFIG)
+                                    .propertymappingsScopeList({
+                                        ordering: "scope_name",
+                                    })
+                                    .then((scopes) => {
+                                        return scopes.results
+                                            .filter((scope) => {
+                                                return !scope.managed?.startsWith(
+                                                    "goauthentik.io/providers",
+                                                );
+                                            })
+                                            .map((scope) => {
+                                                const selected = (
+                                                    this.instance?.propertyMappings || []
+                                                ).some((su) => {
+                                                    return su == scope.pk;
+                                                });
+                                                return html`<option
+                                                    value=${ifDefined(scope.pk)}
+                                                    ?selected=${selected}
+                                                >
+                                                    ${scope.name}
+                                                </option>`;
+                                            });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Additional scope mappings, which are passed to the proxy.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Hold control/command to select multiple items.`}
+                        </p>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal label=${t`Skip path regex`} name="skipPathRegex">

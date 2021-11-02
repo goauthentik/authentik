@@ -2,7 +2,7 @@ import Fuse from "fuse.js";
 
 import { t } from "@lingui/macro";
 
-import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { until } from "lit/directives/until";
 
@@ -18,9 +18,9 @@ import { Application, CoreApi } from "@goauthentik/api";
 
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
+import { UIConfig, uiConfig } from "../common/config";
 import { loading } from "../utils";
 import "./LibraryApplication";
-import { UIConfig, uiConfig } from "./config";
 
 @customElement("ak-library")
 export class LibraryPage extends LitElement {
@@ -40,7 +40,7 @@ export class LibraryPage extends LitElement {
         new CoreApi(DEFAULT_CONFIG).coreApplicationsList({}).then((apps) => {
             this.apps = apps;
             this.fuse = new Fuse(apps.results, {
-                keys: ["slug", "name"],
+                keys: ["slug", "name", "metaDescription", "metaPublisher"],
             });
             if (!this.fuse || !this.query) return;
             const matchingApps = this.fuse.search(this.query);

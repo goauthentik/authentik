@@ -2,6 +2,8 @@
 from typing import OrderedDict
 
 from django.core.exceptions import ObjectDoesNotExist
+from django_filters.filters import BooleanFilter, ModelMultipleChoiceFilter
+from django_filters.filterset import FilterSet
 from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
@@ -96,6 +98,22 @@ class PolicyBindingSerializer(ModelSerializer):
         return attrs
 
 
+class PolicyBindingFilter(FilterSet):
+    """Filter for PolicyBindings"""
+
+    target_in = ModelMultipleChoiceFilter(
+        field_name="target__pbm_uuid",
+        to_field_name="pbm_uuid",
+        queryset=PolicyBindingModel.objects.select_subclasses(),
+    )
+    policy__isnull = BooleanFilter("policy", "isnull")
+
+    class Meta:
+
+        model = PolicyBinding
+        fields = ["policy", "policy__isnull", "target", "target_in", "enabled", "order", "timeout"]
+
+
 class PolicyBindingViewSet(UsedByMixin, ModelViewSet):
     """PolicyBinding Viewset"""
 
@@ -105,5 +123,6 @@ class PolicyBindingViewSet(UsedByMixin, ModelViewSet):
         .prefetch_related("policy")
     )  # prefetching policy so we resolve the subclass
     serializer_class = PolicyBindingSerializer
-    filterset_fields = ["policy", "target", "enabled", "order", "timeout"]
     search_fields = ["policy__name"]
+    filterset_class = PolicyBindingFilter
+    ordering = ["target", "order"]

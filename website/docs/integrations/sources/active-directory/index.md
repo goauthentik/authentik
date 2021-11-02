@@ -9,7 +9,7 @@ The following placeholders will be used:
 - `ad.company` is the Name of the Active Directory domain.
 - `authentik.company` is the FQDN of the authentik install.
 
-## Active Directory Setup
+## Active Directory setup
 
 1. Open Active Directory Users and Computers
 
@@ -27,14 +27,15 @@ The following placeholders will be used:
 
     ![](./02_delegate.png)
 
-7. Grant these additional permissions (only required when *Sync users' password* is enabled, and dependant on your AD Domain)
+7. Grant these additional permissions (only required when *Sync users' password* is enabled, and dependent on your AD Domain)
 
     ![](./03_additional_perms.png)
 
 Additional infos: https://support.microfocus.com/kb/doc.php?id=7023371
 
 ## authentik Setup
-In authentik, create a new LDAP Source in Administration -> Sources.
+
+In authentik, create a new LDAP Source in Resources -> Sources.
 
 Use these settings:
 

@@ -75,12 +75,15 @@ class OutpostConfig:
     docker_network: Optional[str] = field(default=None)
     docker_map_ports: bool = field(default=True)
 
+    container_image: Optional[str] = field(default=None)
+
     kubernetes_replicas: int = field(default=1)
     kubernetes_namespace: str = field(default_factory=get_namespace)
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
     kubernetes_service_type: str = field(default="ClusterIP")
     kubernetes_disabled_components: list[str] = field(default_factory=list)
+    kubernetes_image_pull_secrets: Optional[list[str]] = field(default_factory=list)
 
 
 class OutpostModel(Model):

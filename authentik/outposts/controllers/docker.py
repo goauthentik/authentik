@@ -2,6 +2,7 @@
 from time import sleep
 
 from django.conf import settings
+from django.utils.text import slugify
 from docker import DockerClient
 from docker.errors import DockerException, NotFound
 from docker.models.containers import Container
@@ -27,6 +28,17 @@ class DockerController(BaseController):
             self.client = connection.client()
         except ServiceConnectionInvalid as exc:
             raise ControllerException from exc
+
+    @property
+    def name(self) -> str:
+        """Get the name of the object this reconciler manages"""
+        return (
+            self.outpost.config.object_naming_template
+            % {
+                "name": slugify(self.outpost.name),
+                "uuid": self.outpost.uuid.hex,
+            }
+        ).lower()
 
     def _get_labels(self) -> dict[str, str]:
         return {
@@ -81,7 +93,7 @@ class DockerController(BaseController):
             return False
         for port in self.deployment_ports:
             key = f"{port.inner_port or port.port}/{port.protocol.lower()}"
-            if key not in container.ports:
+            if not container.ports.get(key, None):
                 return True
             host_matching = False
             for host_port in container.ports[key]:
@@ -92,7 +104,7 @@ class DockerController(BaseController):
 
     def try_pull_image(self):
         """Try to pull the image needed for this outpost based on the CONFIG
-        `outposts.docker_image_base`, but fall back to known-good images"""
+        `outposts.container_image_base`, but fall back to known-good images"""
         image = self.get_container_image()
         try:
             self.client.images.pull(image)
@@ -102,15 +114,14 @@ class DockerController(BaseController):
         return image
 
     def _get_container(self) -> tuple[Container, bool]:
-        container_name = f"authentik-proxy-{self.outpost.uuid.hex}"
         try:
-            return self.client.containers.get(container_name), False
+            return self.client.containers.get(self.name), False
         except NotFound:
             self.logger.info("(Re-)creating container...")
             image_name = self.try_pull_image()
             container_args = {
                 "image": image_name,
-                "name": container_name,
+                "name": self.name,
                 "detach": True,
                 "environment": self._get_env(),
                 "labels": self._get_labels(),
@@ -131,12 +142,23 @@ class DockerController(BaseController):
                 True,
             )
 
+    def _migrate_container_name(self):
+        """Migrate 2021.9 to 2021.10+"""
+        old_name = f"authentik-proxy-{self.outpost.uuid.hex}"
+        try:
+            old_container: Container = self.client.containers.get(old_name)
+            old_container.kill()
+            old_container.remove()
+        except NotFound:
+            return
+
     # pylint: disable=too-many-return-statements
     def up(self, depth=1):
         if self.outpost.managed == MANAGED_OUTPOST:
             return None
         if depth >= 10:
             raise ControllerException("Giving up since we exceeded recursion limit.")
+        self._migrate_container_name()
         try:
             container, has_been_created = self._get_container()
             if has_been_created:
@@ -148,7 +170,7 @@ class DockerController(BaseController):
                 if should_image not in container.image.tags:
                     self.logger.info(
                         "Container has mismatched image, re-creating...",
-                        has=container.tags,
+                        has=container.image.tags,
                         should=should_image,
                     )
                     self.down()

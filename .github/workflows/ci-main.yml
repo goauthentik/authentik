@@ -150,7 +150,10 @@ jobs:
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+        run: |
+          scripts/ci_prepare.sh
+          # Sync anyways since stable will have different dependencies
+          pipenv sync --dev
       - name: run migrations to stable
         run: pipenv run python -m lifecycle.migrate
       - name: checkout current code

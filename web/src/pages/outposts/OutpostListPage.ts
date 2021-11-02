@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult } from "lit";
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
@@ -12,7 +12,7 @@ import { Outpost, OutpostsApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import { PFSize } from "../../elements/Spinner";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
@@ -40,11 +40,11 @@ export class OutpostListPage extends TablePage<Outpost> {
     searchEnabled(): boolean {
         return true;
     }
-    apiEndpoint(page: number): Promise<AKResponse<Outpost>> {
+    async apiEndpoint(page: number): Promise<AKResponse<Outpost>> {
         return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
     }

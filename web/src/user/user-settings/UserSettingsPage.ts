@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, LitElement, TemplateResult } from "lit";
-import { customElement } from "lit/decorators";
+import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { customElement, state } from "lit/decorators";
 import { until } from "lit/directives/until";
 
 import AKGlobal from "../../authentik.css";
@@ -12,18 +12,24 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
+import { StagesApi, UserSetting } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
 import { me } from "../../api/Users";
+import { EVENT_REFRESH } from "../../constants";
 import "../../elements/Tabs";
 import "../../elements/user/SessionList";
 import "../../elements/user/UserConsentList";
-import "./UserSelfForm";
+import "./details/UserDetailsForm";
+import "./details/UserPassword";
+import "./mfa/MFADevicesPage";
 import "./sources/SourceSettings";
-import "./stages/StageSettings";
 import "./tokens/UserTokenList";
 
 @customElement("ak-user-settings")
@@ -41,8 +47,23 @@ export class UserSettingsPage extends LitElement {
             PFSizing,
             PFForm,
             PFFormControl,
+            PFStack,
             AKGlobal,
         ];
+    }
+
+    @state()
+    userSettings!: Promise<UserSetting[]>;
+
+    constructor() {
+        super();
+        this.addEventListener(EVENT_REFRESH, () => {
+            this.firstUpdated();
+        });
+    }
+
+    firstUpdated(): void {
+        this.userSettings = new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
     }
 
     render(): TemplateResult {
@@ -54,10 +75,30 @@ export class UserSettingsPage extends LitElement {
                         data-tab-title="${t`User details`}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        <div class="pf-c-card">
-                            <div class="pf-c-card__title">${t`Update details`}</div>
-                            <div class="pf-c-card__body">
-                                <ak-user-self-form .instancePk=${1}></ak-user-self-form>
+                        <div class="pf-l-stack pf-m-gutter">
+                            <div class="pf-l-stack__item">
+                                <div class="pf-c-card">
+                                    <div class="pf-c-card__title">${t`Update details`}</div>
+                                    <div class="pf-c-card__body">
+                                        <ak-user-details-form
+                                            .instancePk=${1}
+                                        ></ak-user-details-form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pf-l-stack__item">
+                                ${until(
+                                    this.userSettings?.then((settings) => {
+                                        if (
+                                            settings.filter(
+                                                (stage) =>
+                                                    stage.component === "ak-user-settings-password",
+                                            ).length > 0
+                                        ) {
+                                            return html`<ak-user-settings-password></ak-user-settings-password>`;
+                                        }
+                                    }),
+                                )}
                             </div>
                         </div>
                     </section>
@@ -88,11 +129,13 @@ export class UserSettingsPage extends LitElement {
                         )}
                     </section>
                     <section
-                        slot="page-stages"
-                        data-tab-title="${t`Password, 2FA, etc`}"
+                        slot="page-mfa"
+                        data-tab-title="${t`MFA Devices`}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        <ak-user-settings-stage></ak-user-settings-stage>
+                        <ak-user-settings-mfa
+                            .userSettings=${this.userSettings}
+                        ></ak-user-settings-mfa>
                     </section>
                     <section
                         slot="page-sources"

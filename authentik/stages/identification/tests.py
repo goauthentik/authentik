@@ -119,10 +119,11 @@ class TestIdentificationStage(APITestCase):
                             "to": "/source/oauth/login/test/",
                             "type": ChallengeTypes.REDIRECT.value,
                         },
-                        "icon_url": "/static/authentik/sources/.svg",
+                        "icon_url": "/static/authentik/sources/default.svg",
                         "name": "test",
                     }
                 ],
+                "show_source_labels": False,
                 "user_fields": ["email"],
             },
         )
@@ -158,6 +159,7 @@ class TestIdentificationStage(APITestCase):
                         {"code": "invalid", "string": "Failed to " "authenticate."}
                     ]
                 },
+                "show_source_labels": False,
                 "flow_info": {
                     "background": self.flow.background_url,
                     "cancel_url": reverse("authentik_flows:cancel"),
@@ -170,7 +172,7 @@ class TestIdentificationStage(APITestCase):
                             "to": "/source/oauth/login/test/",
                             "type": ChallengeTypes.REDIRECT.value,
                         },
-                        "icon_url": "/static/authentik/sources/.svg",
+                        "icon_url": "/static/authentik/sources/default.svg",
                         "name": "test",
                     }
                 ],
@@ -218,6 +220,7 @@ class TestIdentificationStage(APITestCase):
                     "authentik_core:if-flow",
                     kwargs={"flow_slug": "unique-enrollment-string"},
                 ),
+                "show_source_labels": False,
                 "primary_action": "Log in",
                 "flow_info": {
                     "background": flow.background_url,
@@ -226,7 +229,7 @@ class TestIdentificationStage(APITestCase):
                 },
                 "sources": [
                     {
-                        "icon_url": "/static/authentik/sources/.svg",
+                        "icon_url": "/static/authentik/sources/default.svg",
                         "name": "test",
                         "challenge": {
                             "component": "xak-flow-redirect",
@@ -267,6 +270,7 @@ class TestIdentificationStage(APITestCase):
                     "authentik_core:if-flow",
                     kwargs={"flow_slug": "unique-recovery-string"},
                 ),
+                "show_source_labels": False,
                 "primary_action": "Log in",
                 "flow_info": {
                     "background": flow.background_url,
@@ -280,7 +284,7 @@ class TestIdentificationStage(APITestCase):
                             "to": "/source/oauth/login/test/",
                             "type": ChallengeTypes.REDIRECT.value,
                         },
-                        "icon_url": "/static/authentik/sources/.svg",
+                        "icon_url": "/static/authentik/sources/default.svg",
                         "name": "test",
                     }
                 ],

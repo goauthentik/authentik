@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 
@@ -85,7 +85,7 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
                             ${t`Expression using Python.`}
                             <a
                                 target="_blank"
-                                href="https://goauthentik.io/docs/policies/expression"
+                                href="https://goauthentik.io/docs/policies/expression?utm_source=authentik"
                             >
                                 ${t`See documentation for a list of all variables.`}
                             </a>

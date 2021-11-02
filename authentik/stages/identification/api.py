@@ -20,6 +20,7 @@ class IdentificationStageSerializer(StageSerializer):
             "enrollment_flow",
             "recovery_flow",
             "sources",
+            "show_source_labels",
         ]
 
 
@@ -35,5 +36,6 @@ class IdentificationStageViewSet(UsedByMixin, ModelViewSet):
         "show_matched_user",
         "enrollment_flow",
         "recovery_flow",
+        "show_source_labels",
     ]
     ordering = ["name"]

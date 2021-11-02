@@ -5,7 +5,7 @@ on:
     paths:
       - '/locale/'
   schedule:
-  - cron: "*/15 * * * *"
+  - cron: "0 */2 * * *"
   workflow_dispatch:
 
 env:

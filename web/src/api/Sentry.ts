@@ -38,17 +38,6 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                     if (hint.originalException instanceof Response || hint.originalException instanceof DOMException) {
                         return null;
                     }
-                    if (event.exception) {
-                        me().then(user => {
-                            Sentry.showReportDialog({
-                                eventId: event.event_id,
-                                user: {
-                                    email: user.user.email,
-                                    name: user.user.name,
-                                }
-                            });
-                        });
-                    }
                     return event;
                 },
             });
@@ -58,12 +47,13 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                 const intf = window.location.pathname.replace(/.+if\/(.+)\//, "$1");
                 Sentry.setTag(TAG_SENTRY_COMPONENT, `web/${intf}`);
             }
-            console.debug("authentik/config: Sentry enabled.");
             if (config.errorReportingSendPii && canDoPpi) {
                 me().then(user => {
                     Sentry.setUser({ email: user.user.email });
                     console.debug("authentik/config: Sentry with PII enabled.");
                 });
+            } else {
+                console.debug("authentik/config: Sentry enabled.");
             }
         }
         return config;

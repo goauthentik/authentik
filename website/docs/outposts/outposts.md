@@ -1,5 +1,5 @@
 ---
-title: Outposts
+title: Overview
 ---
 
 An outpost is a single deployment of a authentik component, which can be deployed in a completely separate environment. Currently, Proxy Provider and LDAP are supported as outposts.
@@ -39,8 +39,11 @@ authentik_host: https://authentik.tld/
 authentik_host_insecure: false
 # Optionally specify a different URL used for user-facing interactions
 authentik_host_browser:
-# Template used for objects created (deployments, services, secrets, etc)
+# Template used for objects created (deployments/containers, services, secrets, etc)
 object_naming_template: ak-outpost-%(name)s
+# Use a specific docker image for this outpost rather than the default. This also applies to Kubernetes
+# outposts.
+container_image:
 ########################################
 # Docker outpost specific settings
 ########################################
@@ -70,4 +73,7 @@ kubernetes_service_type: ClusterIP
 # - 'ingress'
 # - 'traefik middleware'
 kubernetes_disabled_components: []
+# If the above docker image is in a private repository, use these secrets to pull.
+# NOTE: The secret must be created manually in the namespace first.
+kubernetes_image_pull_secrets: []
 ```

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { until } from "lit/directives/until";
 
@@ -20,6 +20,7 @@ import { CurrentTenant, EventsApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { configureSentry } from "../api/Sentry";
 import { me } from "../api/Users";
+import { UserDisplay, uiConfig } from "../common/config";
 import { WebsocketClient } from "../common/ws";
 import {
     EVENT_API_DRAWER_TOGGLE,
@@ -34,7 +35,6 @@ import "../elements/sidebar/Sidebar";
 import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
 import "../elements/sidebar/SidebarItem";
 import { ROUTES } from "../routesUser";
-import { uiConfig, UserDisplay } from "../user/config";
 import { first } from "../utils";
 import "./locale";
 

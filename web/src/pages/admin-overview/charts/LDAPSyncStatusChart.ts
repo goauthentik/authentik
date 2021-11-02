@@ -1,4 +1,4 @@
-import { ChartOptions, ChartData } from "chart.js";
+import { ChartData, ChartOptions } from "chart.js";
 
 import { t } from "@lingui/macro";
 

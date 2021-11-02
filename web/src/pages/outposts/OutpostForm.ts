@@ -2,12 +2,12 @@ import YAML from "yaml";
 
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
 
-import { Outpost, OutpostsApi, OutpostTypeEnum, ProvidersApi } from "@goauthentik/api";
+import { Outpost, OutpostTypeEnum, OutpostsApi, ProvidersApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/CodeMirror";
@@ -165,7 +165,9 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </p>
                 <p class="pf-c-form__helper-text">
                     See
-                    <a target="_blank" href="https://goauthentik.io/docs/outposts/outposts"
+                    <a
+                        target="_blank"
+                        href="https://goauthentik.io/docs/outposts/outposts?utm_source=authentik"
                         >documentation</a
                     >.
                 </p>
@@ -208,7 +210,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     See
                     <a
                         target="_blank"
-                        href="https://goauthentik.io/docs/outposts/outposts#configuration"
+                        href="https://goauthentik.io/docs/outposts/outposts?utm_source=authentik#configuration"
                         >documentation</a
                     >.
                 </p>

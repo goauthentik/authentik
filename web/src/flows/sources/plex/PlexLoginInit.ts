@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult } from "lit";
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 
 import AKGlobal from "../../../authentik.css";

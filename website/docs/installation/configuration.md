@@ -25,6 +25,8 @@ All of these variables can be set to values, but you can also use a URI-like for
 
 ### PostgreSQL Backup Settings
 
+- `AUTHENTIK_POSTGRESQL__BACKUP__ENABLED`: Controls if the inbuilt backup-mechanism is enabled, defaults to true (new in 2021.10).
+
 Optionally enable automated database backups to S3 or S3-compatible storages.
 
 - `AUTHENTIK_POSTGRESQL__S3_BACKUP__ACCESS_KEY`: S3 Access Key
@@ -62,6 +64,13 @@ Secret key used for cookie signing and unique user IDs, don't change this after 
 Log level for the server and worker containers. Possible values: debug, info, warning, error
 Defaults to `info`.
 
+### AUTHENTIK_COOKIE_DOMAIN
+
+Which domain the session cookie should be set to. By default, the cookie is set to the domain authentik is accessed under.
+
+### AUTHENTIK_DISABLE_UPDATE_CHECK
+
+Disable the inbuilt update-checker. Defaults to `false`.
 
 ### AUTHENTIK_ERROR_REPORTING
 

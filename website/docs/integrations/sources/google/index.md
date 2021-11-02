@@ -15,12 +15,12 @@ The following placeholders will be used:
 You will need to create a new project, and OAuth credentials in the Google Developer console.  The developer console can be overwhelming at first.
 
 1. Visit https://console.developers.google.com/ to create a new project
-2. Create a New project. 
+2. Create a New project.
 
 ![Example Screen](googledeveloper1.png)
 
 3. **Project Name**: Choose a name
-4. **Organization**: Leave as defaut if unsure
+4. **Organization**: Leave as default if unsure
 5. **Location**: Leave as default if unsure
 
 ![Example Screen](googledeveloper2.png)
@@ -36,7 +36,7 @@ You will need to create a new project, and OAuth credentials in the Google Devel
 ![Example Screen](googledeveloper4.png)
 
 
-10. **User Type:** If you do not have a Google Workspace (GSuite) account choose _External_.  If you do have a Google Workspace (Gsuite) account and want to limit acces to only users inside of your organization choose _Internal_
+10. **User Type:** If you do not have a Google Workspace (GSuite) account choose _External_.  If you do have a Google Workspace (Gsuite) account and want to limit access to only users inside of your organization choose _Internal_
 
 _I'm only going to list the mandatory/important fields to complete._
 
@@ -62,7 +62,7 @@ _I'm only going to list the mandatory/important fields to complete._
 24. Click **Create**
 25. Copy and store _Your Client ID_ and _Your Client Secret_ for later
 
-## Authentik
+## authentik
 
 26. Under _Resources -> Sources_ Click **Create Google OAuth Source**
 
@@ -72,12 +72,12 @@ _I'm only going to list the mandatory/important fields to complete._
 30. **Consumer Secret:** Your Client Secret from step 25
 31. **Provider Type:** Google
 
-Here is an exmple of a complete Authentik Google OAuth Source
+Here is an example of a complete authentik Google OAuth Source
 
 ![Example Screen](authentiksource.png)
 
 Save, and you now have Google as a source.
 
 :::note
-For more details on how-to have the new source display on the Login Page see the Sources page
+For more details on how-to have the new source display on the Login Page see [here](../index).
 :::

@@ -10,6 +10,13 @@ module.exports = {
         },
         {
             type: "category",
+            label: "Users & Groups",
+            items: [
+                "user-group/user"
+            ]
+        },
+        {
+            type: "category",
             label: "Installation",
             items: [
                 "installation/index",
@@ -29,7 +36,7 @@ module.exports = {
                 "providers/saml",
                 {
                     type: "category",
-                    label: "Proxy",
+                    label: "Proxy Provider",
                     items: [
                         "providers/proxy/proxy",
                         "providers/proxy/forward_auth",
@@ -65,7 +72,10 @@ module.exports = {
                     items: [
                         "integrations/sources/index",
                         "integrations/sources/active-directory/index",
+                        "integrations/sources/apple/index",
+                        "integrations/sources/azure-ad/index",
                         "integrations/sources/discord/index",
+                        "integrations/sources/freeipa/index",
                         "integrations/sources/github/index",
                         "integrations/sources/google/index",
                         "integrations/sources/ldap/index",
@@ -86,6 +96,7 @@ module.exports = {
                         "integrations/services/grafana/index",
                         "integrations/services/harbor/index",
                         "integrations/services/home-assistant/index",
+                        "integrations/services/matrix-synapse/index",
                         "integrations/services/minio/index",
                         "integrations/services/nextcloud/index",
                         "integrations/services/portainer/index",
@@ -145,17 +156,6 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Expressions",
-            items: [
-                {
-                    type: "category",
-                    label: "Reference",
-                    items: ["expressions/reference/user-object"],
-                },
-            ],
-        },
-        {
-            type: "category",
             label: "Events",
             items: [
                 "events/index",
@@ -176,14 +176,15 @@ module.exports = {
             type: "category",
             label: "Release Notes",
             items: [
+                "releases/v2021.10",
                 "releases/v2021.9",
                 "releases/v2021.8",
-                "releases/v2021.7",
-                "releases/v2021.6",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/v2021.7",
+                        "releases/v2021.6",
                         "releases/v2021.5",
                         "releases/v2021.4",
                         "releases/v2021.3",

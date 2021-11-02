@@ -8,7 +8,7 @@ from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
-from rest_framework.fields import BooleanField, CharField, IntegerField
+from rest_framework.fields import BooleanField, CharField, ChoiceField, IntegerField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
@@ -31,7 +31,7 @@ class StagePromptSerializer(PassiveSerializer):
 
     field_key = CharField()
     label = CharField(allow_blank=True)
-    type = CharField()
+    type = ChoiceField(choices=FieldTypes.choices)
     required = BooleanField()
     placeholder = CharField(allow_blank=True)
     order = IntegerField()

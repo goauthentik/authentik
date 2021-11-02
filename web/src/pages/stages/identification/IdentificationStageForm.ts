@@ -1,17 +1,17 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
 
 import {
     FlowsApi,
-    IdentificationStage,
-    UserFieldsEnum,
-    StagesApi,
     FlowsInstancesListDesignationEnum,
+    IdentificationStage,
     SourcesApi,
+    StagesApi,
+    UserFieldsEnum,
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -189,6 +189,19 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${t`Hold control/command to select multiple items.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="showSourceLabels">
+                        <div class="pf-c-check">
+                            <input
+                                type="checkbox"
+                                class="pf-c-check__input"
+                                ?checked=${first(this.instance?.showSourceLabels, false)}
+                            />
+                            <label class="pf-c-check__label"> ${t`Show sources' labels`} </label>
+                        </div>
+                        <p class="pf-c-form__helper-text">
+                            ${t`By default, only icons are shown for sources. Enable this to show their full names.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="showMatchedUser">

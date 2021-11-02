@@ -1,6 +1,6 @@
 import babel from "@rollup/plugin-babel";
+import commonjs from "@rollup/plugin-commonjs";
 import replace from "@rollup/plugin-replace";
-import commonjs from "rollup-plugin-commonjs";
 import copy from "rollup-plugin-copy";
 import cssimport from "rollup-plugin-cssimport";
 import resolve from "rollup-plugin-node-resolve";
@@ -44,6 +44,8 @@ const resources = [
 
 // eslint-disable-next-line no-undef
 const isProdBuild = process.env.NODE_ENV === "production";
+// eslint-disable-next-line no-undef
+const apiBasePath = process.env.AK_API_BASE_PATH || "";
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function manualChunks(id) {
     if (id.includes("@goauthentik/api")) {
@@ -111,6 +113,7 @@ export default [
             }),
             replace({
                 "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
+                "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
                 "preventAssignment": true,
             }),
             sourcemaps(),
@@ -144,6 +147,7 @@ export default [
             }),
             replace({
                 "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
+                "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
                 "preventAssignment": true,
             }),
             sourcemaps(),
@@ -177,6 +181,7 @@ export default [
             }),
             replace({
                 "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
+                "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
                 "preventAssignment": true,
             }),
             sourcemaps(),

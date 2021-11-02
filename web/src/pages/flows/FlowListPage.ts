@@ -1,13 +1,13 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import { Flow, FlowsApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/ConfirmationForm";
 import "../../elements/forms/DeleteBulkForm";
@@ -39,11 +39,11 @@ export class FlowListPage extends TablePage<Flow> {
     @property()
     order = "slug";
 
-    apiEndpoint(page: number): Promise<AKResponse<Flow>> {
+    async apiEndpoint(page: number): Promise<AKResponse<Flow>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
     }

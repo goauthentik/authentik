@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { until } from "lit/directives/until";
 
@@ -38,7 +38,7 @@ export class DeleteObjectsTable<T> extends Table<T> {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    apiEndpoint(page: number): Promise<AKResponse<T>> {
+    async apiEndpoint(page: number): Promise<AKResponse<T>> {
         return Promise.resolve({
             pagination: {
                 count: this.objects.length,

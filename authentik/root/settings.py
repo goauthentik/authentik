@@ -72,6 +72,7 @@ _cookie_suffix = "_debug" if DEBUG else ""
 CSRF_COOKIE_NAME = "authentik_csrf"
 LANGUAGE_COOKIE_NAME = f"authentik_language{_cookie_suffix}"
 SESSION_COOKIE_NAME = f"authentik_session{_cookie_suffix}"
+SESSION_COOKIE_DOMAIN = CONFIG.y("cookie_domain", None)
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -175,6 +176,7 @@ SPECTACULAR_SETTINGS = {
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
+        "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "POSTPROCESSING_HOOKS": [
@@ -205,9 +207,6 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
-    "DEFAULT_THROTTLE_RATES": {
-        "flow_executor": "100/day",
-    },
 }
 
 REDIS_PROTOCOL_PREFIX = "redis://"
@@ -382,7 +381,7 @@ DBBACKUP_CONNECTOR_MAPPING = {
     "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector",
 }
 DBBACKUP_TMP_DIR = gettempdir() if DEBUG else "/tmp"  # nosec
-if CONFIG.y("postgresql.s3_backup"):
+if CONFIG.y("postgresql.s3_backup.bucket", "") != "":
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     DBBACKUP_STORAGE_OPTIONS = {
         "access_key": CONFIG.y("postgresql.s3_backup.access_key"),

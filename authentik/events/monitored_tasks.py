@@ -81,7 +81,7 @@ class TaskInfo:
     @staticmethod
     def by_name(name: str) -> Optional["TaskInfo"]:
         """Get TaskInfo Object by name"""
-        return cache.get(f"task_{name}")
+        return cache.get(f"task_{name}", None)
 
     def delete(self):
         """Delete task info from cache"""
@@ -116,6 +116,9 @@ def prefill_task():
     """Ensure a task's details are always in cache, so it can always be triggered via API"""
 
     def inner_wrap(func):
+        status = TaskInfo.by_name(func.__name__)
+        if status:
+            return func
         TaskInfo(
             task_name=func.__name__,
             task_description=func.__doc__,

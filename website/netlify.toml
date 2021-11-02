@@ -1,4 +1,8 @@
 [[redirects]]
+  from = "/discord"
+  to = "https://discord.gg/jg33eMhnj6"
+
+[[redirects]]
   from = "/*"
   to = "/.netlify/functions/go-get"
   status = 200
@@ -20,3 +24,15 @@
 [[redirects]]
   from = "/version/*"
   to = "https://raw.githubusercontent.com/goauthentik/authentik/version-:splat"
+
+[[redirects]]
+  from = "/js/script.js"
+  to = "https://plausible.io/js/plausible.outbound-links.js"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/event"
+  to = "https://analytics.beryju.org/api/event"
+  status = 200
+  force = true

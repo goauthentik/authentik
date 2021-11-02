@@ -386,6 +386,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
     def pre_permission_check(self):
         """Check prompt parameter before checking permission/authentication,
         see https://openid.net/specs/openid-connect-core-1_0.html#rfc.section.3.1.2.6"""
+        # Quick sanity check at the beginning to prevent event spamming
+        if len(self.request.GET) < 1:
+            raise Http404
         try:
             self.params = OAuthAuthorizationParams.from_request(self.request)
         except AuthorizeError as error:

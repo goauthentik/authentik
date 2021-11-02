@@ -213,6 +213,10 @@ html > form > input {
     option {
         color: var(--ak-dark-foreground);
     }
+    optgroup:checked,
+    option:checked {
+        color: var(--ak-dark-background);
+    }
     .pf-c-input-group {
         --pf-c-input-group--BackgroundColor: transparent;
     }

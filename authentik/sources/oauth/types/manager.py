@@ -1,7 +1,8 @@
 """Source type manager"""
 from enum import Enum
-from typing import Callable, Optional
+from typing import Callable, Optional, Type
 
+from django.templatetags.static import static
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.views.callback import OAuthCallback
@@ -22,8 +23,8 @@ class SourceType:
 
     callback_view = OAuthCallback
     redirect_view = OAuthRedirect
-    name: str
-    slug: str
+    name: str = "default"
+    slug: str = "default"
 
     urls_customizable = False
 
@@ -32,12 +33,16 @@ class SourceType:
     access_token_url: Optional[str] = None
     profile_url: Optional[str] = None
 
+    def icon_url(self) -> str:
+        """Get Icon URL for login"""
+        return static(f"authentik/sources/{self.slug}.svg")
+
 
 class SourceTypeManager:
     """Manager to hold all Source types."""
 
     def __init__(self) -> None:
-        self.__sources: list[SourceType] = []
+        self.__sources: list[Type[SourceType]] = []
 
     def type(self):
         """Class decorator to register classes inline."""
@@ -56,14 +61,14 @@ class SourceTypeManager:
         """Get list of tuples of all registered names"""
         return [(x.slug, x.name) for x in self.__sources]
 
-    def find_type(self, type_name: str) -> SourceType:
+    def find_type(self, type_name: str) -> Type[SourceType]:
         """Find type based on source"""
         found_type = None
         for src_type in self.__sources:
             if src_type.slug == type_name:
                 return src_type
         if not found_type:
-            found_type = SourceType()
+            found_type = SourceType
             LOGGER.warning(
                 "no matching type found, using default",
                 wanted=type_name,

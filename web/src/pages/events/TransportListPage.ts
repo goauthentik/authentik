@@ -1,13 +1,13 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import { EventsApi, NotificationTransport } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../../elements/buttons/ActionButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
@@ -36,11 +36,11 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     @property()
     order = "name";
 
-    apiEndpoint(page: number): Promise<AKResponse<NotificationTransport>> {
+    async apiEndpoint(page: number): Promise<AKResponse<NotificationTransport>> {
         return new EventsApi(DEFAULT_CONFIG).eventsTransportsList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
     }

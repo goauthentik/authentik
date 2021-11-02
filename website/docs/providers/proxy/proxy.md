@@ -1,5 +1,5 @@
 ---
-title: Proxy provider
+title: Overview
 ---
 
 The proxy outpost sets the following headers:

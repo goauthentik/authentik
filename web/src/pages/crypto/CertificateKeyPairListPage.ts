@@ -1,15 +1,15 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CryptoApi, CertificateKeyPair } from "@goauthentik/api";
+import { CertificateKeyPair, CryptoApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
@@ -43,11 +43,11 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    apiEndpoint(page: number): Promise<AKResponse<CertificateKeyPair>> {
+    async apiEndpoint(page: number): Promise<AKResponse<CertificateKeyPair>> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
     }

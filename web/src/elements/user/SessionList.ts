@@ -1,13 +1,13 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
-import { CoreApi, AuthenticatedSession } from "@goauthentik/api";
+import { AuthenticatedSession, CoreApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../forms/DeleteBulkForm";
 import { Table, TableColumn } from "../table/Table";
 
@@ -16,12 +16,12 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     @property()
     targetUser!: string;
 
-    apiEndpoint(page: number): Promise<AKResponse<AuthenticatedSession>> {
+    async apiEndpoint(page: number): Promise<AKResponse<AuthenticatedSession>> {
         return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsList({
             userUsername: this.targetUser,
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 

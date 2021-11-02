@@ -1,15 +1,15 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
 
-import { FlowsApi, FlowStageBinding, StagesApi } from "@goauthentik/api";
+import { FlowStageBinding, FlowsApi, StagesApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../../elements/Tabs";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
@@ -28,12 +28,12 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     @property()
     target?: string;
 
-    apiEndpoint(page: number): Promise<AKResponse<FlowStageBinding>> {
+    async apiEndpoint(page: number): Promise<AKResponse<FlowStageBinding>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsBindingsList({
             target: this.target || "",
             ordering: "order",
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 

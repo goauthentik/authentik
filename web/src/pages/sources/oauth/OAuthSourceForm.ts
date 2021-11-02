@@ -1,18 +1,18 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
 
 import {
-    OAuthSource,
-    SourcesApi,
     FlowsApi,
-    UserMatchingModeEnum,
-    OAuthSourceRequest,
     FlowsInstancesListDesignationEnum,
+    OAuthSource,
+    OAuthSourceRequest,
     SourceType,
+    SourcesApi,
+    UserMatchingModeEnum,
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
@@ -252,7 +252,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         ?writeOnly=${this.instance !== undefined}
                         name="consumerSecret"
                     >
-                        <input type="text" value="" class="pf-c-form-control" required />
+                        <textarea class="pf-c-form-control"></textarea>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

@@ -1,5 +1,5 @@
 """Base Kubernetes Reconciler"""
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING, Generic, Optional, TypeVar
 
 from django.utils.text import slugify
 from kubernetes.client import V1ObjectMeta
@@ -70,20 +70,33 @@ class KubernetesObjectReconciler(Generic[T]):
                 raise exc
             else:
                 self.reconcile(current, reference)
-        except NeedsRecreate:
-            self.logger.debug("Recreate requested")
-            if current:
-                self.logger.debug("Deleted old")
-                self.delete(current)
-            else:
-                self.logger.debug("No old found, creating")
-            self.logger.debug("Creating")
-            self.create(reference)
         except NeedsUpdate:
-            self.logger.debug("Updating")
-            self.update(current, reference)
+            try:
+                self.update(current, reference)
+                self.logger.debug("Updating")
+            except (OpenApiException, HTTPError) as exc:
+                # pylint: disable=no-member
+                if isinstance(exc, ApiException) and exc.status == 422:
+                    self.logger.debug("Failed to update current, triggering re-create")
+                    self._recreate(current=current, reference=reference)
+                    return
+                self.logger.debug("Other unhandled error", exc=exc)
+                raise exc
+        except NeedsRecreate:
+            self._recreate(current=current, reference=reference)
         else:
             self.logger.debug("Object is up-to-date.")
+
+    def _recreate(self, reference: T, current: Optional[T] = None):
+        """Recreate object"""
+        self.logger.debug("Recreate requested")
+        if current:
+            self.logger.debug("Deleted old")
+            self.delete(current)
+        else:
+            self.logger.debug("No old found, creating")
+        self.logger.debug("Creating")
+        self.create(reference)
 
     def down(self):
         """Delete object if found"""
@@ -138,6 +151,8 @@ class KubernetesObjectReconciler(Generic[T]):
                 "app.kubernetes.io/version": __version__,
                 "app.kubernetes.io/managed-by": "goauthentik.io",
                 "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
+                "goauthentik.io/outpost-type": str(self.controller.outpost.type),
+                "goauthentik.io/outpost-name": slugify(self.controller.outpost.name),
             },
             **kwargs,
         )

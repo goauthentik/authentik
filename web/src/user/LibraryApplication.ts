@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
@@ -14,8 +14,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { Application } from "@goauthentik/api";
 
 import { me } from "../api/Users";
+import { uiConfig } from "../common/config";
 import { truncate } from "../utils";
-import { uiConfig } from "./config";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends LitElement {

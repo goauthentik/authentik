@@ -1,16 +1,14 @@
 """Sync LDAP Users into authentik"""
-from datetime import datetime
-
 import ldap3
 import ldap3.core.exceptions
 from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
-from pytz import UTC
 
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer
-from authentik.sources.ldap.sync.vendor.ad import UserAccountControl
+from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
+from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
 
 
 class UserLDAPSynchronizer(BaseLDAPSynchronizer):
@@ -64,20 +62,6 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             else:
                 self._logger.debug("Synced User", user=ak_user.username, created=created)
                 user_count += 1
-                pwd_last_set: datetime = attributes.get("pwdLastSet", datetime.now())
-                pwd_last_set = pwd_last_set.replace(tzinfo=UTC)
-                if created or pwd_last_set >= ak_user.password_change_date:
-                    self.message(f"'{ak_user.username}': Reset user's password")
-                    self._logger.debug(
-                        "Reset user's password",
-                        user=ak_user.username,
-                        created=created,
-                        pwd_last_set=pwd_last_set,
-                    )
-                    ak_user.set_unusable_password()
-                    ak_user.save()
-                if "userAccountControl" in attributes:
-                    uac = UserAccountControl(attributes.get("userAccountControl"))
-                    ak_user.is_active = UserAccountControl.ACCOUNTDISABLE not in uac
-                    ak_user.save()
+                MicrosoftActiveDirectory(self._source).sync(attributes, ak_user, created)
+                FreeIPA(self._source).sync(attributes, ak_user, created)
         return user_count

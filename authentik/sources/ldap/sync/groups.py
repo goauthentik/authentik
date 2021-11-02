@@ -40,6 +40,9 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 self._logger.debug("Creating group with attributes", **defaults)
                 if "name" not in defaults:
                     raise IntegrityError("Name was not set by propertymappings")
+                # Special check for `users` field, as this is an M2M relation, and cannot be sync'd
+                if "users" in defaults:
+                    del defaults["users"]
                 ak_group, created = Group.objects.update_or_create(
                     **{
                         f"attributes__{LDAP_UNIQUENESS}": uniq,

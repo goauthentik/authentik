@@ -55,7 +55,7 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 		if err == nil {
 			return instance.Bind(username, req)
 		} else {
-			ls.log.WithError(err).Debug("Username not for instance")
+			req.log.WithError(err).Debug("Username not for instance")
 		}
 	}
 	req.log.WithField("request", "bind").Warning("No provider found for request")

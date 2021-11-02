@@ -53,7 +53,7 @@ elif [[ "$1" == "healthcheck" ]]; then
     if [[ $mode == "server" ]]; then
         curl --user-agent "goauthentik.io lifecycle Healthcheck" -I http://localhost:9000/-/health/ready/
     elif [[ $mode == "worker" ]]; then
-        celery -A authentik.root.celery inspect ping -d celery@$HOSTNAME
+        celery -A authentik.root.celery inspect ping -d celery@$HOSTNAME --timeout 5 -j
     fi
 else
     python -m manage "$@"

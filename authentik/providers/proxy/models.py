@@ -138,7 +138,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
                 SCOPE_AK_PROXY,
             ]
         )
-        self.property_mappings.set(scopes)
+        self.property_mappings.add(*list(scopes))
         self.redirect_uris = _get_callback_url(self.external_host)
 
     def __str__(self):

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
@@ -9,7 +9,7 @@ import { Stage, StagesApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
@@ -58,11 +58,11 @@ export class StageListPage extends TablePage<Stage> {
     @property()
     order = "name";
 
-    apiEndpoint(page: number): Promise<AKResponse<Stage>> {
+    async apiEndpoint(page: number): Promise<AKResponse<Stage>> {
         return new StagesApi(DEFAULT_CONFIG).stagesAllList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
     }

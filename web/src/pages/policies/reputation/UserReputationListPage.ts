@@ -1,13 +1,13 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
-import { UserReputation, PoliciesApi } from "@goauthentik/api";
+import { PoliciesApi, UserReputation } from "@goauthentik/api";
 
 import { AKResponse } from "../../../api/Client";
 import { DEFAULT_CONFIG } from "../../../api/Config";
-import { PAGE_SIZE } from "../../../constants";
+import { uiConfig } from "../../../common/config";
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
 import "../../../elements/forms/DeleteBulkForm";
@@ -35,11 +35,11 @@ export class UserReputationListPage extends TablePage<UserReputation> {
     @property()
     order = "username";
 
-    apiEndpoint(page: number): Promise<AKResponse<UserReputation>> {
+    async apiEndpoint(page: number): Promise<AKResponse<UserReputation>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUsersList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
     }

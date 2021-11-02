@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 
@@ -57,7 +57,7 @@ export class PropertyMappingNotification extends ModelForm<NotificationWebhookMa
                     ${t`Expression using Python.`}
                     <a
                         target="_blank"
-                        href="https://goauthentik.io/docs/property-mappings/expression/"
+                        href="https://goauthentik.io/docs/property-mappings/expression?utm_source=authentik"
                     >
                         ${t`See documentation for a list of all variables.`}
                     </a>

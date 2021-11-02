@@ -35,7 +35,7 @@ module.exports = {
                     position: "right",
                 },
                 {
-                    href: "https://discord.gg/jg33eMhnj6",
+                    href: "https://goauthentik.io/discord",
                     label: "Discord",
                     position: "right",
                 },

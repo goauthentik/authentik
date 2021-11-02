@@ -2,7 +2,7 @@ import "webcomponent-qr-code";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 

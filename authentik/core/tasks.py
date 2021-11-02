@@ -6,6 +6,7 @@ from os import environ
 from boto3.exceptions import Boto3Error
 from botocore.exceptions import BotoCoreError, ClientError
 from dbbackup.db.exceptions import CommandConnectorError
+from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core import management
@@ -55,24 +56,25 @@ def clean_expired_models(self: MonitoredTask):
     self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, messages))
 
 
+def should_backup() -> bool:
+    """Check if we should be doing backups"""
+    if SERVICE_HOST_ENV_NAME in environ and not CONFIG.y("postgresql.s3_backup.bucket"):
+        LOGGER.info("Running in k8s and s3 backups are not configured, skipping")
+        return False
+    if not CONFIG.y_bool("postgresql.backup.enabled"):
+        return False
+    if settings.DEBUG:
+        return False
+    return True
+
+
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 @prefill_task()
 def backup_database(self: MonitoredTask):  # pragma: no cover
     """Database backup"""
     self.result_timeout_hours = 25
-    if SERVICE_HOST_ENV_NAME in environ and not CONFIG.y("postgresql.s3_backup"):
-        LOGGER.info("Running in k8s and s3 backups are not configured, skipping")
-        self.set_status(
-            TaskResult(
-                TaskResultStatus.WARNING,
-                [
-                    (
-                        "Skipping backup as authentik is running in Kubernetes "
-                        "without S3 backups configured."
-                    ),
-                ],
-            )
-        )
+    if not should_backup():
+        self.set_status(TaskResult(TaskResultStatus.UNKNOWN, ["Backups are not configured."]))
         return
     try:
         start = datetime.now()

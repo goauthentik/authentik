@@ -1,13 +1,13 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import { ExpiringBaseGrantModel, Oauth2Api } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { PAGE_SIZE } from "../../constants";
+import { uiConfig } from "../../common/config";
 import "../forms/DeleteBulkForm";
 import { Table, TableColumn } from "../table/Table";
 
@@ -16,12 +16,12 @@ export class UserOAuthCodeList extends Table<ExpiringBaseGrantModel> {
     @property({ type: Number })
     userId?: number;
 
-    apiEndpoint(page: number): Promise<AKResponse<ExpiringBaseGrantModel>> {
+    async apiEndpoint(page: number): Promise<AKResponse<ExpiringBaseGrantModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2AuthorizationCodesList({
             user: this.userId,
             ordering: "expires",
             page: page,
-            pageSize: PAGE_SIZE,
+            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 

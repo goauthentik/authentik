@@ -1,19 +1,19 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
 
 import {
+    CapabilitiesEnum,
     Flow,
     FlowDesignationEnum,
-    PolicyEngineMode,
     FlowsApi,
-    CapabilitiesEnum,
+    PolicyEngineMode,
 } from "@goauthentik/api";
 
-import { config, DEFAULT_CONFIG } from "../../api/Config";
+import { DEFAULT_CONFIG, config } from "../../api/Config";
 import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
 import { first } from "../../utils";

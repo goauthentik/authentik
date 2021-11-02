@@ -50,7 +50,7 @@ class OutpostKubernetesTests(TestCase):
                 deployment_reconciler.get_reference_object(),
             )
 
-        with CONFIG.patch("outposts.docker_image_base", "test"):
+        with CONFIG.patch("outposts.container_image_base", "test"):
             with self.assertRaises(NeedsUpdate):
                 deployment_reconciler.reconcile(
                     deployment_reconciler.retrieve(),

@@ -50,7 +50,7 @@ In Wiki.js, configure the authentication strategy with these settings:
 - Client Secret: Client Secret from the authentik provider.
 - Authorization Endpoint URL: https://authentik.company/application/o/authorize/
 - Token Endpoint URL: https://authentik.company/application/o/token/
-- User Info Endpont URL: https://authentik.company/application/o/userinfo/
+- User Info Endpoint URL: https://authentik.company/application/o/userinfo/
 - Issuer: https://authentik.company/application/o/wikijs/
 - Logout URL: https://authentik.company/application/o/wikijs/end-session/
 - Allow self-registration: Enabled

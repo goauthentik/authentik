@@ -31,7 +31,7 @@ Basically, don't be a dickhead. This is an open-source non-profit project, that 
 
 ## I don't want to read this whole thing I just have a question!!!
 
-Either [create a question on GitHub](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=question&template=question.md&title=) or join [the Discord server](https://discord.gg/jg33eMhnj6)
+Either [create a question on GitHub](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=question&template=question.md&title=) or join [the Discord server](https://goauthentik.io/discord)
 
 ## What should I know before I get started?
 
@@ -131,7 +131,7 @@ When you are creating an enhancement suggestion, please fill in [the template](h
 
 authentik can be run locally, all though depending on which part you want to work on, different pre-requisites are required.
 
-This is documented in the [developer docs](https://goauthentik.io/developer-docs/)
+This is documented in the [developer docs](https://goauthentik.io/developer-docs/?utm_source=github)
 
 ### Pull Requests
 

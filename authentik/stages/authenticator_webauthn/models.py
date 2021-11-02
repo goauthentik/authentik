@@ -8,6 +8,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer, Serializer
+from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
+from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
@@ -64,6 +66,11 @@ class WebAuthnDevice(SerializerModel, Device):
 
     created_on = models.DateTimeField(auto_now_add=True)
     last_used_on = models.DateTimeField(default=now)
+
+    @property
+    def descriptor(self) -> PublicKeyCredentialDescriptor:
+        """Get a publickeydescriptor for this device"""
+        return PublicKeyCredentialDescriptor(id=base64url_to_bytes(self.credential_id))
 
     def set_sign_count(self, sign_count: int) -> None:
         """Set the sign_count and update the last_used_on datetime."""

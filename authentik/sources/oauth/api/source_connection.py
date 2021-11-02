@@ -21,6 +21,9 @@ class UserOAuthSourceConnectionSerializer(SourceSerializer):
             "source",
             "identifier",
         ]
+        extra_kwargs = {
+            "user": {"read_only": True},
+        }
 
 
 class UserOAuthSourceConnectionViewSet(
@@ -38,3 +41,4 @@ class UserOAuthSourceConnectionViewSet(
     filterset_fields = ["source__slug"]
     permission_classes = [OwnerPermissions]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    ordering = ["source__slug"]

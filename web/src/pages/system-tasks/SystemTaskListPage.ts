@@ -1,11 +1,11 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { AdminApi, Task, StatusEnum } from "@goauthentik/api";
+import { AdminApi, StatusEnum, Task } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -40,7 +40,7 @@ export class SystemTaskListPage extends TablePage<Task> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    apiEndpoint(page: number): Promise<AKResponse<Task>> {
+    async apiEndpoint(page: number): Promise<AKResponse<Task>> {
         return new AdminApi(DEFAULT_CONFIG).adminSystemTasksList().then((tasks) => {
             return {
                 pagination: {

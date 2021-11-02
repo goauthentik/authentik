@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";

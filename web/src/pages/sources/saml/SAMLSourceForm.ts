@@ -1,20 +1,20 @@
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
 
 import {
-    SAMLSource,
-    SourcesApi,
     BindingTypeEnum,
-    NameIdPolicyEnum,
     CryptoApi,
     DigestAlgorithmEnum,
-    SignatureAlgorithmEnum,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    NameIdPolicyEnum,
+    SAMLSource,
+    SignatureAlgorithmEnum,
+    SourcesApi,
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";

@@ -5,6 +5,16 @@ postgresql:
   user: authentik
   port: 5432
   password: 'env://POSTGRES_PASSWORD'
+  backup:
+    enabled: true
+  s3_backup:
+    access_key: ""
+    secret_key: ""
+    bucket: ""
+    region: eu-central-1
+    host: ""
+    location: ""
+    insecure_skip_verify: false
 
 web:
   listen: 0.0.0.0:9000
@@ -54,9 +64,10 @@ outposts:
   # %(type)s: Outpost type; proxy, ldap, etc
   # %(version)s: Current version; 2021.4.1
   # %(build_hash)s: Build hash if you're running a beta version
-  docker_image_base: "goauthentik.io/%(type)s:%(version)s"
+  container_image_base: env://AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE?goauthentik.io/%(type)s:%(version)s
 
 config_file_dir: "/config"
+cookie_domain: null
 disable_update_check: false
 avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar
 geoip: "./GeoLite2-City.mmdb"
@@ -64,6 +75,6 @@ geoip: "./GeoLite2-City.mmdb"
 # Can't currently be configured via environment variables, only yaml
 footer_links:
   - name: Documentation
-    href: https://goauthentik.io/docs/
+    href: https://goauthentik.io/docs/?utm_source=authentik
   - name: authentik Website
-    href: https://goauthentik.io/
+    href: https://goauthentik.io/?utm_source=authentik
