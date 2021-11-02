@@ -26,6 +26,7 @@ func DefaultConfig() {
 		LogLevel: "info",
 		ErrorReporting: ErrorReportingConfig{
 			Enabled: false,
+			DSN:     "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
 		},
 	}
 }
