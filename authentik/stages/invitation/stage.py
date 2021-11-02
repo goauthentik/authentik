@@ -79,7 +79,9 @@ class InvitationFinalStageView(StageView):
         if not invitation:
             LOGGER.warning("InvitationFinalStageView stage called without invitation")
             return HttpResponseBadRequest
-        if not invitation.single_use:
-            return self.executor.stage_ok()
-        invitation.delete()
+        token = invitation.invite_uuid.hex
+        if invitation.single_use:
+            invitation.delete()
+            LOGGER.debug("Deleted invitation", token=token)
+        del self.executor.plan.context[INVITATION]
         return self.executor.stage_ok()
