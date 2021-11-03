@@ -31,7 +31,6 @@ func (ws *WebServer) APISentryProxy(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	sd := SentryRequest{}
-	ws.log.Debug(lines[0])
 	err = json.Unmarshal([]byte(lines[0]), &sd)
 	if err != nil {
 		ws.log.WithError(err).Warning("failed to parse sentry request")
