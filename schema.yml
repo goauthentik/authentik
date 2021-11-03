@@ -11884,21 +11884,6 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /sentry/:
-    post:
-      operationId: sentry_create
-      description: Sentry tunnel, to prevent ad blockers from blocking sentry
-      tags:
-      - sentry
-      security:
-      - {}
-      responses:
-        '200':
-          description: No response body
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
   /sources/all/:
     get:
       operationId: sources_all_list
@@ -12975,6 +12960,32 @@ paths:
               schema:
                 $ref: '#/components/schemas/RedirectChallenge'
           description: ''
+        '400':
+          description: Token not found
+        '403':
+          description: Access denied
+  /sources/plex/redeem_token_authenticated/:
+    post:
+      operationId: sources_plex_redeem_token_authenticated_create
+      description: Redeem a plex token for an authenticated user, creating a connection
+      parameters:
+      - in: query
+        name: slug
+        schema:
+          type: string
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlexTokenRedeemRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
         '400':
           description: Token not found
         '403':

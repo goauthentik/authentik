@@ -925,6 +925,7 @@ msgid "Configure what data should be used as unique User Identifier. For most ca
 msgstr ""
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
 msgid "Connect"
 msgstr ""
 
