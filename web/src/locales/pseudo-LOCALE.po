@@ -4210,6 +4210,10 @@ msgstr ""
 msgid "Static authenticator"
 msgstr ""
 
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Static token"
+msgstr ""
+
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Static tokens"
 msgstr ""
