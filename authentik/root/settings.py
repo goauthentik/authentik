@@ -14,7 +14,9 @@ import importlib
 import logging
 import os
 import sys
+from hashlib import sha512
 from json import dumps
+from pathlib import Path
 from tempfile import gettempdir
 from time import time
 
@@ -32,6 +34,7 @@ from authentik.core.middleware import structlog_add_request_id
 from authentik.lib.config import CONFIG
 from authentik.lib.logging import add_process_id
 from authentik.lib.sentry import before_send
+from authentik.lib.utils.http import get_http_session
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 
@@ -400,6 +403,17 @@ if CONFIG.y("postgresql.s3_backup.bucket", "") != "":
 
 # Sentry integration
 SENTRY_DSN = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
+# Default to empty string as that is what docker has
+build_hash = os.environ.get(ENV_GIT_HASH_KEY, "")
+if build_hash == "":
+    build_hash = "tagged"
+
+env = "custom"
+if SERVICE_HOST_ENV_NAME in os.environ:
+    env = "kubernetes"
+elif Path("/tmp/authentik-mode").exists():  # nosec
+    env = "compose"
+
 _ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
     # pylint: disable=abstract-class-instantiated
@@ -416,18 +430,26 @@ if _ERROR_REPORTING:
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )
-    # Default to empty string as that is what docker has
-    build_hash = os.environ.get(ENV_GIT_HASH_KEY, "")
-    if build_hash == "":
-        build_hash = "tagged"
     set_tag("authentik.build_hash", build_hash)
-    set_tag("authentik.env", "kubernetes" if SERVICE_HOST_ENV_NAME in os.environ else "compose")
+    set_tag("authentik.env", env)
     set_tag("authentik.component", "backend")
     j_print(
         "Error reporting is enabled",
         env=CONFIG.y("error_reporting.environment", "customer"),
     )
-
+get_http_session().post(
+    "https://goauthentik.io/api/event",
+    json={
+        "domain": "authentik",
+        "name": "pageview",
+        "url": f"http://localhost/{env}",
+        "referrer": f"{__version__} ({build_hash})",
+    },
+    headers={
+        "User-Agent": sha512(SECRET_KEY.encode("ascii")).hexdigest()[:16],
+        "Content-Type": "text/plain",
+    },
+)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
