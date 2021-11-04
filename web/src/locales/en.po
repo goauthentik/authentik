@@ -2646,6 +2646,10 @@ msgstr "Long-running operations which authentik executes in the background."
 msgid "MFA Devices"
 msgstr "MFA Devices"
 
+#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
+msgid "Make sure to keep these tokens in a safe place."
+msgstr "Make sure to keep these tokens in a safe place."
+
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Mark newly created users as inactive."
 msgstr "Mark newly created users as inactive."
@@ -4879,7 +4883,6 @@ msgstr "Token validity"
 msgid "Token(s)"
 msgstr "Token(s)"
 
-#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/pages/tokens/TokenListPage.ts
 msgid "Tokens"
 msgstr "Tokens"

@@ -2638,6 +2638,10 @@ msgstr ""
 msgid "MFA Devices"
 msgstr ""
 
+#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
+msgid "Make sure to keep these tokens in a safe place."
+msgstr ""
+
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Mark newly created users as inactive."
 msgstr ""
@@ -4864,7 +4868,6 @@ msgstr ""
 msgid "Token(s)"
 msgstr ""
 
-#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/pages/tokens/TokenListPage.ts
 msgid "Tokens"
 msgstr ""
