@@ -56,15 +56,17 @@ func main() {
 
 	g := gounicorn.NewGoUnicorn()
 	ws := web.NewWebServer(g)
+	g.HealthyCallback = func() {
+		if !config.G.Web.DisableEmbeddedOutpost {
+			go attemptProxyStart(ws, u)
+		}
+	}
 	defer g.Kill()
 	defer ws.Shutdown()
 	go web.RunMetricsServer()
 	for {
 		go attemptStartBackend(g)
 		ws.Start()
-		if !config.G.Web.DisableEmbeddedOutpost {
-			go attemptProxyStart(ws, u)
-		}
 
 		<-ex
 		running = false
@@ -88,8 +90,6 @@ func attemptStartBackend(g *gounicorn.GoUnicorn) {
 func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 	maxTries := 100
 	attempt := 0
-	// Sleep to wait for the app server to start
-	time.Sleep(30 * time.Second)
 	for {
 		log.WithField("logger", "authentik").Debug("attempting to init outpost")
 		ac := ak.NewAPIController(*u, config.G.SecretKey)
