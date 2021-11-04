@@ -90,14 +90,13 @@ export class UserSettingsPage extends LitElement {
                             <div class="pf-l-stack__item">
                                 ${until(
                                     this.userSettings?.then((settings) => {
-                                        if (
-                                            settings.filter(
-                                                (stage) =>
-                                                    stage.component === "ak-user-settings-password",
-                                            ).length > 0
-                                        ) {
+                                        const pwStage = settings.filter(
+                                            (stage) =>
+                                                stage.component === "ak-user-settings-password",
+                                        );
+                                        if (pwStage.length > 0) {
                                             return html`<ak-user-settings-password
-                                                configureUrl=${ifDefined(settings[0].configureUrl)}
+                                                configureUrl=${ifDefined(pwStage[0].configureUrl)}
                                             ></ak-user-settings-password>`;
                                         }
                                     }),
