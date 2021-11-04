@@ -40,7 +40,7 @@ func getEnv() string {
 	return "custom"
 }
 
-func analytics(akURL url.URL, on string) {
+func analytics(akURL url.URL, on string, t string) {
 	if _, s := os.LookupEnv("AUTHENTIK_DISABLE_ANALYTICS"); s {
 		return
 	}
@@ -56,7 +56,7 @@ func analytics(akURL url.URL, on string) {
 	}{
 		Domain:   "authentik",
 		Name:     "pageview",
-		URL:      fmt.Sprintf("http://localhost/outpost/%s", e),
+		URL:      fmt.Sprintf("http://localhost/outpost/%s/%s", e, t),
 		Referrer: fmt.Sprintf("%s (%s)", constants.VERSION, constants.BUILD()),
 	}
 	b, err := json.Marshal(body)
