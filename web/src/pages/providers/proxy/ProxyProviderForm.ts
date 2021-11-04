@@ -2,9 +2,9 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";

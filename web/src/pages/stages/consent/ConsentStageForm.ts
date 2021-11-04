@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { ConsentStage, ConsentStageModeEnum, StagesApi } from "@goauthentik/api";
 

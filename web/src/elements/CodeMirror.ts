@@ -12,8 +12,8 @@ import "codemirror/mode/yaml/yaml.js";
 import YAML from "yaml";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import CodeMirrorDialogStyle from "codemirror/addon/dialog/dialog.css";
 import CodeMirrorShowHintStyle from "codemirror/addon/hint/show-hint.css";

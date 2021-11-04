@@ -4,7 +4,7 @@ import "@polymer/paper-input/paper-input";
 import { PaperInputElement } from "@polymer/paper-input/paper-input";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "../../authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";

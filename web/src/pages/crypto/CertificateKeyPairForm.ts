@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { CertificateKeyPair, CertificateKeyPairRequest, CryptoApi } from "@goauthentik/api";
 

@@ -2,7 +2,7 @@ import { ChartData } from "chart.js";
 
 import { t } from "@lingui/macro";
 
-import { customElement } from "lit/decorators";
+import { customElement } from "lit/decorators.js";
 
 import { AdminApi, LoginMetrics } from "@goauthentik/api";
 

@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 

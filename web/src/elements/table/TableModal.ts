@@ -1,6 +1,6 @@
 import { CSSResult, LitElement } from "lit";
 import { TemplateResult, html } from "lit";
-import { property } from "lit/decorators";
+import { property } from "lit/decorators.js";
 
 import AKGlobal from "../../authentik.css";
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";

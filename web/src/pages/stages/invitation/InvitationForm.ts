@@ -3,7 +3,7 @@ import YAML from "yaml";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
+import { customElement } from "lit/decorators.js";
 
 import { Invitation, StagesApi } from "@goauthentik/api";
 

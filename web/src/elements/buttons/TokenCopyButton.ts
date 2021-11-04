@@ -1,5 +1,5 @@
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
 
 import { CoreApi } from "@goauthentik/api";
 

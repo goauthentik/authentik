@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
 
 import { EVENT_REFRESH } from "../../constants";
 import "../LoadingOverlay";

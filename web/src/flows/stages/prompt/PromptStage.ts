@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
-import { unsafeHTML } from "lit/directives/unsafe-html";
+import { customElement } from "lit/decorators.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import AKGlobal from "../../../authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";

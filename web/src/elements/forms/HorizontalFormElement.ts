@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, css } from "lit";
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "../../authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";

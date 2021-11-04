@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 

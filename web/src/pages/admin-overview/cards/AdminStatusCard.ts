@@ -1,5 +1,5 @@
 import { TemplateResult, html } from "lit";
-import { until } from "lit/directives/until";
+import { until } from "lit/directives/until.js";
 
 import { EVENT_REFRESH } from "../../../constants";
 import { PFSize } from "../../../elements/Spinner";

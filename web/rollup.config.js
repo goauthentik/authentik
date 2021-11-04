@@ -1,9 +1,9 @@
 import babel from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import copy from "rollup-plugin-copy";
 import cssimport from "rollup-plugin-cssimport";
-import resolve from "rollup-plugin-node-resolve";
 import sourcemaps from "rollup-plugin-sourcemaps";
 import { terser } from "rollup-plugin-terser";
 
@@ -77,7 +77,7 @@ export default [
         ],
         plugins: [
             cssimport(),
-            resolve({ browser: true }),
+            nodeResolve({ browser: true }),
             commonjs(),
             isProdBuild && terser(),
             copy({
@@ -104,7 +104,7 @@ export default [
         ],
         plugins: [
             cssimport(),
-            resolve({ extensions, browser: true }),
+            nodeResolve({ extensions, browser: true }),
             commonjs(),
             babel({
                 extensions,
@@ -138,7 +138,7 @@ export default [
         ],
         plugins: [
             cssimport(),
-            resolve({ extensions, browser: true }),
+            nodeResolve({ extensions, browser: true }),
             commonjs(),
             babel({
                 extensions,
@@ -172,7 +172,7 @@ export default [
         ],
         plugins: [
             cssimport(),
-            resolve({ extensions, browser: true }),
+            nodeResolve({ extensions, browser: true }),
             commonjs(),
             babel({
                 extensions,
