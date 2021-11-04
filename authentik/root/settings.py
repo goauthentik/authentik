@@ -16,13 +16,11 @@ import os
 import sys
 from hashlib import sha512
 from json import dumps
-from pathlib import Path
 from tempfile import gettempdir
 from time import time
 
 import structlog
 from celery.schedules import crontab
-from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 from sentry_sdk import init as sentry_init
 from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.celery import CeleryIntegration
@@ -35,6 +33,7 @@ from authentik.lib.config import CONFIG
 from authentik.lib.logging import add_process_id
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.http import get_http_session
+from authentik.lib.utils.reflection import get_env
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 
@@ -408,12 +407,7 @@ build_hash = os.environ.get(ENV_GIT_HASH_KEY, "")
 if build_hash == "":
     build_hash = "tagged"
 
-env = "custom"
-if SERVICE_HOST_ENV_NAME in os.environ:
-    env = "kubernetes"
-elif Path("/tmp/authentik-mode").exists():  # nosec
-    env = "compose"
-
+env = get_env()
 _ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
     # pylint: disable=abstract-class-instantiated
