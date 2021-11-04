@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators";
+import { ifDefined } from "lit/directives/if-defined";
 import { until } from "lit/directives/until";
 
 import AKGlobal from "../../authentik.css";
@@ -95,7 +96,9 @@ export class UserSettingsPage extends LitElement {
                                                     stage.component === "ak-user-settings-password",
                                             ).length > 0
                                         ) {
-                                            return html`<ak-user-settings-password></ak-user-settings-password>`;
+                                            return html`<ak-user-settings-password
+                                                configureUrl=${ifDefined(settings[0].configureUrl)}
+                                            ></ak-user-settings-password>`;
                                         }
                                     }),
                                 )}

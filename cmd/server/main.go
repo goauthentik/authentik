@@ -38,7 +38,7 @@ func main() {
 
 	if config.G.ErrorReporting.Enabled {
 		err := sentry.Init(sentry.ClientOptions{
-			Dsn:              "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
+			Dsn:              config.G.ErrorReporting.DSN,
 			AttachStacktrace: true,
 			TracesSampleRate: 0.6,
 			Release:          fmt.Sprintf("authentik@%s", constants.VERSION),

@@ -84,6 +84,7 @@ class PlexSource(Source):
             data={
                 "title": f"Plex {self.name}",
                 "component": "ak-user-settings-source-plex",
+                "configure_url": self.client_id,
             }
         )
 

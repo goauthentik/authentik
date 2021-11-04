@@ -47,6 +47,7 @@ export class UserSourceSettingsPage extends LitElement {
                 return html`<ak-user-settings-source-plex
                     objectId=${source.objectUid}
                     title=${source.title}
+                    .configureUrl=${source.configureUrl}
                 >
                 </ak-user-settings-source-plex>`;
             default:

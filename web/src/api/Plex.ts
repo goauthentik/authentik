@@ -1,4 +1,4 @@
-import { VERSION } from "../../../constants";
+import { VERSION } from "../constants";
 
 export interface PlexPinResponse {
     // Only has the fields we care about
@@ -72,8 +72,12 @@ export class PlexAPIClient {
         const pinResponse = await fetch(`https://plex.tv/api/v2/pins/${id}`, {
             headers: headers,
         });
+        if (pinResponse.status > 200) {
+            throw new Error("Invalid response code")
+        }
         const pin: PlexPinResponse = await pinResponse.json();
-        return pin.authToken || "";
+        console.debug(`authentik/plex: polling Pin`);
+        return pin.authToken;
     }
 
     static async pinPoll(clientIdentifier: string, id: number): Promise<string> {

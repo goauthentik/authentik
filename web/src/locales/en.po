@@ -931,6 +931,7 @@ msgid "Configure what data should be used as unique User Identifier. For most ca
 msgstr "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
 msgid "Connect"
 msgstr "Connect"
 

@@ -14,10 +14,10 @@ import {
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
+import { PlexAPIClient, PlexResource, popupCenterScreen } from "../../../api/Plex";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
-import { PlexAPIClient, PlexResource, popupCenterScreen } from "../../../flows/sources/plex/API";
 import { first, randomString } from "../../../utils";
 
 @customElement("ak-source-plex-form")

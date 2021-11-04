@@ -30,7 +30,6 @@ lint-fix:
 		website/developer-docs
 
 lint:
-	pyright authentik tests lifecycle
 	bandit -r authentik tests lifecycle -x node_modules
 	pylint authentik tests lifecycle
 
