@@ -78,7 +78,7 @@ export class GroupListPage extends TablePage<Group> {
     row(item: Group): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${item.parent || t`-`}`,
+            html`${item.parentName || t`-`}`,
             html`${Array.from(item.users || []).length}`,
             html`${item.isSuperuser ? t`Yes` : t`No`}`,
             html` <ak-forms-modal>

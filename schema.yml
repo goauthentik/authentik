@@ -21437,6 +21437,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        parent_name:
+          type: string
+          readOnly: true
         users:
           type: array
           items:
@@ -21452,6 +21455,7 @@ components:
       required:
       - name
       - parent
+      - parent_name
       - pk
       - users
       - users_obj
