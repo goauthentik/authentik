@@ -4176,9 +4176,9 @@ msgstr "Jetons statiques"
 msgid "Static authenticator"
 msgstr ""
 
-#: 
-#~ msgid "Static tokens"
-#~ msgstr "Jetons statiques"
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "Static tokens"
+msgstr "Jetons statiques"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Static: Static value, displayed as-is."
@@ -4603,6 +4603,10 @@ msgstr "Certificat de vérification TLS"
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "TOTP Authenticators"
 msgstr "Authentificateur TOTP"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "TOTP Device"
+msgstr ""
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "TOTP authenticator"

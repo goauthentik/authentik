@@ -4218,9 +4218,9 @@ msgstr "Static Tokens"
 msgid "Static authenticator"
 msgstr "Static authenticator"
 
-#: 
-#~ msgid "Static tokens"
-#~ msgstr "Static tokens"
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "Static tokens"
+msgstr "Static tokens"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Static: Static value, displayed as-is."
@@ -4651,6 +4651,10 @@ msgstr "TLS Verification Certificate"
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "TOTP Authenticators"
 msgstr "TOTP Authenticators"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "TOTP Device"
+msgstr "TOTP Device"
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "TOTP authenticator"
