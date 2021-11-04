@@ -59,6 +59,11 @@ export class UserSourceSettingsPage extends LitElement {
         return html`<div class="pf-l-grid pf-m-gutter">
             ${until(
                 this.sourceSettings?.then((source) => {
+                    if (source.length < 1) {
+                        return html`<ak-empty-state
+                            header=${t`No services available.`}
+                        ></ak-empty-state>`;
+                    }
                     return source.map((stage) => {
                         return html`<div class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl">
                             ${this.renderSourceSettings(stage)}

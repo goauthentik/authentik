@@ -2932,6 +2932,10 @@ msgstr "No policies are currently bound to this object."
 msgid "No recovery flow is configured."
 msgstr "No recovery flow is configured."
 
+#: src/user/user-settings/sources/SourceSettings.ts
+msgid "No services available."
+msgstr "No services available."
+
 #: src/pages/flows/BoundStagesList.ts
 msgid "No stages are currently bound to this flow."
 msgstr "No stages are currently bound to this flow."

@@ -2924,6 +2924,10 @@ msgstr ""
 msgid "No recovery flow is configured."
 msgstr ""
 
+#: src/user/user-settings/sources/SourceSettings.ts
+msgid "No services available."
+msgstr ""
+
 #: src/pages/flows/BoundStagesList.ts
 msgid "No stages are currently bound to this flow."
 msgstr ""
