@@ -432,19 +432,21 @@ if _ERROR_REPORTING:
         env=CONFIG.y("error_reporting.environment", "customer"),
     )
 if not CONFIG.y_bool("disable_startup_analytics", False):
-    get_http_session().post(
-        "https://goauthentik.io/api/event",
-        json={
-            "domain": "authentik",
-            "name": "pageview",
-            "url": f"http://localhost/{env}",
-            "referrer": f"{__version__} ({build_hash})",
-        },
-        headers={
-            "User-Agent": sha512(SECRET_KEY.encode("ascii")).hexdigest()[:16],
-            "Content-Type": "text/plain",
-        },
-    )
+    should_send = env not in ["dev", "ci"]
+    if should_send:
+        get_http_session().post(
+            "https://goauthentik.io/api/event",
+            json={
+                "domain": "authentik",
+                "name": "pageview",
+                "url": f"http://localhost/{env}",
+                "referrer": f"{__version__} ({build_hash})",
+            },
+            headers={
+                "User-Agent": sha512(SECRET_KEY.encode("ascii")).hexdigest()[:16],
+                "Content-Type": "text/plain",
+            },
+        )
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
