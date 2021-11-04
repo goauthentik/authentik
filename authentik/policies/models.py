@@ -65,14 +65,14 @@ class PolicyBinding(SerializerModel):
         # This is quite an ugly hack to prevent pylint from trying
         # to resolve authentik_core.models.Group
         # as python import path
-        "authentik_core." + "Group",
+        "authentik_core.Group",
         on_delete=models.CASCADE,
         default=None,
         null=True,
         blank=True,
     )
     user = models.ForeignKey(
-        "authentik_core." + "User",
+        "authentik_core.User",
         on_delete=models.CASCADE,
         default=None,
         null=True,
@@ -96,7 +96,7 @@ class PolicyBinding(SerializerModel):
             self.policy: Policy
             return self.policy.passes(request)
         if self.group:
-            return PolicyResult(self.group.users.filter(pk=request.user.pk).exists())
+            return PolicyResult(self.group.is_member(request.user))
         if self.user:
             return PolicyResult(request.user == self.user)
         return PolicyResult(False)

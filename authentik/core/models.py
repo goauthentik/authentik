@@ -81,6 +81,27 @@ class Group(models.Model):
     )
     attributes = models.JSONField(default=dict, blank=True)
 
+    def is_member(self, user: "User") -> bool:
+        """Recursively check if `user` is member of us, or any parent."""
+        query = """
+        WITH RECURSIVE parents AS (
+            SELECT authentik_core_group.*, 0 AS relative_depth
+            FROM authentik_core_group
+            WHERE authentik_core_group.group_uuid = %s
+
+            UNION ALL
+
+            SELECT authentik_core_group.*, parents.relative_depth - 1
+            FROM authentik_core_group,parents
+            WHERE authentik_core_group.parent_id = parents.group_uuid
+        )
+        SELECT group_uuid
+        FROM parents
+        GROUP BY group_uuid;
+        """
+        groups = Group.objects.raw(query, [self.group_uuid])
+        return user.ak_groups.filter(pk__in=[group.pk for group in groups]).exists()
+
     def __str__(self):
         return f"Group {self.name}"
 
