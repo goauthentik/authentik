@@ -127,9 +127,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
         authenticator_stage = self.get_shadow_root("ak-stage-authenticator-static", flow_executor)
-        token = authenticator_stage.find_element(
-            By.CSS_SELECTOR, ".ak-otp-tokens li:nth-child(1)"
-        ).text
+        token = authenticator_stage.find_element(By.CSS_SELECTOR, "ul li:nth-child(1)").text
 
         authenticator_stage.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
