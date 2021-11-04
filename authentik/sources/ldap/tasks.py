@@ -31,8 +31,7 @@ def ldap_sync_all():
 @CELERY_APP.task(
     bind=True, base=MonitoredTask, soft_time_limit=60 * 60 * 2, task_time_limit=60 * 60 * 2
 )
-# TODO: remove Optional[str] in 2021.10
-def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: Optional[str] = None):
+def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str):
     """Synchronization of an LDAP Source"""
     self.result_timeout_hours = 2
     try:
@@ -40,8 +39,6 @@ def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: Optional[str] = N
     except LDAPSource.DoesNotExist:
         # Because the source couldn't be found, we don't have a UID
         # to set the state with
-        return
-    if not sync_class:
         return
     sync = path_to_class(sync_class)
     self.set_uid(f"{slugify(source.name)}-{sync.__name__}")
