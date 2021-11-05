@@ -5425,6 +5425,7 @@ msgstr "Avertissement : la politique n'est pas assignée."
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Warning: Provider is not used by an Application."
 msgstr ""
 

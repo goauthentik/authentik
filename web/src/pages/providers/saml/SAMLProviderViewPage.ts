@@ -6,6 +6,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import AKGlobal from "../../../authentik.css";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -61,6 +62,7 @@ export class SAMLProviderViewPage extends LitElement {
             PFCard,
             PFDescriptionList,
             PFSizing,
+            PFBanner,
             AKGlobal,
         ];
     }
@@ -78,6 +80,11 @@ export class SAMLProviderViewPage extends LitElement {
             return html``;
         }
         return html`<ak-tabs>
+            ${this.provider?.assignedApplicationName
+                ? html``
+                : html`<div slot="header" class="pf-c-banner pf-m-warning">
+                      ${t`Warning: Provider is not used by an Application.`}
+                  </div>`}
             <section
                 slot="page-overview"
                 data-tab-title="${t`Overview`}"
