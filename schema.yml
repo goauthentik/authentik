@@ -22168,12 +22168,18 @@ components:
             generated from the group.Pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
+        outpost_set:
+          type: array
+          items:
+            type: string
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
       - authorization_flow
       - component
       - name
+      - outpost_set
       - pk
       - verbose_name
       - verbose_name_plural
@@ -28652,6 +28658,11 @@ components:
           type: string
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
+        outpost_set:
+          type: array
+          items:
+            type: string
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -28659,6 +28670,7 @@ components:
       - component
       - external_host
       - name
+      - outpost_set
       - pk
       - redirect_uris
       - verbose_name
