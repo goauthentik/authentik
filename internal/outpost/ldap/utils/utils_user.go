@@ -1,19 +1,20 @@
-package ldap
+package utils
 
 import (
 	goldap "github.com/go-ldap/ldap/v3"
 	ber "github.com/nmcclain/asn1-ber"
 	"github.com/nmcclain/ldap"
 	"goauthentik.io/api"
+	"goauthentik.io/internal/outpost/ldap/constants"
 )
 
-func parseFilterForUser(req api.ApiCoreUsersListRequest, f *ber.Packet, skip bool) (api.ApiCoreUsersListRequest, bool) {
+func ParseFilterForUser(req api.ApiCoreUsersListRequest, f *ber.Packet, skip bool) (api.ApiCoreUsersListRequest, bool) {
 	switch f.Tag {
 	case ldap.FilterEqualityMatch:
 		return parseFilterForUserSingle(req, f)
 	case ldap.FilterAnd:
 		for _, child := range f.Children {
-			r, s := parseFilterForUser(req, child, skip)
+			r, s := ParseFilterForUser(req, child, skip)
 			skip = skip || s
 			req = r
 		}
@@ -58,7 +59,7 @@ func parseFilterForUserSingle(req api.ApiCoreUsersListRequest, f *ber.Packet) (a
 			name := groupDN.RDNs[0].Attributes[0].Value
 			// If the DN's first ou is virtual-groups, ignore this filter
 			if len(groupDN.RDNs) > 1 {
-				if groupDN.RDNs[1].Attributes[0].Value == UsersOU || groupDN.RDNs[1].Attributes[0].Value == VirtualGroupsOU {
+				if groupDN.RDNs[1].Attributes[0].Value == constants.OUUsers || groupDN.RDNs[1].Attributes[0].Value == constants.OUVirtualGroups {
 					// Since we know we're not filtering anything, skip this request
 					return req, true
 				}

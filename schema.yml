@@ -22035,6 +22035,8 @@ components:
             generated from the group.Pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
+        search_mode:
+          $ref: '#/components/schemas/SearchModeEnum'
       required:
       - application_slug
       - bind_flow_slug
@@ -22173,6 +22175,8 @@ components:
           items:
             type: string
           readOnly: true
+        search_mode:
+          $ref: '#/components/schemas/SearchModeEnum'
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -22228,6 +22232,8 @@ components:
             generated from the group.Pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
+        search_mode:
+          $ref: '#/components/schemas/SearchModeEnum'
       required:
       - authorization_flow
       - name
@@ -26849,6 +26855,8 @@ components:
             generated from the group.Pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
+        search_mode:
+          $ref: '#/components/schemas/SearchModeEnum'
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
@@ -29410,6 +29418,11 @@ components:
       - expression
       - name
       - scope_name
+    SearchModeEnum:
+      enum:
+      - direct
+      - cached
+      type: string
     ServiceConnection:
       type: object
       description: ServiceConnection Serializer

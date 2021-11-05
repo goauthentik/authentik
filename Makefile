@@ -60,18 +60,19 @@ gen-web:
 	\cp -rfv web-api/* web/node_modules/@goauthentik/api
 
 gen-outpost:
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O config.yaml
+	mkdir -p templates
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O templates/README.mustache
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O templates/go.mod.mustache
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
 		openapitools/openapi-generator-cli generate \
-		--git-host goauthentik.io \
-		--git-repo-id outpost \
-		--git-user-id api \
 		-i /local/schema.yml \
 		-g go \
 		-o /local/api \
-		--additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true,disallowAdditionalPropertiesIfNotPresent=false
-	rm -f api/go.mod api/go.sum
+		-c /local/config.yaml
+	go mod edit -replace goauthentik.io/api=./api
 
 gen: gen-build gen-clean gen-web
 
