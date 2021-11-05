@@ -100,6 +100,7 @@ module.exports = {
                         "integrations/services/minio/index",
                         "integrations/services/nextcloud/index",
                         "integrations/services/portainer/index",
+                        "integrations/services/proxmox-ve/index",
                         "integrations/services/rancher/index",
                         "integrations/services/sentry/index",
                         "integrations/services/sonarr/index",
