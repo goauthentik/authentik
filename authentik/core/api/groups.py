@@ -2,8 +2,8 @@
 from django.db.models.query import QuerySet
 from django_filters.filters import ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
-from rest_framework.fields import CharField, JSONField, SerializerMethodField
-from rest_framework.serializers import ListSerializer, ModelSerializer, Serializer
+from rest_framework.fields import CharField, JSONField
+from rest_framework.serializers import ListSerializer, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 

@@ -1,6 +1,4 @@
 """LDAP Sync tasks"""
-from typing import Optional
-
 from django.utils.text import slugify
 from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
