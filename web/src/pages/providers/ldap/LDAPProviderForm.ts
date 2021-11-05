@@ -122,13 +122,13 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
             <ak-form-element-horizontal label=${t`Search mode`} name="searchMode">
                 <select class="pf-c-form-control">
                     <option
-                        value=""
+                        value="${SearchModeEnum.Cached}"
                         ?selected=${this.instance?.searchMode === SearchModeEnum.Cached}
                     >
                         ${t`Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes.`}
                     </option>
                     <option
-                        value=""
+                        value="${SearchModeEnum.Direct}"
                         ?selected=${this.instance?.searchMode === SearchModeEnum.Direct}
                     >
                         ${t`Direct querying, always returns the latest data, but slower than cached querying.`}
