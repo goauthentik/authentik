@@ -9,6 +9,7 @@ from authentik.core.models import Group, Provider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import OutpostModel
 
+
 class SearchModes(models.TextChoices):
     """Search modes"""
 
