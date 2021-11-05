@@ -11,7 +11,7 @@ from authentik.providers.ldap.models import LDAPProvider
 class LDAPProviderSerializer(ProviderSerializer):
     """LDAPProvider Serializer"""
 
-    outpost_set = ListField(child=CharField(), read_only=True)
+    outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
 
     class Meta:
 

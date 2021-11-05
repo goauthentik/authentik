@@ -100,6 +100,7 @@ export class Tabs extends LitElement {
                     ${pages.map((page) => this.renderTab(page))}
                 </ul>
             </div>
+            <slot name="header"></slot>
             <slot name="${ifDefined(this.currentPage)}"></slot>`;
     }
 }

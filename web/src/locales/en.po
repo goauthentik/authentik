@@ -5475,9 +5475,24 @@ msgstr "Wait (min)"
 msgid "Warning"
 msgstr "Warning"
 
+#: src/pages/stages/invitation/InvitationListPage.ts
+msgid "Warning: No invitation stage is bound to any flow. Invitations will not work as expected."
+msgstr "Warning: No invitation stage is bound to any flow. Invitations will not work as expected."
+
 #: src/pages/policies/PolicyListPage.ts
 msgid "Warning: Policy is not assigned."
 msgstr "Warning: Policy is not assigned."
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Warning: Provider is not used by an Application."
+msgstr "Warning: Provider is not used by an Application."
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Warning: Provider is not used by any Outpost."
+msgstr "Warning: Provider is not used by any Outpost."
 
 #: src/pages/providers/ProviderListPage.ts
 msgid "Warning: Provider not assigned to any application."
