@@ -1,6 +1,6 @@
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
-import { ifDefined } from "lit/directives/if-defined";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";

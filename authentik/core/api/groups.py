@@ -42,6 +42,7 @@ class GroupSerializer(ModelSerializer):
     users_obj = ListSerializer(
         child=GroupMemberSerializer(), read_only=True, source="users", required=False
     )
+    parent_name = CharField(source="parent.name", read_only=True)
 
     class Meta:
 
@@ -51,6 +52,7 @@ class GroupSerializer(ModelSerializer):
             "name",
             "is_superuser",
             "parent",
+            "parent_name",
             "users",
             "attributes",
             "users_obj",

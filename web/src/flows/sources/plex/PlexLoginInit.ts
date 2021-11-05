@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
+import { customElement } from "lit/decorators.js";
 
 import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -19,10 +19,10 @@ import {
 import { SourcesApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
+import { PlexAPIClient, popupCenterScreen } from "../../../api/Plex";
 import { MessageLevel } from "../../../elements/messages/Message";
 import { showMessage } from "../../../elements/messages/MessageContainer";
 import { BaseStage } from "../../stages/base";
-import { PlexAPIClient, popupCenterScreen } from "./API";
 
 @customElement("ak-flow-sources-plex")
 export class PlexLoginInit extends BaseStage<

@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
-import { until } from "lit/directives/until";
+import { customElement, property } from "lit/decorators.js";
+import { until } from "lit/directives/until.js";
 
 import AKGlobal from "../../../authentik.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -11,7 +11,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { FlowsApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+import { StagesApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
 
@@ -47,22 +47,33 @@ export class InvitationListLink extends LitElement {
                             }}
                         >
                             ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
+                                new StagesApi(DEFAULT_CONFIG)
+                                    .stagesInvitationStagesList({
                                         ordering: "pk",
-                                        designation: FlowsInstancesListDesignationEnum.Enrollment,
+                                        noFlows: false,
                                     })
-                                    .then((flows) => {
-                                        if (!this.selectedFlow && flows.results.length > 0) {
-                                            this.selectedFlow = flows.results[0].slug;
+                                    .then((stages) => {
+                                        if (
+                                            !this.selectedFlow &&
+                                            stages.results.length > 0 &&
+                                            stages.results[0].flowSet
+                                        ) {
+                                            this.selectedFlow = stages.results[0].flowSet[0].slug;
                                         }
-                                        return flows.results.map((flow) => {
-                                            return html`<option
-                                                value=${flow.slug}
-                                                ?selected=${flow.slug === this.selectedFlow}
-                                            >
-                                                ${flow.slug}
-                                            </option>`;
+                                        const seenFlowSlugs: string[] = [];
+                                        return stages.results.map((stage) => {
+                                            return stage.flowSet?.map((flow) => {
+                                                if (seenFlowSlugs.includes(flow.slug)) {
+                                                    return html``;
+                                                }
+                                                seenFlowSlugs.push(flow.slug);
+                                                return html`<option
+                                                    value=${flow.slug}
+                                                    ?selected=${flow.slug === this.selectedFlow}
+                                                >
+                                                    ${flow.slug}
+                                                </option>`;
+                                            });
                                         });
                                     }),
                                 html`<option>${t`Loading...`}</option>`,

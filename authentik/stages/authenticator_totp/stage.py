@@ -81,7 +81,9 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
         stage: AuthenticatorTOTPStage = self.executor.current_stage
 
         if SESSION_TOTP_DEVICE not in self.request.session:
-            device = TOTPDevice(user=user, confirmed=True, digits=stage.digits)
+            device = TOTPDevice(
+                user=user, confirmed=True, digits=stage.digits, name="TOTP Authenticator"
+            )
 
             self.request.session[SESSION_TOTP_DEVICE] = device
         return super().get(request, *args, **kwargs)

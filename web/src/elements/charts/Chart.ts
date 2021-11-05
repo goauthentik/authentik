@@ -6,7 +6,7 @@ import { LinearScale, TimeScale } from "chart.js";
 import "chartjs-adapter-moment";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
-import { property } from "lit/decorators";
+import { property } from "lit/decorators.js";
 
 import { EVENT_REFRESH } from "../../constants";
 import { FONT_COLOUR_DARK_MODE, FONT_COLOUR_LIGHT_MODE } from "../../pages/flows/FlowDiagram";

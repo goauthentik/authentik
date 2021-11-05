@@ -1,9 +1,10 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "../../../authentik.css";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -58,6 +59,7 @@ export class LDAPProviderViewPage extends LitElement {
             PFCard,
             PFDescriptionList,
             PFSizing,
+            PFBanner,
             AKGlobal,
         ];
     }
@@ -75,6 +77,16 @@ export class LDAPProviderViewPage extends LitElement {
             return html``;
         }
         return html`<ak-tabs>
+            ${this.provider?.assignedApplicationName
+                ? html``
+                : html`<div slot="header" class="pf-c-banner pf-m-warning">
+                      ${t`Warning: Provider is not used by an Application.`}
+                  </div>`}
+            ${this.provider?.outpostSet.length < 1
+                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                      ${t`Warning: Provider is not used by any Outpost.`}
+                  </div>`
+                : html``}
             <section
                 slot="page-overview"
                 data-tab-title="${t`Overview`}"

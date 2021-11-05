@@ -1,4 +1,6 @@
 """Invitation Stage API Views"""
+from django_filters.filters import BooleanFilter
+from django_filters.filterset import FilterSet
 from rest_framework.fields import JSONField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
@@ -21,12 +23,23 @@ class InvitationStageSerializer(StageSerializer):
         ]
 
 
+class InvitationStageFilter(FilterSet):
+    """invitation filter"""
+
+    no_flows = BooleanFilter("flow", "isnull")
+
+    class Meta:
+
+        model = InvitationStage
+        fields = ["name", "no_flows", "continue_flow_without_invitation", "stage_uuid"]
+
+
 class InvitationStageViewSet(UsedByMixin, ModelViewSet):
     """InvitationStage Viewset"""
 
     queryset = InvitationStage.objects.all()
     serializer_class = InvitationStageSerializer
-    filterset_fields = "__all__"
+    filterset_class = InvitationStageFilter
     ordering = ["name"]
 
 
@@ -53,7 +66,7 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
 
     queryset = Invitation.objects.all()
     serializer_class = InvitationSerializer
-    order = ["-expires"]
+    ordering = ["-expires"]
     search_fields = ["created_by__username", "expires"]
     filterset_fields = ["created_by__username", "expires"]
 

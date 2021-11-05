@@ -11,6 +11,8 @@ import (
 )
 
 type GoUnicorn struct {
+	HealthyCallback func()
+
 	log     *log.Entry
 	p       *exec.Cmd
 	started bool
@@ -21,10 +23,11 @@ type GoUnicorn struct {
 func NewGoUnicorn() *GoUnicorn {
 	logger := log.WithField("logger", "authentik.router.unicorn")
 	g := &GoUnicorn{
-		log:     logger,
-		started: false,
-		killed:  false,
-		alive:   false,
+		log:             logger,
+		started:         false,
+		killed:          false,
+		alive:           false,
+		HealthyCallback: func() {},
 	}
 	g.initCmd()
 	return g
@@ -76,6 +79,7 @@ func (g *GoUnicorn) healthcheck() {
 	for range time.Tick(time.Second) {
 		if check() {
 			g.log.Info("backend is alive, backing off with healthchecks")
+			g.HealthyCallback()
 			break
 		}
 		g.log.Debug("backend not alive yet")

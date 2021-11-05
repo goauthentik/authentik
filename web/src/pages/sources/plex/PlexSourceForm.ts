@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import {
     FlowsApi,
@@ -14,10 +14,10 @@ import {
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
+import { PlexAPIClient, PlexResource, popupCenterScreen } from "../../../api/Plex";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
-import { PlexAPIClient, PlexResource, popupCenterScreen } from "../../../flows/sources/plex/API";
 import { first, randomString } from "../../../utils";
 
 @customElement("ak-source-plex-form")

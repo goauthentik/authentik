@@ -925,6 +925,7 @@ msgid "Configure what data should be used as unique User Identifier. For most ca
 msgstr ""
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
 msgid "Connect"
 msgstr ""
 
@@ -2637,6 +2638,10 @@ msgstr ""
 msgid "MFA Devices"
 msgstr ""
 
+#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
+msgid "Make sure to keep these tokens in a safe place."
+msgstr ""
+
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Mark newly created users as inactive."
 msgstr ""
@@ -2921,6 +2926,10 @@ msgstr ""
 
 #: src/pages/users/UserListPage.ts
 msgid "No recovery flow is configured."
+msgstr ""
+
+#: src/user/user-settings/sources/SourceSettings.ts
+msgid "No services available."
 msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
@@ -4201,9 +4210,13 @@ msgstr ""
 msgid "Static authenticator"
 msgstr ""
 
-#: 
-#~ msgid "Static tokens"
-#~ msgstr ""
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Static token"
+msgstr ""
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "Static tokens"
+msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Static: Static value, displayed as-is."
@@ -4636,6 +4649,10 @@ msgid "TOTP Authenticators"
 msgstr ""
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "TOTP Device"
+msgstr ""
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "TOTP authenticator"
 msgstr ""
 
@@ -4859,7 +4876,6 @@ msgstr ""
 msgid "Token(s)"
 msgstr ""
 
-#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/pages/tokens/TokenListPage.ts
 msgid "Tokens"
 msgstr ""
@@ -5444,8 +5460,24 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
+#: src/pages/stages/invitation/InvitationListPage.ts
+msgid "Warning: No invitation stage is bound to any flow. Invitations will not work as expected."
+msgstr ""
+
 #: src/pages/policies/PolicyListPage.ts
 msgid "Warning: Policy is not assigned."
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "Warning: Provider is not used by an Application."
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Warning: Provider is not used by any Outpost."
 msgstr ""
 
 #: src/pages/providers/ProviderListPage.ts

@@ -1,5 +1,5 @@
 import { CSSResult, LitElement } from "lit";
-import { property } from "lit/decorators";
+import { property } from "lit/decorators.js";
 
 import AKGlobal from "../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";

@@ -13,6 +13,7 @@ from django.db import InternalError, OperationalError, ProgrammingError
 from django.http.response import Http404
 from django_redis.exceptions import ConnectionInterrupted
 from docker.errors import DockerException
+from h11 import LocalProtocolError
 from ldap3.core.exceptions import LDAPException
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
@@ -72,6 +73,7 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         # websocket errors
         ChannelFull,
         WebSocketException,
+        LocalProtocolError,
         # rest_framework error
         APIException,
         # celery errors

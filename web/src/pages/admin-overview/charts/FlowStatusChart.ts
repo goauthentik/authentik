@@ -2,7 +2,7 @@ import { ChartData, ChartOptions } from "chart.js";
 
 import { t } from "@lingui/macro";
 
-import { customElement } from "lit/decorators";
+import { customElement } from "lit/decorators.js";
 
 import { FlowsApi } from "@goauthentik/api";
 

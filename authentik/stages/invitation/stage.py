@@ -4,7 +4,6 @@ from typing import Optional
 from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
-from django.shortcuts import get_object_or_404
 from structlog.stdlib import get_logger
 
 from authentik.flows.models import in_memory_stage
@@ -50,7 +49,12 @@ class InvitationStageView(StageView):
                 return self.executor.stage_ok()
             return self.executor.stage_invalid()
 
-        invite: Invitation = get_object_or_404(Invitation, pk=token)
+        invite: Invitation = Invitation.objects.filter(pk=token).first()
+        if not invite:
+            LOGGER.debug("invalid invitation", token=token)
+            if stage.continue_flow_without_invitation:
+                return self.executor.stage_ok()
+            return self.executor.stage_invalid()
         self.executor.plan.context[INVITATION_IN_EFFECT] = True
         self.executor.plan.context[INVITATION] = invite
 
@@ -79,7 +83,9 @@ class InvitationFinalStageView(StageView):
         if not invitation:
             LOGGER.warning("InvitationFinalStageView stage called without invitation")
             return HttpResponseBadRequest
-        if not invitation.single_use:
-            return self.executor.stage_ok()
-        invitation.delete()
+        token = invitation.invite_uuid.hex
+        if invitation.single_use:
+            invitation.delete()
+            LOGGER.debug("Deleted invitation", token=token)
+        del self.executor.plan.context[INVITATION]
         return self.executor.stage_ok()

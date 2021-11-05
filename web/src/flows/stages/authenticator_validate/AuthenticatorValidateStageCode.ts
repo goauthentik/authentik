@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -67,7 +67,9 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                         ? html`<p>${t`A code has been sent to you via SMS.`}</p>`
                         : html``}
                     <ak-form-element
-                        label="${t`Code`}"
+                        label="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
+                            ? t`Static token`
+                            : t`Code`}"
                         ?required="${true}"
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["code"]}
@@ -82,7 +84,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                                 : "numeric"}"
                             pattern="${this.deviceChallenge?.deviceClass ===
                             DeviceClassesEnum.Static
-                                ? ""
+                                ? "[0-9a-zA-Z]*"
                                 : "[0-9]*"}"
                             placeholder="${t`Please enter your Code`}"
                             autofocus=""

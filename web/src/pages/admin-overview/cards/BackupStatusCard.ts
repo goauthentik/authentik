@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
+import { customElement } from "lit/decorators.js";
 
 import { AdminApi, CapabilitiesEnum, StatusEnum } from "@goauthentik/api";
 

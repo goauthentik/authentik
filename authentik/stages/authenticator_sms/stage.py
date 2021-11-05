@@ -101,7 +101,7 @@ class AuthenticatorSMSStageView(ChallengeStageView):
         stage: AuthenticatorSMSStage = self.executor.current_stage
 
         if SESSION_SMS_DEVICE not in self.request.session:
-            device = SMSDevice(user=user, confirmed=False, stage=stage)
+            device = SMSDevice(user=user, confirmed=False, stage=stage, name="SMS Device")
             device.generate_token(commit=False)
             if phone_number := self._has_phone_number():
                 device.phone_number = phone_number

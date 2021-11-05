@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
@@ -138,10 +138,21 @@ export class MFADevicesPage extends Table<Device> {
         </ak-forms-delete-bulk>`;
     }
 
+    deviceTypeName(device: Device): string {
+        switch (device.type) {
+            case "otp_static.StaticDevice":
+                return t`Static tokens`;
+            case "otp_totp.TOTPDevice":
+                return t`TOTP Device`;
+            default:
+                return device.verboseName;
+        }
+    }
+
     row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${item.verboseName}`,
+            html`${this.deviceTypeName(item)}`,
             html`
                 <ak-forms-modal>
                     <span slot="submit">${t`Update`}</span>

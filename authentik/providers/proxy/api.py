@@ -36,6 +36,7 @@ class ProxyProviderSerializer(ProviderSerializer):
     """ProxyProvider Serializer"""
 
     redirect_uris = CharField(read_only=True)
+    outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
 
     def validate(self, attrs) -> dict[Any, str]:
         """Check that internal_host is set when mode is Proxy"""
@@ -74,6 +75,7 @@ class ProxyProviderSerializer(ProviderSerializer):
             "redirect_uris",
             "cookie_domain",
             "token_validity",
+            "outpost_set",
         ]
 
 

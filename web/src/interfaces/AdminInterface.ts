@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators";
-import { until } from "lit/directives/until";
+import { customElement, property } from "lit/decorators.js";
+import { until } from "lit/directives/until.js";
 
 import AKGlobal from "../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";

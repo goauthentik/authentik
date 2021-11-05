@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -22,21 +22,6 @@ import "../../../elements/forms/FormElement";
 import "../../FormStatic";
 import { BaseStage } from "../base";
 
-export const STATIC_TOKEN_STYLE = css`
-    /* Static OTP Tokens */
-    .ak-otp-tokens {
-        list-style: circle;
-        columns: 2;
-        -webkit-columns: 2;
-        -moz-columns: 2;
-        margin-left: var(--pf-global--spacer--xs);
-    }
-    .ak-otp-tokens li {
-        font-size: var(--pf-global--FontSize--2xl);
-        font-family: monospace;
-    }
-`;
-
 @customElement("ak-stage-authenticator-static")
 export class AuthenticatorStaticStage extends BaseStage<
     AuthenticatorStaticChallenge,
@@ -51,7 +36,21 @@ export class AuthenticatorStaticStage extends BaseStage<
             PFTitle,
             PFButton,
             AKGlobal,
-            STATIC_TOKEN_STYLE,
+            css`
+                /* Static OTP Tokens */
+                ul {
+                    list-style: circle;
+                    columns: 2;
+                    -webkit-columns: 2;
+                    -moz-columns: 2;
+                    margin-left: var(--pf-global--spacer--xs);
+                }
+                ul li {
+                    font-size: var(--pf-global--FontSize--2xl);
+                    font-family: monospace;
+                    margin: 0 2rem;
+                }
+            `,
         ];
     }
 
@@ -80,17 +79,14 @@ export class AuthenticatorStaticStage extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
-                    <ak-form-element
-                        label="${t`Tokens`}"
-                        ?required="${true}"
-                        class="pf-c-form__group"
-                    >
-                        <ul class="ak-otp-tokens">
+                    <ak-form-element label="" class="pf-c-form__group">
+                        <ul>
                             ${this.challenge.codes.map((token) => {
                                 return html`<li>${token}</li>`;
                             })}
                         </ul>
                     </ak-form-element>
+                    <p>${t`Make sure to keep these tokens in a safe place.`}</p>
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">

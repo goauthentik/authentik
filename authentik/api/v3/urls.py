@@ -11,7 +11,6 @@ from authentik.admin.api.tasks import TaskViewSet
 from authentik.admin.api.version import VersionView
 from authentik.admin.api.workers import WorkerView
 from authentik.api.v3.config import ConfigView
-from authentik.api.v3.sentry import SentryTunnelView
 from authentik.api.views import APIBrowserView
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
@@ -249,7 +248,6 @@ urlpatterns = (
             FlowInspectorView.as_view(),
             name="flow-inspector",
         ),
-        path("sentry/", SentryTunnelView.as_view(), name="sentry"),
         path("schema/", cache_page(86400)(SpectacularAPIView.as_view()), name="schema"),
     ]
 )

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.10.1
+  version: 2021.10.2
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -11884,21 +11884,6 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /sentry/:
-    post:
-      operationId: sentry_create
-      description: Sentry tunnel, to prevent ad blockers from blocking sentry
-      tags:
-      - sentry
-      security:
-      - {}
-      responses:
-        '200':
-          description: No response body
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
   /sources/all/:
     get:
       operationId: sources_all_list
@@ -12975,6 +12960,32 @@ paths:
               schema:
                 $ref: '#/components/schemas/RedirectChallenge'
           description: ''
+        '400':
+          description: Token not found
+        '403':
+          description: Access denied
+  /sources/plex/redeem_token_authenticated/:
+    post:
+      operationId: sources_plex_redeem_token_authenticated_create
+      description: Redeem a plex token for an authenticated user, creating a connection
+      parameters:
+      - in: query
+        name: slug
+        schema:
+          type: string
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlexTokenRedeemRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
         '400':
           description: Token not found
         '403':
@@ -17132,6 +17143,10 @@ paths:
         name: name
         schema:
           type: string
+      - in: query
+        name: no_flows
+        schema:
+          type: boolean
       - name: ordering
         required: false
         in: query
@@ -21422,6 +21437,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        parent_name:
+          type: string
+          readOnly: true
         users:
           type: array
           items:
@@ -21437,6 +21455,7 @@ components:
       required:
       - name
       - parent
+      - parent_name
       - pk
       - users
       - users_obj
@@ -22149,12 +22168,18 @@ components:
             generated from the group.Pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
+        outpost_set:
+          type: array
+          items:
+            type: string
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
       - authorization_flow
       - component
       - name
+      - outpost_set
       - pk
       - verbose_name
       - verbose_name_plural
@@ -28633,6 +28658,11 @@ components:
           type: string
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
+        outpost_set:
+          type: array
+          items:
+            type: string
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -28640,6 +28670,7 @@ components:
       - component
       - external_host
       - name
+      - outpost_set
       - pk
       - redirect_uris
       - verbose_name

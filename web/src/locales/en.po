@@ -931,6 +931,7 @@ msgid "Configure what data should be used as unique User Identifier. For most ca
 msgstr "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
 msgid "Connect"
 msgstr "Connect"
 
@@ -2645,6 +2646,10 @@ msgstr "Long-running operations which authentik executes in the background."
 msgid "MFA Devices"
 msgstr "MFA Devices"
 
+#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
+msgid "Make sure to keep these tokens in a safe place."
+msgstr "Make sure to keep these tokens in a safe place."
+
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Mark newly created users as inactive."
 msgstr "Mark newly created users as inactive."
@@ -2930,6 +2935,10 @@ msgstr "No policies are currently bound to this object."
 #: src/pages/users/UserListPage.ts
 msgid "No recovery flow is configured."
 msgstr "No recovery flow is configured."
+
+#: src/user/user-settings/sources/SourceSettings.ts
+msgid "No services available."
+msgstr "No services available."
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "No stages are currently bound to this flow."
@@ -4209,9 +4218,13 @@ msgstr "Static Tokens"
 msgid "Static authenticator"
 msgstr "Static authenticator"
 
-#: 
-#~ msgid "Static tokens"
-#~ msgstr "Static tokens"
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Static token"
+msgstr "Static token"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "Static tokens"
+msgstr "Static tokens"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Static: Static value, displayed as-is."
@@ -4644,6 +4657,10 @@ msgid "TOTP Authenticators"
 msgstr "TOTP Authenticators"
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "TOTP Device"
+msgstr "TOTP Device"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "TOTP authenticator"
 msgstr "TOTP authenticator"
 
@@ -4874,7 +4891,6 @@ msgstr "Token validity"
 msgid "Token(s)"
 msgstr "Token(s)"
 
-#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/pages/tokens/TokenListPage.ts
 msgid "Tokens"
 msgstr "Tokens"
@@ -5459,9 +5475,25 @@ msgstr "Wait (min)"
 msgid "Warning"
 msgstr "Warning"
 
+#: src/pages/stages/invitation/InvitationListPage.ts
+msgid "Warning: No invitation stage is bound to any flow. Invitations will not work as expected."
+msgstr "Warning: No invitation stage is bound to any flow. Invitations will not work as expected."
+
 #: src/pages/policies/PolicyListPage.ts
 msgid "Warning: Policy is not assigned."
 msgstr "Warning: Policy is not assigned."
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "Warning: Provider is not used by an Application."
+msgstr "Warning: Provider is not used by an Application."
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Warning: Provider is not used by any Outpost."
+msgstr "Warning: Provider is not used by any Outpost."
 
 #: src/pages/providers/ProviderListPage.ts
 msgid "Warning: Provider not assigned to any application."
