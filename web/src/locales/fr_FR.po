@@ -627,6 +627,10 @@ msgstr "Flux mis en cache"
 msgid "Cached policies"
 msgstr "Politiques mises en cache"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr "URL de rappel"
@@ -912,6 +916,10 @@ msgstr "Configure comment l'exécuteur de flux gère une réponse invalide à un
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Configure comment le champ émetteur du jeton ID sera rempli."
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Configure how the outpost queries the core authentik server's users."
+msgstr ""
 
 #~ msgid "Configure settings relevant to your user profile."
 #~ msgstr "Configure les paramètre applicable à votre profil."
@@ -1405,6 +1413,10 @@ msgstr "Algorithme d'empreinte"
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Digits"
 msgstr "Chiffres"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Direct querying, always returns the latest data, but slower than cached querying."
+msgstr ""
 
 #~ msgid "Disable"
 #~ msgstr "Désactiver"
@@ -3769,6 +3781,10 @@ msgstr "Note"
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Search group"
 msgstr "Rechercher un groupe"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Search mode"
+msgstr ""
 
 #: src/elements/table/TableSearch.ts
 #: src/user/LibraryPage.ts

@@ -621,6 +621,10 @@ msgstr ""
 msgid "Cached policies"
 msgstr ""
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr ""
@@ -905,6 +909,10 @@ msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Configure how the outpost queries the core authentik server's users."
 msgstr ""
 
 #: 
@@ -1406,6 +1414,10 @@ msgstr ""
 
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Digits"
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Direct querying, always returns the latest data, but slower than cached querying."
 msgstr ""
 
 #: 
@@ -3792,6 +3804,10 @@ msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Search group"
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Search mode"
 msgstr ""
 
 #: src/elements/table/TableSearch.ts

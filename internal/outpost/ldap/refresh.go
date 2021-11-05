@@ -9,9 +9,11 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/api"
 	directbind "goauthentik.io/internal/outpost/ldap/bind/direct"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/flags"
+	directsearch "goauthentik.io/internal/outpost/ldap/search/direct"
 	memorysearch "goauthentik.io/internal/outpost/ldap/search/memory"
 )
 
@@ -54,9 +56,11 @@ func (ls *LDAPServer) Refresh() error {
 			}
 			providers[idx].cert = ls.cs.Get(*kp)
 		}
-
-		// providers[idx].searcher = directsearch.NewDirectSearcher(providers[idx])
-		providers[idx].searcher = memorysearch.NewMemorySearcher(providers[idx])
+		if *provider.SearchMode.Ptr() == api.SEARCHMODEENUM_CACHED {
+			providers[idx].searcher = memorysearch.NewMemorySearcher(providers[idx])
+		} else if *provider.SearchMode.Ptr() == api.SEARCHMODEENUM_DIRECT {
+			providers[idx].searcher = directsearch.NewDirectSearcher(providers[idx])
+		}
 		providers[idx].binder = directbind.NewDirectBinder(providers[idx])
 	}
 	ls.providers = providers
