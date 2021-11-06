@@ -14,7 +14,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Flow, FlowsApi } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { AndNext, DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/PageHeader";
 import "../../elements/Tabs";
 import "../../elements/buttons/SpinnerButton";
@@ -100,7 +100,11 @@ export class FlowViewPage extends LitElement {
                                                                 slug: this.flow.slug,
                                                             })
                                                             .then((link) => {
-                                                                const finalURL = `${link.link}?next=/%23${window.location.hash}`;
+                                                                const finalURL = `${
+                                                                    link.link
+                                                                }${AndNext(
+                                                                    `${window.location.pathname}#${window.location.hash}`,
+                                                                )}`;
                                                                 window.open(finalURL, "_blank");
                                                             });
                                                     }}

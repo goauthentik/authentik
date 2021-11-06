@@ -8,7 +8,7 @@ import { until } from "lit/directives/until.js";
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
 import { AKResponse } from "../../../api/Client";
-import { DEFAULT_CONFIG } from "../../../api/Config";
+import { AndNext, DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/buttons/Dropdown";
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/TokenCopyButton";
@@ -78,9 +78,7 @@ export class MFADevicesPage extends Table<Device> {
                                 .map((stage) => {
                                     return html`<li>
                                         <a
-                                            href="${ifDefined(
-                                                stage.configureUrl,
-                                            )}?next=${encodeURIComponent(
+                                            href="${ifDefined(stage.configureUrl)}${AndNext(
                                                 "/if/user/#/settings;page-mfa",
                                             )}"
                                             class="pf-c-dropdown__menu-item"
