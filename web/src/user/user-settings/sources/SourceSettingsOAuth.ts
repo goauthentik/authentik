@@ -45,7 +45,12 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                             </button>`;
                     }
                     return html`<p>${t`Not connected.`}</p>
-                        <a class="pf-c-button pf-m-primary" href=${ifDefined(this.configureUrl)}>
+                        <a
+                            class="pf-c-button pf-m-primary"
+                            href="${ifDefined(this.configureUrl)}?next=${encodeURIComponent(
+                                "/if/user/#/settings;page-sources",
+                            )}"
+                        >
                             ${t`Connect`}
                         </a>`;
                 }),

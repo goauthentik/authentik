@@ -28,7 +28,12 @@ export class UserSettingsPassword extends LitElement {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">${t`Change your password`}</div>
             <div class="pf-c-card__body">
-                <a href="${ifDefined(this.configureUrl)}" class="pf-c-button pf-m-primary">
+                <a
+                    href="${ifDefined(this.configureUrl)}?next=${encodeURIComponent(
+                        "/if/user/#/settings;page-details",
+                    )}"
+                    class="pf-c-button pf-m-primary"
+                >
                     ${t`Change password`}
                 </a>
             </div>
