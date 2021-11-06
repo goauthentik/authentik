@@ -55,5 +55,5 @@ class TokenBackend(InbuiltBackend):
         if not tokens.exists():
             return None
         token = tokens.first()
-        self.set_method("password", request, token=token)
+        self.set_method("token", request, token=token)
         return token.user
