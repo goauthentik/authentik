@@ -2,7 +2,7 @@
 docker-compose -f scripts/ci.docker-compose.yml up -d
 sudo apt update
 sudo apt install -y libxmlsec1-dev pkg-config
-sudo pip install -U wheel pipenv
+sudo pip install -U wheel pipenv==2021.5.29
 if [[ "$INSTALL" != "true" ]]; then
     pipenv install --dev
 fi

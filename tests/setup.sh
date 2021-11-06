@@ -10,7 +10,7 @@ sudo apt-get install -y nodejs
 # Setup python
 sudo apt install -y python3.9 python3.9-dev python3-pip libxmlsec1-dev pkg-config
 # Setup docker
-sudo pip3 install pipenv
+sudo pip3 install pipenv==2021.5.29
 
 cd tests/e2e
 sudo docker-compose up -d

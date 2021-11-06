@@ -6,7 +6,7 @@ COPY ./Pipfile.lock /app/
 
 WORKDIR /app/
 
-RUN pip install pipenv && \
+RUN pip install pipenv==2021.5.29 && \
     pipenv lock -r > requirements.txt && \
     pipenv lock -r --dev-only > requirements-dev.txt
 
