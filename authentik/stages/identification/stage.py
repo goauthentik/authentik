@@ -1,5 +1,6 @@
 """Identification stage logic"""
 from dataclasses import asdict
+from random import SystemRandom
 from time import sleep
 from typing import Any, Optional
 
@@ -78,7 +79,8 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
         pre_user = self.stage.get_user(uid_field)
         if not pre_user:
-            sleep(0.150)
+            # Sleep a random time (between 90 and 210ms) to "prevent" user enumeration attacks
+            sleep(0.30 * SystemRandom().randint(3, 7))
             LOGGER.debug("invalid_login", identifier=uid_field)
             identification_failed.send(sender=self, request=self.stage.request, uid_field=uid_field)
             # We set the pending_user even on failure so it's part of the context, even
