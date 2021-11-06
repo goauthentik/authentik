@@ -74,14 +74,13 @@ func (ws *WebServer) listenPlain() {
 	if err != nil {
 		ws.log.WithError(err).Fatalf("failed to listen")
 	}
-	ws.log.WithField("addr", config.G.Web.Listen).Info("Running")
+	ws.log.WithField("addr", config.G.Web.Listen).Info("Listening")
 
 	proxyListener := &proxyproto.Listener{Listener: ln}
 	defer proxyListener.Close()
 
 	ws.serve(proxyListener)
 
-	ws.log.WithField("addr", config.G.Web.Listen).Info("Running")
 	err = http.ListenAndServe(config.G.Web.Listen, ws.m)
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		ws.log.Errorf("ERROR: http.Serve() - %s", err)
