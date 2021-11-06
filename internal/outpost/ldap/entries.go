@@ -4,7 +4,6 @@ import (
 	"github.com/nmcclain/ldap"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/outpost/ldap/constants"
-	"goauthentik.io/internal/outpost/ldap/group"
 	"goauthentik.io/internal/outpost/ldap/utils"
 )
 
@@ -31,9 +30,4 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		"gidNumber":                     {pi.GetUidNumber(u)},
 	})
 	return &ldap.Entry{DN: dn, Attributes: attrs}
-}
-
-func (pi *ProviderInstance) GroupEntry(g group.LDAPGroup) *ldap.Entry {
-	// TODO: Remove
-	return g.Entry()
 }
