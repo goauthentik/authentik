@@ -7,7 +7,7 @@ import { until } from "lit/directives/until.js";
 
 import { SourcesApi } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../../api/Config";
+import { AndNext, DEFAULT_CONFIG } from "../../../api/Config";
 import { BaseUserSettings } from "../BaseUserSettings";
 
 @customElement("ak-user-settings-source-oauth")
@@ -47,7 +47,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                     return html`<p>${t`Not connected.`}</p>
                         <a
                             class="pf-c-button pf-m-primary"
-                            href="${ifDefined(this.configureUrl)}?next=${encodeURIComponent(
+                            href="${ifDefined(this.configureUrl)}${AndNext(
                                 "/if/user/#/settings;page-sources",
                             )}"
                         >
