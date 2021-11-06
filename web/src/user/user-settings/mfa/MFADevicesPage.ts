@@ -78,7 +78,11 @@ export class MFADevicesPage extends Table<Device> {
                                 .map((stage) => {
                                     return html`<li>
                                         <a
-                                            href="${ifDefined(stage.configureUrl)}"
+                                            href="${ifDefined(
+                                                stage.configureUrl,
+                                            )}?next=${encodeURIComponent(
+                                                "/if/user/#/settings;page-mfa",
+                                            )}"
                                             class="pf-c-dropdown__menu-item"
                                         >
                                             ${stageToAuthenticatorName(stage)}
