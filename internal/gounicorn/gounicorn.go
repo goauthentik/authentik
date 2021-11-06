@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"runtime"
+	"syscall"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -49,7 +51,7 @@ func (g *GoUnicorn) IsRunning() bool {
 
 func (g *GoUnicorn) Start() error {
 	if g.killed {
-		g.log.Debug("Not restarting gunicorn since we're killed")
+		g.log.Debug("Not restarting gunicorn since we're shutdown")
 		return nil
 	}
 	if g.started {
@@ -91,8 +93,15 @@ func (g *GoUnicorn) healthcheck() {
 
 func (g *GoUnicorn) Kill() {
 	g.killed = true
-	err := g.p.Process.Kill()
+	var err error
+	if runtime.GOOS == "darwin" {
+		g.log.WithField("method", "kill").Warning("stopping gunicorn")
+		err = g.p.Process.Kill()
+	} else {
+		g.log.WithField("method", "sigterm").Warning("stopping gunicorn")
+		err = syscall.Kill(g.p.Process.Pid, syscall.SIGTERM)
+	}
 	if err != nil {
-		g.log.WithError(err).Warning("failed to kill gunicorn")
+		g.log.WithError(err).Warning("failed to stop gunicorn")
 	}
 }

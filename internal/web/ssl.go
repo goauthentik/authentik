@@ -26,7 +26,7 @@ func (ws *WebServer) listenTLS() {
 		ws.log.WithError(err).Fatalf("failed to listen")
 		return
 	}
-	ws.log.WithField("addr", config.G.Web.ListenTLS).Info("Running")
+	ws.log.WithField("addr", config.G.Web.ListenTLS).Info("Listening (TLS)")
 
 	proxyListener := &proxyproto.Listener{Listener: tcpKeepAliveListener{ln.(*net.TCPListener)}}
 	defer proxyListener.Close()

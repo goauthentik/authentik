@@ -21,18 +21,19 @@ var running = true
 func main() {
 	log.SetLevel(log.DebugLevel)
 	log.SetFormatter(&log.JSONFormatter{})
+	l := log.WithField("logger", "authentik.root")
 	config.DefaultConfig()
 	err := config.LoadConfig("./authentik/lib/default.yml")
 	if err != nil {
-		log.WithError(err).Warning("failed to load default config")
+		l.WithError(err).Warning("failed to load default config")
 	}
 	err = config.LoadConfig("./local.env.yml")
 	if err != nil {
-		log.WithError(err).Debug("no local config to load")
+		l.WithError(err).Debug("no local config to load")
 	}
 	err = config.FromEnv()
 	if err != nil {
-		log.WithError(err).Debug("failed to environment variables")
+		l.WithError(err).Debug("failed to environment variables")
 	}
 	config.ConfigureLogger()
 
@@ -45,7 +46,7 @@ func main() {
 			Environment:      config.G.ErrorReporting.Environment,
 		})
 		if err != nil {
-			log.WithError(err).Warning("failed to init sentry")
+			l.WithError(err).Warning("failed to init sentry")
 		}
 	}
 
@@ -61,8 +62,6 @@ func main() {
 			go attemptProxyStart(ws, u)
 		}
 	}
-	defer g.Kill()
-	defer ws.Shutdown()
 	go web.RunMetricsServer()
 	for {
 		go attemptStartBackend(g)
@@ -70,19 +69,19 @@ func main() {
 
 		<-ex
 		running = false
-		log.WithField("logger", "authentik").Info("shutting down webserver")
+		l.WithField("logger", "authentik").Info("shutting down gunicorn")
+		go g.Kill()
+		l.WithField("logger", "authentik").Info("shutting down webserver")
 		go ws.Shutdown()
-		log.WithField("logger", "authentik").Info("killing gunicorn")
-		g.Kill()
 	}
 }
 
 func attemptStartBackend(g *gounicorn.GoUnicorn) {
 	for {
-		err := g.Start()
 		if !running {
 			return
 		}
+		err := g.Start()
 		log.WithField("logger", "authentik.router").WithError(err).Warning("gunicorn process died, restarting")
 	}
 }
