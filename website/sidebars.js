@@ -210,6 +210,7 @@ module.exports = {
                 "troubleshooting/login",
                 "troubleshooting/image_upload_backup",
                 "troubleshooting/missing_permission",
+                "troubleshooting/missing_admin_group",
             ],
         },
     ],
