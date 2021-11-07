@@ -152,3 +152,13 @@ Configure how authentik should show avatars for users. Following values can be s
    - `%(username)s`: The user's username
    - `%(mail_hash)s`: The email address, md5 hashed
    - `%(upn)s`: The user's UPN, if set (otherwise an empty string)
+
+## Debugging
+
+To check if your config has been applied correctly, you can run the following command to output the full config:
+
+```
+docker-compose run --rm worker dump_config
+# Or for kubernetes
+kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
+```

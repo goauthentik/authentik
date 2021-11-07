@@ -1,5 +1,5 @@
 """prompt models"""
-from typing import Type
+from typing import Any, Optional, Type
 from uuid import uuid4
 
 from django.db import models
@@ -74,13 +74,15 @@ class Prompt(SerializerModel):
 
         return PromptSerializer
 
-    @property
-    def field(self) -> CharField:
+    def field(self, default: Optional[Any]) -> CharField:
         """Get field type for Challenge and response"""
         field_class = CharField
         kwargs = {
             "required": self.required,
         }
+        if default:
+            kwargs["initial"] = default
+
         if self.type == FieldTypes.EMAIL:
             field_class = EmailField
         if self.type == FieldTypes.NUMBER:
