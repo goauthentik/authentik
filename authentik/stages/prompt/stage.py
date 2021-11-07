@@ -65,7 +65,8 @@ class PromptChallengeResponse(ChallengeResponse):
         fields = list(self.stage.fields.all())
         for field in fields:
             field: Prompt
-            self.fields[field.field_key] = field.field
+            current = plan.context.get(PLAN_CONTEXT_PROMPT, {}).get(field.field_key)
+            self.fields[field.field_key] = field.field(current)
             # Special handling for fields with username type
             # these check for existing users with the same username
             if field.type == FieldTypes.USERNAME:

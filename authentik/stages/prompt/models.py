@@ -1,5 +1,5 @@
 """prompt models"""
-from typing import Type
+from typing import Any, Optional, Type
 from uuid import uuid4
 
 from django.db import models
@@ -74,13 +74,17 @@ class Prompt(SerializerModel):
 
         return PromptSerializer
 
-    @property
-    def field(self) -> CharField:
+    def field(self, default: Optional[Any]) -> CharField:
         """Get field type for Challenge and response"""
         field_class = CharField
+        _default = self.placeholder
+        if default:
+            _default = default
         kwargs = {
             "required": self.required,
+            "default": _default,
         }
+
         if self.type == FieldTypes.EMAIL:
             field_class = EmailField
         if self.type == FieldTypes.NUMBER:
@@ -88,7 +92,6 @@ class Prompt(SerializerModel):
         if self.type == FieldTypes.HIDDEN:
             field_class = HiddenField
             kwargs["required"] = False
-            kwargs["default"] = self.placeholder
         if self.type == FieldTypes.CHECKBOX:
             field_class = BooleanField
             kwargs["required"] = False
@@ -97,7 +100,7 @@ class Prompt(SerializerModel):
         if self.type == FieldTypes.DATE_TIME:
             field_class = DateTimeField
         if self.type == FieldTypes.STATIC:
-            kwargs["initial"] = self.placeholder
+            kwargs["initial"] = _default
             kwargs["required"] = False
             kwargs["label"] = ""
         if self.type == FieldTypes.SEPARATOR:
