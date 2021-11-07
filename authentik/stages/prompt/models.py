@@ -77,13 +77,11 @@ class Prompt(SerializerModel):
     def field(self, default: Optional[Any]) -> CharField:
         """Get field type for Challenge and response"""
         field_class = CharField
-        _default = self.placeholder
-        if default:
-            _default = default
         kwargs = {
             "required": self.required,
-            "default": _default,
         }
+        if default:
+            kwargs["initial"] = default
 
         if self.type == FieldTypes.EMAIL:
             field_class = EmailField
@@ -92,6 +90,7 @@ class Prompt(SerializerModel):
         if self.type == FieldTypes.HIDDEN:
             field_class = HiddenField
             kwargs["required"] = False
+            kwargs["default"] = self.placeholder
         if self.type == FieldTypes.CHECKBOX:
             field_class = BooleanField
             kwargs["required"] = False
@@ -100,7 +99,7 @@ class Prompt(SerializerModel):
         if self.type == FieldTypes.DATE_TIME:
             field_class = DateTimeField
         if self.type == FieldTypes.STATIC:
-            kwargs["initial"] = _default
+            kwargs["initial"] = self.placeholder
             kwargs["required"] = False
             kwargs["label"] = ""
         if self.type == FieldTypes.SEPARATOR:
