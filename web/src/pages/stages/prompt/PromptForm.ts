@@ -50,6 +50,12 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 ${t`Text: Simple Text input`}
             </option>
             <option
+                value=${PromptTypeEnum.TextReadOnly}
+                ?selected=${this.instance?.type === PromptTypeEnum.TextReadOnly}
+            >
+                ${t`Text (read-only): Simple Text input, but cannot be edited.`}
+            </option>
+            <option
                 value=${PromptTypeEnum.Username}
                 ?selected=${this.instance?.type === PromptTypeEnum.Username}
             >

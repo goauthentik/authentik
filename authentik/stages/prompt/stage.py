@@ -97,10 +97,10 @@ class PromptChallengeResponse(ChallengeResponse):
         # Check if we have any static or hidden fields, and ensure they
         # still have the same value
         static_hidden_fields: QuerySet[Prompt] = self.stage.fields.filter(
-            type__in=[FieldTypes.HIDDEN, FieldTypes.STATIC]
+            type__in=[FieldTypes.HIDDEN, FieldTypes.STATIC, FieldTypes.TEXT_READ_ONLY]
         )
         for static_hidden in static_hidden_fields:
-            attrs[static_hidden.field_key] = static_hidden.placeholder
+            attrs[static_hidden.field_key] = self.fields[static_hidden.field_key].initial
 
         # Check if we have two password fields, and make sure they are the same
         password_fields: QuerySet[Prompt] = self.stage.fields.filter(type=FieldTypes.PASSWORD)

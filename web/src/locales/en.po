@@ -4724,6 +4724,10 @@ msgid "Test Property Mapping"
 msgstr "Test Property Mapping"
 
 #: src/pages/stages/prompt/PromptForm.ts
+msgid "Text (read-only): Simple Text input, but cannot be edited."
+msgstr "Text (read-only): Simple Text input, but cannot be edited."
+
+#: src/pages/stages/prompt/PromptForm.ts
 msgid "Text: Simple Text input"
 msgstr "Text: Simple Text input"
 

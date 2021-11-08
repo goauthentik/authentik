@@ -26,6 +26,10 @@ class FieldTypes(models.TextChoices):
 
     # Simple text field
     TEXT = "text", _("Text: Simple Text input")
+    # Simple text field
+    TEXT_READ_ONLY = "text_read_only", _(
+        "Text (read-only): Simple Text input, but cannot be edited."
+    )
     # Same as text, but has autocomplete for password managers
     USERNAME = (
         "username",
@@ -80,8 +84,6 @@ class Prompt(SerializerModel):
         kwargs = {
             "required": self.required,
         }
-        if default:
-            kwargs["initial"] = default
 
         if self.type == FieldTypes.EMAIL:
             field_class = EmailField
@@ -105,6 +107,8 @@ class Prompt(SerializerModel):
         if self.type == FieldTypes.SEPARATOR:
             kwargs["required"] = False
             kwargs["label"] = ""
+        if default:
+            kwargs["initial"] = default
         return field_class(**kwargs)
 
     def save(self, *args, **kwargs):

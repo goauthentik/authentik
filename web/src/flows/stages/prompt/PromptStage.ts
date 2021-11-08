@@ -42,6 +42,13 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     class="pf-c-form-control"
                     ?required=${prompt.required}
                     value="">`;
+            case PromptTypeEnum.TextReadOnly:
+                return `<input
+                    type="text"
+                    name="${prompt.fieldKey}"
+                    class="pf-c-form-control"
+                    readonly
+                    value="${prompt.placeholder}">`;
             case PromptTypeEnum.Username:
                 return `<input
                     type="text"

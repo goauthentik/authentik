@@ -17634,6 +17634,7 @@ paths:
           - separator
           - static
           - text
+          - text_read_only
           - username
       tags:
       - stages
@@ -28374,6 +28375,7 @@ components:
     PromptTypeEnum:
       enum:
       - text
+      - text_read_only
       - username
       - email
       - password
@@ -30728,4 +30730,3 @@ components:
 servers:
 - url: /api/v3/
 - url: /api/v2beta/
-
