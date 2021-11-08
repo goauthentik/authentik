@@ -67,7 +67,6 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	}
 	outpost := outposts.Results[0]
 	doGlobalSetup(outpost.Config)
-	go analytics(akURL, outpost.Name, string(outpost.Type))
 
 	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
 
