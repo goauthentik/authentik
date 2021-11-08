@@ -40,7 +40,6 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 	ls.defaultCert = &defaultCert
 	s.BindFunc("", ls)
 	s.SearchFunc("", ls)
-	s.CloseFunc("", ls)
 	return ls
 }
 
