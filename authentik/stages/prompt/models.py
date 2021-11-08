@@ -13,6 +13,7 @@ from rest_framework.fields import (
     EmailField,
     HiddenField,
     IntegerField,
+    ReadOnlyField,
 )
 from rest_framework.serializers import BaseSerializer
 
@@ -85,6 +86,8 @@ class Prompt(SerializerModel):
             "required": self.required,
         }
 
+        if self.type == FieldTypes.TEXT_READ_ONLY:
+            field_class = ReadOnlyField
         if self.type == FieldTypes.EMAIL:
             field_class = EmailField
         if self.type == FieldTypes.NUMBER:
@@ -101,14 +104,14 @@ class Prompt(SerializerModel):
         if self.type == FieldTypes.DATE_TIME:
             field_class = DateTimeField
         if self.type == FieldTypes.STATIC:
-            kwargs["initial"] = self.placeholder
+            kwargs["default"] = self.placeholder
             kwargs["required"] = False
             kwargs["label"] = ""
         if self.type == FieldTypes.SEPARATOR:
             kwargs["required"] = False
             kwargs["label"] = ""
         if default:
-            kwargs["initial"] = default
+            kwargs["default"] = default
         return field_class(**kwargs)
 
     def save(self, *args, **kwargs):

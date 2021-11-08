@@ -100,7 +100,8 @@ class PromptChallengeResponse(ChallengeResponse):
             type__in=[FieldTypes.HIDDEN, FieldTypes.STATIC, FieldTypes.TEXT_READ_ONLY]
         )
         for static_hidden in static_hidden_fields:
-            attrs[static_hidden.field_key] = self.fields[static_hidden.field_key].initial
+            field = self.fields[static_hidden.field_key]
+            attrs[static_hidden.field_key] = field.default
 
         # Check if we have two password fields, and make sure they are the same
         password_fields: QuerySet[Prompt] = self.stage.fields.filter(type=FieldTypes.PASSWORD)
@@ -165,10 +166,11 @@ class PromptStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         fields = list(self.executor.current_stage.fields.all().order_by("order"))
         serializers = []
-        context_prompt = self.executor.plan.get(PLAN_CONTEXT_PROMPT, {})
+        context_prompt = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
         for field in fields:
             data = StagePromptSerializer(field).data
-            data["placeholder"] = context_prompt.get(field.field_key)
+            if field.field_key in context_prompt:
+                data["placeholder"] = context_prompt.get(field.field_key)
             serializers.append(data)
         challenge = PromptChallenge(
             data={
