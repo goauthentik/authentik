@@ -164,10 +164,16 @@ class PromptStageView(ChallengeStageView):
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         fields = list(self.executor.current_stage.fields.all().order_by("order"))
+        serializers = []
+        context_prompt = self.executor.plan.get(PLAN_CONTEXT_PROMPT, {})
+        for field in fields:
+            data = StagePromptSerializer(field).data
+            data["placeholder"] = context_prompt.get(field.field_key)
+            serializers.append(data)
         challenge = PromptChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "fields": [StagePromptSerializer(field).data for field in fields],
+                "fields": serializers,
             },
         )
         return challenge
