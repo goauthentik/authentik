@@ -20,6 +20,25 @@ Optional flag, when set to false, Tokens created by the user will not expire.
 
 See [Troubleshooting access problems](../troubleshooting/access.md), when set, the user gets a more detailed explanation of access decisions.
 
+### `additionalHeaders`:
+
+:::info
+This field is only used by the Proxy Provider.
+:::
+
+Some applications can be configured to create new users using header information forwarded from Authentik. You can forward additional header information by adding each header 
+underneath `additionalHeaders`:
+
+#### Example:
+```
+additionalHeaders:
+  REMOTE-USER: joe.smith
+  REMOTE-EMAIL: joe@jsmith.com
+  REMOTE-NAME: Joseph
+```
+
+These headers will now be passed to the application when the user logs in. Most applications will need to be configured to accept these headers. Some examples of applications that can accept additional headers from an Authentik Proxy Provider are [Grafana](https://grafana.com/docs/grafana/latest/auth/auth-proxy/) and [Tandoor Recipes](https://docs.tandoor.dev/features/authentication/).
+
 ## Object attributes
 
 The User object has the following attributes:
