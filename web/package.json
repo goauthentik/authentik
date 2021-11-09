@@ -71,7 +71,7 @@
         "@types/codemirror": "5.60.5",
         "@types/grecaptcha": "^3.0.3",
         "@typescript-eslint/eslint-plugin": "^5.3.1",
-        "@typescript-eslint/parser": "^5.3.0",
+        "@typescript-eslint/parser": "^5.3.1",
         "@webcomponents/webcomponentsjs": "^2.6.0",
         "babel-plugin-macros": "^3.1.0",
         "base64-js": "^1.5.1",
