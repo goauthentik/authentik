@@ -24,9 +24,13 @@ The following placeholders will be used:
 Create an application in authentik. Create a SAML Provider with the following values
 
 - ACS URL: `https://sentry.company/saml/acs/<sentry organisation name>/`
-- Audience: `https://sentry.company/saml/metadata/<sentry organisation name>/`
 - Issuer: `authentik`
 - Service Provider Binding: `Post`
+- Audience: `https://sentry.company/saml/metadata/<sentry organisation name>/`
+
+Under *Advanced protocol settings*, set the following:
+
+- Signing Certificate: Select any certificate.
 - Property Mapping: Select all Managed Mappings
 
 ## Sentry
