@@ -88,7 +88,7 @@ The docker-compose project contains the following containers:
 
 - server
 
-    This is the backend service, which does all the logic, runs the API and the actual SSO part. It also runs the frontend, hosts the JS/CSS files, and also servers the files you've uploaded for icons/etc.
+    This is the backend service, which does all the logic, runs the API and the actual SSO part. It also runs the frontend, hosts the JS/CSS files, and also serves the files you've uploaded for icons/etc.
 
 - worker
 
