@@ -69,10 +69,26 @@ class LDAPSyncTests(TestCase):
         )
         self.source.save()
         connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+
+        # Create the user beforehand so we can set attributes and check they aren't removed
+        user = User.objects.create(
+            username="user0_sn",
+            attributes={
+                "ldap_uniq": (
+                    "S-117-6648368-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-"
+                    "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-"
+                    "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-"
+                    "0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"
+                ),
+                "foo": "bar,",
+            },
+        )
+
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source)
             user_sync.sync()
             user = User.objects.filter(username="user0_sn").first()
+            self.assertEqual(user.attributes["foo"], "bar")
             self.assertFalse(user.is_active)
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
 
