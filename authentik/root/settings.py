@@ -435,19 +435,24 @@ if _ERROR_REPORTING:
 if not CONFIG.y_bool("disable_startup_analytics", False):
     should_send = env not in ["dev", "ci"]
     if should_send:
-        get_http_session().post(
-            "https://goauthentik.io/api/event",
-            json={
-                "domain": "authentik",
-                "name": "pageview",
-                "referrer": f"{__version__} ({build_hash})",
-                "url": f"http://localhost/{env}?utm_source={__version__}&utm_medium={env}",
-            },
-            headers={
-                "User-Agent": sha512(SECRET_KEY.encode("ascii")).hexdigest()[:16],
-                "Content-Type": "application/json",
-            },
-        )
+        try:
+            get_http_session().post(
+                "https://goauthentik.io/api/event",
+                json={
+                    "domain": "authentik",
+                    "name": "pageview",
+                    "referrer": f"{__version__} ({build_hash})",
+                    "url": f"http://localhost/{env}?utm_source={__version__}&utm_medium={env}",
+                },
+                headers={
+                    "User-Agent": sha512(SECRET_KEY.encode("ascii")).hexdigest()[:16],
+                    "Content-Type": "application/json",
+                },
+                timeout=5,
+            )
+        # pylint: disable=bare-except
+        except:  # nosec
+            pass
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
