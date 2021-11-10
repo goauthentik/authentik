@@ -26,6 +26,7 @@ module.exports = {
                 "installation/configuration",
                 "installation/reverse-proxy",
                 "installation/automated-install",
+                "installation/air-gapped",
             ],
         },
         {

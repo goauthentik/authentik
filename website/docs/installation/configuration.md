@@ -88,10 +88,6 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
   Whether or not to send personal data, like usernames. Defaults to `false`.
 
-### AUTHENTIK_DISABLE_UPDATE_CHECK
-
-Optionally disable the update check. Defaults to `false`.
-
 ### AUTHENTIK_EMAIL
 
 - `AUTHENTIK_EMAIL__HOST`
@@ -144,7 +140,7 @@ Optionally disable the update check. Defaults to `false`.
 Configure how authentik should show avatars for users. Following values can be set:
 
 - `none`: Disables per-user avatars and just shows a 1x1 pixel transparent picture
-- `gravatar`: Uses gravatar with the user's email address
+- `gravatar`: Uses gravatar with the user's email address (default)
 - Any URL: If you want to use images hosted on another server, you can set any URL.
 
   Additionally, these placeholders can be used:
