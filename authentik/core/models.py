@@ -174,7 +174,7 @@ class User(GuardianUserMixin, AbstractUser):
         if mode == "none":
             return DEFAULT_AVATAR
         # gravatar uses md5 for their URLs, so md5 can't be avoided
-        mail_hash = md5(self.email.encode("utf-8")).hexdigest()  # nosec
+        mail_hash = md5(self.email.lower().encode("utf-8")).hexdigest()  # nosec
         if mode == "gravatar":
             parameters = [
                 ("s", "158"),
