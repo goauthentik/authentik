@@ -290,6 +290,7 @@ jobs:
       - test-integration
       - test-e2e
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v2
       - name: Set up Docker Buildx
