@@ -2,6 +2,7 @@ package proxyv2
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -17,7 +18,7 @@ func (ps *ProxyServer) HandlePing(rw http.ResponseWriter, r *http.Request) {
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
 		"method":       r.Method,
-		"schema":       r.URL.Scheme,
+		"scheme":       r.URL.Scheme,
 		"path":         r.URL.Path,
 		"host":         web.GetHost(r),
 		"type":         "ping",
@@ -33,7 +34,7 @@ func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
 		"method":       r.Method,
-		"schema":       r.URL.Scheme,
+		"scheme":       r.URL.Scheme,
 		"path":         r.URL.Path,
 		"host":         web.GetHost(r),
 		"type":         "ping",
@@ -42,6 +43,10 @@ func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
+	if strings.HasPrefix(r.URL.Path, "/akprox/static") {
+		ps.HandleStatic(rw, r)
+		return
+	}
 	host := web.GetHost(r)
 	a, ok := ps.apps[host]
 	if !ok {
