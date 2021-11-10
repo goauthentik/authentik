@@ -21,14 +21,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-      - id: cache-pipenv
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: |
           sudo apt-get update
           sudo apt-get install -y gettext
