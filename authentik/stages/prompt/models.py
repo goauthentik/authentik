@@ -85,7 +85,8 @@ class Prompt(SerializerModel):
         kwargs = {
             "required": self.required,
         }
-
+        if self.type == FieldTypes.TEXT:
+            kwargs["trim_whitespace"] = False
         if self.type == FieldTypes.TEXT_READ_ONLY:
             field_class = ReadOnlyField
         if self.type == FieldTypes.EMAIL:

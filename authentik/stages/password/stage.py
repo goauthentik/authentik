@@ -69,7 +69,7 @@ class PasswordChallenge(WithUserInfoChallenge):
 class PasswordChallengeResponse(ChallengeResponse):
     """Password challenge response"""
 
-    password = CharField()
+    password = CharField(trim_whitespace=False)
 
     component = CharField(default="ak-stage-password")
 
