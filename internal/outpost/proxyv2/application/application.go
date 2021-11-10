@@ -66,7 +66,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		ClientSecret: *p.ClientSecret,
 		RedirectURL:  urlJoin(p.ExternalHost, "/akprox/callback"),
 		Endpoint:     endpoint.Endpoint,
-		Scopes:       []string{oidc.ScopeOpenID, "profile", "email", "ak_proxy"},
+		Scopes:       p.ScopesToRequest,
 	}
 	mux := mux.NewRouter()
 	a := &Application{

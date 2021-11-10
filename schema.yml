@@ -28589,11 +28589,17 @@ components:
           format: float
           nullable: true
           readOnly: true
+        scopes_to_request:
+          type: array
+          items:
+            type: string
+          readOnly: true
       required:
       - external_host
       - name
       - oidc_configuration
       - pk
+      - scopes_to_request
       - token_validity
     ProxyProvider:
       type: object
