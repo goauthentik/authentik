@@ -46,6 +46,7 @@ const resources = [
 const isProdBuild = process.env.NODE_ENV === "production";
 // eslint-disable-next-line no-undef
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function manualChunks(id) {
     if (id.includes("@goauthentik/api")) {
@@ -63,6 +64,24 @@ function manualChunks(id) {
         return "vendor";
     }
 }
+
+const PLUGINS = [
+    cssimport(),
+    nodeResolve({ extensions, browser: true }),
+    commonjs(),
+    babel({
+        extensions,
+        babelHelpers: "runtime",
+        include: ["src/**/*"],
+    }),
+    replace({
+        "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
+        "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
+        "preventAssignment": true,
+    }),
+    sourcemaps(),
+    isProdBuild && terser(),
+].filter((p) => p);
 
 export default [
     // Polyfills (imported first)
@@ -96,29 +115,12 @@ export default [
         output: [
             {
                 format: "es",
-                dir: "dist",
+                dir: "dist/flow",
                 sourcemap: true,
                 manualChunks: manualChunks,
-                chunkFileNames: "flow-[name].js",
             },
         ],
-        plugins: [
-            cssimport(),
-            nodeResolve({ extensions, browser: true }),
-            commonjs(),
-            babel({
-                extensions,
-                babelHelpers: "runtime",
-                include: ["src/**/*"],
-            }),
-            replace({
-                "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
-                "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-                "preventAssignment": true,
-            }),
-            sourcemaps(),
-            isProdBuild && terser(),
-        ].filter((p) => p),
+        plugins: PLUGINS,
         watch: {
             clearScreen: false,
         },
@@ -130,29 +132,12 @@ export default [
         output: [
             {
                 format: "es",
-                dir: "dist",
+                dir: "dist/admin",
                 sourcemap: true,
                 manualChunks: manualChunks,
-                chunkFileNames: "admin-[name].js",
             },
         ],
-        plugins: [
-            cssimport(),
-            nodeResolve({ extensions, browser: true }),
-            commonjs(),
-            babel({
-                extensions,
-                babelHelpers: "runtime",
-                include: ["src/**/*"],
-            }),
-            replace({
-                "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
-                "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-                "preventAssignment": true,
-            }),
-            sourcemaps(),
-            isProdBuild && terser(),
-        ].filter((p) => p),
+        plugins: PLUGINS,
         watch: {
             clearScreen: false,
         },
@@ -164,29 +149,12 @@ export default [
         output: [
             {
                 format: "es",
-                dir: "dist",
+                dir: "dist/user",
                 sourcemap: true,
                 manualChunks: manualChunks,
-                chunkFileNames: "user-[name].js",
             },
         ],
-        plugins: [
-            cssimport(),
-            nodeResolve({ extensions, browser: true }),
-            commonjs(),
-            babel({
-                extensions,
-                babelHelpers: "runtime",
-                include: ["src/**/*"],
-            }),
-            replace({
-                "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
-                "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-                "preventAssignment": true,
-            }),
-            sourcemaps(),
-            isProdBuild && terser(),
-        ].filter((p) => p),
+        plugins: PLUGINS,
         watch: {
             clearScreen: false,
         },
