@@ -47,10 +47,10 @@ Another way is to use the CLI. SSH into any Proxmox cluster node, and issue the 
 
 `pveum realm add authentik --type openid --issuer-url https://authentik.company/application/o/proxmox/ --client-id xxx --client-key xxx --username-claim username --autocreate 1`
 
-You can find the Issuer URL on the Provider Metadata tab in Authentik. You can find the Client ID and Key on the Provider Edit dialog in Authentik.
+You can find the Issuer URL on the Provider Metadata tab in authentik. You can find the Client ID and Key on the Provider Edit dialog in authentik.
 
 After configuring the source in Proxmox, any user that logs in to Proxmox for the first time automatically gets an user named `<authentik username>@<pve realm name>`. In this example,
-Authentik user `bob` will get an user named `bob@authentik` in Proxmox. You can then assign Permissions as normally in Proxmox. You can also pre-create the users in Proxmox if you want
+authentik user `bob` will get an user named `bob@authentik` in Proxmox. You can then assign Permissions as normally in Proxmox. You can also pre-create the users in Proxmox if you want
 the user to be able to perform actions immediately after first login.
 
 There is no way to directly trigger an OpenID Connect login in Proxmox, but if you set the source as 'default', it will be automatically selected on the Proxmox login screen.
