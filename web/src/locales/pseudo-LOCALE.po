@@ -1407,6 +1407,10 @@ msgstr ""
 msgid "Device(s)"
 msgstr ""
 
+#: src/pages/flows/FlowViewPage.ts
+msgid "Diagram"
+msgstr ""
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Digest algorithm"
@@ -1712,17 +1716,17 @@ msgstr ""
 msgid "Exception"
 msgstr ""
 
-#: src/pages/flows/FlowViewPage.ts
-msgid "Execute"
-msgstr ""
+#: 
+#~ msgid "Execute"
+#~ msgstr ""
 
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
 msgstr ""
 
-#: src/pages/flows/FlowViewPage.ts
-msgid "Execute with inspector"
-msgstr ""
+#: 
+#~ msgid "Execute with inspector"
+#~ msgstr ""
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 msgid "Executes the python snippet to determine whether to allow or deny a request."
@@ -2954,6 +2958,10 @@ msgstr ""
 
 #: src/pages/events/RuleListPage.ts
 msgid "None (rule disabled)"
+msgstr ""
+
+#: src/pages/flows/FlowViewPage.ts
+msgid "Normal"
 msgstr ""
 
 #: src/pages/outposts/OutpostHealthSimple.ts
@@ -5662,6 +5670,10 @@ msgstr ""
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 msgid "reference will be set to an empty value"
+msgstr ""
+
+#: src/pages/flows/FlowViewPage.ts
+msgid "with inspector"
 msgstr ""
 
 #: src/elements/Expand.ts

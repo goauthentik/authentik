@@ -1415,6 +1415,10 @@ msgstr "Device classes which can be used to authenticate."
 msgid "Device(s)"
 msgstr "Device(s)"
 
+#: src/pages/flows/FlowViewPage.ts
+msgid "Diagram"
+msgstr "Diagram"
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Digest algorithm"
@@ -1720,17 +1724,17 @@ msgstr "Everything is ok."
 msgid "Exception"
 msgstr "Exception"
 
-#: src/pages/flows/FlowViewPage.ts
-msgid "Execute"
-msgstr "Execute"
+#: 
+#~ msgid "Execute"
+#~ msgstr "Execute"
 
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
 msgstr "Execute flow"
 
-#: src/pages/flows/FlowViewPage.ts
-msgid "Execute with inspector"
-msgstr "Execute with inspector"
+#: 
+#~ msgid "Execute with inspector"
+#~ msgstr "Execute with inspector"
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 msgid "Executes the python snippet to determine whether to allow or deny a request."
@@ -2963,6 +2967,10 @@ msgstr "No workers connected. Background tasks will not run."
 #: src/pages/events/RuleListPage.ts
 msgid "None (rule disabled)"
 msgstr "None (rule disabled)"
+
+#: src/pages/flows/FlowViewPage.ts
+msgid "Normal"
+msgstr "Normal"
 
 #: src/pages/outposts/OutpostHealthSimple.ts
 msgid "Not available"
@@ -5680,6 +5688,10 @@ msgstr "reference will be reset to default value"
 #: src/elements/forms/DeleteForm.ts
 msgid "reference will be set to an empty value"
 msgstr "reference will be set to an empty value"
+
+#: src/pages/flows/FlowViewPage.ts
+msgid "with inspector"
+msgstr "with inspector"
 
 #: src/elements/Expand.ts
 #: src/elements/Expand.ts

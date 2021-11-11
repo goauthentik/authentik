@@ -1405,6 +1405,10 @@ msgstr "Classe d'équipement qui peut être utilisé pour s'authentifier"
 msgid "Device(s)"
 msgstr ""
 
+#: src/pages/flows/FlowViewPage.ts
+msgid "Diagram"
+msgstr ""
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Digest algorithm"
@@ -1706,17 +1710,17 @@ msgstr "Tout va bien."
 msgid "Exception"
 msgstr "Exception"
 
-#: src/pages/flows/FlowViewPage.ts
-msgid "Execute"
-msgstr "Exécuter"
+#: 
+#~ msgid "Execute"
+#~ msgstr "Exécuter"
 
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
 msgstr "Exécuter le flux"
 
-#: src/pages/flows/FlowViewPage.ts
-msgid "Execute with inspector"
-msgstr "Exécuter avec inspection"
+#: 
+#~ msgid "Execute with inspector"
+#~ msgstr "Exécuter avec inspection"
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 msgid "Executes the python snippet to determine whether to allow or deny a request."
@@ -2943,6 +2947,10 @@ msgstr "Aucun worker connecté. Les tâches de fond ne tourneront pas."
 #: src/pages/events/RuleListPage.ts
 msgid "None (rule disabled)"
 msgstr "Aucun (règle désactivée)"
+
+#: src/pages/flows/FlowViewPage.ts
+msgid "Normal"
+msgstr ""
 
 #: src/pages/outposts/OutpostHealthSimple.ts
 msgid "Not available"
@@ -5615,6 +5623,10 @@ msgstr "la référence sera réinitialisée à sa valeur par défaut"
 #: src/elements/forms/DeleteForm.ts
 msgid "reference will be set to an empty value"
 msgstr "la référence sera réinitialisée à une valeur vide"
+
+#: src/pages/flows/FlowViewPage.ts
+msgid "with inspector"
+msgstr ""
 
 #: src/elements/Expand.ts
 #: src/elements/Expand.ts
