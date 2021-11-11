@@ -27,6 +27,8 @@ def default_device_classes() -> list:
         DeviceClasses.STATIC,
         DeviceClasses.TOTP,
         DeviceClasses.WEBAUTHN,
+        DeviceClasses.DUO,
+        DeviceClasses.SMS,
     ]
 
 
