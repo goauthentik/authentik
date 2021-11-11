@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"sync"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/nmcclain/ldap"
@@ -115,18 +114,6 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	}
 	accsp.Finish()
 
-	// parsedFilter, err := ldap.CompileFilter(req.Filter)
-	// if err != nil {
-	// 	metrics.RequestsRejected.With(prometheus.Labels{
-	// 		"outpost_name": ms.si.GetOutpostName(),
-	// 		"type":         "search",
-	// 		"reason":       "filter_parse_fail",
-	// 		"dn":           req.BindDN,
-	// 		"client":       req.RemoteAddr(),
-	// 	}).Inc()
-	// 	return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
-	// }
-
 	switch filterEntity {
 	default:
 		metrics.RequestsRejected.With(prometheus.Labels{
@@ -144,27 +131,12 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	case constants.OCAKVirtualGroup:
 		fallthrough
 	case constants.OCGroup:
-		wg := sync.WaitGroup{}
-		wg.Add(2)
-
-		gEntries := make([]*ldap.Entry, 0)
-		uEntries := make([]*ldap.Entry, 0)
-
-		go func() {
-			defer wg.Done()
-			for _, g := range ms.groups {
-				gEntries = append(gEntries, group.FromAPIGroup(g, ms.si).Entry())
-			}
-		}()
-
-		go func() {
-			defer wg.Done()
-			for _, u := range ms.users {
-				uEntries = append(uEntries, group.FromAPIUser(u, ms.si).Entry())
-			}
-		}()
-		wg.Wait()
-		entries = append(gEntries, uEntries...)
+		for _, g := range ms.groups {
+			entries = append(entries, group.FromAPIGroup(g, ms.si).Entry())
+		}
+		for _, u := range ms.users {
+			entries = append(entries, group.FromAPIUser(u, ms.si).Entry())
+		}
 	case "":
 		fallthrough
 	case constants.OCOrgPerson:

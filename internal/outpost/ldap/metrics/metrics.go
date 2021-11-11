@@ -3,6 +3,8 @@ package metrics
 import (
 	"net/http"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -26,7 +28,9 @@ func RunServer() {
 		rw.WriteHeader(204)
 	})
 	m.Path("/metrics").Handler(promhttp.Handler())
-	err := http.ListenAndServe("0.0.0.0:9300", m)
+	listen := "0.0.0.0:9300"
+	log.WithField("logger", "authentik.outpost.metrics").WithField("listen", listen).Info("Starting Metrics server")
+	err := http.ListenAndServe(listen, m)
 	if err != nil {
 		panic(err)
 	}

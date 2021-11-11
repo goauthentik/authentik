@@ -32,7 +32,7 @@ func doGlobalSetup(config map[string]interface{}) {
 	default:
 		log.SetLevel(log.DebugLevel)
 	}
-	log.WithField("buildHash", constants.BUILD()).WithField("version", constants.VERSION).Info("Starting authentik outpost")
+	log.WithField("logger", "authentik.outpost").WithField("hash", constants.BUILD()).WithField("version", constants.VERSION).Info("Starting authentik outpost")
 
 	sentryEnv := "customer-outpost"
 	sentryEnable := true

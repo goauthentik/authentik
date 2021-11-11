@@ -15,7 +15,7 @@ func (ms *MemorySearcher) FetchUsers() []api.User {
 			ms.log.WithError(err).Warning("failed to update users")
 			return nil, err
 		}
-		ms.log.WithField("page", page).Debug("fetched users")
+		ms.log.WithField("page", page).WithField("count", len(users.Results)).Debug("fetched users")
 		return &users, nil
 	}
 	page := 1
@@ -25,12 +25,12 @@ func (ms *MemorySearcher) FetchUsers() []api.User {
 		if err != nil {
 			return users
 		}
+		users = append(users, apiUsers.Results...)
 		if apiUsers.Pagination.Next > 0 {
 			page += 1
 		} else {
 			break
 		}
-		users = append(users, apiUsers.Results...)
 	}
 	return users
 }
@@ -42,7 +42,7 @@ func (ms *MemorySearcher) FetchGroups() []api.Group {
 			ms.log.WithError(err).Warning("failed to update groups")
 			return nil, err
 		}
-		ms.log.WithField("page", page).Debug("fetched groups")
+		ms.log.WithField("page", page).WithField("count", len(groups.Results)).Debug("fetched groups")
 		return &groups, nil
 	}
 	page := 1
@@ -52,12 +52,12 @@ func (ms *MemorySearcher) FetchGroups() []api.Group {
 		if err != nil {
 			return groups
 		}
+		groups = append(groups, apiGroups.Results...)
 		if apiGroups.Pagination.Next > 0 {
 			page += 1
 		} else {
 			break
 		}
-		groups = append(groups, apiGroups.Results...)
 	}
 	return groups
 }
