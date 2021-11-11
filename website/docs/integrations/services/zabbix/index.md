@@ -35,6 +35,8 @@ Check the box to enable SAML authentication.
 
 Set the Field `IdP entity ID` to `zabbix`.
 
+Set the Field `SSO service URL` to `https://authentik.company/application/saml/zabbix/sso/binding/redirect/`.
+
 Set the Field `Username attribute` to `http://schemas.goauthentik.io/2021/02/saml/username`
 
 Set the Field `SP entity ID` to `https://authentik.company/application/saml/zabbix/sso/binding/redirect/`
