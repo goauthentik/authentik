@@ -1456,11 +1456,11 @@
         },
         "webauthn": {
             "hashes": [
-                "sha256:11b02195ee7875bd6c9a786dfee8eb0170ad3292ce168e1a47160c56b23d3362",
-                "sha256:984ab4964e5e1dae5b9d27ffb1b781cac7678491811e3dec5de672e5f58aa57a"
+                "sha256:1a24696c67f8f3eb09267b10b3bfa4aade86bf08e2c41333d8c00f199c528b97",
+                "sha256:523e6e488a4d5e8c4fe183dde154a7cdfc9dad62e6e30e97c1d52e4a4ae6390e"
             ],
             "index": "pypi",
-            "version": "==1.0.1"
+            "version": "==1.1.0"
         },
         "websocket-client": {
             "hashes": [
