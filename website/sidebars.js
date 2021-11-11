@@ -101,6 +101,7 @@ module.exports = {
                         "integrations/services/matrix-synapse/index",
                         "integrations/services/minio/index",
                         "integrations/services/nextcloud/index",
+                        "integrations/services/opnsense/index",
                         "integrations/services/portainer/index",
                         "integrations/services/proxmox-ve/index",
                         "integrations/services/rancher/index",
