@@ -84,7 +84,9 @@ class AuthenticatorDuoStageView(ChallengeStageView):
         self.request.session.pop(SESSION_KEY_DUO_USER_ID)
         self.request.session.pop(SESSION_KEY_DUO_ACTIVATION_CODE)
         if not existing_device:
-            DuoDevice.objects.create(user=self.get_pending_user(), duo_user_id=user_id, stage=stage)
+            DuoDevice.objects.create(
+                name="Duo Device", user=self.get_pending_user(), duo_user_id=user_id, stage=stage
+            )
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")
         return self.executor.stage_ok()
