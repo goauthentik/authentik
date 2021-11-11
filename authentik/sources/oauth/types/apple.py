@@ -50,7 +50,9 @@ class AppleOAuthClient(OAuth2Client):
     def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
         id_token = token.get("id_token")
         _, raw_payload, _ = id_token.split(".")
-        payload = loads(b64decode(raw_payload.encode().decode()))
+        padded_payload = raw_payload + "="*divmod (len (raw_payload) , 4)
+        base64decoded_payload = b64decode (padded_payload.encode().decode())
+        payload = loads(base64decoded_payload)
         return payload
 
 
