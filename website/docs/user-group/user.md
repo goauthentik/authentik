@@ -26,10 +26,11 @@ See [Troubleshooting access problems](../troubleshooting/access.md), when set, t
 This field is only used by the Proxy Provider.
 :::
 
-Some applications can be configured to create new users using header information forwarded from Authentik. You can forward additional header information by adding each header 
+Some applications can be configured to create new users using header information forwarded from Authentik. You can forward additional header information by adding each header
 underneath `additionalHeaders`:
 
 #### Example:
+
 ```
 additionalHeaders:
   REMOTE-USER: joe.smith
