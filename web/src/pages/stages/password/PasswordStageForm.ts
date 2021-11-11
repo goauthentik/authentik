@@ -128,7 +128,7 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation:
                                             FlowsInstancesListDesignationEnum.StageConfiguration,
                                     })

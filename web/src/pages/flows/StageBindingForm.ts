@@ -100,7 +100,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 ${until(
                     new FlowsApi(DEFAULT_CONFIG)
                         .flowsInstancesList({
-                            ordering: "pk",
+                            ordering: "slug",
                         })
                         .then((flows) => {
                             return flows.results.map((flow) => {
@@ -124,7 +124,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     ${until(
                         new StagesApi(DEFAULT_CONFIG)
                             .stagesAllList({
-                                ordering: "pk",
+                                ordering: "name",
                             })
                             .then((stages) => {
                                 return this.groupStages(stages.results);

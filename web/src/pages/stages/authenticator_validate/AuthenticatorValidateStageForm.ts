@@ -183,7 +183,7 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                                       ${until(
                                           new StagesApi(DEFAULT_CONFIG)
                                               .stagesAllList({
-                                                  ordering: "pk",
+                                                  ordering: "name",
                                               })
                                               .then((stages) => {
                                                   return stages.results.map((stage) => {

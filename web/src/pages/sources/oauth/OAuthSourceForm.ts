@@ -269,7 +269,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation:
                                             FlowsInstancesListDesignationEnum.Authentication,
                                     })
@@ -308,7 +308,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation: FlowsInstancesListDesignationEnum.Enrollment,
                                     })
                                     .then((flows) => {

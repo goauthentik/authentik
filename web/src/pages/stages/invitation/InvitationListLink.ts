@@ -49,7 +49,7 @@ export class InvitationListLink extends LitElement {
                             ${until(
                                 new StagesApi(DEFAULT_CONFIG)
                                     .stagesInvitationStagesList({
-                                        ordering: "pk",
+                                        ordering: "name",
                                         noFlows: false,
                                     })
                                     .then((stages) => {

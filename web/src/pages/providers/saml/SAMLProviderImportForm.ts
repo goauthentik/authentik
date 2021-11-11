@@ -48,7 +48,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                     ${until(
                         new FlowsApi(DEFAULT_CONFIG)
                             .flowsInstancesList({
-                                ordering: "pk",
+                                ordering: "slug",
                                 designation: FlowsInstancesListDesignationEnum.Authorization,
                             })
                             .then((flows) => {

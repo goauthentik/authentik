@@ -188,7 +188,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             ${until(
                                 new PoliciesApi(DEFAULT_CONFIG)
                                     .policiesAllList({
-                                        ordering: "pk",
+                                        ordering: "name",
                                     })
                                     .then((policies) => {
                                         return this.groupPolicies(policies.results);
@@ -209,7 +209,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             ${until(
                                 new CoreApi(DEFAULT_CONFIG)
                                     .coreGroupsList({
-                                        ordering: "pk",
+                                        ordering: "name",
                                     })
                                     .then((groups) => {
                                         return groups.results.map((group) => {
@@ -237,7 +237,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             ${until(
                                 new CoreApi(DEFAULT_CONFIG)
                                     .coreUsersList({
-                                        ordering: "pk",
+                                        ordering: "name",
                                     })
                                     .then((users) => {
                                         return users.results.map((user) => {

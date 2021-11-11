@@ -71,7 +71,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                         tenant().then((t) => {
                             return new FlowsApi(DEFAULT_CONFIG)
                                 .flowsInstancesList({
-                                    ordering: "pk",
+                                    ordering: "slug",
                                     designation: FlowsInstancesListDesignationEnum.Authentication,
                                 })
                                 .then((flows) => {
@@ -161,7 +161,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                             ${until(
                                 new CryptoApi(DEFAULT_CONFIG)
                                     .cryptoCertificatekeypairsList({
-                                        ordering: "pk",
+                                        ordering: "name",
                                         hasKey: true,
                                     })
                                     .then((keys) => {

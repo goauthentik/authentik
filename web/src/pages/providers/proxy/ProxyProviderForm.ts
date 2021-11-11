@@ -281,7 +281,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                     ${until(
                         new FlowsApi(DEFAULT_CONFIG)
                             .flowsInstancesList({
-                                ordering: "pk",
+                                ordering: "slug",
                                 designation: FlowsInstancesListDesignationEnum.Authorization,
                             })
                             .then((flows) => {
@@ -331,7 +331,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                             ${until(
                                 new CryptoApi(DEFAULT_CONFIG)
                                     .cryptoCertificatekeypairsList({
-                                        ordering: "pk",
+                                        ordering: "name",
                                         hasKey: true,
                                     })
                                     .then((keys) => {

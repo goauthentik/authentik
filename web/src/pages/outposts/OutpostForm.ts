@@ -59,7 +59,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             case OutpostTypeEnum.Proxy:
                 return new ProvidersApi(DEFAULT_CONFIG)
                     .providersProxyList({
-                        ordering: "pk",
+                        ordering: "name",
                         applicationIsnull: false,
                     })
                     .then((providers) => {
@@ -80,7 +80,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             case OutpostTypeEnum.Ldap:
                 return new ProvidersApi(DEFAULT_CONFIG)
                     .providersLdapList({
-                        ordering: "pk",
+                        ordering: "name",
                         applicationIsnull: false,
                     })
                     .then((providers) => {
@@ -141,7 +141,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     ${until(
                         new OutpostsApi(DEFAULT_CONFIG)
                             .outpostsServiceConnectionsAllList({
-                                ordering: "pk",
+                                ordering: "name",
                             })
                             .then((scs) => {
                                 return scs.results.map((sc) => {

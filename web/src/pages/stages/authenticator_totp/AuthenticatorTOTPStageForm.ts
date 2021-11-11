@@ -90,7 +90,7 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation:
                                             FlowsInstancesListDesignationEnum.StageConfiguration,
                                     })

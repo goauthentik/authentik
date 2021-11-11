@@ -246,7 +246,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation:
                                             FlowsInstancesListDesignationEnum.Authentication,
                                     })
@@ -285,7 +285,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation: FlowsInstancesListDesignationEnum.Enrollment,
                                     })
                                     .then((flows) => {

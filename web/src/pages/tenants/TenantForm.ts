@@ -143,7 +143,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation:
                                             FlowsInstancesListDesignationEnum.Authentication,
                                     })
@@ -180,7 +180,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation: FlowsInstancesListDesignationEnum.Invalidation,
                                     })
                                     .then((flows) => {
@@ -210,7 +210,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation: FlowsInstancesListDesignationEnum.Recovery,
                                     })
                                     .then((flows) => {
@@ -246,7 +246,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation: FlowsInstancesListDesignationEnum.Unenrollment,
                                     })
                                     .then((flows) => {
