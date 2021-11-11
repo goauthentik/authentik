@@ -12,7 +12,8 @@ module.exports = {
             type: "category",
             label: "Users & Groups",
             items: [
-                "user-group/user"
+                "user-group/user",
+                "user-group/group",
             ]
         },
         {
