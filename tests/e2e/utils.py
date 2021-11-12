@@ -106,10 +106,16 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         return None
 
     def _get_driver(self) -> WebDriver:
-        return webdriver.Remote(
-            command_executor="http://localhost:4444/wd/hub",
-            desired_capabilities=DesiredCapabilities.CHROME,
-        )
+        count = 0
+        while count < RETRIES:
+            try:
+                return webdriver.Remote(
+                    command_executor="http://localhost:4444/wd/hub",
+                    desired_capabilities=DesiredCapabilities.CHROME,
+                )
+            except WebDriverException:
+                count += 1
+        raise ValueError(f"Webdriver failed after {RETRIES}.")
 
     def tearDown(self):
         if "TF_BUILD" in environ:
