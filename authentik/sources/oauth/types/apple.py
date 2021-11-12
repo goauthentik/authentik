@@ -40,7 +40,7 @@ class AppleOAuthClient(OAuth2Client):
             "iat": now,
             "exp": now + 86400 * 180,
             "aud": "https://appleid.apple.com",
-            "sub": self.source.consumer_key,
+            "sub": parts[0],
         }
         # pyright: reportGeneralTypeIssues=false
         jwt = encode(payload, self.source.consumer_secret, "ES256", {"kid": parts[2]})
