@@ -73,3 +73,56 @@ Starting with 2021.9.1, custom attributes will override the inbuilt attributes.
 You can also configure SSL for your LDAP Providers by selecting a certificate and a server name in the provider settings.
 
 This enables you to bind on port 636 using LDAPS, StartTLS is not supported.
+
+## Example: sssd
+
+[sssd](https://sssd.io/) is a common method of retrieving users and groups on a Linux host from an LDAP server. The below
+`sssd.conf` can be used to do so against an Authentik LDAP provider:
+
+```ini
+[nss]
+filter_groups = root
+filter_users = root
+reconnection_retries = 3
+
+[sssd]
+config_file_version = 2
+reconnection_retries = 3
+sbus_timeout = 30
+domains = ldap.goauthentik.io
+services = nss, pam, ssh
+
+[pam]
+reconnection_retries = 3
+
+[domain/ldap.goauthentik.io]
+cache_credentials = True
+id_provider = ldap
+chpass_provider = ldap
+auth_provider = ldap
+access_provider = ldap
+ldap_uri = ldaps://*ip*:636
+
+ldap_schema = rfc2307bis
+ldap_search_base = dc=ldap,dc=goauthentik,dc=io
+ldap_user_search_base = ou=users,dc=ldap,dc=goauthentik,dc=io
+ldap_group_search_base = dc=ldap,dc=goauthentik,dc=io
+
+ldap_user_object_class = user
+ldap_user_name = cn
+ldap_group_object_class = group
+ldap_group_name = cn
+
+# Optionally, filter logins to only a specific group
+#ldap_access_order = filter
+#ldap_access_filter = memberOf=cn=authentik Admins,ou=groups,dc=ldap,dc=goauthentik,dc=io
+
+ldap_default_bind_dn = cn=service-sssd,ou=users,dc=ldap,dc=goauthentik,dc=io
+ldap_default_authtok = *token-from-authentik*
+```
+
+You'll first need to create a service account like the above. Setting up sssd on a given
+distribution varies, please consult the documentation for that specific distribution.
+
+You can store SSH authorized keys in LDAP by adding the `sshPublicKey` attribute to any
+user with their public key as the value.

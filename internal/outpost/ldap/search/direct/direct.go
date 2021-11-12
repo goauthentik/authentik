@@ -4,16 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"sync"
 
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/nmcclain/ldap"
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/outpost/ldap/constants"
-	"goauthentik.io/internal/outpost/ldap/flags"
 	"goauthentik.io/internal/outpost/ldap/group"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/search"
@@ -35,26 +34,11 @@ func NewDirectSearcher(si server.LDAPServerInstance) *DirectSearcher {
 	return ds
 }
 
-func (ds *DirectSearcher) SearchMe(req *search.Request, f flags.UserFlags) (ldap.ServerSearchResult, error) {
-	if f.UserInfo == nil {
-		u, _, err := ds.si.GetAPIClient().CoreApi.CoreUsersRetrieve(req.Context(), f.UserPk).Execute()
-		if err != nil {
-			req.Log().WithError(err).Warning("Failed to get user info")
-			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("failed to get userinfo")
-		}
-		f.UserInfo = &u
-	}
-	entries := make([]*ldap.Entry, 1)
-	entries[0] = ds.si.UserEntry(*f.UserInfo)
-	return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
-}
-
 func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, error) {
 	accsp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.check_access")
-	baseDN := strings.ToLower("," + ds.si.GetBaseDN())
+	baseDN := strings.ToLower(ds.si.GetBaseDN())
 
-	entries := []*ldap.Entry{}
-	filterEntity, err := ldap.GetFilterObjectClass(req.Filter)
+	filterOC, err := ldap.GetFilterObjectClass(req.Filter)
 	if err != nil {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": ds.si.GetOutpostName(),
@@ -75,7 +59,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", req.BindDN)
 	}
-	if !strings.HasSuffix(req.BindDN, baseDN) {
+	if !strings.HasSuffix(req.BindDN, ","+baseDN) {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": ds.si.GetOutpostName(),
 			"type":         "search",
@@ -98,15 +82,6 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
-
-	if req.Scope == ldap.ScopeBaseObject {
-		req.Log().Debug("base scope, showing domain info")
-		return ds.SearchBase(req, flags.CanSearch)
-	}
-	if !flags.CanSearch {
-		req.Log().Debug("User can't search, showing info about user")
-		return ds.SearchMe(req, flags)
-	}
 	accsp.Finish()
 
 	parsedFilter, err := ldap.CompileFilter(req.Filter)
@@ -121,99 +96,176 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
 
+	entries := make([]*ldap.Entry, 0)
+
 	// Create a custom client to set additional headers
 	c := api.NewAPIClient(ds.si.GetAPIClient().GetConfig())
 	c.GetConfig().AddDefaultHeader("X-authentik-outpost-ldap-query", req.Filter)
 
-	switch filterEntity {
-	default:
-		metrics.RequestsRejected.With(prometheus.Labels{
-			"outpost_name": ds.si.GetOutpostName(),
-			"type":         "search",
-			"reason":       "unhandled_filter_type",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
-		}).Inc()
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, req.Filter)
-	case constants.OCGroupOfUniqueNames:
-		fallthrough
-	case constants.OCAKGroup:
-		fallthrough
-	case constants.OCAKVirtualGroup:
-		fallthrough
-	case constants.OCGroup:
-		wg := sync.WaitGroup{}
-		wg.Add(2)
+	scope := req.SearchRequest.Scope
+	needUsers, needGroups := ds.si.GetNeededObjects(scope, req.BaseDN, filterOC)
 
-		gEntries := make([]*ldap.Entry, 0)
-		uEntries := make([]*ldap.Entry, 0)
+	if scope >= 0 && req.BaseDN == baseDN {
+		if utils.IncludeObjectClass(filterOC, constants.GetDomainOCs()) {
+			entries = append(entries, ds.si.GetBaseEntry())
+		}
 
-		go func() {
-			defer wg.Done()
+		scope -= 1 // Bring it from WholeSubtree to SingleLevel and so on
+	}
+
+	var users *[]api.User
+	var groups *[]api.Group
+
+	errs, _ := errgroup.WithContext(req.Context())
+
+	if needUsers {
+		errs.Go(func() error {
+			if flags.CanSearch {
+				uapisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.api_user")
+				searchReq, skip := utils.ParseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter, false)
+
+				if skip {
+					req.Log().Trace("Skip backend request")
+					return nil
+				}
+
+				u, _, e := searchReq.Execute()
+				uapisp.Finish()
+
+				if err != nil {
+					req.Log().WithError(err).Warning("failed to get users")
+					return e
+				}
+
+				users = &u.Results
+			} else {
+				if flags.UserInfo == nil {
+					uapisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.api_user")
+					u, _, err := c.CoreApi.CoreUsersRetrieve(req.Context(), flags.UserPk).Execute()
+					uapisp.Finish()
+
+					if err != nil {
+						req.Log().WithError(err).Warning("Failed to get user info")
+						return fmt.Errorf("failed to get userinfo")
+					}
+
+					flags.UserInfo = &u
+				}
+
+				u := make([]api.User, 1)
+				u[0] = *flags.UserInfo
+
+				users = &u
+			}
+
+			return nil
+		})
+	}
+
+	if needGroups {
+		errs.Go(func() error {
 			gapisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.api_group")
 			searchReq, skip := utils.ParseFilterForGroup(c.CoreApi.CoreGroupsList(gapisp.Context()), parsedFilter, false)
 			if skip {
 				req.Log().Trace("Skip backend request")
-				return
+				return nil
 			}
-			groups, _, err := searchReq.Execute()
+
+			if !flags.CanSearch {
+				// If they can't search, filter all groups by those they're a member of
+				searchReq = searchReq.MembersByPk([]int32{flags.UserPk})
+			}
+
+			g, _, err := searchReq.Execute()
 			gapisp.Finish()
 			if err != nil {
 				req.Log().WithError(err).Warning("failed to get groups")
-				return
+				return err
 			}
-			req.Log().WithField("count", len(groups.Results)).Trace("Got results from API")
+			req.Log().WithField("count", len(g.Results)).Trace("Got results from API")
 
-			for _, g := range groups.Results {
-				gEntries = append(gEntries, group.FromAPIGroup(g, ds.si).Entry())
-			}
-		}()
-
-		go func() {
-			defer wg.Done()
-			uapisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.api_user")
-			searchReq, skip := utils.ParseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter, false)
-			if skip {
-				req.Log().Trace("Skip backend request")
-				return
-			}
-			users, _, err := searchReq.Execute()
-			uapisp.Finish()
-			if err != nil {
-				req.Log().WithError(err).Warning("failed to get users")
-				return
+			if !flags.CanSearch {
+				for i, results := range g.Results {
+					// If they can't search, remove any users from the group results except the one we're looking for.
+					g.Results[i].Users = []int32{flags.UserPk}
+					for _, u := range results.UsersObj {
+						if u.Pk == flags.UserPk {
+							g.Results[i].UsersObj = []api.GroupMember{u}
+							break
+						}
+					}
+				}
 			}
 
-			for _, u := range users.Results {
-				uEntries = append(uEntries, group.FromAPIUser(u, ds.si).Entry())
-			}
-		}()
-		wg.Wait()
-		entries = append(gEntries, uEntries...)
-	case "":
-		fallthrough
-	case constants.OCOrgPerson:
-		fallthrough
-	case constants.OCInetOrgPerson:
-		fallthrough
-	case constants.OCAKUser:
-		fallthrough
-	case constants.OCUser:
-		uapisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.api_user")
-		searchReq, skip := utils.ParseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter, false)
-		if skip {
-			req.Log().Trace("Skip backend request")
-			return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
+			groups = &g.Results
+
+			return nil
+		})
+	}
+
+	err = errs.Wait()
+
+	if err != nil {
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, err
+	}
+
+	if scope >= 0 && (req.BaseDN == ds.si.GetBaseDN() || strings.HasSuffix(req.BaseDN, ds.si.GetBaseUserDN())) {
+		singleu := strings.HasSuffix(req.BaseDN, ","+ds.si.GetBaseUserDN())
+
+		if !singleu && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
+			entries = append(entries, utils.GetContainerEntry(filterOC, ds.si.GetBaseUserDN(), constants.OUUsers))
+			scope -= 1
 		}
-		users, _, err := searchReq.Execute()
-		uapisp.Finish()
 
-		if err != nil {
-			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("API Error: %s", err)
+		if scope >= 0 && users != nil && utils.IncludeObjectClass(filterOC, constants.GetUserOCs()) {
+			for _, u := range *users {
+				entry := ds.si.UserEntry(u)
+				if req.BaseDN == entry.DN || !singleu {
+					entries = append(entries, entry)
+				}
+			}
 		}
-		for _, u := range users.Results {
-			entries = append(entries, ds.si.UserEntry(u))
+
+		scope += 1 // Return the scope to what it was before we descended
+	}
+
+	if scope >= 0 && (req.BaseDN == ds.si.GetBaseDN() || strings.HasSuffix(req.BaseDN, ds.si.GetBaseGroupDN())) {
+		singleg := strings.HasSuffix(req.BaseDN, ","+ds.si.GetBaseGroupDN())
+
+		if !singleg && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
+			entries = append(entries, utils.GetContainerEntry(filterOC, ds.si.GetBaseGroupDN(), constants.OUGroups))
+			scope -= 1
+		}
+
+		if scope >= 0 && groups != nil && utils.IncludeObjectClass(filterOC, constants.GetGroupOCs()) {
+			for _, g := range *groups {
+				entry := group.FromAPIGroup(g, ds.si).Entry()
+				if req.BaseDN == entry.DN || !singleg {
+					entries = append(entries, entry)
+				}
+			}
+		}
+
+		scope += 1 // Return the scope to what it was before we descended
+	}
+
+	if scope >= 0 && (req.BaseDN == ds.si.GetBaseDN() || strings.HasSuffix(req.BaseDN, ds.si.GetBaseVirtualGroupDN())) {
+		singlevg := strings.HasSuffix(req.BaseDN, ","+ds.si.GetBaseVirtualGroupDN())
+
+		if !singlevg || utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
+			entries = append(entries, utils.GetContainerEntry(filterOC, ds.si.GetBaseVirtualGroupDN(), constants.OUVirtualGroups))
+			scope -= 1
+		}
+
+		if scope >= 0 && users != nil && utils.IncludeObjectClass(filterOC, constants.GetVirtualGroupOCs()) {
+			for _, u := range *users {
+				entry := group.FromAPIUser(u, ds.si).Entry()
+				if req.BaseDN == entry.DN || !singlevg {
+					entries = append(entries, entry)
+				}
+			}
 		}
 	}
+
 	return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
 }

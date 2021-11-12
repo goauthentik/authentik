@@ -11,11 +11,11 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/outpost/ldap/constants"
-	"goauthentik.io/internal/outpost/ldap/flags"
 	"goauthentik.io/internal/outpost/ldap/group"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/search"
 	"goauthentik.io/internal/outpost/ldap/server"
+	"goauthentik.io/internal/outpost/ldap/utils"
 )
 
 type MemorySearcher struct {
@@ -37,29 +37,11 @@ func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
 	return ms
 }
 
-func (ms *MemorySearcher) SearchMe(req *search.Request, f flags.UserFlags) (ldap.ServerSearchResult, error) {
-	if f.UserInfo == nil {
-		for _, u := range ms.users {
-			if u.Pk == f.UserPk {
-				f.UserInfo = &u
-			}
-		}
-		if f.UserInfo == nil {
-			req.Log().WithField("pk", f.UserPk).Warning("User with pk is not in local cache")
-			return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("failed to get userinfo")
-		}
-	}
-	entries := make([]*ldap.Entry, 1)
-	entries[0] = ms.si.UserEntry(*f.UserInfo)
-	return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
-}
-
 func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, error) {
 	accsp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.check_access")
-	baseDN := strings.ToLower("," + ms.si.GetBaseDN())
+	baseDN := strings.ToLower(ms.si.GetBaseDN())
 
-	entries := []*ldap.Entry{}
-	filterEntity, err := ldap.GetFilterObjectClass(req.Filter)
+	filterOC, err := ldap.GetFilterObjectClass(req.Filter)
 	if err != nil {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": ms.si.GetOutpostName(),
@@ -80,7 +62,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", req.BindDN)
 	}
-	if !strings.HasSuffix(req.BindDN, baseDN) {
+	if !strings.HasSuffix(req.BindDN, ","+baseDN) {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": ms.si.GetOutpostName(),
 			"type":         "search",
@@ -103,52 +85,132 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
-
-	if req.Scope == ldap.ScopeBaseObject {
-		req.Log().Debug("base scope, showing domain info")
-		return ms.SearchBase(req, flags.CanSearch)
-	}
-	if !flags.CanSearch {
-		req.Log().Debug("User can't search, showing info about user")
-		return ms.SearchMe(req, flags)
-	}
 	accsp.Finish()
 
-	switch filterEntity {
-	default:
-		metrics.RequestsRejected.With(prometheus.Labels{
-			"outpost_name": ms.si.GetOutpostName(),
-			"type":         "search",
-			"reason":       "unhandled_filter_type",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
-		}).Inc()
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: unhandled filter type: %s [%s]", filterEntity, req.Filter)
-	case constants.OCGroupOfUniqueNames:
-		fallthrough
-	case constants.OCAKGroup:
-		fallthrough
-	case constants.OCAKVirtualGroup:
-		fallthrough
-	case constants.OCGroup:
-		for _, g := range ms.groups {
-			entries = append(entries, group.FromAPIGroup(g, ms.si).Entry())
+	entries := make([]*ldap.Entry, 0)
+
+	scope := req.SearchRequest.Scope
+	needUsers, needGroups := ms.si.GetNeededObjects(scope, req.BaseDN, filterOC)
+
+	if scope >= 0 && req.BaseDN == baseDN {
+		if utils.IncludeObjectClass(filterOC, constants.GetDomainOCs()) {
+			entries = append(entries, ms.si.GetBaseEntry())
 		}
-		for _, u := range ms.users {
-			entries = append(entries, group.FromAPIUser(u, ms.si).Entry())
-		}
-	case "":
-		fallthrough
-	case constants.OCOrgPerson:
-		fallthrough
-	case constants.OCInetOrgPerson:
-		fallthrough
-	case constants.OCAKUser:
-		fallthrough
-	case constants.OCUser:
-		for _, u := range ms.users {
-			entries = append(entries, ms.si.UserEntry(u))
+
+		scope -= 1 // Bring it from WholeSubtree to SingleLevel and so on
+	}
+
+	var users *[]api.User
+	var groups []*group.LDAPGroup
+
+	if needUsers {
+		if flags.CanSearch {
+			users = &ms.users
+		} else {
+			if flags.UserInfo == nil {
+				for i, u := range ms.users {
+					if u.Pk == flags.UserPk {
+						flags.UserInfo = &ms.users[i]
+					}
+				}
+
+				if flags.UserInfo == nil {
+					req.Log().WithField("pk", flags.UserPk).Warning("User with pk is not in local cache")
+					err = fmt.Errorf("failed to get userinfo")
+				}
+			}
+
+			u := make([]api.User, 1)
+			u[0] = *flags.UserInfo
+
+			users = &u
 		}
 	}
+
+	if needGroups {
+		groups = make([]*group.LDAPGroup, 0)
+
+		for _, g := range ms.groups {
+			if flags.CanSearch {
+				groups = append(groups, group.FromAPIGroup(g, ms.si))
+			} else {
+				// If the user cannot search, we're going to only return
+				// the groups they're in _and_ only return themselves
+				// as a member.
+				for _, u := range g.UsersObj {
+					if flags.UserPk == u.Pk {
+						// TODO: Is there a better way to clone this object?
+						fg := api.NewGroup(g.Pk, g.Name, g.Parent, g.ParentName, []int32{flags.UserPk}, []api.GroupMember{u})
+						fg.SetAttributes(*g.Attributes)
+						fg.SetIsSuperuser(*g.IsSuperuser)
+						groups = append(groups, group.FromAPIGroup(*fg, ms.si))
+						break
+					}
+				}
+			}
+		}
+	}
+
+	if err != nil {
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, err
+	}
+
+	if scope >= 0 && (req.BaseDN == ms.si.GetBaseDN() || strings.HasSuffix(req.BaseDN, ms.si.GetBaseUserDN())) {
+		singleu := strings.HasSuffix(req.BaseDN, ","+ms.si.GetBaseUserDN())
+
+		if !singleu && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
+			entries = append(entries, utils.GetContainerEntry(filterOC, ms.si.GetBaseUserDN(), constants.OUUsers))
+			scope -= 1
+		}
+
+		if scope >= 0 && users != nil && utils.IncludeObjectClass(filterOC, constants.GetUserOCs()) {
+			for _, u := range *users {
+				entry := ms.si.UserEntry(u)
+				if req.BaseDN == entry.DN || !singleu {
+					entries = append(entries, entry)
+				}
+			}
+		}
+
+		scope += 1 // Return the scope to what it was before we descended
+	}
+
+	if scope >= 0 && (req.BaseDN == ms.si.GetBaseDN() || strings.HasSuffix(req.BaseDN, ms.si.GetBaseGroupDN())) {
+		singleg := strings.HasSuffix(req.BaseDN, ","+ms.si.GetBaseGroupDN())
+
+		if !singleg && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
+			entries = append(entries, utils.GetContainerEntry(filterOC, ms.si.GetBaseGroupDN(), constants.OUGroups))
+			scope -= 1
+		}
+
+		if scope >= 0 && groups != nil && utils.IncludeObjectClass(filterOC, constants.GetGroupOCs()) {
+			for _, g := range groups {
+				if req.BaseDN == g.DN || !singleg {
+					entries = append(entries, g.Entry())
+				}
+			}
+		}
+
+		scope += 1 // Return the scope to what it was before we descended
+	}
+
+	if scope >= 0 && (req.BaseDN == ms.si.GetBaseDN() || strings.HasSuffix(req.BaseDN, ms.si.GetBaseVirtualGroupDN())) {
+		singlevg := strings.HasSuffix(req.BaseDN, ","+ms.si.GetBaseVirtualGroupDN())
+
+		if !singlevg && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
+			entries = append(entries, utils.GetContainerEntry(filterOC, ms.si.GetBaseVirtualGroupDN(), constants.OUVirtualGroups))
+			scope -= 1
+		}
+
+		if scope >= 0 && users != nil && utils.IncludeObjectClass(filterOC, constants.GetVirtualGroupOCs()) {
+			for _, u := range *users {
+				entry := group.FromAPIUser(u, ms.si).Entry()
+				if req.BaseDN == entry.DN || !singlevg {
+					entries = append(entries, entry)
+				}
+			}
+		}
+	}
+
 	return ldap.ServerSearchResult{Entries: entries, Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess}, nil
 }
