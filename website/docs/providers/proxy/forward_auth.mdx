@@ -77,10 +77,17 @@ server {
         # error_page          401 =302 https://authentik.company/akprox/start?rd=$scheme://$http_host$request_uri;
 
         # translate headers from the outposts back to the actual upstream
-        auth_request_set    $username    $upstream_http_x_auth_username;
-        auth_request_set    $email       $upstream_http_X_Forwarded_Email;
-        proxy_set_header    X-Auth-Username   $username;
-        proxy_set_header    X-Forwarded-Email $email;
+        auth_request_set $authentik_username $upstream_http_x_authentik_username;
+        auth_request_set $authentik_groups $upstream_http_x_authentik_groups;
+        auth_request_set $authentik_email $upstream_http_x_authentik_email;
+        auth_request_set $authentik_name $upstream_http_x_authentik_name;
+        auth_request_set $authentik_uid $upstream_http_x_authentik_uid;
+
+        proxy_set_header X-authentik-username $authentik_username;
+        proxy_set_header X-authentik-groups $authentik_groups;
+        proxy_set_header X-authentik-email $authentik_email;
+        proxy_set_header X-authentik-name $authentik_name;
+        proxy_set_header X-authentik-uid $authentik_uid;
     }
 
     # all requests to /akprox must be accessible without authentication
@@ -132,7 +139,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/auth-url: https://*external host that you configured in authentik*/akprox/auth?nginx
     nginx.ingress.kubernetes.io/auth-signin: https://*external host that you configured in authentik*/akprox/start?rd=$escaped_request_uri
-    nginx.ingress.kubernetes.io/auth-response-headers: X-Auth-Username,X-Forwarded-Email,X-Forwarded-Preferred-Username,X-Forwarded-User,X-Auth-Groups
+    nginx.ingress.kubernetes.io/auth-response-headers: Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid
     nginx.ingress.kubernetes.io/auth-snippet: |
        proxy_set_header X-Forwarded-Host $http_host;
 ```
@@ -159,11 +166,11 @@ http:
         trustForwardHeader: true
         authResponseHeaders:
           - Set-Cookie
-          - X-Auth-Username
-          - X-Auth-Groups
-          - X-Forwarded-Email
-          - X-Forwarded-Preferred-Username
-          - X-Forwarded-User
+          - X-authentik-username
+          - X-authentik-groups
+          - X-authentik-email
+          - X-authentik-name
+          - X-authentik-uid
   routers:
     default-router:
       rule: "Host(`*external host that you configured in authentik*`)"
@@ -230,7 +237,7 @@ services:
       traefik.http.routers.authentik.tls: true
       traefik.http.middlewares.authentik.forwardauth.address: http://authentik_proxy:9000/akprox/auth/traefik
       traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
-      traefik.http.middlewares.authentik.forwardauth.authResponseHeaders: Set-Cookie,X-Auth-Username,X-Auth-Groups,X-Forwarded-Email,X-Forwarded-Preferred-Username,X-Forwarded-User
+      traefik.http.middlewares.authentik.forwardauth.authResponseHeaders: Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid
     restart: unless-stopped
 
   whoami:
@@ -259,11 +266,11 @@ spec:
     trustForwardHeader: true
     authResponseHeaders:
       - Set-Cookie
-      - X-Auth-Username
-      - X-Auth-Groups
-      - X-Forwarded-Email
-      - X-Forwarded-Preferred-Username
-      - X-Forwarded-User
+      - X-authentik-username
+      - X-authentik-groups
+      - X-authentik-email
+      - X-authentik-name
+      - X-authentik-uid
 ```
 
 Add the following settings to your IngressRoute
