@@ -34,7 +34,7 @@ Only settings that have been modified from default have been listed.
 - RSA Key: authentik Self-signed certificate
 
 :::note
-Take note of the `Client ID` and `Client Secret` you'll need to give them to Gitea in _Step 3_.
+Take note of the `Client ID` and `Client Secret`, you'll need to give them to Gitea in _Step 3_.
 :::
 
 ### Step 2
@@ -64,4 +64,4 @@ Change the following fields
 
 ![](./gitea1.png)
 
-`Add Authentication Source` and you should be done. Your Gitea login page should now have a `Sign in With` followed by the Gitea logo which you can click on to sign-in with Gitea.
+`Add Authentication Source` and you should be done. Your Gitea login page should now have a `Sign in With` followed by the authentik logo which you can click on to sign-in to Gitea with Authentik creds.
