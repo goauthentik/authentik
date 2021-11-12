@@ -29,6 +29,7 @@ type ProviderInstance struct {
 	tlsServerName       *string
 	cert                *tls.Certificate
 	outpostName         string
+	outpostPk           int32
 	searchAllowedGroups []*strfmt.UUID
 	boundUsersMutex     sync.RWMutex
 	boundUsers          map[string]flags.UserFlags
