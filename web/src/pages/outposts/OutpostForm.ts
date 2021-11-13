@@ -73,7 +73,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                                 value=${ifDefined(provider.pk)}
                                 ?selected=${selected}
                             >
-                                ${provider.assignedApplicationName} (${provider.name})
+                                ${provider.assignedApplicationName} (${provider.externalHost})
                             </option>`;
                         });
                     });

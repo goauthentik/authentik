@@ -1,6 +1,8 @@
 package proxyv2
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -60,7 +62,23 @@ func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
 		}
 
 		ps.log.WithField("host", host).Warning("no app for hostname")
-		rw.WriteHeader(400)
+
+		rw.Header().Set("Content-Type", "application/json")
+		rw.WriteHeader(http.StatusBadRequest)
+		j := json.NewEncoder(rw)
+		j.SetIndent("", "\t")
+		err := j.Encode(struct {
+			Message string
+			Host    string
+			Detail  string
+		}{
+			Message: "no app for hostname",
+			Host:    host,
+			Detail:  fmt.Sprintf("Check the outpost settings and make sure '%s' is included.", host),
+		})
+		if err != nil {
+			ps.log.WithError(err).Warning("Failed to write error body")
+		}
 		return
 	}
 	ps.log.WithField("host", host).Trace("passing to application mux")
