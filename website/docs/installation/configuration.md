@@ -149,6 +149,22 @@ Configure how authentik should show avatars for users. Following values can be s
    - `%(mail_hash)s`: The email address, md5 hashed
    - `%(upn)s`: The user's UPN, if set (otherwise an empty string)
 
+### AUTHENTIK_DEFAULT_USER_CHANGE_EMAIL
+
+:::info
+Requires authentik 2021.10.5
+:::
+
+Enable the ability for users to change their Email address, defaults to `true`.
+
+### AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME
+
+:::info
+Requires authentik 2021.10.5
+:::
+
+Enable the ability for users to change their Usernames, defaults to `true`.
+
 ## Debugging
 
 To check if your config has been applied correctly, you can run the following command to output the full config:

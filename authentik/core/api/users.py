@@ -55,6 +55,7 @@ from authentik.core.models import (
     User,
 )
 from authentik.events.models import EventAction
+from authentik.lib.config import CONFIG
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -125,7 +126,9 @@ class UserSelfSerializer(ModelSerializer):
 
     def validate_email(self, email: str):
         """Check if the user is allowed to change their email"""
-        if self.instance.group_attributes().get(USER_ATTRIBUTE_CHANGE_EMAIL, True):
+        if self.instance.group_attributes().get(
+            USER_ATTRIBUTE_CHANGE_EMAIL, CONFIG.y_bool("default_user_change_email", True)
+        ):
             return email
         if email != self.instance.email:
             raise ValidationError("Not allowed to change email.")
@@ -133,7 +136,9 @@ class UserSelfSerializer(ModelSerializer):
 
     def validate_username(self, username: str):
         """Check if the user is allowed to change their username"""
-        if self.instance.group_attributes().get(USER_ATTRIBUTE_CHANGE_USERNAME, True):
+        if self.instance.group_attributes().get(
+            USER_ATTRIBUTE_CHANGE_USERNAME, CONFIG.y_bool("default_user_change_username", True)
+        ):
             return username
         if username != self.instance.username:
             raise ValidationError("Not allowed to change username.")
