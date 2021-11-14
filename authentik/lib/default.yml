@@ -72,7 +72,6 @@ disable_startup_analytics: false
 avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar
 geoip: "./GeoLite2-City.mmdb"
 
-# Can't currently be configured via environment variables, only yaml
 footer_links:
   - name: Documentation
     href: https://goauthentik.io/docs/?utm_source=authentik
