@@ -25,14 +25,14 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-      # - id: cache-pipenv
-      #   uses: actions/cache@v2.1.6
-      #   with:
-      #     path: ~/.local/share/virtualenvs
-      #     key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
+      - id: cache-pipenv
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
-        # env:
-        #   INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: run pylint
         run: pipenv run pylint authentik tests lifecycle
@@ -43,14 +43,14 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-      # - id: cache-pipenv
-      #   uses: actions/cache@v2.1.6
-      #   with:
-      #     path: ~/.local/share/virtualenvs
-      #     key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
+      - id: cache-pipenv
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
-        # env:
-        #   INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: run black
         run: pipenv run black --check authentik tests lifecycle
@@ -61,14 +61,14 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-      # - id: cache-pipenv
-      #   uses: actions/cache@v2.1.6
-      #   with:
-      #     path: ~/.local/share/virtualenvs
-      #     key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
+      - id: cache-pipenv
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
-        # env:
-        #   INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: run isort
         run: pipenv run isort --check authentik tests lifecycle
@@ -79,14 +79,14 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-      # - id: cache-pipenv
-      #   uses: actions/cache@v2.1.6
-      #   with:
-      #     path: ~/.local/share/virtualenvs
-      #     key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
+      - id: cache-pipenv
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
-        # env:
-        #   INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: run bandit
         run: pipenv run bandit -r authentik tests lifecycle
@@ -113,14 +113,14 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-      # - id: cache-pipenv
-      #   uses: actions/cache@v2.1.6
-      #   with:
-      #     path: ~/.local/share/virtualenvs
-      #     key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
+      - id: cache-pipenv
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
-        # env:
-        #   INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: run migrations
         run: pipenv run python -m lifecycle.migrate
@@ -137,11 +137,11 @@ jobs:
         id: ev
         run: |
           python ./scripts/gh_env.py
-      # - id: cache-pipenv
-      #   uses: actions/cache@v2.1.6
-      #   with:
-      #     path: ~/.local/share/virtualenvs
-      #     key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
+      - id: cache-pipenv
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: checkout stable
         run: |
           # Copy current, latest config to local
@@ -150,8 +150,8 @@ jobs:
           git checkout ${{ steps.ev.outputs.branchName }} -- .github
           git checkout ${{ steps.ev.outputs.branchName }} -- scripts
       - name: prepare
-        # env:
-        #   INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: |
           scripts/ci_prepare.sh
           # Sync anyways since stable will have different dependencies
@@ -165,8 +165,8 @@ jobs:
           git checkout ${{ steps.ev.outputs.branchName }}
           pipenv sync --dev
       - name: prepare
-        # env:
-        #   INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: migrate to latest
         run: pipenv run python -m lifecycle.migrate
@@ -177,14 +177,14 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-      # - id: cache-pipenv
-      #   uses: actions/cache@v2.1.6
-      #   with:
-      #     path: ~/.local/share/virtualenvs
-      #     key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
+      - id: cache-pipenv
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
-        # env:
-        #   INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - uses: testspace-com/setup-testspace@v1
         with:
@@ -206,14 +206,14 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-      # - id: cache-pipenv
-      #   uses: actions/cache@v2.1.6
-      #   with:
-      #     path: ~/.local/share/virtualenvs
-      #     key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
+      - id: cache-pipenv
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
-        # env:
-        #   INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - uses: testspace-com/setup-testspace@v1
         with:
@@ -245,14 +245,14 @@ jobs:
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
-      # - id: cache-pipenv
-      #   uses: actions/cache@v2.1.6
-      #   with:
-      #     path: ~/.local/share/virtualenvs
-      #     key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
+      - id: cache-pipenv
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
-        # env:
-        #   INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: |
           scripts/ci_prepare.sh
           docker-compose -f tests/e2e/docker-compose.yml up -d
