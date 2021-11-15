@@ -1,8 +1,8 @@
 """Crypto tests"""
 import datetime
 
-from django.test import TestCase
 from django.urls import reverse
+from rest_framework.test import APITestCase
 
 from authentik.core.api.used_by import DeleteAction
 from authentik.core.models import User
@@ -14,8 +14,17 @@ from authentik.lib.generators import generate_key
 from authentik.providers.oauth2.models import OAuth2Provider
 
 
-class TestCrypto(TestCase):
+class TestCrypto(APITestCase):
     """Test Crypto validation"""
+
+    def test_model_private(self):
+        """Test model private key"""
+        cert = CertificateKeyPair.objects.create(
+            name="test",
+            certificate_data="foo",
+            key_data="foo",
+        )
+        self.assertIsNone(cert.private_key)
 
     def test_serializer(self):
         """Test API Validation"""
@@ -53,6 +62,38 @@ class TestCrypto(TestCase):
         now = datetime.datetime.today()
         self.assertEqual(instance.name, "test-cert")
         self.assertEqual((instance.certificate.not_valid_after - now).days, 2)
+
+    def test_builder_api(self):
+        """Test Builder (via API)"""
+        self.client.force_login(User.objects.get(username="akadmin"))
+        response = self.client.post(
+            reverse("authentik_api:certificatekeypair-generate"),
+            data={
+                "common_name": "foo",
+                "subject_alt_name": "bar,baz",
+                "validity_days": 3
+            },
+        )
+        self.assertTrue(CertificateKeyPair.objects.filter(name="foo").exists())
+
+    def test_builder_api_invalid(self):
+        """Test Builder (via API) (invalid)"""
+        self.client.force_login(User.objects.get(username="akadmin"))
+        response = self.client.post(
+            reverse("authentik_api:certificatekeypair-generate"),
+            data={},
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_list(self):
+        """Test API List"""
+        self.client.force_login(User.objects.get(username="akadmin"))
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-list",
+            )
+        )
+        self.assertEqual(200, response.status_code)
 
     def test_certificate_download(self):
         """Test certificate export (download)"""
