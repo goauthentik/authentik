@@ -20,5 +20,5 @@ def managed_reconcile(self: MonitoredTask):
         self.set_status(
             TaskResult(TaskResultStatus.SUCCESSFUL, ["Successfully updated managed models."])
         )
-    except DatabaseError as exc:
+    except DatabaseError as exc:  # pragma: no cover
         self.set_status(TaskResult(TaskResultStatus.WARNING, [str(exc)]))
