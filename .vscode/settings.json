@@ -17,7 +17,7 @@
         "kubernetes",
         "sso",
         "slo",
-        "scim",
+        "scim"
     ],
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
