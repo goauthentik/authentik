@@ -4,7 +4,7 @@ module.exports = {
     title: "authentik",
     tagline: "Making authentication simple.",
     url: "https://goauthentik.io",
-    baseUrl: "/help/",
+    baseUrl: "/if/help/",
     onBrokenLinks: "throw",
     favicon: "img/icon.png",
     organizationName: "BeryJu",
