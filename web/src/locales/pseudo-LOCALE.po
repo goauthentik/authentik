@@ -1219,8 +1219,12 @@ msgstr ""
 msgid "Creation Date"
 msgstr ""
 
+#: 
+#~ msgid "Current plan cntext"
+#~ msgstr ""
+
 #: src/flows/FlowInspector.ts
-msgid "Current plan cntext"
+msgid "Current plan context"
 msgstr ""
 
 #: src/pages/applications/ApplicationForm.ts
