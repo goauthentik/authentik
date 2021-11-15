@@ -30,7 +30,7 @@ class TestPasswordPolicy(TestCase):
     def test_failed_length(self):
         """Password too short"""
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = "test"
+        request.context["password"] = "test"  # nosec
         result: PolicyResult = self.policy.passes(request)
         self.assertFalse(result.passing)
         self.assertEqual(result.messages, ("test message",))
@@ -38,7 +38,7 @@ class TestPasswordPolicy(TestCase):
     def test_failed_lowercase(self):
         """not enough lowercase"""
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = "TTTTTTTTTTTTTTTTTTTTTTTe"
+        request.context["password"] = "TTTTTTTTTTTTTTTTTTTTTTTe"  # nosec
         result: PolicyResult = self.policy.passes(request)
         self.assertFalse(result.passing)
         self.assertEqual(result.messages, ("test message",))
@@ -46,7 +46,7 @@ class TestPasswordPolicy(TestCase):
     def test_failed_uppercase(self):
         """not enough uppercase"""
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = "tttttttttttttttttttttttE"
+        request.context["password"] = "tttttttttttttttttttttttE"  # nosec
         result: PolicyResult = self.policy.passes(request)
         self.assertFalse(result.passing)
         self.assertEqual(result.messages, ("test message",))
@@ -54,7 +54,7 @@ class TestPasswordPolicy(TestCase):
     def test_failed_symbols(self):
         """not enough uppercase"""
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = "TETETETETETETETETETETETETe!!!"
+        request.context["password"] = "TETETETETETETETETETETETETe!!!"  # nosec
         result: PolicyResult = self.policy.passes(request)
         self.assertFalse(result.passing)
         self.assertEqual(result.messages, ("test message",))
@@ -62,7 +62,7 @@ class TestPasswordPolicy(TestCase):
     def test_true(self):
         """Positive password case"""
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = generate_key() + "ee!!!"
+        request.context["password"] = generate_key() + "ee!!!"  # nosec
         result: PolicyResult = self.policy.passes(request)
         self.assertTrue(result.passing)
         self.assertEqual(result.messages, tuple())
