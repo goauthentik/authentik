@@ -1,5 +1,6 @@
 """Dynamically set SameSite depending if the upstream connection is TLS or not"""
-import time
+from time import time
+from typing import Callable
 
 from django.conf import settings
 from django.contrib.sessions.backends.base import UpdateError
@@ -9,6 +10,13 @@ from django.http.request import HttpRequest
 from django.http.response import HttpResponse
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
+from structlog.stdlib import get_logger
+from typing_extensions import runtime
+
+from authentik.core.middleware import KEY_AUTH_VIA, KEY_USER
+from authentik.lib.utils.http import get_client_ip
+
+LOGGER = get_logger("authentik.asgi")
 
 
 class SessionMiddleware(UpstreamSessionMiddleware):
@@ -88,3 +96,36 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                         samesite=same_site,
                     )
         return response
+
+
+class LoggingMiddleware:
+    """Logger middleware"""
+
+    get_response: Callable[[HttpRequest], HttpResponse]
+
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        start = time()
+        response = self.get_response(request)
+        status_code = response.status_code
+        kwargs = {
+            "request_id": request.request_id,
+        }
+        kwargs.update(response.ak_context)
+        self.log(request, status_code, int((time() - start) * 1000), **kwargs)
+        return response
+
+    def log(self, request: HttpRequest, status_code: int, runtime: int, **kwargs):
+        """Log request"""
+        LOGGER.info(
+            request.get_full_path(),
+            remote=get_client_ip(request),
+            method=request.method,
+            scheme=request.scheme,
+            status=status_code,
+            runtime=runtime,
+            user_agent=request.META.get("HTTP_USER_AGENT", ""),
+            **kwargs,
+        )

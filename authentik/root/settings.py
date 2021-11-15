@@ -241,6 +241,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
 
 MIDDLEWARE = [
+    "authentik.root.middleware.LoggingMiddleware",
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "authentik.root.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -275,7 +276,7 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = "authentik.root.asgi.app.application"
+ASGI_APPLICATION = "authentik.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {

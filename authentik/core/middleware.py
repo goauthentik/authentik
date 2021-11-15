@@ -12,7 +12,6 @@ LOCAL = local()
 RESPONSE_HEADER_ID = "X-authentik-id"
 KEY_AUTH_VIA = "auth_via"
 KEY_USER = "user"
-INTERNAL_HEADER_PREFIX = "X-authentik-internal-"
 
 
 class ImpersonateMiddleware:
@@ -53,9 +52,10 @@ class RequestIDMiddleware:
             }
         response = self.get_response(request)
         response[RESPONSE_HEADER_ID] = request.request_id
+        setattr(response, "ak_context", {})
         if auth_via := LOCAL.authentik.get(KEY_AUTH_VIA, None):
-            response[INTERNAL_HEADER_PREFIX + KEY_AUTH_VIA] = auth_via
-        response[INTERNAL_HEADER_PREFIX + KEY_USER] = request.user.username
+            response.ak_context[KEY_AUTH_VIA] = auth_via
+        response.ak_context[KEY_USER] = request.user.username
         for key in list(LOCAL.authentik.keys()):
             del LOCAL.authentik[key]
         return response
