@@ -23,6 +23,13 @@ class TestRecovery(TestCase):
         self.assertIn(token.key, out.getvalue())
         self.assertEqual(len(Token.objects.all()), 1)
 
+    def test_create_key_invalid(self):
+        """Test creation of a new key (invalid)"""
+        out = StringIO()
+        self.assertEqual(len(Token.objects.all()), 0)
+        call_command("create_recovery_key", "1", "foo", stderr=out)
+        self.assertIn("not found", out.getvalue())
+
     def test_recovery_view(self):
         """Test recovery view"""
         out = StringIO()

@@ -138,6 +138,7 @@ INSTALLED_APPS = [
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
     "authentik.tenants",
+    "authentik.managed",
     "rest_framework",
     "django_filters",
     "drf_spectacular",
@@ -573,6 +574,5 @@ if DEBUG:
     os.environ[ENV_GIT_HASH_KEY] = "dev"
 
 INSTALLED_APPS.append("authentik.core")
-INSTALLED_APPS.append("authentik.managed")
 
 j_print("Booting authentik", version=__version__)
