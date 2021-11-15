@@ -8,6 +8,7 @@ from botocore.exceptions import BotoCoreError
 from celery.exceptions import CeleryError
 from channels.middleware import BaseMiddleware
 from channels_redis.core import ChannelFull
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
 from django.db import InternalError, OperationalError, ProgrammingError
 from django.http.response import Http404
@@ -107,4 +108,6 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
             "django_redis",
         ]:
             return None
+    if settings.DEBUG:
+        return None
     return event
