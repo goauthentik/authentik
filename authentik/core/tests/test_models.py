@@ -59,6 +59,6 @@ def provider_tester_factory(test_model: Type[Stage]) -> Callable:
 
 
 for model in all_subclasses(Source):
-    setattr(TestModels, f"test_model_{model.__name__}", source_tester_factory(model))
+    setattr(TestModels, f"test_source_{model.__name__}", source_tester_factory(model))
 for model in all_subclasses(Provider):
-    setattr(TestModels, f"test_model_{model.__name__}", provider_tester_factory(model))
+    setattr(TestModels, f"test_provider_{model.__name__}", provider_tester_factory(model))

@@ -87,6 +87,10 @@ class AuthenticatorValidateStageTests(APITestCase):
         )
         self.assertFalse(serializer.is_valid())
         self.assertIn("not_configured_action", serializer.errors)
+        serializer = AuthenticatorValidateStageSerializer(
+            data={"name": "foo", "not_configured_action": NotConfiguredAction.DENY}
+        )
+        self.assertTrue(serializer.is_valid())
 
     def test_device_challenge_totp(self):
         """Test device challenge"""

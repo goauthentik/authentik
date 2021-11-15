@@ -66,13 +66,9 @@ class TestCrypto(APITestCase):
     def test_builder_api(self):
         """Test Builder (via API)"""
         self.client.force_login(User.objects.get(username="akadmin"))
-        response = self.client.post(
+        self.client.post(
             reverse("authentik_api:certificatekeypair-generate"),
-            data={
-                "common_name": "foo",
-                "subject_alt_name": "bar,baz",
-                "validity_days": 3
-            },
+            data={"common_name": "foo", "subject_alt_name": "bar,baz", "validity_days": 3},
         )
         self.assertTrue(CertificateKeyPair.objects.filter(name="foo").exists())
 

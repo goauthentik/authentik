@@ -216,6 +216,7 @@ class TestPromptStage(APITestCase):
     def test_static_hidden_overwrite(self):
         """Test that static and hidden fields ignore any value sent to them"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PROMPT] = {"hidden_prompt": "hidden"}
         self.prompt_data["hidden_prompt"] = "foo"
         self.prompt_data["static_prompt"] = "foo"
         challenge_response = PromptChallengeResponse(
@@ -223,4 +224,5 @@ class TestPromptStage(APITestCase):
         )
         self.assertEqual(challenge_response.is_valid(), True)
         self.assertNotEqual(challenge_response.validated_data["hidden_prompt"], "foo")
+        self.assertEqual(challenge_response.validated_data["hidden_prompt"], "hidden")
         self.assertNotEqual(challenge_response.validated_data["static_prompt"], "foo")
