@@ -64,7 +64,7 @@ outposts:
   # %(type)s: Outpost type; proxy, ldap, etc
   # %(version)s: Current version; 2021.4.1
   # %(build_hash)s: Build hash if you're running a beta version
-  container_image_base: env://AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE?goauthentik.io/%(type)s:%(version)s
+  container_image_base: goauthentik.io/%(type)s:%(version)s
 
 cookie_domain: null
 disable_update_check: false

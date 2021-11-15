@@ -19,7 +19,7 @@ Add the following block to your `.env` file:
 ```shell
 AUTHENTIK_IMAGE=goauthentik.io/dev-server
 AUTHENTIK_TAG=gh-next
-AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=goauthentik.io/dev-%(type)s:gh-next
+AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=goauthentik.io/dev-%(type)s:gh-next
 ```
 
 Afterwards, run the upgrade commands from the latest releasae notes.
@@ -30,7 +30,7 @@ Add the following block to your `values.yml` file:
 ```yaml
 authentik:
   outposts:
-    docker_image_base: goauthentik.io/dev-%(type)s:gh-%(build_hash)s
+    container_image_base: goauthentik.io/dev-%(type)s:gh-%(build_hash)s
 image:
   repository: goauthentik.io/dev-server
   tag: gh-next

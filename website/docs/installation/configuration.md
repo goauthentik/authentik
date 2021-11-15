@@ -126,7 +126,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
 ### AUTHENTIK_OUTPOSTS
 
-- `AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE`
+- `AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE`
 
   Placeholders:
    - `%(type)s`: Outpost type; proxy, ldap, etc
