@@ -4,22 +4,27 @@ from tempfile import mkdtemp
 from time import sleep
 
 import yaml
-from django.test import TestCase
+from channels.testing import ChannelsLiveServerTestCase
 from docker import DockerClient, from_env
 from docker.models.containers import Container
 from docker.types.healthcheck import Healthcheck
 
 from authentik import __version__
 from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.models import Flow
+from authentik.flows.models import Flow, FlowDesignation
 from authentik.outposts.controllers.docker import DockerController
-from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostType
+from authentik.outposts.models import (
+    DockerServiceConnection,
+    Outpost,
+    OutpostType,
+    default_outpost_config,
+)
 from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.models import ProxyProvider
 from tests.e2e.utils import get_docker_tag
 
 
-class OutpostDockerTests(TestCase):
+class OutpostDockerTests(ChannelsLiveServerTestCase):
     """Test Docker Controllers"""
 
     def _start_container(self, ssl_folder: str) -> Container:
@@ -59,7 +64,9 @@ class OutpostDockerTests(TestCase):
             name="test",
             internal_host="http://localhost",
             external_host="http://localhost",
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=Flow.objects.create(
+                name="foo", slug="foo", designation=FlowDesignation.AUTHORIZATION
+            ),
         )
         authentication_kp = CertificateKeyPair.objects.create(
             name="docker-authentication",
@@ -82,6 +89,7 @@ class OutpostDockerTests(TestCase):
             name="test",
             type=OutpostType.PROXY,
             service_connection=self.service_connection,
+            _config=default_outpost_config(self.live_server_url),
         )
         self.outpost.providers.add(self.provider)
         self.outpost.save()
