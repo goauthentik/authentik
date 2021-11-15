@@ -9,6 +9,7 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 )
 
@@ -38,6 +39,10 @@ func NewGoUnicorn() *GoUnicorn {
 func (g *GoUnicorn) initCmd() {
 	command := "gunicorn"
 	args := []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi.app:application"}
+	if config.G.Debug {
+		command = "./manage.py"
+		args = []string{"runserver"}
+	}
 	g.log.WithField("args", args).WithField("cmd", command).Debug("Starting gunicorn")
 	g.p = exec.Command(command, args...)
 	g.p.Env = os.Environ()
