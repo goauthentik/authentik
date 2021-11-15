@@ -3,8 +3,13 @@ from django.core.cache import cache
 from django.test import TestCase
 from requests_mock import Mocker
 
-from authentik.admin.tasks import VERSION_CACHE_KEY, update_latest_version
+from authentik.admin.tasks import (
+    VERSION_CACHE_KEY,
+    clear_update_notifications,
+    update_latest_version,
+)
 from authentik.events.models import Event, EventAction
+from authentik.lib.config import CONFIG
 
 RESPONSE_VALID = {
     "$schema": "https://version.goauthentik.io/schema.json",
@@ -56,3 +61,22 @@ class TestAdminTasks(TestCase):
                     action=EventAction.UPDATE_AVAILABLE, context__new_version="0.0.0"
                 ).exists()
             )
+
+    def test_version_disabled(self):
+        """Test Update checker while its disabled"""
+        with CONFIG.patch("disable_update_check", True):
+            update_latest_version.delay().get()
+            self.assertEqual(cache.get(VERSION_CACHE_KEY), "0.0.0")
+
+    def test_clear_update_notifications(self):
+        """Test clear of previous notification"""
+        Event.objects.create(
+            action=EventAction.UPDATE_AVAILABLE, context={"new_version": "99999999.9999999.9999999"}
+        )
+        Event.objects.create(action=EventAction.UPDATE_AVAILABLE, context={"new_version": "1.1.1"})
+        clear_update_notifications()
+        self.assertFalse(
+            Event.objects.filter(
+                action=EventAction.UPDATE_AVAILABLE, context__new_version="1.1"
+            ).exists()
+        )
