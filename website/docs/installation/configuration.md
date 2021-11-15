@@ -88,10 +88,6 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
   Whether or not to send personal data, like usernames. Defaults to `false`.
 
-### AUTHENTIK_DISABLE_UPDATE_CHECK
-
-Optionally disable the update check. Defaults to `false`.
-
 ### AUTHENTIK_EMAIL
 
 - `AUTHENTIK_EMAIL__HOST`
@@ -144,7 +140,7 @@ Optionally disable the update check. Defaults to `false`.
 Configure how authentik should show avatars for users. Following values can be set:
 
 - `none`: Disables per-user avatars and just shows a 1x1 pixel transparent picture
-- `gravatar`: Uses gravatar with the user's email address
+- `gravatar`: Uses gravatar with the user's email address (default)
 - Any URL: If you want to use images hosted on another server, you can set any URL.
 
   Additionally, these placeholders can be used:
@@ -152,3 +148,43 @@ Configure how authentik should show avatars for users. Following values can be s
    - `%(username)s`: The user's username
    - `%(mail_hash)s`: The email address, md5 hashed
    - `%(upn)s`: The user's UPN, if set (otherwise an empty string)
+
+### AUTHENTIK_DEFAULT_USER_CHANGE_EMAIL
+
+:::info
+Requires authentik 2021.10.5
+:::
+
+Enable the ability for users to change their Email address, defaults to `true`.
+
+### AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME
+
+:::info
+Requires authentik 2021.10.5
+:::
+
+Enable the ability for users to change their Usernames, defaults to `true`.
+
+### AUTHENTIK_FOOTER_LINKS
+
+:::info
+Requires authentik 2021.10.5
+:::
+
+This option configures the footer links on the flow executor pages.
+
+The setting can be used as follows:
+
+```
+AUTHENTIK_FOOTER_LINKS='[{"name": "Link Name","href":"https://goauthentik.io"}]'
+```
+
+## Debugging
+
+To check if your config has been applied correctly, you can run the following command to output the full config:
+
+```
+docker-compose run --rm worker dump_config
+# Or for kubernetes
+kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
+```

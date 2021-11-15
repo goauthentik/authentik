@@ -1,7 +1,10 @@
 import { t } from "@lingui/macro";
 
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
+import { CSSResult, TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { Invitation, StagesApi } from "@goauthentik/api";
 
@@ -34,12 +37,24 @@ export class InvitationListPage extends TablePage<Invitation> {
         return "pf-icon pf-icon-migration";
     }
 
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFBanner);
+    }
+
     checkbox = true;
 
     @property()
     order = "expires";
 
+    @state()
+    invitationStageExists = false;
+
     async apiEndpoint(page: number): Promise<AKResponse<Invitation>> {
+        const stages = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesList({
+            noFlows: false,
+        });
+        this.invitationStageExists = stages.pagination.count > 0;
+        this.expandable = this.invitationStageExists;
         return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsList({
             ordering: this.order,
             page: page,
@@ -109,5 +124,24 @@ export class InvitationListPage extends TablePage<Invitation> {
             </ak-forms-modal>
             ${super.renderToolbar()}
         `;
+    }
+
+    render(): TemplateResult {
+        return html`<ak-page-header
+                icon=${this.pageIcon()}
+                header=${this.pageTitle()}
+                description=${ifDefined(this.pageDescription())}
+            >
+            </ak-page-header>
+            ${this.invitationStageExists
+                ? html``
+                : html`
+                      <div class="pf-c-banner pf-m-warning">
+                          ${t`Warning: No invitation stage is bound to any flow. Invitations will not work as expected.`}
+                      </div>
+                  `}
+            <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-c-card">${this.renderTable()}</div>
+            </section>`;
     }
 }

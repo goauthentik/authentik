@@ -29,9 +29,17 @@ Currently, it is only supported to restore backups into the same version they ha
 Instead, install the version the backup was taken with, restore the backup and then upgrade.
 :::
 
-Run this command in your authentik installation directory
+Run this command in your authentik installation directory.
 
-The filename can be found by either looking into the `./backups` directory or using S3.
+To see all available backups, run
+
+```
+docker-compose run --rm worker listbackups
+# Or for kubernetes
+kubectl exec -it deployment/authentik-worker -c authentik -- ak listbackups
+```
+
+Then, to restore, run
 
 ```
 docker-compose run --rm worker restore -i default-2020-10-03-115557.psql

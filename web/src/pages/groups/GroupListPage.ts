@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
 
 import { CoreApi, Group } from "@goauthentik/api";
 
@@ -78,7 +78,7 @@ export class GroupListPage extends TablePage<Group> {
     row(item: Group): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${item.parent || t`-`}`,
+            html`${item.parentName || t`-`}`,
             html`${Array.from(item.users || []).length}`,
             html`${item.isSuperuser ? t`Yes` : t`No`}`,
             html` <ak-forms-modal>

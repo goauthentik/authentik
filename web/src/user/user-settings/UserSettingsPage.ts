@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import { customElement, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import AKGlobal from "../../authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -90,14 +90,13 @@ export class UserSettingsPage extends LitElement {
                             <div class="pf-l-stack__item">
                                 ${until(
                                     this.userSettings?.then((settings) => {
-                                        if (
-                                            settings.filter(
-                                                (stage) =>
-                                                    stage.component === "ak-user-settings-password",
-                                            ).length > 0
-                                        ) {
+                                        const pwStage = settings.filter(
+                                            (stage) =>
+                                                stage.component === "ak-user-settings-password",
+                                        );
+                                        if (pwStage.length > 0) {
                                             return html`<ak-user-settings-password
-                                                configureUrl=${ifDefined(settings[0].configureUrl)}
+                                                configureUrl=${ifDefined(pwStage[0].configureUrl)}
                                             ></ak-user-settings-password>`;
                                         }
                                     }),

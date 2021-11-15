@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators";
-import { unsafeHTML } from "lit/directives/unsafe-html";
-import { until } from "lit/directives/until";
+import { customElement, property } from "lit/decorators.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { until } from "lit/directives/until.js";
 
 import AKGlobal from "../authentik.css";
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
@@ -418,7 +418,8 @@ export class FlowExecutor extends LitElement implements StageHost {
                                                 )
                                                     ? html`
                                                           <li>
-                                                              <a href="https://unsplash.com/@foxxmd"
+                                                              <a
+                                                                  href="https://unsplash.com/@kimonmaritz"
                                                                   >${t`Background image`}</a
                                                               >
                                                           </li>

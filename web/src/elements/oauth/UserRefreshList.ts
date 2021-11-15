@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
 
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 

@@ -1,5 +1,5 @@
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "../authentik.css";
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";

@@ -9,6 +9,8 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import Group, PropertyMapping, Source
 from authentik.lib.models import DomainlessURLValidator
 
+LDAP_TIMEOUT = 15
+
 
 class LDAPSource(Source):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
@@ -86,12 +88,13 @@ class LDAPSource(Source):
     def connection(self) -> Connection:
         """Get a fully connected and bound LDAP Connection"""
         if not self._connection:
-            server = Server(self.server_uri, get_info=ALL)
+            server = Server(self.server_uri, get_info=ALL, connect_timeout=LDAP_TIMEOUT)
             self._connection = Connection(
                 server,
                 raise_exceptions=True,
                 user=self.bind_cn,
                 password=self.bind_password,
+                receive_timeout=LDAP_TIMEOUT,
             )
 
             self._connection.bind()

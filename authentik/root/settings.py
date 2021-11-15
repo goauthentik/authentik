@@ -14,13 +14,13 @@ import importlib
 import logging
 import os
 import sys
+from hashlib import sha512
 from json import dumps
 from tempfile import gettempdir
 from time import time
 
 import structlog
 from celery.schedules import crontab
-from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 from sentry_sdk import init as sentry_init
 from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.celery import CeleryIntegration
@@ -32,6 +32,8 @@ from authentik.core.middleware import structlog_add_request_id
 from authentik.lib.config import CONFIG
 from authentik.lib.logging import add_process_id
 from authentik.lib.sentry import before_send
+from authentik.lib.utils.http import get_http_session
+from authentik.lib.utils.reflection import get_env
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 
@@ -308,7 +310,7 @@ EMAIL_HOST = CONFIG.y("email.host")
 EMAIL_PORT = int(CONFIG.y("email.port"))
 EMAIL_HOST_USER = CONFIG.y("email.username")
 EMAIL_HOST_PASSWORD = CONFIG.y("email.password")
-EMAIL_USE_TLS = CONFIG.y_bool("email.use_tls", True)
+EMAIL_USE_TLS = CONFIG.y_bool("email.use_tls", False)
 EMAIL_USE_SSL = CONFIG.y_bool("email.use_ssl", False)
 EMAIL_TIMEOUT = int(CONFIG.y("email.timeout"))
 DEFAULT_FROM_EMAIL = CONFIG.y("email.from")
@@ -381,6 +383,7 @@ DBBACKUP_CONNECTOR_MAPPING = {
     "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector",
 }
 DBBACKUP_TMP_DIR = gettempdir() if DEBUG else "/tmp"  # nosec
+DBBACKUP_CLEANUP_KEEP = 30
 if CONFIG.y("postgresql.s3_backup.bucket", "") != "":
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     DBBACKUP_STORAGE_OPTIONS = {
@@ -400,6 +403,12 @@ if CONFIG.y("postgresql.s3_backup.bucket", "") != "":
 
 # Sentry integration
 SENTRY_DSN = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
+# Default to empty string as that is what docker has
+build_hash = os.environ.get(ENV_GIT_HASH_KEY, "")
+if build_hash == "":
+    build_hash = "tagged"
+
+env = get_env()
 _ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
     # pylint: disable=abstract-class-instantiated
@@ -416,18 +425,34 @@ if _ERROR_REPORTING:
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )
-    # Default to empty string as that is what docker has
-    build_hash = os.environ.get(ENV_GIT_HASH_KEY, "")
-    if build_hash == "":
-        build_hash = "tagged"
     set_tag("authentik.build_hash", build_hash)
-    set_tag("authentik.env", "kubernetes" if SERVICE_HOST_ENV_NAME in os.environ else "compose")
+    set_tag("authentik.env", env)
     set_tag("authentik.component", "backend")
     j_print(
         "Error reporting is enabled",
         env=CONFIG.y("error_reporting.environment", "customer"),
     )
-
+if not CONFIG.y_bool("disable_startup_analytics", False):
+    should_send = env not in ["dev", "ci"]
+    if should_send:
+        try:
+            get_http_session().post(
+                "https://goauthentik.io/api/event",
+                json={
+                    "domain": "authentik",
+                    "name": "pageview",
+                    "referrer": f"{__version__} ({build_hash})",
+                    "url": f"http://localhost/{env}?utm_source={__version__}&utm_medium={env}",
+                },
+                headers={
+                    "User-Agent": sha512(SECRET_KEY.encode("ascii")).hexdigest()[:16],
+                    "Content-Type": "application/json",
+                },
+                timeout=5,
+            )
+        # pylint: disable=bare-except
+        except:  # nosec
+            pass
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/

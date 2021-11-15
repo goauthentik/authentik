@@ -1,5 +1,5 @@
 ---
-title: authentik behind a reverse-proxy
+title: Reverse-proxy
 ---
 
 If you want to access authentik behind a reverse-proxy, use a config like this. It is important that Websocket is enabled, so that Outposts can connect.

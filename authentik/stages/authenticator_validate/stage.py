@@ -95,7 +95,8 @@ class AuthenticatorValidateStageView(ChallengeStageView):
     def get_device_challenges(self) -> list[dict]:
         """Get a list of all device challenges applicable for the current stage"""
         challenges = []
-        user_devices = devices_for_user(self.get_pending_user())
+        # Convert to a list to have usable log output instead of just <generator ...>
+        user_devices = list(devices_for_user(self.get_pending_user()))
         LOGGER.debug("Got devices for user", devices=user_devices)
 
         # static and totp are only shown once

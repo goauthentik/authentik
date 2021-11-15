@@ -55,7 +55,7 @@ class AuthenticatorStaticStageView(ChallengeStageView):
         stage: AuthenticatorStaticStage = self.executor.current_stage
 
         if SESSION_STATIC_DEVICE not in self.request.session:
-            device = StaticDevice(user=user, confirmed=True)
+            device = StaticDevice(user=user, confirmed=True, name="Static Token")
             tokens = []
             for _ in range(0, stage.token_count):
                 tokens.append(StaticToken(device=device, token=StaticToken.random_token()))

@@ -149,7 +149,7 @@ class ChallengeStageView(StageView):
                 )
         challenge_response.initial_data["response_errors"] = full_errors
         if not challenge_response.is_valid():
-            LOGGER.warning(
+            LOGGER.error(
                 "f(ch): invalid challenge response",
                 binding=self.executor.current_binding,
                 errors=challenge_response.errors,

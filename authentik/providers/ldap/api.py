@@ -1,5 +1,5 @@
 """LDAPProvider API Views"""
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, ListField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
@@ -11,6 +11,8 @@ from authentik.providers.ldap.models import LDAPProvider
 class LDAPProviderSerializer(ProviderSerializer):
     """LDAPProvider Serializer"""
 
+    outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
+
     class Meta:
 
         model = LDAPProvider
@@ -21,6 +23,8 @@ class LDAPProviderSerializer(ProviderSerializer):
             "tls_server_name",
             "uid_start_number",
             "gid_start_number",
+            "outpost_set",
+            "search_mode",
         ]
 
 
@@ -65,6 +69,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
             "tls_server_name",
             "uid_start_number",
             "gid_start_number",
+            "search_mode",
         ]
 
 

@@ -1,10 +1,8 @@
 """Apple OAuth Views"""
-from base64 import b64decode
-from json import loads
 from time import time
 from typing import Any, Optional
 
-from jwt import encode
+from jwt import decode, encode
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
@@ -40,7 +38,7 @@ class AppleOAuthClient(OAuth2Client):
             "iat": now,
             "exp": now + 86400 * 180,
             "aud": "https://appleid.apple.com",
-            "sub": self.source.consumer_key,
+            "sub": parts[0],
         }
         # pyright: reportGeneralTypeIssues=false
         jwt = encode(payload, self.source.consumer_secret, "ES256", {"kid": parts[2]})
@@ -49,9 +47,7 @@ class AppleOAuthClient(OAuth2Client):
 
     def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
         id_token = token.get("id_token")
-        _, raw_payload, _ = id_token.split(".")
-        payload = loads(b64decode(raw_payload.encode().decode()))
-        return payload
+        return decode(id_token, options={"verify_signature": False})
 
 
 class AppleOAuthRedirect(OAuthRedirect):

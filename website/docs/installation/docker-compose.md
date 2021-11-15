@@ -14,7 +14,7 @@ This installation method is for test-setups and small-scale productive setups.
 
 Download the latest `docker-compose.yml` from [here](https://goauthentik.io/docker-compose.yml). Place it in a directory of your choice.
 
-To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.10.2 >> .env`
+To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.10.4 >> .env`
 
 If this is a fresh authentik install run the following commands to generate a password:
 
@@ -88,7 +88,7 @@ The docker-compose project contains the following containers:
 
 - server
 
-    This is the backend service, which does all the logic, runs the API and the actual SSO part. It also runs the frontend, hosts the JS/CSS files, and also servers the files you've uploaded for icons/etc.
+    This is the backend service, which does all the logic, runs the API and the actual SSO part. It also runs the frontend, hosts the JS/CSS files, and also serves the files you've uploaded for icons/etc.
 
 - worker
 

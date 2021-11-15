@@ -625,6 +625,10 @@ msgstr "Cached flows"
 msgid "Cached policies"
 msgstr "Cached policies"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
+msgstr "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr "Callback URL"
@@ -912,6 +916,10 @@ msgstr "Configure how the flow executor should handle an invalid response to a c
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Configure how the issuer field of the ID Token should be filled."
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Configure how the outpost queries the core authentik server's users."
+msgstr "Configure how the outpost queries the core authentik server's users."
 
 #: 
 #: 
@@ -1407,6 +1415,10 @@ msgstr "Device classes which can be used to authenticate."
 msgid "Device(s)"
 msgstr "Device(s)"
 
+#: src/pages/flows/FlowViewPage.ts
+msgid "Diagram"
+msgstr "Diagram"
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Digest algorithm"
@@ -1415,6 +1427,10 @@ msgstr "Digest algorithm"
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Digits"
 msgstr "Digits"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Direct querying, always returns the latest data, but slower than cached querying."
+msgstr "Direct querying, always returns the latest data, but slower than cached querying."
 
 #: 
 #: 
@@ -1708,17 +1724,17 @@ msgstr "Everything is ok."
 msgid "Exception"
 msgstr "Exception"
 
-#: src/pages/flows/FlowViewPage.ts
-msgid "Execute"
-msgstr "Execute"
+#: 
+#~ msgid "Execute"
+#~ msgstr "Execute"
 
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
 msgstr "Execute flow"
 
-#: src/pages/flows/FlowViewPage.ts
-msgid "Execute with inspector"
-msgstr "Execute with inspector"
+#: 
+#~ msgid "Execute with inspector"
+#~ msgstr "Execute with inspector"
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 msgid "Executes the python snippet to determine whether to allow or deny a request."
@@ -2646,6 +2662,10 @@ msgstr "Long-running operations which authentik executes in the background."
 msgid "MFA Devices"
 msgstr "MFA Devices"
 
+#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
+msgid "Make sure to keep these tokens in a safe place."
+msgstr "Make sure to keep these tokens in a safe place."
+
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Mark newly created users as inactive."
 msgstr "Mark newly created users as inactive."
@@ -2932,6 +2952,10 @@ msgstr "No policies are currently bound to this object."
 msgid "No recovery flow is configured."
 msgstr "No recovery flow is configured."
 
+#: src/user/user-settings/sources/SourceSettings.ts
+msgid "No services available."
+msgstr "No services available."
+
 #: src/pages/flows/BoundStagesList.ts
 msgid "No stages are currently bound to this flow."
 msgstr "No stages are currently bound to this flow."
@@ -2943,6 +2967,10 @@ msgstr "No workers connected. Background tasks will not run."
 #: src/pages/events/RuleListPage.ts
 msgid "None (rule disabled)"
 msgstr "None (rule disabled)"
+
+#: src/pages/flows/FlowViewPage.ts
+msgid "Normal"
+msgstr "Normal"
 
 #: src/pages/outposts/OutpostHealthSimple.ts
 msgid "Not available"
@@ -3794,6 +3822,10 @@ msgstr "Score"
 msgid "Search group"
 msgstr "Search group"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Search mode"
+msgstr "Search mode"
+
 #: src/elements/table/TableSearch.ts
 #: src/user/LibraryPage.ts
 msgid "Search..."
@@ -4210,9 +4242,13 @@ msgstr "Static Tokens"
 msgid "Static authenticator"
 msgstr "Static authenticator"
 
-#: 
-#~ msgid "Static tokens"
-#~ msgstr "Static tokens"
+#: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Static token"
+msgstr "Static token"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "Static tokens"
+msgstr "Static tokens"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Static: Static value, displayed as-is."
@@ -4645,6 +4681,10 @@ msgid "TOTP Authenticators"
 msgstr "TOTP Authenticators"
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "TOTP Device"
+msgstr "TOTP Device"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "TOTP authenticator"
 msgstr "TOTP authenticator"
 
@@ -4690,6 +4730,10 @@ msgstr "Test Policy"
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 msgid "Test Property Mapping"
 msgstr "Test Property Mapping"
+
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "Text (read-only): Simple Text input, but cannot be edited."
+msgstr "Text (read-only): Simple Text input, but cannot be edited."
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Text: Simple Text input"
@@ -4875,7 +4919,6 @@ msgstr "Token validity"
 msgid "Token(s)"
 msgstr "Token(s)"
 
-#: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/pages/tokens/TokenListPage.ts
 msgid "Tokens"
 msgstr "Tokens"
@@ -5460,9 +5503,25 @@ msgstr "Wait (min)"
 msgid "Warning"
 msgstr "Warning"
 
+#: src/pages/stages/invitation/InvitationListPage.ts
+msgid "Warning: No invitation stage is bound to any flow. Invitations will not work as expected."
+msgstr "Warning: No invitation stage is bound to any flow. Invitations will not work as expected."
+
 #: src/pages/policies/PolicyListPage.ts
 msgid "Warning: Policy is not assigned."
 msgstr "Warning: Policy is not assigned."
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "Warning: Provider is not used by an Application."
+msgstr "Warning: Provider is not used by an Application."
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Warning: Provider is not used by any Outpost."
+msgstr "Warning: Provider is not used by any Outpost."
 
 #: src/pages/providers/ProviderListPage.ts
 msgid "Warning: Provider not assigned to any application."
@@ -5629,6 +5688,10 @@ msgstr "reference will be reset to default value"
 #: src/elements/forms/DeleteForm.ts
 msgid "reference will be set to an empty value"
 msgstr "reference will be set to an empty value"
+
+#: src/pages/flows/FlowViewPage.ts
+msgid "with inspector"
+msgstr "with inspector"
 
 #: src/elements/Expand.ts
 #: src/elements/Expand.ts

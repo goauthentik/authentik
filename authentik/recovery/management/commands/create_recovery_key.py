@@ -7,11 +7,8 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from structlog.stdlib import get_logger
 
 from authentik.core.models import Token, TokenIntents, User
-
-LOGGER = get_logger()
 
 
 class Command(BaseCommand):

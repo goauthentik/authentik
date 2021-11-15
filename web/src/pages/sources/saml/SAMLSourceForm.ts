@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import {
     BindingTypeEnum,
@@ -149,7 +149,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             ${until(
                                 new CryptoApi(DEFAULT_CONFIG)
                                     .cryptoCertificatekeypairsList({
-                                        ordering: "pk",
+                                        ordering: "name",
                                     })
                                     .then((keys) => {
                                         return keys.results.map((key) => {
@@ -341,7 +341,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation:
                                             FlowsInstancesListDesignationEnum.StageConfiguration,
                                     })
@@ -378,7 +378,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation:
                                             FlowsInstancesListDesignationEnum.Authentication,
                                     })
@@ -417,7 +417,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation: FlowsInstancesListDesignationEnum.Enrollment,
                                     })
                                     .then((flows) => {

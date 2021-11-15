@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import {
     ClientTypeEnum,
@@ -80,7 +80,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                     ${until(
                         new FlowsApi(DEFAULT_CONFIG)
                             .flowsInstancesList({
-                                ordering: "pk",
+                                ordering: "slug",
                                 designation: FlowsInstancesListDesignationEnum.Authorization,
                             })
                             .then((flows) => {
@@ -183,7 +183,7 @@ ${this.instance?.redirectUris}</textarea
                             ${until(
                                 new CryptoApi(DEFAULT_CONFIG)
                                     .cryptoCertificatekeypairsList({
-                                        ordering: "pk",
+                                        ordering: "name",
                                         hasKey: true,
                                     })
                                     .then((keys) => {

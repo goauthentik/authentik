@@ -9,7 +9,6 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import ChallengeTypes, RedirectChallenge
-from authentik.lib.models import SerializerModel
 
 if TYPE_CHECKING:
     from authentik.sources.oauth.types.manager import SourceType

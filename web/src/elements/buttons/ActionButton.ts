@@ -1,4 +1,4 @@
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
 
 import { MessageLevel } from "../messages/Message";
 import { showMessage } from "../messages/MessageContainer";

@@ -1,8 +1,13 @@
 """authentik lib reflection utilities"""
+import os
 from importlib import import_module
+from pathlib import Path
 from typing import Union
 
 from django.conf import settings
+from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
+
+from authentik.lib.config import CONFIG
 
 
 def all_subclasses(cls, sort=True):
@@ -42,3 +47,16 @@ def get_apps():
     for _app in apps.get_app_configs():
         if _app.name.startswith("authentik"):
             yield _app
+
+
+def get_env() -> str:
+    """Get environment in which authentik is currently running"""
+    if SERVICE_HOST_ENV_NAME in os.environ:
+        return "kubernetes"
+    if "CI" in os.environ:
+        return "ci"
+    if Path("/tmp/authentik-mode").exists():  # nosec
+        return "compose"
+    if CONFIG.y_bool("debug"):
+        return "dev"
+    return "custom"

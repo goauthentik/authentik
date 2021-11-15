@@ -43,12 +43,13 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 # Special check for `users` field, as this is an M2M relation, and cannot be sync'd
                 if "users" in defaults:
                     del defaults["users"]
-                ak_group, created = Group.objects.update_or_create(
-                    **{
+                ak_group, created = self.update_or_create_attributes(
+                    Group,
+                    {
                         f"attributes__{LDAP_UNIQUENESS}": uniq,
                         "parent": self._source.sync_parent_group,
-                        "defaults": defaults,
-                    }
+                    },
+                    defaults,
                 )
             except (IntegrityError, FieldError) as exc:
                 Event.new(

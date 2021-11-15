@@ -1,5 +1,6 @@
 """Identification stage logic"""
 from dataclasses import asdict
+from random import SystemRandom
 from time import sleep
 from typing import Any, Optional
 
@@ -15,10 +16,16 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Application, Source, User
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    ChallengeTypes,
+    RedirectChallenge,
+)
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
-from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, challenge_types
+from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
+from authentik.sources.plex.models import PlexAuthenticationChallenge
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
 from authentik.stages.password.stage import authenticate
@@ -28,8 +35,11 @@ LOGGER = get_logger()
 
 @extend_schema_field(
     PolymorphicProxySerializer(
-        component_name="ChallengeTypes",
-        serializers=challenge_types(),
+        component_name="LoginChallengeTypes",
+        serializers={
+            RedirectChallenge().fields["component"].default: RedirectChallenge,
+            PlexAuthenticationChallenge().fields["component"].default: PlexAuthenticationChallenge,
+        },
         resource_type_field_name="component",
     )
 )
@@ -78,7 +88,8 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
         pre_user = self.stage.get_user(uid_field)
         if not pre_user:
-            sleep(0.150)
+            # Sleep a random time (between 90 and 210ms) to "prevent" user enumeration attacks
+            sleep(0.30 * SystemRandom().randint(3, 7))
             LOGGER.debug("invalid_login", identifier=uid_field)
             identification_failed.send(sender=self, request=self.stage.request, uid_field=uid_field)
             # We set the pending_user even on failure so it's part of the context, even

@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import {
     FlowsApi,
@@ -269,7 +269,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation:
                                             FlowsInstancesListDesignationEnum.Authentication,
                                     })
@@ -308,7 +308,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation: FlowsInstancesListDesignationEnum.Enrollment,
                                     })
                                     .then((flows) => {

@@ -1,7 +1,4 @@
 """managed tasks"""
-from glob import glob
-
-from django.core.cache import cache
 from django.db import DatabaseError
 
 from authentik.core.tasks import CELERY_APP
@@ -11,7 +8,6 @@ from authentik.events.monitored_tasks import (
     TaskResultStatus,
     prefill_task,
 )
-from authentik.lib.config import CONFIG
 from authentik.managed.manager import ObjectManager
 
 

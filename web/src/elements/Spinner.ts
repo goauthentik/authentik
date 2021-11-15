@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
 
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 

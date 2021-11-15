@@ -31,6 +31,7 @@ jobs:
             golangci/golangci-lint:v1.39.0 \
             golangci-lint run -v --timeout 200s
   build:
+    timeout-minutes: 120
     needs:
       - lint-golint
     strategy:

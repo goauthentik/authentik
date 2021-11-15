@@ -27,6 +27,7 @@ VERSION_CACHE_TIMEOUT = 8 * 60 * 60  # 8 hours
 # Chop of the first ^ because we want to search the entire string
 URL_FINDER = URLValidator.regex.pattern[1:]
 PROM_INFO = Info("authentik_version", "Currently running authentik version")
+LOCAL_VERSION = parse(__version__)
 
 
 def _set_prom_info():
@@ -48,7 +49,7 @@ def clear_update_notifications():
         if "new_version" not in notification.event.context:
             continue
         notification_version = notification.event.context["new_version"]
-        if notification_version == __version__:
+        if LOCAL_VERSION >= parse(notification_version):
             notification.delete()
 
 
@@ -74,8 +75,7 @@ def update_latest_version(self: MonitoredTask):
         _set_prom_info()
         # Check if upstream version is newer than what we're running,
         # and if no event exists yet, create one.
-        local_version = parse(__version__)
-        if local_version < parse(upstream_version):
+        if LOCAL_VERSION < parse(upstream_version):
             # Event has already been created, don't create duplicate
             if Event.objects.filter(
                 action=EventAction.UPDATE_AVAILABLE,

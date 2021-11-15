@@ -1,6 +1,8 @@
 """Sync LDAP Users and groups into authentik"""
 from typing import Any
 
+from deepmerge import always_merger
+from django.db.models.base import Model
 from django.db.models.query import QuerySet
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -105,3 +107,24 @@ class BaseLDAPSynchronizer:
             )
         properties["attributes"][LDAP_DISTINGUISHED_NAME] = object_dn
         return properties
+
+    def update_or_create_attributes(
+        self,
+        obj: type[Model],
+        query: dict[str, Any],
+        data: dict[str, Any],
+    ) -> tuple[Model, bool]:
+        """Same as django's update_or_create but correctly update attributes by merging dicts"""
+        instance = obj.objects.filter(**query).first()
+        if not instance:
+            return (obj.objects.create(**data), True)
+        for key, value in data.items():
+            if key == "attributes":
+                continue
+            setattr(instance, key, value)
+        final_atttributes = {}
+        always_merger.merge(final_atttributes, instance.attributes)
+        always_merger.merge(final_atttributes, data.get("attributes", {}))
+        instance.attributes = final_atttributes
+        instance.save()
+        return (instance, False)

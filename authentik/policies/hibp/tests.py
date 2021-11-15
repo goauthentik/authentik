@@ -26,7 +26,7 @@ class TestHIBPPolicy(TestCase):
             name="test_false",
         )
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = "password"
+        request.context["password"] = "password"  # nosec
         result: PolicyResult = policy.passes(request)
         self.assertFalse(result.passing)
         self.assertTrue(result.messages[0].startswith("Password exists on "))

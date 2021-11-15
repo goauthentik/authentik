@@ -12,7 +12,8 @@ module.exports = {
             type: "category",
             label: "Users & Groups",
             items: [
-                "user-group/user"
+                "user-group/user",
+                "user-group/group",
             ]
         },
         {
@@ -26,6 +27,7 @@ module.exports = {
                 "installation/configuration",
                 "installation/reverse-proxy",
                 "installation/automated-install",
+                "installation/air-gapped",
             ],
         },
         {
@@ -92,6 +94,7 @@ module.exports = {
                         "integrations/services/aws/index",
                         "integrations/services/awx-tower/index",
                         "integrations/services/bookstack/index",
+                        "integrations/services/gitea/index",
                         "integrations/services/gitlab/index",
                         "integrations/services/grafana/index",
                         "integrations/services/harbor/index",
@@ -99,7 +102,9 @@ module.exports = {
                         "integrations/services/matrix-synapse/index",
                         "integrations/services/minio/index",
                         "integrations/services/nextcloud/index",
+                        "integrations/services/opnsense/index",
                         "integrations/services/portainer/index",
+                        "integrations/services/proxmox-ve/index",
                         "integrations/services/rancher/index",
                         "integrations/services/sentry/index",
                         "integrations/services/sonarr/index",
@@ -209,6 +214,7 @@ module.exports = {
                 "troubleshooting/login",
                 "troubleshooting/image_upload_backup",
                 "troubleshooting/missing_permission",
+                "troubleshooting/missing_admin_group",
             ],
         },
     ],

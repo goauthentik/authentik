@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import {
     FlowsApi,
@@ -112,7 +112,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                             ${until(
                                 new StagesApi(DEFAULT_CONFIG)
                                     .stagesPasswordList({
-                                        ordering: "pk",
+                                        ordering: "name",
                                     })
                                     .then((stages) => {
                                         return stages.results.map((stage) => {
@@ -228,7 +228,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation: FlowsInstancesListDesignationEnum.Enrollment,
                                     })
                                     .then((flows) => {
@@ -258,7 +258,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation: FlowsInstancesListDesignationEnum.Recovery,
                                     })
                                     .then((flows) => {

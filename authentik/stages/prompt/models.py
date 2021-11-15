@@ -1,5 +1,5 @@
 """prompt models"""
-from typing import Type
+from typing import Any, Optional, Type
 from uuid import uuid4
 
 from django.db import models
@@ -13,6 +13,7 @@ from rest_framework.fields import (
     EmailField,
     HiddenField,
     IntegerField,
+    ReadOnlyField,
 )
 from rest_framework.serializers import BaseSerializer
 
@@ -26,6 +27,10 @@ class FieldTypes(models.TextChoices):
 
     # Simple text field
     TEXT = "text", _("Text: Simple Text input")
+    # Simple text field
+    TEXT_READ_ONLY = "text_read_only", _(
+        "Text (read-only): Simple Text input, but cannot be edited."
+    )
     # Same as text, but has autocomplete for password managers
     USERNAME = (
         "username",
@@ -74,13 +79,16 @@ class Prompt(SerializerModel):
 
         return PromptSerializer
 
-    @property
-    def field(self) -> CharField:
+    def field(self, default: Optional[Any]) -> CharField:
         """Get field type for Challenge and response"""
         field_class = CharField
         kwargs = {
             "required": self.required,
         }
+        if self.type == FieldTypes.TEXT:
+            kwargs["trim_whitespace"] = False
+        if self.type == FieldTypes.TEXT_READ_ONLY:
+            field_class = ReadOnlyField
         if self.type == FieldTypes.EMAIL:
             field_class = EmailField
         if self.type == FieldTypes.NUMBER:
@@ -97,12 +105,14 @@ class Prompt(SerializerModel):
         if self.type == FieldTypes.DATE_TIME:
             field_class = DateTimeField
         if self.type == FieldTypes.STATIC:
-            kwargs["initial"] = self.placeholder
+            kwargs["default"] = self.placeholder
             kwargs["required"] = False
             kwargs["label"] = ""
         if self.type == FieldTypes.SEPARATOR:
             kwargs["required"] = False
             kwargs["label"] = ""
+        if default:
+            kwargs["default"] = default
         return field_class(**kwargs)
 
     def save(self, *args, **kwargs):

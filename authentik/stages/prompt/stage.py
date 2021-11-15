@@ -65,7 +65,8 @@ class PromptChallengeResponse(ChallengeResponse):
         fields = list(self.stage.fields.all())
         for field in fields:
             field: Prompt
-            self.fields[field.field_key] = field.field
+            current = plan.context.get(PLAN_CONTEXT_PROMPT, {}).get(field.field_key)
+            self.fields[field.field_key] = field.field(current)
             # Special handling for fields with username type
             # these check for existing users with the same username
             if field.type == FieldTypes.USERNAME:
@@ -96,10 +97,11 @@ class PromptChallengeResponse(ChallengeResponse):
         # Check if we have any static or hidden fields, and ensure they
         # still have the same value
         static_hidden_fields: QuerySet[Prompt] = self.stage.fields.filter(
-            type__in=[FieldTypes.HIDDEN, FieldTypes.STATIC]
+            type__in=[FieldTypes.HIDDEN, FieldTypes.STATIC, FieldTypes.TEXT_READ_ONLY]
         )
         for static_hidden in static_hidden_fields:
-            attrs[static_hidden.field_key] = static_hidden.placeholder
+            field = self.fields[static_hidden.field_key]
+            attrs[static_hidden.field_key] = field.default
 
         # Check if we have two password fields, and make sure they are the same
         password_fields: QuerySet[Prompt] = self.stage.fields.filter(type=FieldTypes.PASSWORD)
@@ -163,10 +165,17 @@ class PromptStageView(ChallengeStageView):
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         fields = list(self.executor.current_stage.fields.all().order_by("order"))
+        serializers = []
+        context_prompt = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
+        for field in fields:
+            data = StagePromptSerializer(field).data
+            if field.field_key in context_prompt:
+                data["placeholder"] = context_prompt.get(field.field_key)
+            serializers.append(data)
         challenge = PromptChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "fields": [StagePromptSerializer(field).data for field in fields],
+                "fields": serializers,
             },
         )
         return challenge

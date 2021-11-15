@@ -4,13 +4,18 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"runtime"
+	"syscall"
 	"time"
 
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 )
 
 type GoUnicorn struct {
+	HealthyCallback func()
+
 	log     *log.Entry
 	p       *exec.Cmd
 	started bool
@@ -21,10 +26,11 @@ type GoUnicorn struct {
 func NewGoUnicorn() *GoUnicorn {
 	logger := log.WithField("logger", "authentik.router.unicorn")
 	g := &GoUnicorn{
-		log:     logger,
-		started: false,
-		killed:  false,
-		alive:   false,
+		log:             logger,
+		started:         false,
+		killed:          false,
+		alive:           false,
+		HealthyCallback: func() {},
 	}
 	g.initCmd()
 	return g
@@ -33,6 +39,10 @@ func NewGoUnicorn() *GoUnicorn {
 func (g *GoUnicorn) initCmd() {
 	command := "gunicorn"
 	args := []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi.app:application"}
+	if config.G.Debug {
+		command = "./manage.py"
+		args = []string{"runserver"}
+	}
 	g.log.WithField("args", args).WithField("cmd", command).Debug("Starting gunicorn")
 	g.p = exec.Command(command, args...)
 	g.p.Env = os.Environ()
@@ -46,7 +56,7 @@ func (g *GoUnicorn) IsRunning() bool {
 
 func (g *GoUnicorn) Start() error {
 	if g.killed {
-		g.log.Debug("Not restarting gunicorn since we're killed")
+		g.log.Debug("Not restarting gunicorn since we're shutdown")
 		return nil
 	}
 	if g.started {
@@ -76,6 +86,7 @@ func (g *GoUnicorn) healthcheck() {
 	for range time.Tick(time.Second) {
 		if check() {
 			g.log.Info("backend is alive, backing off with healthchecks")
+			g.HealthyCallback()
 			break
 		}
 		g.log.Debug("backend not alive yet")
@@ -87,8 +98,15 @@ func (g *GoUnicorn) healthcheck() {
 
 func (g *GoUnicorn) Kill() {
 	g.killed = true
-	err := g.p.Process.Kill()
+	var err error
+	if runtime.GOOS == "darwin" {
+		g.log.WithField("method", "kill").Warning("stopping gunicorn")
+		err = g.p.Process.Kill()
+	} else {
+		g.log.WithField("method", "sigterm").Warning("stopping gunicorn")
+		err = syscall.Kill(g.p.Process.Pid, syscall.SIGTERM)
+	}
 	if err != nil {
-		g.log.WithError(err).Warning("failed to kill gunicorn")
+		g.log.WithError(err).Warning("failed to stop gunicorn")
 	}
 }

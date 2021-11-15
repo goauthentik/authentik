@@ -3,7 +3,8 @@ import os
 from collections.abc import Mapping
 from contextlib import contextmanager
 from glob import glob
-from json import dumps
+from json import dumps, loads
+from json.decoder import JSONDecodeError
 from time import time
 from typing import Any
 from urllib.parse import urlparse
@@ -123,6 +124,11 @@ class ConfigLoader:
                 if dot_part not in current_obj:
                     current_obj[dot_part] = {}
                 current_obj = current_obj[dot_part]
+            # Check if the value is json, and try to load it
+            try:
+                value = loads(value)
+            except JSONDecodeError:
+                pass
             current_obj[dot_parts[-1]] = value
             idx += 1
         if idx > 0:

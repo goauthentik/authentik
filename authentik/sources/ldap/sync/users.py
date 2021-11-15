@@ -42,11 +42,8 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 self._logger.debug("Creating user with attributes", **defaults)
                 if "username" not in defaults:
                     raise IntegrityError("Username was not set by propertymappings")
-                ak_user, created = User.objects.update_or_create(
-                    **{
-                        f"attributes__{LDAP_UNIQUENESS}": uniq,
-                        "defaults": defaults,
-                    }
+                ak_user, created = self.update_or_create_attributes(
+                    User, {f"attributes__{LDAP_UNIQUENESS}": uniq}, defaults
                 )
             except (IntegrityError, FieldError) as exc:
                 Event.new(

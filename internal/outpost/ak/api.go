@@ -10,7 +10,6 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/recws-org/recws"
 	"goauthentik.io/api"
@@ -119,7 +118,7 @@ func (a *APIController) OnRefresh() error {
 	}
 	a.Outpost = outposts.Results[0]
 
-	log.WithField("name", a.Outpost.Name).Debug("Fetched outpost configuration")
+	a.logger.WithField("name", a.Outpost.Name).Debug("Fetched outpost configuration")
 	return a.Server.Refresh()
 }
 
@@ -131,20 +130,8 @@ func (a *APIController) StartBackgorundTasks() error {
 		"version":      constants.VERSION,
 		"build":        constants.BUILD(),
 	}).Set(1)
-	err := a.OnRefresh()
-	if err != nil {
-		return errors.Wrap(err, "failed to run initial refresh")
-	} else {
-		LastUpdate.With(prometheus.Labels{
-			"uuid":         a.instanceUUID.String(),
-			"outpost_name": a.Outpost.Name,
-			"outpost_type": a.Server.Type(),
-			"version":      constants.VERSION,
-			"build":        constants.BUILD(),
-		}).SetToCurrentTime()
-	}
 	go func() {
-		a.logger.Debug("Starting WS reconnector...")
+		a.logger.Debug("Starting WS re-connector...")
 		a.startWSReConnector()
 	}()
 	go func() {

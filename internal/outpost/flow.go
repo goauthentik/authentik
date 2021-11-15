@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -18,7 +17,6 @@ import (
 	"goauthentik.io/api"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/utils"
 )
 
 type StageComponent string
@@ -103,8 +101,8 @@ type ChallengeInt interface {
 	GetResponseErrors() map[string][]api.ErrorDetail
 }
 
-func (fe *FlowExecutor) DelegateClientIP(a net.Addr) {
-	fe.cip = utils.GetIP(a)
+func (fe *FlowExecutor) DelegateClientIP(a string) {
+	fe.cip = a
 	fe.api.GetConfig().AddDefaultHeader(HeaderAuthentikRemoteIP, fe.cip)
 }
 
@@ -132,8 +130,8 @@ func (fe *FlowExecutor) getAnswer(stage StageComponent) string {
 
 // WarmUp Ensure authentik's flow cache is warmed up
 func (fe *FlowExecutor) WarmUp() error {
-	defer fe.sp.Finish()
 	gcsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.get_challenge")
+	defer gcsp.Finish()
 	req := fe.api.FlowsApi.FlowsExecutorGet(gcsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
 	_, _, err := req.Execute()
 	return err
@@ -192,6 +190,7 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 		}
 		devId32 := int32(devId)
 		inner := api.NewAuthenticatorValidationChallengeResponseRequest()
+		inner.SelectedChallenge = (*api.DeviceChallengeRequest)(deviceChallenge)
 		inner.Duo = &devId32
 		responseReq = responseReq.FlowChallengeResponseRequest(api.AuthenticatorValidationChallengeResponseRequestAsFlowChallengeResponseRequest(inner))
 	case string(StageAccessDenied):

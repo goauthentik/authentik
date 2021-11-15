@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import {
     AuthenticatorDuoStage,
@@ -107,7 +107,7 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
-                                        ordering: "pk",
+                                        ordering: "slug",
                                         designation:
                                             FlowsInstancesListDesignationEnum.StageConfiguration,
                                     })

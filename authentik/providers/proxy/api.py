@@ -11,6 +11,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.providers.oauth2.models import ScopeMapping
 from authentik.providers.oauth2.views.provider import ProviderInfoView
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 
@@ -36,6 +37,7 @@ class ProxyProviderSerializer(ProviderSerializer):
     """ProxyProvider Serializer"""
 
     redirect_uris = CharField(read_only=True)
+    outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
 
     def validate(self, attrs) -> dict[Any, str]:
         """Check that internal_host is set when mode is Proxy"""
@@ -74,6 +76,7 @@ class ProxyProviderSerializer(ProviderSerializer):
             "redirect_uris",
             "cookie_domain",
             "token_validity",
+            "outpost_set",
         ]
 
 
@@ -108,6 +111,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
 
     oidc_configuration = SerializerMethodField()
     token_validity = SerializerMethodField()
+    scopes_to_request = SerializerMethodField()
 
     @extend_schema_field(OpenIDConnectConfigurationSerializer)
     def get_oidc_configuration(self, obj: ProxyProvider):
@@ -117,6 +121,14 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
     def get_token_validity(self, obj: ProxyProvider) -> Optional[float]:
         """Get token validity as second count"""
         return timedelta_from_string(obj.token_validity).total_seconds()
+
+    def get_scopes_to_request(self, obj: ProxyProvider) -> list[str]:
+        """Get all the scope names the outpost should request,
+        including custom-defined ones"""
+        scope_names = set(
+            ScopeMapping.objects.filter(provider__in=[obj]).values_list("scope_name", flat=True)
+        )
+        return list(scope_names)
 
     class Meta:
 
@@ -139,6 +151,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "mode",
             "cookie_domain",
             "token_validity",
+            "scopes_to_request",
         ]
 
 

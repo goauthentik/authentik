@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.10.2
+  version: 2021.10.4
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -17191,6 +17191,10 @@ paths:
         name: name
         schema:
           type: string
+      - in: query
+        name: no_flows
+        schema:
+          type: boolean
       - name: ordering
         required: false
         in: query
@@ -17678,6 +17682,7 @@ paths:
           - separator
           - static
           - text
+          - text_read_only
           - username
       tags:
       - stages
@@ -21503,6 +21508,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        parent_name:
+          type: string
+          readOnly: true
         users:
           type: array
           items:
@@ -21518,6 +21526,7 @@ components:
       required:
       - name
       - parent
+      - parent_name
       - pk
       - users
       - users_obj
@@ -22097,6 +22106,8 @@ components:
             generated from the group.Pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
+        search_mode:
+          $ref: '#/components/schemas/SearchModeEnum'
       required:
       - application_slug
       - bind_flow_slug
@@ -22230,12 +22241,20 @@ components:
             generated from the group.Pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
+        outpost_set:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        search_mode:
+          $ref: '#/components/schemas/SearchModeEnum'
       required:
       - assigned_application_name
       - assigned_application_slug
       - authorization_flow
       - component
       - name
+      - outpost_set
       - pk
       - verbose_name
       - verbose_name_plural
@@ -22284,6 +22303,8 @@ components:
             generated from the group.Pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
+        search_mode:
+          $ref: '#/components/schemas/SearchModeEnum'
       required:
       - authorization_flow
       - name
@@ -22494,6 +22515,15 @@ components:
           type: string
       required:
       - link
+    LoginChallengeTypes:
+      oneOf:
+      - $ref: '#/components/schemas/RedirectChallenge'
+      - $ref: '#/components/schemas/PlexAuthenticationChallenge'
+      discriminator:
+        propertyName: component
+        mapping:
+          xak-flow-redirect: '#/components/schemas/RedirectChallenge'
+          ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallenge'
     LoginMetrics:
       type: object
       description: Login Metrics per 1h
@@ -22521,7 +22551,7 @@ components:
           type: string
           nullable: true
         challenge:
-          $ref: '#/components/schemas/ChallengeTypes'
+          $ref: '#/components/schemas/LoginChallengeTypes'
       required:
       - challenge
       - name
@@ -26905,6 +26935,8 @@ components:
             generated from the group.Pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
+        search_mode:
+          $ref: '#/components/schemas/SearchModeEnum'
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
@@ -28413,6 +28445,7 @@ components:
     PromptTypeEnum:
       enum:
       - text
+      - text_read_only
       - username
       - email
       - password
@@ -28626,11 +28659,17 @@ components:
           format: float
           nullable: true
           readOnly: true
+        scopes_to_request:
+          type: array
+          items:
+            type: string
+          readOnly: true
       required:
       - external_host
       - name
       - oidc_configuration
       - pk
+      - scopes_to_request
       - token_validity
     ProxyProvider:
       type: object
@@ -28714,6 +28753,11 @@ components:
           type: string
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
+        outpost_set:
+          type: array
+          items:
+            type: string
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -28721,6 +28765,7 @@ components:
       - component
       - external_host
       - name
+      - outpost_set
       - pk
       - redirect_uris
       - verbose_name
@@ -29460,6 +29505,11 @@ components:
       - expression
       - name
       - scope_name
+    SearchModeEnum:
+      enum:
+      - direct
+      - cached
+      type: string
     ServiceConnection:
       type: object
       description: ServiceConnection Serializer

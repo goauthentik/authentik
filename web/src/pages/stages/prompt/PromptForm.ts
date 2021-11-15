@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { Prompt, PromptTypeEnum, StagesApi } from "@goauthentik/api";
 
@@ -48,6 +48,12 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 ?selected=${this.instance?.type === PromptTypeEnum.Text}
             >
                 ${t`Text: Simple Text input`}
+            </option>
+            <option
+                value=${PromptTypeEnum.TextReadOnly}
+                ?selected=${this.instance?.type === PromptTypeEnum.TextReadOnly}
+            >
+                ${t`Text (read-only): Simple Text input, but cannot be edited.`}
             </option>
             <option
                 value=${PromptTypeEnum.Username}

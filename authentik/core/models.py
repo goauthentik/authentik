@@ -20,7 +20,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
-from rest_framework.serializers import Serializer
+from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
@@ -86,6 +86,27 @@ class Group(SerializerModel):
         from authentik.core.api.groups import GroupSerializer
 
         return GroupSerializer
+
+    def is_member(self, user: "User") -> bool:
+        """Recursively check if `user` is member of us, or any parent."""
+        query = """
+        WITH RECURSIVE parents AS (
+            SELECT authentik_core_group.*, 0 AS relative_depth
+            FROM authentik_core_group
+            WHERE authentik_core_group.group_uuid = %s
+
+            UNION ALL
+
+            SELECT authentik_core_group.*, parents.relative_depth - 1
+            FROM authentik_core_group,parents
+            WHERE authentik_core_group.parent_id = parents.group_uuid
+        )
+        SELECT group_uuid
+        FROM parents
+        GROUP BY group_uuid;
+        """
+        groups = Group.objects.raw(query, [self.group_uuid])
+        return user.ak_groups.filter(pk__in=[group.pk for group in groups]).exists()
 
     def __str__(self):
         return f"Group {self.name}"
@@ -165,7 +186,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         if mode == "none":
             return DEFAULT_AVATAR
         # gravatar uses md5 for their URLs, so md5 can't be avoided
-        mail_hash = md5(self.email.encode("utf-8")).hexdigest()  # nosec
+        mail_hash = md5(self.email.lower().encode("utf-8")).hexdigest()  # nosec
         if mode == "gravatar":
             parameters = [
                 ("s", "158"),
@@ -374,13 +395,18 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         return self.name
 
 
-class UserSourceConnection(CreatedUpdatedModel):
+class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
     """Connection between User and Source."""
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
 
     objects = InheritanceManager()
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        """Get serializer for this model"""
+        raise NotImplementedError
 
     class Meta:
 

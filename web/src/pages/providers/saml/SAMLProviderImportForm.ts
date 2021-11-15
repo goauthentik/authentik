@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
-import { until } from "lit/directives/until";
+import { customElement } from "lit/decorators.js";
+import { until } from "lit/directives/until.js";
 
 import {
     FlowsApi,
@@ -48,7 +48,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                     ${until(
                         new FlowsApi(DEFAULT_CONFIG)
                             .flowsInstancesList({
-                                ordering: "pk",
+                                ordering: "slug",
                                 designation: FlowsInstancesListDesignationEnum.Authorization,
                             })
                             .then((flows) => {

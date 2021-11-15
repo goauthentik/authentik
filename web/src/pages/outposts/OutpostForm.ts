@@ -3,9 +3,9 @@ import YAML from "yaml";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import { Outpost, OutpostTypeEnum, OutpostsApi, ProvidersApi } from "@goauthentik/api";
 
@@ -59,7 +59,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             case OutpostTypeEnum.Proxy:
                 return new ProvidersApi(DEFAULT_CONFIG)
                     .providersProxyList({
-                        ordering: "pk",
+                        ordering: "name",
                         applicationIsnull: false,
                     })
                     .then((providers) => {
@@ -73,14 +73,14 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                                 value=${ifDefined(provider.pk)}
                                 ?selected=${selected}
                             >
-                                ${provider.assignedApplicationName} (${provider.name})
+                                ${provider.assignedApplicationName} (${provider.externalHost})
                             </option>`;
                         });
                     });
             case OutpostTypeEnum.Ldap:
                 return new ProvidersApi(DEFAULT_CONFIG)
                     .providersLdapList({
-                        ordering: "pk",
+                        ordering: "name",
                         applicationIsnull: false,
                     })
                     .then((providers) => {
@@ -141,7 +141,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     ${until(
                         new OutpostsApi(DEFAULT_CONFIG)
                             .outpostsServiceConnectionsAllList({
-                                ordering: "pk",
+                                ordering: "name",
                             })
                             .then((scs) => {
                                 return scs.results.map((sc) => {

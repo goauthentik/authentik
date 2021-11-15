@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import { CryptoApi, DockerServiceConnection, OutpostsApi } from "@goauthentik/api";
 
@@ -86,7 +86,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     ${until(
                         new CryptoApi(DEFAULT_CONFIG)
                             .cryptoCertificatekeypairsList({
-                                ordering: "pk",
+                                ordering: "name",
                             })
                             .then((certs) => {
                                 return certs.results.map((cert) => {
@@ -116,7 +116,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     ${until(
                         new CryptoApi(DEFAULT_CONFIG)
                             .cryptoCertificatekeypairsList({
-                                ordering: "pk",
+                                ordering: "name",
                             })
                             .then((certs) => {
                                 return certs.results.map((cert) => {

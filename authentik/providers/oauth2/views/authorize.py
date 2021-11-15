@@ -369,7 +369,7 @@ class OAuthFulfillmentStage(StageView):
         if self.params.grant_type == GrantTypes.HYBRID:
             query_fragment["code"] = code.code
 
-        query_fragment["token_type"] = "bearer"
+        query_fragment["token_type"] = "bearer"  # nosec
         query_fragment["expires_in"] = int(
             timedelta_from_string(self.provider.access_code_validity).total_seconds()
         )

@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators";
-import { ifDefined } from "lit/directives/if-defined";
-import { until } from "lit/directives/until";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import {
     CryptoApi,
@@ -70,7 +70,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                     ${until(
                         new FlowsApi(DEFAULT_CONFIG)
                             .flowsInstancesList({
-                                ordering: "pk",
+                                ordering: "slug",
                                 designation: FlowsInstancesListDesignationEnum.Authorization,
                             })
                             .then((flows) => {
@@ -154,7 +154,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             ${until(
                                 new CryptoApi(DEFAULT_CONFIG)
                                     .cryptoCertificatekeypairsList({
-                                        ordering: "pk",
+                                        ordering: "name",
                                         hasKey: true,
                                     })
                                     .then((keys) => {
@@ -188,7 +188,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             ${until(
                                 new CryptoApi(DEFAULT_CONFIG)
                                     .cryptoCertificatekeypairsList({
-                                        ordering: "pk",
+                                        ordering: "name",
                                     })
                                     .then((keys) => {
                                         return keys.results.map((key) => {

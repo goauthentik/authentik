@@ -1,7 +1,10 @@
 package proxyv2
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -17,7 +20,7 @@ func (ps *ProxyServer) HandlePing(rw http.ResponseWriter, r *http.Request) {
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
 		"method":       r.Method,
-		"schema":       r.URL.Scheme,
+		"scheme":       r.URL.Scheme,
 		"path":         r.URL.Path,
 		"host":         web.GetHost(r),
 		"type":         "ping",
@@ -33,7 +36,7 @@ func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
 		"method":       r.Method,
-		"schema":       r.URL.Scheme,
+		"scheme":       r.URL.Scheme,
 		"path":         r.URL.Path,
 		"host":         web.GetHost(r),
 		"type":         "ping",
@@ -42,6 +45,10 @@ func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
+	if strings.HasPrefix(r.URL.Path, "/akprox/static") {
+		ps.HandleStatic(rw, r)
+		return
+	}
 	host := web.GetHost(r)
 	a, ok := ps.apps[host]
 	if !ok {
@@ -55,7 +62,23 @@ func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
 		}
 
 		ps.log.WithField("host", host).Warning("no app for hostname")
-		rw.WriteHeader(400)
+
+		rw.Header().Set("Content-Type", "application/json")
+		rw.WriteHeader(http.StatusBadRequest)
+		j := json.NewEncoder(rw)
+		j.SetIndent("", "\t")
+		err := j.Encode(struct {
+			Message string
+			Host    string
+			Detail  string
+		}{
+			Message: "no app for hostname",
+			Host:    host,
+			Detail:  fmt.Sprintf("Check the outpost settings and make sure '%s' is included.", host),
+		})
+		if err != nil {
+			ps.log.WithError(err).Warning("Failed to write error body")
+		}
 		return
 	}
 	ps.log.WithField("host", host).Trace("passing to application mux")

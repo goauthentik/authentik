@@ -3,6 +3,7 @@ from requests import RequestException
 
 from authentik.events.models import Event, EventAction
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.lib.utils.errors import exception_to_string
 from authentik.root.celery import CELERY_APP
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
@@ -31,7 +32,7 @@ def check_plex_token(self: MonitoredTask, source_slug: int):
         self.set_status(
             TaskResult(
                 TaskResultStatus.ERROR,
-                ["Plex token is invalid/an error occurred:", str(exc)],
+                ["Plex token is invalid/an error occurred:", exception_to_string(exc)],
             )
         )
         Event.new(

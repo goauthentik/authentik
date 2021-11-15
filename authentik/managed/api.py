@@ -1,18 +1,15 @@
 """Serializer mixin for managed models"""
 from glob import glob
-from pathlib import Path
 
-from django.http.response import Http404
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, DateTimeField
+from rest_framework.fields import CharField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer
-from rest_framework.viewsets import ModelViewSet, ViewSet
+from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.utils import TypeCreateSerializer
 from authentik.lib.config import CONFIG
 from authentik.managed.models import BlueprintInstance
 
@@ -47,6 +44,7 @@ class BlueprintInstanceViewSet(ModelViewSet):
     @extend_schema(responses={200: ListSerializer(child=CharField())})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def available(self, request: Request) -> Response:
+        """Get blueprints"""
         files = []
         for folder in CONFIG.y("blueprint_locations"):
             for file in glob(f"{folder}/**", recursive=True):

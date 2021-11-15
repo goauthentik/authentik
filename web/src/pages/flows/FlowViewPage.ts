@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -14,7 +14,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Flow, FlowsApi } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { AndNext, DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/PageHeader";
 import "../../elements/Tabs";
 import "../../elements/buttons/SpinnerButton";
@@ -100,12 +100,16 @@ export class FlowViewPage extends LitElement {
                                                                 slug: this.flow.slug,
                                                             })
                                                             .then((link) => {
-                                                                const finalURL = `${link.link}?next=/%23${window.location.hash}`;
+                                                                const finalURL = `${
+                                                                    link.link
+                                                                }${AndNext(
+                                                                    `${window.location.pathname}#${window.location.hash}`,
+                                                                )}`;
                                                                 window.open(finalURL, "_blank");
                                                             });
                                                     }}
                                                 >
-                                                    ${t`Execute`}
+                                                    ${t`Normal`}
                                                 </button>
                                                 <button
                                                     class="pf-c-button pf-m-secondary"
@@ -120,7 +124,7 @@ export class FlowViewPage extends LitElement {
                                                             });
                                                     }}
                                                 >
-                                                    ${t`Execute with inspector`}
+                                                    ${t`with inspector`}
                                                 </button>
                                             </div>
                                         </dd>
@@ -146,10 +150,24 @@ export class FlowViewPage extends LitElement {
                         <div
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
                         >
+                            <div class="pf-c-card__title">${t`Diagram`}</div>
                             <div class="pf-c-card">
                                 <div class="pf-c-card__body">
                                     <ak-flow-diagram flowSlug=${this.flow.slug}> </ak-flow-diagram>
                                 </div>
+                            </div>
+                        </div>
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">${t`Changelog`}</div>
+                            <div class="pf-c-card__body">
+                                <ak-object-changelog
+                                    targetModelPk=${this.flow.pk || ""}
+                                    targetModelApp="authentik_flows"
+                                    targetModelName="flow"
+                                >
+                                </ak-object-changelog>
                             </div>
                         </div>
                     </div>
@@ -177,22 +195,6 @@ export class FlowViewPage extends LitElement {
                         <div class="pf-c-card__body">
                             <ak-bound-policies-list .target=${this.flow.policybindingmodelPtrId}>
                             </ak-bound-policies-list>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    slot="page-changelog"
-                    data-tab-title="${t`Changelog`}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.flow.pk || ""}
-                                targetModelApp="authentik_flows"
-                                targetModelName="flow"
-                            >
-                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>

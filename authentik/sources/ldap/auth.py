@@ -7,7 +7,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.auth import InbuiltBackend
 from authentik.core.models import User
-from authentik.sources.ldap.models import LDAPSource
+from authentik.sources.ldap.models import LDAP_TIMEOUT, LDAPSource
 
 LOGGER = get_logger()
 LDAP_DISTINGUISHED_NAME = "distinguishedName"
@@ -62,6 +62,7 @@ class LDAPBackend(InbuiltBackend):
                 user=user.attributes.get(LDAP_DISTINGUISHED_NAME),
                 password=password,
                 raise_exceptions=True,
+                receive_timeout=LDAP_TIMEOUT,
             )
             temp_connection.bind()
             return user

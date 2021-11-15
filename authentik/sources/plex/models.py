@@ -12,7 +12,6 @@ from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.lib.generators import generate_id
-from authentik.lib.models import SerializerModel
 
 
 class PlexAuthenticationChallenge(Challenge):
@@ -94,7 +93,7 @@ class PlexSource(Source):
         verbose_name_plural = _("Plex Sources")
 
 
-class PlexSourceConnection(SerializerModel, UserSourceConnection):
+class PlexSourceConnection(UserSourceConnection):
     """Connect user and plex source"""
 
     plex_token = models.TextField()
