@@ -11,9 +11,7 @@ from django.http.response import HttpResponse
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
 from structlog.stdlib import get_logger
-from typing_extensions import runtime
 
-from authentik.core.middleware import KEY_AUTH_VIA, KEY_USER
 from authentik.lib.utils.http import get_client_ip
 
 LOGGER = get_logger("authentik.asgi")
@@ -71,7 +69,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                     expires = None
                 else:
                     max_age = request.session.get_expiry_age()
-                    expires_time = time.time() + max_age
+                    expires_time = time() + max_age
                     expires = http_date(expires_time)
                 # Save the session data and refresh the client cookie.
                 # Skip session save for 500 responses, refs #3881.
@@ -113,7 +111,7 @@ class LoggingMiddleware:
         kwargs = {
             "request_id": request.request_id,
         }
-        kwargs.update(response.ak_context)
+        kwargs.update(getattr(response, "ak_context", {}))
         self.log(request, status_code, int((time() - start) * 1000), **kwargs)
         return response
 
