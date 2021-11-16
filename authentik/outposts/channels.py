@@ -126,7 +126,7 @@ class OutpostConsumer(AuthJsonConsumer):
         self.send_json(asdict(response))
 
     # pylint: disable=unused-argument
-    def event_update(self, event):
+    def event_update(self, event):  # pragma: no cover
         """Event handler which is called by post_save signals, Send update instruction"""
         self.send_json(
             asdict(WebsocketMessage(instruction=WebsocketMessageInstruction.TRIGGER_UPDATE))

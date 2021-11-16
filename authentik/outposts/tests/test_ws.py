@@ -75,3 +75,23 @@ class TestOutpostWS(TransactionTestCase):
         self.assertEqual(
             response, asdict(WebsocketMessage(instruction=WebsocketMessageInstruction.ACK, args={}))
         )
+        await communicator.disconnect()
+
+    async def test_send_ack(self):
+        """Test sending of ACK"""
+        communicator = WebsocketCommunicator(
+            URLRouter(websocket.websocket_urlpatterns),
+            f"/ws/outpost/{self.outpost.pk}/",
+            {b"authorization": f"Bearer {self.token}".encode()},
+        )
+        connected, _ = await communicator.connect()
+        self.assertTrue(connected)
+        await communicator.send_json_to(
+            asdict(
+                WebsocketMessage(
+                    instruction=WebsocketMessageInstruction.ACK,
+                    args={},
+                )
+            )
+        )
+        await communicator.disconnect()
