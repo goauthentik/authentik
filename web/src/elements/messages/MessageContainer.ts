@@ -9,12 +9,12 @@ import { EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "../../constants";
 import "./Message";
 import { APIMessage } from "./Message";
 
-export function showMessage(message: APIMessage): void {
+export function showMessage(message: APIMessage, unique = false): void {
     const container = document.querySelector<MessageContainer>("ak-message-container");
     if (!container) {
         throw new Error("failed to find message container");
     }
-    container.addMessage(message);
+    container.addMessage(message, unique);
     container.requestUpdate();
 }
 
@@ -44,7 +44,13 @@ export class MessageContainer extends LitElement {
         }) as EventListener);
     }
 
-    addMessage(message: APIMessage): void {
+    addMessage(message: APIMessage, unique = false): void {
+        if (unique) {
+            const matchingMessages = this.messages.filter((m) => m.message == message.message);
+            if (matchingMessages.length > 0) {
+                return;
+            }
+        }
         this.messages.push(message);
     }
 

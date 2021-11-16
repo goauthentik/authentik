@@ -33,10 +33,13 @@ export class WebsocketClient {
         this.messageSocket.addEventListener("close", (e) => {
             console.debug(`authentik/ws: closed ws connection: ${e}`);
             if (this.retryDelay > 3000) {
-                showMessage({
-                    level: MessageLevel.error,
-                    message: t`Connection error, reconnecting...`,
-                });
+                showMessage(
+                    {
+                        level: MessageLevel.error,
+                        message: t`Connection error, reconnecting...`,
+                    },
+                    true,
+                );
             }
             setTimeout(() => {
                 console.debug(`authentik/ws: reconnecting ws in ${this.retryDelay}ms`);
