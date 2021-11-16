@@ -45,6 +45,7 @@ class AssertionProcessor:
     _assertion_id: str
 
     _valid_not_before: str
+    _session_not_on_or_after: str
     _valid_not_on_or_after: str
 
     def __init__(self, provider: SAMLProvider, request: HttpRequest, auth_n_request: AuthNRequest):
@@ -57,6 +58,9 @@ class AssertionProcessor:
 
         self._valid_not_before = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_before)
+        )
+        self._session_not_on_or_after = get_time_string(
+            timedelta_from_string(self.provider.session_valid_not_on_or_after)
         )
         self._valid_not_on_or_after = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_on_or_after)
@@ -117,6 +121,7 @@ class AssertionProcessor:
         auth_n_statement = Element(f"{{{NS_SAML_ASSERTION}}}AuthnStatement")
         auth_n_statement.attrib["AuthnInstant"] = self._valid_not_before
         auth_n_statement.attrib["SessionIndex"] = self._assertion_id
+        auth_n_statement.attrib["SessionNotOnOrAfter"] = self._session_not_on_or_after
 
         auth_n_context = SubElement(auth_n_statement, f"{{{NS_SAML_ASSERTION}}}AuthnContext")
         auth_n_context_class_ref = SubElement(
