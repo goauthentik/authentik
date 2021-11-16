@@ -92,7 +92,7 @@ class TestUserWriteStage(APITestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        response = self.client.get(
+        response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 

@@ -74,6 +74,7 @@ class TestAdminTasks(TestCase):
             action=EventAction.UPDATE_AVAILABLE, context={"new_version": "99999999.9999999.9999999"}
         )
         Event.objects.create(action=EventAction.UPDATE_AVAILABLE, context={"new_version": "1.1.1"})
+        Event.objects.create(action=EventAction.UPDATE_AVAILABLE, context={})
         clear_update_notifications()
         self.assertFalse(
             Event.objects.filter(

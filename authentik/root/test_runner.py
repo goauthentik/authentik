@@ -37,7 +37,8 @@ class PytestTestRunner:  # pragma: no cover
             argv.append("-vv")
         if self.failfast:
             argv.append("--exitfirst")
-        argv.append("--reuse-db")
+        if self.keepdb:
+            argv.append("--reuse-db")
 
         argv.extend(test_labels)
         return pytest.main(argv)

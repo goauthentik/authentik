@@ -3,6 +3,7 @@ from django.test import RequestFactory, TestCase
 
 from authentik.core.models import USER_ATTRIBUTE_CAN_OVERRIDE_IP, Token, TokenIntents, User
 from authentik.lib.utils.http import OUTPOST_REMOTE_IP_HEADER, OUTPOST_TOKEN_HEADER, get_client_ip
+from authentik.lib.views import bad_request_message
 
 
 class TestHTTP(TestCase):
@@ -11,6 +12,11 @@ class TestHTTP(TestCase):
     def setUp(self) -> None:
         self.user = User.objects.get(username="akadmin")
         self.factory = RequestFactory()
+
+    def test_bad_request_message(self):
+        """test bad_request_message"""
+        request = self.factory.get("/")
+        self.assertEqual(bad_request_message(request, "foo").status_code, 400)
 
     def test_normal(self):
         """Test normal request"""

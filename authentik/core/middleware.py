@@ -53,8 +53,7 @@ class RequestIDMiddleware:
         response = self.get_response(request)
         response[RESPONSE_HEADER_ID] = request.request_id
         setattr(response, "ak_context", {})
-        if auth_via := LOCAL.authentik.get(KEY_AUTH_VIA, None):
-            response.ak_context[KEY_AUTH_VIA] = auth_via
+        response.ak_context.update(LOCAL.authentik)
         response.ak_context[KEY_USER] = request.user.username
         for key in list(LOCAL.authentik.keys()):
             del LOCAL.authentik[key]
