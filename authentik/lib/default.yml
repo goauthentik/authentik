@@ -80,3 +80,5 @@ footer_links:
 
 default_user_change_email: true
 default_user_change_username: true
+
+gdpr_compliance: true

@@ -165,6 +165,14 @@ Requires authentik 2021.10.5
 
 Enable the ability for users to change their Usernames, defaults to `true`.
 
+### AUTHENTIK_GDPR_COMPLIANCE
+
+:::info
+Requires authentik 2021.10.5
+:::
+
+When enabled, all the events caused by a user will be deleted upon the user's deletion. Defaults to `true`.
+
 ### AUTHENTIK_FOOTER_LINKS
 
 :::info

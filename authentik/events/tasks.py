@@ -106,3 +106,11 @@ def notification_transport(self: MonitoredTask, notification_pk: int, transport_
     except NotificationTransportError as exc:
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
         raise exc
+
+
+@CELERY_APP.task()
+def gdpr_cleanup(user_pk: int):
+    """cleanup events from gdpr_compliance"""
+    events = Event.objects.filter(user__pk=user_pk)
+    LOGGER.debug("GDPR cleanup, removing events from user", events=events.count())
+    events.delete()
