@@ -170,19 +170,19 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:265d949fb6f86b5e698ca17393864d073fe0ed9225ebad6b58281297e3e1196c",
-                "sha256:9c0bb2315ef2d718d31322f27eff68c8175234105a5d3859a2683acf7681ffd0"
+                "sha256:cd386635d01c3474c6a2c028af4b7d36d9a45d29bfc1f7766189daefe3bbf533",
+                "sha256:d3750ebf56b25ec54f0bbb10c1fa73c973770fba28e9bc04ba13f59d4a025812"
             ],
             "index": "pypi",
-            "version": "==1.20.6"
+            "version": "==1.20.7"
         },
         "botocore": {
             "hashes": [
-                "sha256:66e8ae9249b1a66f049baae05b2d0556193db9efae58fc5791186341e123001c",
-                "sha256:9e8d870a0a4335ce4816c707137da54b1ab7bf98f0ed959a7ba59c98c7f6c057"
+                "sha256:39f9880eee40e170f8098a7cabe6de8689faa2f0313a03972f7a7c0ccc8b0e84",
+                "sha256:50c3bd89849f257915f2d161e056ce55ff318712077565113c435547bfea4073"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==1.23.6"
+            "version": "==1.23.7"
         },
         "cachetools": {
             "hashes": [
@@ -763,11 +763,11 @@
         },
         "kombu": {
             "hashes": [
-                "sha256:31bd287191bf56b1addba54a28eced8d6b6b5ba57ad184f48b065578f73c8e33",
-                "sha256:f262a2adc71b53e5b7dad4933bbdee65d8766ca4df6a9043b13edaad2144aaec"
+                "sha256:0f5d0763fb916808f617b886697b2be28e6bc35026f08e679697fc814b48a608",
+                "sha256:d36f0cde6a18d9eb7b6b3aa62a59bfdff7f5724689850e447eca5be8efc9d501"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==5.2.1"
+            "version": "==5.2.2"
         },
         "kubernetes": {
             "hashes": [
