@@ -64,7 +64,7 @@
         "@rollup/plugin-replace": "^3.0.0",
         "@rollup/plugin-typescript": "^8.3.0",
         "@sentry/browser": "^6.14.3",
-        "@sentry/tracing": "^6.14.3",
+        "@sentry/tracing": "^6.15.0",
         "@squoosh/cli": "^0.7.2",
         "@trivago/prettier-plugin-sort-imports": "^3.1.1",
         "@types/chart.js": "^2.9.34",
