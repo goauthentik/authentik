@@ -160,29 +160,32 @@ export class AuthenticatorValidateStage
             case DeviceClassesEnum.Static:
             case DeviceClassesEnum.Totp:
             case DeviceClassesEnum.Sms:
-                return html`<ak-stage-authenticator-validate-code
-                    .host=${this}
-                    .challenge=${this.challenge}
-                    .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
-                >
-                </ak-stage-authenticator-validate-code>`;
+                return html`<!-- @ts-ignore -->
+                    <ak-stage-authenticator-validate-code
+                        .host=${this}
+                        .challenge=${this.challenge}
+                        .deviceChallenge=${this.selectedDeviceChallenge}
+                        .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
+                    >
+                    </ak-stage-authenticator-validate-code>`;
             case DeviceClassesEnum.Webauthn:
-                return html`<ak-stage-authenticator-validate-webauthn
-                    .host=${this}
-                    .challenge=${this.challenge}
-                    .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
-                >
-                </ak-stage-authenticator-validate-webauthn>`;
+                return html`<!-- @ts-ignore -->
+                    <ak-stage-authenticator-validate-webauthn
+                        .host=${this}
+                        .challenge=${this.challenge}
+                        .deviceChallenge=${this.selectedDeviceChallenge}
+                        .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
+                    >
+                    </ak-stage-authenticator-validate-webauthn>`;
             case DeviceClassesEnum.Duo:
-                return html`<ak-stage-authenticator-validate-duo
-                    .host=${this}
-                    .challenge=${this.challenge}
-                    .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
-                >
-                </ak-stage-authenticator-validate-duo>`;
+                return html`<!-- @ts-ignore -->
+                    <ak-stage-authenticator-validate-duo
+                        .host=${this}
+                        .challenge=${this.challenge}
+                        .deviceChallenge=${this.selectedDeviceChallenge}
+                        .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
+                    >
+                    </ak-stage-authenticator-validate-duo>`;
         }
         return html``;
     }
