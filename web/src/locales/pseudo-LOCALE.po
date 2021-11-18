@@ -3832,8 +3832,12 @@ msgid "Secret key"
 msgstr ""
 
 #: src/pages/events/utils.ts
-msgid "Secret was rotation"
+msgid "Secret was rotated"
 msgstr ""
+
+#: 
+#~ msgid "Secret was rotation"
+#~ msgstr ""
 
 #: src/pages/events/utils.ts
 msgid "Secret was viewed"

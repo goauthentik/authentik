@@ -20,7 +20,7 @@ export function ActionToLabel(action?: EventActions): string {
         case EventActions.SecretView:
             return t`Secret was viewed`;
         case EventActions.SecretRotate:
-            return t`Secret was rotation`;
+            return t`Secret was rotated`;
         case EventActions.InvitationUsed:
             return t`Invitation used`;
         case EventActions.AuthorizeApplication:
