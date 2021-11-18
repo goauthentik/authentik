@@ -16,6 +16,7 @@ import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import { MessageLevel } from "../../elements/messages/Message";
 import { showMessage } from "../../elements/messages/MessageContainer";
+import { getURLParam, updateURLParams } from "../../elements/router/RouteMatch";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import { first } from "../../utils";
@@ -46,7 +47,7 @@ export class UserListPage extends TablePage<User> {
     order = "last_login";
 
     @property({ type: Boolean })
-    hideServiceAccounts = true;
+    hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDescriptionList);
@@ -284,6 +285,9 @@ export class UserListPage extends TablePage<User> {
                                     this.hideServiceAccounts = !this.hideServiceAccounts;
                                     this.page = 1;
                                     this.fetch();
+                                    updateURLParams({
+                                        hideServiceAccounts: this.hideServiceAccounts,
+                                    });
                                 }}
                             />
                             <label class="pf-c-check__label" for="hide-service-accounts">

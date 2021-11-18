@@ -81,3 +81,12 @@ migrate:
 
 run:
 	go run -v cmd/server/main.go
+
+web: web-lint-fix web-lint
+
+web-lint-fix:
+	cd web && npm run prettier
+
+web-lint:
+	cd web && npm run lint
+	cd web && npm run lit-analyse

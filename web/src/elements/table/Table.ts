@@ -19,6 +19,7 @@ import { groupBy } from "../../utils";
 import "../EmptyState";
 import "../chips/Chip";
 import "../chips/ChipGroup";
+import { getURLParams, updateURLParams } from "../router/RouteMatch";
 import "./TablePagination";
 import "./TableSearch";
 
@@ -355,6 +356,9 @@ export abstract class Table<T> extends LitElement {
                         composed: true,
                     }),
                 );
+                updateURLParams({
+                    search: value,
+                });
             }}
         >
         </ak-table-search>`;
@@ -393,6 +397,10 @@ export abstract class Table<T> extends LitElement {
     }
 
     firstUpdated(): void {
+        const params = getURLParams();
+        if ("search" in params) {
+            this.search = params.search;
+        }
         this.fetch();
     }
 

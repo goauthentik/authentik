@@ -15,6 +15,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
+import { getURLParam, updateURLParams } from "../../elements/router/RouteMatch";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import { groupBy } from "../../utils";
@@ -45,7 +46,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     order = "name";
 
     @property({ type: Boolean })
-    hideManaged = false;
+    hideManaged = getURLParam<boolean>("hideManaged", true);
 
     async apiEndpoint(page: number): Promise<AKResponse<PropertyMapping>> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({
@@ -171,6 +172,9 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                                     this.hideManaged = !this.hideManaged;
                                     this.page = 1;
                                     this.fetch();
+                                    updateURLParams({
+                                        hideManaged: this.hideManaged,
+                                    });
                                 }}
                             />
                             <label class="pf-c-check__label" for="hide-managed"
