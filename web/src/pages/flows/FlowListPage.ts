@@ -114,7 +114,9 @@ export class FlowListPage extends TablePage<Flow> {
                             })
                             .then((link) => {
                                 window.open(
-                                    `${link.link}?inspector&next=/%23${window.location.href}`,
+                                    `${link.link}?inspector&next=${encodeURIComponent(
+                                        `/#${window.location.href}`,
+                                    )}`,
                                 );
                             });
                     }}

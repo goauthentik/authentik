@@ -222,7 +222,9 @@ export class UserInterface extends LitElement {
                                             <div class="pf-c-page__header-tools-group">
                                                 <a
                                                     class="pf-c-button pf-m-warning pf-m-small"
-                                                    href=${`/-/impersonation/end/?back=${window.location.pathname}%23${window.location.hash}`}
+                                                    href=${`/-/impersonation/end/?back=${encodeURIComponent(
+                                                        `${window.location.pathname}#${window.location.hash}`,
+                                                    )}`}
                                                 >
                                                     ${t`Stop impersonation`}
                                                 </a>

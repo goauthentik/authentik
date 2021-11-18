@@ -167,7 +167,9 @@ export class AdminInterface extends LitElement {
                         return html`<ak-sidebar-item
                             ?highlight=${true}
                             ?isAbsoluteLink=${true}
-                            path=${`/-/impersonation/end/?back=${window.location.pathname}%23${window.location.hash}`}
+                            path=${`/-/impersonation/end/?back=${encodeURIComponent(
+                                `${window.location.pathname}#${window.location.hash}`,
+                            )}`}
                         >
                             <span slot="label"
                                 >${t`You're currently impersonating ${u.user.username}. Click to stop.`}</span

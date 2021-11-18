@@ -119,7 +119,11 @@ export class FlowViewPage extends LitElement {
                                                                 slug: this.flow.slug,
                                                             })
                                                             .then((link) => {
-                                                                const finalURL = `${link.link}?inspector&next=/%23${window.location.hash}`;
+                                                                const finalURL = `${
+                                                                    link.link
+                                                                }?${encodeURI(
+                                                                    `inspector&next=/#${window.location.hash}`,
+                                                                )}`;
                                                                 window.open(finalURL, "_blank");
                                                             });
                                                     }}
