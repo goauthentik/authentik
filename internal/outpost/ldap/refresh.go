@@ -45,8 +45,9 @@ func (ls *LDAPServer) Refresh() error {
 		existing := ls.getCurrentProvider(provider.Pk)
 		users := make(map[string]flags.UserFlags)
 		if existing != nil {
-			existing.boundUsersMutex.Unlock()
+			existing.boundUsersMutex.RLock()
 			users = existing.boundUsers
+			existing.boundUsersMutex.RUnlock()
 		}
 
 		providers[idx] = &ProviderInstance{
