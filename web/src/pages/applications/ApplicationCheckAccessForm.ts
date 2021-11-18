@@ -9,6 +9,7 @@ import { Application, CoreApi, PolicyTestResult } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { Form } from "../../elements/forms/Form";
 import "../../elements/forms/HorizontalFormElement";
+import { UserOption } from "../../elements/user/utils";
 
 @customElement("ak-application-check-access-form")
 export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
@@ -84,7 +85,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                                         ?selected=${user.pk.toString() === this.request?.toString()}
                                         value=${user.pk}
                                     >
-                                        ${user.username}
+                                        ${UserOption(user)}
                                     </option>`;
                                 });
                             }),

@@ -18,6 +18,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/CodeMirror";
 import { Form } from "../../elements/forms/Form";
 import "../../elements/forms/HorizontalFormElement";
+import { UserOption } from "../../elements/user/utils";
 import { first } from "../../utils";
 
 @customElement("ak-policy-test-form")
@@ -90,7 +91,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                                         user.pk.toString()}
                                         value=${user.pk}
                                     >
-                                        ${user.username}
+                                        ${UserOption(user)}
                                     </option>`;
                                 });
                             }),
