@@ -19,6 +19,7 @@ import { Application, CoreApi } from "@goauthentik/api";
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { UIConfig, uiConfig } from "../common/config";
+import { getURLParam, updateURLParams } from "../elements/router/RouteMatch";
 import { loading } from "../utils";
 import "./LibraryApplication";
 
@@ -31,7 +32,7 @@ export class LibraryPage extends LitElement {
     selectedApp?: Application;
 
     @property()
-    query?: string;
+    query = getURLParam<string | undefined>("search", undefined);
 
     fuse?: Fuse<Application>;
 
@@ -125,6 +126,9 @@ export class LibraryPage extends LitElement {
                             ? html`<input
                                   @input=${(ev: InputEvent) => {
                                       this.query = (ev.target as HTMLInputElement).value;
+                                      updateURLParams({
+                                          search: this.query,
+                                      });
                                       if (!this.fuse) return;
                                       const apps = this.fuse.search(this.query);
                                       if (apps.length < 1) return;
@@ -135,6 +139,10 @@ export class LibraryPage extends LitElement {
                                           window.location.assign(this.selectedApp.launchUrl);
                                       } else if (ev.key === "Escape") {
                                           (ev.target as HTMLInputElement).value = "";
+                                          this.query = "";
+                                          updateURLParams({
+                                              search: this.query,
+                                          });
                                           this.selectedApp = undefined;
                                       }
                                   }}

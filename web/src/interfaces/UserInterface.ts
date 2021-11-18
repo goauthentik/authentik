@@ -30,6 +30,7 @@ import {
 import "../elements/messages/MessageContainer";
 import "../elements/messages/MessageContainer";
 import "../elements/notifications/NotificationDrawer";
+import { getURLParam, updateURLParams } from "../elements/router/RouteMatch";
 import "../elements/router/RouterOutlet";
 import "../elements/sidebar/Sidebar";
 import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
@@ -41,10 +42,10 @@ import "./locale";
 @customElement("ak-interface-user")
 export class UserInterface extends LitElement {
     @property({ type: Boolean })
-    notificationOpen = false;
+    notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
     @property({ type: Boolean })
-    apiDrawerOpen = false;
+    apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
     ws: WebsocketClient;
 
@@ -94,10 +95,16 @@ export class UserInterface extends LitElement {
         super();
         this.ws = new WebsocketClient();
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
-            this.notificationOpen = !this.notificationOpen;
+            this.notificationDrawerOpen = !this.notificationDrawerOpen;
+            updateURLParams({
+                notificationDrawerOpen: this.notificationDrawerOpen,
+            });
         });
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
             this.apiDrawerOpen = !this.apiDrawerOpen;
+            updateURLParams({
+                apiDrawerOpen: this.apiDrawerOpen,
+            });
         });
         window.addEventListener(EVENT_REFRESH, () => {
             this.firstUpdated();
@@ -150,6 +157,9 @@ export class UserInterface extends LitElement {
                                               type="button"
                                               @click=${() => {
                                                   this.apiDrawerOpen = !this.apiDrawerOpen;
+                                                  updateURLParams({
+                                                      apiDrawerOpen: this.apiDrawerOpen,
+                                                  });
                                               }}
                                           >
                                               <i class="fas fa-code" aria-hidden="true"></i>
@@ -165,7 +175,12 @@ export class UserInterface extends LitElement {
                                               type="button"
                                               aria-label="${t`Unread notifications`}"
                                               @click=${() => {
-                                                  this.notificationOpen = !this.notificationOpen;
+                                                  this.notificationDrawerOpen =
+                                                      !this.notificationDrawerOpen;
+                                                  updateURLParams({
+                                                      notificationDrawerOpen:
+                                                          this.notificationDrawerOpen,
+                                                  });
                                               }}
                                           >
                                               <span
@@ -267,7 +282,7 @@ export class UserInterface extends LitElement {
                     </header>
                     <div class="pf-c-page__drawer">
                         <div
-                            class="pf-c-drawer ${this.notificationOpen || this.apiDrawerOpen
+                            class="pf-c-drawer ${this.notificationDrawerOpen || this.apiDrawerOpen
                                 ? "pf-m-expanded"
                                 : "pf-m-collapsed"}"
                         >
@@ -288,10 +303,11 @@ export class UserInterface extends LitElement {
                                     </div>
                                 </div>
                                 <ak-notification-drawer
-                                    class="pf-c-drawer__panel pf-m-width-33 ${this.notificationOpen
+                                    class="pf-c-drawer__panel pf-m-width-33 ${this
+                                        .notificationDrawerOpen
                                         ? ""
                                         : "display-none"}"
-                                    ?hidden=${!this.notificationOpen}
+                                    ?hidden=${!this.notificationDrawerOpen}
                                 ></ak-notification-drawer>
                                 <ak-api-drawer
                                     class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
