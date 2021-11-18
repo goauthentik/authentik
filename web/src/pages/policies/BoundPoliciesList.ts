@@ -51,7 +51,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         ];
     }
 
-    getPolicyUserGroupRow(item: PolicyBinding): string {
+    getPolicyUserGroupRowLabel(item: PolicyBinding): string {
         if (item.policy) {
             return t`Policy ${item.policyObj?.name}`;
         } else if (item.group) {
@@ -63,9 +63,17 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         }
     }
 
+    getPolicyUserGroupRow(item: PolicyBinding): TemplateResult {
+        const label = this.getPolicyUserGroupRowLabel(item);
+        if (item.user) {
+            return html` <a href=${t`#/identity/users/${item.user}`}> ${label} </a> `;
+        }
+        return html`${label}`;
+    }
+
     getObjectEditButton(item: PolicyBinding): TemplateResult {
         if (item.policy) {
-            return html` <ak-forms-modal>
+            return html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update ${item.policyObj?.name}`} </span>
                 <ak-proxy-form
@@ -105,7 +113,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             .metadata=${(item: PolicyBinding) => {
                 return [
                     { key: t`Order`, value: item.order.toString() },
-                    { key: t`Policy / User / Group`, value: this.getPolicyUserGroupRow(item) },
+                    { key: t`Policy / User / Group`, value: this.getPolicyUserGroupRowLabel(item) },
                 ];
             }}
             .usedBy=${(item: PolicyBinding) => {
