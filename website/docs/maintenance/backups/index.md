@@ -47,7 +47,7 @@ docker-compose run --rm worker restore -i default-2020-10-03-115557.psql
 kubectl exec -it deployment/authentik-worker -c authentik -- ak restore -i default-2020-10-03-115557.psql
 ```
 
-After you've restored the backup, it is recommended to restart all services with `docker-compose restart` or `kubectl restart deployment --all`.
+After you've restored the backup, it is recommended to restart all services with `docker-compose restart` or `kubectl rollout restart deployment --all`.
 
 ### S3 Configuration
 
