@@ -24,14 +24,15 @@ var (
 
 func RunServer() {
 	m := mux.NewRouter()
+	l := log.WithField("logger", "authentik.outpost.metrics")
 	m.HandleFunc("/akprox/ping", func(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(204)
 	})
 	m.Path("/metrics").Handler(promhttp.Handler())
 	listen := "0.0.0.0:9300"
-	log.WithField("logger", "authentik.outpost.metrics").WithField("listen", listen).Info("Starting Metrics server")
+	l.WithField("listen", listen).Info("Starting Metrics server")
 	err := http.ListenAndServe(listen, m)
 	if err != nil {
-		panic(err)
+		l.WithError(err).Warning("Failed to start metrics listener")
 	}
 }

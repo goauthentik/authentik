@@ -21,6 +21,7 @@ var (
 
 func RunMetricsServer() {
 	m := mux.NewRouter()
+	l := log.WithField("logger", "authentik.router.metrics")
 	m.Path("/metrics").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		promhttp.InstrumentMetricHandler(
 			prometheus.DefaultRegisterer, promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{
@@ -31,26 +32,27 @@ func RunMetricsServer() {
 		// Get upstream metrics
 		re, err := http.NewRequest("GET", "http://localhost:8000/metrics/", nil)
 		if err != nil {
-			log.WithError(err).Warning("failed to get upstream metrics")
+			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
 		re.SetBasicAuth("monitor", config.G.SecretKey)
 		res, err := http.DefaultClient.Do(re)
 		if err != nil {
-			log.WithError(err).Warning("failed to get upstream metrics")
+			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
 		bm, err := ioutil.ReadAll(res.Body)
 		if err != nil {
-			log.WithError(err).Warning("failed to get upstream metrics")
+			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
 		_, err = rw.Write(bm)
 		if err != nil {
-			log.WithError(err).Warning("failed to get upstream metrics")
+			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
 	})
+	l.WithField("listen", config.G.Web.ListenMetrics).Info("Listening (metrics)")
 	err := http.ListenAndServe(config.G.Web.ListenMetrics, m)
 	if err != nil {
 		panic(err)
