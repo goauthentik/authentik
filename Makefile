@@ -33,9 +33,10 @@ lint:
 	bandit -r authentik tests lifecycle -x node_modules
 	pylint authentik tests lifecycle
 
-i18n-extract:
+i18n-extract: i18n-extract-core web-extract
+
+i18n-extract-core:
 	./manage.py makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
-	cd web && npm run extract
 
 gen-build:
 	./manage.py spectacular --file schema.yml
@@ -82,7 +83,7 @@ migrate:
 run:
 	go run -v cmd/server/main.go
 
-web: web-lint-fix web-lint
+web: web-lint-fix web-lint web-extract
 
 web-lint-fix:
 	cd web && npm run prettier
@@ -90,3 +91,6 @@ web-lint-fix:
 web-lint:
 	cd web && npm run lint
 	cd web && npm run lit-analyse
+
+web-extract:
+	cd web && npm run extract

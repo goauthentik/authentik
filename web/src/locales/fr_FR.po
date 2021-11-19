@@ -19,6 +19,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: @lingui/cli\n"
 
+#: 
+#~ msgid "#/identity/users/{0}"
+#~ msgstr ""
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -1515,6 +1519,8 @@ msgstr "Chaque fournisseur a un émetteur différent, basé sur le slug de l'app
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/flows/FlowViewPage.ts
+#: src/pages/flows/FlowViewPage.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
@@ -5034,6 +5040,7 @@ msgstr "À jour !"
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowViewPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
@@ -5083,6 +5090,7 @@ msgid "Update Device"
 msgstr ""
 
 #: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowViewPage.ts
 msgid "Update Flow"
 msgstr "Mettre à jour le flux"
 

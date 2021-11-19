@@ -66,7 +66,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     getPolicyUserGroupRow(item: PolicyBinding): TemplateResult {
         const label = this.getPolicyUserGroupRowLabel(item);
         if (item.user) {
-            return html` <a href=${t`#/identity/users/${item.user}`}> ${label} </a> `;
+            return html` <a href=${`#/identity/users/${item.user}`}> ${label} </a> `;
         }
         return html`${label}`;
     }

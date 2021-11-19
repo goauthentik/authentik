@@ -22,6 +22,7 @@ import "../../elements/events/ObjectChangelog";
 import "../policies/BoundPoliciesList";
 import "./BoundStagesList";
 import "./FlowDiagram";
+import "./FlowForm";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends LitElement {
@@ -85,6 +86,30 @@ export class FlowViewPage extends LitElement {
                             <div class="pf-c-card__body">
                                 <dl class="pf-c-description-list">
                                     <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${t`Edit`}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <ak-forms-modal>
+                                                    <span slot="submit"> ${t`Update`} </span>
+                                                    <span slot="header"> ${t`Update Flow`} </span>
+                                                    <ak-flow-form
+                                                        slot="form"
+                                                        .instancePk=${this.flow.slug}
+                                                    >
+                                                    </ak-flow-form>
+                                                    <button
+                                                        slot="trigger"
+                                                        class="pf-c-button pf-m-secondary"
+                                                    >
+                                                        ${t`Edit`}
+                                                    </button>
+                                                </ak-forms-modal>
+                                            </div>
+                                        </dd>
                                         <dt class="pf-c-description-list__term">
                                             <span class="pf-c-description-list__text"
                                                 >${t`Execute flow`}</span
