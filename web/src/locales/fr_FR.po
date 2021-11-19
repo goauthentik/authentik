@@ -2267,6 +2267,7 @@ msgid "If your authentik_host setting does not match the URL you want to login w
 msgstr "Ajouter cette option si le paramètre authentik_host ne correspond pas à l'URL sur laquelle vous voulez ouvrir une session."
 
 #: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Impersonate"
 msgstr "Se faire passer pour"
 

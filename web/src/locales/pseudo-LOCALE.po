@@ -2276,6 +2276,7 @@ msgid "If your authentik_host setting does not match the URL you want to login w
 msgstr ""
 
 #: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Impersonate"
 msgstr ""
 

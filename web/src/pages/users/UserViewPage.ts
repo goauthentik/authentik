@@ -100,11 +100,11 @@ export class UserViewPage extends LitElement {
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
                     >
                         <div class="pf-c-card__title">${t`User Info`}</div>
                         <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list">
+                            <dl class="pf-c-description-list pf-m-2-col">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
@@ -241,13 +241,34 @@ export class UserViewPage extends LitElement {
                                 ${t`Reset Password`}
                             </ak-action-button>
                         </div>
+                        <div class="pf-c-card__footer">
+                            <a
+                                class="pf-c-button pf-m-tertiary"
+                                href="${`/-/impersonation/${this.user.pk}/`}"
+                            >
+                                ${t`Impersonate`}
+                            </a>
+                        </div>
                     </div>
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                     >
                         <div class="pf-c-card__title">${t`Actions over the last 24 hours`}</div>
                         <div class="pf-c-card__body">
                             <ak-charts-user userId=${this.user.pk || 0}> </ak-charts-user>
+                        </div>
+                    </div>
+                    <div
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                    >
+                        <div class="pf-c-card__title">${t`Changelog`}</div>
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.user.pk}
+                                targetModelApp="authentik_core"
+                                targetModelName="user"
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
@@ -272,22 +293,6 @@ export class UserViewPage extends LitElement {
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">
                         <ak-events-user targetUser=${this.user.username}> </ak-events-user>
-                    </div>
-                </div>
-            </section>
-            <section
-                slot="page-changelog"
-                data-tab-title="${t`Changelog`}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.user.pk}
-                            targetModelApp="authentik_core"
-                            targetModelName="user"
-                        >
-                        </ak-object-changelog>
                     </div>
                 </div>
             </section>
