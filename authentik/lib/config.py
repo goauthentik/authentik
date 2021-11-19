@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from glob import glob
 from json import dumps, loads
 from json.decoder import JSONDecodeError
+from sys import argv, stderr
 from time import time
 from typing import Any
 from urllib.parse import urlparse
@@ -60,7 +61,7 @@ class ConfigLoader:
             "timestamp": time(),
         }
         output.update(kwargs)
-        print(dumps(output))
+        print(dumps(output), file=stderr)
 
     def update(self, root: dict[str, Any], updatee: dict[str, Any]) -> dict[str, Any]:
         """Recursively update dictionary"""
@@ -180,3 +181,6 @@ class ConfigLoader:
 
 
 CONFIG = ConfigLoader()
+
+if __name__ == "__main__":
+    print(CONFIG.y(argv[1]))
