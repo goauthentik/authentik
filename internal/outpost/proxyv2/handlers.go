@@ -31,7 +31,7 @@ func (ps *ProxyServer) HandlePing(rw http.ResponseWriter, r *http.Request) {
 func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
 	staticFs := http.FileServer(http.FS(staticWeb.StaticDist))
 	before := time.Now()
-	http.StripPrefix("/akprox/static", staticFs).ServeHTTP(rw, r)
+	web.DisableIndex(http.StripPrefix("/akprox/static", staticFs)).ServeHTTP(rw, r)
 	after := time.Since(before)
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
@@ -54,7 +54,7 @@ func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
 	if !ok {
 		// If we only have one handler, host name switching doesn't matter
 		if len(ps.apps) == 1 {
-			ps.log.WithField("host", host).Warning("passing to single app mux")
+			ps.log.WithField("host", host).Trace("passing to single app mux")
 			for k := range ps.apps {
 				ps.apps[k].ServeHTTP(rw, r)
 				return

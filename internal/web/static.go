@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
+	"goauthentik.io/internal/utils/web"
 	staticWeb "goauthentik.io/web"
 	staticDocs "goauthentik.io/website"
 )
@@ -14,7 +15,7 @@ import (
 func (ws *WebServer) configureStatic() {
 	statRouter := ws.lh.NewRoute().Subrouter()
 	indexLessRouter := statRouter.NewRoute().Subrouter()
-	indexLessRouter.Use(disableIndex)
+	indexLessRouter.Use(web.DisableIndex)
 	// Media files, always local
 	fs := http.FileServer(http.Dir(config.G.Paths.Media))
 	var distHandler http.Handler
@@ -42,7 +43,7 @@ func (ws *WebServer) configureStatic() {
 	indexLessRouter.PathPrefix("/if/flow/{flow_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
-		disableIndex(http.StripPrefix(fmt.Sprintf("/if/flow/%s", vars["flow_slug"]), distFs)).ServeHTTP(rw, r)
+		web.DisableIndex(http.StripPrefix(fmt.Sprintf("/if/flow/%s", vars["flow_slug"]), distFs)).ServeHTTP(rw, r)
 	})
 	indexLessRouter.PathPrefix("/if/admin/assets").Handler(http.StripPrefix("/if/admin", distFs))
 	indexLessRouter.PathPrefix("/if/user/assets").Handler(http.StripPrefix("/if/user", distFs))
