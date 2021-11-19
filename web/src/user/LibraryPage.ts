@@ -58,7 +58,6 @@ export class LibraryPage extends LitElement {
         return [PFBase, PFDisplay, PFEmptyState, PFPage, PFContent, PFGallery, AKGlobal].concat(css`
             :host,
             main {
-                height: 100%;
                 padding: 3% 5%;
             }
             .header {
