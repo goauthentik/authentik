@@ -1,10 +1,15 @@
 #!/bin/bash -e
 python -m lifecycle.wait_for_db
-printf '{"event": "Bootstrap completed", "level": "info", "logger": "bootstrap", "command": "%s"}\n' "$@" > /dev/stderr
+
+function log {
+    printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" > /dev/stderr
+}
+
+log "Bootstrap completed"
 
 function check_if_root {
     if [[ $EUID -ne 0 ]]; then
-        printf '{"event": "Not running as root, disabling permission fixes", "level": "info", "logger": "bootstrap", "command": "%s"}\n' "$@" > /dev/stderr
+        log "Not running as root, disabling permission fixes"
         $1
         return
     fi
@@ -26,6 +31,30 @@ function check_if_root {
     chpst -u authentik:$GROUP env HOME=/authentik $1
 }
 
+function prefixwith {
+    local prefix="$1"
+    shift
+    "$@" > >(sed "s/^/$prefix: /") 2> >(sed "s/^/$prefix (err): /" >&2)
+}
+
+function restore {
+    PG_HOST=$(python -m authentik.lib.config postgresql.host 2> /dev/null)
+    PG_NAME=$(python -m authentik.lib.config postgresql.name 2> /dev/null)
+    PG_USER=$(python -m authentik.lib.config postgresql.user 2> /dev/null)
+    PG_PORT=$(python -m authentik.lib.config postgresql.port 2> /dev/null)
+    export PGPASSWORD=$(python -m authentik.lib.config postgresql.password 2> /dev/null)
+    log "Ensuring no one can connect to the database"
+    prefixwith "psql" psql -h"${PG_HOST}" -U"${PG_USER}" -c"UPDATE pg_database SET datallowconn = 'false' WHERE datname = '${PG_NAME}';" "postgres"
+    prefixwith "psql" psql -h"${PG_HOST}" -U"${PG_USER}" -c"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${PG_NAME}';" "postgres"
+    log "deleting and re-creating database"
+    prefixwith "psql" dropdb -h"${PG_HOST}" -U"${PG_USER}" "${PG_NAME}" || trueacku
+    prefixwith "psql" createdb -h"${PG_HOST}" -U"${PG_USER}" "${PG_NAME}"
+    log "running initial migrations"
+    prefixwith "migrate" python -m lifecycle.migrate 2> /dev/null
+    log "restoring database"
+    prefixwith "restore" python -m manage dbrestore -i ${@:2}
+}
+
 MODE_FILE="/tmp/authentik-mode"
 
 if [[ "$1" == "server" ]]; then
@@ -40,7 +69,7 @@ elif [[ "$1" == "worker" ]]; then
 elif [[ "$1" == "backup" ]]; then
     python -m manage dbbackup --clean
 elif [[ "$1" == "restore" ]]; then
-    python -m manage dbrestore ${@:2}
+    restore $@
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test" ]]; then

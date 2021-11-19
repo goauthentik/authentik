@@ -29,6 +29,10 @@ Currently, it is only supported to restore backups into the same version they ha
 Instead, install the version the backup was taken with, restore the backup and then upgrade.
 :::
 
+:::info
+The restore command expects to have superuser-permissions on the PostgreSQL instance. To get a clean restore, it deletes the current database, re-creates it and then imports the data.
+:::
+
 Run this command in your authentik installation directory.
 
 To see all available backups, run
@@ -42,9 +46,9 @@ kubectl exec -it deployment/authentik-worker -c authentik -- ak listbackups
 Then, to restore, run
 
 ```
-docker-compose run --rm worker restore -i default-2020-10-03-115557.psql
+docker-compose run --rm worker restore default-2020-10-03-115557.psql
 # Or for kubernetes
-kubectl exec -it deployment/authentik-worker -c authentik -- ak restore -i default-2020-10-03-115557.psql
+kubectl exec -it deployment/authentik-worker -c authentik -- ak restore default-2020-10-03-115557.psql
 ```
 
 After you've restored the backup, it is recommended to restart all services with `docker-compose restart` or `kubectl rollout restart deployment --all`.

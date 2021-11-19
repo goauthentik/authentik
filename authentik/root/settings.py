@@ -536,6 +536,7 @@ _LOGGING_HANDLER_MAP = {
     "asyncio": "WARNING",
     "aioredis": "WARNING",
     "s3transfer": "WARNING",
+    "botocore": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
