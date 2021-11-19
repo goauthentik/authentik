@@ -42,11 +42,28 @@ class LifespanApp:
                     return
 
 
+class RouteNotFoundMiddleware:
+    """Middleware to ignore 404s for websocket requests
+    taken from https://github.com/django/daphne/issues/165#issuecomment-808284950"""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        try:
+            return await self.app(scope, receive, send)
+        except ValueError as exc:
+            if "No route found for path" in str(exc) and scope["type"] == "websocket":
+                await send({"type": "websocket.close"})
+            else:
+                raise exc
+
+
 application = SentryAsgiMiddleware(
     ProtocolTypeRouter(
         {
             "http": get_asgi_application(),
-            "websocket": URLRouter(websocket.websocket_urlpatterns),
+            "websocket": RouteNotFoundMiddleware(URLRouter(websocket.websocket_urlpatterns)),
             "lifespan": LifespanApp,
         }
     )
