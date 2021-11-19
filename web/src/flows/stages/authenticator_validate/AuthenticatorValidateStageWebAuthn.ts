@@ -5,10 +5,12 @@ import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
@@ -43,7 +45,17 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     showBackButton = false;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
+        return [
+            PFBase,
+            PFLogin,
+            PFEmptyState,
+            PFBullseye,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            PFButton,
+            AKGlobal,
+        ];
     }
 
     async authenticate(): Promise<void> {
