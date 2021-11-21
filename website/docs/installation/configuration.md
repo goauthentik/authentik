@@ -100,11 +100,11 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
 - `AUTHENTIK_EMAIL__USERNAME`
 
-  Default: `""`
+  Default: `` (Don't add quotation marks)
 
 - `AUTHENTIK_EMAIL__PASSWORD`
 
-  Default: `""`
+  Default: `` (Don't add quotation marks)
 
 - `AUTHENTIK_EMAIL__USE_TLS`
 
