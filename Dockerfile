@@ -57,13 +57,13 @@ ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates gnupg git runit && \
+    apt-get install -y --no-install-recommends curl ca-certificates gnupg git runit rustc && \
     curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
     echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
     apt-get update && \
-    apt-get install -y --no-install-recommends libpq-dev postgresql-client build-essential libxmlsec1-dev pkg-config libmaxminddb0 && \
+    apt-get install -y --no-install-recommends libpq-dev postgresql-client build-essential libxmlsec1-dev pkg-config libmaxminddb0 libffi7 libffi-dev && \
     pip install -r /requirements.txt --no-cache-dir && \
-    apt-get remove --purge -y build-essential git && \
+    apt-get remove --purge -y build-essential git rustc && \
     apt-get autoremove --purge -y && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
