@@ -14,7 +14,7 @@ jobs:
         arch:
           - 'linux/amd64'
           - 'linux/arm64'
-          # - 'linux/arm/v7'
+          - 'linux/arm/v7'
     steps:
       - uses: actions/checkout@v2
       - name: Set up QEMU
@@ -63,7 +63,7 @@ jobs:
         arch:
           - 'linux/amd64'
           - 'linux/arm64'
-          # - 'linux/arm/v7'
+          - 'linux/arm/v7'
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2

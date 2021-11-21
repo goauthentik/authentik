@@ -35,6 +35,7 @@ jobs:
     needs:
       - lint-golint
     strategy:
+      fail-fast: false
       matrix:
         type:
           - proxy

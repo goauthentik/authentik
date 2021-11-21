@@ -20,6 +20,7 @@ env:
 jobs:
   lint:
     strategy:
+      fail-fast: false
       matrix:
         job:
           - pylint
