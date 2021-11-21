@@ -291,6 +291,13 @@ jobs:
       - test-e2e
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - 'linux/amd64'
+          - 'linux/arm64'
+          - 'linux/arm/v7'
     steps:
       - uses: actions/checkout@v2
       - name: Set up Docker Buildx
@@ -317,3 +324,4 @@ jobs:
             ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.sha }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
+          platforms: ${{ matrix.arch }}

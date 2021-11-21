@@ -72,4 +72,4 @@ jobs:
           file: ${{ matrix.type }}.Dockerfile
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
-          platforms: ${{ matrix.terraform }}
+          platforms: ${{ matrix.arch }}
