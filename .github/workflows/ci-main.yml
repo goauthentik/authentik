@@ -18,13 +18,24 @@ env:
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
 jobs:
-  lint-pylint:
+  lint:
+    strategy:
+      matrix:
+        job:
+          - pylint
+          - black
+          - isort
+          - bandit
+          - pyright
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
       - id: cache-pipenv
         uses: actions/cache@v2.1.6
         with:
@@ -35,77 +46,7 @@ jobs:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: run pylint
-        run: pipenv run pylint authentik tests lifecycle
-  lint-black:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-      - id: cache-pipenv
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
-      - name: run black
-        run: pipenv run black --check authentik tests lifecycle
-  lint-isort:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-      - id: cache-pipenv
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
-      - name: run isort
-        run: pipenv run isort --check authentik tests lifecycle
-  lint-bandit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-      - id: cache-pipenv
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
-      - name: run bandit
-        run: pipenv run bandit -r authentik tests lifecycle
-  lint-pyright:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-      - name: prepare
-        run: |
-          scripts/ci_prepare.sh
-          npm install -g pyright@1.1.136
-      - name: run bandit
-        run: pipenv run pyright e2e lifecycle
+        run: pipenv run make ci-${{ matrix.job }}
   test-migrations:
     runs-on: ubuntu-latest
     steps:
@@ -279,11 +220,7 @@ jobs:
         uses: codecov/codecov-action@v2
   build:
     needs:
-      - lint-pylint
-      - lint-black
-      - lint-isort
-      - lint-bandit
-      - lint-pyright
+      - lint
       - test-migrations
       - test-migrations-from-stable
       - test-unittest

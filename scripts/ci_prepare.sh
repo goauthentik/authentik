@@ -7,3 +7,4 @@ if [[ "$INSTALL" != "true" ]]; then
     pipenv install --dev
 fi
 pipenv run python -m scripts.generate_ci_config
+npm install -g pyright@1.1.136

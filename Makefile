@@ -94,3 +94,21 @@ web-lint:
 
 web-extract:
 	cd web && npm run extract
+
+# These targets are use by GitHub actions to allow usage of matrix
+# which makes the YAML File a lot smaller
+
+ci-pylint:
+	pylint authentik tests lifecycle
+
+ci-black:
+	black --check authentik tests lifecycle
+
+ci-isort:
+	isort --check authentik tests lifecycle
+
+ci-bandit:
+	bandit -r authentik tests lifecycle
+
+ci-pyright:
+	pyright e2e lifecycle
