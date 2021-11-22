@@ -41,6 +41,7 @@ module.exports = {
                 "services/onlyoffice/index",
                 "services/opnsense/index",
                 "services/portainer/index",
+                "services/powerdns-admin/index",
                 "services/proxmox-ve/index",
                 "services/rancher/index",
                 "services/sentry/index",
