@@ -4,7 +4,7 @@
 
 [[redirects]]
   from = "/docs/integrations/*"
-  to = "/integrations/:split"
+  to = "/integrations/:splat"
 
 [[redirects]]
   from = "/*"
