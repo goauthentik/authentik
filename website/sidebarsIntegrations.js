@@ -50,6 +50,7 @@ module.exports = {
                 "services/sonarr/index",
                 "services/tautulli/index",
                 "services/ubuntu-landscape/index",
+                "services/uptime-kuma/index",
                 "services/veeam-enterprise-manager/index",
                 "services/vikunja/index",
                 "services/vmware-vcenter/index",
