@@ -3,7 +3,7 @@ from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import USER_ATTRIBUTE_CHANGE_EMAIL, USER_ATTRIBUTE_CHANGE_USERNAME, User
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
 from authentik.stages.email.models import EmailStage
 from authentik.tenants.models import Tenant
@@ -71,7 +71,7 @@ class TestUsersAPI(APITestCase):
     def test_recovery(self):
         """Test user recovery link (no recovery flow set)"""
         flow = create_test_flow(FlowDesignation.RECOVERY)
-        tenant: Tenant = Tenant.objects.create(domain="test")
+        tenant: Tenant = create_test_tenant()
         tenant.flow_recovery = flow
         tenant.save()
         self.client.force_login(self.admin)
@@ -99,7 +99,7 @@ class TestUsersAPI(APITestCase):
         self.user.email = "foo@bar.baz"
         self.user.save()
         flow = create_test_flow(designation=FlowDesignation.RECOVERY)
-        tenant: Tenant = Tenant.objects.create(domain="test")
+        tenant: Tenant = create_test_tenant()
         tenant.flow_recovery = flow
         tenant.save()
         self.client.force_login(self.admin)
@@ -113,7 +113,7 @@ class TestUsersAPI(APITestCase):
         self.user.email = "foo@bar.baz"
         self.user.save()
         flow = create_test_flow(FlowDesignation.RECOVERY)
-        tenant: Tenant = Tenant.objects.create(domain="test")
+        tenant: Tenant = create_test_tenant()
         tenant.flow_recovery = flow
         tenant.save()
 

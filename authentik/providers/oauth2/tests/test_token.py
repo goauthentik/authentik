@@ -6,8 +6,7 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.crypto.models import CertificateKeyPair
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.constants import (
@@ -36,7 +35,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
@@ -63,7 +62,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         request = self.factory.post(
@@ -86,7 +85,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
@@ -115,7 +114,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
         )
         # Needs to be assigned to an application for iss to be set
         self.app.provider = provider
@@ -157,7 +156,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
         )
         # Needs to be assigned to an application for iss to be set
         self.app.provider = provider
@@ -206,7 +205,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
@@ -251,7 +250,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
         )
         # Needs to be assigned to an application for iss to be set
         self.app.provider = provider

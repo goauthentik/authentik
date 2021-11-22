@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
-from authentik.crypto.models import CertificateKeyPair
+from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
@@ -81,7 +81,7 @@ class TestProviderSAML(SeleniumTestCase):
             issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
-            signing_kp=CertificateKeyPair.objects.first(),
+            signing_kp=create_test_cert(),
         )
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()
@@ -144,7 +144,7 @@ class TestProviderSAML(SeleniumTestCase):
             issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
-            signing_kp=CertificateKeyPair.objects.first(),
+            signing_kp=create_test_cert(),
         )
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()
@@ -222,7 +222,7 @@ class TestProviderSAML(SeleniumTestCase):
             issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
-            signing_kp=CertificateKeyPair.objects.first(),
+            signing_kp=create_test_cert(),
         )
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()
@@ -294,7 +294,7 @@ class TestProviderSAML(SeleniumTestCase):
             issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
-            signing_kp=CertificateKeyPair.objects.first(),
+            signing_kp=create_test_cert(),
         )
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()

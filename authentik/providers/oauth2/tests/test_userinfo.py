@@ -6,8 +6,7 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.crypto.models import CertificateKeyPair
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id, generate_key
 from authentik.managed.manager import ObjectManager
@@ -28,7 +27,7 @@ class TestUserinfo(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="",
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())
         # Needs to be assigned to an application for iss to be set

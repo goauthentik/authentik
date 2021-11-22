@@ -19,7 +19,8 @@ class TestEvaluator(TestCase):
 
     def test_user_by(self):
         """Test expr_user_by"""
-        self.assertIsNotNone(BaseEvaluator.expr_user_by(username="akadmin"))
+        user = create_test_admin_user()
+        self.assertIsNotNone(BaseEvaluator.expr_user_by(username=user.username))
         self.assertIsNone(BaseEvaluator.expr_user_by(username="bar"))
         self.assertIsNone(BaseEvaluator.expr_user_by(foo="bar"))
 

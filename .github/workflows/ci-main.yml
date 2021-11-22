@@ -89,8 +89,8 @@ jobs:
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           git checkout $(git describe --abbrev=0 --match 'version/*')
-          git checkout ${{ steps.ev.outputs.branchName }} -- .github
-          git checkout ${{ steps.ev.outputs.branchName }} -- scripts
+          git checkout $GITHUB_HEAD_REF -- .github
+          git checkout $GITHUB_HEAD_REF -- scripts
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -104,7 +104,7 @@ jobs:
         run: |
           set -x
           git fetch
-          git checkout ${{ steps.ev.outputs.branchName }}
+          git checkout $GITHUB_HEAD_REF
           pipenv sync --dev
       - name: prepare
         env:

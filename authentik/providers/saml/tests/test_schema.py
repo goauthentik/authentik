@@ -4,8 +4,7 @@ from base64 import b64encode
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
 
-from authentik.core.tests.utils import create_test_flow
-from authentik.crypto.models import CertificateKeyPair
+from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.lib.tests.utils import get_request
 from authentik.managed.manager import ObjectManager
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
@@ -20,7 +19,7 @@ class TestSchema(TestCase):
 
     def setUp(self):
         ObjectManager().run()
-        cert = CertificateKeyPair.objects.first()
+        cert = create_test_cert()
         self.provider: SAMLProvider = SAMLProvider.objects.create(
             authorization_flow=create_test_flow(),
             acs_url="http://testserver/source/saml/provider/acs/",

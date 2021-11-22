@@ -4,8 +4,7 @@ from django.contrib.auth.management import create_permissions
 from django.test import TestCase
 from guardian.models import UserObjectPermission
 
-from authentik.core.tests.utils import create_test_flow
-from authentik.crypto.models import CertificateKeyPair
+from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.proxy.models import ProxyProvider
 
@@ -45,7 +44,7 @@ class OutpostTests(TestCase):
         self.assertEqual(permissions[1].object_pk, str(provider.pk))
 
         # Provider requires a certificate-key-pair, user should have permissions for it
-        keypair = CertificateKeyPair.objects.first()
+        keypair = create_test_cert()
         provider.certificate = keypair
         provider.save()
         permissions = UserObjectPermission.objects.filter(user=outpost.user).order_by(

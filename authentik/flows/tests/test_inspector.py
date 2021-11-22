@@ -77,7 +77,7 @@ class TestFlowInspector(APITestCase):
 
         self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {"uid_field": "akadmin"},
+            {"uid_field": self.admin.username},
             follow=True,
         )
 
@@ -89,5 +89,5 @@ class TestFlowInspector(APITestCase):
         self.assertEqual(content["plans"][0]["current_stage"]["stage_obj"]["name"], "ident")
         self.assertEqual(content["current_plan"]["current_stage"]["stage_obj"]["name"], "dummy2")
         self.assertEqual(
-            content["current_plan"]["plan_context"]["pending_user"]["username"], "akadmin"
+            content["current_plan"]["plan_context"]["pending_user"]["username"], self.admin.username
         )

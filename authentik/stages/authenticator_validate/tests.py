@@ -53,7 +53,7 @@ class AuthenticatorValidateStageTests(APITestCase):
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {"uid_field": "akadmin"},
+            {"uid_field": self.user.username},
         )
         self.assertEqual(response.status_code, 302)
         response = self.client.get(

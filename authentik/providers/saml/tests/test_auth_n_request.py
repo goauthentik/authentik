@@ -4,7 +4,7 @@ from base64 import b64encode
 from django.http.request import QueryDict
 from django.test import RequestFactory, TestCase
 
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.tests.utils import get_request
@@ -75,7 +75,7 @@ class TestAuthNRequest(TestCase):
 
     def setUp(self):
         ObjectManager().run()
-        cert = CertificateKeyPair.objects.first()
+        cert = create_test_cert()
         self.provider: SAMLProvider = SAMLProvider.objects.create(
             authorization_flow=create_test_flow(),
             acs_url="http://testserver/source/saml/provider/acs/",
@@ -208,7 +208,7 @@ class TestAuthNRequest(TestCase):
             ),
             audience="https://10.120.20.200/saml-sp/SAML2/POST",
             issuer="https://10.120.20.200/saml-sp/SAML2/POST",
-            signing_kp=CertificateKeyPair.objects.first(),
+            signing_kp=create_test_cert(),
         )
         parsed_request = AuthNRequestParser(provider).parse(POST_REQUEST)
         self.assertEqual(parsed_request.id, "aws_LDxLGeubpc5lx12gxCgS6uPbix1yd5re")
@@ -216,7 +216,8 @@ class TestAuthNRequest(TestCase):
 
     def test_request_attributes(self):
         """Test full SAML Request/Response flow, fully signed"""
-        http_request = get_request("/", user=create_test_admin_user())
+        user = create_test_admin_user()
+        http_request = get_request("/", user=user)
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -228,11 +229,12 @@ class TestAuthNRequest(TestCase):
         )
         # Now create a response and convert it to string (provider)
         response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
-        self.assertIn("akadmin", response_proc.build_response())
+        self.assertIn(user.username, response_proc.build_response())
 
     def test_request_attributes_invalid(self):
         """Test full SAML Request/Response flow, fully signed"""
-        http_request = get_request("/", user=create_test_admin_user())
+        user = create_test_admin_user()
+        http_request = get_request("/", user=user)
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -248,7 +250,7 @@ class TestAuthNRequest(TestCase):
         )
         # Now create a response and convert it to string (provider)
         response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
-        self.assertIn("akadmin", response_proc.build_response())
+        self.assertIn(user.username, response_proc.build_response())
 
         events = Event.objects.filter(
             action=EventAction.CONFIGURATION_ERROR,

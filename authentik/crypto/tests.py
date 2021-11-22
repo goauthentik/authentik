@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.api.used_by import DeleteAction
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
@@ -27,7 +27,7 @@ class TestCrypto(APITestCase):
 
     def test_serializer(self):
         """Test API Validation"""
-        keypair = CertificateKeyPair.objects.first()
+        keypair = create_test_cert()
         self.assertTrue(
             CertificateKeyPairSerializer(
                 data={
@@ -93,7 +93,7 @@ class TestCrypto(APITestCase):
     def test_certificate_download(self):
         """Test certificate export (download)"""
         self.client.force_login(create_test_admin_user())
-        keypair = CertificateKeyPair.objects.first()
+        keypair = create_test_cert()
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-view-certificate",
@@ -114,7 +114,7 @@ class TestCrypto(APITestCase):
     def test_private_key_download(self):
         """Test private_key export (download)"""
         self.client.force_login(create_test_admin_user())
-        keypair = CertificateKeyPair.objects.first()
+        keypair = create_test_cert()
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-view-private-key",
@@ -135,14 +135,14 @@ class TestCrypto(APITestCase):
     def test_used_by(self):
         """Test used_by endpoint"""
         self.client.force_login(create_test_admin_user())
-        keypair = CertificateKeyPair.objects.first()
+        keypair = create_test_cert()
         provider = OAuth2Provider.objects.create(
             name="test",
             client_id="test",
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://localhost",
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=keypair,
         )
         response = self.client.get(
             reverse(

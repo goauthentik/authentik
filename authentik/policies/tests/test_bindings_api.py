@@ -2,7 +2,6 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.policies.models import PolicyBindingModel
 
@@ -13,8 +12,8 @@ class TestBindingsAPI(APITestCase):
     def setUp(self) -> None:
         super().setUp()
         self.pbm = PolicyBindingModel.objects.create()
-        self.group = Group.objects.first()
         self.user = create_test_admin_user()
+        self.group = self.user.ak_groups.first()
         self.client.force_login(self.user)
 
     def test_valid_binding(self):

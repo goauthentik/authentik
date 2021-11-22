@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.flows.models import Flow, FlowDesignation
+from authentik.flows.models import FlowDesignation
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.tests.test_metadata import METADATA_SIMPLE
 
@@ -74,11 +74,7 @@ class TestSAMLProviderAPI(APITestCase):
                 {
                     "file": metadata,
                     "name": "test",
-                    "authorization_flow": Flow.objects.filter(
-                        designation=FlowDesignation.AUTHORIZATION
-                    )
-                    .first()
-                    .slug,
+                    "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).slug,
                 },
                 format="multipart",
             )
@@ -95,11 +91,7 @@ class TestSAMLProviderAPI(APITestCase):
                 {
                     "file": metadata,
                     "name": "test",
-                    "authorization_flow": Flow.objects.filter(
-                        designation=FlowDesignation.AUTHORIZATION
-                    )
-                    .first()
-                    .slug,
+                    "authorization_flow": create_test_flow().slug,
                 },
                 format="multipart",
             )

@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
-from authentik.crypto.models import CertificateKeyPair
+from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
@@ -84,7 +84,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
             redirect_uris="http://localhost:9009/",
             authorization_flow=authorization_flow,
         )
@@ -127,7 +127,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
             redirect_uris="http://localhost:9009/auth/callback",
             authorization_flow=authorization_flow,
         )
@@ -178,7 +178,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
             redirect_uris="http://localhost:9009/auth/callback",
         )
         provider.property_mappings.set(
@@ -242,7 +242,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
             redirect_uris="http://localhost:9009/auth/callback",
         )
         provider.property_mappings.set(
