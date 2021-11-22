@@ -11,7 +11,7 @@ RUN pip install pipenv && \
     pipenv lock -r --dev-only > requirements-dev.txt
 
 # Stage 2: Build website
-FROM --platform=amd64 docker.io/node:16 as website-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:16 as website-builder
 
 COPY ./website /static/
 
@@ -19,7 +19,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build-docs-only
 
 # Stage 3: Build webui
-FROM --platform=amd64 docker.io/node:16 as web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:16 as web-builder
 
 COPY ./web /static/
 
@@ -57,11 +57,10 @@ ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates gnupg git runit rustc && \
-    curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-    echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends libpq-dev postgresql-client build-essential libxmlsec1-dev pkg-config libmaxminddb0 libffi7 libffi-dev && \
+    apt-get install -y --no-install-recommends \
+        curl ca-certificates gnupg git runit rustc libpq-dev \
+        postgresql-client build-essential libxmlsec1-dev \
+        pkg-config libmaxminddb0 libffi7 libffi-dev zlib1g-dev && \
     pip install -r /requirements.txt --no-cache-dir && \
     apt-get remove --purge -y build-essential git rustc && \
     apt-get autoremove --purge -y && \
