@@ -34,6 +34,7 @@ module.exports = {
                 "services/gitlab/index",
                 "services/grafana/index",
                 "services/harbor/index",
+                "services/hedgedoc/index",
                 "services/home-assistant/index",
                 "services/matrix-synapse/index",
                 "services/minio/index",
