@@ -42,8 +42,8 @@ jobs:
           - ldap
         arch:
           - 'linux/amd64'
-          - 'linux/arm64'
-          - 'linux/arm/v7'
+          # - 'linux/arm64'
+          # - 'linux/arm/v7'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
