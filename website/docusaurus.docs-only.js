@@ -24,6 +24,12 @@ module.exports = {
                     position: "left",
                 },
                 {
+                    to: "integrations/",
+                    activeBasePath: "integrations",
+                    label: "Integrations",
+                    position: "left",
+                },
+                {
                     to: "developer-docs/",
                     activeBasePath: "developer-docs",
                     label: "Developer Docs",
@@ -51,7 +57,8 @@ module.exports = {
                 docs: {
                     id: "docs",
                     sidebarPath: require.resolve("./sidebars.js"),
-                    editUrl: "https://github.com/goauthentik/authentik/edit/master/website/",
+                    editUrl:
+                        "https://github.com/goauthentik/authentik/edit/master/website/",
                 },
                 pages: false,
                 theme: {
@@ -62,22 +69,34 @@ module.exports = {
     ],
     plugins: [
         [
-            '@docusaurus/plugin-content-docs',
+            "@docusaurus/plugin-content-docs",
             {
-                id: 'docsDevelopers',
-                path: 'developer-docs',
-                routeBasePath: 'developer-docs',
-                sidebarPath: require.resolve('./sidebarsDev.js'),
-                editUrl: "https://github.com/goauthentik/authentik/edit/master/website/",
+                id: "docsIntegrations",
+                path: "integrations",
+                routeBasePath: "integrations",
+                sidebarPath: require.resolve("./sidebarsIntegrations.js"),
+                editUrl:
+                    "https://github.com/goauthentik/authentik/edit/master/website/",
             },
         ],
         [
-            '@docusaurus/plugin-client-redirects',
+            "@docusaurus/plugin-content-docs",
+            {
+                id: "docsDevelopers",
+                path: "developer-docs",
+                routeBasePath: "developer-docs",
+                sidebarPath: require.resolve("./sidebarsDev.js"),
+                editUrl:
+                    "https://github.com/goauthentik/authentik/edit/master/website/",
+            },
+        ],
+        [
+            "@docusaurus/plugin-client-redirects",
             {
                 redirects: [
                     {
-                        to: '/docs/',
-                        from: ['/'],
+                        to: "/docs/",
+                        from: ["/"],
                     },
                 ],
             },
