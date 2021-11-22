@@ -6,11 +6,12 @@
     --ifm-color-primary-light: #fd644b;
     --ifm-color-primary-lighter: #fd7159;
     --ifm-color-primary-lightest: #fe9786;
-    --ifm-navbar-link-hover-color: var(--ifm-navbar-link-color);
+    --ifm-navbar-link-hover-color: var(--ifm-color-content-inverse);
 }
 
 .button.button--outline {
-    color: var(--ifm-navbar-link-color) !important;
+    color: var(--ifm-navbar-link-hover-color) !important;
+    --ifm-button-border-color: var(--ifm-navbar-link-hover-color) !important;
 }
 
 .navbar {
