@@ -30,6 +30,7 @@ module.exports = {
                 "services/aws/index",
                 "services/awx-tower/index",
                 "services/bookstack/index",
+                "services/budibase/index",
                 "services/gitea/index",
                 "services/gitlab/index",
                 "services/grafana/index",
