@@ -2,7 +2,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.api.stages import StageSerializer, StageViewSet
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage
 from authentik.policies.dummy.models import DummyPolicy
@@ -47,7 +47,7 @@ class TestFlowsAPI(APITestCase):
 
     def test_api_diagram(self):
         """Test flow diagram."""
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         self.client.force_login(user)
 
         flow = Flow.objects.create(
@@ -77,7 +77,7 @@ class TestFlowsAPI(APITestCase):
 
     def test_api_diagram_no_stages(self):
         """Test flow diagram with no stages."""
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         self.client.force_login(user)
 
         flow = Flow.objects.create(
@@ -93,7 +93,7 @@ class TestFlowsAPI(APITestCase):
 
     def test_types(self):
         """Test Stage's types endpoint"""
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         self.client.force_login(user)
 
         response = self.client.get(

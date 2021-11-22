@@ -5,8 +5,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.api.used_by import DeleteAction
-from authentik.core.models import User
-from authentik.core.tests.utils import create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
@@ -65,7 +64,7 @@ class TestCrypto(APITestCase):
 
     def test_builder_api(self):
         """Test Builder (via API)"""
-        self.client.force_login(User.objects.get(username="akadmin"))
+        self.client.force_login(create_test_admin_user())
         self.client.post(
             reverse("authentik_api:certificatekeypair-generate"),
             data={"common_name": "foo", "subject_alt_name": "bar,baz", "validity_days": 3},
@@ -74,7 +73,7 @@ class TestCrypto(APITestCase):
 
     def test_builder_api_invalid(self):
         """Test Builder (via API) (invalid)"""
-        self.client.force_login(User.objects.get(username="akadmin"))
+        self.client.force_login(create_test_admin_user())
         response = self.client.post(
             reverse("authentik_api:certificatekeypair-generate"),
             data={},
@@ -83,7 +82,7 @@ class TestCrypto(APITestCase):
 
     def test_list(self):
         """Test API List"""
-        self.client.force_login(User.objects.get(username="akadmin"))
+        self.client.force_login(create_test_admin_user())
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-list",
@@ -93,7 +92,7 @@ class TestCrypto(APITestCase):
 
     def test_certificate_download(self):
         """Test certificate export (download)"""
-        self.client.force_login(User.objects.get(username="akadmin"))
+        self.client.force_login(create_test_admin_user())
         keypair = CertificateKeyPair.objects.first()
         response = self.client.get(
             reverse(
@@ -114,7 +113,7 @@ class TestCrypto(APITestCase):
 
     def test_private_key_download(self):
         """Test private_key export (download)"""
-        self.client.force_login(User.objects.get(username="akadmin"))
+        self.client.force_login(create_test_admin_user())
         keypair = CertificateKeyPair.objects.first()
         response = self.client.get(
             reverse(
@@ -135,7 +134,7 @@ class TestCrypto(APITestCase):
 
     def test_used_by(self):
         """Test used_by endpoint"""
-        self.client.force_login(User.objects.get(username="akadmin"))
+        self.client.force_login(create_test_admin_user())
         keypair = CertificateKeyPair.objects.first()
         provider = OAuth2Provider.objects.create(
             name="test",

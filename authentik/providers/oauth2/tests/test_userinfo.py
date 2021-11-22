@@ -5,8 +5,8 @@ from dataclasses import asdict
 from django.urls import reverse
 from django.utils.encoding import force_str
 
-from authentik.core.models import Application, User
-from authentik.core.tests.utils import create_test_flow
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id, generate_key
@@ -34,7 +34,7 @@ class TestUserinfo(OAuthTestCase):
         # Needs to be assigned to an application for iss to be set
         self.app.provider = self.provider
         self.app.save()
-        self.user = User.objects.get(username="akadmin")
+        self.user = create_test_admin_user()
         self.token: RefreshToken = RefreshToken.objects.create(
             provider=self.provider,
             user=self.user,
@@ -57,12 +57,12 @@ class TestUserinfo(OAuthTestCase):
         self.assertJSONEqual(
             force_str(res.content),
             {
-                "name": "authentik Default Admin",
-                "given_name": "authentik Default Admin",
+                "name": self.user.name,
+                "given_name": self.user.name,
                 "family_name": "",
-                "preferred_username": "akadmin",
-                "nickname": "akadmin",
-                "groups": ["authentik Admins"],
+                "preferred_username": self.user.name,
+                "nickname": self.user.name,
+                "groups": [group.name for group in self.user.ak_groups.all()],
                 "sub": "bar",
             },
         )
@@ -80,12 +80,12 @@ class TestUserinfo(OAuthTestCase):
         self.assertJSONEqual(
             force_str(res.content),
             {
-                "name": "authentik Default Admin",
-                "given_name": "authentik Default Admin",
+                "name": self.user.name,
+                "given_name": self.user.name,
                 "family_name": "",
-                "preferred_username": "akadmin",
-                "nickname": "akadmin",
-                "groups": ["authentik Admins"],
+                "preferred_username": self.user.name,
+                "nickname": self.user.name,
+                "groups": [group.name for group in self.user.ak_groups.all()],
                 "sub": "bar",
             },
         )

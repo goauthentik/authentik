@@ -10,7 +10,7 @@ from django.test import RequestFactory
 from structlog.stdlib import get_logger
 
 from authentik import __version__
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 
@@ -68,7 +68,7 @@ class Command(BaseCommand):  # pragma: no cover
     def benchmark_flows(self, proc_count):
         """Get full recovery link"""
         flow = Flow.objects.get(slug="default-authentication-flow")
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         manager = Manager()
         return_dict = manager.dict()
 

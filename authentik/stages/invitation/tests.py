@@ -8,6 +8,7 @@ from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -167,7 +168,7 @@ class TestInvitationsAPI(APITestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        self.user = User.objects.get(username="akadmin")
+        self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
     def test_invite_create(self):

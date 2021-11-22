@@ -3,7 +3,8 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Application, User
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 
@@ -12,7 +13,7 @@ class TestApplicationsAPI(APITestCase):
     """Test applications API"""
 
     def setUp(self) -> None:
-        self.user = User.objects.get(username="akadmin")
+        self.user = create_test_admin_user()
         self.allowed = Application.objects.create(name="allowed", slug="allowed")
         self.denied = Application.objects.create(name="denied", slug="denied")
         PolicyBinding.objects.create(

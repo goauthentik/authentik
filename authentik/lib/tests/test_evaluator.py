@@ -1,7 +1,7 @@
 """Test Evaluator base functions"""
 from django.test import TestCase
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.expression.evaluator import BaseEvaluator
 
 
@@ -25,6 +25,4 @@ class TestEvaluator(TestCase):
 
     def test_is_group_member(self):
         """Test expr_is_group_member"""
-        self.assertFalse(
-            BaseEvaluator.expr_is_group_member(User.objects.get(username="akadmin"), name="test")
-        )
+        self.assertFalse(BaseEvaluator.expr_is_group_member(create_test_admin_user(), name="test"))

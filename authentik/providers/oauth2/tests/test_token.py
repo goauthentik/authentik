@@ -5,11 +5,10 @@ from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.encoding import force_str
 
-from authentik.core.models import Application, User
-from authentik.core.tests.utils import create_test_flow
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.constants import (
     GRANT_TYPE_AUTHORIZATION_CODE,
@@ -40,7 +39,7 @@ class TestToken(OAuthTestCase):
             rsa_key=CertificateKeyPair.objects.first(),
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         code = AuthorizationCode.objects.create(code="foobar", provider=provider, user=user)
         request = self.factory.post(
             "/",
@@ -90,7 +89,7 @@ class TestToken(OAuthTestCase):
             rsa_key=CertificateKeyPair.objects.first(),
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         token: RefreshToken = RefreshToken.objects.create(
             provider=provider,
             user=user,
@@ -122,7 +121,7 @@ class TestToken(OAuthTestCase):
         self.app.provider = provider
         self.app.save()
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         code = AuthorizationCode.objects.create(
             code="foobar", provider=provider, user=user, is_open_id=True
         )
@@ -164,7 +163,7 @@ class TestToken(OAuthTestCase):
         self.app.provider = provider
         self.app.save()
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         token: RefreshToken = RefreshToken.objects.create(
             provider=provider,
             user=user,
@@ -210,7 +209,7 @@ class TestToken(OAuthTestCase):
             rsa_key=CertificateKeyPair.objects.first(),
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         token: RefreshToken = RefreshToken.objects.create(
             provider=provider,
             user=user,
@@ -258,7 +257,7 @@ class TestToken(OAuthTestCase):
         self.app.provider = provider
         self.app.save()
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         token: RefreshToken = RefreshToken.objects.create(
             provider=provider,
             user=user,

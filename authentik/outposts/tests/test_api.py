@@ -2,8 +2,8 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import PropertyMapping, User
-from authentik.core.tests.utils import create_test_flow
+from authentik.core.models import PropertyMapping
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.outposts.api.outposts import OutpostSerializer
 from authentik.outposts.models import OutpostType, default_outpost_config
 from authentik.providers.ldap.models import LDAPProvider
@@ -18,7 +18,7 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
         self.mapping = PropertyMapping.objects.create(
             name="dummy", expression="""return {'foo': 'bar'}"""
         )
-        self.user = User.objects.get(username="akadmin")
+        self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
     def test_outpost_validaton(self):

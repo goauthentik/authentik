@@ -3,8 +3,8 @@ from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.encoding import force_str
 
-from authentik.core.models import Application, User
-from authentik.core.tests.utils import create_test_flow
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow
@@ -185,7 +185,7 @@ class TestAuthorize(OAuthTestCase):
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         self.client.force_login(user)
         # Step 1, initiate params and get redirect to flow
         self.client.get(
@@ -223,7 +223,7 @@ class TestAuthorize(OAuthTestCase):
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         self.client.force_login(user)
         # Step 1, initiate params and get redirect to flow
         self.client.get(

@@ -4,10 +4,9 @@ from base64 import b64encode
 from django.http.request import QueryDict
 from django.test import RequestFactory, TestCase
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import Flow
 from authentik.lib.tests.utils import get_request
 from authentik.managed.manager import ObjectManager
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
@@ -78,9 +77,7 @@ class TestAuthNRequest(TestCase):
         ObjectManager().run()
         cert = CertificateKeyPair.objects.first()
         self.provider: SAMLProvider = SAMLProvider.objects.create(
-            authorization_flow=Flow.objects.get(
-                slug="default-provider-authorization-implicit-consent"
-            ),
+            authorization_flow=create_test_flow(),
             acs_url="http://testserver/source/saml/provider/acs/",
             signing_kp=cert,
             verification_kp=cert,
@@ -90,7 +87,7 @@ class TestAuthNRequest(TestCase):
         self.source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",
-            pre_authentication_flow=Flow.objects.get(slug="default-source-pre-authentication"),
+            pre_authentication_flow=create_test_flow(),
             signing_kp=cert,
         )
         self.factory = RequestFactory()
@@ -186,9 +183,7 @@ class TestAuthNRequest(TestCase):
         )
         provider = SAMLProvider(
             name="samltool",
-            authorization_flow=Flow.objects.get(
-                slug="default-provider-authorization-implicit-consent"
-            ),
+            authorization_flow=create_test_flow(),
             acs_url="https://10.120.20.200/saml-sp/SAML2/POST",
             audience="https://10.120.20.200/saml-sp/SAML2/POST",
             issuer="https://10.120.20.200/saml-sp/SAML2/POST",
@@ -206,9 +201,7 @@ class TestAuthNRequest(TestCase):
         """Test post request with static request"""
         provider = SAMLProvider(
             name="aws",
-            authorization_flow=Flow.objects.get(
-                slug="default-provider-authorization-implicit-consent"
-            ),
+            authorization_flow=create_test_flow(),
             acs_url=(
                 "https://eu-central-1.signin.aws.amazon.com/platform/"
                 "saml/acs/2d737f96-55fb-4035-953e-5e24134eb778"
@@ -223,7 +216,7 @@ class TestAuthNRequest(TestCase):
 
     def test_request_attributes(self):
         """Test full SAML Request/Response flow, fully signed"""
-        http_request = get_request("/", user=User.objects.get(username="akadmin"))
+        http_request = get_request("/", user=create_test_admin_user())
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -239,7 +232,7 @@ class TestAuthNRequest(TestCase):
 
     def test_request_attributes_invalid(self):
         """Test full SAML Request/Response flow, fully signed"""
-        http_request = get_request("/", user=User.objects.get(username="akadmin"))
+        http_request = get_request("/", user=create_test_admin_user())
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
