@@ -3,8 +3,8 @@ from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.encoding import force_str
 
-from authentik.core.models import Application, User
-from authentik.crypto.models import CertificateKeyPair
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
@@ -43,7 +43,7 @@ class TestAuthorize(OAuthTestCase):
         OAuth2Provider.objects.create(
             name="test",
             client_id="test",
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
         )
         with self.assertRaises(AuthorizeError):
@@ -63,7 +63,7 @@ class TestAuthorize(OAuthTestCase):
         OAuth2Provider.objects.create(
             name="test",
             client_id="test",
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
         )
         with self.assertRaises(RedirectUriError):
@@ -85,7 +85,7 @@ class TestAuthorize(OAuthTestCase):
         OAuth2Provider.objects.create(
             name="test",
             client_id="test",
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
         )
         with self.assertRaises(RedirectUriError):
             request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
@@ -105,7 +105,7 @@ class TestAuthorize(OAuthTestCase):
         OAuth2Provider.objects.create(
             name="test",
             client_id="test",
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
         )
         request = self.factory.get(
@@ -184,7 +184,7 @@ class TestAuthorize(OAuthTestCase):
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         self.client.force_login(user)
         # Step 1, initiate params and get redirect to flow
         self.client.get(
@@ -218,11 +218,11 @@ class TestAuthorize(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=flow,
             redirect_uris="http://localhost",
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
-        user = User.objects.get(username="akadmin")
+        user = create_test_admin_user()
         self.client.force_login(user)
         # Step 1, initiate params and get redirect to flow
         self.client.get(

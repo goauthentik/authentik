@@ -3,8 +3,7 @@ from defusedxml import ElementTree
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
 
-from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.models import Flow
+from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 
@@ -20,8 +19,8 @@ class TestMetadataProcessor(TestCase):
         source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",
-            signing_kp=CertificateKeyPair.objects.first(),
-            pre_authentication_flow=Flow.objects.get(slug="default-source-pre-authentication"),
+            signing_kp=create_test_cert(),
+            pre_authentication_flow=create_test_flow(),
         )
         request = self.factory.get("/")
         xml = MetadataProcessor(source, request).build_entity_descriptor()
@@ -35,8 +34,8 @@ class TestMetadataProcessor(TestCase):
         source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",
-            signing_kp=CertificateKeyPair.objects.first(),
-            pre_authentication_flow=Flow.objects.get(slug="default-source-pre-authentication"),
+            signing_kp=create_test_cert(),
+            pre_authentication_flow=create_test_flow(),
         )
         request = self.factory.get("/")
         xml = MetadataProcessor(source, request).build_entity_descriptor()
@@ -48,7 +47,7 @@ class TestMetadataProcessor(TestCase):
         source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",
-            pre_authentication_flow=Flow.objects.get(slug="default-source-pre-authentication"),
+            pre_authentication_flow=create_test_flow(),
         )
         request = self.factory.get("/")
         xml = MetadataProcessor(source, request).build_entity_descriptor()

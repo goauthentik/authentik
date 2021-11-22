@@ -5,10 +5,9 @@ from dataclasses import asdict
 from django.urls import reverse
 from django.utils.encoding import force_str
 
-from authentik.core.models import Application, User
-from authentik.crypto.models import CertificateKeyPair
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.managed.manager import ObjectManager
 from authentik.providers.oauth2.models import IDToken, OAuth2Provider, RefreshToken, ScopeMapping
@@ -26,15 +25,15 @@ class TestUserinfo(OAuthTestCase):
             name="test",
             client_id=generate_id(),
             client_secret=generate_key(),
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="",
-            rsa_key=CertificateKeyPair.objects.first(),
+            rsa_key=create_test_cert(),
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())
         # Needs to be assigned to an application for iss to be set
         self.app.provider = self.provider
         self.app.save()
-        self.user = User.objects.get(username="akadmin")
+        self.user = create_test_admin_user()
         self.token: RefreshToken = RefreshToken.objects.create(
             provider=self.provider,
             user=self.user,
@@ -57,12 +56,12 @@ class TestUserinfo(OAuthTestCase):
         self.assertJSONEqual(
             force_str(res.content),
             {
-                "name": "authentik Default Admin",
-                "given_name": "authentik Default Admin",
+                "name": self.user.name,
+                "given_name": self.user.name,
                 "family_name": "",
-                "preferred_username": "akadmin",
-                "nickname": "akadmin",
-                "groups": ["authentik Admins"],
+                "preferred_username": self.user.name,
+                "nickname": self.user.name,
+                "groups": [group.name for group in self.user.ak_groups.all()],
                 "sub": "bar",
             },
         )
@@ -80,12 +79,12 @@ class TestUserinfo(OAuthTestCase):
         self.assertJSONEqual(
             force_str(res.content),
             {
-                "name": "authentik Default Admin",
-                "given_name": "authentik Default Admin",
+                "name": self.user.name,
+                "given_name": self.user.name,
                 "family_name": "",
-                "preferred_username": "akadmin",
-                "nickname": "akadmin",
-                "groups": ["authentik Admins"],
+                "preferred_username": self.user.name,
+                "nickname": self.user.name,
+                "groups": [group.name for group in self.user.ak_groups.all()],
                 "sub": "bar",
             },
         )

@@ -2,6 +2,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
+from authentik.core.tests.utils import create_test_flow
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -12,9 +13,8 @@ class TestHelperView(TestCase):
 
     def test_default_view(self):
         """Test that ToDefaultFlow returns the expected URL"""
-        flow = Flow.objects.filter(
-            designation=FlowDesignation.INVALIDATION,
-        ).first()
+        Flow.objects.filter(designation=FlowDesignation.INVALIDATION).delete()
+        flow = create_test_flow(FlowDesignation.INVALIDATION)
         response = self.client.get(
             reverse("authentik_flows:default-invalidation"),
         )
@@ -24,9 +24,8 @@ class TestHelperView(TestCase):
 
     def test_default_view_invalid_plan(self):
         """Test that ToDefaultFlow returns the expected URL (with an invalid plan)"""
-        flow = Flow.objects.filter(
-            designation=FlowDesignation.INVALIDATION,
-        ).first()
+        Flow.objects.filter(designation=FlowDesignation.INVALIDATION).delete()
+        flow = create_test_flow(FlowDesignation.INVALIDATION)
         plan = FlowPlan(flow_pk=flow.pk.hex + "aa")
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan

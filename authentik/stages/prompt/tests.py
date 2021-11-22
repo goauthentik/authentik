@@ -7,6 +7,7 @@ from rest_framework.exceptions import ErrorDetail
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -202,8 +203,9 @@ class TestPromptStage(APITestCase):
 
     def test_invalid_username(self):
         """Test challenge_response validation"""
+        user = create_test_admin_user()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        self.prompt_data["username_prompt"] = "akadmin"
+        self.prompt_data["username_prompt"] = user.username
         challenge_response = PromptChallengeResponse(
             None, stage=self.stage, plan=plan, data=self.prompt_data
         )

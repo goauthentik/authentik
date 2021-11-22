@@ -3,7 +3,8 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Application, User
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
 
 
@@ -12,7 +13,7 @@ class TestEventsMiddleware(APITestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        self.user = User.objects.get(username="akadmin")
+        self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
     def test_create(self):

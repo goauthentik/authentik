@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework.serializers import ValidationError
 from rest_framework.test import APITestCase
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.stages.email.api import EmailStageSerializer
 from authentik.stages.email.models import EmailTemplates
 
@@ -13,8 +13,8 @@ class TestEmailStageAPI(APITestCase):
 
     def setUp(self):
         super().setUp()
-        self.akadmin = User.objects.get(username="akadmin")
-        self.client.force_login(self.akadmin)
+        self.user = create_test_admin_user()
+        self.client.force_login(self.user)
 
     def test_templates(self):
         """Test template list"""

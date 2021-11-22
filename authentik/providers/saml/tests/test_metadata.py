@@ -3,7 +3,7 @@
 
 from django.test import TestCase
 
-from authentik.flows.models import Flow
+from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 
@@ -65,7 +65,7 @@ class TestServiceProviderMetadataParser(TestCase):
     """Test ServiceProviderMetadataParser parsing and creation of SAML Provider"""
 
     def setUp(self) -> None:
-        self.flow = Flow.objects.first()
+        self.flow = create_test_flow()
 
     def test_simple(self):
         """Test simple metadata without Singing"""
@@ -81,6 +81,7 @@ class TestServiceProviderMetadataParser(TestCase):
 
     def test_with_signing_cert(self):
         """Test Metadata with signing cert"""
+        create_test_cert()
         metadata = ServiceProviderMetadataParser().parse(METADATA_CERT)
         provider = metadata.to_provider("test", self.flow)
         self.assertEqual(provider.acs_url, "http://localhost:8080/apps/user_saml/saml/acs")

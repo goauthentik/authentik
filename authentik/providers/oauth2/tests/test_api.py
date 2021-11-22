@@ -2,8 +2,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import User
-from authentik.flows.models import Flow, FlowDesignation
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.providers.oauth2.models import JWTAlgorithms
 
 
@@ -12,7 +11,7 @@ class TestOAuth2ProviderAPI(APITestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        self.user = User.objects.get(username="akadmin")
+        self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
     def test_validate(self):
@@ -24,9 +23,7 @@ class TestOAuth2ProviderAPI(APITestCase):
             data={
                 "name": "test",
                 "jwt_alg": str(JWTAlgorithms.RS256),
-                "authorization_flow": Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION)
-                .first()
-                .pk,
+                "authorization_flow": create_test_flow().pk,
             },
         )
         self.assertJSONEqual(

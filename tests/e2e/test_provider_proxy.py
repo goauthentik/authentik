@@ -45,7 +45,6 @@ class TestProviderProxy(SeleniumTestCase):
             image=self.get_container_image("goauthentik.io/dev-proxy"),
             detach=True,
             network_mode="host",
-            auto_remove=True,
             environment={
                 "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,

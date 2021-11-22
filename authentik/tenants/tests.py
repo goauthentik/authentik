@@ -4,6 +4,7 @@ from django.test.client import RequestFactory
 from django.urls import reverse
 from django.utils.encoding import force_str
 
+from authentik.core.tests.utils import create_test_tenant
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
@@ -15,16 +16,15 @@ class TestTenants(TestCase):
 
     def test_current_tenant(self):
         """Test Current tenant API"""
+        tenant = create_test_tenant()
         self.assertJSONEqual(
             force_str(self.client.get(reverse("authentik_api:tenant-current")).content),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
-                "matched_domain": "authentik-default",
+                "matched_domain": tenant.domain,
                 "ui_footer_links": CONFIG.y("footer_links"),
-                "flow_authentication": "default-authentication-flow",
-                "flow_invalidation": "default-invalidation-flow",
             },
         )
 

@@ -9,6 +9,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, Group, Source, User, UserSourceConnection
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -182,10 +183,11 @@ class TestUserWriteStage(APITestCase):
     )
     def test_duplicate_data(self):
         """Test with duplicate data, should trigger error"""
+        user = create_test_admin_user()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         plan.context[PLAN_CONTEXT_PROMPT] = {
-            "username": "akadmin",
+            "username": user.username,
             "attribute_some-custom-attribute": "test",
             "some_ignored_attribute": "bar",
         }
