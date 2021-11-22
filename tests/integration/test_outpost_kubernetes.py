@@ -1,7 +1,7 @@
 """outpost tests"""
 from django.test import TestCase
 
-from authentik.flows.models import Flow
+from authentik.core.tests.utils import create_test_flow
 from authentik.lib.config import CONFIG
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
 from authentik.outposts.controllers.k8s.triggers import NeedsUpdate
@@ -22,7 +22,7 @@ class OutpostKubernetesTests(TestCase):
             name="test",
             internal_host="http://localhost",
             external_host="http://localhost",
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
         )
         self.service_connection = KubernetesServiceConnection.objects.first()
         self.outpost: Outpost = Outpost.objects.create(

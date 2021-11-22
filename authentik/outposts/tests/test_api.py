@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import PropertyMapping, User
-from authentik.flows.models import Flow
+from authentik.core.tests.utils import create_test_flow
 from authentik.outposts.api.outposts import OutpostSerializer
 from authentik.outposts.models import OutpostType, default_outpost_config
 from authentik.providers.ldap.models import LDAPProvider
@@ -30,7 +30,7 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
                 "config": default_outpost_config(),
                 "providers": [
                     ProxyProvider.objects.create(
-                        name="test", authorization_flow=Flow.objects.first()
+                        name="test", authorization_flow=create_test_flow()
                     ).pk
                 ],
             }
@@ -43,7 +43,7 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
                 "config": default_outpost_config(),
                 "providers": [
                     LDAPProvider.objects.create(
-                        name="test", authorization_flow=Flow.objects.first()
+                        name="test", authorization_flow=create_test_flow()
                     ).pk
                 ],
             }
@@ -60,9 +60,7 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
 
     def test_outpost_config(self):
         """Test Outpost's config field"""
-        provider = ProxyProvider.objects.create(
-            name="test", authorization_flow=Flow.objects.first()
-        )
+        provider = ProxyProvider.objects.create(name="test", authorization_flow=create_test_flow())
         invalid = OutpostSerializer(data={"name": "foo", "providers": [provider.pk], "config": ""})
         self.assertFalse(invalid.is_valid())
         self.assertIn("config", invalid.errors)

@@ -6,8 +6,8 @@ from django.urls.base import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_flow
 from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.models import Flow
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
@@ -24,7 +24,7 @@ class TestJWKS(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name="test",
             client_id="test",
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
             rsa_key=CertificateKeyPair.objects.first(),
         )
@@ -40,7 +40,7 @@ class TestJWKS(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name="test",
             client_id="test",
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)

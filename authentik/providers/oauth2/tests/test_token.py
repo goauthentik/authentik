@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import Application, User
+from authentik.core.tests.utils import create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
@@ -34,7 +35,7 @@ class TestToken(OAuthTestCase):
             name="test",
             client_id=generate_id(),
             client_secret=generate_key(),
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
             rsa_key=CertificateKeyPair.objects.first(),
         )
@@ -61,7 +62,7 @@ class TestToken(OAuthTestCase):
             name="test",
             client_id=generate_id(),
             client_secret=generate_key(),
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
             rsa_key=CertificateKeyPair.objects.first(),
         )
@@ -84,7 +85,7 @@ class TestToken(OAuthTestCase):
             name="test",
             client_id=generate_id(),
             client_secret=generate_key(),
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
             rsa_key=CertificateKeyPair.objects.first(),
         )
@@ -113,7 +114,7 @@ class TestToken(OAuthTestCase):
             name="test",
             client_id=generate_id(),
             client_secret=generate_key(),
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
             rsa_key=CertificateKeyPair.objects.first(),
         )
@@ -155,7 +156,7 @@ class TestToken(OAuthTestCase):
             name="test",
             client_id=generate_id(),
             client_secret=generate_key(),
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
             rsa_key=CertificateKeyPair.objects.first(),
         )
@@ -204,7 +205,7 @@ class TestToken(OAuthTestCase):
             name="test",
             client_id=generate_id(),
             client_secret=generate_key(),
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
             rsa_key=CertificateKeyPair.objects.first(),
         )
@@ -249,7 +250,7 @@ class TestToken(OAuthTestCase):
             name="test",
             client_id=generate_id(),
             client_secret=generate_key(),
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
             rsa_key=CertificateKeyPair.objects.first(),
         )

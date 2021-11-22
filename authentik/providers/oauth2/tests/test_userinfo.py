@@ -6,9 +6,9 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import Application, User
+from authentik.core.tests.utils import create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.managed.manager import ObjectManager
 from authentik.providers.oauth2.models import IDToken, OAuth2Provider, RefreshToken, ScopeMapping
@@ -26,7 +26,7 @@ class TestUserinfo(OAuthTestCase):
             name="test",
             client_id=generate_id(),
             client_secret=generate_key(),
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="",
             rsa_key=CertificateKeyPair.objects.first(),
         )

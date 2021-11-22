@@ -3,7 +3,7 @@
 
 from django.test import TestCase
 
-from authentik.flows.models import Flow
+from authentik.core.tests.utils import create_test_flow
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 
@@ -65,7 +65,7 @@ class TestServiceProviderMetadataParser(TestCase):
     """Test ServiceProviderMetadataParser parsing and creation of SAML Provider"""
 
     def setUp(self) -> None:
-        self.flow = Flow.objects.first()
+        self.flow = create_test_flow()
 
     def test_simple(self):
         """Test simple metadata without Singing"""

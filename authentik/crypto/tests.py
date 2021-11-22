@@ -6,10 +6,10 @@ from rest_framework.test import APITestCase
 
 from authentik.core.api.used_by import DeleteAction
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_flow
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.models import Flow
 from authentik.lib.generators import generate_key
 from authentik.providers.oauth2.models import OAuth2Provider
 
@@ -141,7 +141,7 @@ class TestCrypto(APITestCase):
             name="test",
             client_id="test",
             client_secret=generate_key(),
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://localhost",
             rsa_key=CertificateKeyPair.objects.first(),
         )
