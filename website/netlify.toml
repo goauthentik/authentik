@@ -3,6 +3,10 @@
   to = "https://discord.gg/jg33eMhnj6"
 
 [[redirects]]
+  from = "/docs/integrations/*"
+  to = "/integrations/:split"
+
+[[redirects]]
   from = "/*"
   to = "/.netlify/functions/go-get"
   status = 200

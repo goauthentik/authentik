@@ -11,10 +11,7 @@ module.exports = {
         {
             type: "category",
             label: "Users & Groups",
-            items: [
-                "user-group/user",
-                "user-group/group",
-            ]
+            items: ["user-group/user", "user-group/group"],
         },
         {
             type: "category",
@@ -66,64 +63,6 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Integrations",
-            items: [
-                {
-                    type: "category",
-                    label: "as Source",
-                    items: [
-                        "integrations/sources/index",
-                        "integrations/sources/active-directory/index",
-                        "integrations/sources/apple/index",
-                        "integrations/sources/azure-ad/index",
-                        "integrations/sources/discord/index",
-                        "integrations/sources/freeipa/index",
-                        "integrations/sources/github/index",
-                        "integrations/sources/google/index",
-                        "integrations/sources/ldap/index",
-                        "integrations/sources/oauth/index",
-                        "integrations/sources/plex/index",
-                        "integrations/sources/saml/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "as Provider",
-                    items: [
-                        "integrations/services/apache-guacamole/index",
-                        "integrations/services/aws/index",
-                        "integrations/services/awx-tower/index",
-                        "integrations/services/bookstack/index",
-                        "integrations/services/gitea/index",
-                        "integrations/services/gitlab/index",
-                        "integrations/services/grafana/index",
-                        "integrations/services/harbor/index",
-                        "integrations/services/home-assistant/index",
-                        "integrations/services/matrix-synapse/index",
-                        "integrations/services/minio/index",
-                        "integrations/services/nextcloud/index",
-                        "integrations/services/onlyoffice/index",
-                        "integrations/services/opnsense/index",
-                        "integrations/services/portainer/index",
-                        "integrations/services/proxmox-ve/index",
-                        "integrations/services/rancher/index",
-                        "integrations/services/sentry/index",
-                        "integrations/services/sonarr/index",
-                        "integrations/services/tautulli/index",
-                        "integrations/services/ubuntu-landscape/index",
-                        "integrations/services/veeam-enterprise-manager/index",
-                        "integrations/services/vikunja/index",
-                        "integrations/services/vmware-vcenter/index",
-                        "integrations/services/wekan/index",
-                        "integrations/services/wiki-js/index",
-                        "integrations/services/wordpress/index",
-                        "integrations/services/zabbix/index",
-                    ],
-                },
-            ],
-        },
-        {
-            type: "category",
             label: "Flows",
             items: ["flow/flows", "flow/examples"],
         },
@@ -166,7 +105,7 @@ module.exports = {
             items: [
                 "events/index",
                 "events/notifications",
-                "events/transports"
+                "events/transports",
             ],
         },
         {
