@@ -37,10 +37,19 @@ jobs:
         run: pipenv run ./manage.py compilemessages
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
+        id: cpr
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: compile-backend-translation
           commit-message: "core: compile backend translations"
           title: "core: compile backend translations"
+          body: "core: compile backend translations"
           delete-branch: true
           signoff: true
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        uses: peter-evans/enable-pull-request-automerge@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash

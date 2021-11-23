@@ -30,10 +30,19 @@ jobs:
           npm i @goauthentik/api@$VERSION
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
+        id: cpr
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: update-web-api-client
           commit-message: "web: Update Web API Client version"
           title: "web: Update Web API Client version"
+          body: "web: Update Web API Client version"
           delete-branch: true
           signoff: true
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        uses: peter-evans/enable-pull-request-automerge@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
