@@ -53,41 +53,37 @@ export class ApplicationForm extends ModelForm<Application, string> {
         return super.styles.concat(PFDropdown);
     }
 
-    send = (data: Application): Promise<Application | void> => {
-        let writeOp: Promise<Application>;
+    send = async (data: Application): Promise<Application | void> => {
+        let app: Application;
         if (this.instance) {
-            writeOp = new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
+            app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
                 slug: this.instance.slug,
                 applicationRequest: data,
             });
         } else {
-            writeOp = new CoreApi(DEFAULT_CONFIG).coreApplicationsCreate({
+            app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsCreate({
                 applicationRequest: data,
             });
         }
-        return config().then((c) => {
-            if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
-                const icon = this.getFormFile();
-                if (icon || this.clearIcon) {
-                    return writeOp.then((app) => {
-                        return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
-                            slug: app.slug,
-                            file: icon,
-                            clear: this.clearIcon,
-                        });
-                    });
-                }
-            } else {
-                return writeOp.then((app) => {
-                    return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconUrlCreate({
-                        slug: app.slug,
-                        filePathRequest: {
-                            url: data.metaIcon || "",
-                        },
-                    });
+        const c = await config();
+        if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
+            const icon = this.getFormFile();
+            if (icon || this.clearIcon) {
+                await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
+                    slug: app.slug,
+                    file: icon,
+                    clear: this.clearIcon,
                 });
             }
-        });
+        } else {
+            await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconUrlCreate({
+                slug: app.slug,
+                filePathRequest: {
+                    url: data.metaIcon || "",
+                },
+            });
+        }
+        return app;
     };
 
     groupProviders(providers: Provider[]): TemplateResult {

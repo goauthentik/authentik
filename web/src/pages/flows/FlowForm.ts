@@ -38,41 +38,37 @@ export class FlowForm extends ModelForm<Flow, string> {
     @property({ type: Boolean })
     clearBackground = false;
 
-    send = (data: Flow): Promise<void | Flow> => {
-        let writeOp: Promise<Flow>;
+    send = async (data: Flow): Promise<void | Flow> => {
+        let flow: Flow;
         if (this.instance) {
-            writeOp = new FlowsApi(DEFAULT_CONFIG).flowsInstancesUpdate({
+            flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesUpdate({
                 slug: this.instance.slug,
                 flowRequest: data,
             });
         } else {
-            writeOp = new FlowsApi(DEFAULT_CONFIG).flowsInstancesCreate({
+            flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesCreate({
                 flowRequest: data,
             });
         }
-        return config().then((c) => {
-            if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
-                const icon = this.getFormFile();
-                if (icon || this.clearBackground) {
-                    return writeOp.then((app) => {
-                        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
-                            slug: app.slug,
-                            file: icon,
-                            clear: this.clearBackground,
-                        });
-                    });
-                }
-            } else {
-                return writeOp.then((app) => {
-                    return new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundUrlCreate({
-                        slug: app.slug,
-                        filePathRequest: {
-                            url: data.background || "",
-                        },
-                    });
+        const c = await config();
+        if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
+            const icon = this.getFormFile();
+            if (icon || this.clearBackground) {
+                await new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
+                    slug: flow.slug,
+                    file: icon,
+                    clear: this.clearBackground,
                 });
             }
-        });
+        } else {
+            await new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundUrlCreate({
+                slug: flow.slug,
+                filePathRequest: {
+                    url: data.background || "",
+                },
+            });
+        }
+        return flow;
     };
 
     renderDesignations(): TemplateResult {
