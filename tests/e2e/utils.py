@@ -53,6 +53,7 @@ class SeleniumTestCase(ChannelsLiveServerTestCase):
 
     def setUp(self):
         super().setUp()
+        # pylint: disable=invalid-name
         self.maxDiff = None
         self.wait_timeout = 60
         self.driver = self._get_driver()
@@ -91,11 +92,11 @@ class SeleniumTestCase(ChannelsLiveServerTestCase):
 
     def output_container_logs(self, container: Optional[Container] = None):
         """Output the container logs to our STDOUT"""
-        ct = container or self.container
-        self.logger.debug("--------container logs", container=ct.image.tags[0])
-        for log in ct.logs().decode().split("\n"):
-            self.logger.debug(log, container=ct.image.tags[0])
-        self.logger.debug("--------end container logs", container=ct.image.tags[0])
+        _container = container or self.container
+        self.logger.debug("--------container logs", container=_container.image.tags[0])
+        for log in _container.logs().decode().split("\n"):
+            self.logger.debug(log, container=_container.image.tags[0])
+        self.logger.debug("--------end container logs", container=_container.image.tags[0])
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
         """Optionally get container specs which will launched on setup, wait for the container to

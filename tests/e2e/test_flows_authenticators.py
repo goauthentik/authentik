@@ -25,7 +25,6 @@ class TestFlowsAuthenticator(SeleniumTestCase):
     """test flow with otp stages"""
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     def test_totp_validate(self):
@@ -55,7 +54,6 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.assert_user(self.user)
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_stages_authenticator_totp", "0006_default_setup_flow")
@@ -100,7 +98,6 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.assertTrue(TOTPDevice.objects.filter(user=self.user, confirmed=True).exists())
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_stages_authenticator_static", "0005_default_setup_flow")

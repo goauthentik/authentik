@@ -94,7 +94,6 @@ class TestSourceSAML(SeleniumTestCase):
         }
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")
@@ -161,7 +160,6 @@ class TestSourceSAML(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")
@@ -241,7 +239,6 @@ class TestSourceSAML(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")

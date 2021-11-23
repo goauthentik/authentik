@@ -81,7 +81,6 @@ class TestProviderLDAP(SeleniumTestCase):
         return outpost
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
     def test_ldap_bind_success(self):
@@ -107,7 +106,6 @@ class TestProviderLDAP(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
     def test_ldap_bind_success_ssl(self):
@@ -133,7 +131,6 @@ class TestProviderLDAP(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
     def test_ldap_bind_fail(self):
@@ -157,7 +154,6 @@ class TestProviderLDAP(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
     def test_ldap_bind_search(self):
