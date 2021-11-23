@@ -269,17 +269,17 @@ export class ApplicationForm extends ModelForm<Application, string> {
                             </ak-form-element-horizontal>`;
                         }),
                     )}
-                    <ak-form-element-horizontal label=${t`Description`} name="metaDescription">
-                        <textarea class="pf-c-form-control">
-${ifDefined(this.instance?.metaDescription)}</textarea
-                        >
-                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Publisher`} name="metaPublisher">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.metaPublisher)}"
                             class="pf-c-form-control"
                         />
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Description`} name="metaDescription">
+                        <textarea class="pf-c-form-control">
+${ifDefined(this.instance?.metaDescription)}</textarea
+                        >
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

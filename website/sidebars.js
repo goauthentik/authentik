@@ -10,11 +10,6 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Users & Groups",
-            items: ["user-group/user", "user-group/group"],
-        },
-        {
-            type: "category",
             label: "Installation",
             items: [
                 "installation/index",
@@ -26,6 +21,10 @@ module.exports = {
                 "installation/automated-install",
                 "installation/air-gapped",
             ],
+        },
+        {
+            type: "doc",
+            id: "applications",
         },
         {
             type: "category",
@@ -107,6 +106,11 @@ module.exports = {
                 "events/notifications",
                 "events/transports",
             ],
+        },
+        {
+            type: "category",
+            label: "Users & Groups",
+            items: ["user-group/user", "user-group/group"],
         },
         {
             type: "doc",
