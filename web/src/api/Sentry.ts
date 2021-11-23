@@ -34,6 +34,9 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                         if ((hint.originalException as Error | undefined)?.name == 'NetworkError') {
                             return null;
                         }
+                        if ((hint.originalException as Error | undefined)?.name.includes("fetch")) {
+                            return null;
+                        }
                     }
                     if (hint.originalException instanceof Response || hint.originalException instanceof DOMException) {
                         return null;
