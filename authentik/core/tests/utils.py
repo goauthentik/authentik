@@ -31,9 +31,8 @@ def create_test_admin_user(name: Optional[str] = None, set_password=False) -> Us
         name=uid,
         email=f"{uid}@goauthentik.io",
     )
-    if set_password:
-        user.set_password(uid)
-        user.save()
+    user.set_password(uid)
+    user.save()
     group.users.add(user)
     return user
 

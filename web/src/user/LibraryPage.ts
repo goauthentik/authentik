@@ -98,7 +98,9 @@ export class LibraryPage extends LitElement {
     renderApps(config: UIConfig): TemplateResult {
         return html`<div class="pf-l-gallery pf-m-gutter">
             ${this.apps?.results
-                .filter((app) => app.launchUrl)
+                .filter((app) => {
+                    return app.launchUrl && app.launchUrl.startsWith("http");
+                })
                 .map(
                     (app) =>
                         html`<ak-library-app
