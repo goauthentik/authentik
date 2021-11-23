@@ -40,8 +40,7 @@ class PytestTestRunner:  # pragma: no cover
         if self.keepdb:
             argv.append("--reuse-db")
 
-        if any("tests/e2e" in label for label in test_labels):
-            argv.append("-pno:randomly")
+        argv.append("-pno:randomly")
 
         argv.extend(test_labels)
         return pytest.main(argv)
