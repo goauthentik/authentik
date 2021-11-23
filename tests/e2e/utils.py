@@ -61,7 +61,7 @@ class SeleniumTestCase(ChannelsLiveServerTestCase):
         self.driver.implicitly_wait(30)
         self.wait = WebDriverWait(self.driver, self.wait_timeout)
         self.logger = get_logger()
-        self.user = create_test_admin_user(set_password=True)
+        self.user = create_test_admin_user()
         if specs := self.get_container_specs():
             self.container = self._start_container(specs)
 

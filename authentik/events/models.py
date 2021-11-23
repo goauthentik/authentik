@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Optional, Type, Union
 from uuid import uuid4
 
 from django.conf import settings
-from django.core.validators import URLValidator
 from django.db import models
 from django.http import HttpRequest
 from django.http.request import QueryDict
@@ -20,6 +19,7 @@ from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
 from authentik.events.geo import GEOIP_READER
 from authentik.events.utils import cleanse_dict, get_user, model_to_dict, sanitize_dict
+from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_client_ip, get_http_session
 from authentik.lib.utils.time import timedelta_from_string
@@ -224,7 +224,7 @@ class NotificationTransport(models.Model):
     name = models.TextField(unique=True)
     mode = models.TextField(choices=TransportMode.choices)
 
-    webhook_url = models.TextField(blank=True, validators=[URLValidator()])
+    webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
     webhook_mapping = models.ForeignKey(
         "NotificationWebhookMapping", on_delete=models.SET_DEFAULT, null=True, default=None
     )

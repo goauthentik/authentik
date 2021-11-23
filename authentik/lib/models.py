@@ -1,6 +1,7 @@
 """Generic models"""
 import re
 
+from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import models
 from django.utils.regex_helper import _lazy_re_compile
@@ -66,3 +67,11 @@ class DomainlessURLValidator(URLValidator):
             r"\Z",
             re.IGNORECASE,
         )
+        self.schemes = ["http", "https", "blank"]
+
+    def __call__(self, value):
+        # Check if the scheme is valid.
+        scheme = value.split("://")[0].lower()
+        if scheme not in self.schemes:
+            value = "default" + value
+        return super().__call__(value)

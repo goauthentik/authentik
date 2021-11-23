@@ -9,7 +9,6 @@ from deepmerge import always_merger
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
-from django.core import validators
 from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
@@ -29,7 +28,7 @@ from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
-from authentik.lib.models import CreatedUpdatedModel, SerializerModel
+from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator, SerializerModel
 from authentik.lib.utils.http import get_client_ip
 from authentik.managed.models import ManagedModel
 from authentik.policies.models import PolicyBindingModel
@@ -246,7 +245,7 @@ class Application(PolicyBindingModel):
     )
 
     meta_launch_url = models.TextField(
-        default="", blank=True, validators=[validators.URLValidator()]
+        default="", blank=True, validators=[DomainlessURLValidator()]
     )
     # For template applications, this can be set to /static/authentik/applications/*
     meta_icon = models.FileField(

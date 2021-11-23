@@ -4,7 +4,6 @@ import uuid
 from datetime import timedelta
 from typing import Iterable
 
-import django.core.validators
 import django.db.models.deletion
 from django.apps.registry import Apps
 from django.conf import settings
@@ -12,6 +11,7 @@ from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 import authentik.events.models
+import authentik.lib.models
 from authentik.events.models import EventAction, NotificationSeverity, TransportMode
 
 
@@ -826,6 +826,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="notificationtransport",
             name="webhook_url",
-            field=models.TextField(blank=True, validators=[django.core.validators.URLValidator()]),
+            field=models.TextField(
+                blank=True, validators=[authentik.lib.models.DomainlessURLValidator()]
+            ),
         ),
     ]
