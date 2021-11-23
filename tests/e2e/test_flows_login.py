@@ -2,7 +2,7 @@
 from sys import platform
 from unittest.case import skipUnless
 
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -23,4 +23,4 @@ class TestFlowsLogin(SeleniumTestCase):
         )
         self.login()
         self.wait_for_url(self.if_user_url("/library"))
-        self.assert_user(USER())
+        self.assert_user(self.user)

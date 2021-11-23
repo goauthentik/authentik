@@ -9,7 +9,7 @@ from authentik.core.models import User
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.generators import generate_key
 from authentik.stages.password.models import PasswordStage
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -63,6 +63,6 @@ class TestFlowsStageSetup(SeleniumTestCase):
         )
 
         self.wait_for_url(self.if_user_url("/library"))
-        # Because USER() is cached, we need to get the user manually here
-        user = User.objects.get(username=USER().username)
+        # Because self.user is cached, we need to get the user manually here
+        user = User.objects.get(username=self.user.username)
         self.assertTrue(user.check_password(new_password))

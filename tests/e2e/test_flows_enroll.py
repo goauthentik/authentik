@@ -16,7 +16,7 @@ from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.user_login.models import UserLoginStage
 from authentik.stages.user_write.models import UserWriteStage
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -218,10 +218,10 @@ class TestFlowsEnroll(SeleniumTestCase):
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=username]")))
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys("foo")
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
-            USER().username
+            self.user.username
         )
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=password_repeat]").send_keys(
-            USER().username
+            self.user.username
         )
         prompt_stage.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
 

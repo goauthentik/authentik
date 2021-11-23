@@ -16,7 +16,7 @@ from authentik.flows.models import Flow
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -96,29 +96,29 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-            [USER().name],
+            [self.user.name],
         )
         self.assertEqual(
             body["attr"][
                 "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
             ],
-            [USER().username],
+            [self.user.username],
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
-            [USER().username],
+            [self.user.username],
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
-            [str(USER().pk)],
+            [str(self.user.pk)],
         )
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
-            [USER().email],
+            [self.user.email],
         )
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
-            [USER().email],
+            [self.user.email],
         )
 
     @retry()
@@ -174,29 +174,29 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-            [USER().name],
+            [self.user.name],
         )
         self.assertEqual(
             body["attr"][
                 "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
             ],
-            [USER().username],
+            [self.user.username],
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
-            [USER().username],
+            [self.user.username],
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
-            [str(USER().pk)],
+            [str(self.user.pk)],
         )
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
-            [USER().email],
+            [self.user.email],
         )
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
-            [USER().email],
+            [self.user.email],
         )
 
     @retry()
@@ -243,29 +243,29 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-            [USER().name],
+            [self.user.name],
         )
         self.assertEqual(
             body["attr"][
                 "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
             ],
-            [USER().username],
+            [self.user.username],
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
-            [USER().username],
+            [self.user.username],
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
-            [str(USER().pk)],
+            [str(self.user.pk)],
         )
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
-            [USER().email],
+            [self.user.email],
         )
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
-            [USER().email],
+            [self.user.email],
         )
 
     @retry()

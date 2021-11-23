@@ -22,7 +22,7 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_PROFILE,
 )
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -146,14 +146,14 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
 
-        self.assertEqual(body["IDTokenClaims"]["nickname"], USER().username)
-        self.assertEqual(body["UserInfo"]["nickname"], USER().username)
+        self.assertEqual(body["IDTokenClaims"]["nickname"], self.user.username)
+        self.assertEqual(body["UserInfo"]["nickname"], self.user.username)
 
-        self.assertEqual(body["IDTokenClaims"]["name"], USER().name)
-        self.assertEqual(body["UserInfo"]["name"], USER().name)
+        self.assertEqual(body["IDTokenClaims"]["name"], self.user.name)
+        self.assertEqual(body["UserInfo"]["name"], self.user.name)
 
-        self.assertEqual(body["IDTokenClaims"]["email"], USER().email)
-        self.assertEqual(body["UserInfo"]["email"], USER().email)
+        self.assertEqual(body["IDTokenClaims"]["email"], self.user.email)
+        self.assertEqual(body["UserInfo"]["email"], self.user.email)
 
     @retry()
     @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
@@ -211,14 +211,14 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
 
-        self.assertEqual(body["IDTokenClaims"]["nickname"], USER().username)
-        self.assertEqual(body["UserInfo"]["nickname"], USER().username)
+        self.assertEqual(body["IDTokenClaims"]["nickname"], self.user.username)
+        self.assertEqual(body["UserInfo"]["nickname"], self.user.username)
 
-        self.assertEqual(body["IDTokenClaims"]["name"], USER().name)
-        self.assertEqual(body["UserInfo"]["name"], USER().name)
+        self.assertEqual(body["IDTokenClaims"]["name"], self.user.name)
+        self.assertEqual(body["UserInfo"]["name"], self.user.name)
 
-        self.assertEqual(body["IDTokenClaims"]["email"], USER().email)
-        self.assertEqual(body["UserInfo"]["email"], USER().email)
+        self.assertEqual(body["IDTokenClaims"]["email"], self.user.email)
+        self.assertEqual(body["UserInfo"]["email"], self.user.email)
 
     @retry()
     @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")

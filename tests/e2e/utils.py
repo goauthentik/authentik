@@ -27,14 +27,10 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.managed.manager import ObjectManager
 
 RETRIES = int(environ.get("RETRIES", "3"))
-
-# pylint: disable=invalid-name
-def USER() -> User:  # noqa
-    """Cached function that always returns akadmin"""
-    return User.objects.get(username="akadmin")
 
 
 def get_docker_tag() -> str:
@@ -53,6 +49,7 @@ class SeleniumTestCase(ChannelsLiveServerTestCase):
 
     container: Optional[Container] = None
     wait_timeout: int
+    user: User
 
     def setUp(self):
         super().setUp()
@@ -63,6 +60,7 @@ class SeleniumTestCase(ChannelsLiveServerTestCase):
         self.driver.implicitly_wait(30)
         self.wait = WebDriverWait(self.driver, self.wait_timeout)
         self.logger = get_logger()
+        self.user = create_test_admin_user(set_password=True)
         if specs := self.get_container_specs():
             self.container = self._start_container(specs)
 
@@ -162,7 +160,7 @@ class SeleniumTestCase(ChannelsLiveServerTestCase):
 
         identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").click()
         identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
-            USER().username
+            self.user.username
         )
         identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
             Keys.ENTER
@@ -171,7 +169,7 @@ class SeleniumTestCase(ChannelsLiveServerTestCase):
         flow_executor = self.get_shadow_root("ak-flow-executor")
         password_stage = self.get_shadow_root("ak-stage-password", flow_executor)
         password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
-            USER().username
+            self.user.username
         )
         password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(Keys.ENTER)
         sleep(1)

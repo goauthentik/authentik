@@ -20,7 +20,7 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_PROFILE,
 )
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -147,19 +147,19 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.get("http://localhost:3000/profile")
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
-            USER().name,
+            self.user.name,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
-            USER().name,
+            self.user.name,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
 
     @retry()
@@ -204,19 +204,19 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.get("http://localhost:3000/profile")
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
-            USER().name,
+            self.user.name,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
-            USER().name,
+            self.user.name,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
         self.driver.get("http://localhost:3000/logout")
         self.wait_for_url(
@@ -286,19 +286,19 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
-            USER().name,
+            self.user.name,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
-            USER().name,
+            self.user.name,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
 
     @retry()

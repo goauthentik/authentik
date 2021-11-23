@@ -22,7 +22,7 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_PROFILE,
 )
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -148,9 +148,9 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         sleep(1)
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
         print(body)
-        self.assertEqual(body["profile"]["nickname"], USER().username)
-        self.assertEqual(body["profile"]["name"], USER().name)
-        self.assertEqual(body["profile"]["email"], USER().email)
+        self.assertEqual(body["profile"]["nickname"], self.user.username)
+        self.assertEqual(body["profile"]["name"], self.user.name)
+        self.assertEqual(body["profile"]["email"], self.user.email)
 
     @retry()
     @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
@@ -210,9 +210,9 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         sleep(1)
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
 
-        self.assertEqual(body["profile"]["nickname"], USER().username)
-        self.assertEqual(body["profile"]["name"], USER().name)
-        self.assertEqual(body["profile"]["email"], USER().email)
+        self.assertEqual(body["profile"]["nickname"], self.user.username)
+        self.assertEqual(body["profile"]["name"], self.user.name)
+        self.assertEqual(body["profile"]["email"], self.user.email)
 
     @retry()
     @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")

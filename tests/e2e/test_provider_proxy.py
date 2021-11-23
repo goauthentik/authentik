@@ -16,7 +16,7 @@ from authentik.flows.models import Flow
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
 from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -62,9 +62,8 @@ class TestProviderProxy(SeleniumTestCase):
     def test_proxy_simple(self):
         """Test simple outpost setup with single provider"""
         # set additionalHeaders to test later
-        user = USER()
-        user.attributes["additionalHeaders"] = {"X-Foo": "bar"}
-        user.save()
+        self.user.attributes["additionalHeaders"] = {"X-Foo": "bar"}
+        self.user.save()
 
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name="proxy_provider",
