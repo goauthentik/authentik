@@ -10,7 +10,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.crypto.models import CertificateKeyPair
@@ -18,8 +17,6 @@ from authentik.flows.models import Flow
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
-
-LOGGER = get_logger()
 
 IDP_CERT = """-----BEGIN CERTIFICATE-----
 MIIDXTCCAkWgAwIBAgIJALmVVuDWu4NYMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV

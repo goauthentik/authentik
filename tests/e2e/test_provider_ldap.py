@@ -79,6 +79,7 @@ class TestProviderLDAP(SeleniumTestCase):
                     break
             healthcheck_retries += 1
             sleep(0.5)
+        sleep(5)
         return user, outpost
 
     @retry()
@@ -196,7 +197,7 @@ class TestProviderLDAP(SeleniumTestCase):
         for obj in response:
             del obj["raw_attributes"]
             del obj["raw_dn"]
-        o_user = outpost.suer
+        o_user = outpost.user
         self.assertCountEqual(
             response,
             [

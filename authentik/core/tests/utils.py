@@ -22,7 +22,7 @@ def create_test_flow(designation: FlowDesignation = FlowDesignation.STAGE_CONFIG
     )
 
 
-def create_test_admin_user(name: Optional[str] = None, set_password = False) -> User:
+def create_test_admin_user(name: Optional[str] = None, set_password=False) -> User:
     """Generate a test-admin user"""
     uid = generate_id(20) if not name else name
     group = Group.objects.create(name=uid, is_superuser=True)

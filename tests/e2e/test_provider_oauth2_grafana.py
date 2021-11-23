@@ -7,7 +7,6 @@ from unittest.case import skipUnless
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
@@ -22,8 +21,6 @@ from authentik.providers.oauth2.constants import (
 )
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
 from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
-
-LOGGER = get_logger()
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")

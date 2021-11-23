@@ -12,7 +12,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from structlog.stdlib import get_logger
 from yaml import safe_dump
 
 from authentik.core.models import User
@@ -25,7 +24,6 @@ from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 CONFIG_PATH = "/tmp/dex.yml"  # nosec
-LOGGER = get_logger()
 
 
 class OAUth1Type(SourceType):
