@@ -4,7 +4,6 @@ from time import sleep
 from typing import Any, Optional
 from unittest.case import skipUnless
 
-from django.test import override_settings
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -111,7 +110,6 @@ class TestFlowsEnroll(SeleniumTestCase):
     @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
-    @override_settings(EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend")
     def test_enroll_email(self):
         """Test enroll with Email verification"""
         # First stage fields

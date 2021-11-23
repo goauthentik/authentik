@@ -1,6 +1,6 @@
 """email tests"""
 from smtplib import SMTPException
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
@@ -42,7 +42,10 @@ class TestEmailStageSending(APITestCase):
         session.save()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        with self.settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"):
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
             response = self.client.post(url)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(mail.outbox), 1)
@@ -64,7 +67,10 @@ class TestEmailStageSending(APITestCase):
         session.save()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        with self.settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"):
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
             with patch(
                 "django.core.mail.backends.locmem.EmailBackend.send_messages",
                 MagicMock(side_effect=[SMTPException, EmailBackend.send_messages]),

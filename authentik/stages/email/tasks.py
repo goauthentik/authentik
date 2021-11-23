@@ -83,7 +83,7 @@ def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Opti
         message_object.extra_headers["Message-ID"] = message_id
 
         LOGGER.debug("Sending mail", to=message_object.to)
-        stage.backend.send_messages([message_object])
+        backend.send_messages([message_object])
         Event.new(
             EventAction.EMAIL_SENT,
             message=(f"Email to {', '.join(message_object.to)} sent"),
