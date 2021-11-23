@@ -82,7 +82,6 @@ class TestProviderProxy(SeleniumTestCase):
             type=OutpostType.PROXY,
         )
         outpost.providers.add(proxy)
-        outpost.save()
         outpost.build_user_permissions(outpost.user)
 
         self.proxy_container = self.start_proxy(outpost)
@@ -102,7 +101,7 @@ class TestProviderProxy(SeleniumTestCase):
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn("X-Forwarded-Preferred-Username: akadmin", full_body_text)
+        self.assertIn(f"X-authentik-username: {self.user.username}", full_body_text)
         self.assertIn("X-Foo: bar", full_body_text)
 
         self.driver.get("http://localhost:9000/akprox/sign_out")
@@ -145,7 +144,6 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
             _config=asdict(OutpostConfig(authentik_host=self.live_server_url, log_level="debug")),
         )
         outpost.providers.add(proxy)
-        outpost.save()
         outpost.build_user_permissions(outpost.user)
 
         # Wait until outpost healthcheck succeeds
