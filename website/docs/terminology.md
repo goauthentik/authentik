@@ -25,17 +25,21 @@ A Provider is a way for other applications to authenticate against authentik. Co
 
 At a base level a policy is a yes/no gate. It will either evaluate to True or False depending on the Policy Kind and settings. For example, a "Group Membership Policy" evaluates to True if the user is member of the specified Group and False if not. This can be used to conditionally apply Stages, grant/deny access to various objects, and for other custom logic.
 
-### Stages
+See [Policies](./policies/index.md)
+
+### Stages & Stages
+
+Flows are an ordered sequence of stages. These flows can be used to define how a user authenticates, enrolls, etc.
 
 A stage represents a single verification or logic step. They are used to authenticate users, enroll users, and more. These stages can optionally be applied to a flow via policies.
 
-### Flows
-
-Flows are an ordered sequence of stages. These flows can be used to define how a user authenticates, enrolls, etc.
+See [Flows](./flow/flows.md)
 
 ### Property Mappings
 
 Property Mappings allow you to make information available for external applications. For example, if you want to login to AWS with authentik, you'd use Property Mappings to set the user's roles in AWS based on their group memberships in authentik.
+
+See [Property Mappings](./property-mappings/index.md)
 
 ### Outpost
 

@@ -1,7 +1,6 @@
 """Generic models"""
 import re
 
-from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import models
 from django.utils.regex_helper import _lazy_re_compile
