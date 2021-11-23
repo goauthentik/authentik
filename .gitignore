@@ -66,7 +66,9 @@ coverage.xml
 unittest.xml
 
 # Translations
-*.mo
+# Have to include binary mo files as they are annoying to compile at build time
+# since a full postgres and redis instance are required
+# *.mo
 
 # Django stuff:
 

@@ -67,7 +67,6 @@ class TestProviderLDAP(SeleniumTestCase):
             _config=asdict(OutpostConfig(log_level="debug")),
         )
         outpost.providers.add(ldap)
-        outpost.save()
 
         self.ldap_container = self.start_ldap(outpost)
 
