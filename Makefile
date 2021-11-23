@@ -7,13 +7,13 @@ NPM_VERSION = $(shell python -m scripts.npm_version)
 all: lint-fix lint test gen
 
 test-integration:
-	coverage run manage.py test -v 3 tests/integration
+	coverage run manage.py test tests/integration
 
 test-e2e:
-	coverage run manage.py test --failfast -v 3 tests/e2e
+	coverage run manage.py test --failfast tests/e2e
 
 test:
-	coverage run manage.py test -v 3 authentik
+	coverage run manage.py test authentik
 	coverage html
 	coverage report
 
