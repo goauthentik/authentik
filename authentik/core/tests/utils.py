@@ -22,7 +22,7 @@ def create_test_flow(designation: FlowDesignation = FlowDesignation.STAGE_CONFIG
     )
 
 
-def create_test_admin_user(name: Optional[str] = None) -> User:
+def create_test_admin_user(name: Optional[str] = None, set_password = False) -> User:
     """Generate a test-admin user"""
     uid = generate_id(20) if not name else name
     group = Group.objects.create(name=uid, is_superuser=True)
@@ -31,7 +31,8 @@ def create_test_admin_user(name: Optional[str] = None) -> User:
         name=uid,
         email=f"{uid}@goauthentik.io",
     )
-    user.set_password(uid)
+    if set_password:
+        user.set_password(uid)
     group.users.add(user)
     return user
 
