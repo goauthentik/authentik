@@ -26,11 +26,12 @@ def create_test_admin_user(name: Optional[str] = None) -> User:
     """Generate a test-admin user"""
     uid = generate_id(20) if not name else name
     group = Group.objects.create(name=uid, is_superuser=True)
-    user = User.objects.create(
+    user: User = User.objects.create(
         username=uid,
         name=uid,
         email=f"{uid}@goauthentik.io",
     )
+    user.set_password(uid)
     group.users.add(user)
     return user
 
