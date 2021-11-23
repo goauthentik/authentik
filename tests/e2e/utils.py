@@ -6,8 +6,8 @@ from os import environ, makedirs
 from time import sleep, time
 from typing import Any, Callable, Optional
 
+from channels.testing import ChannelsLiveServerTestCase
 from django.apps import apps
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection
 from django.db.migrations.loader import MigrationLoader
 from django.db.migrations.operations.special import RunPython
@@ -48,7 +48,7 @@ def get_docker_tag() -> str:
     return f"gh-{branch_name}"
 
 
-class SeleniumTestCase(StaticLiveServerTestCase):
+class SeleniumTestCase(ChannelsLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
     container: Optional[Container] = None
