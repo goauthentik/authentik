@@ -13,6 +13,6 @@ def generate_key(length=128):
     """Generate a suitable client secret"""
     rand = SystemRandom()
     return "".join(
-        rand.choice(string.ascii_letters + string.digits + string.punctuation + string.punctuation)
+        rand.choice(string.ascii_letters + string.digits + string.punctuation)
         for x in range(length)
     )

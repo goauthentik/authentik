@@ -66,7 +66,7 @@ class DomainlessURLValidator(URLValidator):
             r"\Z",
             re.IGNORECASE,
         )
-        self.schemes = ["http", "https", "blank"]
+        self.schemes = ["http", "https", "blank"] + list(self.schemes)
 
     def __call__(self, value):
         # Check if the scheme is valid.
