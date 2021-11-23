@@ -33,6 +33,7 @@ def create_test_admin_user(name: Optional[str] = None, set_password=False) -> Us
     )
     if set_password:
         user.set_password(uid)
+        user.save()
     group.users.add(user)
     return user
 
