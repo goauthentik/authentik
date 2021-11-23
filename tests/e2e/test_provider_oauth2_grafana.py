@@ -24,7 +24,6 @@ from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, Scope
 from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
 
 LOGGER = get_logger()
-APPLICATION_SLUG = "grafana"
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -34,6 +33,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
     def setUp(self):
         self.client_id = generate_id()
         self.client_secret = generate_key()
+        self.app_slug = generate_id(20)
         super().setUp()
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
@@ -60,7 +60,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 "GF_AUTH_SIGNOUT_REDIRECT_URL": (
                     self.url(
                         "authentik_core:if-session-end",
-                        application_slug=APPLICATION_SLUG,
+                        application_slug=self.app_slug,
                     )
                 ),
                 "GF_LOG_LEVEL": "debug",
@@ -97,7 +97,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="Grafana",
-            slug=APPLICATION_SLUG,
+            slug=self.app_slug,
             provider=provider,
         )
 
@@ -137,10 +137,9 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 scope_name__in=[SCOPE_OPENID, SCOPE_OPENID_EMAIL, SCOPE_OPENID_PROFILE]
             )
         )
-        provider.save()
         Application.objects.create(
             name="Grafana",
-            slug=APPLICATION_SLUG,
+            slug=self.app_slug,
             provider=provider,
         )
 
@@ -197,7 +196,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="Grafana",
-            slug=APPLICATION_SLUG,
+            slug=self.app_slug,
             provider=provider,
         )
 
@@ -226,7 +225,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.wait_for_url(
             self.url(
                 "authentik_core:if-session-end",
-                application_slug=APPLICATION_SLUG,
+                application_slug=self.app_slug,
             )
         )
         self.driver.find_element(By.ID, "logout").click()
@@ -262,7 +261,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider.save()
         app = Application.objects.create(
             name="Grafana",
-            slug=APPLICATION_SLUG,
+            slug=self.app_slug,
             provider=provider,
         )
 
@@ -335,7 +334,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider.save()
         app = Application.objects.create(
             name="Grafana",
-            slug=APPLICATION_SLUG,
+            slug=self.app_slug,
             provider=provider,
         )
 

@@ -6,7 +6,6 @@ from typing import Any, Optional
 from unittest.case import skipUnless
 from unittest.mock import Mock, patch
 
-from django.test import override_settings
 from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -178,43 +177,6 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
-
-    @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0009_source_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
-    @override_settings(SESSION_COOKIE_SAMESITE="strict")
-    def test_oauth_samesite_strict(self):
-        """test OAuth Source With SameSite set to strict
-        (=will fail because session is not carried over)"""
-        self.create_objects()
-        self.driver.get(self.live_server_url)
-
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
-        wait = WebDriverWait(identification_stage, self.wait_timeout)
-
-        wait.until(
-            ec.presence_of_element_located(
-                (By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button")
-            )
-        )
-        identification_stage.find_element(
-            By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button"
-        ).click()
-
-        # Now we should be at the IDP, wait for the login field
-        self.wait.until(ec.presence_of_element_located((By.ID, "login")))
-        self.driver.find_element(By.ID, "login").send_keys("admin@example.com")
-        self.driver.find_element(By.ID, "password").send_keys("password")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
-
-        # Wait until we're logged in
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
-        self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
     @retry()
     @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
