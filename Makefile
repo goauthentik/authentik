@@ -10,7 +10,7 @@ test-integration:
 	coverage run manage.py test tests/integration
 
 test-e2e:
-	coverage run manage.py test --failfast tests/e2e
+	coverage run manage.py test tests/e2e
 
 test:
 	coverage run manage.py test authentik

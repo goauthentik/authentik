@@ -51,6 +51,14 @@ module.exports = {
                 "outposts/embedded/embedded",
                 {
                     type: "category",
+                    label: "Integrations",
+                    items: [
+                        "outposts/integrations/docker",
+                        "outposts/integrations/kubernetes",
+                    ],
+                },
+                {
+                    type: "category",
                     label: "Running and upgrading",
                     items: [
                         "outposts/manual-deploy-docker-compose",
