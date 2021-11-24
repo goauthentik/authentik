@@ -955,10 +955,6 @@ msgstr ""
 "Schlüsselpaar, das zum Signieren ausgehender Antworten an den Dienstanbieter"
 " verwendet wird."
 
-#: authentik/providers/saml/models.py:150
-msgid "Signing Keypair"
-msgstr "Schlüsselpaar für Signierung"
-
 #: authentik/providers/saml/models.py:180
 msgid "SAML Provider"
 msgstr "SAML Anbieter"
