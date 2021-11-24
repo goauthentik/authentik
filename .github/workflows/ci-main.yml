@@ -38,7 +38,7 @@ jobs:
         with:
           node-version: '16'
       - id: cache-pipenv
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -56,7 +56,7 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -80,7 +80,7 @@ jobs:
         run: |
           python ./scripts/gh_env.py
       - id: cache-pipenv
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -120,7 +120,7 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -149,7 +149,7 @@ jobs:
         with:
           python-version: '3.9'
       - id: cache-pipenv
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -188,7 +188,7 @@ jobs:
         with:
           domain: ${{github.repository_owner}}
       - id: cache-pipenv
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
@@ -199,7 +199,7 @@ jobs:
           scripts/ci_prepare.sh
           docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
