@@ -27816,7 +27816,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: Singing Keypair
+          title: Signing Keypair
           description: Keypair which is used to sign outgoing requests. Leave empty
             to disable signing.
         digest_algorithm:
@@ -29489,7 +29489,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: Singing Keypair
+          title: Signing Keypair
           description: Keypair which is used to sign outgoing requests. Leave empty
             to disable signing.
         digest_algorithm:
@@ -29578,7 +29578,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: Singing Keypair
+          title: Signing Keypair
           description: Keypair which is used to sign outgoing requests. Leave empty
             to disable signing.
         digest_algorithm:

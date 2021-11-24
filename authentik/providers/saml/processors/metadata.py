@@ -36,7 +36,7 @@ class MetadataProcessor:
         self.xml_id = get_random_id()
 
     def get_signing_key_descriptor(self) -> Optional[Element]:
-        """Get Singing KeyDescriptor, if enabled for the provider"""
+        """Get Signing KeyDescriptor, if enabled for the provider"""
         if not self.provider.signing_kp:
             return None
         key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")

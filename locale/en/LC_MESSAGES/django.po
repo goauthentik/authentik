@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-23 18:09+0000\n"
+"POT-Creation-Date: 2021-11-24 08:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,99 +39,99 @@ msgstr ""
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr ""
 
-#: authentik/core/models.py:70
+#: authentik/core/models.py:69
 msgid "name"
 msgstr ""
 
-#: authentik/core/models.py:72
+#: authentik/core/models.py:71
 msgid "Users added to this group will be superusers."
 msgstr ""
 
-#: authentik/core/models.py:130
+#: authentik/core/models.py:129
 msgid "User's display name."
 msgstr ""
 
-#: authentik/core/models.py:197 authentik/providers/oauth2/models.py:315
+#: authentik/core/models.py:196 authentik/providers/oauth2/models.py:315
 msgid "User"
 msgstr ""
 
-#: authentik/core/models.py:198
+#: authentik/core/models.py:197
 msgid "Users"
 msgstr ""
 
-#: authentik/core/models.py:209
+#: authentik/core/models.py:208
 msgid "Flow used when authorizing this provider."
 msgstr ""
 
-#: authentik/core/models.py:242
+#: authentik/core/models.py:241
 msgid "Application's display Name."
 msgstr ""
 
-#: authentik/core/models.py:243
+#: authentik/core/models.py:242
 msgid "Internal application name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:290
+#: authentik/core/models.py:289
 msgid "Application"
 msgstr ""
 
-#: authentik/core/models.py:291
+#: authentik/core/models.py:290
 msgid "Applications"
 msgstr ""
 
-#: authentik/core/models.py:297
+#: authentik/core/models.py:296
 msgid "Use the source-specific identifier"
 msgstr ""
 
-#: authentik/core/models.py:305
+#: authentik/core/models.py:304
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr ""
 
-#: authentik/core/models.py:314
+#: authentik/core/models.py:313
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
 msgstr ""
 
-#: authentik/core/models.py:321
+#: authentik/core/models.py:320
 msgid "Source's display Name."
 msgstr ""
 
-#: authentik/core/models.py:322
+#: authentik/core/models.py:321
 msgid "Internal source name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:333
+#: authentik/core/models.py:332
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
-#: authentik/core/models.py:342
+#: authentik/core/models.py:341
 msgid "Flow to use when enrolling new users."
 msgstr ""
 
-#: authentik/core/models.py:474
+#: authentik/core/models.py:473
 msgid "Token"
 msgstr ""
 
-#: authentik/core/models.py:475
+#: authentik/core/models.py:474
 msgid "Tokens"
 msgstr ""
 
-#: authentik/core/models.py:518
+#: authentik/core/models.py:517
 msgid "Property Mapping"
 msgstr ""
 
-#: authentik/core/models.py:519
+#: authentik/core/models.py:518
 msgid "Property Mappings"
 msgstr ""
 
-#: authentik/core/models.py:555
+#: authentik/core/models.py:554
 msgid "Authenticated Session"
 msgstr ""
 
-#: authentik/core/models.py:556
+#: authentik/core/models.py:555
 msgid "Authenticated Sessions"
 msgstr ""
 
@@ -892,7 +892,7 @@ msgstr ""
 msgid "Keypair used to sign outgoing Responses going to the Service Provider."
 msgstr ""
 
-#: authentik/providers/saml/models.py:150
+#: authentik/providers/saml/models.py:150 authentik/sources/saml/models.py:119
 msgid "Signing Keypair"
 msgstr ""
 
@@ -1194,10 +1194,6 @@ msgstr ""
 
 #: authentik/sources/saml/models.py:103
 msgid "Delete temporary users after"
-msgstr ""
-
-#: authentik/sources/saml/models.py:119
-msgid "Singing Keypair"
 msgstr ""
 
 #: authentik/sources/saml/models.py:121

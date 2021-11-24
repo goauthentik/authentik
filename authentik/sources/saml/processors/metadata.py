@@ -30,7 +30,7 @@ class MetadataProcessor:
         self.http_request = request
 
     def get_signing_key_descriptor(self) -> Optional[Element]:
-        """Get Singing KeyDescriptor, if enabled for the source"""
+        """Get Signing KeyDescriptor, if enabled for the source"""
         if self.source.signing_kp:
             key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
             key_descriptor.attrib["use"] = "signing"

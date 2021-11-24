@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # Vrifox, 2021
 # Lars Lehmann <lars@lars-lehmann.net>, 2021
 # Johannes —/—, 2021
 # flip yksflip, 2021
 # Rhea Alleen, 2021
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -1274,7 +1274,7 @@ msgid "Delete temporary users after"
 msgstr "Temporäre Benutzer  danach löschen"
 
 #: authentik/sources/saml/models.py:119
-msgid "Singing Keypair"
+msgid "Signing Keypair"
 msgstr "Signierendes Schlüsselpaar"
 
 #: authentik/sources/saml/models.py:121

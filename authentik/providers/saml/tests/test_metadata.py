@@ -68,7 +68,7 @@ class TestServiceProviderMetadataParser(TestCase):
         self.flow = create_test_flow()
 
     def test_simple(self):
-        """Test simple metadata without Singing"""
+        """Test simple metadata without Signing"""
         metadata = ServiceProviderMetadataParser().parse(METADATA_SIMPLE)
         provider = metadata.to_provider("test", self.flow)
         self.assertEqual(provider.acs_url, "http://localhost:8080/saml/acs")

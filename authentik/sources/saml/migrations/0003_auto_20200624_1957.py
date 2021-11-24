@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 help_text="Certificate Key Pair of the IdP which Assertion's Signature is validated against.",
                 on_delete=django.db.models.deletion.PROTECT,
                 to="authentik_crypto.CertificateKeyPair",
-                verbose_name="Singing Keypair",
+                verbose_name="Signing Keypair",
             ),
         ),
         migrations.AlterField(
