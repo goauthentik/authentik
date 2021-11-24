@@ -95,13 +95,14 @@ class TestProviderProxy(SeleniumTestCase):
                     break
             healthcheck_retries += 1
             sleep(0.5)
+        sleep(5)
 
         self.driver.get("http://localhost:9000")
         self.login()
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn(f"X-authentik-username: {self.user.username}", full_body_text)
+        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
         self.assertIn("X-Foo: bar", full_body_text)
 
         self.driver.get("http://localhost:9000/akprox/sign_out")
