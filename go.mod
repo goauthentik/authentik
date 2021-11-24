@@ -10,7 +10,7 @@ require (
 	github.com/getsentry/sentry-go v0.11.0
 	github.com/go-ldap/ldap/v3 v3.4.1
 	github.com/go-openapi/runtime v0.21.0
-	github.com/go-openapi/strfmt v0.21.0
+	github.com/go-openapi/strfmt v0.21.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0
