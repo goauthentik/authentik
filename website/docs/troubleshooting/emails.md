@@ -4,7 +4,7 @@ title: Troubleshooting Email sending
 
 To test if an email stage, or the global email settings are configured correctly, you can run the following command:
 
-````
+```
 ak test_email <to address> [-s <stage name>]
 ```
 
