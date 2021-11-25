@@ -183,4 +183,7 @@ class ConfigLoader:
 CONFIG = ConfigLoader()
 
 if __name__ == "__main__":
-    print(CONFIG.y(argv[1]))
+    if len(argv) < 2:
+        print(dumps(CONFIG.raw, indent=4))
+    else:
+        print(CONFIG.y(argv[1]))

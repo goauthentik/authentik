@@ -1,11 +1,12 @@
 #!/bin/bash -e
-python -m lifecycle.wait_for_db
-
 function log {
     printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" > /dev/stderr
 }
 
-log "Bootstrap completed"
+function wait_for_db {
+    python -m lifecycle.wait_for_db
+    log "Bootstrap completed"
+}
 
 function check_if_root {
     if [[ $EUID -ne 0 ]]; then
@@ -58,6 +59,7 @@ function restore {
 MODE_FILE="/tmp/authentik-mode"
 
 if [[ "$1" == "server" ]]; then
+    wait_for_db
     echo "server" > $MODE_FILE
     # We only set prometheus_multiproc_dir for serer, as with the worker it just fills up the disk
     export prometheus_multiproc_dir=/dev/shm/
@@ -67,8 +69,10 @@ elif [[ "$1" == "worker" ]]; then
     echo "worker" > $MODE_FILE
     check_if_root "celery -A authentik.root.celery worker --autoscale 3,1 -E -B -s /tmp/celerybeat-schedule -Q authentik,authentik_scheduled,authentik_events"
 elif [[ "$1" == "backup" ]]; then
+    wait_for_db
     python -m manage dbbackup --clean
 elif [[ "$1" == "restore" ]]; then
+    wait_for_db
     restore $@
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
@@ -84,6 +88,8 @@ elif [[ "$1" == "healthcheck" ]]; then
     elif [[ $mode == "worker" ]]; then
         celery -A authentik.root.celery inspect ping -d celery@$HOSTNAME --timeout 5 -j
     fi
+elif [[ "$1" == "dump_config" ]]; then
+    python -m authentik.lib.config
 else
     python -m manage "$@"
 fi
