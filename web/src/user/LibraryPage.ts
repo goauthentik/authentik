@@ -99,7 +99,15 @@ export class LibraryPage extends LitElement {
         return html`<div class="pf-l-gallery pf-m-gutter">
             ${this.apps?.results
                 .filter((app) => {
-                    return app.launchUrl && app.launchUrl.startsWith("http");
+                    if (app.launchUrl) {
+                        // If the launch URL is a full URL, only show with http or https
+                        if (app.launchUrl.indexOf("://") !== -1) {
+                            return app.launchUrl.startsWith("http");
+                        }
+                        // If the URL doesn't include a protocol, assume its a relative path
+                        return true;
+                    }
+                    return false;
                 })
                 .map(
                     (app) =>
