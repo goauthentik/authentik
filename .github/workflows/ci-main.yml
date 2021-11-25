@@ -41,7 +41,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -59,7 +59,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -83,7 +83,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: checkout stable
         run: |
           # Copy current, latest config to local
@@ -123,7 +123,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -152,7 +152,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -191,7 +191,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
