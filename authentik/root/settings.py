@@ -18,6 +18,7 @@ from hashlib import sha512
 from json import dumps
 from tempfile import gettempdir
 from time import time
+from urllib.parse import quote
 
 import structlog
 from celery.schedules import crontab
@@ -223,7 +224,7 @@ CACHES = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": (
             f"{REDIS_PROTOCOL_PREFIX}:"
-            f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+            f"{quote(CONFIG.y('redis.password'))}@{quote(CONFIG.y('redis.host'))}:"
             f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.cache_db')}"
         ),
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
