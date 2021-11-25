@@ -83,8 +83,8 @@ class ConfigLoader:
             try:
                 with open(url.path, "r", encoding="utf8") as _file:
                     value = _file.read()
-            except OSError:
-                self._log("error", f"Failed to read config value from {url.path}")
+            except OSError as exc:
+                self._log("error", f"Failed to read config value from {url.path}: {exc}")
                 value = url.query
         return value
 
