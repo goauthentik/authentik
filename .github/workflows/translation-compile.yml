@@ -4,6 +4,9 @@ on:
     branches: [ master ]
     paths:
       - '/locale/'
+  pull_request:
+    paths:
+      - '/locale/'
   schedule:
   - cron: "0 */2 * * *"
   workflow_dispatch:

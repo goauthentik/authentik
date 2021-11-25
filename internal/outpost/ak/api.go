@@ -6,6 +6,9 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/go-openapi/strfmt"
@@ -87,8 +90,9 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		instanceUUID: uuid.New(),
 		Outpost:      outpost,
 	}
-	ac.logger.WithField("offset", ac.reloadOffset).Debug("HA Reload offset")
+	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
 	ac.initWS(akURL, strfmt.UUID(outpost.Pk))
+	ac.configureRefreshSignal()
 	return ac
 }
 
@@ -105,6 +109,21 @@ func (a *APIController) Start() error {
 		}
 	}()
 	return nil
+}
+
+func (a *APIController) configureRefreshSignal() {
+	s := make(chan os.Signal, 1)
+	go func() {
+		for {
+			<-s
+			err := a.OnRefresh()
+			if err != nil {
+				a.logger.WithError(err).Warning("failed to refresh")
+			}
+		}
+	}()
+	signal.Notify(s, syscall.SIGUSR1)
+	a.logger.Debug("Enabled USR1 hook to reload")
 }
 
 func (a *APIController) OnRefresh() error {
