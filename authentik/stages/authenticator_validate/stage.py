@@ -5,6 +5,7 @@ from rest_framework.fields import CharField, IntegerField, JSONField, ListField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
+from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
 from authentik.flows.models import NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -148,6 +149,16 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 LOGGER.debug("Authenticator not configured, denying")
                 return self.executor.stage_invalid()
             if stage.not_configured_action == NotConfiguredAction.CONFIGURE:
+                if not stage.configuration_stage:
+                    Event.new(
+                        EventAction.CONFIGURATION_ERROR,
+                        message=(
+                            "Authenticator validation stage is set to configure user "
+                            "but no configuration flow is set."
+                        ),
+                        stage=self,
+                    ).from_http(self.request).set_user(user).save()
+                    return self.executor.stage_invalid()
                 LOGGER.debug("Authenticator not configured, sending user to configure")
                 # Because the foreign key to stage.configuration_stage points to
                 # a base stage class, we need to do another lookup
