@@ -43,15 +43,16 @@ while True:
 REDIS_PROTOCOL_PREFIX = "redis://"
 if CONFIG.y_bool("redis.tls", False):
     REDIS_PROTOCOL_PREFIX = "rediss://"
+REDIS_URL = (
+    f"{REDIS_PROTOCOL_PREFIX}:"
+    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
+    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.ws_db')}"
+)
 while True:
     try:
-        redis = Redis.from_url(
-            f"{REDIS_PROTOCOL_PREFIX}:"
-            f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
-            f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.ws_db')}"
-        )
+        redis = Redis.from_url(REDIS_URL)
         redis.ping()
         break
     except RedisError as exc:
         sleep(1)
-        j_print(f"Redis Connection failed, retrying... ({exc})")
+        j_print(f"Redis Connection failed, retrying... ({exc})", redis_url=REDIS_URL)
