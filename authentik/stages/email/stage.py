@@ -63,14 +63,13 @@ class EmailStageView(ChallengeStageView):
         valid_delta = timedelta(
             minutes=current_stage.token_expiry + 1
         )  # + 1 because django timesince always rounds down
-        token_filters = {
-            "user": pending_user,
-            "identifier": slugify(f"ak-email-stage-{current_stage.name}-{pending_user}"),
-        }
+        identifier = slugify(f"ak-email-stage-{current_stage.name}-{pending_user}")
         # Don't check for validity here, we only care if the token exists
-        tokens = Token.objects.filter(**token_filters)
+        tokens = Token.objects.filter(identifier=identifier)
         if not tokens.exists():
-            return Token.objects.create(expires=now() + valid_delta, **token_filters)
+            return Token.objects.create(
+                expires=now() + valid_delta, user=pending_user, identifier=identifier
+            )
         token = tokens.first()
         # Check if token is expired and rotate key if so
         if token.is_expired:
