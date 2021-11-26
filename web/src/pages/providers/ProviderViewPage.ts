@@ -70,11 +70,7 @@ export class ProviderViewPage extends LitElement {
             >
             </ak-page-header>
             <ak-tabs>
-                <section
-                    slot="page-overview"
-                    data-tab-title="${t`Overview`}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
+                <section slot="page-overview" data-tab-title="${t`Overview`}">
                     ${this.renderProvider()}
                 </section>
                 <section

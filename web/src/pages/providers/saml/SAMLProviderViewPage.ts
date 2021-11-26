@@ -106,7 +106,7 @@ export class SAMLProviderViewPage extends LitElement {
                       ${t`Warning: Provider is not used by an Application.`}
                   </div>`
         }
-            <div class="pf-l-grid pf-m-gutter">
+            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
                         <dl class="pf-c-description-list pf-m-3-col-on-lg">
