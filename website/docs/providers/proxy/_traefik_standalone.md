@@ -3,7 +3,7 @@ http:
   middlewares:
     authentik:
       forwardAuth:
-        address: http://authentik-outpost-example-outpost:9000/akprox/auth/traefik
+        address: http://outpost.company:9000/akprox/auth/traefik
         trustForwardHeader: true
         authResponseHeaders:
           - Set-Cookie
@@ -14,13 +14,13 @@ http:
           - X-authentik-uid
   routers:
     default-router:
-      rule: "Host(`*external host that you configured in authentik*`)"
+      rule: "Host(`app.company`)"
       middlewares:
         - name: authentik
       priority: 10
       services: # Unchanged
-    default-router-auth
-      match: "Host(`*external host that you configured in authentik*`) && PathPrefix(`/akprox/`)"
+    default-router-auth:
+      match: "Host(`app.company`) && PathPrefix(`/akprox/`)"
       priority: 15
       services: http://*ip of your outpost*:9000/akprox
 ```

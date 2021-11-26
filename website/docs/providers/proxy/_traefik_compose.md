@@ -45,10 +45,10 @@ services:
     labels:
       traefik.enable: true
       traefik.port: 9000
-      traefik.http.routers.authentik.rule: Host(`*external host that you configured in authentik*`) && PathPrefix(`/akprox/`)
+      traefik.http.routers.authentik.rule: Host(`app.company`) && PathPrefix(`/akprox/`)
       traefik.http.routers.authentik.entrypoints: https
       traefik.http.routers.authentik.tls: true
-      traefik.http.middlewares.authentik.forwardauth.address: http://authentik_proxy:9000/akprox/auth/traefik
+      traefik.http.middlewares.authentik.forwardauth.address: http://app.company:9000/akprox/auth/traefik
       traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
       traefik.http.middlewares.authentik.forwardauth.authResponseHeaders: Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid
     restart: unless-stopped
@@ -57,7 +57,7 @@ services:
     image: containous/whoami
     labels:
       traefik.enable: true
-      traefik.http.routers.whoami.rule: Host(`*external host that you configured in authentik*`)
+      traefik.http.routers.whoami.rule: Host(`app.company`)
       traefik.http.routers.whoami.entrypoints: https
       traefik.http.routers.whoami.tls: true
       traefik.http.routers.whoami.middlewares: authentik@docker

@@ -7,7 +7,7 @@ metadata:
   name: authentik
 spec:
   forwardAuth:
-    address: http://authentik-outpost-example-outpost:9000/akprox/auth/traefik
+    address: http://outpost.company:9000/akprox/auth/traefik
     trustForwardHeader: true
     authResponseHeaders:
       - Set-Cookie
@@ -30,7 +30,7 @@ See [here](https://doc.traefik.io/traefik/v2.4/providers/kubernetes-crd/#allowcr
 spec:
   routes:
     - kind: Rule
-      match: "Host(`*external host that you configured in authentik*`)"
+      match: "Host(`app.company`)"
       middlewares:
         - name: authentik
           namespace: authentik
@@ -38,7 +38,7 @@ spec:
       services: # Unchanged
     # This part is only required for single-app setups
     - kind: Rule
-      match: "Host(`*external host that you configured in authentik*`) && PathPrefix(`/akprox/`)"
+      match: "Host(`app.company`) && PathPrefix(`/akprox/`)"
       priority: 15
       services:
         - kind: Service
