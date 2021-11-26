@@ -1,3 +1,4 @@
+import markdown from "@jackfranklin/rollup-plugin-markdown";
 import babel from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
@@ -49,6 +50,9 @@ const apiBasePath = process.env.AK_API_BASE_PATH || "";
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function manualChunks(id) {
+    if (id.endsWith(".md")) {
+        return "docs";
+    }
     if (id.includes("@goauthentik/api")) {
         return "api";
     }
@@ -67,6 +71,7 @@ function manualChunks(id) {
 
 const PLUGINS = [
     cssimport(),
+    markdown(),
     nodeResolve({ extensions, browser: true }),
     commonjs(),
     babel({
