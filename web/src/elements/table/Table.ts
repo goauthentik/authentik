@@ -19,7 +19,7 @@ import { groupBy } from "../../utils";
 import "../EmptyState";
 import "../chips/Chip";
 import "../chips/ChipGroup";
-import { getURLParams, updateURLParams } from "../router/RouteMatch";
+import { getURLParam, updateURLParams } from "../router/RouteMatch";
 import "./TablePagination";
 import "./TableSearch";
 
@@ -116,7 +116,7 @@ export abstract class Table<T> extends LitElement {
     order?: string;
 
     @property({ type: String })
-    search?: string;
+    search: string = getURLParam("search", "");
 
     @property({ type: Boolean })
     checkbox = false;
@@ -397,10 +397,6 @@ export abstract class Table<T> extends LitElement {
     }
 
     firstUpdated(): void {
-        const params = getURLParams();
-        if ("search" in params) {
-            this.search = params.search;
-        }
         this.fetch();
     }
 

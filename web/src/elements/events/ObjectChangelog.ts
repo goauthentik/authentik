@@ -27,19 +27,38 @@ export class ObjectChangelog extends Table<Event> {
     targetModelPk!: string | number;
 
     @property()
-    targetModelApp!: string;
+    targetModelApp?: string;
+
+    private _targetModelName: string = "";
 
     @property()
-    targetModelName!: string;
+    set targetModelName(value: string) {
+        this._targetModelName = value;
+        this.fetch();
+    }
+
+    get targetModelName(): string {
+        return this._targetModelName;
+    }
 
     async apiEndpoint(page: number): Promise<AKResponse<Event>> {
+        let modelName = this._targetModelName;
+        let appName = this.targetModelApp;
+        if (this._targetModelName.indexOf(".") !== -1) {
+            const parts = this._targetModelName.split(".");
+            appName = parts[0];
+            modelName = parts[1];
+        }
+        if (this._targetModelName === "") {
+            return Promise.reject();
+        }
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             action: "model_",
             page: page,
             ordering: this.order,
             pageSize: (await uiConfig()).pagination.perPage,
-            contextModelApp: this.targetModelApp,
-            contextModelName: this.targetModelName,
+            contextModelApp: appName,
+            contextModelName: modelName,
             contextModelPk: this.targetModelPk.toString(),
         });
     }
