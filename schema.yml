@@ -20425,6 +20425,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         pk:
           type: integer
         name:
@@ -20433,6 +20436,7 @@ components:
           type: string
           readOnly: true
       required:
+      - meta_model_name
       - name
       - pk
       - type

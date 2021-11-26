@@ -41,6 +41,7 @@ class MetaNameSerializer(PassiveSerializer):
 
     verbose_name = SerializerMethodField()
     verbose_name_plural = SerializerMethodField()
+    meta_model_name = SerializerMethodField()
 
     def get_verbose_name(self, obj: Model) -> str:
         """Return object's verbose_name"""
@@ -49,6 +50,10 @@ class MetaNameSerializer(PassiveSerializer):
     def get_verbose_name_plural(self, obj: Model) -> str:
         """Return object's plural verbose_name"""
         return obj._meta.verbose_name_plural
+
+    def get_meta_model_name(self, obj: Model) -> str:
+        """Return internal model name"""
+        return f"{obj._meta.app_label}.{obj._meta.model_name}"
 
 
 class TypeCreateSerializer(PassiveSerializer):
