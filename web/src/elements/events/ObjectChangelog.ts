@@ -29,7 +29,7 @@ export class ObjectChangelog extends Table<Event> {
     @property()
     targetModelApp?: string;
 
-    private _targetModelName: string = "";
+    private _targetModelName = "";
 
     @property()
     set targetModelName(value: string) {

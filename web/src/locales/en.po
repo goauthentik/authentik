@@ -566,6 +566,11 @@ msgstr "Bearer Token"
 msgid "Bind CN"
 msgstr "Bind CN"
 
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+msgid "Bind DN"
+msgstr "Bind DN"
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Bind Password"
 msgstr "Bind Password"
@@ -662,6 +667,7 @@ msgid "Certificate"
 msgstr "Certificate"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Certificate Fingerprint (SHA1)"
 msgstr "Certificate Fingerprint (SHA1)"
 
@@ -711,10 +717,7 @@ msgstr "Change your password"
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/flows/FlowViewPage.ts
-#: src/pages/providers/ldap/LDAPProviderViewPage.ts
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts
-#: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/ProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
@@ -754,6 +757,10 @@ msgstr "Check outposts."
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Check status"
 msgstr "Check status"
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+msgid "Check the IP of the Kubernetes service, or"
+msgstr "Check the IP of the Kubernetes service, or"
 
 #: 
 #~ msgid "Check your Emails for a password reset link."
@@ -946,6 +953,10 @@ msgstr "Configure what data should be used as unique User Identifier. For most c
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
 msgid "Connect"
 msgstr "Connect"
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+msgid "Connect to the LDAP Server on port 389:"
+msgstr "Connect to the LDAP Server on port 389:"
 
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "Connected services"
@@ -2027,7 +2038,12 @@ msgstr "Format: \"weeks=3;days=2;hours=3,seconds=2\"."
 msgid "Forward auth (domain level)"
 msgstr "Forward auth (domain level)"
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Forward auth (domain-level)"
+msgstr "Forward auth (domain-level)"
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Forward auth (single application)"
 msgstr "Forward auth (single application)"
 
@@ -2196,6 +2212,10 @@ msgstr "Hold control/command to select multiple items."
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+msgid "How to connect"
+msgstr "How to connect"
 
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
@@ -2722,9 +2742,7 @@ msgstr "Message"
 msgid "Messages"
 msgstr "Messages"
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
-#: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Metadata"
 msgstr "Metadata"
@@ -2899,6 +2917,18 @@ msgstr "Newly created users are added to this group, if a group is selected."
 #: src/flows/FlowInspector.ts
 msgid "Next stage"
 msgstr "Next stage"
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Nginx (Ingress)"
+msgstr "Nginx (Ingress)"
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Nginx (Proxy Manager)"
+msgstr "Nginx (Proxy Manager)"
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Nginx (standalone)"
+msgstr "Nginx (standalone)"
 
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
@@ -3213,10 +3243,7 @@ msgstr "Outposts are deployments of authentik components to support different en
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/providers/ldap/LDAPProviderViewPage.ts
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts
-#: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/ProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
@@ -3509,6 +3536,7 @@ msgstr "Providers"
 
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Proxy"
 msgstr "Proxy"
 
@@ -3649,6 +3677,10 @@ msgstr "Regular user"
 msgid "Related"
 msgstr "Related"
 
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "Related objects"
+msgstr "Related objects"
+
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 msgid "Remove the user from the current session."
 msgstr "Remove the user from the current session."
@@ -3743,6 +3775,10 @@ msgstr "Run sync again"
 msgid "SAML Attribute Name"
 msgstr "SAML Attribute Name"
 
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SAML Metadata"
+msgstr "SAML Metadata"
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "SHA1"
@@ -3828,6 +3864,10 @@ msgstr "Scopes"
 #: src/pages/policies/reputation/UserReputationListPage.ts
 msgid "Score"
 msgstr "Score"
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+msgid "Search base"
+msgstr "Search base"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Search group"
@@ -4040,6 +4080,10 @@ msgstr "Set a custom HTTP-Basic Authentication header based on values from authe
 #: src/pages/users/UserForm.ts
 msgid "Set custom attributes using YAML or JSON."
 msgstr "Set custom attributes using YAML or JSON."
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Setup"
+msgstr "Setup"
 
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/RuleListPage.ts
@@ -4754,6 +4798,10 @@ msgstr "Text (read-only): Simple Text input, but cannot be edited."
 msgid "Text: Simple Text input"
 msgstr "Text: Simple Text input"
 
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+msgid "The Host IP of the docker host"
+msgstr "The Host IP of the docker host"
+
 #: src/elements/router/Router404.ts
 msgid "The URL \"{0}\" was not found."
 msgstr "The URL \"{0}\" was not found."
@@ -4973,6 +5021,18 @@ msgstr "Total users"
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Traditional authenticator"
 msgstr "Traditional authenticator"
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Traefik (Compose)"
+msgstr "Traefik (Compose)"
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Traefik (Ingress)"
+msgstr "Traefik (Ingress)"
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Traefik (Standalone)"
+msgstr "Traefik (Standalone)"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Transient"

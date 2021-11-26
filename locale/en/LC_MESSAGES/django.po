@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-24 08:54+0000\n"
+"POT-Creation-Date: 2021-11-26 12:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,11 +31,11 @@ msgstr ""
 msgid "Validation Error"
 msgstr ""
 
-#: authentik/core/api/providers.py:88
+#: authentik/core/api/providers.py:89
 msgid "SAML Provider from Metadata"
 msgstr ""
 
-#: authentik/core/api/providers.py:89
+#: authentik/core/api/providers.py:90
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr ""
 
@@ -380,12 +380,12 @@ msgstr ""
 msgid "Managed by authentik"
 msgstr ""
 
-#: authentik/outposts/api/service_connections.py:130
+#: authentik/outposts/api/service_connections.py:131
 msgid ""
 "You can only use an empty kubeconfig when connecting to a local cluster."
 msgstr ""
 
-#: authentik/outposts/api/service_connections.py:138
+#: authentik/outposts/api/service_connections.py:139
 msgid "Invalid kubeconfig"
 msgstr ""
 
@@ -1393,19 +1393,19 @@ msgstr ""
 msgid "Email Stages"
 msgstr ""
 
-#: authentik/stages/email/stage.py:104
+#: authentik/stages/email/stage.py:103
 msgid "Invalid token"
 msgstr ""
 
-#: authentik/stages/email/stage.py:108
+#: authentik/stages/email/stage.py:107
 msgid "Successfully verified Email."
 msgstr ""
 
-#: authentik/stages/email/stage.py:115 authentik/stages/email/stage.py:137
+#: authentik/stages/email/stage.py:114 authentik/stages/email/stage.py:136
 msgid "No pending user."
 msgstr ""
 
-#: authentik/stages/email/stage.py:127
+#: authentik/stages/email/stage.py:126
 msgid "Email sent."
 msgstr ""
 

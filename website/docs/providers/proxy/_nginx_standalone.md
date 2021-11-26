@@ -9,7 +9,8 @@ server {
     ssl_certificate_key     /etc/ssl/private/ssl-cert-snakeoil.key;
 
     # Increase buffer size for large headers
-    # This is needed only if you get 'upstream sent too big header while reading response header from upstream' error when trying to access an application protected by goauthentik
+    # This is needed only if you get 'upstream sent too big header while reading response
+    # header from upstream' error when trying to access an application protected by goauthentik
     proxy_buffers 8 16k;
     proxy_buffer_size 32k;
     fastcgi_buffers 16 16k;

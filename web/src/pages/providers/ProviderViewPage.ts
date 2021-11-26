@@ -1,6 +1,11 @@
-import { LitElement, TemplateResult, html } from "lit";
+import { t } from "@lingui/macro";
+
+import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+import AKGlobal from "../../authentik.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
@@ -26,6 +31,10 @@ export class ProviderViewPage extends LitElement {
 
     @property({ attribute: false })
     provider?: Provider;
+
+    static get styles(): CSSResult[] {
+        return [PFPage, AKGlobal];
+    }
 
     renderProvider(): TemplateResult {
         if (!this.provider) {
@@ -60,6 +69,29 @@ export class ProviderViewPage extends LitElement {
                 description=${ifDefined(this.provider?.verboseName)}
             >
             </ak-page-header>
-            ${this.renderProvider()}`;
+            <ak-tabs>
+                <section
+                    slot="page-overview"
+                    data-tab-title="${t`Overview`}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    ${this.renderProvider()}
+                </section>
+                <section
+                    slot="page-changelog"
+                    data-tab-title="${t`Changelog`}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.provider?.pk || ""}
+                                targetModelName=${this.provider?.metaModelName || ""}
+                            >
+                            </ak-object-changelog>
+                        </div>
+                    </div>
+                </section>
+            </ak-tabs>`;
     }
 }

@@ -20,11 +20,9 @@ spec:
 
 Add the following settings to your IngressRoute
 
-:::warning
 By default traefik does not allow cross-namespace references for middlewares:
 
 See [here](https://doc.traefik.io/traefik/v2.4/providers/kubernetes-crd/#allowcrossnamespace) to enable it.
-:::
 
 ```yaml
 spec:
@@ -42,6 +40,8 @@ spec:
       priority: 15
       services:
         - kind: Service
-          name: authentik-outpost-example-outpost
+          # Or, to use an external Outpost, create an ExternalName service and reference that here.
+          # See https://kubernetes.io/docs/concepts/services-networking/service/#externalname
+          name: ak-outpost-example-outpost
           port: 9000
 ```

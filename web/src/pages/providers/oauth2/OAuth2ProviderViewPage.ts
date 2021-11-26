@@ -12,11 +12,8 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
-import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { OAuth2Provider, OAuth2ProviderSetupURLs, ProvidersApi } from "@goauthentik/api";
 
@@ -59,13 +56,10 @@ export class OAuth2ProviderViewPage extends LitElement {
             PFBase,
             PFButton,
             PFPage,
-            PFFlex,
-            PFDisplay,
-            PFGallery,
+            PFGrid,
             PFContent,
             PFCard,
             PFDescriptionList,
-            PFSizing,
             PFForm,
             PFFormControl,
             PFBanner,
@@ -85,18 +79,15 @@ export class OAuth2ProviderViewPage extends LitElement {
         if (!this.provider) {
             return html``;
         }
-        return html` ${this.provider?.assignedApplicationName
+        return html` ${
+            this.provider?.assignedApplicationName
                 ? html``
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${t`Warning: Provider is not used by an Application.`}
-                  </div>`}<ak-tabs>
-                <section
-                    slot="page-overview"
-                    data-tab-title="${t`Overview`}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-u-display-flex pf-u-justify-content-center">
-                        <div class="pf-u-w-75">
+                  </div>`
+        }
+            <div class="pf-l-grid pf-m-gutter">
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__body">
                                     <dl class="pf-c-description-list pf-m-2-col-on-lg">
@@ -182,39 +173,12 @@ export class OAuth2ProviderViewPage extends LitElement {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </section>
-                <section
-                    slot="page-changelog"
-                    data-tab-title="${t`Changelog`}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider.pk || ""}
-                                targetModelApp="authentik_providers_oauth2"
-                                targetModelName="oauth2provider"
-                            >
-                            </ak-object-changelog>
-                        </div>
-                    </div>
-                </section>
-                <section
-                    slot="page-metadata"
-                    data-tab-title="${t`Metadata`}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-u-display-flex pf-u-justify-content-center">
-                        <div class="pf-u-w-75">
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__body">
                                     <form class="pf-c-form">
                                         <div class="pf-c-form__group">
-                                            <label
-                                                class="pf-c-form__label"
-                                                for="help-text-simple-form-name"
-                                            >
+                                            <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
                                                     >${t`OpenID Configuration URL`}</span
                                                 >
@@ -227,10 +191,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                                             />
                                         </div>
                                         <div class="pf-c-form__group">
-                                            <label
-                                                class="pf-c-form__label"
-                                                for="help-text-simple-form-name"
-                                            >
+                                            <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
                                                     >${t`OpenID Configuration Issuer`}</span
                                                 >
@@ -244,10 +205,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                                         </div>
                                         <hr />
                                         <div class="pf-c-form__group">
-                                            <label
-                                                class="pf-c-form__label"
-                                                for="help-text-simple-form-name"
-                                            >
+                                            <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
                                                     >${t`Authorize URL`}</span
                                                 >
@@ -260,10 +218,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                                             />
                                         </div>
                                         <div class="pf-c-form__group">
-                                            <label
-                                                class="pf-c-form__label"
-                                                for="help-text-simple-form-name"
-                                            >
+                                            <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
                                                     >${t`Token URL`}</span
                                                 >
@@ -276,10 +231,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                                             />
                                         </div>
                                         <div class="pf-c-form__group">
-                                            <label
-                                                class="pf-c-form__label"
-                                                for="help-text-simple-form-name"
-                                            >
+                                            <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
                                                     >${t`Userinfo URL`}</span
                                                 >
@@ -292,10 +244,7 @@ export class OAuth2ProviderViewPage extends LitElement {
                                             />
                                         </div>
                                         <div class="pf-c-form__group">
-                                            <label
-                                                class="pf-c-form__label"
-                                                for="help-text-simple-form-name"
-                                            >
+                                            <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
                                                     >${t`Logout URL`}</span
                                                 >

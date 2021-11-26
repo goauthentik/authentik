@@ -14,7 +14,7 @@ import { getURLParams, updateURLParams } from "./router/RouteMatch";
 @customElement("ak-tabs")
 export class Tabs extends LitElement {
     @property()
-    pageIdentifier: string = "page";
+    pageIdentifier = "page";
 
     @property()
     currentPage?: string;

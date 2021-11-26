@@ -11,7 +11,9 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: authentik-outpost-example-outpost
+          # Or, to use an external Outpost, create an ExternalName service and reference that here.
+          # See https://kubernetes.io/docs/concepts/services-networking/service/#externalname
+          serviceName: ak-outpost-example-outpost
           servicePort: 9000
         path: /akprox
 ```

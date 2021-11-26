@@ -1,7 +1,9 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { until } from "lit-html/directives/until.js";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import AKGlobal from "../../../authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -9,16 +11,17 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
-import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { LDAPProvider, ProvidersApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
+import { me } from "../../../api/Users";
 import { EVENT_REFRESH } from "../../../constants";
 import "../../../elements/CodeMirror";
 import "../../../elements/Tabs";
@@ -51,15 +54,15 @@ export class LDAPProviderViewPage extends LitElement {
         return [
             PFBase,
             PFButton,
+            PFBanner,
+            PFForm,
+            PFFormControl,
+            PFList,
+            PFGrid,
             PFPage,
-            PFFlex,
-            PFDisplay,
-            PFGallery,
             PFContent,
             PFCard,
             PFDescriptionList,
-            PFSizing,
-            PFBanner,
             AKGlobal,
         ];
     }
@@ -76,101 +79,131 @@ export class LDAPProviderViewPage extends LitElement {
         if (!this.provider) {
             return html``;
         }
-        return html` ${this.provider?.assignedApplicationName
+        return html`${
+            this.provider?.assignedApplicationName
                 ? html``
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${t`Warning: Provider is not used by an Application.`}
-                  </div>`}
-            ${this.provider?.outpostSet.length < 1
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${t`Warning: Provider is not used by any Outpost.`}
                   </div>`
-                : html``}
-            <ak-tabs>
-                <section
-                    slot="page-overview"
-                    data-tab-title="${t`Overview`}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-u-display-flex pf-u-justify-content-center">
-                        <div class="pf-u-w-75">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__body">
-                                    <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text"
-                                                    >${t`Name`}</span
-                                                >
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">
-                                                    ${this.provider.name}
-                                                </div>
-                                            </dd>
-                                        </div>
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text"
-                                                    >${t`Assigned to application`}</span
-                                                >
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">
-                                                    <ak-provider-related-application
-                                                        .provider=${this.provider}
-                                                    ></ak-provider-related-application>
-                                                </div>
-                                            </dd>
-                                        </div>
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text"
-                                                    >${t`Base DN`}</span
-                                                >
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">
-                                                    ${this.provider.baseDn}
-                                                </div>
-                                            </dd>
-                                        </div>
-                                    </dl>
-                                </div>
-                                <div class="pf-c-card__footer">
-                                    <ak-forms-modal>
-                                        <span slot="submit"> ${t`Update`} </span>
-                                        <span slot="header"> ${t`Update LDAP Provider`} </span>
-                                        <ak-provider-ldap-form
-                                            slot="form"
-                                            .instancePk=${this.provider.pk}
-                                        >
-                                        </ak-provider-ldap-form>
-                                        <button slot="trigger" class="pf-c-button pf-m-primary">
-                                            ${t`Edit`}
-                                        </button>
-                                    </ak-forms-modal>
-                                </div>
+        }
+            ${
+                this.provider?.outpostSet.length < 1
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${t`Warning: Provider is not used by any Outpost.`}
+                      </div>`
+                    : html``
+            }
+            <div class="pf-l-grid pf-m-gutter">
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                    <div class="pf-c-card__body">
+                        <dl class="pf-c-description-list pf-m-3-col-on-lg">
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">${t`Name`}</span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.provider.name}
+                                    </div>
+                                </dd>
                             </div>
-                        </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${t`Assigned to application`}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        <ak-provider-related-application
+                                            .provider=${this.provider}
+                                        ></ak-provider-related-application>
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${t`Base DN`}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.provider.baseDn}
+                                    </div>
+                                </dd>
+                            </div>
+                        </dl>
                     </div>
-                </section>
-                <section
-                    slot="page-changelog"
-                    data-tab-title="${t`Changelog`}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider.pk || ""}
-                                targetModelApp="authentik_providers_ldap"
-                                targetModelName="LDAPProvider"
-                            >
-                            </ak-object-changelog>
-                        </div>
+                    <div class="pf-c-card__footer">
+                        <ak-forms-modal>
+                            <span slot="submit"> ${t`Update`} </span>
+                            <span slot="header"> ${t`Update LDAP Provider`} </span>
+                            <ak-provider-ldap-form slot="form" .instancePk=${this.provider.pk}>
+                            </ak-provider-ldap-form>
+                            <button slot="trigger" class="pf-c-button pf-m-primary">
+                                ${t`Edit`}
+                            </button>
+                        </ak-forms-modal>
                     </div>
-                </section>
-            </ak-tabs>`;
+                </div>
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                    <div class="pf-c-card__title">
+                        ${t`How to connect`}
+                    </div>
+                    <div class="pf-c-card__body">
+                        <p>
+                            ${t`Connect to the LDAP Server on port 389:`}
+                        </p>
+                        <ul class="pf-c-list">
+                            <li>${t`Check the IP of the Kubernetes service, or`}</li>
+                            <li>${t`The Host IP of the docker host`}</li>
+                        </ul>
+                        <form class="pf-c-form">
+                            <div class="pf-c-form__group">
+                                <label class="pf-c-form__label">
+                                    <span class="pf-c-form__label-text">${t`Bind DN`}</span>
+                                </label>
+                                <!-- @ts-ignore -->
+                                <input
+                                    class="pf-c-form-control"
+                                    readonly
+                                    type="text"
+                                    value=${until(
+                                        me().then((m) => {
+                                            return `cn=${
+                                                m.user.username
+                                            },ou=users,${this.provider?.baseDn?.toLowerCase()}`;
+                                        }),
+                                    )}
+                                />
+                            </div>
+                            <div class="pf-c-form__group">
+                                <label class="pf-c-form__label">
+                                    <span class="pf-c-form__label-text">${t`Bind Password`}</span>
+                                </label>
+                                <input
+                                    class="pf-c-form-control"
+                                    readonly
+                                    type="text"
+                                    value="Your authentik password"
+                                />
+                            </div>
+                            <div class="pf-c-form__group">
+                                <label class="pf-c-form__label">
+                                    <span class="pf-c-form__label-text">${t`Search base`}</span>
+                                </label>
+                                <input
+                                    class="pf-c-form-control"
+                                    readonly
+                                    type="text"
+                                    value=${ifDefined(this.provider?.baseDn?.toLowerCase())}
+                                />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>`;
     }
 }

@@ -562,6 +562,11 @@ msgstr ""
 msgid "Bind CN"
 msgstr ""
 
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+msgid "Bind DN"
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Bind Password"
 msgstr ""
@@ -658,6 +663,7 @@ msgid "Certificate"
 msgstr ""
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Certificate Fingerprint (SHA1)"
 msgstr ""
 
@@ -707,10 +713,7 @@ msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/flows/FlowViewPage.ts
-#: src/pages/providers/ldap/LDAPProviderViewPage.ts
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts
-#: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/ProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
@@ -749,6 +752,10 @@ msgstr ""
 
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Check status"
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+msgid "Check the IP of the Kubernetes service, or"
 msgstr ""
 
 #: 
@@ -939,6 +946,10 @@ msgstr ""
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
 msgid "Connect"
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+msgid "Connect to the LDAP Server on port 389:"
 msgstr ""
 
 #: src/user/user-settings/UserSettingsPage.ts
@@ -2019,7 +2030,12 @@ msgstr ""
 msgid "Forward auth (domain level)"
 msgstr ""
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Forward auth (domain-level)"
+msgstr ""
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Forward auth (single application)"
 msgstr ""
 
@@ -2187,6 +2203,10 @@ msgstr ""
 
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+msgid "How to connect"
 msgstr ""
 
 #: src/elements/forms/DeleteBulkForm.ts
@@ -2714,9 +2734,7 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
-#: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Metadata"
 msgstr ""
@@ -2890,6 +2908,18 @@ msgstr ""
 
 #: src/flows/FlowInspector.ts
 msgid "Next stage"
+msgstr ""
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Nginx (Ingress)"
+msgstr ""
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Nginx (Proxy Manager)"
+msgstr ""
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Nginx (standalone)"
 msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
@@ -3205,10 +3235,7 @@ msgstr ""
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/providers/ldap/LDAPProviderViewPage.ts
-#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
-#: src/pages/providers/proxy/ProxyProviderViewPage.ts
-#: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/ProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
@@ -3501,6 +3528,7 @@ msgstr ""
 
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Proxy"
 msgstr ""
 
@@ -3641,6 +3669,10 @@ msgstr ""
 msgid "Related"
 msgstr ""
 
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "Related objects"
+msgstr ""
+
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 msgid "Remove the user from the current session."
 msgstr ""
@@ -3735,6 +3767,10 @@ msgstr ""
 msgid "SAML Attribute Name"
 msgstr ""
 
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SAML Metadata"
+msgstr ""
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "SHA1"
@@ -3819,6 +3855,10 @@ msgstr ""
 #: src/pages/policies/reputation/IPReputationListPage.ts
 #: src/pages/policies/reputation/UserReputationListPage.ts
 msgid "Score"
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+msgid "Search base"
 msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
@@ -4031,6 +4071,10 @@ msgstr ""
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Set custom attributes using YAML or JSON."
+msgstr ""
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Setup"
 msgstr ""
 
 #: src/pages/events/RuleForm.ts
@@ -4746,6 +4790,10 @@ msgstr ""
 msgid "Text: Simple Text input"
 msgstr ""
 
+#: src/pages/providers/ldap/LDAPProviderViewPage.ts
+msgid "The Host IP of the docker host"
+msgstr ""
+
 #: src/elements/router/Router404.ts
 msgid "The URL \"{0}\" was not found."
 msgstr ""
@@ -4957,6 +5005,18 @@ msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Traditional authenticator"
+msgstr ""
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Traefik (Compose)"
+msgstr ""
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Traefik (Ingress)"
+msgstr ""
+
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Traefik (Standalone)"
 msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts

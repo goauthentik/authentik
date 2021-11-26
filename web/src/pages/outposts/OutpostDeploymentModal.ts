@@ -28,7 +28,7 @@ export class OutpostDeploymentModal extends ModalButton {
                 </p>
                 <form class="pf-c-form">
                     <div class="pf-c-form__group">
-                        <label class="pf-c-form__label" for="help-text-simple-form-name">
+                        <label class="pf-c-form__label">
                             <span class="pf-c-form__label-text">AUTHENTIK_HOST</span>
                         </label>
                         <input
@@ -39,7 +39,7 @@ export class OutpostDeploymentModal extends ModalButton {
                         />
                     </div>
                     <div class="pf-c-form__group">
-                        <label class="pf-c-form__label" for="help-text-simple-form-name">
+                        <label class="pf-c-form__label">
                             <span class="pf-c-form__label-text">AUTHENTIK_TOKEN</span>
                         </label>
                         <div>
@@ -55,7 +55,7 @@ export class OutpostDeploymentModal extends ModalButton {
                         ${t`If your authentik Instance is using a self-signed certificate, set this value.`}
                     </h3>
                     <div class="pf-c-form__group">
-                        <label class="pf-c-form__label" for="help-text-simple-form-name">
+                        <label class="pf-c-form__label">
                             <span class="pf-c-form__label-text">AUTHENTIK_INSECURE</span>
                         </label>
                         <input class="pf-c-form-control" readonly type="text" value="true" />
@@ -66,7 +66,7 @@ export class OutpostDeploymentModal extends ModalButton {
                                   ${t`If your authentik_host setting does not match the URL you want to login with, add this setting.`}
                               </h3>
                               <div class="pf-c-form__group">
-                                  <label class="pf-c-form__label" for="help-text-simple-form-name">
+                                  <label class="pf-c-form__label">
                                       <span class="pf-c-form__label-text"
                                           >AUTHENTIK_HOST_BROWSER</span
                                       >
