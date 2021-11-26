@@ -14,6 +14,9 @@ import { getURLParams, updateURLParams } from "./router/RouteMatch";
 @customElement("ak-tabs")
 export class Tabs extends LitElement {
     @property()
+    pageIdentifier: string = "page";
+
+    @property()
     currentPage?: string;
 
     @property({ type: Boolean })
@@ -66,9 +69,9 @@ export class Tabs extends LitElement {
 
     onClick(slot?: string): void {
         this.currentPage = slot;
-        updateURLParams({
-            page: slot,
-        });
+        const params: { [key: string]: string | undefined } = {};
+        params[this.pageIdentifier] = slot;
+        updateURLParams(params);
     }
 
     renderTab(page: Element): TemplateResult {
@@ -84,10 +87,10 @@ export class Tabs extends LitElement {
         const pages = Array.from(this.querySelectorAll("[slot^='page-']"));
         if (window.location.hash.includes(ROUTE_SEPARATOR)) {
             const params = getURLParams();
-            if ("page" in params) {
-                if (this.querySelector(`[slot='${params.page}']`) !== null) {
+            if (this.pageIdentifier in params) {
+                if (this.querySelector(`[slot='${params[this.pageIdentifier]}']`) !== null) {
                     // To update the URL to match with the current slot
-                    this.currentPage = params.page;
+                    this.currentPage = params[this.pageIdentifier];
                 }
             }
         }
