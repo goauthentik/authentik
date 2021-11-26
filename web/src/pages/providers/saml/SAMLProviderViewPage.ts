@@ -107,7 +107,7 @@ export class SAMLProviderViewPage extends LitElement {
                   </div>`
         }
             <div class="pf-l-grid pf-m-gutter">
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl">
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
                         <dl class="pf-c-description-list pf-m-3-col-on-lg">
                             <div class="pf-c-description-list__group">
@@ -178,7 +178,7 @@ export class SAMLProviderViewPage extends LitElement {
                         </ak-forms-modal>
                     </div>
                 </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl">
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__title">
                         ${t`Related objects`}
                     </div>
