@@ -87,7 +87,7 @@
         "fuse.js": "^6.4.6",
         "lit": "^2.0.2",
         "moment": "^2.29.1",
-        "prettier": "^2.4.1",
+        "prettier": "^2.5.0",
         "rapidoc": "^9.1.3",
         "rollup": "^2.60.1",
         "rollup-plugin-copy": "^3.4.0",
