@@ -16,7 +16,7 @@ FROM --platform=${BUILDPLATFORM} docker.io/node:16 as website-builder
 COPY ./website /work/website/
 
 ENV NODE_ENV=production
-RUN cd /static && npm i && npm run build-docs-only
+RUN cd /work/website && npm i && npm run build-docs-only
 
 # Stage 3: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:16 as web-builder
@@ -25,7 +25,7 @@ COPY ./web /work/web/
 COPY ./website /work/website/
 
 ENV NODE_ENV=production
-RUN cd /static && npm i && npm run build
+RUN cd /work/web && npm i && npm run build
 
 # Stage 4: Build go proxy
 FROM docker.io/golang:1.17.3-bullseye AS builder
