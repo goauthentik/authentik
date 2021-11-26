@@ -13,7 +13,7 @@ RUN pip install pipenv && \
 # Stage 2: Build website
 FROM --platform=${BUILDPLATFORM} docker.io/node:16 as website-builder
 
-COPY ./website /static/
+COPY ./website /work/website/
 
 ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build-docs-only
@@ -21,7 +21,8 @@ RUN cd /static && npm i && npm run build-docs-only
 # Stage 3: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:16 as web-builder
 
-COPY ./web /static/
+COPY ./web /work/web/
+COPY ./website /work/website/
 
 ENV NODE_ENV=production
 RUN cd /static && npm i && npm run build
@@ -31,11 +32,11 @@ FROM docker.io/golang:1.17.3-bullseye AS builder
 
 WORKDIR /work
 
-COPY --from=web-builder /static/robots.txt /work/web/robots.txt
-COPY --from=web-builder /static/security.txt /work/web/security.txt
-COPY --from=web-builder /static/dist/ /work/web/dist/
-COPY --from=web-builder /static/authentik/ /work/web/authentik/
-COPY --from=website-builder /static/help/ /work/website/help/
+COPY --from=web-builder /work/web/robots.txt /work/web/robots.txt
+COPY --from=web-builder /work/web/security.txt /work/web/security.txt
+COPY --from=web-builder /work/web/dist/ /work/web/dist/
+COPY --from=web-builder /work/web/authentik/ /work/web/authentik/
+COPY --from=website-builder /work/website/help/ /work/website/help/
 
 COPY ./cmd /work/cmd
 COPY ./web/static.go /work/web/static.go
