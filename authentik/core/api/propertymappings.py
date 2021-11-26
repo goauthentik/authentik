@@ -56,6 +56,7 @@ class PropertyMappingSerializer(ManagedSerializer, ModelSerializer, MetaNameSeri
             "component",
             "verbose_name",
             "verbose_name_plural",
+            "meta_model_name",
         ]
 
 

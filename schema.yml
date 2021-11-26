@@ -19121,6 +19121,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -19133,6 +19136,7 @@ components:
             If empty, user will not be able to configure this stage.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -19304,6 +19308,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -19322,6 +19329,7 @@ components:
       - api_hostname
       - client_id
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -19419,6 +19427,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -19446,6 +19457,7 @@ components:
       - auth
       - component
       - from_number
+      - meta_model_name
       - name
       - pk
       - provider
@@ -19547,6 +19559,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -19563,6 +19578,7 @@ components:
           minimum: -2147483648
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -19650,6 +19666,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -19668,6 +19687,7 @@ components:
       required:
       - component
       - digits
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -19717,6 +19737,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -19737,6 +19760,7 @@ components:
             is not prompted again.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -19981,6 +20005,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -19990,6 +20017,7 @@ components:
           description: Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - public_key
@@ -20269,6 +20297,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -20281,6 +20312,7 @@ components:
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -20392,12 +20424,16 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -20518,6 +20554,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         url:
           type: string
           description: Can be in the format of 'unix://<path>' when connecting to
@@ -20537,6 +20576,7 @@ components:
             for no authentication.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - url
@@ -20626,6 +20666,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -20642,6 +20685,7 @@ components:
       required:
       - bound_to
       - component
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -20686,12 +20730,16 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -20784,6 +20832,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -20826,6 +20877,7 @@ components:
           description: Activate users upon completion of stage.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -20988,6 +21040,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -21008,6 +21063,7 @@ components:
       required:
       - bound_to
       - component
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -21132,6 +21188,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -21141,6 +21200,7 @@ components:
       - bound_to
       - component
       - expression
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -21652,6 +21712,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -21666,6 +21729,7 @@ components:
       required:
       - bound_to
       - component
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -21791,6 +21855,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -21837,6 +21904,7 @@ components:
           type: boolean
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -21965,6 +22033,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -21976,6 +22047,7 @@ components:
             when no invitation is given.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -22032,6 +22104,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         kubeconfig:
           type: object
           additionalProperties: {}
@@ -22039,6 +22114,7 @@ components:
             the currently selected context.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -22142,11 +22218,15 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         object_field:
           type: string
       required:
       - component
       - expression
+      - meta_model_name
       - name
       - object_field
       - pk
@@ -22214,6 +22294,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         base_dn:
           type: string
           description: DN under which objects are accessible.
@@ -22256,6 +22339,7 @@ components:
       - assigned_application_slug
       - authorization_flow
       - component
+      - meta_model_name
       - name
       - outpost_set
       - pk
@@ -22351,6 +22435,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -22414,6 +22501,7 @@ components:
       required:
       - base_dn
       - component
+      - meta_model_name
       - name
       - pk
       - server_uri
@@ -22824,6 +22912,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
@@ -22876,6 +22967,7 @@ components:
       - assigned_application_slug
       - authorization_flow
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -23016,6 +23108,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -23059,6 +23154,7 @@ components:
       - callback_url
       - component
       - consumer_key
+      - meta_model_name
       - name
       - pk
       - provider_type
@@ -26108,6 +26204,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -26121,6 +26220,7 @@ components:
       - bound_to
       - component
       - days
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -26168,6 +26268,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -26199,6 +26302,7 @@ components:
       - bound_to
       - component
       - error_message
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -26262,6 +26366,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -26286,6 +26393,7 @@ components:
       required:
       - backends
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -28153,6 +28261,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -28177,6 +28288,7 @@ components:
           description: Plex token used to check friends
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - plex_token
@@ -28313,12 +28425,16 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
       required:
       - bound_to
       - component
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -28575,6 +28691,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -28592,6 +28711,7 @@ components:
       required:
       - component
       - fields
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -28665,9 +28785,13 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
       required:
       - component
       - expression
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -28721,11 +28845,15 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
       - authorization_flow
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -28886,6 +29014,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         internal_host:
           type: string
           format: uri
@@ -28943,6 +29074,7 @@ components:
       - authorization_flow
       - component
       - external_host
+      - meta_model_name
       - name
       - outpost_set
       - pk
@@ -29095,6 +29227,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -29109,6 +29244,7 @@ components:
       required:
       - bound_to
       - component
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -29174,6 +29310,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         saml_name:
           type: string
         friendly_name:
@@ -29182,6 +29321,7 @@ components:
       required:
       - component
       - expression
+      - meta_model_name
       - name
       - pk
       - saml_name
@@ -29252,6 +29392,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         acs_url:
           type: string
           format: uri
@@ -29315,6 +29458,7 @@ components:
       - assigned_application_slug
       - authorization_flow
       - component
+      - meta_model_name
       - metadata_download_url
       - name
       - pk
@@ -29453,6 +29597,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -29508,6 +29655,7 @@ components:
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - pre_authentication_flow
@@ -29661,6 +29809,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         scope_name:
           type: string
           description: Scope used by the client
@@ -29671,6 +29822,7 @@ components:
       required:
       - component
       - expression
+      - meta_model_name
       - name
       - pk
       - scope_name
@@ -29736,8 +29888,12 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -29854,6 +30010,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -29863,6 +30022,7 @@ components:
             or a new user enrolled.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - slug
@@ -29963,12 +30123,16 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -30488,12 +30652,16 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -30537,6 +30705,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -30547,6 +30718,7 @@ components:
             the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -30589,12 +30761,16 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -30917,6 +31093,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -30931,6 +31110,7 @@ components:
           description: Optionally add newly created users to this group.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name

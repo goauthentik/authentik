@@ -41,6 +41,7 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
             "component",
             "verbose_name",
             "verbose_name_plural",
+            "meta_model_name",
             "flow_set",
         ]
 
