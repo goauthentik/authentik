@@ -149,7 +149,8 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 			re, err := regexp.Compile(regex)
 			if err != nil {
 				// TODO: maybe create event for this?
-				return nil, errors.Wrap(err, "failed to compile SkipPathRegex")
+				a.log.WithError(err).Warning("failed to compile SkipPathRegex")
+				continue
 			} else {
 				a.UnauthenticatedRegex = append(a.UnauthenticatedRegex, re)
 			}
