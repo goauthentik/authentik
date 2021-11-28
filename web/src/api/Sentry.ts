@@ -15,7 +15,8 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
             Sentry.init({
                 dsn: "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
                 ignoreErrors: [
-                    /network/i,
+                    /network/ig,
+                    /fetch/ig,
                 ],
                 release: `authentik@${VERSION}`,
                 tunnel: "/api/v3/sentry/",
@@ -29,14 +30,6 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                 beforeSend: async (event: Sentry.Event, hint: Sentry.EventHint): Promise<Sentry.Event | null> => {
                     if (hint.originalException instanceof SentryIgnoredError) {
                         return null;
-                    }
-                    if ((hint.originalException as Error | undefined)?.hasOwnProperty("name")) {
-                        if ((hint.originalException as Error | undefined)?.name == 'NetworkError') {
-                            return null;
-                        }
-                        if ((hint.originalException as Error | undefined)?.name.includes("fetch")) {
-                            return null;
-                        }
                     }
                     if (hint.originalException instanceof Response || hint.originalException instanceof DOMException) {
                         return null;
