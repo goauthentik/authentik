@@ -157,7 +157,6 @@ msgstr "Action"
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
-#: src/pages/policies/reputation/IPReputationListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 #: src/pages/stages/StageListPage.ts
@@ -667,7 +666,6 @@ msgid "Certificate"
 msgstr "Certificate"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Certificate Fingerprint (SHA1)"
 msgstr "Certificate Fingerprint (SHA1)"
 
@@ -1492,6 +1490,7 @@ msgstr "Domain"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Download"
 msgstr "Download"
@@ -1503,6 +1502,10 @@ msgstr "Download Certificate"
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Download Private key"
 msgstr "Download Private key"
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "Download signing certificate"
+msgstr "Download signing certificate"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
@@ -2087,6 +2090,10 @@ msgstr "Generate Certificate-Key Pair"
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Generic"
 msgstr "Generic"
+
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
+msgid "Generic OpenID Connect"
+msgstr "Generic OpenID Connect"
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
@@ -4682,9 +4689,9 @@ msgstr "Suspicious request"
 msgid "Symbol charset"
 msgstr "Symbol charset"
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts
-msgid "Sync"
-msgstr "Sync"
+#: 
+#~ msgid "Sync"
+#~ msgstr "Sync"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Sync groups"

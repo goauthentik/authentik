@@ -162,7 +162,6 @@ msgstr "Action"
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
-#: src/pages/policies/reputation/IPReputationListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 #: src/pages/stages/StageListPage.ts
@@ -669,7 +668,6 @@ msgid "Certificate"
 msgstr "Certificat"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Certificate Fingerprint (SHA1)"
 msgstr "Empreinte du certificat (SHA1)"
 
@@ -1480,6 +1478,7 @@ msgstr "Domaine"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Download"
 msgstr "Télécharger"
@@ -1491,6 +1490,10 @@ msgstr "Télécharger le certificat"
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Download Private key"
 msgstr "Télécharger la clé privée"
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "Download signing certificate"
+msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
@@ -2071,6 +2074,10 @@ msgstr "Générer une paire clé/certificat"
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Generic"
+msgstr ""
+
+#: src/pages/sources/oauth/OAuthSourceViewPage.ts
+msgid "Generic OpenID Connect"
 msgstr ""
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
@@ -4636,9 +4643,9 @@ msgstr "Requête suspecte"
 msgid "Symbol charset"
 msgstr "Set de symboles"
 
-#: src/pages/sources/ldap/LDAPSourceViewPage.ts
-msgid "Sync"
-msgstr "Synchroniser"
+#: 
+#~ msgid "Sync"
+#~ msgstr "Synchroniser"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Sync groups"
