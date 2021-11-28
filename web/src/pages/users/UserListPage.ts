@@ -11,6 +11,7 @@ import { CoreApi, User } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG, tenant } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import { PFColor } from "../../elements/Label";
 import "../../elements/buttons/ActionButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
@@ -110,7 +111,9 @@ export class UserListPage extends TablePage<User> {
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </a>`,
-            html`${item.isActive ? t`Yes` : t`No`}`,
+            html` <ak-label color=${item.isActive ? PFColor.Green : PFColor.Red}>
+                ${item.isActive ? t`Yes` : t`No`}
+            </ak-label>`,
             html`${first(item.lastLogin?.toLocaleString(), t`-`)}`,
             html` <ak-forms-modal>
                     <span slot="submit"> ${t`Update`} </span>

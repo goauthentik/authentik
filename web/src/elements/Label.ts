@@ -44,7 +44,7 @@ export class Label extends LitElement {
             <span class="pf-c-label__content">
                 <span class="pf-c-label__icon">
                     <i
-                        class="fas fa-fw${this.icon || this.getDefaultIcon()}"
+                        class="fas fa-fw ${this.icon || this.getDefaultIcon()}"
                         aria-hidden="true"
                     ></i>
                 </span>

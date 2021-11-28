@@ -10,6 +10,7 @@ import { ExpiringBaseGrantModel, Oauth2Api, RefreshTokenModel } from "@goauthent
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import { PFColor } from "../Label";
 import "../forms/DeleteBulkForm";
 import { Table, TableColumn } from "../table/Table";
 
@@ -85,7 +86,9 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
     row(item: RefreshTokenModel): TemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
-            html`${item.revoked ? t`Yes` : t`No`}`,
+            html`<ak-label color=${item.revoked ? PFColor.Orange : PFColor.Green}>
+                ${item.revoked ? t`Yes` : t`No`}
+            </ak-label>`,
             html`${item.expires?.toLocaleString()}`,
             html`${item.scope.join(", ")}`,
         ];

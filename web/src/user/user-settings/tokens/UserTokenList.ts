@@ -10,6 +10,7 @@ import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 import { AKResponse } from "../../../api/Client";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { uiConfig } from "../../../common/config";
+import { PFColor } from "../../../elements/Label";
 import "../../../elements/buttons/Dropdown";
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/TokenCopyButton";
@@ -92,7 +93,9 @@ export class UserTokenList extends Table<Token> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${item.expiring ? t`Yes` : t`No`}
+                                    <ak-label color=${item.expiring ? PFColor.Green : PFColor.Red}>
+                                        ${item.expiring ? t`Yes` : t`No`}
+                                    </ak-label>
                                 </div>
                             </dd>
                         </div>

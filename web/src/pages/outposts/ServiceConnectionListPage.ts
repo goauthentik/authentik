@@ -65,7 +65,9 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         return [
             html`${item.name}`,
             html`${item.verboseName}`,
-            html`${item.local ? t`Yes` : t`No`}`,
+            html`<ak-label color=${item.local ? PFColor.Grey : PFColor.Green}>
+                ${item.local ? t`Yes` : t`No`}
+            </ak-label>`,
             html`${until(
                 new OutpostsApi(DEFAULT_CONFIG)
                     .outpostsServiceConnectionsAllStateRetrieve({

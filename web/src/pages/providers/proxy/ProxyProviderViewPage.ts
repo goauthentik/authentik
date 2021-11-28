@@ -27,6 +27,7 @@ import MDTraefikStandalone from "../../../../../website/docs/providers/proxy/_tr
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 import "../../../elements/CodeMirror";
+import { PFColor } from "../../../elements/Label";
 import "../../../elements/Tabs";
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
@@ -172,21 +173,13 @@ export class ProxyProviderViewPage extends LitElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.basicAuthEnabled
-                                            ? html`<span class="pf-c-button__icon pf-m-start">
-                                                      <i
-                                                          class="fas fa-check-circle"
-                                                          aria-hidden="true"
-                                                      ></i
-                                                      >&nbsp; </span
-                                                  >${t`Yes`}`
-                                            : html`<span class="pf-c-button__icon pf-m-start">
-                                                      <i
-                                                          class="fas fa-times-circle"
-                                                          aria-hidden="true"
-                                                      ></i
-                                                      >&nbsp; </span
-                                                  >${t`No`}`}
+                                        <ak-label
+                                            color=${this.provider.basicAuthEnabled
+                                                ? PFColor.Green
+                                                : PFColor.Red}
+                                        >
+                                            ${this.provider.basicAuthEnabled ? t`Yes` : t`No`}
+                                        </ak-label>
                                     </div>
                                 </dd>
                             </div>

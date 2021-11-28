@@ -10,6 +10,7 @@ import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import { PFColor } from "../../elements/Label";
 import { PFSize } from "../../elements/Spinner";
 import "../../elements/Tabs";
 import "../../elements/buttons/Dropdown";
@@ -136,7 +137,9 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     row(item: PolicyBinding): TemplateResult[] {
         return [
             html`${this.getPolicyUserGroupRow(item)}`,
-            html`${item.enabled ? t`Yes` : t`No`}`,
+            html` <ak-label color=${item.enabled ? PFColor.Green : PFColor.Orange}>
+                ${item.enabled ? t`Yes` : t`No`}
+            </ak-label>`,
             html`${item.order}`,
             html`${item.timeout}`,
             html` ${this.getObjectEditButton(item)}

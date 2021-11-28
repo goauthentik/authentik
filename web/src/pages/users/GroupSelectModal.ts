@@ -8,6 +8,7 @@ import { CoreApi, Group } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import { PFColor } from "../../elements/Label";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { TableModal } from "../../elements/table/TableModal";
@@ -48,7 +49,9 @@ export class GroupSelectModal extends TableModal<Group> {
             html`<div>
                 <div>${item.name}</div>
             </div>`,
-            html`${item.isSuperuser ? t`Yes` : t`No`}`,
+            html` <ak-label color=${item.isSuperuser ? PFColor.Green : PFColor.Grey}>
+                ${item.isSuperuser ? t`Yes` : t`No`}
+            </ak-label>`,
             html`${item.users.length}`,
         ];
     }

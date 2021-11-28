@@ -8,6 +8,7 @@ import { CoreApi, Tenant } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import { PFColor } from "../../elements/Label";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
@@ -77,7 +78,9 @@ export class TenantListPage extends TablePage<Tenant> {
     row(item: Tenant): TemplateResult[] {
         return [
             html`${item.domain}`,
-            html`${item._default ? t`Yes` : t`No`}`,
+            html` <ak-label color=${item._default ? PFColor.Green : PFColor.Red}>
+                ${item._default ? t`Yes` : t`No`}
+            </ak-label>`,
             html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update Tenant`} </span>

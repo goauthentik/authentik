@@ -8,6 +8,7 @@ import { CoreApi, User } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import { PFColor } from "../../elements/Label";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { TableModal } from "../../elements/table/TableModal";
@@ -50,7 +51,9 @@ export class MemberSelectTable extends TableModal<User> {
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </div>`,
-            html`${item.isActive ? t`Yes` : t`No`}`,
+            html` <ak-label color=${item.isActive ? PFColor.Green : PFColor.Orange}>
+                ${item.isActive ? t`Yes` : t`No`}
+            </ak-label>`,
             html`${first(item.lastLogin?.toLocaleString(), t`-`)}`,
         ];
     }

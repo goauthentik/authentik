@@ -93,10 +93,10 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     row(item: CertificateKeyPair): TemplateResult[] {
         return [
             html`${item.name}`,
-            html` <ak-label color=${item.privateKeyAvailable ? PFColor.Green : PFColor.Grey}>
+            html`<ak-label color=${item.privateKeyAvailable ? PFColor.Green : PFColor.Grey}>
                 ${item.privateKeyAvailable ? t`Yes` : t`No`}
             </ak-label>`,
-            html` <ak-label color=${item.certExpiry > new Date() ? PFColor.Green : PFColor.Orange}>
+            html`<ak-label color=${item.certExpiry > new Date() ? PFColor.Green : PFColor.Orange}>
                 ${item.certExpiry?.toLocaleString()}
             </ak-label>`,
             html`<ak-forms-modal>
