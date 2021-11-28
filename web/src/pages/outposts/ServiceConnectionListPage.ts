@@ -73,15 +73,11 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     })
                     .then((state) => {
                         if (state.healthy) {
-                            return html`<ak-label
-                                color=${PFColor.Green}
-                                text=${ifDefined(state.version)}
-                            ></ak-label>`;
+                            return html`<ak-label color=${PFColor.Green}
+                                >${ifDefined(state.version)}</ak-label
+                            >`;
                         }
-                        return html`<ak-label
-                            color=${PFColor.Red}
-                            text=${t`Unhealthy`}
-                        ></ak-label>`;
+                        return html`<ak-label color=${PFColor.Red}>${t`Unhealthy`}</ak-label>`;
                     }),
                 html`<ak-spinner></ak-spinner>`,
             )}`,

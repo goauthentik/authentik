@@ -26,21 +26,18 @@ export class OutpostHealthElement extends LitElement {
         }
         return html` <ul>
             <li role="cell">
-                <ak-label
-                    color=${PFColor.Green}
-                    text=${t`Last seen: ${this.outpostHealth.lastSeen?.toLocaleTimeString()}`}
-                ></ak-label>
+                <ak-label color=${PFColor.Green}>
+                    ${t`Last seen: ${this.outpostHealth.lastSeen?.toLocaleTimeString()}`}
+                </ak-label>
             </li>
             <li role="cell">
                 ${this.outpostHealth.versionOutdated
-                    ? html`<ak-label
-                          color=${PFColor.Red}
-                          text=${t`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`}
-                      ></ak-label>`
-                    : html`<ak-label
-                          color=${PFColor.Green}
-                          text=${t`Version: ${this.outpostHealth.version || ""}`}
-                      ></ak-label>`}
+                    ? html`<ak-label color=${PFColor.Red}
+                          >${t`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`}
+                      </ak-label>`
+                    : html`<ak-label color=${PFColor.Green}
+                          >${t`Version: ${this.outpostHealth.version || ""}`}
+                      </ak-label>`}
             </li>
         </ul>`;
     }

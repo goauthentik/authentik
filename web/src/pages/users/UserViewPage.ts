@@ -161,7 +161,6 @@ export class UserViewPage extends LitElement {
                                                 color=${this.user.isActive
                                                     ? PFColor.Green
                                                     : PFColor.Orange}
-                                                text=""
                                             ></ak-label>
                                         </div>
                                     </dd>
@@ -178,7 +177,6 @@ export class UserViewPage extends LitElement {
                                                 color=${this.user.isSuperuser
                                                     ? PFColor.Green
                                                     : PFColor.Orange}
-                                                text=""
                                             ></ak-label>
                                         </div>
                                     </dd>

@@ -20,9 +20,6 @@ export class Label extends LitElement {
     @property()
     icon?: string;
 
-    @property()
-    text?: string;
-
     static get styles(): CSSResult[] {
         return [PFBase, PFLabel, AKGlobal];
     }
@@ -47,12 +44,11 @@ export class Label extends LitElement {
             <span class="pf-c-label__content">
                 <span class="pf-c-label__icon">
                     <i
-                        class="fas ${this.text ? "fa-fw" : ""} ${this.icon ||
-                        this.getDefaultIcon()}"
+                        class="fas fa-fw${this.icon || this.getDefaultIcon()}"
                         aria-hidden="true"
                     ></i>
                 </span>
-                ${this.text || ""}
+                <slot></slot>
             </span>
         </span>`;
     }
