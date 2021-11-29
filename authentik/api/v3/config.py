@@ -5,7 +5,14 @@ from django.conf import settings
 from django.db import models
 from drf_spectacular.utils import extend_schema
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
-from rest_framework.fields import BooleanField, CharField, ChoiceField, FloatField, IntegerField, ListField
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    FloatField,
+    IntegerField,
+    ListField,
+)
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -23,14 +30,14 @@ class Capabilities(models.TextChoices):
     CAN_GEO_IP = "can_geo_ip"
     CAN_BACKUP = "can_backup"
 
+
 class ErrorReportingConfigSerializer(PassiveSerializer):
     """Config for error reporting"""
 
     enabled = BooleanField(read_only=True)
     environment = CharField(read_only=True)
     send_pii = BooleanField(read_only=True)
-    traces_sample_rate=FloatField(read_only=True)
-
+    traces_sample_rate = FloatField(read_only=True)
 
 
 class ConfigSerializer(PassiveSerializer):
