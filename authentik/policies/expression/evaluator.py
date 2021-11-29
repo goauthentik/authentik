@@ -50,7 +50,7 @@ class PolicyEvaluator(BaseEvaluator):
                 if device_class == device_type:
                     return True
             return False
-        return len(user_devices) > 0
+        return len(list(user_devices)) > 0
 
     def set_policy_request(self, request: PolicyRequest):
         """Update context based on policy request (if http request is given, update that too)"""
