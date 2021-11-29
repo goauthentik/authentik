@@ -27,9 +27,6 @@ Outposts fetch their configuration from authentik. Below are all the options you
 ```yaml
 # Log level that the outpost will set
 log_level: debug
-# Enable/disable error reporting for the outpost, based on the authentik settings
-error_reporting_enabled: true
-error_reporting_environment: beryjuorg-prod
 ########################################
 # The settings below are only relevant when using a managed outpost
 ########################################

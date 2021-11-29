@@ -67,8 +67,6 @@ class OutpostConfig:
     authentik_host_browser: str = ""
 
     log_level: str = CONFIG.y("log_level")
-    error_reporting_enabled: bool = CONFIG.y_bool("error_reporting.enabled")
-    error_reporting_environment: str = CONFIG.y("error_reporting.environment", "customer")
     object_naming_template: str = field(default="ak-outpost-%(name)s")
 
     docker_network: Optional[str] = field(default=None)

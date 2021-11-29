@@ -22,8 +22,6 @@ import (
 )
 
 const ConfigLogLevel = "log_level"
-const ConfigErrorReportingEnabled = "error_reporting_enabled"
-const ConfigErrorReportingEnvironment = "error_reporting_environment"
 
 // APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
@@ -68,7 +66,6 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		return nil
 	}
 	outpost := outposts.Results[0]
-	doGlobalSetup(outpost.Config)
 
 	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
 
@@ -78,6 +75,8 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		return nil
 	}
 	log.Debug("Fetched global configuration")
+
+	doGlobalSetup(outpost, akConfig)
 
 	ac := &APIController{
 		Client:       apiClient,

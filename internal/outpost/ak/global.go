@@ -1,6 +1,7 @@
 package ak
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -8,17 +9,18 @@ import (
 	"github.com/getsentry/sentry-go"
 	httptransport "github.com/go-openapi/runtime/client"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/api"
 	"goauthentik.io/internal/constants"
 )
 
-func doGlobalSetup(config map[string]interface{}) {
+func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
 	log.SetFormatter(&log.JSONFormatter{
 		FieldMap: log.FieldMap{
 			log.FieldKeyMsg:  "event",
 			log.FieldKeyTime: "timestamp",
 		},
 	})
-	switch config[ConfigLogLevel].(string) {
+	switch outpost.Config[ConfigLogLevel].(string) {
 	case "trace":
 		log.SetLevel(log.TraceLevel)
 	case "debug":
@@ -34,29 +36,17 @@ func doGlobalSetup(config map[string]interface{}) {
 	}
 	log.WithField("logger", "authentik.outpost").WithField("hash", constants.BUILD()).WithField("version", constants.VERSION).Info("Starting authentik outpost")
 
-	sentryEnv := "customer-outpost"
-	sentryEnable := true
-	if cSentryEnv, ok := config[ConfigErrorReportingEnvironment]; ok {
-		if ccSentryEnv, ok := cSentryEnv.(string); ok {
-			sentryEnv = ccSentryEnv
-		}
-	}
-	var dsn string
-	if cSentryEnable, ok := config[ConfigErrorReportingEnabled]; ok {
-		if ccSentryEnable, ok := cSentryEnable.(bool); ok {
-			sentryEnable = ccSentryEnable
-		}
-	}
-	if sentryEnable {
-		dsn = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
+	if globalConfig.ErrorReporting.Enabled {
+		sentryEnv := fmt.Sprintf("%s-outpost-%s", globalConfig.ErrorReporting.Environment, outpost.Type)
+		dsn := "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
 		log.WithField("env", sentryEnv).Debug("Error reporting enabled")
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn:              dsn,
 			Environment:      sentryEnv,
-			TracesSampleRate: 1,
+			TracesSampleRate: float64(globalConfig.ErrorReporting.TracesSampleRate),
 		})
 		if err != nil {
-			log.Fatalf("sentry.Init: %s", err)
+			log.WithField("env", sentryEnv).WithError(err).Warning("Failed to initialise sentry")
 		}
 	}
 }
