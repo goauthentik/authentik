@@ -93,6 +93,7 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         # End-user errors
         Http404,
     )
+    exc_value = None
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]
         if isinstance(exc_value, ignored_classes):
@@ -106,8 +107,10 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
             "asyncio",
             "multiprocessing",
             "django_redis",
+            "django.security.DisallowedHost",
         ]:
             return None
+    LOGGER.debug("sending event to sentry", exc=exc_value, source_logger=event.get("logger", None))
     if settings.DEBUG:
         return None
     return event
