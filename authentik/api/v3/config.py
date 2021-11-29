@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 from drf_spectacular.utils import extend_schema
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
-from rest_framework.fields import BooleanField, CharField, ChoiceField, IntegerField, ListField
+from rest_framework.fields import BooleanField, CharField, ChoiceField, FloatField, IntegerField, ListField
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -23,14 +23,20 @@ class Capabilities(models.TextChoices):
     CAN_GEO_IP = "can_geo_ip"
     CAN_BACKUP = "can_backup"
 
+class ErrorReportingConfigSerializer(PassiveSerializer):
+    """Config for error reporting"""
+
+    enabled = BooleanField(read_only=True)
+    environment = CharField(read_only=True)
+    send_pii = BooleanField(read_only=True)
+    traces_sample_rate=FloatField(read_only=True)
+
+
 
 class ConfigSerializer(PassiveSerializer):
     """Serialize authentik Config into DRF Object"""
 
-    error_reporting_enabled = BooleanField(read_only=True)
-    error_reporting_environment = CharField(read_only=True)
-    error_reporting_send_pii = BooleanField(read_only=True)
-
+    error_reporting = ErrorReportingConfigSerializer(required=True)
     capabilities = ListField(child=ChoiceField(choices=Capabilities.choices))
 
     cache_timeout = IntegerField(required=True)
@@ -66,9 +72,12 @@ class ConfigView(APIView):
         """Retrieve public configuration options"""
         config = ConfigSerializer(
             {
-                "error_reporting_enabled": CONFIG.y("error_reporting.enabled"),
-                "error_reporting_environment": CONFIG.y("error_reporting.environment"),
-                "error_reporting_send_pii": CONFIG.y("error_reporting.send_pii"),
+                "error_reporting": {
+                    "enabled": CONFIG.y("error_reporting.enabled"),
+                    "environment": CONFIG.y("error_reporting.environment"),
+                    "send_pii": CONFIG.y("error_reporting.send_pii"),
+                    "traces_sample_rate": float(CONFIG.y("error_reporting.sample_rate", 0.4)),
+                },
                 "capabilities": self.get_capabilities(),
                 "cache_timeout": int(CONFIG.y("redis.cache_timeout")),
                 "cache_timeout_flows": int(CONFIG.y("redis.cache_timeout_flows")),

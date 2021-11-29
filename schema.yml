@@ -20206,15 +20206,8 @@ components:
       type: object
       description: Serialize authentik Config into DRF Object
       properties:
-        error_reporting_enabled:
-          type: boolean
-          readOnly: true
-        error_reporting_environment:
-          type: string
-          readOnly: true
-        error_reporting_send_pii:
-          type: boolean
-          readOnly: true
+        error_reporting:
+          $ref: '#/components/schemas/ErrorReportingConfig'
         capabilities:
           type: array
           items:
@@ -20233,9 +20226,7 @@ components:
       - cache_timeout_policies
       - cache_timeout_reputation
       - capabilities
-      - error_reporting_enabled
-      - error_reporting_environment
-      - error_reporting_send_pii
+      - error_reporting
     ConsentChallenge:
       type: object
       description: Challenge info for consent screens
@@ -20949,6 +20940,28 @@ components:
       required:
       - code
       - string
+    ErrorReportingConfig:
+      type: object
+      description: Config for error reporting
+      properties:
+        enabled:
+          type: boolean
+          readOnly: true
+        environment:
+          type: string
+          readOnly: true
+        send_pii:
+          type: boolean
+          readOnly: true
+        traces_sample_rate:
+          type: number
+          format: float
+          readOnly: true
+      required:
+      - enabled
+      - environment
+      - send_pii
+      - traces_sample_rate
     Event:
       type: object
       description: Event Serializer
