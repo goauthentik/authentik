@@ -49,7 +49,7 @@ gen-web:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		ghcr.io/beryju/openapi-generator generate \
+		openapitools/openapi-generator-cli generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/web-api \
@@ -74,6 +74,7 @@ gen-outpost:
 		-o /local/api \
 		-c /local/config.yaml
 	go mod edit -replace goauthentik.io/api=./api
+	rm -rf config.yaml ./templates/
 
 gen: gen-build gen-clean gen-web
 
