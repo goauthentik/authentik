@@ -44,14 +44,13 @@ class PolicyEvaluator(BaseEvaluator):
     ) -> bool:
         """Check if a user has any authenticator devices, optionally matching *device_type*"""
         user_devices = devices_for_user(user)
-        for device in user_devices:
-            if device_type:
+        if device_type:
+            for device in user_devices:
                 device_class = device.__class__.__name__.lower().replace("device", "")
                 if device_class == device_type:
                     return True
-            else:
-                return True
-        return False
+            return False
+        return len(list(user_devices)) > 0
 
     def set_policy_request(self, request: PolicyRequest):
         """Update context based on policy request (if http request is given, update that too)"""
