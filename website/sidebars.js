@@ -37,6 +37,7 @@ module.exports = {
                     label: "Proxy Provider",
                     items: [
                         "providers/proxy/proxy",
+                        "providers/proxy/custom_headers",
                         "providers/proxy/forward_auth",
                     ],
                 },

@@ -18,7 +18,7 @@ module.exports = {
                 {
                     to: "docs/",
                     activeBasePath: "docs",
-                    label: "Docs",
+                    label: "Documentation",
                     position: "left",
                 },
                 {
@@ -30,7 +30,7 @@ module.exports = {
                 {
                     to: "developer-docs/",
                     activeBasePath: "developer-docs",
-                    label: "Developer Docs",
+                    label: "Developer",
                     position: "left",
                 },
                 {
