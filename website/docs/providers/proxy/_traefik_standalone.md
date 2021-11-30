@@ -22,5 +22,5 @@ http:
     default-router-auth:
       match: "Host(`app.company`) && PathPrefix(`/akprox/`)"
       priority: 15
-      services: http://*ip of your outpost*:9000/akprox
+      services: http://outpost.company:9000/akprox
 ```
