@@ -8,12 +8,6 @@ jobs:
   # Build
   build-server:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        arch:
-          - 'linux/amd64'
-          - 'linux/arm64'
     steps:
       - uses: actions/checkout@v2
       - name: Set up QEMU
@@ -40,7 +34,7 @@ jobs:
             beryju/authentik:latest,
             ghcr.io/goauthentik/server:2021.10.4,
             ghcr.io/goauthentik/server:latest
-          platforms: ${{ matrix.arch }}
+          platforms: linux/amd64,linux/arm64
           context: .
       - name: Building Docker Image (stable)
         if: ${{ github.event_name == 'release' && !contains('2021.10.4', 'rc') }}
@@ -59,9 +53,6 @@ jobs:
         type:
           - proxy
           - ldap
-        arch:
-          - 'linux/amd64'
-          - 'linux/arm64'
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
@@ -92,7 +83,7 @@ jobs:
             ghcr.io/goauthentik/${{ matrix.type }}:2021.10.4,
             ghcr.io/goauthentik/${{ matrix.type }}:latest
           file: ${{ matrix.type }}.Dockerfile
-          platforms: ${{ matrix.arch }}
+          platforms: linux/amd64,linux/arm64
       - name: Building Docker Image (stable)
         if: ${{ github.event_name == 'release' && !contains('2021.10.4', 'rc') }}
         run: |
