@@ -7,22 +7,22 @@ import (
 	"strings"
 )
 
-func (a *Application) addHeaders(r *http.Request, c *Claims) {
+func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	// https://goauthentik.io/docs/providers/proxy/proxy
 
 	// Legacy headers, remove after 2022.1
-	r.Header.Set("X-Auth-Username", c.PreferredUsername)
-	r.Header.Set("X-Auth-Groups", strings.Join(c.Groups, "|"))
-	r.Header.Set("X-Forwarded-Email", c.Email)
-	r.Header.Set("X-Forwarded-Preferred-Username", c.PreferredUsername)
-	r.Header.Set("X-Forwarded-User", c.Sub)
+	headers.Set("X-Auth-Username", c.PreferredUsername)
+	headers.Set("X-Auth-Groups", strings.Join(c.Groups, "|"))
+	headers.Set("X-Forwarded-Email", c.Email)
+	headers.Set("X-Forwarded-Preferred-Username", c.PreferredUsername)
+	headers.Set("X-Forwarded-User", c.Sub)
 
 	// New headers, unique prefix
-	r.Header.Set("X-authentik-username", c.PreferredUsername)
-	r.Header.Set("X-authentik-groups", strings.Join(c.Groups, "|"))
-	r.Header.Set("X-authentik-email", c.Email)
-	r.Header.Set("X-authentik-name", c.Name)
-	r.Header.Set("X-authentik-uid", c.Sub)
+	headers.Set("X-authentik-username", c.PreferredUsername)
+	headers.Set("X-authentik-groups", strings.Join(c.Groups, "|"))
+	headers.Set("X-authentik-email", c.Email)
+	headers.Set("X-authentik-name", c.Name)
+	headers.Set("X-authentik-uid", c.Sub)
 
 	userAttributes := c.Proxy.UserAttributes
 	// Attempt to set basic auth based on user's attributes
@@ -39,7 +39,7 @@ func (a *Application) addHeaders(r *http.Request, c *Claims) {
 		}
 		authVal := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
 		a.log.WithField("username", username).Trace("setting http basic auth")
-		r.Header["Authorization"] = []string{fmt.Sprintf("Basic %s", authVal)}
+		headers.Set("Authorization", fmt.Sprintf("Basic %s", authVal))
 	}
 	// Check if user has additional headers set that we should sent
 	if additionalHeaders, ok := userAttributes["additionalHeaders"].(map[string]interface{}); ok {
@@ -48,15 +48,7 @@ func (a *Application) addHeaders(r *http.Request, c *Claims) {
 			return
 		}
 		for key, value := range additionalHeaders {
-			r.Header.Set(key, toString(value))
-		}
-	}
-}
-
-func copyHeadersToResponse(rw http.ResponseWriter, r *http.Request) {
-	for headerKey, headers := range r.Header {
-		for _, value := range headers {
-			rw.Header().Set(headerKey, value)
+			headers.Set(key, toString(value))
 		}
 	}
 }

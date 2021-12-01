@@ -26,8 +26,8 @@ func (a *Application) configureForward() error {
 func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Request) {
 	claims, err := a.getClaims(r)
 	if claims != nil && err == nil {
-		a.addHeaders(r, claims)
-		copyHeadersToResponse(rw, r)
+		a.addHeaders(rw.Header(), claims)
+		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
 		return
 	} else if claims == nil && a.IsAllowlisted(r) {
 		a.log.Trace("path can be accessed without authentication")
@@ -69,9 +69,9 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request) {
 	claims, err := a.getClaims(r)
 	if claims != nil && err == nil {
-		a.addHeaders(r, claims)
-		copyHeadersToResponse(rw, r)
+		a.addHeaders(rw.Header(), claims)
 		rw.WriteHeader(200)
+		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
 		return
 	} else if claims == nil && a.IsAllowlisted(r) {
 		a.log.Trace("path can be accessed without authentication")
