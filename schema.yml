@@ -28984,7 +28984,17 @@ components:
           items:
             type: string
           readOnly: true
+        assigned_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
       required:
+      - assigned_application_name
+      - assigned_application_slug
       - external_host
       - name
       - oidc_configuration
