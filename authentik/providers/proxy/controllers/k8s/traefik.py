@@ -20,7 +20,7 @@ class TraefikMiddlewareSpecForwardAuth:
 
     address: str
     # pylint: disable=invalid-name
-    authResponseHeaders: list[str]
+    authResponseHeadersRegex: str
     # pylint: disable=invalid-name
     trustForwardHeader: bool
 
@@ -108,21 +108,7 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
             spec=TraefikMiddlewareSpec(
                 forwardAuth=TraefikMiddlewareSpecForwardAuth(
                     address=f"http://{self.name}.{self.namespace}:9000/akprox/auth/traefik",
-                    authResponseHeaders=[
-                        "Set-Cookie",
-                        # Legacy headers, remove after 2022.1
-                        "X-Auth-Username",
-                        "X-Auth-Groups",
-                        "X-Forwarded-Email",
-                        "X-Forwarded-Preferred-Username",
-                        "X-Forwarded-User",
-                        # New headers, unique prefix
-                        "X-authentik-username",
-                        "X-authentik-groups",
-                        "X-authentik-email",
-                        "X-authentik-name",
-                        "X-authentik-uid",
-                    ],
+                    authResponseHeadersRegex="^.*$",
                     trustForwardHeader=True,
                 )
             ),
