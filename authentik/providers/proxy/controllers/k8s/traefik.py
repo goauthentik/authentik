@@ -20,9 +20,11 @@ class TraefikMiddlewareSpecForwardAuth:
 
     address: str
     # pylint: disable=invalid-name
-    authResponseHeadersRegex: str
+    authResponseHeadersRegex: str = field(default="")
     # pylint: disable=invalid-name
-    trustForwardHeader: bool
+    authResponseHeaders: list[str] = field(default_factory=list)
+    # pylint: disable=invalid-name
+    trustForwardHeader: bool = field(default=True)
 
 
 @dataclass
@@ -108,6 +110,7 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
             spec=TraefikMiddlewareSpec(
                 forwardAuth=TraefikMiddlewareSpecForwardAuth(
                     address=f"http://{self.name}.{self.namespace}:9000/akprox/auth/traefik",
+                    authResponseHeaders=[],
                     authResponseHeadersRegex="^.*$",
                     trustForwardHeader=True,
                 )
