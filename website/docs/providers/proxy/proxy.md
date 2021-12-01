@@ -42,6 +42,10 @@ Besides these user-specific headers, some application specific headers are also 
 
     The authentik application's slug.
 
+- X-authentik-meta-version: `authentik-outpost@1.2.3 (build=tagged)`
+
+    The authentik outpost's version.
+
 # HTTPS
 
 The outpost listens on both 9000 for HTTP and 9443 for HTTPS.

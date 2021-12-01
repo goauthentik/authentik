@@ -40,7 +40,6 @@ COPY --from=website-builder /work/website/help/ /work/website/help/
 
 COPY ./cmd /work/cmd
 COPY ./web/static.go /work/web/static.go
-COPY ./website/static.go /work/website/static.go
 COPY ./internal /work/internal
 COPY ./go.mod /work/go.mod
 COPY ./go.sum /work/go.sum

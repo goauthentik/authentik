@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+
+	"goauthentik.io/internal/constants"
 )
 
 func (a *Application) addHeaders(headers http.Header, c *Claims) {
@@ -28,6 +30,7 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	headers.Set("X-authentik-meta-outpost", a.outpostName)
 	headers.Set("X-authentik-meta-provider", a.proxyConfig.Name)
 	headers.Set("X-authentik-meta-app", a.proxyConfig.AssignedApplicationSlug)
+	headers.Set("X-authentik-meta-version", constants.OutpostUserAgent())
 
 	userAttributes := c.Proxy.UserAttributes
 	// Attempt to set basic auth based on user's attributes

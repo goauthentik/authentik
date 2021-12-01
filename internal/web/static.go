@@ -13,6 +13,7 @@ import (
 
 func (ws *WebServer) configureStatic() {
 	statRouter := ws.lh.NewRoute().Subrouter()
+	statRouter.Use(ws.staticHeaderMiddleware)
 	indexLessRouter := statRouter.NewRoute().Subrouter()
 	indexLessRouter.Use(web.DisableIndex)
 	// Media files, always local
