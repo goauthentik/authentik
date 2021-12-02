@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/gob"
 	"fmt"
@@ -52,11 +53,17 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		return nil, fmt.Errorf("failed to parse URL, skipping provider")
 	}
 
-	ks := hs256.NewKeySet(*p.ClientSecret)
+	var ks oidc.KeySet
+	if contains(p.OidcConfiguration.IdTokenSigningAlgValuesSupported, "HS256") {
+		ks = hs256.NewKeySet(*p.ClientSecret)
+	} else {
+		ctx := context.WithValue(context.Background(), oauth2.HTTPClient, c)
+		ks = oidc.NewRemoteKeySet(ctx, p.OidcConfiguration.JwksUri)
+	}
 
 	var verifier = oidc.NewVerifier(p.OidcConfiguration.Issuer, ks, &oidc.Config{
 		ClientID:             *p.ClientId,
-		SupportedSigningAlgs: []string{"HS256"},
+		SupportedSigningAlgs: []string{"RS256", "HS256"},
 	})
 
 	// Configure an OpenID Connect aware OAuth2 client.
