@@ -1,9 +1,9 @@
 """authentik LDAP Models"""
-from typing import Optional, Type
+from typing import Type
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from ldap3 import ALL, ROUND_ROBIN, Connection, Server, ServerPool
+from ldap3 import ALL, RANDOM, Connection, Server, ServerPool
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
@@ -93,31 +93,32 @@ class LDAPSource(Source):
 
         return LDAPSourceSerializer
 
-    _connection: Optional[Connection] = None
+    @property
+    def server(self) -> Server:
+        """Get LDAP Server/ServerPool"""
+        servers = []
+        if "," in self.server_uri:
+            for server in self.server_uri.split(","):
+                servers.append(Server(server, get_info=ALL, connect_timeout=LDAP_TIMEOUT))
+        else:
+            servers = [Server(self.server_uri, get_info=ALL, connect_timeout=LDAP_TIMEOUT)]
+        return ServerPool(servers, RANDOM, active=True, exhaust=True)
 
     @property
     def connection(self) -> Connection:
         """Get a fully connected and bound LDAP Connection"""
-        if not self._connection:
-            servers = []
-            if "," in self.server_uri:
-                for server in self.server_uri.split(","):
-                    servers.append(Server(server, get_info=ALL, connect_timeout=LDAP_TIMEOUT))
-            else:
-                servers = [Server(self.server_uri, get_info=ALL, connect_timeout=LDAP_TIMEOUT)]
-            pool = ServerPool(servers, ROUND_ROBIN, active=True, exhaust=True)
-            self._connection = Connection(
-                pool,
-                raise_exceptions=True,
-                user=self.bind_cn,
-                password=self.bind_password,
-                receive_timeout=LDAP_TIMEOUT,
-            )
+        connection = Connection(
+            self.server,
+            raise_exceptions=True,
+            user=self.bind_cn,
+            password=self.bind_password,
+            receive_timeout=LDAP_TIMEOUT,
+        )
 
-            self._connection.bind()
-            if self.start_tls:
-                self._connection.start_tls()
-        return self._connection
+        connection.bind()
+        if self.start_tls:
+            connection.start_tls()
+        return connection
 
     class Meta:
 
