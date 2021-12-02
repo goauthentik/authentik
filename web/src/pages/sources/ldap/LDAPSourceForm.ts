@@ -124,6 +124,9 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             class="pf-c-form-control"
                             required
                         />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Specify multiple server URIs by separating them with a comma.`}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="startTls">
                         <div class="pf-c-check">

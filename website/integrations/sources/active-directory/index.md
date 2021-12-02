@@ -43,6 +43,10 @@ Use these settings:
 
     For authentik to be able to write passwords back to Active Directory, make sure to use `ldaps://`
 
+    You can specify multiple servers by separating URIs with a comma, like `ldap://dc1.ad.company,ldap://dc2.ad.company`.
+
+    When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
+
 - Bind CN: `<name of your service user>@ad.company`
 - Bind Password: The password you've given the user above
 - Base DN: The base DN which you want authentik to sync

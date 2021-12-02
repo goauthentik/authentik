@@ -4162,6 +4162,10 @@ msgstr "Sources"
 msgid "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
 msgstr "Sources d'identités, qui peuvent soit être synchronisées dans la base de données d'Authentik, soit être utilisées par les utilisateurs pour s'authentifier et s'inscrire."
 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "Specify multiple server URIs by separating them with a comma."
+msgstr ""
+
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 msgid "Stage"

@@ -3,7 +3,7 @@ from typing import Optional, Type
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from ldap3 import ALL, Connection, Server
+from ldap3 import ALL, ROUND_ROBIN, Connection, Server, ServerPool
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
@@ -12,11 +12,22 @@ from authentik.lib.models import DomainlessURLValidator
 LDAP_TIMEOUT = 15
 
 
+class MultiURLValidator(DomainlessURLValidator):
+    """Same as DomainlessURLValidator but supports multiple URLs separated with a comma."""
+
+    def __call__(self, value: str):
+        if "," in value:
+            for url in value.split(","):
+                super().__call__(url)
+        else:
+            super().__call__(value)
+
+
 class LDAPSource(Source):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
     server_uri = models.TextField(
-        validators=[DomainlessURLValidator(schemes=["ldap", "ldaps"])],
+        validators=[MultiURLValidator(schemes=["ldap", "ldaps"])],
         verbose_name=_("Server URI"),
     )
     bind_cn = models.TextField(verbose_name=_("Bind CN"), blank=True)
@@ -88,9 +99,15 @@ class LDAPSource(Source):
     def connection(self) -> Connection:
         """Get a fully connected and bound LDAP Connection"""
         if not self._connection:
-            server = Server(self.server_uri, get_info=ALL, connect_timeout=LDAP_TIMEOUT)
+            servers = []
+            if "," in self.server_uri:
+                for server in self.server_uri.split(","):
+                    servers.append(Server(server, get_info=ALL, connect_timeout=LDAP_TIMEOUT))
+            else:
+                servers = [Server(self.server_uri, get_info=ALL, connect_timeout=LDAP_TIMEOUT)]
+            pool = ServerPool(servers, ROUND_ROBIN, active=True, exhaust=True)
             self._connection = Connection(
-                server,
+                pool,
                 raise_exceptions=True,
                 user=self.bind_cn,
                 password=self.bind_password,
