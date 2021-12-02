@@ -94,14 +94,14 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		if !ok {
 			return l
 		}
-		return l.WithField("request_username", c.Email)
+		return l.WithField("request_username", c.PreferredUsername)
 	}))
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 			c, _ := a.getClaims(r)
 			user := ""
 			if c != nil {
-				user = c.Email
+				user = c.PreferredUsername
 			}
 			before := time.Now()
 			inner.ServeHTTP(rw, r)
