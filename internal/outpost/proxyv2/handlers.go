@@ -28,7 +28,7 @@ func (ps *ProxyServer) HandlePing(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
-	staticFs := http.FileServer(http.Dir("./website/static/"))
+	staticFs := http.FileServer(http.Dir("./web/dist/"))
 	before := time.Now()
 	web.DisableIndex(http.StripPrefix("/akprox/static", staticFs)).ServeHTTP(rw, r)
 	after := time.Since(before)
