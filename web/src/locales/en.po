@@ -3612,8 +3612,8 @@ msgid "Re-evaluate policies"
 msgstr "Re-evaluate policies"
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
-msgid "Receive a push notification on your phone to prove your identity."
-msgstr "Receive a push notification on your phone to prove your identity."
+msgid "Receive a push notification on your device."
+msgstr "Receive a push notification on your device."
 
 #: src/pages/flows/utils.ts
 #: src/pages/tokens/TokenListPage.ts

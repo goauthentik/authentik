@@ -101,7 +101,7 @@ export class AuthenticatorValidateStage
                     <div class="right">
                         <p>${t`Duo push-notifications`}</p>
                         <small
-                            >${t`Receive a push notification on your phone to prove your identity.`}</small
+                            >${t`Receive a push notification on your device.`}</small
                         >
                     </div>`;
             case DeviceClassesEnum.Webauthn:
