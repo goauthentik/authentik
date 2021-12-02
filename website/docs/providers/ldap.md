@@ -73,3 +73,8 @@ Starting with 2021.9.1, custom attributes will override the inbuilt attributes.
 You can also configure SSL for your LDAP Providers by selecting a certificate and a server name in the provider settings.
 
 This enables you to bind on port 636 using LDAPS, StartTLS is not supported.
+
+## Integrations
+
+See the integration guide for [sssd](../../integrations/services/sssd/index) for
+an example guide.

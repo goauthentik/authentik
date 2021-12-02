@@ -47,6 +47,7 @@ module.exports = {
                 "services/proxmox-ve/index",
                 "services/rancher/index",
                 "services/sentry/index",
+                "services/sssd/index",
                 "services/sonarr/index",
                 "services/tautulli/index",
                 "services/ubuntu-landscape/index",
