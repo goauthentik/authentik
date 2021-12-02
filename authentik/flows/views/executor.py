@@ -53,6 +53,7 @@ NEXT_ARG_NAME = "next"
 SESSION_KEY_PLAN = "authentik_flows_plan"
 SESSION_KEY_APPLICATION_PRE = "authentik_flows_application_pre"
 SESSION_KEY_GET = "authentik_flows_get"
+SESSION_KEY_POST = "authentik_flows_post"
 SESSION_KEY_HISTORY = "authentik_flows_history"
 
 

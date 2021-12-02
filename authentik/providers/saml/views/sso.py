@@ -13,7 +13,7 @@ from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN, SESSION_KEY_POST
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
@@ -37,7 +37,7 @@ LOGGER = get_logger()
 
 
 class SAMLSSOView(PolicyAccessView):
-    """ "SAML SSO Base View, which plans a flow and injects our final stage.
+    """SAML SSO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
 
     def resolve_provider_application(self):
@@ -120,14 +120,20 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
 
     def check_saml_request(self) -> Optional[HttpRequest]:
         """Handle POST bindings"""
-        if REQUEST_KEY_SAML_REQUEST not in self.request.POST:
+        payload = self.request.POST
+        # Restore the post body from the session
+        # This happens when using POST bindings but the user isn't logged in
+        # (user gets redirected and POST body is 'lost')
+        if SESSION_KEY_POST in self.request.session:
+            payload = self.request.session[SESSION_KEY_POST]
+        if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("check_saml_request: SAML payload missing")
             return bad_request_message(self.request, "The SAML request payload is missing.")
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse(
-                self.request.POST[REQUEST_KEY_SAML_REQUEST],
-                self.request.POST.get(REQUEST_KEY_RELAY_STATE),
+                payload[REQUEST_KEY_SAML_REQUEST],
+                payload.get(REQUEST_KEY_RELAY_STATE),
             )
             self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
