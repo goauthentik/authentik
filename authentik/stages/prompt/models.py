@@ -113,6 +113,9 @@ class Prompt(SerializerModel):
             kwargs["label"] = ""
         if default:
             kwargs["default"] = default
+        # May not set both `required` and `default`
+        if "default" in kwargs:
+            kwargs.pop("required", None)
         return field_class(**kwargs)
 
     def save(self, *args, **kwargs):
