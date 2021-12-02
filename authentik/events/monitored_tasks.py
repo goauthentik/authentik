@@ -112,13 +112,13 @@ class TaskInfo:
         cache.set(key, self, timeout=timeout_hours * 60 * 60)
 
 
-def prefill_task():
+def prefill_task(func):
     """Ensure a task's details are always in cache, so it can always be triggered via API"""
 
-    def inner_wrap(func):
+    def wrapper(*args, **kwargs):
         status = TaskInfo.by_name(func.__name__)
         if status:
-            return func
+            return func(*args, **kwargs)
         TaskInfo(
             task_name=func.__name__,
             task_description=func.__doc__,
@@ -131,9 +131,9 @@ def prefill_task():
             finish_time=datetime.now(),
         ).save(86400)
         LOGGER.debug("prefilled task", task_name=func.__name__)
-        return func
+        return func(*args, **kwargs)
 
-    return inner_wrap
+    return wrapper
 
 
 class MonitoredTask(Task):

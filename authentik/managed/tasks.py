@@ -12,7 +12,7 @@ from authentik.managed.manager import ObjectManager
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task()
+@prefill_task
 def managed_reconcile(self: MonitoredTask):
     """Run ObjectManager to ensure objects are up-to-date"""
     try:

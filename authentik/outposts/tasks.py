@@ -76,7 +76,7 @@ def outpost_service_connection_state(connection_pk: Any):
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task()
+@prefill_task
 def outpost_service_connection_monitor(self: MonitoredTask):
     """Regularly check the state of Outpost Service Connections"""
     connections = OutpostServiceConnection.objects.all()
@@ -126,7 +126,7 @@ def outpost_controller(
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task()
+@prefill_task
 def outpost_token_ensurer(self: MonitoredTask):
     """Periodically ensure that all Outposts have valid Service Accounts
     and Tokens"""
