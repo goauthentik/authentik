@@ -144,6 +144,8 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
     queryset = CertificateKeyPair.objects.exclude(managed__isnull=False)
     serializer_class = CertificateKeyPairSerializer
     filterset_class = CertificateKeyPairFilter
+    ordering = ["name"]
+    search_fields = ["name"]
 
     @permission_required(None, ["authentik_crypto.add_certificatekeypair"])
     @extend_schema(
