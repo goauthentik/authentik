@@ -16,21 +16,15 @@ from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession, ExpiringModel
-from authentik.events.monitored_tasks import (
-    MonitoredTask,
-    TaskResult,
-    TaskResultStatus,
-    prefill_task,
-)
+from authentik.events.monitored_tasks import PrefilledMonitoredTask, TaskResult, TaskResultStatus
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task
-def clean_expired_models(self: MonitoredTask):
+@CELERY_APP.task(bind=True, base=PrefilledMonitoredTask)
+def clean_expired_models(self: PrefilledMonitoredTask):
     """Remove expired objects"""
     messages = []
     for cls in ExpiringModel.__subclasses__():
@@ -68,9 +62,8 @@ def should_backup() -> bool:
     return True
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task
-def backup_database(self: MonitoredTask):  # pragma: no cover
+@CELERY_APP.task(bind=True, base=PrefilledMonitoredTask)
+def backup_database(self: PrefilledMonitoredTask):  # pragma: no cover
     """Database backup"""
     self.result_timeout_hours = 25
     if not should_backup():

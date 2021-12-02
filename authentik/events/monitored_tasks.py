@@ -112,30 +112,6 @@ class TaskInfo:
         cache.set(key, self, timeout=timeout_hours * 60 * 60)
 
 
-def prefill_task(func):
-    """Ensure a task's details are always in cache, so it can always be triggered via API"""
-
-    def wrapper(*args, **kwargs):
-        status = TaskInfo.by_name(func.__name__)
-        if status:
-            return func(*args, **kwargs)
-        TaskInfo(
-            task_name=func.__name__,
-            task_description=func.__doc__,
-            result=TaskResult(TaskResultStatus.UNKNOWN, messages=[_("Task has not been run yet.")]),
-            task_call_module=func.__module__,
-            task_call_func=func.__name__,
-            # We don't have real values for these attributes but they cannot be null
-            start_timestamp=default_timer(),
-            finish_timestamp=default_timer(),
-            finish_time=datetime.now(),
-        ).save(86400)
-        LOGGER.debug("prefilled task", task_name=func.__name__)
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
 class MonitoredTask(Task):
     """Task which can save its state to the cache"""
 
@@ -205,6 +181,32 @@ class MonitoredTask(Task):
             message=(f"Task {self.__name__} encountered an error: {exception_to_string(exc)}"),
         ).save()
         return super().on_failure(exc, task_id, args, kwargs, einfo=einfo)
+
+    def run(self, *args, **kwargs):
+        raise NotImplementedError
+
+
+class PrefilledMonitoredTask(MonitoredTask):
+    """Subclass of MonitoredTask, but create entry in cache if task hasn't been run
+    Does not support UID"""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        status = TaskInfo.by_name(self.__name__)
+        if status:
+            return
+        TaskInfo(
+            task_name=self.__name__,
+            task_description=self.__doc__,
+            result=TaskResult(TaskResultStatus.UNKNOWN, messages=[_("Task has not been run yet.")]),
+            task_call_module=self.__module__,
+            task_call_func=self.__name__,
+            # We don't have real values for these attributes but they cannot be null
+            start_timestamp=default_timer(),
+            finish_timestamp=default_timer(),
+            finish_time=datetime.now(),
+        ).save(86400)
+        LOGGER.debug("prefilled task", task_name=self.__name__)
 
     def run(self, *args, **kwargs):
         raise NotImplementedError

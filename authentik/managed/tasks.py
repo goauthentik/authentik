@@ -2,18 +2,12 @@
 from django.db import DatabaseError
 
 from authentik.core.tasks import CELERY_APP
-from authentik.events.monitored_tasks import (
-    MonitoredTask,
-    TaskResult,
-    TaskResultStatus,
-    prefill_task,
-)
+from authentik.events.monitored_tasks import PrefilledMonitoredTask, TaskResult, TaskResultStatus
 from authentik.managed.manager import ObjectManager
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task
-def managed_reconcile(self: MonitoredTask):
+@CELERY_APP.task(bind=True, base=PrefilledMonitoredTask)
+def managed_reconcile(self: PrefilledMonitoredTask):
     """Run ObjectManager to ensure objects are up-to-date"""
     try:
         ObjectManager().run()
