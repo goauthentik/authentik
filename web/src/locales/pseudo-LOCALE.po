@@ -2697,6 +2697,14 @@ msgstr ""
 msgid "Make sure to keep these tokens in a safe place."
 msgstr ""
 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Managed by authentik"
+msgstr ""
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Managed by authentik (Discovered)"
+msgstr ""
+
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Mark newly created users as inactive."
 msgstr ""

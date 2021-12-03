@@ -2705,6 +2705,14 @@ msgstr "MFA Devices"
 msgid "Make sure to keep these tokens in a safe place."
 msgstr "Make sure to keep these tokens in a safe place."
 
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Managed by authentik"
+msgstr "Managed by authentik"
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Managed by authentik (Discovered)"
+msgstr "Managed by authentik (Discovered)"
+
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Mark newly created users as inactive."
 msgstr "Mark newly created users as inactive."

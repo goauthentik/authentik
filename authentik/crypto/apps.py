@@ -13,3 +13,4 @@ class AuthentikCryptoConfig(AppConfig):
 
     def ready(self):
         import_module("authentik.crypto.managed")
+        import_module("authentik.crypto.tasks")

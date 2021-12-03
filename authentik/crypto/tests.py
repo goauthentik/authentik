@@ -1,5 +1,7 @@
 """Crypto tests"""
 import datetime
+from os import makedirs, mkdir
+from tempfile import TemporaryDirectory
 
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -9,6 +11,8 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_cert,
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
+from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_key
 from authentik.providers.oauth2.models import OAuth2Provider
 
@@ -162,4 +166,33 @@ class TestCrypto(APITestCase):
                     "action": DeleteAction.SET_NULL.name,
                 }
             ],
+        )
+
+    def test_discovery(self):
+        """Test certificate discovery"""
+        builder = CertificateBuilder()
+        builder.common_name = "test-cert"
+        with self.assertRaises(ValueError):
+            builder.save()
+        builder.build(
+            subject_alt_names=[],
+            validity_days=3,
+        )
+        with TemporaryDirectory() as temp_dir:
+            with open(f"{temp_dir}/foo.pem", "w+", encoding="utf-8") as _cert:
+                _cert.write(builder.certificate)
+            with open(f"{temp_dir}/foo.key", "w+", encoding="utf-8") as _key:
+                _key.write(builder.private_key)
+            makedirs(f"{temp_dir}/foo.bar", exist_ok=True)
+            with open(f"{temp_dir}/foo.bar/fullchain.pem", "w+", encoding="utf-8") as _cert:
+                _cert.write(builder.certificate)
+            with open(f"{temp_dir}/foo.bar/privkey.pem", "w+", encoding="utf-8") as _key:
+                _key.write(builder.private_key)
+            with CONFIG.patch("cert_discovery_dir", temp_dir):
+                certificate_discovery()
+        self.assertTrue(
+            CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % "foo").exists()
+        )
+        self.assertTrue(
+            CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % "foo.bar").exists()
         )

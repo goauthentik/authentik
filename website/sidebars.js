@@ -22,7 +22,12 @@ module.exports = {
             type: "category",
             label: "Core Concepts",
             collapsed: false,
-            items: ["core/terminology", "core/applications", "core/tenants"],
+            items: [
+                "core/terminology",
+                "core/applications",
+                "core/tenants",
+                "core/certificates",
+            ],
         },
         {
             type: "category",

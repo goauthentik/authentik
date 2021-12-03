@@ -28,7 +28,7 @@ function check_if_root {
         GROUP="authentik:${GROUP_NAME}"
     fi
     # Fix permissions of backups and media
-    chown -R authentik:authentik /media /backups
+    chown -R authentik:authentik /media /backups /certs
     chpst -u authentik:$GROUP env HOME=/authentik $1
 }
 

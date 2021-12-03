@@ -20,6 +20,7 @@ from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.builder import CertificateBuilder
+from authentik.crypto.managed import MANAGED_KEY
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 
@@ -141,7 +142,7 @@ class CertificateKeyPairFilter(FilterSet):
 class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
     """CertificateKeyPair Viewset"""
 
-    queryset = CertificateKeyPair.objects.exclude(managed__isnull=False)
+    queryset = CertificateKeyPair.objects.exclude(managed=MANAGED_KEY)
     serializer_class = CertificateKeyPairSerializer
     filterset_class = CertificateKeyPairFilter
     ordering = ["name"]
