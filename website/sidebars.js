@@ -5,10 +5,6 @@ module.exports = {
             id: "index",
         },
         {
-            type: "doc",
-            id: "terminology",
-        },
-        {
             type: "category",
             label: "Installation",
             items: [
@@ -23,8 +19,10 @@ module.exports = {
             ],
         },
         {
-            type: "doc",
-            id: "applications",
+            type: "category",
+            label: "Core Concepts",
+            collapsed: false,
+            items: ["core/terminology", "core/applications", "core/tenants"],
         },
         {
             type: "category",
@@ -120,10 +118,6 @@ module.exports = {
             type: "category",
             label: "Users & Groups",
             items: ["user-group/user", "user-group/group"],
-        },
-        {
-            type: "doc",
-            id: "tenants",
         },
         {
             type: "category",

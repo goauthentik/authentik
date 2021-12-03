@@ -1,5 +1,6 @@
 ---
 title: Applications
+slug: /applications
 ---
 
 Applications in authentik are the counterpart of providers. They exist in a 1-to-1 relationship, each application needs a provider and every provider can be used with one application.

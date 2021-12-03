@@ -1,5 +1,6 @@
 ---
 title: Tenants
+slug: /tenants
 ---
 
 authentik support soft multi-tenancy. This means that you can configure several options depending on domain, but all the objects like applications, providers, etc, are still global. This can be handy to use the same authentik instance, but branded differently for different domains.

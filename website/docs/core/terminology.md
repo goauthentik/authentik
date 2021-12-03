@@ -1,6 +1,7 @@
 ---
 id: terminology
 title: Terminology
+slug: /terminology
 ---
 
 ![](/img/authentik_objects.svg)
