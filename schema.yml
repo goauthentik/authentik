@@ -12059,11 +12059,6 @@ paths:
         schema:
           type: string
       - in: query
-        name: authentication_flow
-        schema:
-          type: string
-          format: uuid
-      - in: query
         name: base_dn
         schema:
           type: string
@@ -12075,11 +12070,6 @@ paths:
         name: enabled
         schema:
           type: boolean
-      - in: query
-        name: enrollment_flow
-        schema:
-          type: string
-          format: uuid
       - in: query
         name: group_membership_field
         schema:
@@ -12115,12 +12105,10 @@ paths:
         schema:
           type: integer
       - in: query
-        name: policy_engine_mode
+        name: peer_certificate
         schema:
           type: string
-          enum:
-          - all
-          - any
+          format: uuid
       - in: query
         name: property_mappings
         schema:
@@ -22461,6 +22449,12 @@ components:
         server_uri:
           type: string
           format: uri
+        peer_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally verify the LDAP Server's Certificate against the
+            CA Chain in this keypair.
         bind_cn:
           type: string
         start_tls:
@@ -22558,6 +22552,12 @@ components:
           type: string
           minLength: 1
           format: uri
+        peer_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally verify the LDAP Server's Certificate against the
+            CA Chain in this keypair.
         bind_cn:
           type: string
         bind_password:
@@ -27181,6 +27181,12 @@ components:
           type: string
           minLength: 1
           format: uri
+        peer_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally verify the LDAP Server's Certificate against the
+            CA Chain in this keypair.
         bind_cn:
           type: string
         bind_password:

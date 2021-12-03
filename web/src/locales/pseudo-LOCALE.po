@@ -2600,6 +2600,7 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -4735,6 +4736,7 @@ msgstr ""
 #~ msgstr ""
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "TLS Verification Certificate"
 msgstr ""
 
@@ -5634,6 +5636,10 @@ msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
+msgstr ""
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
 msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts

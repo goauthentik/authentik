@@ -7,6 +7,7 @@ import { until } from "lit/directives/until.js";
 
 import {
     CoreApi,
+    CryptoApi,
     LDAPSource,
     LDAPSourceRequest,
     PropertymappingsApi,
@@ -139,6 +140,44 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         </div>
                         <p class="pf-c-form__helper-text">
                             ${t`To use SSL instead, use 'ldaps://' and disable this option.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`TLS Verification Certificate`}
+                        name="peerCertificate"
+                    >
+                        <select class="pf-c-form-control">
+                            <option
+                                value=""
+                                ?selected=${this.instance?.peerCertificate === undefined}
+                            >
+                                ---------
+                            </option>
+                            ${until(
+                                new CryptoApi(DEFAULT_CONFIG)
+                                    .cryptoCertificatekeypairsList({
+                                        ordering: "name",
+                                    })
+                                    .then((keys) => {
+                                        return keys.results.map((key) => {
+                                            let selected =
+                                                this.instance?.peerCertificate === key.pk;
+                                            if (keys.results.length === 1) {
+                                                selected = true;
+                                            }
+                                            return html`<option
+                                                value=${ifDefined(key.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${key.name}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Bind CN`} name="bindCn">

@@ -1,12 +1,14 @@
 """authentik LDAP Models"""
+from ssl import CERT_REQUIRED
 from typing import Type
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from ldap3 import ALL, RANDOM, Connection, Server, ServerPool
+from ldap3 import ALL, RANDOM, Connection, Server, ServerPool, Tls
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
+from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.models import DomainlessURLValidator
 
 LDAP_TIMEOUT = 15
@@ -30,6 +32,17 @@ class LDAPSource(Source):
         validators=[MultiURLValidator(schemes=["ldap", "ldaps"])],
         verbose_name=_("Server URI"),
     )
+    peer_certificate = models.ForeignKey(
+        CertificateKeyPair,
+        on_delete=models.SET_DEFAULT,
+        default=None,
+        null=True,
+        help_text=_(
+            "Optionally verify the LDAP Server's Certificate "
+            "against the CA Chain in this keypair."
+        ),
+    )
+
     bind_cn = models.TextField(verbose_name=_("Bind CN"), blank=True)
     bind_password = models.TextField(blank=True)
     start_tls = models.BooleanField(default=False, verbose_name=_("Enable Start TLS"))
@@ -97,11 +110,19 @@ class LDAPSource(Source):
     def server(self) -> Server:
         """Get LDAP Server/ServerPool"""
         servers = []
+        tls = Tls()
+        if self.peer_certificate:
+            tls = Tls(ca_certs_data=self.peer_certificate.certificate_data, validate=CERT_REQUIRED)
+        kwargs = {
+            "get_info": ALL,
+            "connect_timeout": LDAP_TIMEOUT,
+            "tls": tls,
+        }
         if "," in self.server_uri:
             for server in self.server_uri.split(","):
-                servers.append(Server(server, get_info=ALL, connect_timeout=LDAP_TIMEOUT))
+                servers.append(Server(server, **kwargs))
         else:
-            servers = [Server(self.server_uri, get_info=ALL, connect_timeout=LDAP_TIMEOUT)]
+            servers = [Server(self.server_uri, **kwargs)]
         return ServerPool(servers, RANDOM, active=True, exhaust=True)
 
     @property

@@ -2589,6 +2589,7 @@ msgstr "Chargement en cours"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -4699,6 +4700,7 @@ msgstr "Certificat TLS d'authentification"
 #~ msgstr "Nom TLS du serveur"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "TLS Verification Certificate"
 msgstr "Certificat de vérification TLS"
 
@@ -5593,6 +5595,10 @@ msgstr "Lorsqu'un utilisateur revient de l'e-mail avec succès, son compte sera 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr "Lorsqu'un nom d'utilisateur/email valide a été saisi, et si cette option est active, le nom d'utilisateur et l'avatar de l'utilisateur seront affichés. Sinon, le texte que l'utilisateur a saisi sera affiché."
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
+msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."

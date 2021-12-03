@@ -2608,6 +2608,7 @@ msgstr "Loading"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -4743,6 +4744,7 @@ msgstr "TLS Authentication Certificate"
 #~ msgstr "TLS Server name"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "TLS Verification Certificate"
 msgstr "TLS Verification Certificate"
 
@@ -5650,6 +5652,10 @@ msgstr "When a user returns from the email successfully, their account will be a
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
+msgstr "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
