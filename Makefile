@@ -113,3 +113,6 @@ ci-bandit:
 
 ci-pyright:
 	pyright e2e lifecycle
+
+ci-pending-migrations:
+	./manage.py makemigrations --check
