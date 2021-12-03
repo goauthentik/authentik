@@ -18,7 +18,7 @@ This certificate is generated to be used as a default for all OAuth2/OIDC provid
 
 This certificate can also be used for SAML Providers/Sources, just keep in mind that the certificate is only valid for a year. Some SAML applications require the certificate to be valid, so they might need to be rotated regularly.
 
-For SAML use-cases, you can generate a Certificate thats valid for longer than 1 year, on your own risk.
+For SAML use-cases, you can generate a Certificate that's valid for longer than 1 year, on your own risk.
 
 ## External certificates
 
