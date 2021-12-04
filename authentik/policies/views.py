@@ -10,7 +10,7 @@ from django.views.generic.base import View
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application, Provider, User
-from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
+from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_POST
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.engine import PolicyEngine
@@ -84,6 +84,10 @@ class PolicyAccessView(AccessMixin, View):
         a hint on the Identification Stage what the user should login for."""
         if self.application:
             self.request.session[SESSION_KEY_APPLICATION_PRE] = self.application
+        # Because this view might get hit with a POST request, we need to preserve that data
+        # since later views might need it (mostly SAML)
+        if self.request.method.lower() == "post":
+            self.request.session[SESSION_KEY_POST] = self.request.POST
         return redirect_to_login(
             self.request.get_full_path(),
             self.get_login_url(),

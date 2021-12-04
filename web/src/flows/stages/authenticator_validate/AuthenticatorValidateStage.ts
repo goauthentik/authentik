@@ -100,9 +100,7 @@ export class AuthenticatorValidateStage
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
                         <p>${t`Duo push-notifications`}</p>
-                        <small
-                            >${t`Receive a push notification on your phone to prove your identity.`}</small
-                        >
+                        <small>${t`Receive a push notification on your device.`}</small>
                     </div>`;
             case DeviceClassesEnum.Webauthn:
                 return html`<i class="fas fa-mobile-alt"></i>

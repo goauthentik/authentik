@@ -424,7 +424,7 @@ if _ERROR_REPORTING:
         ],
         before_send=before_send,
         release=f"authentik@{__version__}",
-        traces_sample_rate=float(CONFIG.y("error_reporting.sample_rate", 0.4)),
+        traces_sample_rate=float(CONFIG.y("error_reporting.sample_rate", 0.5)),
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )

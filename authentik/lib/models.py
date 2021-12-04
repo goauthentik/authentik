@@ -68,9 +68,9 @@ class DomainlessURLValidator(URLValidator):
         )
         self.schemes = ["http", "https", "blank"] + list(self.schemes)
 
-    def __call__(self, value):
+    def __call__(self, value: str):
         # Check if the scheme is valid.
         scheme = value.split("://")[0].lower()
         if scheme not in self.schemes:
             value = "default" + value
-        return super().__call__(value)
+        super().__call__(value)

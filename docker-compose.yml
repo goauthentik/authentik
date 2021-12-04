@@ -55,6 +55,7 @@ services:
     volumes:
       - ./backups:/backups
       - ./media:/media
+      - ./certs:/certs
       - /var/run/docker.sock:/var/run/docker.sock
       - ./custom-templates:/templates
       - geoip:/geoip

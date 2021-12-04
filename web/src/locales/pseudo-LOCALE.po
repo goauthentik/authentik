@@ -2379,6 +2379,12 @@ msgstr ""
 msgid "Internal host SSL Validation"
 msgstr ""
 
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
+msgid ""
+"Invalid login attempts will decrease the score for the client's IP, and the\n"
+"username they are attempting to login as, by one."
+msgstr ""
+
 #: src/pages/flows/StageBindingForm.ts
 msgid "Invalid response action"
 msgstr ""
@@ -2600,6 +2606,7 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -2694,6 +2701,14 @@ msgstr ""
 
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 msgid "Make sure to keep these tokens in a safe place."
+msgstr ""
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Managed by authentik"
+msgstr ""
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Managed by authentik (Discovered)"
 msgstr ""
 
 #: src/pages/stages/user_write/UserWriteStageForm.ts
@@ -3604,7 +3619,7 @@ msgid "Re-evaluate policies"
 msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
-msgid "Receive a push notification on your phone to prove your identity."
+msgid "Receive a push notification on your device."
 msgstr ""
 
 #: src/pages/flows/utils.ts
@@ -4191,6 +4206,10 @@ msgstr ""
 msgid "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
 msgstr ""
 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "Specify multiple server URIs by separating them with a comma."
+msgstr ""
+
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 msgid "Stage"
@@ -4731,6 +4750,7 @@ msgstr ""
 #~ msgstr ""
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "TLS Verification Certificate"
 msgstr ""
 
@@ -4823,9 +4843,16 @@ msgid "The following objects use {objName}"
 msgstr ""
 
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
+#~ msgid ""
+#~ "The policy passes when the reputation score is above the threshold, and\n"
+#~ "doesn't pass when either or both of the selected options are equal or less than the\n"
+#~ "threshold."
+#~ msgstr ""
+
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid ""
-"The policy passes when the reputation score is above the threshold, and\n"
-"doesn't pass when either or both of the selected options are equal or less than the\n"
+"The policy passes when the reputation score is below the threshold, and\n"
+"doesn't pass when either or both of the selected options are equal or above the\n"
 "threshold."
 msgstr ""
 
@@ -5630,6 +5657,10 @@ msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
+msgstr ""
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
 msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts

@@ -15,6 +15,11 @@ For FreeIPA, follow the [FreeIPA Integration](../freeipa/index.md)
 :::
 
 - Server URI: URI to your LDAP server/Domain Controller.
+
+    You can specify multiple servers by separating URIs with a comma, like `ldap://ldap1.company,ldap://ldap2.company`.
+
+    When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
+
 - Bind CN: CN of the bind user. This can also be a UPN in the format of `user@domain.tld`.
 - Bind password: Password used during the bind process.
 - Enable StartTLS: Enables StartTLS functionality. To use LDAPS instead, use port `636`.

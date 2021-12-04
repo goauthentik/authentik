@@ -176,7 +176,7 @@ export class ProxyProviderViewPage extends LitElement {
                                         <ak-label
                                             color=${this.provider.basicAuthEnabled
                                                 ? PFColor.Green
-                                                : PFColor.Red}
+                                                : PFColor.Grey}
                                         >
                                             ${this.provider.basicAuthEnabled ? t`Yes` : t`No`}
                                         </ak-label>

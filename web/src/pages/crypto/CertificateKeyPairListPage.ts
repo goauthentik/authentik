@@ -91,8 +91,13 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     }
 
     row(item: CertificateKeyPair): TemplateResult[] {
+        let managedSubText = t`Managed by authentik`;
+        if (item.managed && item.managed.startsWith("goauthentik.io/crypto/discovered")) {
+            managedSubText = t`Managed by authentik (Discovered)`;
+        }
         return [
-            html`${item.name}`,
+            html`<div>${item.name}</div>
+                ${item.managed ? html`<small>${managedSubText}</small>` : html``}`,
             html`<ak-label color=${item.privateKeyAvailable ? PFColor.Green : PFColor.Grey}>
                 ${item.privateKeyAvailable ? t`Yes` : t`No`}
             </ak-label>`,

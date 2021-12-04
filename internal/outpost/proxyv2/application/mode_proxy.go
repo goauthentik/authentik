@@ -39,7 +39,7 @@ func (a *Application) configureProxy() error {
 			a.redirectToStart(rw, r)
 			return
 		} else {
-			a.addHeaders(r, claims)
+			a.addHeaders(r.Header, claims)
 		}
 		before := time.Now()
 		rp.ServeHTTP(rw, r)

@@ -34,13 +34,9 @@ WORKDIR /work
 
 COPY --from=web-builder /work/web/robots.txt /work/web/robots.txt
 COPY --from=web-builder /work/web/security.txt /work/web/security.txt
-COPY --from=web-builder /work/web/dist/ /work/web/dist/
-COPY --from=web-builder /work/web/authentik/ /work/web/authentik/
-COPY --from=website-builder /work/website/help/ /work/website/help/
 
 COPY ./cmd /work/cmd
 COPY ./web/static.go /work/web/static.go
-COPY ./website/static.go /work/website/static.go
 COPY ./internal /work/internal
 COPY ./go.mod /work/go.mod
 COPY ./go.sum /work/go.sum
@@ -78,6 +74,9 @@ COPY ./tests /tests
 COPY ./manage.py /
 COPY ./lifecycle/ /lifecycle
 COPY --from=builder /work/authentik /authentik-proxy
+COPY --from=web-builder /work/web/dist/ /web/dist/
+COPY --from=web-builder /work/web/authentik/ /web/authentik/
+COPY --from=website-builder /work/website/help/ /website/help/
 
 USER authentik
 

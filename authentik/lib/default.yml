@@ -47,6 +47,7 @@ error_reporting:
   enabled: false
   environment: customer
   send_pii: false
+  sample_rate: 0.5
 
 # Global email settings
 email:
@@ -82,3 +83,4 @@ default_user_change_email: true
 default_user_change_username: true
 
 gdpr_compliance: true
+cert_discovery_dir: /certs

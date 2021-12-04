@@ -28,6 +28,7 @@ jobs:
           - isort
           - bandit
           - pyright
+          - pending-migrations
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

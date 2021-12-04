@@ -1,24 +1,48 @@
 """authentik LDAP Models"""
-from typing import Optional, Type
+from ssl import CERT_REQUIRED
+from typing import Type
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from ldap3 import ALL, Connection, Server
+from ldap3 import ALL, RANDOM, Connection, Server, ServerPool, Tls
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
+from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.models import DomainlessURLValidator
 
 LDAP_TIMEOUT = 15
+
+
+class MultiURLValidator(DomainlessURLValidator):
+    """Same as DomainlessURLValidator but supports multiple URLs separated with a comma."""
+
+    def __call__(self, value: str):
+        if "," in value:
+            for url in value.split(","):
+                super().__call__(url)
+        else:
+            super().__call__(value)
 
 
 class LDAPSource(Source):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
     server_uri = models.TextField(
-        validators=[DomainlessURLValidator(schemes=["ldap", "ldaps"])],
+        validators=[MultiURLValidator(schemes=["ldap", "ldaps"])],
         verbose_name=_("Server URI"),
     )
+    peer_certificate = models.ForeignKey(
+        CertificateKeyPair,
+        on_delete=models.SET_DEFAULT,
+        default=None,
+        null=True,
+        help_text=_(
+            "Optionally verify the LDAP Server's Certificate "
+            "against the CA Chain in this keypair."
+        ),
+    )
+
     bind_cn = models.TextField(verbose_name=_("Bind CN"), blank=True)
     bind_password = models.TextField(blank=True)
     start_tls = models.BooleanField(default=False, verbose_name=_("Enable Start TLS"))
@@ -82,25 +106,40 @@ class LDAPSource(Source):
 
         return LDAPSourceSerializer
 
-    _connection: Optional[Connection] = None
+    @property
+    def server(self) -> Server:
+        """Get LDAP Server/ServerPool"""
+        servers = []
+        tls = Tls()
+        if self.peer_certificate:
+            tls = Tls(ca_certs_data=self.peer_certificate.certificate_data, validate=CERT_REQUIRED)
+        kwargs = {
+            "get_info": ALL,
+            "connect_timeout": LDAP_TIMEOUT,
+            "tls": tls,
+        }
+        if "," in self.server_uri:
+            for server in self.server_uri.split(","):
+                servers.append(Server(server, **kwargs))
+        else:
+            servers = [Server(self.server_uri, **kwargs)]
+        return ServerPool(servers, RANDOM, active=True, exhaust=True)
 
     @property
     def connection(self) -> Connection:
         """Get a fully connected and bound LDAP Connection"""
-        if not self._connection:
-            server = Server(self.server_uri, get_info=ALL, connect_timeout=LDAP_TIMEOUT)
-            self._connection = Connection(
-                server,
-                raise_exceptions=True,
-                user=self.bind_cn,
-                password=self.bind_password,
-                receive_timeout=LDAP_TIMEOUT,
-            )
+        connection = Connection(
+            self.server,
+            raise_exceptions=True,
+            user=self.bind_cn,
+            password=self.bind_password,
+            receive_timeout=LDAP_TIMEOUT,
+        )
 
-            self._connection.bind()
-            if self.start_tls:
-                self._connection.start_tls()
-        return self._connection
+        connection.bind()
+        if self.start_tls:
+            connection.start_tls()
+        return connection
 
     class Meta:
 

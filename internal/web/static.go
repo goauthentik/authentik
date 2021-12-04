@@ -9,33 +9,19 @@ import (
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/utils/web"
 	staticWeb "goauthentik.io/web"
-	staticDocs "goauthentik.io/website"
 )
 
 func (ws *WebServer) configureStatic() {
 	statRouter := ws.lh.NewRoute().Subrouter()
+	statRouter.Use(ws.staticHeaderMiddleware)
 	indexLessRouter := statRouter.NewRoute().Subrouter()
 	indexLessRouter.Use(web.DisableIndex)
 	// Media files, always local
 	fs := http.FileServer(http.Dir(config.G.Paths.Media))
-	var distHandler http.Handler
-	var distFs http.Handler
-	var authentikHandler http.Handler
-	var helpHandler http.Handler
-	if config.G.Debug || config.G.Web.LoadLocalFiles {
-		ws.log.Debug("Using local static files")
-		distFs = http.FileServer(http.Dir("./web/dist"))
-		distHandler = http.StripPrefix("/static/dist/", distFs)
-		authentikHandler = http.StripPrefix("/static/authentik/", http.FileServer(http.Dir("./web/authentik")))
-		helpHandler = http.FileServer(http.Dir("./website/help/"))
-	} else {
-		statRouter.Use(ws.staticHeaderMiddleware)
-		ws.log.Debug("Using packaged static files with aggressive caching")
-		distFs = http.FileServer(http.FS(staticWeb.StaticDist))
-		distHandler = http.StripPrefix("/static", distFs)
-		authentikHandler = http.StripPrefix("/static", http.FileServer(http.FS(staticWeb.StaticAuthentik)))
-		helpHandler = http.FileServer(http.FS(staticDocs.Help))
-	}
+	distFs := http.FileServer(http.Dir("./web/dist"))
+	distHandler := http.StripPrefix("/static/dist/", distFs)
+	authentikHandler := http.StripPrefix("/static/authentik/", http.FileServer(http.Dir("./web/authentik")))
+	helpHandler := http.FileServer(http.Dir("./website/help/"))
 	indexLessRouter.PathPrefix("/static/dist/").Handler(distHandler)
 	indexLessRouter.PathPrefix("/static/authentik/").Handler(authentikHandler)
 

@@ -1,12 +1,6 @@
 package web
 
-import "embed"
-
-//go:embed dist/*
-var StaticDist embed.FS
-
-//go:embed authentik
-var StaticAuthentik embed.FS
+import _ "embed"
 
 //go:embed robots.txt
 var RobotsTxt []byte

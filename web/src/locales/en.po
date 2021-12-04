@@ -2387,6 +2387,14 @@ msgstr "Internal host"
 msgid "Internal host SSL Validation"
 msgstr "Internal host SSL Validation"
 
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
+msgid ""
+"Invalid login attempts will decrease the score for the client's IP, and the\n"
+"username they are attempting to login as, by one."
+msgstr ""
+"Invalid login attempts will decrease the score for the client's IP, and the\n"
+"username they are attempting to login as, by one."
+
 #: src/pages/flows/StageBindingForm.ts
 msgid "Invalid response action"
 msgstr "Invalid response action"
@@ -2608,6 +2616,7 @@ msgstr "Loading"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -2703,6 +2712,14 @@ msgstr "MFA Devices"
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 msgid "Make sure to keep these tokens in a safe place."
 msgstr "Make sure to keep these tokens in a safe place."
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Managed by authentik"
+msgstr "Managed by authentik"
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Managed by authentik (Discovered)"
+msgstr "Managed by authentik (Discovered)"
 
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Mark newly created users as inactive."
@@ -3612,8 +3629,8 @@ msgid "Re-evaluate policies"
 msgstr "Re-evaluate policies"
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
-msgid "Receive a push notification on your phone to prove your identity."
-msgstr "Receive a push notification on your phone to prove your identity."
+msgid "Receive a push notification on your device."
+msgstr "Receive a push notification on your device."
 
 #: src/pages/flows/utils.ts
 #: src/pages/tokens/TokenListPage.ts
@@ -4199,6 +4216,10 @@ msgstr "Sources"
 msgid "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
 msgstr "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
 
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "Specify multiple server URIs by separating them with a comma."
+msgstr "Specify multiple server URIs by separating them with a comma."
+
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 msgid "Stage"
@@ -4739,6 +4760,7 @@ msgstr "TLS Authentication Certificate"
 #~ msgstr "TLS Server name"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
+#: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "TLS Verification Certificate"
 msgstr "TLS Verification Certificate"
 
@@ -4831,13 +4853,23 @@ msgid "The following objects use {objName}"
 msgstr "The following objects use {objName}"
 
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
+#~ msgid ""
+#~ "The policy passes when the reputation score is above the threshold, and\n"
+#~ "doesn't pass when either or both of the selected options are equal or less than the\n"
+#~ "threshold."
+#~ msgstr ""
+#~ "The policy passes when the reputation score is above the threshold, and\n"
+#~ "doesn't pass when either or both of the selected options are equal or less than the\n"
+#~ "threshold."
+
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid ""
-"The policy passes when the reputation score is above the threshold, and\n"
-"doesn't pass when either or both of the selected options are equal or less than the\n"
+"The policy passes when the reputation score is below the threshold, and\n"
+"doesn't pass when either or both of the selected options are equal or above the\n"
 "threshold."
 msgstr ""
-"The policy passes when the reputation score is above the threshold, and\n"
-"doesn't pass when either or both of the selected options are equal or less than the\n"
+"The policy passes when the reputation score is below the threshold, and\n"
+"doesn't pass when either or both of the selected options are equal or above the\n"
 "threshold."
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
@@ -5646,6 +5678,10 @@ msgstr "When a user returns from the email successfully, their account will be a
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+msgid "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
+msgstr "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."

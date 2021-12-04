@@ -19,9 +19,9 @@ from structlog.stdlib import get_logger
 
 from authentik.events.monitored_tasks import (
     MonitoredTask,
+    PrefilledMonitoredTask,
     TaskResult,
     TaskResultStatus,
-    prefill_task,
 )
 from authentik.lib.utils.reflection import path_to_class
 from authentik.outposts.controllers.base import BaseController, ControllerException
@@ -75,9 +75,8 @@ def outpost_service_connection_state(connection_pk: Any):
     cache.set(connection.state_key, state, timeout=None)
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task()
-def outpost_service_connection_monitor(self: MonitoredTask):
+@CELERY_APP.task(bind=True, base=PrefilledMonitoredTask)
+def outpost_service_connection_monitor(self: PrefilledMonitoredTask):
     """Regularly check the state of Outpost Service Connections"""
     connections = OutpostServiceConnection.objects.all()
     for connection in connections.iterator():
@@ -125,9 +124,8 @@ def outpost_controller(
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, logs))
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task()
-def outpost_token_ensurer(self: MonitoredTask):
+@CELERY_APP.task(bind=True, base=PrefilledMonitoredTask)
+def outpost_token_ensurer(self: PrefilledMonitoredTask):
     """Periodically ensure that all Outposts have valid Service Accounts
     and Tokens"""
     all_outposts = Outpost.objects.all()

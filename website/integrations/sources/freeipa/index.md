@@ -30,7 +30,7 @@ The following placeholders will be used:
 
     ```
     $ ldapmodify -x -D "cn=Directory Manager" -W -h ipa1.freeipa.company -p 389
-    
+
     dn: cn=ipa_pwd_extop,cn=plugins,cn=config
     changetype: modify
     add: passSyncManagersDNs
@@ -45,6 +45,11 @@ In authentik, create a new LDAP Source in Resources -> Sources.
 Use these settings:
 
 - Server URI: `ldaps://ipa1.freeipa.company`
+
+    You can specify multiple servers by separating URIs with a comma, like `ldap://ipa1.freeipa.company,ldap://ipa2.freeipa.company`.
+
+    When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
+
 - Bind CN: `uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company`
 - Bind Password: The password you've given the user above
 - Base DN: `dc=freeipa,dc=company`

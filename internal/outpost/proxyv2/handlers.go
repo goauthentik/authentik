@@ -10,7 +10,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	"goauthentik.io/internal/utils/web"
-	staticWeb "goauthentik.io/web"
 )
 
 func (ps *ProxyServer) HandlePing(rw http.ResponseWriter, r *http.Request) {
@@ -29,9 +28,9 @@ func (ps *ProxyServer) HandlePing(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
-	staticFs := http.FileServer(http.FS(staticWeb.StaticDist))
+	staticFs := http.FileServer(http.Dir("./web/dist/"))
 	before := time.Now()
-	web.DisableIndex(http.StripPrefix("/akprox/static", staticFs)).ServeHTTP(rw, r)
+	web.DisableIndex(http.StripPrefix("/akprox/static/dist", staticFs)).ServeHTTP(rw, r)
 	after := time.Since(before)
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
