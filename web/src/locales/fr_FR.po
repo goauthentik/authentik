@@ -2370,6 +2370,12 @@ msgstr "Hôte interne"
 msgid "Internal host SSL Validation"
 msgstr "Validation SSL de l'hôte interne"
 
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
+msgid ""
+"Invalid login attempts will decrease the score for the client's IP, and the\n"
+"username they are attempting to login as, by one."
+msgstr ""
+
 #: src/pages/flows/StageBindingForm.ts
 msgid "Invalid response action"
 msgstr "Action de réponse invalide"
@@ -4800,11 +4806,18 @@ msgid "The following objects use {objName}"
 msgstr "Les objets suivants utilisent {objName}"
 
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
+#~ msgid ""
+#~ "The policy passes when the reputation score is above the threshold, and\n"
+#~ "doesn't pass when either or both of the selected options are equal or less than the\n"
+#~ "threshold."
+#~ msgstr "La politique est réussie si la note de réputation est au-dessus du seuil, et échoue si au moins l'une des options sélectionnées sont inférieures ou égales au seuil."
+
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid ""
-"The policy passes when the reputation score is above the threshold, and\n"
-"doesn't pass when either or both of the selected options are equal or less than the\n"
+"The policy passes when the reputation score is below the threshold, and\n"
+"doesn't pass when either or both of the selected options are equal or above the\n"
 "threshold."
-msgstr "La politique est réussie si la note de réputation est au-dessus du seuil, et échoue si au moins l'une des options sélectionnées sont inférieures ou égales au seuil."
+msgstr ""
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "The policy takes a random time to execute. This controls the minimum time it will take."

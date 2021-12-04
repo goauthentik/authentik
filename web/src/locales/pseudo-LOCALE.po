@@ -2379,6 +2379,12 @@ msgstr ""
 msgid "Internal host SSL Validation"
 msgstr ""
 
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
+msgid ""
+"Invalid login attempts will decrease the score for the client's IP, and the\n"
+"username they are attempting to login as, by one."
+msgstr ""
+
 #: src/pages/flows/StageBindingForm.ts
 msgid "Invalid response action"
 msgstr ""
@@ -4837,9 +4843,16 @@ msgid "The following objects use {objName}"
 msgstr ""
 
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
+#~ msgid ""
+#~ "The policy passes when the reputation score is above the threshold, and\n"
+#~ "doesn't pass when either or both of the selected options are equal or less than the\n"
+#~ "threshold."
+#~ msgstr ""
+
+#: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid ""
-"The policy passes when the reputation score is above the threshold, and\n"
-"doesn't pass when either or both of the selected options are equal or less than the\n"
+"The policy passes when the reputation score is below the threshold, and\n"
+"doesn't pass when either or both of the selected options are equal or above the\n"
 "threshold."
 msgstr ""
 
