@@ -24,7 +24,7 @@ function check_if_root {
         getent group $DOCKER_GID || groupadd -f -g $DOCKER_GID docker
         usermod -a -G $DOCKER_GID authentik
         # since the name of the group might not be docker, we need to lookup the group id
-        GROUP_NAME=$(getent group $DOCKER_GID  | sed 's/:/\n/g' | head -1)
+        GROUP_NAME=$(getent group $DOCKER_GID | sed 's/:/\n/g' | head -1)
         GROUP="authentik:${GROUP_NAME}"
     fi
     # Fix permissions of backups and media

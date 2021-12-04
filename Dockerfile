@@ -64,8 +64,8 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
     adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
-    mkdir /backups && \
-    chown authentik:authentik /backups
+    mkdir /backups /certs && \
+    chown authentik:authentik /backups /certs
 
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
