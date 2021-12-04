@@ -30,14 +30,14 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik:2021.12.1-rc1,
+            beryju/authentik:2021.12.1-rc2,
             beryju/authentik:latest,
-            ghcr.io/goauthentik/server:2021.12.1-rc1,
+            ghcr.io/goauthentik/server:2021.12.1-rc2,
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
           context: .
       - name: Building Docker Image (stable)
-        if: ${{ github.event_name == 'release' && !contains('2021.12.1-rc1', 'rc') }}
+        if: ${{ github.event_name == 'release' && !contains('2021.12.1-rc2', 'rc') }}
         run: |
           docker pull beryju/authentik:latest
           docker tag beryju/authentik:latest beryju/authentik:stable
@@ -78,14 +78,14 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-${{ matrix.type }}:2021.12.1-rc1,
+            beryju/authentik-${{ matrix.type }}:2021.12.1-rc2,
             beryju/authentik-${{ matrix.type }}:latest,
-            ghcr.io/goauthentik/${{ matrix.type }}:2021.12.1-rc1,
+            ghcr.io/goauthentik/${{ matrix.type }}:2021.12.1-rc2,
             ghcr.io/goauthentik/${{ matrix.type }}:latest
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
       - name: Building Docker Image (stable)
-        if: ${{ github.event_name == 'release' && !contains('2021.12.1-rc1', 'rc') }}
+        if: ${{ github.event_name == 'release' && !contains('2021.12.1-rc2', 'rc') }}
         run: |
           docker pull beryju/authentik-${{ matrix.type }}:latest
           docker tag beryju/authentik-${{ matrix.type }}:latest beryju/authentik-${{ matrix.type }}:stable
@@ -133,7 +133,7 @@ jobs:
           SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
-          version: authentik@2021.12.1-rc1
+          version: authentik@2021.12.1-rc2
           environment: beryjuorg-prod
           sourcemaps: './web/dist'
           url_prefix: '~/static/dist'
