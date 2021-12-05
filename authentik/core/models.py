@@ -25,7 +25,6 @@ from structlog.stdlib import get_logger
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton, UserSettingSerializer
-from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator, SerializerModel
@@ -203,7 +202,7 @@ class Provider(SerializerModel):
     name = models.TextField()
 
     authorization_flow = models.ForeignKey(
-        Flow,
+        "authentik_flows.Flow",
         on_delete=models.CASCADE,
         help_text=_("Flow used when authorizing this provider."),
         related_name="provider_authorization",
@@ -324,7 +323,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
 
     authentication_flow = models.ForeignKey(
-        Flow,
+        "authentik_flows.Flow",
         blank=True,
         null=True,
         default=None,
@@ -333,7 +332,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         related_name="source_authentication",
     )
     enrollment_flow = models.ForeignKey(
-        Flow,
+        "authentik_flows.Flow",
         blank=True,
         null=True,
         default=None,

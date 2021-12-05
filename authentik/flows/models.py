@@ -1,4 +1,6 @@
 """Flow models"""
+from base64 import b64decode, b64encode
+from pickle import dumps, loads  # nosec
 from typing import TYPE_CHECKING, Optional, Type
 from uuid import uuid4
 
@@ -9,11 +11,13 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.policies.models import PolicyBindingModel
 
 if TYPE_CHECKING:
+    from authentik.flows.planner import FlowPlan
     from authentik.flows.stage import StageView
 
 LOGGER = get_logger()
@@ -260,3 +264,30 @@ class ConfigurableStage(models.Model):
     class Meta:
 
         abstract = True
+
+
+class FlowToken(Token):
+    """Subclass of a standard Token, stores the currently active flow plan upon creation.
+    Can be used to later resume a flow."""
+
+    flow = models.ForeignKey(Flow, on_delete=models.CASCADE)
+    _plan = models.TextField()
+
+    @staticmethod
+    def pickle(plan) -> str:
+        """Pickle into string"""
+        data = dumps(plan)
+        return b64encode(data).decode()
+
+    @property
+    def plan(self) -> "FlowPlan":
+        """Load Flow plan from pickled version"""
+        return loads(b64decode(self._plan.encode()))  # nosec
+
+    def __str__(self) -> str:
+        return f"Flow Token {super.__str__()}"
+
+    class Meta:
+
+        verbose_name = _("Flow Token")
+        verbose_name_plural = _("Flow Tokens")
