@@ -119,9 +119,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                     SAML_BINDING_REDIRECT,
                     SAML_BINDING_POST,
                 ],
-                description=(
-                    "Optionally force the metadata to only include one binding."
-                )
+                description=("Optionally force the metadata to only include one binding."),
             ),
         ],
     )
