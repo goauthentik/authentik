@@ -10,6 +10,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.request_parser import AuthNRequest
@@ -101,10 +102,11 @@ class AssertionProcessor:
 
                 attribute_statement.append(attribute)
 
-            except PropertyMappingExpressionException as exc:
+            except (PropertyMappingExpressionException, ValueError) as exc:
+                # Value error can be raised when assigning invalid data to an attribute
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    message=f"Failed to evaluate property-mapping: {exception_to_string(exc)}",
                     mapping=mapping,
                 ).from_http(self.http_request)
                 continue
