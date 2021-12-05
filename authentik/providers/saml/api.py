@@ -123,7 +123,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             raise Http404
         try:
             metadata = MetadataProcessor(provider, request).build_entity_descriptor()
-            if "download" in request._request.GET:
+            if "download" in request.query_params:
                 response = HttpResponse(metadata, content_type="application/xml")
                 response[
                     "Content-Disposition"
