@@ -11645,6 +11645,14 @@ paths:
         name: download
         schema:
           type: boolean
+      - in: query
+        name: force_binding
+        schema:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+        description: Optionally force the metadata to only include one binding.
       - in: path
         name: id
         schema:

@@ -36,6 +36,7 @@ from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
+from authentik.sources.saml.processors.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
 
 LOGGER = get_logger()
 
@@ -109,7 +110,19 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                 name="download",
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.BOOL,
-            )
+            ),
+            OpenApiParameter(
+                name="force_binding",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.STR,
+                enum=[
+                    SAML_BINDING_REDIRECT,
+                    SAML_BINDING_POST,
+                ],
+                description=(
+                    "Optionally force the metadata to only include one binding."
+                )
+            ),
         ],
     )
     @action(methods=["GET"], detail=True, permission_classes=[AllowAny])
@@ -122,7 +135,9 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         except ValueError:
             raise Http404
         try:
-            metadata = MetadataProcessor(provider, request).build_entity_descriptor()
+            proc = MetadataProcessor(provider, request)
+            proc.force_binding = request.query_params.get("force_binding", None)
+            metadata = proc.build_entity_descriptor()
             if "download" in request.query_params:
                 response = HttpResponse(metadata, content_type="application/xml")
                 response[
