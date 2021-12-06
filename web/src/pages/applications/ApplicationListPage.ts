@@ -125,7 +125,7 @@ export class ApplicationListPage extends TablePage<Application> {
                 </ak-forms-modal>
                 ${item.launchUrl
                     ? html`<a href=${item.launchUrl} target="_blank" class="pf-c-button pf-m-plain">
-                          <i class="fas fas fa-share-square"></i>
+                          <i class="fas fa-share-square"></i>
                       </a>`
                     : html``}`,
         ];

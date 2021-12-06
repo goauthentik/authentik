@@ -70,7 +70,7 @@ export class EventListPage extends TablePage<Event> {
             html`<span>${item.clientIp || t`-`}</span>`,
             html`<span>${item.tenant?.name || t`-`}</span>`,
             html`<a href="#/events/log/${item.pk}">
-                <i class="fas fas fa-share-square"></i>
+                <i class="fas fa-share-square"></i>
             </a>`,
         ];
     }

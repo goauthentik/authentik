@@ -73,14 +73,15 @@ export class LibraryApplication extends LitElement {
             style="background: ${this.background} !important"
         >
             <div class="pf-c-card__header">
-                ${this.application.metaIcon
-                    ? html`<a href="${ifDefined(this.application.launchUrl ?? "")}"
-                          ><img
+                <a href="${ifDefined(this.application.launchUrl ?? "")}">
+                    ${this.application.metaIcon
+                        ? html`<img
                               class="app-icon pf-c-avatar"
                               src="${ifDefined(this.application.metaIcon)}"
                               alt="${t`Application Icon`}"
-                      /></a>`
-                    : html`<i class="fas fas fa-share-square"></i>`}
+                          />`
+                        : html`<i class="fas fa-share-square"></i>`}
+                </a>
                 ${until(
                     uiConfig().then((config) => {
                         if (!config.enabledFeatures.applicationEdit) {
