@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.authorization import OwnerFilter, OwnerPermissions
+from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.oauth.models import UserOAuthSourceConnection
@@ -27,11 +27,6 @@ class UserOAuthSourceConnectionViewSet(UsedByMixin, ModelViewSet):
     queryset = UserOAuthSourceConnection.objects.all()
     serializer_class = UserOAuthSourceConnectionSerializer
     filterset_fields = ["source__slug"]
-    permission_classes = [OwnerPermissions]
+    permission_classes = [OwnerSuperuserPermissions]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering = ["source__slug"]
-
-    def perform_create(self, serializer: UserOAuthSourceConnectionSerializer):
-        if not self.request.user.is_superuser:
-            return serializer.save()
-        return serializer.save(user=self.request.user)
