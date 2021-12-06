@@ -125,7 +125,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
         # This happens when using POST bindings but the user isn't logged in
         # (user gets redirected and POST body is 'lost')
         if SESSION_KEY_POST in self.request.session:
-            payload = self.request.session[SESSION_KEY_POST]
+            payload = self.request.session.pop(SESSION_KEY_POST)
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("check_saml_request: SAML payload missing")
             return bad_request_message(self.request, "The SAML request payload is missing.")
