@@ -1,8 +1,7 @@
 """Plex Source connection Serializer"""
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.sources import SourceSerializer
@@ -27,14 +26,7 @@ class PlexSourceConnectionSerializer(SourceSerializer):
         }
 
 
-class PlexSourceConnectionViewSet(
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    UsedByMixin,
-    mixins.ListModelMixin,
-    GenericViewSet,
-):
+class PlexSourceConnectionViewSet(UsedByMixin, ModelViewSet):
     """Plex Source connection Serializer"""
 
     queryset = PlexSourceConnection.objects.all()
@@ -43,3 +35,8 @@ class PlexSourceConnectionViewSet(
     permission_classes = [OwnerPermissions]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering = ["pk"]
+
+    def perform_create(self, serializer: PlexSourceConnectionSerializer):
+        if not self.request.user.is_superuser:
+            return serializer.save()
+        return serializer.save(user=self.request.user)
