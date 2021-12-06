@@ -62,6 +62,21 @@ export class LibraryApplication extends LitElement {
         ];
     }
 
+    renderIcon(): TemplateResult {
+        if (this.application?.metaIcon) {
+            if (this.application.metaIcon.startsWith("fa://")) {
+                const icon = this.application.metaIcon.replaceAll("fa://", "");
+                return html`<i class="fas ${icon}"></i>`;
+            }
+            return html`<img
+                class="app-icon pf-c-avatar"
+                src="${ifDefined(this.application.metaIcon)}"
+                alt="${t`Application Icon`}"
+            />`;
+        }
+        return html`<i class="fas fa-share-square"></i>`;
+    }
+
     render(): TemplateResult {
         if (!this.application) {
             return html`<ak-spinner></ak-spinner>`;
@@ -73,15 +88,7 @@ export class LibraryApplication extends LitElement {
             style="background: ${this.background} !important"
         >
             <div class="pf-c-card__header">
-                <a href="${ifDefined(this.application.launchUrl ?? "")}">
-                    ${this.application.metaIcon
-                        ? html`<img
-                              class="app-icon pf-c-avatar"
-                              src="${ifDefined(this.application.metaIcon)}"
-                              alt="${t`Application Icon`}"
-                          />`
-                        : html`<i class="fas fa-share-square"></i>`}
-                </a>
+                <a href="${ifDefined(this.application.launchUrl ?? "")}"> ${this.renderIcon()} </a>
                 ${until(
                     uiConfig().then((config) => {
                         if (!config.enabledFeatures.applicationEdit) {

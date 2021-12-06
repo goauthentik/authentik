@@ -266,6 +266,9 @@ export class ApplicationForm extends ModelForm<Application, string> {
                                     value="${first(this.instance?.metaIcon, "")}"
                                     class="pf-c-form-control"
                                 />
+                                <p class="pf-c-form__helper-text">
+                                    ${t`Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".`}
+                                </p>
                             </ak-form-element-horizontal>`;
                         }),
                     )}

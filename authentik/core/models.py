@@ -262,7 +262,7 @@ class Application(PolicyBindingModel):
         it is returned as-is"""
         if not self.meta_icon:
             return None
-        if self.meta_icon.name.startswith("http") or self.meta_icon.name.startswith("/static"):
+        if "://" in self.meta_icon.name or self.meta_icon.name.startswith("/static"):
             return self.meta_icon.name
         return self.meta_icon.url
 

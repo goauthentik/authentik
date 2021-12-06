@@ -1568,6 +1568,10 @@ msgstr "Éditer l'étap"
 msgid "Edit User"
 msgstr "Éditer l'utilisateur"
 
+#: src/pages/applications/ApplicationForm.ts
+msgid "Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon \"fa-test\"."
+msgstr ""
+
 #: src/user/LibraryPage.ts
 msgid "Either no applications are defined, or you don't have access to any."
 msgstr "Soit aucune application n'est définie, soit vous n'en avez accès à aucune."
