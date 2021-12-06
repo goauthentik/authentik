@@ -210,7 +210,3 @@ class PrefilledMonitoredTask(MonitoredTask):
 
     def run(self, *args, **kwargs):
         raise NotImplementedError
-
-
-for task in TaskInfo.all().values():
-    task.set_prom_metrics()
