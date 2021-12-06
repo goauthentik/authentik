@@ -1,6 +1,8 @@
 """Outpost API Views"""
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
+from django_filters.filters import ModelMultipleChoiceFilter
+from django_filters.filterset import FilterSet
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, DateTimeField
@@ -99,16 +101,30 @@ class OutpostHealthSerializer(PassiveSerializer):
     version_outdated = BooleanField(read_only=True)
 
 
+class OutpostFilter(FilterSet):
+    """Filter for Outposts"""
+
+    providers_by_pk = ModelMultipleChoiceFilter(
+        field_name="providers",
+        queryset=Provider.objects.all(),
+    )
+
+    class Meta:
+
+        model = Outpost
+        fields = {
+            "providers": ["isnull"],
+            "name": ["iexact", "icontains"],
+            "service_connection__name": ["iexact", "icontains"],
+        }
+
+
 class OutpostViewSet(UsedByMixin, ModelViewSet):
     """Outpost Viewset"""
 
     queryset = Outpost.objects.all()
     serializer_class = OutpostSerializer
-    filterset_fields = {
-        "providers": ["isnull"],
-        "name": ["iexact", "icontains"],
-        "service_connection__name": ["iexact", "icontains"],
-    }
+    filterset_class = OutpostFilter
     search_fields = [
         "name",
         "providers__name",

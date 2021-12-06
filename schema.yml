@@ -5764,6 +5764,14 @@ paths:
         name: providers__isnull
         schema:
           type: boolean
+      - in: query
+        name: providers_by_pk
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - name: search
         required: false
         in: query
@@ -5952,6 +5960,14 @@ paths:
         name: providers__isnull
         schema:
           type: boolean
+      - in: query
+        name: providers_by_pk
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - name: search
         required: false
         in: query

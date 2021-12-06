@@ -5557,6 +5557,10 @@ msgstr "Attente (min)"
 msgid "Warning"
 msgstr "Avertissement"
 
+#: src/pages/applications/ApplicationViewPage.ts
+msgid "Warning: Application is not used by any Outpost."
+msgstr ""
+
 #: src/pages/stages/invitation/InvitationListPage.ts
 msgid "Warning: No invitation stage is bound to any flow. Invitations will not work as expected."
 msgstr ""
