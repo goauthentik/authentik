@@ -97,7 +97,7 @@ class TokenParams:
                 )
                 # https://tools.ietf.org/html/rfc6749#section-6
                 # Fallback to original token's scopes when none are given
-                if self.scope == []:
+                if not self.scope:
                     self.scope = self.refresh_token.scope
             except RefreshToken.DoesNotExist:
                 LOGGER.warning(
