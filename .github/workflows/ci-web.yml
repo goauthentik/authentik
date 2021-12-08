@@ -65,11 +65,17 @@ jobs:
         run: |
           cd web
           npm run lit-analyse
-  build:
+  ci-web-mark:
     needs:
       - lint-eslint
       - lint-prettier
       - lint-lit-analyse
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo mark
+  build:
+    needs:
+      - ci-web-mark
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

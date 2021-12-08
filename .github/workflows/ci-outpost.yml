@@ -30,10 +30,16 @@ jobs:
             -w /app \
             golangci/golangci-lint:v1.39.0 \
             golangci-lint run -v --timeout 200s
+  ci-outpost-mark:
+    needs:
+      - lint-golint
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo mark
   build:
     timeout-minutes: 120
     needs:
-      - lint-golint
+      - ci-outpost-mark
     strategy:
       fail-fast: false
       matrix:
