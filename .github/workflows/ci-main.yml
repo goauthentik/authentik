@@ -223,7 +223,7 @@ jobs:
           testspace [e2e]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v2
-  build:
+  ci-core-mark:
     needs:
       - lint
       - test-migrations
@@ -231,6 +231,11 @@ jobs:
       - test-unittest
       - test-integration
       - test-e2e
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo mark
+  build:
+    needs: ci-core-mark
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
