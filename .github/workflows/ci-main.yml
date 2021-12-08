@@ -89,9 +89,11 @@ jobs:
         run: |
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
+          cp -R .github ..
+          cp -R scripts ..
           git checkout $(git describe --abbrev=0 --match 'version/*')
-          git checkout $GITHUB_HEAD_REF -- .github
-          git checkout $GITHUB_HEAD_REF -- scripts
+          rm -rf .github/ scripts/
+          mv ../.github ../scripts .
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
@@ -105,6 +107,7 @@ jobs:
         run: |
           set -x
           git fetch
+          git reset --hard HEAD
           git checkout $GITHUB_HEAD_REF
           pipenv sync --dev
       - name: prepare
