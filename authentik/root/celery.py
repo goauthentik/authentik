@@ -1,6 +1,7 @@
 """authentik core celery"""
 import os
 from logging.config import dictConfig
+from uuid import uuid4
 
 from celery import Celery
 from celery.signals import (
@@ -14,6 +15,7 @@ from celery.signals import (
 from django.conf import settings
 from structlog.stdlib import get_logger
 
+from authentik.core.middleware import LOCAL
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 
@@ -26,7 +28,7 @@ CELERY_APP = Celery("authentik")
 
 # pylint: disable=unused-argument
 @setup_logging.connect
-def config_loggers(*args, **kwags):
+def config_loggers(*args, **kwargs):
     """Apply logging settings from settings.py to celery"""
     dictConfig(settings.LOGGING)
 
@@ -43,6 +45,10 @@ def after_task_publish_hook(sender=None, headers=None, body=None, **kwargs):
 @task_prerun.connect
 def task_prerun_hook(task_id, task, *args, **kwargs):
     """Log task_id on worker"""
+    request_id = "task-" + uuid4().hex[5:]
+    LOCAL.authentik = {
+        "request_id": request_id,
+    }
     LOGGER.debug("Task started", task_id=task_id, task_name=task.__name__)
 
 
@@ -51,6 +57,8 @@ def task_prerun_hook(task_id, task, *args, **kwargs):
 def task_postrun_hook(task_id, task, *args, retval=None, state=None, **kwargs):
     """Log task_id on worker"""
     LOGGER.debug("Task finished", task_id=task_id, task_name=task.__name__, state=state)
+    for key in list(LOCAL.authentik.keys()):
+        del LOCAL.authentik[key]
 
 
 # pylint: disable=unused-argument
