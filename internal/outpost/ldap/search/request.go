@@ -25,6 +25,7 @@ type Request struct {
 func NewRequest(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (*Request, *sentry.Span) {
 	rid := uuid.New().String()
 	bindDN = strings.ToLower(bindDN)
+	searchReq.BaseDN = strings.ToLower(searchReq.BaseDN)
 	span := sentry.StartSpan(context.TODO(), "authentik.providers.ldap.search", sentry.TransactionName("authentik.providers.ldap.search"))
 	span.SetTag("request_uid", rid)
 	span.SetTag("user.username", bindDN)
