@@ -46,7 +46,7 @@ def after_task_publish_hook(sender=None, headers=None, body=None, **kwargs):
 def task_prerun_hook(task_id, task, *args, **kwargs):
     """Log task_id on worker"""
     request_id = "task-" + uuid4().hex[5:]
-    LOCAL.authentik = {
+    LOCAL.authentik_task = {
         "request_id": request_id,
     }
     LOGGER.debug("Task started", task_id=task_id, task_name=task.__name__)
@@ -57,8 +57,10 @@ def task_prerun_hook(task_id, task, *args, **kwargs):
 def task_postrun_hook(task_id, task, *args, retval=None, state=None, **kwargs):
     """Log task_id on worker"""
     LOGGER.debug("Task finished", task_id=task_id, task_name=task.__name__, state=state)
-    for key in list(LOCAL.authentik.keys()):
-        del LOCAL.authentik[key]
+    if not hasattr(LOCAL, "authentik_task"):
+        return
+    for key in list(LOCAL.authentik_task.keys()):
+        del LOCAL.authentik_task[key]
 
 
 # pylint: disable=unused-argument
