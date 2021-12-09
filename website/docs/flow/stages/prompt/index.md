@@ -60,3 +60,5 @@ return False
 This policy expects you to have two password fields with `field_key` set to `password` and `password_repeat`.
 
 Afterwards, bind this policy to the prompt stage you want to validate.
+
+Before 2021.12, any policy was required to pass for the result to be considered valid. This has been changed, and now all policies are required to be valid.
