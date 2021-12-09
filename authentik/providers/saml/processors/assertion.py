@@ -101,7 +101,8 @@ class AssertionProcessor:
 
                 attribute_statement.append(attribute)
 
-            except PropertyMappingExpressionException as exc:
+            except (PropertyMappingExpressionException, ValueError) as exc:
+                # Value error can be raised when assigning invalid data to an attribute
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
                     message=f"Failed to evaluate property-mapping: {str(exc)}",

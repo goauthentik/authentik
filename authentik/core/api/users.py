@@ -314,7 +314,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     name=username,
                     attributes={USER_ATTRIBUTE_SA: True, USER_ATTRIBUTE_TOKEN_EXPIRING: False},
                 )
-                if create_group:
+                if create_group and self.request.user.has_perm("authentik_core.add_group"):
                     group = Group.objects.create(
                         name=username,
                     )

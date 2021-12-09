@@ -192,7 +192,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
             secret=certificate,
             type="certificate",
         ).from_http(request)
-        if "download" in request._request.GET:
+        if "download" in request.query_params:
             # Mime type from https://pki-tutorial.readthedocs.io/en/latest/mime.html
             response = HttpResponse(
                 certificate.certificate_data, content_type="application/x-pem-file"
@@ -223,7 +223,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
             secret=certificate,
             type="private_key",
         ).from_http(request)
-        if "download" in request._request.GET:
+        if "download" in request.query_params:
             # Mime type from https://pki-tutorial.readthedocs.io/en/latest/mime.html
             response = HttpResponse(certificate.key_data, content_type="application/x-pem-file")
             response[

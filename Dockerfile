@@ -1,5 +1,5 @@
 # Stage 1: Lock python dependencies
-FROM docker.io/python:3.9-slim-bullseye as locker
+FROM docker.io/python:3.10.1-slim-bullseye as locker
 
 COPY ./Pipfile /app/
 COPY ./Pipfile.lock /app/
@@ -28,7 +28,7 @@ ENV NODE_ENV=production
 RUN cd /work/web && npm i && npm run build
 
 # Stage 4: Build go proxy
-FROM docker.io/golang:1.17.3-bullseye AS builder
+FROM docker.io/golang:1.17.4-bullseye AS builder
 
 WORKDIR /work
 
@@ -44,7 +44,7 @@ COPY ./go.sum /work/go.sum
 RUN go build -o /work/authentik ./cmd/server/main.go
 
 # Stage 5: Run
-FROM docker.io/python:3.9-slim-bullseye
+FROM docker.io/python:3.10.1-slim-bullseye
 
 WORKDIR /
 COPY --from=locker /app/requirements.txt /

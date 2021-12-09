@@ -49,6 +49,7 @@ urllib3 = {extras = ["secure"],version = "*"}
 uvicorn = {extras = ["standard"],version = "*"}
 webauthn = "*"
 xmlsec = "*"
+flower = "*"
 
 [dev-packages]
 bandit = "*"

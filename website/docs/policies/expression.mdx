@@ -25,7 +25,7 @@ ak_message("Access denied")
 return False
 ```
 
-### `ak_user_has_authenticator(user: User, device_type: Optional[str] = None)` (2021.9+)
+### `ak_user_has_authenticator(user: User, device_type: Optional[str] = None) -> bool` (2021.9+)
 
 Check if a user has any authenticator devices. Only fully validated devices are counted.
 
@@ -40,6 +40,23 @@ Example:
 
 ```python
 return ak_user_has_authenticator(request.user)
+```
+
+### `ak_call_policy(name: str, **kwargs) -> PolicyResult` (2021.12+)
+
+Call another policy with the name *name*. Current request is passed to policy. Key-word arguments
+can be used to modify the request's context.
+
+Example:
+
+```python
+result = ak_call_policy("test-policy")
+# result is a PolicyResult object, so you can access `.passing` and `.messages`.
+return result.passing
+
+result = ak_call_policy("test-policy-2", foo="bar")
+# Inside the `test-policy-2` you can then use `request.context["foo"]`
+return result.passing
 ```
 
 import Functions from '../expressions/_functions.md'

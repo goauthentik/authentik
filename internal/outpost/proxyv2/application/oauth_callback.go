@@ -45,6 +45,5 @@ func (a *Application) redeemCallback(r *http.Request, shouldState string) (*Clai
 	if err := idToken.Claims(&claims); err != nil {
 		return nil, err
 	}
-	claims.RawToken = rawIDToken
 	return claims, nil
 }

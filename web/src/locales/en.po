@@ -1580,6 +1580,10 @@ msgstr "Edit Stage"
 msgid "Edit User"
 msgstr "Edit User"
 
+#: src/pages/applications/ApplicationForm.ts
+msgid "Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon \"fa-test\"."
+msgstr "Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon \"fa-test\"."
+
 #: src/user/LibraryPage.ts
 msgid "Either no applications are defined, or you don't have access to any."
 msgstr "Either no applications are defined, or you don't have access to any."
@@ -5618,6 +5622,10 @@ msgstr "Wait (min)"
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
 msgstr "Warning"
+
+#: src/pages/applications/ApplicationViewPage.ts
+msgid "Warning: Application is not used by any Outpost."
+msgstr "Warning: Application is not used by any Outpost."
 
 #: src/pages/stages/invitation/InvitationListPage.ts
 msgid "Warning: No invitation stage is bound to any flow. Invitations will not work as expected."

@@ -1572,6 +1572,10 @@ msgstr ""
 msgid "Edit User"
 msgstr ""
 
+#: src/pages/applications/ApplicationForm.ts
+msgid "Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon \"fa-test\"."
+msgstr ""
+
 #: src/user/LibraryPage.ts
 msgid "Either no applications are defined, or you don't have access to any."
 msgstr ""
@@ -5597,6 +5601,10 @@ msgstr ""
 #: src/pages/events/RuleForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
+msgstr ""
+
+#: src/pages/applications/ApplicationViewPage.ts
+msgid "Warning: Application is not used by any Outpost."
 msgstr ""
 
 #: src/pages/stages/invitation/InvitationListPage.ts

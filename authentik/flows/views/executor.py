@@ -34,8 +34,16 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
-from authentik.flows.models import ConfigurableStage, Flow, FlowDesignation, FlowStageBinding, Stage
+from authentik.flows.models import (
+    ConfigurableStage,
+    Flow,
+    FlowDesignation,
+    FlowStageBinding,
+    FlowToken,
+    Stage,
+)
 from authentik.flows.planner import (
+    PLAN_CONTEXT_IS_RESTORED,
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_REDIRECT,
     FlowPlan,
@@ -55,6 +63,7 @@ SESSION_KEY_APPLICATION_PRE = "authentik_flows_application_pre"
 SESSION_KEY_GET = "authentik_flows_get"
 SESSION_KEY_POST = "authentik_flows_post"
 SESSION_KEY_HISTORY = "authentik_flows_history"
+QS_KEY_TOKEN = "flow_token"  # nosec
 
 
 def challenge_types():
@@ -127,8 +136,31 @@ class FlowExecutorView(APIView):
         message = exc.__doc__ if exc.__doc__ else str(exc)
         return self.stage_invalid(error_message=message)
 
+    def _check_flow_token(self, get_params: QueryDict):
+        """Check if the user is using a flow token to restore a plan"""
+        tokens = FlowToken.filter_not_expired(key=get_params[QS_KEY_TOKEN])
+        if not tokens.exists():
+            return False
+        token: FlowToken = tokens.first()
+        try:
+            plan = token.plan
+        except (AttributeError, EOFError, ImportError, IndexError) as exc:
+            LOGGER.warning("f(exec): Failed to restore token plan", exc=exc)
+        finally:
+            token.delete()
+        if not isinstance(plan, FlowPlan):
+            return None
+        plan.context[PLAN_CONTEXT_IS_RESTORED] = True
+        self._logger.debug("f(exec): restored flow plan from token", plan=plan)
+        return plan
+
     # pylint: disable=unused-argument, too-many-return-statements
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
+        get_params = QueryDict(request.GET.get("query", ""))
+        if QS_KEY_TOKEN in get_params:
+            plan = self._check_flow_token(get_params)
+            if plan:
+                self.request.session[SESSION_KEY_PLAN] = plan
         # Early check if there's an active Plan for the current session
         if SESSION_KEY_PLAN in self.request.session:
             self.plan = self.request.session[SESSION_KEY_PLAN]
@@ -156,7 +188,7 @@ class FlowExecutorView(APIView):
                 # we don't show an error message here, but rather call _flow_done()
                 return self._flow_done()
         # Initial flow request, check if we have an upstream query string passed in
-        request.session[SESSION_KEY_GET] = QueryDict(request.GET.get("query", ""))
+        request.session[SESSION_KEY_GET] = get_params
         # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
         try:

@@ -5764,6 +5764,14 @@ paths:
         name: providers__isnull
         schema:
           type: boolean
+      - in: query
+        name: providers_by_pk
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - name: search
         required: false
         in: query
@@ -5952,6 +5960,14 @@ paths:
         name: providers__isnull
         schema:
           type: boolean
+      - in: query
+        name: providers_by_pk
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - name: search
         required: false
         in: query
@@ -11645,6 +11661,14 @@ paths:
         name: download
         schema:
           type: boolean
+      - in: query
+        name: force_binding
+        schema:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+        description: Optionally force the metadata to only include one binding.
       - in: path
         name: id
         schema:
@@ -13562,6 +13586,30 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: sources_user_connections_oauth_create
+      description: Source Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOAuthSourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /sources/user_connections/oauth/{id}/:
     get:
       operationId: sources_user_connections_oauth_retrieve
@@ -13741,6 +13789,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedPlexSourceConnectionList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: sources_user_connections_plex_create
+      description: Plex Source connection Serializer
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlexSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlexSourceConnection'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -28135,6 +28207,10 @@ components:
           type: string
           minLength: 1
           maxLength: 255
+        access_token:
+          type: string
+          writeOnly: true
+          nullable: true
     PatchedUserRequest:
       type: object
       description: User Serializer
@@ -30881,6 +30957,10 @@ components:
           type: string
           minLength: 1
           maxLength: 255
+        access_token:
+          type: string
+          writeOnly: true
+          nullable: true
       required:
       - identifier
       - source

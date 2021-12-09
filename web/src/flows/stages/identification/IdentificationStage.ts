@@ -143,7 +143,7 @@ export class IdentificationStage extends BaseStage<
     }
 
     renderSource(source: LoginSource): TemplateResult {
-        let icon = html`<i class="fas fas fa-share-square" title="${source.name}"></i>`;
+        let icon = html`<i class="fas fa-share-square" title="${source.name}"></i>`;
         if (source.iconUrl) {
             icon = html`<img src="${source.iconUrl}" alt="${source.name}" />`;
         }

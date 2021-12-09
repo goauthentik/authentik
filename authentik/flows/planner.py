@@ -24,6 +24,9 @@ PLAN_CONTEXT_SSO = "is_sso"
 PLAN_CONTEXT_REDIRECT = "redirect"
 PLAN_CONTEXT_APPLICATION = "application"
 PLAN_CONTEXT_SOURCE = "source"
+# Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan
+# was restored.
+PLAN_CONTEXT_IS_RESTORED = "is_restored"
 GAUGE_FLOWS_CACHED = UpdatingGauge(
     "authentik_flows_cached",
     "Cached flows",

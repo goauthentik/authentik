@@ -65,4 +65,6 @@ def structlog_add_request_id(logger: Logger, method_name: str, event_dict: dict)
     """If threadlocal has authentik defined, add request_id to log"""
     if hasattr(LOCAL, "authentik"):
         event_dict.update(LOCAL.authentik)
+    if hasattr(LOCAL, "authentik_task"):
+        event_dict.update(LOCAL.authentik_task)
     return event_dict
