@@ -114,16 +114,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-      - name: Build web api client and web ui
+      - name: Get static files from docker image
         run: |
-          export NODE_ENV=production
-          cd web
-          npm i
-          npm run build
+          docker pull ghcr.io/goauthentik/server:latest
+          container=$(docker container create ghcr.io/goauthentik/server:latest)
+          docker cp ${container}:web/ .
       - name: Create a Sentry.io release
         uses: getsentry/action-release@v1
         if: ${{ github.event_name == 'release' }}
