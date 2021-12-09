@@ -183,7 +183,7 @@ class TestProviderLDAP(SeleniumTestCase):
         User.objects.filter(username="akadmin").delete()
 
         _connection.search(
-            "ou=users,dc=ldap,dc=goauthentik,dc=io",
+            "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
             "(objectClass=user)",
             search_scope=SUBTREE,
             attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
