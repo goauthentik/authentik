@@ -43,9 +43,9 @@ def after_task_publish_hook(sender=None, headers=None, body=None, **kwargs):
 
 # pylint: disable=unused-argument
 @task_prerun.connect
-def task_prerun_hook(task_id, task, *args, **kwargs):
+def task_prerun_hook(task_id: str, task, *args, **kwargs):
     """Log task_id on worker"""
-    request_id = "task-" + uuid4().hex[5:]
+    request_id = "task-" + task_id.replace("-", "")
     LOCAL.authentik_task = {
         "request_id": request_id,
     }
