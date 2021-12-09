@@ -68,6 +68,9 @@ if [[ "$1" == "server" ]]; then
 elif [[ "$1" == "worker" ]]; then
     echo "worker" > $MODE_FILE
     check_if_root "celery -A authentik.root.celery worker --autoscale 3,1 -E -B -s /tmp/celerybeat-schedule -Q authentik,authentik_scheduled,authentik_events"
+elif [[ "$1" == "flower" ]]; then
+    echo "flower" > $MODE_FILE
+    celery -A authentik.root.celery flower
 elif [[ "$1" == "backup" ]]; then
     wait_for_db
     python -m manage dbbackup --clean
@@ -87,6 +90,8 @@ elif [[ "$1" == "healthcheck" ]]; then
         curl --user-agent "goauthentik.io lifecycle Healthcheck" -I http://localhost:9000/-/health/ready/
     elif [[ $mode == "worker" ]]; then
         celery -A authentik.root.celery inspect ping -d celery@$HOSTNAME --timeout 5 -j
+    elif [[ $mode == "flower" ]]; then
+        curl http://localhost:5555/metrics
     fi
 elif [[ "$1" == "dump_config" ]]; then
     python -m authentik.lib.config
