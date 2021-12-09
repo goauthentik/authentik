@@ -87,9 +87,7 @@ class FlowInspectorView(APIView):
     @extend_schema(
         responses={
             200: FlowInspectionSerializer(),
-            400: OpenApiResponse(
-                description="No flow plan in session."
-            ),  # This error can be raised by the email stage
+            400: OpenApiResponse(description="No flow plan in session."),
         },
         request=OpenApiTypes.NONE,
         operation_id="flows_inspector_get",
@@ -106,7 +104,10 @@ class FlowInspectorView(APIView):
         if SESSION_KEY_PLAN in request.session:
             current_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
         else:
-            current_plan = request.session[SESSION_KEY_HISTORY][-1]
+            try:
+                current_plan = request.session[SESSION_KEY_HISTORY][-1]
+            except KeyError:
+                return Response(status=400)
             is_completed = True
         current_serializer = FlowInspectorPlanSerializer(
             instance=current_plan, context={"request": request}
