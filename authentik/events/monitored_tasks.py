@@ -186,27 +186,21 @@ class MonitoredTask(Task):
         raise NotImplementedError
 
 
-class PrefilledMonitoredTask(MonitoredTask):
-    """Subclass of MonitoredTask, but create entry in cache if task hasn't been run
-    Does not support UID"""
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        status = TaskInfo.by_name(self.__name__)
-        if status:
-            return
-        TaskInfo(
-            task_name=self.__name__,
-            task_description=self.__doc__,
-            result=TaskResult(TaskResultStatus.UNKNOWN, messages=[_("Task has not been run yet.")]),
-            task_call_module=self.__module__,
-            task_call_func=self.__name__,
-            # We don't have real values for these attributes but they cannot be null
-            start_timestamp=default_timer(),
-            finish_timestamp=default_timer(),
-            finish_time=datetime.now(),
-        ).save(86400)
-        LOGGER.debug("prefilled task", task_name=self.__name__)
-
-    def run(self, *args, **kwargs):
-        raise NotImplementedError
+def prefill_task(func):
+    """Ensure a task's details are always in cache, so it can always be triggered via API"""
+    status = TaskInfo.by_name(func.__name__)
+    if status:
+        return func
+    TaskInfo(
+        task_name=func.__name__,
+        task_description=func.__doc__,
+        result=TaskResult(TaskResultStatus.UNKNOWN, messages=[_("Task has not been run yet.")]),
+        task_call_module=func.__module__,
+        task_call_func=func.__name__,
+        # We don't have real values for these attributes but they cannot be null
+        start_timestamp=default_timer(),
+        finish_timestamp=default_timer(),
+        finish_time=datetime.now(),
+    ).save(86400)
+    LOGGER.debug("prefilled task", task_name=func.__name__)
+    return func

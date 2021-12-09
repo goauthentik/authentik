@@ -6,7 +6,12 @@ from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
-from authentik.events.monitored_tasks import PrefilledMonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.monitored_tasks import (
+    MonitoredTask,
+    TaskResult,
+    TaskResultStatus,
+    prefill_task,
+)
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
@@ -15,8 +20,9 @@ LOGGER = get_logger()
 MANAGED_DISCOVERED = "goauthentik.io/crypto/discovered/%s"
 
 
-@CELERY_APP.task(bind=True, base=PrefilledMonitoredTask)
-def certificate_discovery(self: PrefilledMonitoredTask):
+@CELERY_APP.task(bind=True, base=MonitoredTask)
+@prefill_task
+def certificate_discovery(self: MonitoredTask):
     """Discover and update certificates form the filesystem"""
     certs = {}
     private_keys = {}
