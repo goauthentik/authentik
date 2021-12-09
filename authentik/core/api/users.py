@@ -233,7 +233,11 @@ class UsersFilter(FilterSet):
         qs = {}
         for key, _value in value.items():
             qs[f"attributes__{key}"] = _value
-        return queryset.filter(**qs)
+        try:
+            _ = len(queryset.filter(**qs))
+            return queryset.filter(**qs)
+        except ValueError:
+            return queryset
 
     class Meta:
         model = User
