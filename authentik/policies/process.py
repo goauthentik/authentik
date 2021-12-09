@@ -127,8 +127,8 @@ class PolicyProcess(PROCESS_CLASS):
         )
         return policy_result
 
-    def run(self):  # pragma: no cover
-        """Task wrapper to run policy checking"""
+    def profiling_wrapper(self):
+        """Run with profiling enabled"""
         with Hub.current.start_span(
             op="policy.process.execute",
         ) as span, HIST_POLICIES_EXECUTION_TIME.labels(
@@ -142,8 +142,12 @@ class PolicyProcess(PROCESS_CLASS):
             span: Span
             span.set_data("policy", self.binding.policy)
             span.set_data("request", self.request)
-            try:
-                self.connection.send(self.execute())
-            except Exception as exc:  # pylint: disable=broad-except
-                LOGGER.warning(str(exc))
-                self.connection.send(PolicyResult(False, str(exc)))
+            return self.execute()
+
+    def run(self):  # pragma: no cover
+        """Task wrapper to run policy checking"""
+        try:
+            self.connection.send(self.profiling_wrapper())
+        except Exception as exc:  # pylint: disable=broad-except
+            LOGGER.warning(str(exc))
+            self.connection.send(PolicyResult(False, str(exc)))

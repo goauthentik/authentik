@@ -1,7 +1,6 @@
 """authentik core celery"""
 import os
 from logging.config import dictConfig
-from uuid import uuid4
 
 from celery import Celery
 from celery.signals import (
