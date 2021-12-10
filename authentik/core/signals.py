@@ -37,8 +37,7 @@ def post_save_application(sender: type[Model], instance, created: bool, **_):
     if not created:  # pragma: no cover
         return
     # Also delete user application cache
-    keys = cache.keys(user_app_cache_key("*"))
-    cache.delete_many(keys)
+    cache.delete_pattern(user_app_cache_key("*"))
 
 
 @receiver(user_logged_in)

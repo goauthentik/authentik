@@ -19,8 +19,7 @@ def migrate_sessions(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     from django.contrib.sessions.backends.cache import KEY_PREFIX
     from django.core.cache import cache
 
-    session_keys = cache.keys(KEY_PREFIX + "*")
-    cache.delete_many(session_keys)
+    cache.delete_pattern(KEY_PREFIX + "*")
 
 
 def fix_duplicates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
