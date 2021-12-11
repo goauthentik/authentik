@@ -116,6 +116,11 @@ func (ac *APIController) startWSHandler() {
 	logger := ac.logger.WithField("loop", "ws-handler")
 	for {
 		var wsMsg websocketMessage
+		if ac.wsConn == nil {
+			go ac.reconnectWS()
+			time.Sleep(time.Second * 5)
+			continue
+		}
 		err := ac.wsConn.ReadJSON(&wsMsg)
 		if err != nil {
 			ConnectionStatus.With(prometheus.Labels{
@@ -162,6 +167,11 @@ func (ac *APIController) startWSHealth() {
 				"buildHash": constants.BUILD(),
 				"uuid":      ac.instanceUUID.String(),
 			},
+		}
+		if ac.wsConn == nil {
+			go ac.reconnectWS()
+			time.Sleep(time.Second * 5)
+			continue
 		}
 		err := ac.wsConn.WriteJSON(aliveMsg)
 		ac.logger.WithField("loop", "ws-health").Trace("hello'd")
