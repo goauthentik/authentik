@@ -50,6 +50,7 @@ uvicorn = {extras = ["standard"],version = "*"}
 webauthn = "*"
 xmlsec = "*"
 flower = "*"
+wsproto = "*"
 
 [dev-packages]
 bandit = "*"
