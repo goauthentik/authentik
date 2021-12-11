@@ -53,9 +53,6 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
 
     def validate_response(self, response: dict) -> dict:
         """Validate webauthn challenge response"""
-        # pylint: disable=no-name-in-module
-        from pydantic.error_wrappers import ValidationError as PydanticValidationError
-
         challenge = self.request.session["challenge"]
 
         try:
@@ -65,7 +62,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 expected_rp_id=get_rp_id(self.request),
                 expected_origin=get_origin(self.request),
             )
-        except (InvalidRegistrationResponse, PydanticValidationError) as exc:
+        except InvalidRegistrationResponse as exc:
             LOGGER.warning("registration failed", exc=exc)
             raise ValidationError(f"Registration failed. Error: {exc}")
 
