@@ -11,10 +11,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/google/uuid"
+	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/recws-org/recws"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/constants"
 
@@ -35,10 +34,13 @@ type APIController struct {
 
 	logger *log.Entry
 
-	reloadOffset    time.Duration
-	lastWsReconnect time.Time
+	reloadOffset time.Duration
 
-	wsConn       *recws.RecConn
+	wsConn              *websocket.Conn
+	lastWsReconnect     time.Time
+	wsIsReconnecting    bool
+	wsBackoffMultiplier int
+
 	instanceUUID uuid.UUID
 }
 
@@ -85,12 +87,16 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		token:  token,
 		logger: log,
 
-		reloadOffset: time.Duration(rand.Intn(10)) * time.Second,
-		instanceUUID: uuid.New(),
-		Outpost:      outpost,
+		reloadOffset:        time.Duration(rand.Intn(10)) * time.Second,
+		instanceUUID:        uuid.New(),
+		Outpost:             outpost,
+		wsBackoffMultiplier: 1,
 	}
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
-	ac.initWS(akURL, strfmt.UUID(outpost.Pk))
+	err = ac.initWS(akURL, outpost.Pk)
+	if err != nil {
+		go ac.reconnectWS()
+	}
 	ac.configureRefreshSignal()
 	return ac
 }
@@ -148,10 +154,6 @@ func (a *APIController) StartBackgorundTasks() error {
 		"version":      constants.VERSION,
 		"build":        constants.BUILD(),
 	}).Set(1)
-	go func() {
-		a.logger.Debug("Starting WS re-connector...")
-		a.startWSReConnector()
-	}()
 	go func() {
 		a.logger.Debug("Starting WS Handler...")
 		a.startWSHandler()

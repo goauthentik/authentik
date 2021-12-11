@@ -6,18 +6,17 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/recws-org/recws"
 	"goauthentik.io/internal/constants"
 )
 
-func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {
-	pathTemplate := "%s://%s/ws/outpost/%s/"
+func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
+	pathTemplate := "%s://%s/ws/outpost/%s/?%s"
 	scheme := strings.ReplaceAll(akURL.Scheme, "http", "ws")
 
 	authHeader := fmt.Sprintf("Bearer %s", ac.token)
@@ -32,15 +31,19 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {
 		value = "false"
 	}
 
-	ws := &recws.RecConn{
-		NonVerbose: true,
+	dialer := websocket.Dialer{
+		Proxy:            http.ProxyFromEnvironment,
+		HandshakeTimeout: 10 * time.Second,
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: strings.ToLower(value) == "true",
 		},
 	}
-	ws.Dial(fmt.Sprintf(pathTemplate, scheme, akURL.Host, outpostUUID.String()), header)
 
-	ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithField("outpost", outpostUUID.String()).Debug("Connecting to authentik")
+	ws, _, err := dialer.Dial(fmt.Sprintf(pathTemplate, scheme, akURL.Host, outpostUUID, akURL.Query().Encode()), header)
+	if err != nil {
+		ac.logger.WithError(err).Warning("failed to connect websocket")
+		return err
+	}
 
 	ac.wsConn = ws
 	// Send hello message with our version
@@ -52,11 +55,14 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID strfmt.UUID) {
 			"uuid":      ac.instanceUUID.String(),
 		},
 	}
-	err := ws.WriteJSON(msg)
+	err = ws.WriteJSON(msg)
 	if err != nil {
 		ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithError(err).Warning("Failed to hello to authentik")
+		return err
 	}
 	ac.lastWsReconnect = time.Now()
+	ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithField("outpost", outpostUUID).Debug("Successfully connected websocket")
+	return nil
 }
 
 // Shutdown Gracefully stops all workers, disconnects from websocket
@@ -65,21 +71,43 @@ func (ac *APIController) Shutdown() {
 	// waiting (with timeout) for the server to close the connection.
 	err := ac.wsConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	if err != nil {
-		ac.logger.Println("write close:", err)
+		ac.logger.WithError(err).Warning("failed to write close message")
 		return
 	}
+	err = ac.wsConn.Close()
+	if err != nil {
+		ac.logger.WithError(err).Warning("failed to close websocket")
+	}
+	ac.logger.Info("finished shutdown")
 }
 
-func (ac *APIController) startWSReConnector() {
+func (ac *APIController) reconnectWS() {
+	if ac.wsIsReconnecting {
+		return
+	}
+	ac.wsIsReconnecting = true
+	u := url.URL{
+		Host:   ac.Client.GetConfig().Host,
+		Scheme: ac.Client.GetConfig().Scheme,
+	}
+	attempt := 1
 	for {
-		time.Sleep(time.Second * 5)
-		if ac.wsConn.IsConnected() {
-			continue
-		}
-		if time.Since(ac.lastWsReconnect).Seconds() > 30 {
-			ac.wsConn.CloseAndReconnect()
-			ac.logger.Info("Reconnecting websocket")
-			ac.lastWsReconnect = time.Now()
+		q := u.Query()
+		q.Set("attempt", strconv.Itoa(attempt))
+		u.RawQuery = q.Encode()
+		err := ac.initWS(u, ac.Outpost.Pk)
+		attempt += 1
+		if err != nil {
+			ac.logger.Infof("waiting %d seconds to reconnect", ac.wsBackoffMultiplier)
+			time.Sleep(time.Duration(ac.wsBackoffMultiplier) * time.Second)
+			ac.wsBackoffMultiplier = ac.wsBackoffMultiplier * 2
+			// Limit to 300 seconds (5m)
+			if ac.wsBackoffMultiplier >= 300 {
+				ac.wsBackoffMultiplier = 300
+			}
+		} else {
+			ac.wsIsReconnecting = false
+			return
 		}
 	}
 }
@@ -96,6 +124,7 @@ func (ac *APIController) startWSHandler() {
 				"uuid":         ac.instanceUUID.String(),
 			}).Set(0)
 			logger.WithError(err).Warning("ws read error")
+			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
 		}
@@ -126,9 +155,6 @@ func (ac *APIController) startWSHandler() {
 func (ac *APIController) startWSHealth() {
 	ticker := time.NewTicker(time.Second * 10)
 	for ; true; <-ticker.C {
-		if !ac.wsConn.IsConnected() {
-			continue
-		}
 		aliveMsg := websocketMessage{
 			Instruction: WebsocketInstructionHello,
 			Args: map[string]interface{}{
@@ -141,6 +167,7 @@ func (ac *APIController) startWSHealth() {
 		ac.logger.WithField("loop", "ws-health").Trace("hello'd")
 		if err != nil {
 			ac.logger.WithField("loop", "ws-health").WithError(err).Warning("ws write error")
+			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
 		} else {

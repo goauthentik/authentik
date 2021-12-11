@@ -27,7 +27,6 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/pquerna/cachecontrol v0.0.0-20201205024021-ac21108117ac // indirect
 	github.com/prometheus/client_golang v1.11.0
-	github.com/recws-org/recws v1.3.1
 	github.com/sirupsen/logrus v1.8.1
 	goauthentik.io/api v0.2021104.11
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
