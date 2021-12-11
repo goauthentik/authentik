@@ -103,7 +103,7 @@ func (ps *ProxyServer) ServeHTTP() {
 	listenAddress := fmt.Sprintf(ps.Listen, 9000+ps.PortOffset)
 	listener, err := net.Listen("tcp", listenAddress)
 	if err != nil {
-		ps.log.Fatalf("FATAL: listen (%s) failed - %s", listenAddress, err)
+		ps.log.WithField("listen", listenAddress).WithError(err).Fatalf("listen failed")
 	}
 	proxyListener := &proxyproto.Listener{Listener: listener}
 	defer proxyListener.Close()
