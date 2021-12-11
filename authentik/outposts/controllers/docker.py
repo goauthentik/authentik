@@ -230,7 +230,9 @@ class DockerController(BaseController):
         try:
             container, _ = self._get_container()
             if container.status == "running":
+                self.logger.info("Stopping container.")
                 container.kill()
+            self.logger.info("Removing container.")
             container.remove(force=True)
         except DockerException as exc:
             raise ControllerException(str(exc)) from exc

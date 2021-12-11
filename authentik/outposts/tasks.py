@@ -105,9 +105,12 @@ def outpost_controller(
     logs = []
     if from_cache:
         outpost: Outpost = cache.get(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
+        LOGGER.debug("Getting outpost from cache to delete")
     else:
         outpost: Outpost = Outpost.objects.filter(pk=outpost_pk).first()
+        LOGGER.debug("Getting outpost from DB")
     if not outpost:
+        LOGGER.warning("No outpost")
         return
     self.set_uid(slugify(outpost.name))
     try:
