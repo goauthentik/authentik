@@ -225,7 +225,7 @@ class DockerController(BaseController):
             raise ControllerException(str(exc)) from exc
 
     def down(self):
-        if self.outpost.managed != MANAGED_OUTPOST:
+        if self.outpost.managed == MANAGED_OUTPOST:
             return
         try:
             container, _ = self._get_container()
