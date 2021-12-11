@@ -16,9 +16,8 @@ func DefaultConfig() {
 	G = Config{
 		Debug: false,
 		Web: WebConfig{
-			Listen:         "localhost:9000",
-			ListenTLS:      "localhost:9443",
-			LoadLocalFiles: false,
+			Listen:    "localhost:9000",
+			ListenTLS: "localhost:9443",
 		},
 		Paths: PathsConfig{
 			Media: "./media",
