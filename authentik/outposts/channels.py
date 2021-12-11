@@ -9,7 +9,7 @@ from dacite import from_dict
 from dacite.data import Data
 from guardian.shortcuts import get_objects_for_user
 from prometheus_client import Gauge
-from structlog.stdlib import get_logger
+from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.channels import AuthJsonConsumer
 from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
@@ -22,8 +22,6 @@ GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
     "Last update from any outpost",
     ["outpost", "uid", "version"],
 )
-
-LOGGER = get_logger()
 
 
 class WebsocketMessageInstruction(IntEnum):
@@ -51,6 +49,7 @@ class OutpostConsumer(AuthJsonConsumer):
     """Handler for Outposts that connect over websockets for health checks and live updates"""
 
     outpost: Optional[Outpost] = None
+    logger: BoundLogger
 
     last_uid: Optional[str] = None
 
@@ -59,11 +58,20 @@ class OutpostConsumer(AuthJsonConsumer):
     def connect(self):
         super().connect()
         uuid = self.scope["url_route"]["kwargs"]["pk"]
-        outpost = get_objects_for_user(self.user, "authentik_outposts.view_outpost").filter(pk=uuid)
-        if not outpost.exists():
+        outpost = (
+            get_objects_for_user(self.user, "authentik_outposts.view_outpost")
+            .filter(pk=uuid)
+            .first()
+        )
+        if not outpost:
             raise DenyConnection()
-        self.accept()
-        self.outpost = outpost.first()
+        self.logger = get_logger().bind(outpost=outpost)
+        try:
+            self.accept()
+        except RuntimeError as exc:
+            self.logger.warning("runtime error during accept", exc=exc)
+            raise DenyConnection()
+        self.outpost = outpost
         self.last_uid = self.channel_name
 
     # pylint: disable=unused-argument
@@ -78,9 +86,8 @@ class OutpostConsumer(AuthJsonConsumer):
                 uid=self.last_uid,
                 expected=self.outpost.config.kubernetes_replicas,
             ).dec()
-        LOGGER.debug(
+        self.logger.debug(
             "removed outpost instance from cache",
-            outpost=self.outpost,
             instance_uuid=self.last_uid,
         )
 
@@ -103,9 +110,8 @@ class OutpostConsumer(AuthJsonConsumer):
                 uid=self.last_uid,
                 expected=self.outpost.config.kubernetes_replicas,
             ).inc()
-            LOGGER.debug(
+            self.logger.debug(
                 "added outpost instance to cache",
-                outpost=self.outpost,
                 instance_uuid=self.last_uid,
             )
             self.first_msg = True
