@@ -19,6 +19,7 @@ from drf_spectacular.utils import OpenApiParameter, PolymorphicProxySerializer, 
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from sentry_sdk import capture_exception
+from sentry_sdk.api import set_tag
 from sentry_sdk.hub import Hub
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -127,6 +128,7 @@ class FlowExecutorView(APIView):
         super().setup(request, flow_slug=flow_slug)
         self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         self._logger = get_logger().bind(flow_slug=flow_slug)
+        set_tag("authentik.flow", self.flow.slug)
 
     def handle_invalid_flow(self, exc: BaseException) -> HttpResponse:
         """When a flow is non-applicable check if user is on the correct domain"""
@@ -158,7 +160,7 @@ class FlowExecutorView(APIView):
     # pylint: disable=unused-argument, too-many-return-statements
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         with Hub.current.start_span(op="flow.executor.dispatch") as span:
-            span.set_data("flow", self.flow.flow_uuid)
+            span.set_data("authentik Flow", self.flow.slug)
             get_params = QueryDict(request.GET.get("query", ""))
             if QS_KEY_TOKEN in get_params:
                 plan = self._check_flow_token(get_params)
@@ -270,9 +272,9 @@ class FlowExecutorView(APIView):
         )
         try:
             with Hub.current.start_span(op="flow.executor.stage") as span:
-                span.set_data("method", "get")
-                span.set_data("stage", self.current_stage_view)
-                span.set_data("flow", self.flow.flow_uuid)
+                span.set_data("Method", "GET")
+                span.set_data("authentik Stage", self.current_stage_view)
+                span.set_data("authentik Flow", self.flow.slug)
                 stage_response = self.current_stage_view.get(request, *args, **kwargs)
                 return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
@@ -311,9 +313,9 @@ class FlowExecutorView(APIView):
         )
         try:
             with Hub.current.start_span(op="flow.executor.stage") as span:
-                span.set_data("method", "post")
-                span.set_data("stage", self.current_stage_view)
-                span.set_data("flow", self.flow.flow_uuid)
+                span.set_data("Method", "POST")
+                span.set_data("authentik Stage", self.current_stage_view)
+                span.set_data("authentik Flow", self.flow.slug)
                 stage_response = self.current_stage_view.post(request, *args, **kwargs)
                 return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
