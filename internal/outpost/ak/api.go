@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
@@ -46,11 +47,13 @@ type APIController struct {
 
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
+	rsp := sentry.StartSpan(context.TODO(), "authentik.outposts.init")
+
 	config := api.NewConfiguration()
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
-		Transport: NewUserAgentTransport(constants.OutpostUserAgent(), NewTracingTransport(context.TODO(), GetTLSTransport())),
+		Transport: NewUserAgentTransport(constants.OutpostUserAgent(), NewTracingTransport(rsp.Context(), GetTLSTransport())),
 	}
 	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 
