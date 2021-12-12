@@ -128,10 +128,12 @@ class PolicyViewSet(
     @action(detail=False, methods=["POST"])
     def cache_clear(self, request: Request) -> Response:
         """Clear policy cache"""
-        count = cache.delete_pattern("policy_*")
-        LOGGER.debug("Cleared Policy cache", keys=count)
+        keys = cache.keys("policy_*")
+        cache.delete_many(keys)
+        LOGGER.debug("Cleared Policy cache", keys=len(keys))
         # Also delete user application cache
-        cache.delete_pattern(user_app_cache_key("*"))
+        keys = cache.keys(user_app_cache_key("*"))
+        cache.delete_many(keys)
         return Response(status=204)
 
     @permission_required("authentik_policies.view_policy")

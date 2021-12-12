@@ -130,8 +130,9 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, methods=["POST"])
     def cache_clear(self, request: Request) -> Response:
         """Clear flow cache"""
-        count = cache.delete_pattern("flow_*")
-        LOGGER.debug("Cleared flow cache", keys=count)
+        keys = cache.keys("flow_*")
+        cache.delete_many(keys)
+        LOGGER.debug("Cleared flow cache", keys=len(keys))
         return Response(status=204)
 
     @permission_required(

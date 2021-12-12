@@ -19,7 +19,10 @@ def invalidate_policy_cache(sender, instance, **_):
         total = 0
         for binding in PolicyBinding.objects.filter(policy=instance):
             prefix = f"policy_{binding.policy_binding_uuid.hex}_{binding.policy.pk.hex}*"
-            total += cache.delete_pattern(prefix)
+            keys = cache.keys(prefix)
+            total += len(keys)
+            cache.delete_many(keys)
         LOGGER.debug("Invalidating policy cache", policy=instance, keys=total)
         # Also delete user application cache
-        cache.delete_pattern(user_app_cache_key("*"))
+        keys = cache.keys(user_app_cache_key("*")) or []
+        cache.delete_many(keys)

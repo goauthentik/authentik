@@ -205,7 +205,8 @@ class FlowExecutorView(APIView):
                 self._logger.warning(
                     "f(exec): found incompatible flow plan, invalidating run", exc=exc
                 )
-                cache.delete_pattern("flow_*")
+                keys = cache.keys("flow_*")
+                cache.delete_many(keys)
                 return self.stage_invalid()
             if not next_binding:
                 self._logger.debug("f(exec): no more stages, flow is done.")
@@ -331,7 +332,8 @@ class FlowExecutorView(APIView):
             # from the cache. If there are errors, just delete all cached flows
             _ = plan.has_stages
         except Exception:  # pylint: disable=broad-except
-            cache.delete_pattern("flow_*")
+            keys = cache.keys("flow_*")
+            cache.delete_many(keys)
             return self._initiate_plan()
         return plan
 
