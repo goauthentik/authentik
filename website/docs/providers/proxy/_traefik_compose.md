@@ -31,7 +31,7 @@ services:
       - '--entrypoints.https.address=:443'
 
   authentik_proxy:
-    image: goauthentik.io/proxy:2021.5.1
+    image: goauthentik.io/proxy:latest
     ports:
       - 9000:9000
       - 9443:9443
@@ -50,7 +50,7 @@ services:
       traefik.http.routers.authentik.tls: true
       traefik.http.middlewares.authentik.forwardauth.address: http://outpost.company:9000/akprox/auth/traefik
       traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
-      traefik.http.middlewares.authentik.forwardauth.authResponseHeadersRegex: ^.*$
+      traefik.http.middlewares.authentik.forwardauth.authResponseHeadersRegex: ^.*$$
     restart: unless-stopped
 
   whoami:
