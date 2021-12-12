@@ -24,6 +24,8 @@ class DockerController(BaseController):
 
     def __init__(self, outpost: Outpost, connection: DockerServiceConnection) -> None:
         super().__init__(outpost, connection)
+        if outpost.managed == MANAGED_OUTPOST:
+            return
         try:
             self.client = connection.client()
         except ServiceConnectionInvalid as exc:
