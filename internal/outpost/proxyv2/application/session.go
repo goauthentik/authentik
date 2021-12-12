@@ -2,6 +2,7 @@ package application
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 
 	"github.com/gorilla/sessions"
@@ -26,14 +27,14 @@ func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
 		a.log.Info("using redis session backend")
 		store = rs
 	} else {
-		cs := sessions.NewCookieStore([]byte(*p.CookieSecret))
+		cs := sessions.NewFilesystemStore(os.TempDir(), []byte(*p.CookieSecret))
 		cs.Options.Domain = *p.CookieDomain
 		if p.TokenValidity.IsSet() {
 			t := p.TokenValidity.Get()
 			// Add one to the validity to ensure we don't have a session with indefinite length
 			cs.Options.MaxAge = int(*t) + 1
 		}
-		a.log.Info("using cookie session backend")
+		a.log.Info("using filesystem session backend")
 		store = cs
 	}
 	return store
