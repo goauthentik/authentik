@@ -159,7 +159,9 @@ class FlowExecutorView(APIView):
 
     # pylint: disable=unused-argument, too-many-return-statements
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
-        with Hub.current.start_span(op="flow.executor.dispatch") as span:
+        with Hub.current.start_span(
+            op="flow.executor.dispatch", description=self.flow.slug
+        ) as span:
             span.set_data("authentik Flow", self.flow.slug)
             get_params = QueryDict(request.GET.get("query", ""))
             if QS_KEY_TOKEN in get_params:
@@ -272,7 +274,10 @@ class FlowExecutorView(APIView):
             stage=self.current_stage,
         )
         try:
-            with Hub.current.start_span(op="flow.executor.stage") as span:
+            with Hub.current.start_span(
+                op="flow.executor.stage",
+                description=class_to_path(self.current_stage_view.__class__),
+            ) as span:
                 span.set_data("Method", "GET")
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
@@ -313,7 +318,10 @@ class FlowExecutorView(APIView):
             stage=self.current_stage,
         )
         try:
-            with Hub.current.start_span(op="flow.executor.stage") as span:
+            with Hub.current.start_span(
+                op="flow.executor.stage",
+                description=class_to_path(self.current_stage_view.__class__),
+            ) as span:
                 span.set_data("Method", "POST")
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
