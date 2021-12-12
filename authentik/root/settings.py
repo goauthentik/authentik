@@ -24,6 +24,7 @@ import structlog
 from celery.schedules import crontab
 from sentry_sdk import init as sentry_init
 from sentry_sdk.api import set_tag
+from sentry_sdk.integrations.boto3 import Boto3Integration
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
@@ -421,6 +422,7 @@ if _ERROR_REPORTING:
             DjangoIntegration(transaction_style="function_name"),
             CeleryIntegration(),
             RedisIntegration(),
+            Boto3Integration(),
         ],
         before_send=before_send,
         release=f"authentik@{__version__}",
