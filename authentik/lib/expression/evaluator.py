@@ -82,6 +82,7 @@ class BaseEvaluator:
         The result is returned without any type-checking."""
         with Hub.current.start_span(op="authentik.lib.evaluator.evaluate") as span:
             span: Span
+            span.description = self._filename
             span.set_data("expression", expression_source)
             param_keys = self._context.keys()
             try:
