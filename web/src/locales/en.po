@@ -296,6 +296,10 @@ msgstr "Alternatively, if your current device has Duo installed, click on this l
 msgid "Always require consent"
 msgstr "Always require consent"
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "An example setup can look like this:"
+msgstr "An example setup can look like this:"
+
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Any HTML can be used."
 msgstr "Any HTML can be used."
@@ -444,6 +448,10 @@ msgstr "Authentication"
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Authentication Type"
 msgstr "Authentication Type"
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Authentication URL"
+msgstr "Authentication URL"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -1857,7 +1865,6 @@ msgstr "External Host"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "External host"
 msgstr "External host"
 
@@ -2343,6 +2350,10 @@ msgstr "Import certificates of external providers or create certificates to sign
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "In case you can't access any other method."
 msgstr "In case you can't access any other method."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com."
+msgstr "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com."
 
 #: src/pages/users/UserListPage.ts
 msgid "Inactive"
@@ -2996,6 +3007,10 @@ msgstr "No Stages bound"
 msgid "No additional data available."
 msgstr "No additional data available."
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "No additional setup is required."
+msgstr "No additional setup is required."
+
 #: src/elements/forms/ModalForm.ts
 msgid "No form found"
 msgstr "No form found"
@@ -3210,8 +3225,8 @@ msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
 msgstr "Optionally set the 'FriendlyName' value of the Assertion attribute."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
-msgstr "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+#~ msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+#~ msgstr "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
@@ -4109,6 +4124,10 @@ msgstr "Set a custom HTTP-Basic Authentication header based on values from authe
 msgid "Set custom attributes using YAML or JSON."
 msgstr "Set custom attributes using YAML or JSON."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+msgstr "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Setup"
 msgstr "Setup"
@@ -4845,8 +4864,12 @@ msgid "The external URL you'll access the application at. Include any non-standa
 msgstr "The external URL you'll access the application at. Include any non-standard port."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
-msgstr "The external URL you'll authenticate at. Can be the same domain as authentik."
+#~ msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
+#~ msgstr "The external URL you'll authenticate at. Can be the same domain as authentik."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "The external URL you'll authenticate at. The authentik core server should be reachable under this URL."
+msgstr "The external URL you'll authenticate at. The authentik core server should be reachable under this URL."
 
 #: 
 #~ msgid "The following objects use {0}:"
@@ -5782,6 +5805,10 @@ msgstr "You're about to be redirect to the following URL."
 msgid "You're currently impersonating {0}. Click to stop."
 msgstr "You're currently impersonating {0}. Click to stop."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "app1 running on app1.example.com"
+msgstr "app1 running on app1.example.com"
+
 #: 
 #~ msgid "authentik Builtin Database"
 #~ msgstr "authentik Builtin Database"
@@ -5789,6 +5816,10 @@ msgstr "You're currently impersonating {0}. Click to stop."
 #: 
 #~ msgid "authentik LDAP Backend"
 #~ msgstr "authentik LDAP Backend"
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "authentik running on auth.example.com"
+msgstr "authentik running on auth.example.com"
 
 #: src/elements/forms/DeleteForm.ts
 msgid "connecting object will be deleted"

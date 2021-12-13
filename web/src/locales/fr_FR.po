@@ -300,6 +300,10 @@ msgstr "Sinon, si Duo est installé sur cet appareil, cliquez sur ce lien :"
 msgid "Always require consent"
 msgstr "Toujours exiger l'approbation"
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "An example setup can look like this:"
+msgstr ""
+
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Any HTML can be used."
 msgstr ""
@@ -447,6 +451,10 @@ msgstr "Authentification"
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Authentication Type"
+msgstr ""
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Authentication URL"
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
@@ -1843,7 +1851,6 @@ msgstr "Hôte externe"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "External host"
 msgstr "Hôte externe"
 
@@ -2326,6 +2333,10 @@ msgstr "Importer les certificats des fournisseurs externes ou créer des certifi
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "In case you can't access any other method."
 msgstr "Au cas où aucune autre méthode ne soit disponible."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com."
+msgstr ""
 
 #: src/pages/users/UserListPage.ts
 msgid "Inactive"
@@ -2974,6 +2985,10 @@ msgstr "Aucune étape liée"
 msgid "No additional data available."
 msgstr "Aucune donnée additionnelle disponible."
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "No additional setup is required."
+msgstr ""
+
 #: src/elements/forms/ModalForm.ts
 msgid "No form found"
 msgstr "Aucun formulaire trouvé"
@@ -3185,8 +3200,8 @@ msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
 msgstr "Indiquer la valeur \"FriendlyName\" de l'attribut d'assertion (optionnel)"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
-msgstr "Indiquer votre domaine parent (optionnel), si vous souhaitez que l'authentification et l'autorisation soient réalisés au niveau du domaine. Si vous exécutez des applications sur app1.domain.tld, app2.domain.tld, indiquez ici \"domain.tld\"."
+#~ msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+#~ msgstr "Indiquer votre domaine parent (optionnel), si vous souhaitez que l'authentification et l'autorisation soient réalisés au niveau du domaine. Si vous exécutez des applications sur app1.domain.tld, app2.domain.tld, indiquez ici \"domain.tld\"."
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
@@ -4072,6 +4087,10 @@ msgstr "Définir un en-tête d'authentification HTTP-Basic personnalisé basé s
 msgid "Set custom attributes using YAML or JSON."
 msgstr "Définissez des attributs personnalisés via YAML ou JSON."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+msgstr ""
+
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Setup"
 msgstr ""
@@ -4799,8 +4818,12 @@ msgid "The external URL you'll access the application at. Include any non-standa
 msgstr "L'URL externe par laquelle vous accéderez à l'application. Incluez un port non-standard si besoin."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
-msgstr "L'URL externe sur laquelle vous vous authentifierez. Cela peut être le même domaine qu'authentik."
+#~ msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
+#~ msgstr "L'URL externe sur laquelle vous vous authentifierez. Cela peut être le même domaine qu'authentik."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "The external URL you'll authenticate at. The authentik core server should be reachable under this URL."
+msgstr ""
 
 #~ msgid "The following objects use {0}:"
 #~ msgstr "Les objets suivants utilisent {0} :"
@@ -5718,11 +5741,19 @@ msgstr "Vous allez être redirigé vers l'URL suivante."
 msgid "You're currently impersonating {0}. Click to stop."
 msgstr "Vous êtes en train de vous faire passer pour {0}. Cliquez pour arrêter."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "app1 running on app1.example.com"
+msgstr ""
+
 #~ msgid "authentik Builtin Database"
 #~ msgstr "Base de données intégrée à authentik"
 
 #~ msgid "authentik LDAP Backend"
 #~ msgstr "Backend LDAP authentik"
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "authentik running on auth.example.com"
+msgstr ""
 
 #: src/elements/forms/DeleteForm.ts
 msgid "connecting object will be deleted"
