@@ -17,14 +17,14 @@ class AppleOAuthClient(OAuth2Client):
     """Apple OAuth2 client"""
 
     def get_client_id(self) -> str:
-        parts = self.source.consumer_key.split(";")
+        parts: list[str] = self.source.consumer_key.split(";")
         if len(parts) < 3:
             return self.source.consumer_key
-        return parts[0]
+        return parts[0].strip()
 
     def get_client_secret(self) -> str:
         now = time()
-        parts = self.source.consumer_key.split(";")
+        parts: list[str] = self.source.consumer_key.split(";")
         if len(parts) < 3:
             raise ValueError(
                 (
@@ -34,14 +34,14 @@ class AppleOAuthClient(OAuth2Client):
             )
         LOGGER.debug("got values from client_id", team=parts[1], kid=parts[2])
         payload = {
-            "iss": parts[1],
+            "iss": parts[1].strip(),
             "iat": now,
             "exp": now + 86400 * 180,
             "aud": "https://appleid.apple.com",
-            "sub": parts[0],
+            "sub": parts[0].strip(),
         }
         # pyright: reportGeneralTypeIssues=false
-        jwt = encode(payload, self.source.consumer_secret, "ES256", {"kid": parts[2]})
+        jwt = encode(payload, self.source.consumer_secret, "ES256", {"kid": parts[2].strip()})
         LOGGER.debug("signing payload as secret key", payload=payload, jwt=jwt)
         return jwt
 
