@@ -19,6 +19,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
 		if err != nil {
 			panic(err)
 		}
+		rs.SetMaxLength(math.MaxInt64)
 		if p.TokenValidity.IsSet() {
 			t := p.TokenValidity.Get()
 			// Add one to the validity to ensure we don't have a session with indefinite length
