@@ -44,7 +44,7 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
             if (window.location.pathname.includes("if/")) {
                 // Get the interface name from URL
                 const pathMatches = window.location.pathname.match(/.+if\/(\w+)\//);
-                let currentInterface = "unkown";
+                let currentInterface = "unknown";
                 if (pathMatches && pathMatches.length >= 2) {
                     currentInterface = pathMatches[1];
                 }

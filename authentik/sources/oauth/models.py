@@ -183,6 +183,16 @@ class AppleOAuthSource(OAuthSource):
         verbose_name_plural = _("Apple OAuth Sources")
 
 
+class OktaOAuthSource(OAuthSource):
+    """Login using a okta.com."""
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _("Okta OAuth Source")
+        verbose_name_plural = _("Okta OAuth Sources")
+
+
 class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 
