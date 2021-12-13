@@ -11,6 +11,10 @@
   to = "/docs/:splat"
 
 [[redirects]]
+  from = "/integrations/*/index"
+  to = "/integrations/:splat"
+
+[[redirects]]
   from = "/*"
   to = "/.netlify/functions/go-get"
   status = 200
