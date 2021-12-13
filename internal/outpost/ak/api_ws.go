@@ -107,6 +107,7 @@ func (ac *APIController) reconnectWS() {
 			}
 		} else {
 			ac.wsIsReconnecting = false
+			ac.wsBackoffMultiplier = 1
 			return
 		}
 	}
