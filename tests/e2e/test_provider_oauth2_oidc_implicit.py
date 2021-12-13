@@ -145,7 +145,6 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
         sleep(1)
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
-        print(body)
         self.assertEqual(body["profile"]["nickname"], self.user.username)
         self.assertEqual(body["profile"]["name"], self.user.name)
         self.assertEqual(body["profile"]["email"], self.user.email)

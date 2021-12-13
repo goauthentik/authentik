@@ -41,7 +41,7 @@ class TestPropertyMappingAPI(APITestCase):
         expr = "return True"
         self.assertEqual(PropertyMappingSerializer().validate_expression(expr), expr)
         with self.assertRaises(ValidationError):
-            print(PropertyMappingSerializer().validate_expression("/"))
+            PropertyMappingSerializer().validate_expression("/")
 
     def test_types(self):
         """Test PropertyMappigns's types endpoint"""

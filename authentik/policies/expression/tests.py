@@ -74,4 +74,4 @@ class TestExpressionPolicyAPI(APITestCase):
         expr = "return True"
         self.assertEqual(ExpressionPolicySerializer().validate_expression(expr), expr)
         with self.assertRaises(ValidationError):
-            print(ExpressionPolicySerializer().validate_expression("/"))
+            ExpressionPolicySerializer().validate_expression("/")

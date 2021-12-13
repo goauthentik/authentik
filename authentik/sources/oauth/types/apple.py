@@ -74,7 +74,6 @@ class AppleOAuth2Callback(OAuthCallback):
         self,
         info: dict[str, Any],
     ) -> dict[str, Any]:
-        print(info)
         return {
             "email": info.get("email"),
             "name": info.get("name"),
