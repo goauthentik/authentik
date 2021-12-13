@@ -50,4 +50,4 @@ In Tautulli, navigate to Settings and enable the "Show Advanced" option. Navigat
 
 Save the settings, and restart Tautulli if prompted.
 
-Afterwards, you need to deploy an Outpost in front of Tautulli, as descried [here](../sonarr/index.md)
+Afterwards, you need to deploy an Outpost in front of Tautulli, as descried [here](../sonarr/)
