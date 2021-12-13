@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
@@ -94,15 +95,24 @@ export class ApplicationListPage extends TablePage<Application> {
         </ak-forms-delete-bulk>`;
     }
 
+    renderIcon(item: Application): TemplateResult {
+        if (item?.metaIcon) {
+            if (item.metaIcon.startsWith("fa://")) {
+                const icon = item.metaIcon.replaceAll("fa://", "");
+                return html`<i class="fas ${icon}"></i>`;
+            }
+            return html`<img
+                class="app-icon pf-c-avatar"
+                src="${ifDefined(item.metaIcon)}"
+                alt="${t`Application Icon`}"
+            />`;
+        }
+        return html`<i class="fas fa-share-square"></i>`;
+    }
+
     row(item: Application): TemplateResult[] {
         return [
-            item.metaIcon
-                ? html`<img
-                      class="app-icon pf-c-avatar"
-                      src="${item.metaIcon}"
-                      alt="${t`Application Icon`}"
-                  />`
-                : html`<i class="fas fa-question-circle"></i>`,
+            this.renderIcon(item),
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
