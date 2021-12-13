@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6a89870496296af32dbc2f64b0832d4c20010829ada0b3c4dc27fee56b68fad9"
+            "sha256": "ba1371e813190a2e25b49788b7ba6071c8ef61f512043b71d343681003387b9b"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -494,11 +494,11 @@
         },
         "djangorestframework": {
             "hashes": [
-                "sha256:6d1d59f623a5ad0509fe0d6bfe93cbdfe17b8116ebc8eda86d45f6e16e819aaf",
-                "sha256:f747949a8ddac876e879190df194b925c177cdeb725a099db1460872f7c0a7f2"
+                "sha256:48e64f08244fa0df9e2b8fbd405edec263d8e1251112a06d0073b546b7c86b9c",
+                "sha256:8b987d5683f5b3553dd946d4972048d3117fc526cb0bc01a3f021e81af53f39e"
             ],
             "index": "pypi",
-            "version": "==3.12.4"
+            "version": "==3.13.0"
         },
         "djangorestframework-guardian": {
             "hashes": [
@@ -1312,12 +1312,12 @@
             "version": "==0.5.0"
         },
         "sentry-sdk": {
+            "git": "https://github.com/beryju/sentry-python.git",
             "hashes": [
                 "sha256:0db297ab32e095705c20f742c3a5dac62fe15c4318681884053d0898e5abb2f6",
                 "sha256:789a11a87ca02491896e121efdd64e8fd93327b69e8f2f7d42f03e2569648e88"
             ],
-            "index": "pypi",
-            "version": "==1.5.0"
+            "ref": "379aee28b15d3b87b381317746c4efd24b3d7bc3"
         },
         "service-identity": {
             "hashes": [

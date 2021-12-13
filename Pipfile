@@ -40,7 +40,7 @@ pycryptodome = "*"
 pyjwt = "*"
 pyyaml = "*"
 requests-oauthlib = "*"
-sentry-sdk = "*"
+sentry-sdk = { git = 'https://github.com/beryju/sentry-python.git', ref = '379aee28b15d3b87b381317746c4efd24b3d7bc3' }
 service_identity = "*"
 structlog = "*"
 swagger-spec-validator = "*"
