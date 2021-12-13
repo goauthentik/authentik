@@ -27,7 +27,10 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                 ],
                 tracesSampleRate: config.errorReporting.tracesSampleRate,
                 environment: config.errorReporting.environment,
-                beforeSend: async (event: Sentry.Event, hint: Sentry.EventHint): Promise<Sentry.Event | null> => {
+                beforeSend: async (event: Sentry.Event, hint: Sentry.EventHint | undefined): Promise<Sentry.Event | null> => {
+                    if (!hint) {
+                        return event;
+                    }
                     if (hint.originalException instanceof SentryIgnoredError) {
                         return null;
                     }
