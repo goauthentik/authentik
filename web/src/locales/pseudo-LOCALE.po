@@ -433,6 +433,10 @@ msgstr ""
 #~ msgid "Auth Type"
 #~ msgstr ""
 
+#: src/flows/sources/apple/AppleLoginInit.ts
+msgid "Authenticating with Apple..."
+msgstr ""
+
 #: src/flows/sources/plex/PlexLoginInit.ts
 msgid "Authenticating with Plex..."
 msgstr ""
@@ -3772,6 +3776,10 @@ msgstr ""
 #: src/pages/events/EventInfo.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
 msgid "Result"
+msgstr ""
+
+#: src/flows/sources/apple/AppleLoginInit.ts
+msgid "Retry"
 msgstr ""
 
 #: 

@@ -441,6 +441,10 @@ msgstr "Audience"
 #~ msgid "Auth Type"
 #~ msgstr ""
 
+#: src/flows/sources/apple/AppleLoginInit.ts
+msgid "Authenticating with Apple..."
+msgstr ""
+
 #: src/flows/sources/plex/PlexLoginInit.ts
 msgid "Authenticating with Plex..."
 msgstr "Authentification avec Plex..."
@@ -3754,6 +3758,10 @@ msgstr "Ressources"
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
 msgid "Result"
 msgstr "Résultat"
+
+#: src/flows/sources/apple/AppleLoginInit.ts
+msgid "Retry"
+msgstr ""
 
 #~ msgid "Retry Task"
 #~ msgstr "Réessayer la tâche"

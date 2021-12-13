@@ -19086,6 +19086,46 @@ components:
       - authentik.managed
       - authentik.core
       type: string
+    AppleChallengeResponseRequest:
+      type: object
+      description: Pseudo class for plex response
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-flow-sources-oauth-apple
+    AppleLoginChallenge:
+      type: object
+      description: Special challenge for apple-native authentication flow, which happens
+        on the client.
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-flow-sources-oauth-apple
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        client_id:
+          type: string
+        scope:
+          type: string
+        redirect_uri:
+          type: string
+        state:
+          type: string
+      required:
+      - client_id
+      - redirect_uri
+      - scope
+      - state
+      - type
     Application:
       type: object
       description: Application Serializer
@@ -20225,6 +20265,7 @@ components:
     ChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/AccessDeniedChallenge'
+      - $ref: '#/components/schemas/AppleLoginChallenge'
       - $ref: '#/components/schemas/AuthenticatorDuoChallenge'
       - $ref: '#/components/schemas/AuthenticatorSMSChallenge'
       - $ref: '#/components/schemas/AuthenticatorStaticChallenge'
@@ -20246,6 +20287,7 @@ components:
         propertyName: component
         mapping:
           ak-stage-access-denied: '#/components/schemas/AccessDeniedChallenge'
+          ak-flow-sources-oauth-apple: '#/components/schemas/AppleLoginChallenge'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallenge'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallenge'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallenge'
@@ -21387,6 +21429,7 @@ components:
       - title
     FlowChallengeResponseRequest:
       oneOf:
+      - $ref: '#/components/schemas/AppleChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorSMSChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
@@ -21405,6 +21448,7 @@ components:
       discriminator:
         propertyName: component
         mapping:
+          ak-flow-sources-oauth-apple: '#/components/schemas/AppleChallengeResponseRequest'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallengeResponseRequest'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
@@ -22711,11 +22755,13 @@ components:
       oneOf:
       - $ref: '#/components/schemas/RedirectChallenge'
       - $ref: '#/components/schemas/PlexAuthenticationChallenge'
+      - $ref: '#/components/schemas/AppleLoginChallenge'
       discriminator:
         propertyName: component
         mapping:
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
           ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallenge'
+          ak-flow-sources-oauth-apple: '#/components/schemas/AppleLoginChallenge'
     LoginMetrics:
       type: object
       description: Login Metrics per 1h
