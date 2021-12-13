@@ -47,7 +47,7 @@ type APIController struct {
 
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
-	rsp := sentry.StartSpan(context.TODO(), "authentik.outposts.init")
+	rsp := sentry.StartSpan(context.Background(), "authentik.outposts.init")
 
 	config := api.NewConfiguration()
 	config.Host = akURL.Host

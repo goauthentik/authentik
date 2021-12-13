@@ -64,7 +64,7 @@ class GeoIPReader:
     def city(self, ip_address: str) -> Optional[City]:
         """Wrapper for Reader.city"""
         with Hub.current.start_span(
-            op="events.geo.city",
+            op="authentik.events.geo.city",
             description=ip_address,
         ):
             if not self.enabled:

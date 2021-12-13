@@ -130,7 +130,7 @@ class PolicyProcess(PROCESS_CLASS):
     def profiling_wrapper(self):
         """Run with profiling enabled"""
         with Hub.current.start_span(
-            op="policy.process.execute",
+            op="authentik.policy.process.execute",
         ) as span, HIST_POLICIES_EXECUTION_TIME.labels(
             binding_order=self.binding.order,
             binding_target_type=self.binding.target_type,

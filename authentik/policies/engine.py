@@ -90,7 +90,7 @@ class PolicyEngine:
     def build(self) -> "PolicyEngine":
         """Build wrapper which monitors performance"""
         with Hub.current.start_span(
-            op="policy.engine.build",
+            op="authentik.policy.engine.build",
             description=self.__pbm,
         ) as span, HIST_POLICIES_BUILD_TIME.labels(
             object_name=self.__pbm,
