@@ -167,8 +167,7 @@ class SAMLSource(Source):
             reverse(f"authentik_sources_saml:{view}", kwargs={"source_slug": self.slug})
         )
 
-    @property
-    def ui_login_button(self) -> UILoginButton:
+    def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
             challenge=RedirectChallenge(
                 instance={

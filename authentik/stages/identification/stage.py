@@ -191,7 +191,7 @@ class IdentificationStageView(ChallengeStageView):
             current_stage.sources.filter(enabled=True).order_by("name").select_subclasses()
         )
         for source in sources:
-            ui_login_button = source.ui_login_button
+            ui_login_button = source.ui_login_button(self.request)
             if ui_login_button:
                 button = asdict(ui_login_button)
                 button["challenge"] = ui_login_button.challenge.data

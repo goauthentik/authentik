@@ -32,7 +32,7 @@ class TestFlowsAPI(APITestCase):
 
     def test_models(self):
         """Test that ui_user_settings returns none"""
-        self.assertIsNone(Stage().ui_user_settings)
+        self.assertIsNone(Stage().ui_user_settings())
 
     def test_api_serializer(self):
         """Test that stage serializer returns the correct type"""

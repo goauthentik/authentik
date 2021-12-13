@@ -2,6 +2,7 @@
 from typing import TYPE_CHECKING, Optional, Type
 
 from django.db import models
+from django.http.request import HttpRequest
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
@@ -63,11 +64,15 @@ class OAuthSource(Source):
 
         return OAuthSourceSerializer
 
-    @property
-    def ui_login_button(self) -> UILoginButton:
-        return self.type().ui_login_button()
+    def ui_login_button(self, request: HttpRequest) -> UILoginButton:
+        provider_type = self.type
+        provider = provider_type()
+        return UILoginButton(
+            name=self.name,
+            icon_url=provider.icon_url(),
+            challenge=provider.login_challenge(self, request),
+        )
 
-    @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={

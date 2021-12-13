@@ -104,14 +104,14 @@ class SourceViewSet(
         )
         matching_sources: list[UserSettingSerializer] = []
         for source in _all_sources:
-            user_settings = source.ui_user_settings
+            user_settings = source.ui_user_settings()
             if not user_settings:
                 continue
             policy_engine = PolicyEngine(source, request.user, request)
             policy_engine.build()
             if not policy_engine.passing:
                 continue
-            source_settings = source.ui_user_settings
+            source_settings = source.ui_user_settings()
             source_settings.initial_data["object_uid"] = source.slug
             if not source_settings.is_valid():
                 LOGGER.warning(source_settings.errors)

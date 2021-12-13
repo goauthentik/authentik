@@ -48,7 +48,6 @@ class AuthenticatorDuoStage(ConfigurableStage, Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-duo-form"
 
-    @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={

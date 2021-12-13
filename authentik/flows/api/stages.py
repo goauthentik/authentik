@@ -90,7 +90,7 @@ class StageViewSet(
             stages += list(configurable_stage.objects.all().order_by("name"))
         matching_stages: list[dict] = []
         for stage in stages:
-            user_settings = stage.ui_user_settings
+            user_settings = stage.ui_user_settings()
             if not user_settings:
                 continue
             user_settings.initial_data["object_uid"] = str(stage.pk)

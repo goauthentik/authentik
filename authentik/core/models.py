@@ -359,13 +359,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Return component used to edit this object"""
         raise NotImplementedError
 
-    @property
-    def ui_login_button(self) -> Optional[UILoginButton]:
+    def ui_login_button(self, request: HttpRequest) -> Optional[UILoginButton]:
         """If source uses a http-based flow, return UI Information about the login
         button. If source doesn't use http-based flow, return None."""
         return None
 
-    @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or UserSettingSerializer."""
