@@ -7,6 +7,7 @@ from typing import Optional, TypedDict
 from geoip2.database import Reader
 from geoip2.errors import GeoIP2Error
 from geoip2.models import City
+from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
@@ -62,13 +63,17 @@ class GeoIPReader:
 
     def city(self, ip_address: str) -> Optional[City]:
         """Wrapper for Reader.city"""
-        if not self.enabled:
-            return None
-        self.__check_expired()
-        try:
-            return self.__reader.city(ip_address)
-        except (GeoIP2Error, ValueError):
-            return None
+        with Hub.current.start_span(
+            op="events.geo.city",
+            description=ip_address,
+        ):
+            if not self.enabled:
+                return None
+            self.__check_expired()
+            try:
+                return self.__reader.city(ip_address)
+            except (GeoIP2Error, ValueError):
+                return None
 
     def city_dict(self, ip_address: str) -> Optional[GeoIPDict]:
         """Wrapper for self.city that returns a dict"""
