@@ -2,10 +2,12 @@
   from = "/discord"
   to = "https://discord.gg/jg33eMhnj6"
 
+# Migration from docs to separate directory
 [[redirects]]
   from = "/docs/integrations/*"
   to = "/integrations/:splat"
 
+# Docusaurus update removes index
 [[redirects]]
   from = "/docs/*/index"
   to = "/docs/:splat"
@@ -14,6 +16,7 @@
   from = "/integrations/*/index"
   to = "/integrations/:splat"
 
+# ?go-get=1 downloads
 [[redirects]]
   from = "/*"
   to = "/.netlify/functions/go-get"
@@ -21,6 +24,7 @@
   force = true
   query = {go-get = "1"}
 
+# Container registry
 [[redirects]]
   from = "/v2"
   to = "/.netlify/functions/oci-proxy"
