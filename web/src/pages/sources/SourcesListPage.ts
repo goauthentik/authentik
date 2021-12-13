@@ -139,8 +139,7 @@ export class SourceListPage extends TablePage<Source> {
                                         >
                                         </ak-proxy-form>
                                         <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                            ${type.name}<br />
-                                            <small>${type.description}</small>
+                                            ${type.name}
                                         </button>
                                     </ak-forms-modal>
                                 </li>`;
