@@ -108,10 +108,11 @@ export class PageHeader extends LitElement {
 
     renderIcon(): TemplateResult {
         if (this.icon) {
-            if (this.iconImage) {
+            if (this.iconImage && !this.icon.startsWith("fa://")) {
                 return html`<img class="pf-icon" src="${this.icon}" />&nbsp;`;
             }
-            return html`<i class=${this.icon}></i>&nbsp;`;
+            const icon = this.icon.replaceAll("fa://", "fa ");
+            return html`<i class=${icon}></i>&nbsp;`;
         }
         return html``;
     }

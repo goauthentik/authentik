@@ -168,6 +168,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 
 func (a *Application) IsAllowlisted(r *http.Request) bool {
 	for _, u := range a.UnauthenticatedRegex {
+		a.log.WithField("regex", u.String()).WithField("url", r.URL.Path).Trace("Matching URL against allow list")
 		if u.MatchString(r.URL.Path) {
 			return true
 		}
