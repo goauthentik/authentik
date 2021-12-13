@@ -9,12 +9,17 @@
 
 # Docusaurus update removes index
 [[redirects]]
-  from = "/docs/*/index"
-  to = "/docs/:splat"
-
+  from = "/docs/:firstPart/index"
+  to = "/docs/:firstPart/"
 [[redirects]]
-  from = "/integrations/*/index"
-  to = "/integrations/:splat"
+  from = "/docs/:firstPart/:secondPart/index"
+  to = "/docs/:firstPart/:secondPart/"
+[[redirects]]
+  from = "/integrations/:firstPart/index"
+  to = "/integrations/:firstPart/"
+[[redirects]]
+  from = "/integrations/:firstPart/:secondPart/index"
+  to = "/integrations/:firstPart/:secondPart/"
 
 # ?go-get=1 downloads
 [[redirects]]
