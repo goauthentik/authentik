@@ -194,8 +194,10 @@ class TokenView(View):
             self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
 
             if self.params.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
+                LOGGER.info("Converting authorization code to refresh token")
                 return TokenResponse(self.create_code_response())
             if self.params.grant_type == GRANT_TYPE_REFRESH_TOKEN:
+                LOGGER.info("Refreshing refresh token")
                 return TokenResponse(self.create_refresh_response())
             raise ValueError(f"Invalid grant_type: {self.params.grant_type}")
         except TokenError as error:
