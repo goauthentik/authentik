@@ -4,6 +4,7 @@ from typing import Any
 from django.db.models import F, Q
 from django.db.models import Value as V
 from django.http.request import HttpRequest
+from sentry_sdk.hub import Hub
 
 from authentik.lib.config import CONFIG
 from authentik.tenants.models import Tenant
@@ -28,7 +29,9 @@ def get_tenant_for_request(request: HttpRequest) -> Tenant:
 def context_processor(request: HttpRequest) -> dict[str, Any]:
     """Context Processor that injects tenant object into every template"""
     tenant = getattr(request, "tenant", DEFAULT_TENANT)
+    trace = Hub.current.scope.span.to_traceparent()
     return {
         "tenant": tenant,
         "footer_links": CONFIG.y("footer_links"),
+        "sentry_trace": trace,
     }
