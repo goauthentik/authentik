@@ -3,8 +3,11 @@ from enum import Enum
 from typing import Callable, Optional, Type
 
 from django.templatetags.static import static
+from django.urls.base import reverse
 from structlog.stdlib import get_logger
 
+from authentik.core.types import UILoginButton
+from authentik.flows.challenge import ChallengeTypes, RedirectChallenge
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
@@ -36,6 +39,22 @@ class SourceType:
     def icon_url(self) -> str:
         """Get Icon URL for login"""
         return static(f"authentik/sources/{self.slug}.svg")
+
+    def ui_login_button(self) -> UILoginButton:
+        """Allow types to return custom challenges"""
+        return UILoginButton(
+            challenge=RedirectChallenge(
+                instance={
+                    "type": ChallengeTypes.REDIRECT.value,
+                    "to": reverse(
+                        "authentik_sources_oauth:oauth-client-login",
+                        kwargs={"source_slug": self.slug},
+                    ),
+                }
+            ),
+            icon_url=self.icon_url(),
+            name=self.name,
+        )
 
 
 class SourceTypeManager:
