@@ -21,7 +21,6 @@ If you want to only make changes on the UI, you don't need a backend running fro
     AUTHENTIK_TAG=gh-next
     AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=goauthentik.io/dev-%(type)s:gh-next
     AUTHENTIK_LOG_LEVEL=debug
-    AUTHENTIK_WEB_LOAD_LOCAL_FILES=true
     ```
 
     This will cause authentik to use the beta images.

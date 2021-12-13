@@ -1,9 +1,11 @@
 """Groups API Viewset"""
+from json import loads
+
 from django.db.models.query import QuerySet
-from django_filters.filters import ModelMultipleChoiceFilter
+from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from rest_framework.fields import CharField, JSONField
-from rest_framework.serializers import ListSerializer, ModelSerializer
+from rest_framework.serializers import ListSerializer, ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 
@@ -62,6 +64,13 @@ class GroupSerializer(ModelSerializer):
 class GroupFilter(FilterSet):
     """Filter for groups"""
 
+    attributes = CharFilter(
+        field_name="attributes",
+        lookup_expr="",
+        label="Attributes",
+        method="filter_attributes",
+    )
+
     members_by_username = ModelMultipleChoiceFilter(
         field_name="users__username",
         to_field_name="username",
@@ -72,10 +81,28 @@ class GroupFilter(FilterSet):
         queryset=User.objects.all(),
     )
 
+    # pylint: disable=unused-argument
+    def filter_attributes(self, queryset, name, value):
+        """Filter attributes by query args"""
+        try:
+            value = loads(value)
+        except ValueError:
+            raise ValidationError(detail="filter: failed to parse JSON")
+        if not isinstance(value, dict):
+            raise ValidationError(detail="filter: value must be key:value mapping")
+        qs = {}
+        for key, _value in value.items():
+            qs[f"attributes__{key}"] = _value
+        try:
+            _ = len(queryset.filter(**qs))
+            return queryset.filter(**qs)
+        except ValueError:
+            return queryset
+
     class Meta:
 
         model = Group
-        fields = ["name", "is_superuser", "members_by_pk", "members_by_username"]
+        fields = ["name", "is_superuser", "members_by_pk", "attributes", "members_by_username"]
 
 
 class GroupViewSet(UsedByMixin, ModelViewSet):

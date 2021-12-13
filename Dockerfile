@@ -28,7 +28,7 @@ ENV NODE_ENV=production
 RUN cd /work/web && npm i && npm run build
 
 # Stage 4: Build go proxy
-FROM docker.io/golang:1.17.4-bullseye AS builder
+FROM docker.io/golang:1.17.5-bullseye AS builder
 
 WORKDIR /work
 
@@ -64,8 +64,8 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
     adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
-    mkdir /backups /certs && \
-    chown authentik:authentik /backups /certs
+    mkdir -p /backups /certs /media && \
+    chown authentik:authentik /backups /certs /media
 
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /

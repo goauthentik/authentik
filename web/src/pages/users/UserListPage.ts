@@ -62,7 +62,7 @@ export class UserListPage extends TablePage<User> {
             search: this.search || "",
             attributes: this.hideServiceAccounts
                 ? JSON.stringify({
-                      "goauthentik.io/user/service-account__isnull": "true",
+                      "goauthentik.io/user/service-account__isnull": true,
                   })
                 : undefined,
         });

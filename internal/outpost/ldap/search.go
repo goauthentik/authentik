@@ -3,6 +3,7 @@ package ldap
 import (
 	"errors"
 	"net"
+	"strings"
 
 	"github.com/getsentry/sentry-go"
 	goldap "github.com/go-ldap/ldap/v3"
@@ -41,13 +42,13 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 	if searchReq.BaseDN == "" {
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultSuccess}, nil
 	}
-	bd, err := goldap.ParseDN(searchReq.BaseDN)
+	bd, err := goldap.ParseDN(strings.ToLower(searchReq.BaseDN))
 	if err != nil {
 		req.Log().WithError(err).Info("failed to parse basedn")
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, errors.New("invalid DN")
 	}
 	for _, provider := range ls.providers {
-		providerBase, _ := goldap.ParseDN(provider.BaseDN)
+		providerBase, _ := goldap.ParseDN(strings.ToLower(provider.BaseDN))
 		if providerBase.AncestorOf(bd) || providerBase.Equal(bd) {
 			return provider.searcher.Search(req)
 		}

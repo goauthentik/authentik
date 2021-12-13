@@ -24,6 +24,8 @@ class DockerController(BaseController):
 
     def __init__(self, outpost: Outpost, connection: DockerServiceConnection) -> None:
         super().__init__(outpost, connection)
+        if outpost.managed == MANAGED_OUTPOST:
+            return
         try:
             self.client = connection.client()
         except ServiceConnectionInvalid as exc:
@@ -225,12 +227,14 @@ class DockerController(BaseController):
             raise ControllerException(str(exc)) from exc
 
     def down(self):
-        if self.outpost.managed != MANAGED_OUTPOST:
+        if self.outpost.managed == MANAGED_OUTPOST:
             return
         try:
             container, _ = self._get_container()
             if container.status == "running":
+                self.logger.info("Stopping container.")
                 container.kill()
+            self.logger.info("Removing container.")
             container.remove(force=True)
         except DockerException as exc:
             raise ControllerException(str(exc)) from exc

@@ -23,6 +23,6 @@ def invalidate_policy_cache(sender, instance, **_):
             total += len(keys)
             cache.delete_many(keys)
         LOGGER.debug("Invalidating policy cache", policy=instance, keys=total)
-    # Also delete user application cache
-    keys = cache.keys(user_app_cache_key("*")) or []
-    cache.delete_many(keys)
+        # Also delete user application cache
+        keys = cache.keys(user_app_cache_key("*")) or []
+        cache.delete_many(keys)

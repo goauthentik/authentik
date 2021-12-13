@@ -25,6 +25,7 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	headers.Set("X-authentik-email", c.Email)
 	headers.Set("X-authentik-name", c.Name)
 	headers.Set("X-authentik-uid", c.Sub)
+	headers.Set("X-authentik-jwt", c.RawToken)
 
 	// System headers
 	headers.Set("X-authentik-meta-jwks", a.proxyConfig.OidcConfiguration.JwksUri)

@@ -7,31 +7,16 @@ services:
     container_name: traefik
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    labels:
-      traefik.enable: true
-      traefik.http.routers.api.rule: Host(`traefik.example.com`)
-      traefik.http.routers.api.entrypoints: https
-      traefik.http.routers.api.service: api@internal
-      traefik.http.routers.api.tls: true
     ports:
       - 80:80
-      - 443:443
     command:
       - '--api'
-      - '--log=true'
-      - '--log.level=DEBUG'
-      - '--log.filepath=/var/log/traefik.log'
       - '--providers.docker=true'
       - '--providers.docker.exposedByDefault=false'
-      - '--entrypoints.http=true'
-      - '--entrypoints.http.address=:80'
-      - '--entrypoints.http.http.redirections.entrypoint.to=https'
-      - '--entrypoints.http.http.redirections.entrypoint.scheme=https'
-      - '--entrypoints.https=true'
-      - '--entrypoints.https.address=:443'
+      - "--entrypoints.web.address=:80"
 
-  authentik_proxy:
-    image: goauthentik.io/proxy:2021.5.1
+  authentik-proxy:
+    image: goauthentik.io/proxy:latest
     ports:
       - 9000:9000
       - 9443:9443
@@ -46,11 +31,10 @@ services:
       traefik.enable: true
       traefik.port: 9000
       traefik.http.routers.authentik.rule: Host(`app.company`) && PathPrefix(`/akprox/`)
-      traefik.http.routers.authentik.entrypoints: https
-      traefik.http.routers.authentik.tls: true
-      traefik.http.middlewares.authentik.forwardauth.address: http://outpost.company:9000/akprox/auth/traefik
+      # `authentik-proxy` refers to the service name in the compose file.
+      traefik.http.middlewares.authentik.forwardauth.address: http://authentik-proxy:9000/akprox/auth/traefik
       traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
-      traefik.http.middlewares.authentik.forwardauth.authResponseHeadersRegex: ^.*$
+      traefik.http.middlewares.authentik.forwardauth.authResponseHeadersRegex: ^.*$$
     restart: unless-stopped
 
   whoami:
@@ -58,8 +42,6 @@ services:
     labels:
       traefik.enable: true
       traefik.http.routers.whoami.rule: Host(`app.company`)
-      traefik.http.routers.whoami.entrypoints: https
-      traefik.http.routers.whoami.tls: true
       traefik.http.routers.whoami.middlewares: authentik@docker
     restart: unless-stopped
 ```

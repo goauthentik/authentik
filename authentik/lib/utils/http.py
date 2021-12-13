@@ -4,6 +4,7 @@ from typing import Any, Optional
 
 from django.http import HttpRequest
 from requests.sessions import Session
+from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
 from authentik import ENV_GIT_HASH_KEY, __version__
@@ -52,6 +53,12 @@ def _get_outpost_override_ip(request: HttpRequest) -> Optional[str]:
             fake_ip=fake_ip,
         )
         return None
+    # Update sentry scope to include correct IP
+    user = Hub.current.scope._user
+    if not user:
+        user = {}
+    user["ip_address"] = fake_ip
+    Hub.current.scope.set_user(user)
     return fake_ip
 
 

@@ -285,7 +285,7 @@ class FlowToken(Token):
         return loads(b64decode(self._plan.encode()))  # nosec
 
     def __str__(self) -> str:
-        return f"Flow Token {super.__str__()}"
+        return f"Flow Token {super().__str__()}"
 
     class Meta:
 

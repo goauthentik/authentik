@@ -32,14 +32,15 @@ geoip2 = "*"
 gunicorn = "*"
 kubernetes = "==v19.15.0"
 ldap3 = "*"
-lxml = "*"
+# 4.6.5 and later remove `lxml-version.h` which is required by xmlsec
+lxml = "==4.6.4"
 packaging = "*"
 psycopg2-binary = "*"
 pycryptodome = "*"
 pyjwt = "*"
 pyyaml = "*"
 requests-oauthlib = "*"
-sentry-sdk = "*"
+sentry-sdk = { git = 'https://github.com/BeryJu/sentry-python.git', ref = 'bba7d80c05bc6845aa333ebbd87e3b76747ed355' }
 service_identity = "*"
 structlog = "*"
 swagger-spec-validator = "*"
@@ -50,6 +51,7 @@ uvicorn = {extras = ["standard"],version = "*"}
 webauthn = "*"
 xmlsec = "*"
 flower = "*"
+wsproto = "*"
 
 [dev-packages]
 bandit = "*"

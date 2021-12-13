@@ -2059,6 +2059,11 @@ paths:
       description: Group Viewset
       parameters:
       - in: query
+        name: attributes
+        schema:
+          type: string
+        description: Attributes
+      - in: query
         name: is_superuser
         schema:
           type: boolean
@@ -11846,6 +11851,7 @@ paths:
           - ml
           - mn
           - mr
+          - ms
           - my
           - nb
           - ne

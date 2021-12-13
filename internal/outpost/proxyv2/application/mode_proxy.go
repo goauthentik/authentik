@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
@@ -28,7 +29,8 @@ func (a *Application) configureProxy() error {
 		return err
 	}
 	rp := &httputil.ReverseProxy{Director: a.proxyModifyRequest(u)}
-	rp.Transport = ak.NewTracingTransport(context.TODO(), a.getUpstreamTransport())
+	rsp := sentry.StartSpan(context.TODO(), "authentik.outposts.proxy.application_transport")
+	rp.Transport = ak.NewTracingTransport(rsp.Context(), a.getUpstreamTransport())
 	rp.ErrorHandler = a.newProxyErrorHandler(templates.GetTemplates())
 	rp.ModifyResponse = a.proxyModifyResponse
 	a.mux.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {

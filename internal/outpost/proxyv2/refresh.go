@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/getsentry/sentry-go"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/application"
@@ -20,9 +21,10 @@ func (ps *ProxyServer) Refresh() error {
 	}
 	apps := make(map[string]*application.Application)
 	for _, provider := range providers.Results {
+		rsp := sentry.StartSpan(context.Background(), "authentik.outposts.proxy.application_ss")
 		ua := fmt.Sprintf(" (provider=%s)", provider.Name)
 		hc := &http.Client{
-			Transport: ak.NewUserAgentTransport(constants.OutpostUserAgent()+ua, ak.NewTracingTransport(context.TODO(), ak.GetTLSTransport())),
+			Transport: ak.NewUserAgentTransport(constants.OutpostUserAgent()+ua, ak.NewTracingTransport(rsp.Context(), ak.GetTLSTransport())),
 		}
 		a, err := application.NewApplication(provider, hc, ps.cryptoStore, ps.akAPI)
 		if err != nil {

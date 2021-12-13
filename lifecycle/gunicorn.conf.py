@@ -16,7 +16,7 @@ try:
 except KeyError:
     pass
 
-worker_class = "uvicorn.workers.UvicornWorker"
+worker_class = "lifecycle.worker.DjangoUvicornWorker"
 # Docker containers don't have /tmp as tmpfs
 if os.path.exists("/dev/shm"):  # nosec
     worker_tmp_dir = "/dev/shm"  # nosec

@@ -401,6 +401,7 @@ class Outpost(ManagedModel):
             user = users.first()
         user.attributes[USER_ATTRIBUTE_SA] = True
         user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
+        user.name = f"Outpost {self.name} Service-Account"
         user.save()
         if should_create_user:
             self.build_user_permissions(user)
