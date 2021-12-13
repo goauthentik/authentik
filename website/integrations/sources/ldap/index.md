@@ -9,9 +9,9 @@ Sources allow you to connect authentik to an existing user directory. They can a
 This source allows you to import users and groups from an LDAP Server.
 
 :::info
-For Active Directory, follow the [Active Directory Integration](../active-directory/index.md)
+For Active Directory, follow the [Active Directory Integration](../active-directory/)
 
-For FreeIPA, follow the [FreeIPA Integration](../freeipa/index.md)
+For FreeIPA, follow the [FreeIPA Integration](../freeipa/)
 :::
 
 - Server URI: URI to your LDAP server/Domain Controller.
@@ -32,4 +32,4 @@ For FreeIPA, follow the [FreeIPA Integration](../freeipa/index.md)
 - Object uniqueness field: This field contains a unique identifier.
 - Sync groups: Enable/disable group synchronization. Groups are synced in the background every 5 minutes.
 - Sync parent group: Optionally set this group as the parent group for all synced groups. An example use case of this would be to import Active Directory groups under a root `imported-from-ad` group.
-- Property mappings: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also [LDAP Property Mappings](../../../docs/property-mappings/index#ldap-property-mapping)
+- Property mappings: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also [LDAP Property Mappings](../../../docs/property-mappings/#ldap-property-mapping)

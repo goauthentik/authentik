@@ -9,7 +9,7 @@ This feature is still in technical preview, so please report any Bugs you run in
 You can configure an LDAP Provider for applications that don't support any newer protocols or require LDAP.
 
 :::info
-Note: This provider requires the deployment of the [LDAP Outpost](../outposts/outposts.md)
+Note: This provider requires the deployment of the [LDAP Outpost](../outposts/)
 :::
 
 All users and groups in authentik's database are searchable. Currently, there is limited support for filters (you can only search for objectClass), but this will be expanded in further releases.
@@ -76,5 +76,5 @@ This enables you to bind on port 636 using LDAPS, StartTLS is not supported.
 
 ## Integrations
 
-See the integration guide for [sssd](../../integrations/services/sssd/index) for
+See the integration guide for [sssd](../../integrations/services/sssd/) for
 an example guide.
