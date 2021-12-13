@@ -51,7 +51,7 @@ module.exports = {
             type: "category",
             label: "Outposts",
             items: [
-                "outposts/outposts",
+                "outposts/index",
                 "outposts/embedded/embedded",
                 {
                     type: "category",
@@ -75,7 +75,7 @@ module.exports = {
         {
             type: "category",
             label: "Flows",
-            items: ["flow/flows", "flow/examples"],
+            items: ["flow/index", "flow/examples"],
         },
         {
             type: "category",

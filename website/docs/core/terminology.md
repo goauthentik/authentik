@@ -26,7 +26,7 @@ A Provider is a way for other applications to authenticate against authentik. Co
 
 At a base level a policy is a yes/no gate. It will either evaluate to True or False depending on the Policy Kind and settings. For example, a "Group Membership Policy" evaluates to True if the user is member of the specified Group and False if not. This can be used to conditionally apply Stages, grant/deny access to various objects, and for other custom logic.
 
-See [Policies](./policies/index.md)
+See [Policies](./policies/)
 
 ### Stages & Stages
 
@@ -34,13 +34,13 @@ Flows are an ordered sequence of stages. These flows can be used to define how a
 
 A stage represents a single verification or logic step. They are used to authenticate users, enroll users, and more. These stages can optionally be applied to a flow via policies.
 
-See [Flows](./flow/flows.md)
+See [Flows](./flow/)
 
 ### Property Mappings
 
 Property Mappings allow you to make information available for external applications. For example, if you want to login to AWS with authentik, you'd use Property Mappings to set the user's roles in AWS based on their group memberships in authentik.
 
-See [Property Mappings](./property-mappings/index.md)
+See [Property Mappings](./property-mappings/)
 
 ### Outpost
 
@@ -48,4 +48,4 @@ An outpost is a separate component of authentik, which can be deployed anywhere,
 
 Currently there is only a reverse-proxy outpost, in the future there will be more different outpost types.
 
-See [Outposts](./outposts/outposts.md)
+See [Outposts](./outposts/)

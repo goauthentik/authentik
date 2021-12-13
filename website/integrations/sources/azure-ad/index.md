@@ -44,5 +44,5 @@ If you kept the default *Supported account types* selection of *Single tenant*, 
 Save, and you now have Azure AD as a source.
 
 :::note
-For more details on how-to have the new source display on the Login Page see [here](../index).
+For more details on how-to have the new source display on the Login Page see [here](../).
 :::
