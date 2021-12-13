@@ -11,15 +11,23 @@
 [[redirects]]
   from = "/docs/:firstPart/index"
   to = "/docs/:firstPart/"
+  status = 301
+  force = true
 [[redirects]]
   from = "/docs/:firstPart/:secondPart/index"
   to = "/docs/:firstPart/:secondPart/"
+  status = 301
+  force = true
 [[redirects]]
   from = "/integrations/:firstPart/index"
   to = "/integrations/:firstPart/"
+  status = 301
+  force = true
 [[redirects]]
   from = "/integrations/:firstPart/:secondPart/index"
   to = "/integrations/:firstPart/:secondPart/"
+  status = 301
+  force = true
 
 # ?go-get=1 downloads
 [[redirects]]
