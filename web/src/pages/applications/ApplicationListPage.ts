@@ -14,6 +14,7 @@ import { uiConfig } from "../../common/config";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
+import { getURLParam } from "../../elements/router/RouteMatch";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import "./ApplicationForm";
@@ -143,7 +144,7 @@ export class ApplicationListPage extends TablePage<Application> {
 
     renderToolbar(): TemplateResult {
         return html`
-            <ak-forms-modal>
+            <ak-forms-modal .open=${getURLParam("createForm", false)}>
                 <span slot="submit"> ${t`Create`} </span>
                 <span slot="header"> ${t`Create Application`} </span>
                 <ak-application-form slot="form"> </ak-application-form>

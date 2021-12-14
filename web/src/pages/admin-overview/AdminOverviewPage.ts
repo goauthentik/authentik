@@ -2,15 +2,19 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
+import { until } from "lit/directives/until.js";
 
 import AKGlobal from "../../authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
+import { me } from "../../api/Users";
 import "../../elements/PageHeader";
 import "../../elements/cards/AggregatePromiseCard";
 import "../../elements/charts/AdminLoginsChart";
+import { paramURL } from "../../elements/router/RouterOutlet";
 import "./TopApplicationsTable";
 import "./cards/AdminStatusCard";
 import "./cards/BackupStatusCard";
@@ -31,6 +35,7 @@ export class AdminOverviewPage extends LitElement {
             PFGrid,
             PFPage,
             PFContent,
+            PFList,
             AKGlobal,
             css`
                 .row-divider {
@@ -51,11 +56,18 @@ export class AdminOverviewPage extends LitElement {
     }
 
     render(): TemplateResult {
-        return html` <ak-page-header
-                icon=""
-                header=${t`System Overview`}
-                description=${t`General system status`}
-            >
+        return html`<ak-page-header icon="" header="" description=${t`General system status`}>
+                <span slot="header">
+                    ${until(
+                        me().then((user) => {
+                            let name = user.user.username;
+                            if (user.user.name !== "") {
+                                name = user.user.name;
+                            }
+                            return t`Welcome, ${name}.`;
+                        }),
+                    )}
+                </span>
             </ak-page-header>
             <section class="pf-c-page__main-section">
                 <div class="pf-l-grid pf-m-gutter">
@@ -64,11 +76,35 @@ export class AdminOverviewPage extends LitElement {
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container"
                     >
                         <ak-aggregate-card
-                            icon="pf-icon pf-icon-infrastructure"
-                            header=${t`Policies`}
-                            headerLink="#/policy/policies"
+                            icon="fa fa-share"
+                            header=${t`Quick actions`}
+                            .isCenter=${false}
                         >
-                            <ak-admin-status-chart-policy></ak-admin-status-chart-policy>
+                            <ul class="pf-c-list">
+                                <li>
+                                    <a
+                                        class="pf-c-description-list__text"
+                                        href=${paramURL("/core/applications", {
+                                            createForm: true,
+                                        })}
+                                        >${t`Create a new application`}</a
+                                    >
+                                </li>
+                                <li>
+                                    <a
+                                        class="pf-c-description-list__text"
+                                        href=${paramURL("/events/log")}
+                                        >${t`Check the logs`}</a
+                                    >
+                                </li>
+                                <li>
+                                    <a
+                                        class="pf-c-description-list__text"
+                                        href="https://goauthentik.io/integrations/"
+                                        >${t`Explore integrations`}</a
+                                    >
+                                </li>
+                            </ul>
                         </ak-aggregate-card>
                     </div>
                     <div
