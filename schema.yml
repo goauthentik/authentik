@@ -22127,7 +22127,7 @@ components:
           additionalProperties: {}
         created_by:
           allOf:
-          - $ref: '#/components/schemas/User'
+          - $ref: '#/components/schemas/GroupMember'
           readOnly: true
         single_use:
           type: boolean
