@@ -133,7 +133,10 @@ export class PageHeader extends LitElement {
             </button>
             <section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1>${this.renderIcon()} ${this.header}</h1>
+                    <h1>
+                        ${this.renderIcon()}
+                        <slot name="header"> ${this.header} </slot>
+                    </h1>
                     ${this.description ? html`<p>${this.description}</p>` : html``}
                 </div>
             </section>
