@@ -18,6 +18,9 @@ export class AggregateCard extends LitElement {
     @property()
     headerLink?: string;
 
+    @property({ type: Boolean })
+    isCenter = true;
+
     static get styles(): CSSResult[] {
         return [PFBase, PFCard, PFFlex, AKGlobal].concat([
             css`
@@ -59,7 +62,9 @@ export class AggregateCard extends LitElement {
                 </div>
                 ${this.renderHeaderLink()}
             </div>
-            <div class="pf-c-card__body center-value">${this.renderInner()}</div>
+            <div class="pf-c-card__body ${this.isCenter ? "center-value" : ""}">
+                ${this.renderInner()}
+            </div>
         </div>`;
     }
 }
