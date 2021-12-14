@@ -48,7 +48,7 @@
         "@babel/core": "^7.16.0",
         "@babel/plugin-proposal-decorators": "^7.16.5",
         "@babel/plugin-transform-runtime": "^7.16.4",
-        "@babel/preset-env": "^7.16.4",
+        "@babel/preset-env": "^7.16.5",
         "@babel/preset-typescript": "^7.16.0",
         "@fortawesome/fontawesome-free": "^5.15.4",
         "@goauthentik/api": "^2021.10.4-1639438851",
