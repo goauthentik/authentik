@@ -110,7 +110,15 @@ class EventViewSet(ModelViewSet):
     @extend_schema(
         methods=["GET"],
         responses={200: EventTopPerUserSerializer(many=True)},
+        filters=[],
         parameters=[
+            OpenApiParameter(
+                "action",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                enum=[action for action in EventAction],
+                required=False,
+            ),
             OpenApiParameter(
                 "top_n",
                 type=OpenApiTypes.INT,

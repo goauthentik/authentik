@@ -3918,56 +3918,38 @@ paths:
         name: action
         schema:
           type: string
-      - in: query
-        name: client_ip
-        schema:
-          type: string
-      - in: query
-        name: context_authorized_app
-        schema:
-          type: string
-        description: Context Authorized application
-      - in: query
-        name: context_model_app
-        schema:
-          type: string
-        description: Context Model App
-      - in: query
-        name: context_model_name
-        schema:
-          type: string
-        description: Context Model Name
-      - in: query
-        name: context_model_pk
-        schema:
-          type: string
-        description: Context Model Primary Key
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: tenant_name
-        schema:
-          type: string
-        description: Tenant name
+          enum:
+          - authorize_application
+          - configuration_error
+          - custom_
+          - email_sent
+          - flow_execution
+          - impersonation_ended
+          - impersonation_started
+          - invitation_used
+          - login
+          - login_failed
+          - logout
+          - model_created
+          - model_deleted
+          - model_updated
+          - password_set
+          - policy_exception
+          - policy_execution
+          - property_mapping_exception
+          - secret_rotate
+          - secret_view
+          - source_linked
+          - suspicious_request
+          - system_exception
+          - system_task_exception
+          - system_task_execution
+          - update_available
+          - user_write
       - in: query
         name: top_n
         schema:
           type: integer
-      - in: query
-        name: username
-        schema:
-          type: string
-        description: Username
       tags:
       - events
       security:
