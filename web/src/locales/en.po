@@ -1985,6 +1985,10 @@ msgstr "Flow"
 msgid "Flow Overview"
 msgstr "Flow Overview"
 
+#: src/pages/events/utils.ts
+msgid "Flow execution"
+msgstr "Flow execution"
+
 #: src/flows/FlowInspector.ts
 #: src/flows/FlowInspector.ts
 msgid "Flow inspector"

@@ -70,6 +70,7 @@ class EventAction(models.TextChoices):
     IMPERSONATION_STARTED = "impersonation_started"
     IMPERSONATION_ENDED = "impersonation_ended"
 
+    FLOW_EXECUTION = "flow_execution"
     POLICY_EXECUTION = "policy_execution"
     POLICY_EXCEPTION = "policy_exception"
     PROPERTY_MAPPING_EXCEPTION = "property_mapping_exception"
