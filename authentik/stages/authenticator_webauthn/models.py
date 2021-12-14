@@ -9,7 +9,7 @@ from django.views import View
 from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
-from webauthn.helpers.structs import PublicKeyCredentialDescriptor, UserVerificationRequirement
+from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
@@ -26,9 +26,9 @@ class UserVerification(models.TextChoices):
     https://www.w3.org/TR/webauthn-2/#enumdef-userverificationrequirement
     """
 
-    REQUIRED = UserVerificationRequirement.REQUIRED
-    PREFERRED = UserVerificationRequirement.PREFERRED
-    DISCOURAGED = UserVerificationRequirement.DISCOURAGED
+    REQUIRED = "required"
+    PREFERRED = "preferred"
+    DISCOURAGED = "discouraged"
 
 
 class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
