@@ -106,7 +106,7 @@ class FlowInspectorView(APIView):
         else:
             try:
                 current_plan = request.session[SESSION_KEY_HISTORY][-1]
-            except KeyError:
+            except IndexError:
                 return Response(status=400)
             is_completed = True
         current_serializer = FlowInspectorPlanSerializer(
