@@ -3201,6 +3201,10 @@ msgstr ""
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr ""
 
+#: src/elements/notifications/APIDrawer.ts
+msgid "Open API Browser"
+msgstr ""
+
 #: 
 #~ msgid "Open application"
 #~ msgstr ""
@@ -4756,6 +4760,7 @@ msgid "Superuser-groups"
 msgstr ""
 
 #: src/pages/admin-overview/charts/UserCountStatusChart.ts
+#: src/pages/admin-overview/charts/UserOverTimeStatusChart.ts
 msgid "Superusers"
 msgstr ""
 
@@ -5109,6 +5114,7 @@ msgid "Total policies"
 msgstr ""
 
 #: src/pages/admin-overview/charts/UserCountStatusChart.ts
+#: src/pages/admin-overview/charts/UserOverTimeStatusChart.ts
 msgid "Total users"
 msgstr ""
 
@@ -5518,6 +5524,10 @@ msgstr ""
 msgid "User matching mode"
 msgstr ""
 
+#: src/pages/admin-overview/UserDashboardPage.ts
+msgid "User metrics"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User object filter"
 msgstr ""
@@ -5748,7 +5758,6 @@ msgid "Webhook URL"
 msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
-#: src/pages/admin-overview/UserDashboardPage.ts
 msgid "Welcome, {name}."
 msgstr ""
 

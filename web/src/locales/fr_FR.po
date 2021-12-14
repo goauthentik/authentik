@@ -3187,6 +3187,10 @@ msgstr "Faire simplement échouer la politique sans invalider le mot de passe ut
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr "Envoyer une seule fois la notification, par exemple lors de l'envoi d'un webhook dans un canal de discussion."
 
+#: src/elements/notifications/APIDrawer.ts
+msgid "Open API Browser"
+msgstr ""
+
 #~ msgid "Open application"
 #~ msgstr "Ouvrir l'appication"
 
@@ -4722,6 +4726,7 @@ msgid "Superuser-groups"
 msgstr "Groupes de super-utilisateur"
 
 #: src/pages/admin-overview/charts/UserCountStatusChart.ts
+#: src/pages/admin-overview/charts/UserOverTimeStatusChart.ts
 msgid "Superusers"
 msgstr "Super-utilisateurs"
 
@@ -5070,6 +5075,7 @@ msgid "Total policies"
 msgstr "Politiques totales"
 
 #: src/pages/admin-overview/charts/UserCountStatusChart.ts
+#: src/pages/admin-overview/charts/UserOverTimeStatusChart.ts
 msgid "Total users"
 msgstr "Utilisateurs totaux"
 
@@ -5476,6 +5482,10 @@ msgstr "Interface utilisateur"
 msgid "User matching mode"
 msgstr "Mode de correspondance utilisateur"
 
+#: src/pages/admin-overview/UserDashboardPage.ts
+msgid "User metrics"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User object filter"
 msgstr "Filtre des objets utilisateur"
@@ -5706,7 +5716,6 @@ msgid "Webhook URL"
 msgstr "URL Webhoo"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
-#: src/pages/admin-overview/UserDashboardPage.ts
 msgid "Welcome, {name}."
 msgstr ""
 
