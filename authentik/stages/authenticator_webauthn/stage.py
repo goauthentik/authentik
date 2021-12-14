@@ -96,7 +96,6 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 user_verification=str(stage.user_verification),
             ),
         )
-        registration_options.user.id = user.uid
 
         self.request.session["challenge"] = registration_options.challenge
         return AuthenticatorWebAuthnChallenge(
