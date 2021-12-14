@@ -5,6 +5,7 @@ from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import ReadOnlyField
 from rest_framework.parsers import MultiPartParser
@@ -15,7 +16,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 from structlog.stdlib import get_logger
 
-from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
+from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.decorators import permission_required
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
@@ -231,7 +232,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         app.save()
         return Response({})
 
-    @permission_required("authentik_core.view_application", ["authentik_events.view_event"])
+    @permission_required("authentik_core.view_application")
     @extend_schema(responses={200: CoordinateSerializer(many=True)})
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument
@@ -239,8 +240,10 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         """Metrics for application logins"""
         app = self.get_object()
         return Response(
-            get_events_per_1h(
+            get_objects_for_user(request.user, "authentik_events.view_event")
+            .filter(
                 action=EventAction.AUTHORIZE_APPLICATION,
                 context__authorized_application__pk=app.pk.hex,
             )
+            .get_events_per_hour()
         )

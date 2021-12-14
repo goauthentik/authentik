@@ -38,7 +38,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 from structlog.stdlib import get_logger
 
-from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
+from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.decorators import permission_required
 from authentik.core.api.groups import GroupSerializer
 from authentik.core.api.used_by import UsedByMixin
@@ -184,19 +184,31 @@ class UserMetricsSerializer(PassiveSerializer):
     def get_logins_per_1h(self, _):
         """Get successful logins per hour for the last 24 hours"""
         user = self.context["user"]
-        return get_events_per_1h(action=EventAction.LOGIN, user__pk=user.pk)
+        return (
+            get_objects_for_user(user, "authentik_events.view_event")
+            .filter(action=EventAction.LOGIN, user__pk=user.pk)
+            .get_events_per_hour()
+        )
 
     @extend_schema_field(CoordinateSerializer(many=True))
     def get_logins_failed_per_1h(self, _):
         """Get failed logins per hour for the last 24 hours"""
         user = self.context["user"]
-        return get_events_per_1h(action=EventAction.LOGIN_FAILED, context__username=user.username)
+        return (
+            get_objects_for_user(user, "authentik_events.view_event")
+            .filter(action=EventAction.LOGIN_FAILED, context__username=user.username)
+            .get_events_per_hour()
+        )
 
     @extend_schema_field(CoordinateSerializer(many=True))
     def get_authorizations_per_1h(self, _):
         """Get failed logins per hour for the last 24 hours"""
         user = self.context["user"]
-        return get_events_per_1h(action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk)
+        return (
+            get_objects_for_user(user, "authentik_events.view_event")
+            .filter(action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk)
+            .get_events_per_hour()
+        )
 
 
 class UsersFilter(FilterSet):

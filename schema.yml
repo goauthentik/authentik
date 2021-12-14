@@ -3909,6 +3909,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /events/events/per_month/:
+    get:
+      operationId: events_events_per_month_list
+      description: Get the count of events per month
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: query
+        schema:
+          type: string
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Coordinate'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /events/events/top_per_user/:
     get:
       operationId: events_events_top_per_user_list
@@ -3918,34 +3948,6 @@ paths:
         name: action
         schema:
           type: string
-          enum:
-          - authorize_application
-          - configuration_error
-          - custom_
-          - email_sent
-          - flow_execution
-          - impersonation_ended
-          - impersonation_started
-          - invitation_used
-          - login
-          - login_failed
-          - logout
-          - model_created
-          - model_deleted
-          - model_updated
-          - password_set
-          - policy_exception
-          - policy_execution
-          - property_mapping_exception
-          - secret_rotate
-          - secret_view
-          - source_linked
-          - suspicious_request
-          - system_exception
-          - system_task_exception
-          - system_task_execution
-          - update_available
-          - user_write
       - in: query
         name: top_n
         schema:

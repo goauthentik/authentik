@@ -1,4 +1,6 @@
 """authentik events models"""
+import time
+from collections import Counter
 from datetime import timedelta
 from inspect import getmodule, stack
 from smtplib import SMTPException
@@ -7,6 +9,12 @@ from uuid import uuid4
 
 from django.conf import settings
 from django.db import models
+from django.db.models import Count, ExpressionWrapper, F
+from django.db.models.fields import DurationField
+from django.db.models.functions import ExtractHour
+from django.db.models.functions.datetime import ExtractDay
+from django.db.models.manager import Manager
+from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
@@ -91,6 +99,72 @@ class EventAction(models.TextChoices):
     CUSTOM_PREFIX = "custom_"
 
 
+class EventQuerySet(QuerySet):
+    """Custom events query set with helper functions"""
+
+    def get_events_per_hour(self) -> list[dict[str, int]]:
+        """Get event count by hour in the last day, fill with zeros"""
+        date_from = now() - timedelta(days=1)
+        result = (
+            self.filter(created__gte=date_from)
+            .annotate(age=ExpressionWrapper(now() - F("created"), output_field=DurationField()))
+            .annotate(age_hours=ExtractHour("age"))
+            .values("age_hours")
+            .annotate(count=Count("pk"))
+            .order_by("age_hours")
+        )
+        data = Counter({int(d["age_hours"]): d["count"] for d in result})
+        results = []
+        _now = now()
+        for hour in range(0, -24, -1):
+            results.append(
+                {
+                    "x_cord": time.mktime((_now + timedelta(hours=hour)).timetuple()) * 1000,
+                    "y_cord": data[hour * -1],
+                }
+            )
+        return results
+
+    def get_events_per_day(self) -> list[dict[str, int]]:
+        """Get event count by hour in the last day, fill with zeros"""
+        date_from = now() - timedelta(weeks=4)
+        result = (
+            self.filter(created__gte=date_from)
+            .annotate(age=ExpressionWrapper(now() - F("created"), output_field=DurationField()))
+            .annotate(age_days=ExtractDay("age"))
+            .values("age_days")
+            .annotate(count=Count("pk"))
+            .order_by("age_days")
+        )
+        data = Counter({int(d["age_days"]): d["count"] for d in result})
+        results = []
+        _now = now()
+        for day in range(0, -30, -1):
+            results.append(
+                {
+                    "x_cord": time.mktime((_now + timedelta(days=day)).timetuple()) * 1000,
+                    "y_cord": data[day * -1],
+                }
+            )
+        return results
+
+
+class EventManager(Manager):
+    """Custom helper methods for Events"""
+
+    def get_queryset(self) -> QuerySet:
+        """use custom queryset"""
+        return EventQuerySet(self.model, using=self._db)
+
+    def get_events_per_hour(self) -> list[dict[str, int]]:
+        """Wrap method from queryset"""
+        return self.get_queryset().get_events_per_hour()
+
+    def get_events_per_day(self) -> list[dict[str, int]]:
+        """Wrap method from queryset"""
+        return self.get_queryset().get_events_per_day()
+
+
 class Event(ExpiringModel):
     """An individual Audit/Metrics/Notification/Error Event"""
 
@@ -105,6 +179,8 @@ class Event(ExpiringModel):
 
     # Shadow the expires attribute from ExpiringModel to override the default duration
     expires = models.DateTimeField(default=default_event_duration)
+
+    objects = EventManager()
 
     @staticmethod
     def _get_app_from_request(request: HttpRequest) -> str:
