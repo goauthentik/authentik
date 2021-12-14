@@ -39,7 +39,7 @@ class TestProviderSAML(SeleniumTestCase):
         if force_post:
             metadata_url += f"&force_binding={SAML_BINDING_POST}"
         container = client.containers.run(
-            image="beryju.org/saml-test-sp:latest",
+            image="ghcr.io/beryju/saml-test-sp:latest",
             detach=True,
             network_mode="host",
             auto_remove=True,
