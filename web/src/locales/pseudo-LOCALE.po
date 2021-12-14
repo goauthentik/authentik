@@ -1894,6 +1894,10 @@ msgstr ""
 msgid "Failed Logins"
 msgstr ""
 
+#: src/pages/admin-overview/DashboardUserPage.ts
+msgid "Failed Logins per day in the last month"
+msgstr ""
+
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "Failed attempts before cancel"
 msgstr ""
@@ -2116,7 +2120,6 @@ msgid "General system exception"
 msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
-#: src/pages/admin-overview/UserDashboardPage.ts
 msgid "General system status"
 msgstr ""
 
@@ -2729,6 +2732,10 @@ msgstr ""
 msgid "Logins over the last 24 hours"
 msgstr ""
 
+#: src/pages/admin-overview/DashboardUserPage.ts
+msgid "Logins per day in the last month"
+msgstr ""
+
 #: src/pages/tenants/TenantForm.ts
 msgid "Logo"
 msgstr ""
@@ -3185,6 +3192,10 @@ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Object uniqueness field"
+msgstr ""
+
+#: src/elements/charts/AdminModelPerDay.ts
+msgid "Objects created"
 msgstr ""
 
 #: src/pages/stages/consent/ConsentStageForm.ts
@@ -4764,7 +4775,6 @@ msgid "Superuser-groups"
 msgstr ""
 
 #: src/pages/admin-overview/charts/UserCountStatusChart.ts
-#: src/pages/admin-overview/charts/UserOverTimeStatusChart.ts
 msgid "Superusers"
 msgstr ""
 
@@ -5118,7 +5128,6 @@ msgid "Total policies"
 msgstr ""
 
 #: src/pages/admin-overview/charts/UserCountStatusChart.ts
-#: src/pages/admin-overview/charts/UserOverTimeStatusChart.ts
 msgid "Total users"
 msgstr ""
 
@@ -5529,8 +5538,8 @@ msgid "User matching mode"
 msgstr ""
 
 #: src/pages/admin-overview/UserDashboardPage.ts
-msgid "User metrics"
-msgstr ""
+#~ msgid "User metrics"
+#~ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User object filter"
@@ -5538,6 +5547,10 @@ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User password writeback"
+msgstr ""
+
+#: src/pages/admin-overview/DashboardUserPage.ts
+msgid "User statistics"
 msgstr ""
 
 #: src/pages/users/UserListPage.ts
@@ -5619,6 +5632,10 @@ msgstr ""
 
 #: src/pages/groups/GroupForm.ts
 msgid "Users added to this group will be superusers."
+msgstr ""
+
+#: src/pages/admin-overview/DashboardUserPage.ts
+msgid "Users created per day in the last month"
 msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
@@ -5949,4 +5966,12 @@ msgstr ""
 
 #: src/elements/forms/ConfirmationForm.ts
 msgid "{0}: {1}"
+msgstr ""
+
+#: src/elements/charts/AdminModelPerDay.ts
+msgid "{ago} days ago"
+msgstr ""
+
+#: src/elements/charts/Chart.ts
+msgid "{ago} hours ago"
 msgstr ""

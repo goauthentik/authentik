@@ -91,9 +91,7 @@ export class AdminOverviewPage extends LitElement {
                                     >
                                 </li>
                                 <li>
-                                    <a
-                                        class="pf-u-mb-xl"
-                                        href=${paramURL("/events/log")}
+                                    <a class="pf-u-mb-xl" href=${paramURL("/events/log")}
                                         >${t`Check the logs`}</a
                                     >
                                 </li>

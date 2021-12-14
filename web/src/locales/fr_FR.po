@@ -1888,6 +1888,10 @@ msgstr "Hôte externe"
 msgid "Failed Logins"
 msgstr "Connexions échouées"
 
+#: src/pages/admin-overview/DashboardUserPage.ts
+msgid "Failed Logins per day in the last month"
+msgstr ""
+
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "Failed attempts before cancel"
 msgstr "Échecs avant annulation"
@@ -2109,7 +2113,6 @@ msgid "General system exception"
 msgstr "Exception générale du systèm"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
-#: src/pages/admin-overview/UserDashboardPage.ts
 msgid "General system status"
 msgstr "État général du système"
 
@@ -2718,6 +2721,10 @@ msgstr "Connexions"
 msgid "Logins over the last 24 hours"
 msgstr "Connexions ces dernières 24 heures"
 
+#: src/pages/admin-overview/DashboardUserPage.ts
+msgid "Logins per day in the last month"
+msgstr ""
+
 #: src/pages/tenants/TenantForm.ts
 msgid "Logo"
 msgstr "Logo"
@@ -3172,6 +3179,10 @@ msgstr "Champ d'objet"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Object uniqueness field"
 msgstr "Champ d'unicité de l'objet"
+
+#: src/elements/charts/AdminModelPerDay.ts
+msgid "Objects created"
+msgstr ""
 
 #: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
@@ -4730,7 +4741,6 @@ msgid "Superuser-groups"
 msgstr "Groupes de super-utilisateur"
 
 #: src/pages/admin-overview/charts/UserCountStatusChart.ts
-#: src/pages/admin-overview/charts/UserOverTimeStatusChart.ts
 msgid "Superusers"
 msgstr "Super-utilisateurs"
 
@@ -5079,7 +5089,6 @@ msgid "Total policies"
 msgstr "Politiques totales"
 
 #: src/pages/admin-overview/charts/UserCountStatusChart.ts
-#: src/pages/admin-overview/charts/UserOverTimeStatusChart.ts
 msgid "Total users"
 msgstr "Utilisateurs totaux"
 
@@ -5487,8 +5496,8 @@ msgid "User matching mode"
 msgstr "Mode de correspondance utilisateur"
 
 #: src/pages/admin-overview/UserDashboardPage.ts
-msgid "User metrics"
-msgstr ""
+#~ msgid "User metrics"
+#~ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User object filter"
@@ -5497,6 +5506,10 @@ msgstr "Filtre des objets utilisateur"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User password writeback"
 msgstr "Réécriture du mot de passe utilisateur"
+
+#: src/pages/admin-overview/DashboardUserPage.ts
+msgid "User statistics"
+msgstr ""
 
 #: src/pages/users/UserListPage.ts
 msgid "User status"
@@ -5578,6 +5591,10 @@ msgstr "Utilisateurs"
 #: src/pages/groups/GroupForm.ts
 msgid "Users added to this group will be superusers."
 msgstr "Les utilisateurs ajoutés à ce groupe seront des super-utilisateurs."
+
+#: src/pages/admin-overview/DashboardUserPage.ts
+msgid "Users created per day in the last month"
+msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed."
@@ -5906,3 +5923,11 @@ msgstr "{0}, devrait être {1}"
 #: src/elements/forms/ConfirmationForm.ts
 msgid "{0}: {1}"
 msgstr "{0} : {1}"
+
+#: src/elements/charts/AdminModelPerDay.ts
+msgid "{ago} days ago"
+msgstr ""
+
+#: src/elements/charts/Chart.ts
+msgid "{ago} hours ago"
+msgstr ""

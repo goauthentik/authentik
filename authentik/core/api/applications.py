@@ -232,7 +232,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         app.save()
         return Response({})
 
-    @permission_required("authentik_core.view_application")
+    @permission_required("authentik_core.view_application", ["authentik_events.view_event"])
     @extend_schema(responses={200: CoordinateSerializer(many=True)})
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument

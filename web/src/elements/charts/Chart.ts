@@ -5,6 +5,8 @@ import { ArcElement, BarElement } from "chart.js";
 import { LinearScale, TimeScale } from "chart.js";
 import "chartjs-adapter-moment";
 
+import { t } from "@lingui/macro";
+
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { property } from "lit/decorators.js";
 
@@ -114,6 +116,13 @@ export abstract class AKChart<T> extends LitElement {
         ];
     }
 
+    timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
+        const valueStamp = ticks[index];
+        const delta = Date.now() - valueStamp.value;
+        const ago = Math.round(delta / 1000 / 3600);
+        return t`${ago} hours ago`;
+    }
+
     getOptions(): ChartOptions {
         return {
             maintainAspectRatio: false,
@@ -122,15 +131,8 @@ export abstract class AKChart<T> extends LitElement {
                     type: "time",
                     display: true,
                     ticks: {
-                        callback: function (
-                            tickValue: string | number,
-                            index: number,
-                            ticks: Tick[],
-                        ): string {
-                            const valueStamp = ticks[index];
-                            const delta = Date.now() - valueStamp.value;
-                            const ago = Math.round(delta / 1000 / 3600);
-                            return `${ago} Hours ago`;
+                        callback: (tickValue: string | number, index: number, ticks: Tick[]) => {
+                            return this.timeTickCallback(tickValue, index, ticks);
                         },
                         autoSkip: true,
                         maxTicksLimit: 8,
