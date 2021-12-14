@@ -49,7 +49,7 @@ class SourceType:
                 "type": ChallengeTypes.REDIRECT.value,
                 "to": reverse(
                     "authentik_sources_oauth:oauth-client-login",
-                    kwargs={"source_slug": self.slug},
+                    kwargs={"source_slug": source.slug},
                 ),
             }
         )
