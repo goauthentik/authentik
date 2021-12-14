@@ -18,7 +18,7 @@ class AuthenticateWebAuthnStageSerializer(StageSerializer):
     class Meta:
 
         model = AuthenticateWebAuthnStage
-        fields = StageSerializer.Meta.fields + ["configure_flow"]
+        fields = StageSerializer.Meta.fields + ["configure_flow", "user_verification"]
 
 
 class AuthenticateWebAuthnStageViewSet(UsedByMixin, ModelViewSet):

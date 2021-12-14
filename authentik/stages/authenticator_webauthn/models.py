@@ -9,14 +9,35 @@ from django.views import View
 from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
-from webauthn.helpers.structs import PublicKeyCredentialDescriptor
+from webauthn.helpers.structs import PublicKeyCredentialDescriptor, UserVerificationRequirement
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
 
 
+class UserVerification(models.TextChoices):
+    """The degree to which the Relying Party wishes to verify a user's identity.
+
+    Members:
+        `REQUIRED`: User verification must occur
+        `PREFERRED`: User verification would be great, but if not that's okay too
+        `DISCOURAGED`: User verification should not occur, but it's okay if it does
+
+    https://www.w3.org/TR/webauthn-2/#enumdef-userverificationrequirement
+    """
+
+    REQUIRED = UserVerificationRequirement.REQUIRED
+    PREFERRED = UserVerificationRequirement.PREFERRED
+    DISCOURAGED = UserVerificationRequirement.DISCOURAGED
+
+
 class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
     """WebAuthn stage"""
+
+    user_verification = models.TextField(
+        choices=UserVerification.choices,
+        default=UserVerification.PREFERRED,
+    )
 
     @property
     def serializer(self) -> BaseSerializer:

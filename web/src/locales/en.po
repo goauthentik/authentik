@@ -4325,6 +4325,7 @@ msgstr "Stage(s)"
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 #: src/pages/stages/captcha/CaptchaStageForm.ts
 #: src/pages/stages/consent/ConsentStageForm.ts
 #: src/pages/stages/email/EmailStageForm.ts
@@ -5509,6 +5510,22 @@ msgstr "User password writeback"
 #: src/pages/users/UserListPage.ts
 msgid "User status"
 msgstr "User status"
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "User verification"
+msgstr "User verification"
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "User verification is preferred if available, but not required."
+msgstr "User verification is preferred if available, but not required."
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "User verification must occur."
+msgstr "User verification must occur."
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "User verification should not occur."
+msgstr "User verification should not occur."
 
 #: src/pages/events/utils.ts
 msgid "User was written to"

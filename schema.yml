@@ -15395,6 +15395,14 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: user_verification
+        schema:
+          type: string
+          enum:
+          - discouraged
+          - preferred
+          - required
       tags:
       - stages
       security:
@@ -19240,6 +19248,8 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
       required:
       - component
       - meta_model_name
@@ -19264,6 +19274,8 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
       required:
       - name
     AuthenticatedSession:
@@ -26611,6 +26623,8 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
     PatchedAuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer
@@ -31235,6 +31249,12 @@ components:
       - pk
       - source
       - user
+    UserVerificationEnum:
+      enum:
+      - required
+      - preferred
+      - discouraged
+      type: string
     UserWriteStage:
       type: object
       description: UserWriteStage Serializer

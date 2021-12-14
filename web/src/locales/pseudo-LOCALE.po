@@ -4315,6 +4315,7 @@ msgstr ""
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 #: src/pages/stages/captcha/CaptchaStageForm.ts
 #: src/pages/stages/consent/ConsentStageForm.ts
 #: src/pages/stages/email/EmailStageForm.ts
@@ -5488,6 +5489,22 @@ msgstr ""
 
 #: src/pages/users/UserListPage.ts
 msgid "User status"
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "User verification"
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "User verification is preferred if available, but not required."
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "User verification must occur."
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "User verification should not occur."
 msgstr ""
 
 #: src/pages/events/utils.ts
