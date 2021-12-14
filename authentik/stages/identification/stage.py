@@ -96,7 +96,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
                 description="Sleep random time on invalid user identifier",
             ):
                 # Sleep a random time (between 90 and 210ms) to "prevent" user enumeration attacks
-                sleep(0.30 * SystemRandom().randint(3, 7))
+                sleep(0.030 * SystemRandom().randint(3, 7))
             LOGGER.debug("invalid_login", identifier=uid_field)
             identification_failed.send(sender=self, request=self.stage.request, uid_field=uid_field)
             # We set the pending_user even on failure so it's part of the context, even
