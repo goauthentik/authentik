@@ -109,9 +109,8 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
             GroupLDAPSynchronizer,
             MembershipLDAPSynchronizer,
         ]:
-            task = TaskInfo.by_name(
-                f"ldap_sync_{source.slug}_{sync_class.__name__.replace('LDAPSynchronizer', '').lower()}"
-            )
+            sync_name = sync_class.__name__.replace("LDAPSynchronizer", "").lower()
+            task = TaskInfo.by_name(f"ldap_sync_{source.slug}_{sync_name}")
             if task:
                 results.append(task)
         return Response(TaskSerializer(results, many=True).data)
