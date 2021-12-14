@@ -1,7 +1,6 @@
 """Source API Views"""
 from typing import Any
 
-from django.utils.text import slugify
 from django_filters.filters import AllValuesMultipleFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
@@ -110,7 +109,9 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
             GroupLDAPSynchronizer,
             MembershipLDAPSynchronizer,
         ]:
-            task = TaskInfo.by_name(f"ldap_sync_{slugify(source.name)}-{sync_class.__name__}")
+            task = TaskInfo.by_name(
+                f"ldap_sync_{source.slug}_{sync_class.__name__.replace('LDAPSynchronizer', '').lower()}"
+            )
             if task:
                 results.append(task)
         return Response(TaskSerializer(results, many=True).data)
