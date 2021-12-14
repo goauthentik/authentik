@@ -194,7 +194,6 @@ export class AdminInterface extends LitElement {
                 <ak-sidebar-item path="/administration/overview">
                     <span slot="label">${t`Overview`}</span>
                 </ak-sidebar-item>
-                </ak-sidebar-item>
                 <ak-sidebar-item path="/administration/system-tasks">
                     <span slot="label">${t`System Tasks`}</span>
                 </ak-sidebar-item>

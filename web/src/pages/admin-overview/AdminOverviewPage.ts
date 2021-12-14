@@ -83,7 +83,7 @@ export class AdminOverviewPage extends LitElement {
                             <ul class="pf-c-list">
                                 <li>
                                     <a
-                                        class="pf-c-description-list__text"
+                                        class="pf-u-mb-xl"
                                         href=${paramURL("/core/applications", {
                                             createForm: true,
                                         })}
@@ -92,14 +92,14 @@ export class AdminOverviewPage extends LitElement {
                                 </li>
                                 <li>
                                     <a
-                                        class="pf-c-description-list__text"
+                                        class="pf-u-mb-xl"
                                         href=${paramURL("/events/log")}
                                         >${t`Check the logs`}</a
                                     >
                                 </li>
                                 <li>
                                     <a
-                                        class="pf-c-description-list__text"
+                                        class="pf-u-mb-xl"
                                         href="https://goauthentik.io/integrations/"
                                         >${t`Explore integrations`}</a
                                     >
