@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ErrorDetail, ValidationError
 from rest_framework.fields import CharField
+from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
@@ -43,7 +44,11 @@ def authenticate(request: HttpRequest, backends: list[str], **credentials: Any) 
             LOGGER.warning("Failed to import backend", path=backend_path)
             continue
         LOGGER.debug("Attempting authentication...", backend=backend_path)
-        user = backend.authenticate(request, **credentials)
+        with Hub.current.start_span(
+            op="authentik.stages.password.authenticate",
+            description=backend_path,
+        ):
+            user = backend.authenticate(request, **credentials)
         if user is None:
             LOGGER.debug("Backend returned nothing, continuing", backend=backend_path)
             continue
@@ -120,7 +125,13 @@ class PasswordStageView(ChallengeStageView):
             "username": pending_user.username,
         }
         try:
-            user = authenticate(self.request, self.executor.current_stage.backends, **auth_kwargs)
+            with Hub.current.start_span(
+                op="authentik.stages.password.authenticate",
+                description="User authenticate call",
+            ):
+                user = authenticate(
+                    self.request, self.executor.current_stage.backends, **auth_kwargs
+                )
         except PermissionDenied:
             del auth_kwargs["password"]
             # User was found, but permission was denied (i.e. user is not active)

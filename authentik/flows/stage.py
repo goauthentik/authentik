@@ -6,6 +6,7 @@ from django.http.response import HttpResponse
 from django.urls import reverse
 from django.views.generic.base import View
 from rest_framework.request import Request
+from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
 from authentik.core.models import DEFAULT_AVATAR, User
@@ -94,8 +95,16 @@ class ChallengeStageView(StageView):
                     keep_context=keep_context,
                 )
                 return self.executor.restart_flow(keep_context)
-            return self.challenge_invalid(challenge)
-        return self.challenge_valid(challenge)
+            with Hub.current.start_span(
+                op="authentik.flow.stage.challenge_invalid",
+                description=self.__class__.__name__,
+            ):
+                return self.challenge_invalid(challenge)
+        with Hub.current.start_span(
+            op="authentik.flow.stage.challenge_valid",
+            description=self.__class__.__name__,
+        ):
+            return self.challenge_valid(challenge)
 
     def format_title(self) -> str:
         """Allow usage of placeholder in flow title."""
@@ -104,7 +113,11 @@ class ChallengeStageView(StageView):
         }
 
     def _get_challenge(self, *args, **kwargs) -> Challenge:
-        challenge = self.get_challenge(*args, **kwargs)
+        with Hub.current.start_span(
+            op="authentik.flow.stage.get_challenge",
+            description=self.__class__.__name__,
+        ):
+            challenge = self.get_challenge(*args, **kwargs)
         if "flow_info" not in challenge.initial_data:
             flow_info = ContextualFlowInfo(
                 data={

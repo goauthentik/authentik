@@ -12,6 +12,7 @@ from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
 from rest_framework.fields import BooleanField, CharField, DictField, ListField
 from rest_framework.serializers import ValidationError
+from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import PassiveSerializer
@@ -90,8 +91,12 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
         pre_user = self.stage.get_user(uid_field)
         if not pre_user:
-            # Sleep a random time (between 90 and 210ms) to "prevent" user enumeration attacks
-            sleep(0.30 * SystemRandom().randint(3, 7))
+            with Hub.current.start_span(
+                op="authentik.stages.identification.validate_invalid_wait",
+                description="Sleep random time on invalid user identifier",
+            ):
+                # Sleep a random time (between 90 and 210ms) to "prevent" user enumeration attacks
+                sleep(0.30 * SystemRandom().randint(3, 7))
             LOGGER.debug("invalid_login", identifier=uid_field)
             identification_failed.send(sender=self, request=self.stage.request, uid_field=uid_field)
             # We set the pending_user even on failure so it's part of the context, even
@@ -114,12 +119,16 @@ class IdentificationChallengeResponse(ChallengeResponse):
         if not password:
             LOGGER.warning("Password not set for ident+auth attempt")
         try:
-            user = authenticate(
-                self.stage.request,
-                current_stage.password_stage.backends,
-                username=self.pre_user.username,
-                password=password,
-            )
+            with Hub.current.start_span(
+                op="authentik.stages.identification.authenticate",
+                description="User authenticate call (combo stage)",
+            ):
+                user = authenticate(
+                    self.stage.request,
+                    current_stage.password_stage.backends,
+                    username=self.pre_user.username,
+                    password=password,
+                )
             if not user:
                 raise ValidationError("Failed to authenticate.")
             self.pre_user = user
