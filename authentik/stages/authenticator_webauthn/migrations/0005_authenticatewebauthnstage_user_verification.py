@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
             name="user_verification",
             field=models.TextField(
                 choices=[
-                    ("UserVerificationRequirement.REQUIRED", "Required"),
-                    ("UserVerificationRequirement.PREFERRED", "Preferred"),
-                    ("UserVerificationRequirement.DISCOURAGED", "Discouraged"),
+                    ("required", "Required"),
+                    ("preferred", "Preferred"),
+                    ("discouraged", "Discouraged"),
                 ],
-                default="UserVerificationRequirement.PREFERRED",
+                default="preferred",
             ),
         ),
     ]
