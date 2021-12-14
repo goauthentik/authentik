@@ -189,14 +189,18 @@ export class AdminInterface extends LitElement {
             <ak-sidebar-item path="/if/user/" ?isAbsoluteLink=${true} ?highlight=${true}>
                 <span slot="label">${t`User interface`}</span>
             </ak-sidebar-item>
-            <ak-sidebar-item path="/administration/overview">
-                <span slot="label">${t`Overview`}</span>
-            </ak-sidebar-item>
-            <ak-sidebar-item path="/administration/system-tasks">
-                <span slot="label">${t`System Tasks`}</span>
+            <ak-sidebar-item .expanded=${true}>
+                <span slot="label">${t`Dashboards`}</span>
+                <ak-sidebar-item path="/administration/overview">
+                    <span slot="label">${t`Overview`}</span>
+                </ak-sidebar-item>
+                </ak-sidebar-item>
+                <ak-sidebar-item path="/administration/system-tasks">
+                    <span slot="label">${t`System Tasks`}</span>
+                </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
-                <span slot="label">${t`Resources`}</span>
+                <span slot="label">${t`Applications`}</span>
                 <ak-sidebar-item
                     path="/core/applications"
                     .activeWhen=${[`^/core/applications/(?<slug>${SLUG_REGEX})$`]}
@@ -204,28 +208,16 @@ export class AdminInterface extends LitElement {
                     <span slot="label">${t`Applications`}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item
-                    path="/core/sources"
-                    .activeWhen=${[`^/core/sources/(?<slug>${SLUG_REGEX})$`]}
-                >
-                    <span slot="label">${t`Sources`}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item
                     path="/core/providers"
                     .activeWhen=${[`^/core/providers/(?<id>${ID_REGEX})$`]}
                 >
                     <span slot="label">${t`Providers`}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/core/tenants">
-                    <span slot="label">${t`Tenants`}</span>
-                </ak-sidebar-item>
-            </ak-sidebar-item>
-            <ak-sidebar-item>
-                <span slot="label">${t`Outposts`}</span>
                 <ak-sidebar-item path="/outpost/outposts">
                     <span slot="label">${t`Outposts`}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/outpost/integrations">
-                    <span slot="label">${t`Integrations`}</span>
+                    <span slot="label">${t`Outpost Integrations`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
@@ -272,12 +264,9 @@ export class AdminInterface extends LitElement {
                 <ak-sidebar-item path="/flow/stages/prompts">
                     <span slot="label">${t`Prompts`}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/flow/stages/invitations">
-                    <span slot="label">${t`Invitations`}</span>
-                </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
-                <span slot="label">${t`Identity & Cryptography`}</span>
+                <span slot="label">${t`Directory`}</span>
                 <ak-sidebar-item
                     path="/identity/users"
                     .activeWhen=${[`^/identity/users/(?<id>${ID_REGEX})$`]}
@@ -287,11 +276,26 @@ export class AdminInterface extends LitElement {
                 <ak-sidebar-item path="/identity/groups">
                     <span slot="label">${t`Groups`}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/crypto/certificates">
-                    <span slot="label">${t`Certificates`}</span>
+                <ak-sidebar-item
+                    path="/core/sources"
+                    .activeWhen=${[`^/core/sources/(?<slug>${SLUG_REGEX})$`]}
+                >
+                    <span slot="label">${t`Federation & Social login`}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/core/tokens">
                     <span slot="label">${t`Tokens & App passwords`}</span>
+                </ak-sidebar-item>
+                <ak-sidebar-item path="/flow/stages/invitations">
+                    <span slot="label">${t`Invitations`}</span>
+                </ak-sidebar-item>
+            </ak-sidebar-item>
+            <ak-sidebar-item>
+                <span slot="label">${t`System`}</span>
+                <ak-sidebar-item path="/core/tenants">
+                    <span slot="label">${t`Tenants`}</span>
+                </ak-sidebar-item>
+                <ak-sidebar-item path="/crypto/certificates">
+                    <span slot="label">${t`Certificates`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
         `;

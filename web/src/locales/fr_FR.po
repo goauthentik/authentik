@@ -353,6 +353,7 @@ msgid "Application(s)"
 msgstr "Application(s)"
 
 #: src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/outposts/OutpostForm.ts
 msgid "Applications"
@@ -415,8 +416,12 @@ msgid "Assigned to application"
 msgstr "Assigné à l'application"
 
 #: src/pages/policies/PolicyListPage.ts
-msgid "Assigned to {0} objects."
-msgstr "Assigné à {0} objets"
+msgid "Assigned to {0} object(s)."
+msgstr ""
+
+#: src/pages/policies/PolicyListPage.ts
+#~ msgid "Assigned to {0} objects."
+#~ msgstr "Assigné à {0} objets"
 
 #: src/pages/events/EventInfo.ts
 msgid "Attempted to log in as {0}"
@@ -771,6 +776,10 @@ msgstr "Vérifier le statut"
 
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 msgid "Check the IP of the Kubernetes service, or"
+msgstr ""
+
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Check the logs"
 msgstr ""
 
 #: 
@@ -1210,6 +1219,10 @@ msgstr "Créer un jeton"
 msgid "Create User"
 msgstr "Créer un utilisateu"
 
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Create a new application"
+msgstr ""
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "Créer un groupe"
@@ -1269,6 +1282,10 @@ msgstr "Personalisation"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "DSA-SHA1"
 msgstr "DSA-SHA1"
+
+#: src/interfaces/AdminInterface.ts
+msgid "Dashboards"
+msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Date"
@@ -1449,6 +1466,10 @@ msgstr "Chiffres"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Direct querying, always returns the latest data, but slower than cached querying."
+msgstr ""
+
+#: src/interfaces/AdminInterface.ts
+msgid "Directory"
 msgstr ""
 
 #~ msgid "Disable"
@@ -1816,6 +1837,10 @@ msgstr "Date d'expiration"
 msgid "Explicit Consent"
 msgstr "Approbation explicite"
 
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Explore integrations"
+msgstr ""
+
 #: src/pages/flows/FlowViewPage.ts
 msgid "Export"
 msgstr "Exporter"
@@ -1895,6 +1920,11 @@ msgstr "Impossible de mettre à jour {0} : {1}"
 #: src/pages/tenants/TenantForm.ts
 msgid "Favicon"
 msgstr "Favicon"
+
+#: src/interfaces/AdminInterface.ts
+#: src/pages/sources/SourcesListPage.ts
+msgid "Federation & Social login"
+msgstr ""
 
 #: src/pages/stages/prompt/PromptListPage.ts
 msgid "Field"
@@ -2075,6 +2105,7 @@ msgid "General system exception"
 msgstr "Exception générale du systèm"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
+#: src/pages/admin-overview/UserDashboardPage.ts
 msgid "General system status"
 msgstr "État général du système"
 
@@ -2264,8 +2295,8 @@ msgid "Identifier"
 msgstr "Identifiant"
 
 #: src/interfaces/AdminInterface.ts
-msgid "Identity & Cryptography"
-msgstr "Identité et chiffrement"
+#~ msgid "Identity & Cryptography"
+#~ msgstr "Identité et chiffrement"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -2364,8 +2395,8 @@ msgid "Integration key"
 msgstr "Clé d'intégration"
 
 #: src/interfaces/AdminInterface.ts
-msgid "Integrations"
-msgstr "Intégrations"
+#~ msgid "Integrations"
+#~ msgstr "Intégrations"
 
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
@@ -3232,6 +3263,10 @@ msgstr "Avant-postes périmés"
 msgid "Outpost Deployment Info"
 msgstr "Info de déploiement de l'avant-poste"
 
+#: src/interfaces/AdminInterface.ts
+msgid "Outpost Integrations"
+msgstr ""
+
 #~ msgid "Outpost Service-connection"
 #~ msgstr "Connexion de service de l'avant-poste"
 
@@ -3250,7 +3285,6 @@ msgstr "Statut de l'avant-poste"
 msgid "Outpost(s)"
 msgstr "Avant-poste(s)"
 
-#: src/interfaces/AdminInterface.ts
 #: src/interfaces/AdminInterface.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Outposts"
@@ -3356,7 +3390,6 @@ msgid "Please enter your password"
 msgstr "Veuillez saisir votre mot de passe"
 
 #: src/interfaces/AdminInterface.ts
-#: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 msgid "Policies"
@@ -3571,6 +3604,10 @@ msgstr "Clé publique, obtenue depuis https://www.google.com/recaptcha/intro/v3.
 msgid "Publisher"
 msgstr "Éditeur"
 
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Quick actions"
+msgstr ""
+
 #: src/pages/flows/StageBindingForm.ts
 msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
 msgstr "REDÉMARRER redémarre le flux depuis le début, en gardant le contexte du flux."
@@ -3751,8 +3788,8 @@ msgid "Reset Password"
 msgstr "Réinitialiser le mot de passe"
 
 #: src/interfaces/AdminInterface.ts
-msgid "Resources"
-msgstr "Ressources"
+#~ msgid "Resources"
+#~ msgstr "Ressources"
 
 #: src/pages/events/EventInfo.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
@@ -4195,8 +4232,6 @@ msgstr "Source {0}"
 msgid "Source(s)"
 msgstr "Source(s)"
 
-#: src/interfaces/AdminInterface.ts
-#: src/pages/sources/SourcesListPage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Sources"
 msgstr "Sources"
@@ -4717,9 +4752,13 @@ msgstr "Synchroniser les statuts"
 msgid "Sync users"
 msgstr "Synchroniser les utilisateurs"
 
+#: src/interfaces/AdminInterface.ts
+msgid "System"
+msgstr ""
+
 #: src/pages/admin-overview/AdminOverviewPage.ts
-msgid "System Overview"
-msgstr "Vue d'ensemble du système"
+#~ msgid "System Overview"
+#~ msgstr "Vue d'ensemble du système"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
@@ -5516,6 +5555,7 @@ msgid "Username: Same as Text input, but checks for and prevents duplicate usern
 msgstr "Nom d'utilisateur : Identique à la saisie de texte, mais vérifie et empêche les noms d'utilisateur en double."
 
 #: src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Users"
@@ -5664,6 +5704,11 @@ msgstr "Mapping Webhook"
 #: src/pages/events/TransportForm.ts
 msgid "Webhook URL"
 msgstr "URL Webhoo"
+
+#: src/pages/admin-overview/AdminOverviewPage.ts
+#: src/pages/admin-overview/UserDashboardPage.ts
+msgid "Welcome, {name}."
+msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "When a user returns from the email successfully, their account will be activated."

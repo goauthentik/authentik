@@ -349,6 +349,7 @@ msgid "Application(s)"
 msgstr "Application(s)"
 
 #: src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/outposts/OutpostForm.ts
 msgid "Applications"
@@ -411,8 +412,12 @@ msgid "Assigned to application"
 msgstr "Assigned to application"
 
 #: src/pages/policies/PolicyListPage.ts
-msgid "Assigned to {0} objects."
-msgstr "Assigned to {0} objects."
+msgid "Assigned to {0} object(s)."
+msgstr "Assigned to {0} object(s)."
+
+#: src/pages/policies/PolicyListPage.ts
+#~ msgid "Assigned to {0} objects."
+#~ msgstr "Assigned to {0} objects."
 
 #: src/pages/events/EventInfo.ts
 msgid "Attempted to log in as {0}"
@@ -771,6 +776,10 @@ msgstr "Check status"
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 msgid "Check the IP of the Kubernetes service, or"
 msgstr "Check the IP of the Kubernetes service, or"
+
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Check the logs"
+msgstr "Check the logs"
 
 #: 
 #~ msgid "Check your Emails for a password reset link."
@@ -1212,6 +1221,10 @@ msgstr "Create Token"
 msgid "Create User"
 msgstr "Create User"
 
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Create a new application"
+msgstr "Create a new application"
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "Create group"
@@ -1271,6 +1284,10 @@ msgstr "Customisation"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "DSA-SHA1"
 msgstr "DSA-SHA1"
+
+#: src/interfaces/AdminInterface.ts
+msgid "Dashboards"
+msgstr "Dashboards"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Date"
@@ -1460,6 +1477,10 @@ msgstr "Digits"
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Direct querying, always returns the latest data, but slower than cached querying."
 msgstr "Direct querying, always returns the latest data, but slower than cached querying."
+
+#: src/interfaces/AdminInterface.ts
+msgid "Directory"
+msgstr "Directory"
 
 #: 
 #: 
@@ -1830,6 +1851,10 @@ msgstr "Expiry date"
 msgid "Explicit Consent"
 msgstr "Explicit Consent"
 
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Explore integrations"
+msgstr "Explore integrations"
+
 #: src/pages/flows/FlowViewPage.ts
 msgid "Export"
 msgstr "Export"
@@ -1909,6 +1934,11 @@ msgstr "Failed to update {0}: {1}"
 #: src/pages/tenants/TenantForm.ts
 msgid "Favicon"
 msgstr "Favicon"
+
+#: src/interfaces/AdminInterface.ts
+#: src/pages/sources/SourcesListPage.ts
+msgid "Federation & Social login"
+msgstr "Federation & Social login"
 
 #: src/pages/stages/prompt/PromptListPage.ts
 msgid "Field"
@@ -2090,6 +2120,7 @@ msgid "General system exception"
 msgstr "General system exception"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
+#: src/pages/admin-overview/UserDashboardPage.ts
 msgid "General system status"
 msgstr "General system status"
 
@@ -2281,8 +2312,8 @@ msgid "Identifier"
 msgstr "Identifier"
 
 #: src/interfaces/AdminInterface.ts
-msgid "Identity & Cryptography"
-msgstr "Identity & Cryptography"
+#~ msgid "Identity & Cryptography"
+#~ msgstr "Identity & Cryptography"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -2381,8 +2412,8 @@ msgid "Integration key"
 msgstr "Integration key"
 
 #: src/interfaces/AdminInterface.ts
-msgid "Integrations"
-msgstr "Integrations"
+#~ msgid "Integrations"
+#~ msgstr "Integrations"
 
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
@@ -3258,6 +3289,10 @@ msgstr "Outdated outposts"
 msgid "Outpost Deployment Info"
 msgstr "Outpost Deployment Info"
 
+#: src/interfaces/AdminInterface.ts
+msgid "Outpost Integrations"
+msgstr "Outpost Integrations"
+
 #: 
 #~ msgid "Outpost Service-connection"
 #~ msgstr "Outpost Service-connection"
@@ -3278,7 +3313,6 @@ msgstr "Outpost status"
 msgid "Outpost(s)"
 msgstr "Outpost(s)"
 
-#: src/interfaces/AdminInterface.ts
 #: src/interfaces/AdminInterface.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Outposts"
@@ -3384,7 +3418,6 @@ msgid "Please enter your password"
 msgstr "Please enter your password"
 
 #: src/interfaces/AdminInterface.ts
-#: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 msgid "Policies"
@@ -3603,6 +3636,10 @@ msgstr "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
 msgid "Publisher"
 msgstr "Publisher"
 
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Quick actions"
+msgstr "Quick actions"
+
 #: src/pages/flows/StageBindingForm.ts
 msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
 msgstr "RESTART restarts the flow from the beginning, while keeping the flow context."
@@ -3780,8 +3817,8 @@ msgid "Reset Password"
 msgstr "Reset Password"
 
 #: src/interfaces/AdminInterface.ts
-msgid "Resources"
-msgstr "Resources"
+#~ msgid "Resources"
+#~ msgstr "Resources"
 
 #: src/pages/events/EventInfo.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
@@ -4233,8 +4270,6 @@ msgstr "Source {0}"
 msgid "Source(s)"
 msgstr "Source(s)"
 
-#: src/interfaces/AdminInterface.ts
-#: src/pages/sources/SourcesListPage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Sources"
 msgstr "Sources"
@@ -4762,9 +4797,13 @@ msgstr "Sync status"
 msgid "Sync users"
 msgstr "Sync users"
 
+#: src/interfaces/AdminInterface.ts
+msgid "System"
+msgstr "System"
+
 #: src/pages/admin-overview/AdminOverviewPage.ts
-msgid "System Overview"
-msgstr "System Overview"
+#~ msgid "System Overview"
+#~ msgstr "System Overview"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
@@ -5578,6 +5617,7 @@ msgid "Username: Same as Text input, but checks for and prevents duplicate usern
 msgstr "Username: Same as Text input, but checks for and prevents duplicate usernames."
 
 #: src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Users"
@@ -5726,6 +5766,11 @@ msgstr "Webhook Mapping"
 #: src/pages/events/TransportForm.ts
 msgid "Webhook URL"
 msgstr "Webhook URL"
+
+#: src/pages/admin-overview/AdminOverviewPage.ts
+#: src/pages/admin-overview/UserDashboardPage.ts
+msgid "Welcome, {name}."
+msgstr "Welcome, {name}."
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "When a user returns from the email successfully, their account will be activated."
