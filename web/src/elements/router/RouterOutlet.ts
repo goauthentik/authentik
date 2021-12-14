@@ -30,6 +30,19 @@ window.addEventListener("load", () => {
         })();
 });
 
+export function paramURL(url: string, params?: { [key: string]: unknown }): string {
+    let finalUrl = "#";
+    finalUrl += url;
+    if (params) {
+        finalUrl += ";";
+        finalUrl += encodeURIComponent(JSON.stringify(params));
+    }
+    return finalUrl;
+}
+export function navigate(url: string, params?: { [key: string]: unknown }): void {
+    window.location.assign(paramURL(url, params));
+}
+
 @customElement("ak-router-outlet")
 export class RouterOutlet extends LitElement {
     @property({ attribute: false })
