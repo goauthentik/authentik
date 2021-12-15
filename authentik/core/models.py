@@ -278,7 +278,13 @@ class Application(PolicyBindingModel):
         """Get casted provider instance"""
         if not self.provider:
             return None
-        return Provider.objects.get_subclass(pk=self.provider.pk)
+        # if the Application class has been cache, self.provider is set
+        # but doing a direct query lookup will fail.
+        # In that case, just return None
+        try:
+            return Provider.objects.get_subclass(pk=self.provider.pk)
+        except Provider.DoesNotExist:
+            return None
 
     def __str__(self):
         return self.name
