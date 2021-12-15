@@ -4,7 +4,7 @@ UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
 
-all: lint-fix lint test gen
+all: lint-fix lint test gen web
 
 test-integration:
 	coverage run manage.py test tests/integration

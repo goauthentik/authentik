@@ -296,6 +296,10 @@ msgstr "Alternatively, if your current device has Duo installed, click on this l
 msgid "Always require consent"
 msgstr "Always require consent"
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "An example setup can look like this:"
+msgstr "An example setup can look like this:"
+
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Any HTML can be used."
 msgstr "Any HTML can be used."
@@ -344,6 +348,7 @@ msgstr "Application's display Name."
 msgid "Application(s)"
 msgstr "Application(s)"
 
+#: src/interfaces/AdminInterface.ts
 #: src/interfaces/AdminInterface.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/outposts/OutpostForm.ts
@@ -407,8 +412,12 @@ msgid "Assigned to application"
 msgstr "Assigned to application"
 
 #: src/pages/policies/PolicyListPage.ts
-msgid "Assigned to {0} objects."
-msgstr "Assigned to {0} objects."
+msgid "Assigned to {0} object(s)."
+msgstr "Assigned to {0} object(s)."
+
+#: src/pages/policies/PolicyListPage.ts
+#~ msgid "Assigned to {0} objects."
+#~ msgstr "Assigned to {0} objects."
 
 #: src/pages/events/EventInfo.ts
 msgid "Attempted to log in as {0}"
@@ -433,6 +442,10 @@ msgstr "Audience"
 #~ msgid "Auth Type"
 #~ msgstr "Auth Type"
 
+#: src/flows/sources/apple/AppleLoginInit.ts
+msgid "Authenticating with Apple..."
+msgstr "Authenticating with Apple..."
+
 #: src/flows/sources/plex/PlexLoginInit.ts
 msgid "Authenticating with Plex..."
 msgstr "Authenticating with Plex..."
@@ -444,6 +457,10 @@ msgstr "Authentication"
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Authentication Type"
 msgstr "Authentication Type"
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Authentication URL"
+msgstr "Authentication URL"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -759,6 +776,10 @@ msgstr "Check status"
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 msgid "Check the IP of the Kubernetes service, or"
 msgstr "Check the IP of the Kubernetes service, or"
+
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Check the logs"
+msgstr "Check the logs"
 
 #: 
 #~ msgid "Check your Emails for a password reset link."
@@ -1200,6 +1221,10 @@ msgstr "Create Token"
 msgid "Create User"
 msgstr "Create User"
 
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Create a new application"
+msgstr "Create a new application"
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "Create group"
@@ -1259,6 +1284,10 @@ msgstr "Customisation"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "DSA-SHA1"
 msgstr "DSA-SHA1"
+
+#: src/interfaces/AdminInterface.ts
+msgid "Dashboards"
+msgstr "Dashboards"
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Date"
@@ -1448,6 +1477,10 @@ msgstr "Digits"
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Direct querying, always returns the latest data, but slower than cached querying."
 msgstr "Direct querying, always returns the latest data, but slower than cached querying."
+
+#: src/interfaces/AdminInterface.ts
+msgid "Directory"
+msgstr "Directory"
 
 #: 
 #: 
@@ -1818,6 +1851,10 @@ msgstr "Expiry date"
 msgid "Explicit Consent"
 msgstr "Explicit Consent"
 
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Explore integrations"
+msgstr "Explore integrations"
+
 #: src/pages/flows/FlowViewPage.ts
 msgid "Export"
 msgstr "Export"
@@ -1857,7 +1894,6 @@ msgstr "External Host"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-#: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "External host"
 msgstr "External host"
 
@@ -1865,6 +1901,10 @@ msgstr "External host"
 #: src/elements/charts/UserChart.ts
 msgid "Failed Logins"
 msgstr "Failed Logins"
+
+#: src/pages/admin-overview/DashboardUserPage.ts
+msgid "Failed Logins per day in the last month"
+msgstr "Failed Logins per day in the last month"
 
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "Failed attempts before cancel"
@@ -1898,6 +1938,11 @@ msgstr "Failed to update {0}: {1}"
 #: src/pages/tenants/TenantForm.ts
 msgid "Favicon"
 msgstr "Favicon"
+
+#: src/interfaces/AdminInterface.ts
+#: src/pages/sources/SourcesListPage.ts
+msgid "Federation & Social login"
+msgstr "Federation & Social login"
 
 #: src/pages/stages/prompt/PromptListPage.ts
 msgid "Field"
@@ -1943,6 +1988,10 @@ msgstr "Flow"
 #: src/pages/flows/FlowViewPage.ts
 msgid "Flow Overview"
 msgstr "Flow Overview"
+
+#: src/pages/events/utils.ts
+msgid "Flow execution"
+msgstr "Flow execution"
 
 #: src/flows/FlowInspector.ts
 #: src/flows/FlowInspector.ts
@@ -2270,8 +2319,8 @@ msgid "Identifier"
 msgstr "Identifier"
 
 #: src/interfaces/AdminInterface.ts
-msgid "Identity & Cryptography"
-msgstr "Identity & Cryptography"
+#~ msgid "Identity & Cryptography"
+#~ msgstr "Identity & Cryptography"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -2344,6 +2393,10 @@ msgstr "Import certificates of external providers or create certificates to sign
 msgid "In case you can't access any other method."
 msgstr "In case you can't access any other method."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com."
+msgstr "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com."
+
 #: src/pages/users/UserListPage.ts
 msgid "Inactive"
 msgstr "Inactive"
@@ -2366,8 +2419,8 @@ msgid "Integration key"
 msgstr "Integration key"
 
 #: src/interfaces/AdminInterface.ts
-msgid "Integrations"
-msgstr "Integrations"
+#~ msgid "Integrations"
+#~ msgstr "Integrations"
 
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
@@ -2689,6 +2742,10 @@ msgstr "Logins"
 msgid "Logins over the last 24 hours"
 msgstr "Logins over the last 24 hours"
 
+#: src/pages/admin-overview/DashboardUserPage.ts
+msgid "Logins per day in the last month"
+msgstr "Logins per day in the last month"
+
 #: src/pages/tenants/TenantForm.ts
 msgid "Logo"
 msgstr "Logo"
@@ -2996,6 +3053,10 @@ msgstr "No Stages bound"
 msgid "No additional data available."
 msgstr "No additional data available."
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "No additional setup is required."
+msgstr "No additional setup is required."
+
 #: src/elements/forms/ModalForm.ts
 msgid "No form found"
 msgstr "No form found"
@@ -3143,6 +3204,10 @@ msgstr "Object field"
 msgid "Object uniqueness field"
 msgstr "Object uniqueness field"
 
+#: src/elements/charts/AdminModelPerDay.ts
+msgid "Objects created"
+msgstr "Objects created"
+
 #: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
 msgstr "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
@@ -3160,6 +3225,10 @@ msgstr "Only fail the policy, don't invalidate user's password."
 #: src/pages/events/TransportForm.ts
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr "Only send notification once, for example when sending a webhook into a chat channel."
+
+#: src/elements/notifications/APIDrawer.ts
+msgid "Open API Browser"
+msgstr "Open API Browser"
 
 #: 
 #~ msgid "Open application"
@@ -3210,8 +3279,8 @@ msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
 msgstr "Optionally set the 'FriendlyName' value of the Assertion attribute."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
-msgstr "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+#~ msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+#~ msgstr "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
@@ -3239,6 +3308,10 @@ msgstr "Outdated outposts"
 msgid "Outpost Deployment Info"
 msgstr "Outpost Deployment Info"
 
+#: src/interfaces/AdminInterface.ts
+msgid "Outpost Integrations"
+msgstr "Outpost Integrations"
+
 #: 
 #~ msgid "Outpost Service-connection"
 #~ msgstr "Outpost Service-connection"
@@ -3259,7 +3332,6 @@ msgstr "Outpost status"
 msgid "Outpost(s)"
 msgstr "Outpost(s)"
 
-#: src/interfaces/AdminInterface.ts
 #: src/interfaces/AdminInterface.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Outposts"
@@ -3365,7 +3437,6 @@ msgid "Please enter your password"
 msgstr "Please enter your password"
 
 #: src/interfaces/AdminInterface.ts
-#: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 msgid "Policies"
@@ -3584,6 +3655,10 @@ msgstr "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
 msgid "Publisher"
 msgstr "Publisher"
 
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Quick actions"
+msgstr "Quick actions"
+
 #: src/pages/flows/StageBindingForm.ts
 msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
 msgstr "RESTART restarts the flow from the beginning, while keeping the flow context."
@@ -3761,13 +3836,17 @@ msgid "Reset Password"
 msgstr "Reset Password"
 
 #: src/interfaces/AdminInterface.ts
-msgid "Resources"
-msgstr "Resources"
+#~ msgid "Resources"
+#~ msgstr "Resources"
 
 #: src/pages/events/EventInfo.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
 msgid "Result"
 msgstr "Result"
+
+#: src/flows/sources/apple/AppleLoginInit.ts
+msgid "Retry"
+msgstr "Retry"
 
 #: 
 #~ msgid "Retry Task"
@@ -4109,6 +4188,10 @@ msgstr "Set a custom HTTP-Basic Authentication header based on values from authe
 msgid "Set custom attributes using YAML or JSON."
 msgstr "Set custom attributes using YAML or JSON."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+msgstr "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Setup"
 msgstr "Setup"
@@ -4206,8 +4289,6 @@ msgstr "Source {0}"
 msgid "Source(s)"
 msgstr "Source(s)"
 
-#: src/interfaces/AdminInterface.ts
-#: src/pages/sources/SourcesListPage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Sources"
 msgstr "Sources"
@@ -4298,6 +4379,7 @@ msgstr "Stage(s)"
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 #: src/pages/stages/captcha/CaptchaStageForm.ts
 #: src/pages/stages/consent/ConsentStageForm.ts
 #: src/pages/stages/email/EmailStageForm.ts
@@ -4734,9 +4816,13 @@ msgstr "Sync status"
 msgid "Sync users"
 msgstr "Sync users"
 
+#: src/interfaces/AdminInterface.ts
+msgid "System"
+msgstr "System"
+
 #: src/pages/admin-overview/AdminOverviewPage.ts
-msgid "System Overview"
-msgstr "System Overview"
+#~ msgid "System Overview"
+#~ msgstr "System Overview"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
@@ -4845,8 +4931,12 @@ msgid "The external URL you'll access the application at. Include any non-standa
 msgstr "The external URL you'll access the application at. Include any non-standard port."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
-msgstr "The external URL you'll authenticate at. Can be the same domain as authentik."
+#~ msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
+#~ msgstr "The external URL you'll authenticate at. Can be the same domain as authentik."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "The external URL you'll authenticate at. The authentik core server should be reachable under this URL."
+msgstr "The external URL you'll authenticate at. The authentik core server should be reachable under this URL."
 
 #: 
 #~ msgid "The following objects use {0}:"
@@ -5115,6 +5205,7 @@ msgid "UI settings"
 msgstr "UI settings"
 
 #: src/pages/events/EventInfo.ts
+#: src/pages/users/UserListPage.ts
 msgid "UID"
 msgstr "UID"
 
@@ -5467,6 +5558,10 @@ msgstr "User interface"
 msgid "User matching mode"
 msgstr "User matching mode"
 
+#: src/pages/admin-overview/UserDashboardPage.ts
+#~ msgid "User metrics"
+#~ msgstr "User metrics"
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User object filter"
 msgstr "User object filter"
@@ -5475,9 +5570,29 @@ msgstr "User object filter"
 msgid "User password writeback"
 msgstr "User password writeback"
 
+#: src/pages/admin-overview/DashboardUserPage.ts
+msgid "User statistics"
+msgstr "User statistics"
+
 #: src/pages/users/UserListPage.ts
 msgid "User status"
 msgstr "User status"
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "User verification"
+msgstr "User verification"
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "User verification is preferred if available, but not required."
+msgstr "User verification is preferred if available, but not required."
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "User verification must occur."
+msgstr "User verification must occur."
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "User verification should not occur."
+msgstr "User verification should not occur."
 
 #: src/pages/events/utils.ts
 msgid "User was written to"
@@ -5530,6 +5645,7 @@ msgid "Username: Same as Text input, but checks for and prevents duplicate usern
 msgstr "Username: Same as Text input, but checks for and prevents duplicate usernames."
 
 #: src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Users"
@@ -5538,6 +5654,10 @@ msgstr "Users"
 #: src/pages/groups/GroupForm.ts
 msgid "Users added to this group will be superusers."
 msgstr "Users added to this group will be superusers."
+
+#: src/pages/admin-overview/DashboardUserPage.ts
+msgid "Users created per day in the last month"
+msgstr "Users created per day in the last month"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed."
@@ -5651,6 +5771,10 @@ msgstr "Warning: Provider is not used by any Outpost."
 msgid "Warning: Provider not assigned to any application."
 msgstr "Warning: Provider not assigned to any application."
 
+#: src/pages/users/UserListPage.ts
+msgid "Warning: You're about to delete the user you're logged in as ({0}). Proceed at your own risk."
+msgstr "Warning: You're about to delete the user you're logged in as ({0}). Proceed at your own risk."
+
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Warning: authentik Domain is not configured, authentication will not work."
 msgstr "Warning: authentik Domain is not configured, authentication will not work."
@@ -5678,6 +5802,10 @@ msgstr "Webhook Mapping"
 #: src/pages/events/TransportForm.ts
 msgid "Webhook URL"
 msgstr "Webhook URL"
+
+#: src/pages/admin-overview/AdminOverviewPage.ts
+msgid "Welcome, {name}."
+msgstr "Welcome, {name}."
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "When a user returns from the email successfully, their account will be activated."
@@ -5782,6 +5910,10 @@ msgstr "You're about to be redirect to the following URL."
 msgid "You're currently impersonating {0}. Click to stop."
 msgstr "You're currently impersonating {0}. Click to stop."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "app1 running on app1.example.com"
+msgstr "app1 running on app1.example.com"
+
 #: 
 #~ msgid "authentik Builtin Database"
 #~ msgstr "authentik Builtin Database"
@@ -5789,6 +5921,10 @@ msgstr "You're currently impersonating {0}. Click to stop."
 #: 
 #~ msgid "authentik LDAP Backend"
 #~ msgstr "authentik LDAP Backend"
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "authentik running on auth.example.com"
+msgstr "authentik running on auth.example.com"
 
 #: src/elements/forms/DeleteForm.ts
 msgid "connecting object will be deleted"
@@ -5858,3 +5994,11 @@ msgstr "{0}, should be {1}"
 #: src/elements/forms/ConfirmationForm.ts
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
+
+#: src/elements/charts/AdminModelPerDay.ts
+msgid "{ago} days ago"
+msgstr "{ago} days ago"
+
+#: src/elements/charts/Chart.ts
+msgid "{ago} hours ago"
+msgstr "{ago} hours ago"

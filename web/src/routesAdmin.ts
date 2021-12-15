@@ -2,6 +2,7 @@ import { html } from "lit";
 
 import { ID_REGEX, Route, SLUG_REGEX, UUID_REGEX } from "./elements/router/Route";
 import "./pages/admin-overview/AdminOverviewPage";
+import "./pages/admin-overview/DashboardUserPage";
 import "./pages/applications/ApplicationListPage";
 import "./pages/applications/ApplicationViewPage";
 import "./pages/crypto/CertificateKeyPairListPage";
@@ -39,6 +40,10 @@ export const ROUTES: Route[] = [
     new Route(
         new RegExp("^/administration/overview$"),
         html`<ak-admin-overview></ak-admin-overview>`,
+    ),
+    new Route(
+        new RegExp("^/administration/dashboard/users$"),
+        html`<ak-admin-dashboard-users></ak-admin-dashboard-users>`,
     ),
     new Route(
         new RegExp("^/administration/system-tasks$"),

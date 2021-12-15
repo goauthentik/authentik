@@ -2,13 +2,13 @@
 from typing import TYPE_CHECKING, Optional, Type
 
 from django.db import models
+from django.http.request import HttpRequest
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
-from authentik.flows.challenge import ChallengeTypes, RedirectChallenge
 
 if TYPE_CHECKING:
     from authentik.sources.oauth.types.manager import SourceType
@@ -64,24 +64,15 @@ class OAuthSource(Source):
 
         return OAuthSourceSerializer
 
-    @property
-    def ui_login_button(self) -> UILoginButton:
+    def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         provider_type = self.type
+        provider = provider_type()
         return UILoginButton(
-            challenge=RedirectChallenge(
-                instance={
-                    "type": ChallengeTypes.REDIRECT.value,
-                    "to": reverse(
-                        "authentik_sources_oauth:oauth-client-login",
-                        kwargs={"source_slug": self.slug},
-                    ),
-                }
-            ),
-            icon_url=provider_type().icon_url(),
             name=self.name,
+            icon_url=provider.icon_url(),
+            challenge=provider.login_challenge(self, request),
         )
 
-    @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={
@@ -181,6 +172,16 @@ class AppleOAuthSource(OAuthSource):
         abstract = True
         verbose_name = _("Apple OAuth Source")
         verbose_name_plural = _("Apple OAuth Sources")
+
+
+class OktaOAuthSource(OAuthSource):
+    """Login using a okta.com."""
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _("Okta OAuth Source")
+        verbose_name_plural = _("Okta OAuth Sources")
 
 
 class UserOAuthSourceConnection(UserSourceConnection):

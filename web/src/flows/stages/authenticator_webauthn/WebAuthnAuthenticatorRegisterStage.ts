@@ -51,6 +51,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         // byte arrays as expected by the spec.
         const publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
             this.challenge?.registration as PublicKeyCredentialCreationOptions,
+            this.challenge?.registration.user.id,
         );
 
         // request the authenticator(s) to create a new credential keypair.

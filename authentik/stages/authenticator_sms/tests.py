@@ -90,6 +90,5 @@ class AuthenticatorSMSStageTests(APITestCase):
                     "code": int(self.client.session[SESSION_SMS_DEVICE].token),
                 },
             )
-            print(response.content)
             self.assertEqual(response.status_code, 200)
             sms_send_mock.assert_not_called()

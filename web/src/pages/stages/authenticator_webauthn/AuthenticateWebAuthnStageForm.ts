@@ -1,3 +1,5 @@
+import { UserVerificationEnum } from "@goauthentik/api/dist/models/UserVerificationEnum";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -52,6 +54,40 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                     required
                 />
             </ak-form-element-horizontal>
+            <ak-form-group .expanded=${true}>
+                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${t`User verification`}
+                        ?required=${true}
+                        name="userVerification"
+                    >
+                        <select name="users" class="pf-c-form-control">
+                            <option
+                                value="${UserVerificationEnum.Required}"
+                                ?selected=${this.instance?.userVerification ===
+                                UserVerificationEnum.Required}
+                            >
+                                ${t`User verification must occur.`}
+                            </option>
+                            <option
+                                value="${UserVerificationEnum.Preferred}"
+                                ?selected=${this.instance?.userVerification ===
+                                UserVerificationEnum.Preferred}
+                            >
+                                ${t`User verification is preferred if available, but not required.`}
+                            </option>
+                            <option
+                                value="${UserVerificationEnum.Discouraged}"
+                                ?selected=${this.instance?.userVerification ===
+                                UserVerificationEnum.Discouraged}
+                            >
+                                ${t`User verification should not occur.`}
+                            </option>
+                        </select>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
         </form>`;
     }
 }

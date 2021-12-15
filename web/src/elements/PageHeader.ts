@@ -108,10 +108,11 @@ export class PageHeader extends LitElement {
 
     renderIcon(): TemplateResult {
         if (this.icon) {
-            if (this.iconImage) {
+            if (this.iconImage && !this.icon.startsWith("fa://")) {
                 return html`<img class="pf-icon" src="${this.icon}" />&nbsp;`;
             }
-            return html`<i class=${this.icon}></i>&nbsp;`;
+            const icon = this.icon.replaceAll("fa://", "fa ");
+            return html`<i class=${icon}></i>&nbsp;`;
         }
         return html``;
     }
@@ -132,7 +133,10 @@ export class PageHeader extends LitElement {
             </button>
             <section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1>${this.renderIcon()} ${this.header}</h1>
+                    <h1>
+                        ${this.renderIcon()}
+                        <slot name="header"> ${this.header} </slot>
+                    </h1>
                     ${this.description ? html`<p>${this.description}</p>` : html``}
                 </div>
             </section>

@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
@@ -13,6 +14,7 @@ import { uiConfig } from "../../common/config";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
+import { getURLParam } from "../../elements/router/RouteMatch";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import "./ApplicationForm";
@@ -94,15 +96,24 @@ export class ApplicationListPage extends TablePage<Application> {
         </ak-forms-delete-bulk>`;
     }
 
+    renderIcon(item: Application): TemplateResult {
+        if (item?.metaIcon) {
+            if (item.metaIcon.startsWith("fa://")) {
+                const icon = item.metaIcon.replaceAll("fa://", "");
+                return html`<i class="fas ${icon}"></i>`;
+            }
+            return html`<img
+                class="app-icon pf-c-avatar"
+                src="${ifDefined(item.metaIcon)}"
+                alt="${t`Application Icon`}"
+            />`;
+        }
+        return html`<i class="fas fa-share-square"></i>`;
+    }
+
     row(item: Application): TemplateResult[] {
         return [
-            item.metaIcon
-                ? html`<img
-                      class="app-icon pf-c-avatar"
-                      src="${item.metaIcon}"
-                      alt="${t`Application Icon`}"
-                  />`
-                : html`<i class="fas fa-question-circle"></i>`,
+            this.renderIcon(item),
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
@@ -133,7 +144,7 @@ export class ApplicationListPage extends TablePage<Application> {
 
     renderToolbar(): TemplateResult {
         return html`
-            <ak-forms-modal>
+            <ak-forms-modal .open=${getURLParam("createForm", false)}>
                 <span slot="submit"> ${t`Create`} </span>
                 <span slot="header"> ${t`Create Application`} </span>
                 <ak-application-form slot="form"> </ak-application-form>

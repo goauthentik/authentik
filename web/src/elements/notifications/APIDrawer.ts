@@ -102,6 +102,7 @@ export class APIDrawer extends LitElement {
                 <div class="pf-c-notification-drawer__header">
                     <div class="text">
                         <h1 class="pf-c-notification-drawer__header-title">${t`API Requests`}</h1>
+                        <a href="/api/v3/" target="_blank">${t`Open API Browser`}</a>
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
                         <div class="pf-c-notification-drawer__header-action-close">

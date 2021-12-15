@@ -160,7 +160,7 @@ class FlowExecutorView(APIView):
     # pylint: disable=unused-argument, too-many-return-statements
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         with Hub.current.start_span(
-            op="flow.executor.dispatch", description=self.flow.slug
+            op="authentik.flow.executor.dispatch", description=self.flow.slug
         ) as span:
             span.set_data("authentik Flow", self.flow.slug)
             get_params = QueryDict(request.GET.get("query", ""))
@@ -275,7 +275,7 @@ class FlowExecutorView(APIView):
         )
         try:
             with Hub.current.start_span(
-                op="flow.executor.stage",
+                op="authentik.flow.executor.stage",
                 description=class_to_path(self.current_stage_view.__class__),
             ) as span:
                 span.set_data("Method", "GET")
@@ -319,7 +319,7 @@ class FlowExecutorView(APIView):
         )
         try:
             with Hub.current.start_span(
-                op="flow.executor.stage",
+                op="authentik.flow.executor.stage",
                 description=class_to_path(self.current_stage_view.__class__),
             ) as span:
                 span.set_data("Method", "POST")
@@ -371,6 +371,12 @@ class FlowExecutorView(APIView):
             NEXT_ARG_NAME, "authentik_core:root-redirect"
         )
         self.cancel()
+        Event.new(
+            action=EventAction.FLOW_EXECUTION,
+            flow=self.flow,
+            designation=self.flow.designation,
+            successful=True,
+        ).from_http(self.request)
         return to_stage_response(self.request, redirect_with_qs(next_param))
 
     def stage_ok(self) -> HttpResponse:

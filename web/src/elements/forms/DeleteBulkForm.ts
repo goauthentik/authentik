@@ -187,6 +187,7 @@ export class DeleteBulkForm extends ModalButton {
                     <p class="pf-c-title">
                         ${t`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`}
                     </p>
+                    <slot name="notice"></slot>
                 </form>
             </section>
             <section class="pf-c-page__main-section">

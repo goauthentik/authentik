@@ -2,6 +2,9 @@
 from glob import glob
 from pathlib import Path
 
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
+from cryptography.x509.base import load_pem_x509_certificate
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 
@@ -18,6 +21,22 @@ from authentik.root.celery import CELERY_APP
 LOGGER = get_logger()
 
 MANAGED_DISCOVERED = "goauthentik.io/crypto/discovered/%s"
+
+
+def ensure_private_key_valid(body: str):
+    """Attempt loading of an RSA Private key without password"""
+    load_pem_private_key(
+        str.encode("\n".join([x.strip() for x in body.split("\n")])),
+        password=None,
+        backend=default_backend(),
+    )
+    return body
+
+
+def ensure_certificate_valid(body: str):
+    """Attempt loading of a PEM-encoded certificate"""
+    load_pem_x509_certificate(body.encode("utf-8"), default_backend())
+    return body
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
@@ -42,11 +61,11 @@ def certificate_discovery(self: MonitoredTask):
             with open(path, "r+", encoding="utf-8") as _file:
                 body = _file.read()
                 if "BEGIN RSA PRIVATE KEY" in body:
-                    private_keys[cert_name] = body
+                    private_keys[cert_name] = ensure_private_key_valid(body)
                 else:
-                    certs[cert_name] = body
-        except OSError as exc:
-            LOGGER.warning("Failed to open file", exc=exc, file=path)
+                    certs[cert_name] = ensure_certificate_valid(body)
+        except (OSError, ValueError) as exc:
+            LOGGER.warning("Failed to open file or invalid format", exc=exc, file=path)
         discovered += 1
     for name, cert_data in certs.items():
         cert = CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % name).first()

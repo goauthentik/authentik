@@ -29,4 +29,4 @@ class TestEmailStageAPI(APITestCase):
             EmailTemplates.ACCOUNT_CONFIRM,
         )
         with self.assertRaises(ValidationError):
-            print(EmailStageSerializer().validate_template("foobar"))
+            EmailStageSerializer().validate_template("foobar")

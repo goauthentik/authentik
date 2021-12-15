@@ -36,16 +36,16 @@ This stage should always contain a [**User Logout**](stages/user_logout.md) stag
 
 ### Enrollment
 
-This designates a flow for enrollment. This flow can contain any amount of verification stages, such as [**email**](stages/email/index.md) or [**captcha**](stages/captcha/index.md). At the end, to create the user, you can use the [**user_write**](stages/user_write.md) stage, which either updates the currently staged user, or if none exists, creates a new one.
+This designates a flow for enrollment. This flow can contain any amount of verification stages, such as [**email**](stages/email/) or [**captcha**](stages/captcha/). At the end, to create the user, you can use the [**user_write**](stages/user_write.md) stage, which either updates the currently staged user, or if none exists, creates a new one.
 
 ### Unenrollment
 
-This designates a flow for unenrollment. This flow can contain any amount of verification stages, such as [**email**](stages/email/index.md) or [**captcha**](stages/captcha/index.md). As a final stage, to delete the account, use the [**user_delete**](stages/user_delete.md) stage.
+This designates a flow for unenrollment. This flow can contain any amount of verification stages, such as [**email**](stages/email/) or [**captcha**](stages/captcha/). As a final stage, to delete the account, use the [**user_delete**](stages/user_delete.md) stage.
 
 ### Recovery
 
-This designates a flow for recovery. This flow normally contains an [**identification**](stages/identification/index.md) stage to find the user. It can also contain any amount of verification stages, such as [**email**](stages/email/index.md) or [**captcha**](stages/captcha/index.md).
-Afterwards, use the [**prompt**](stages/prompt/index.md) stage to ask the user for a new password and the [**user_write**](stages/user_write.md) stage to update the password.
+This designates a flow for recovery. This flow normally contains an [**identification**](stages/identification/) stage to find the user. It can also contain any amount of verification stages, such as [**email**](stages/email/) or [**captcha**](stages/captcha/).
+Afterwards, use the [**prompt**](stages/prompt/) stage to ask the user for a new password and the [**user_write**](stages/user_write.md) stage to update the password.
 
 ### Setup
 

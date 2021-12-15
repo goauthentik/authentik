@@ -2,7 +2,7 @@
 from time import sleep
 from typing import Callable, Type
 
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 
@@ -30,6 +30,9 @@ class TestModels(TestCase):
 def source_tester_factory(test_model: Type[Stage]) -> Callable:
     """Test source"""
 
+    factory = RequestFactory()
+    request = factory.get("/")
+
     def tester(self: TestModels):
         model_class = None
         if test_model._meta.abstract:
@@ -38,8 +41,8 @@ def source_tester_factory(test_model: Type[Stage]) -> Callable:
             model_class = test_model()
         model_class.slug = "test"
         self.assertIsNotNone(model_class.component)
-        _ = model_class.ui_login_button
-        _ = model_class.ui_user_settings
+        _ = model_class.ui_login_button(request)
+        _ = model_class.ui_user_settings()
 
     return tester
 

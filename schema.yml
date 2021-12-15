@@ -3909,6 +3909,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /events/events/per_month/:
+    get:
+      operationId: events_events_per_month_list
+      description: Get the count of events per month
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: query
+        schema:
+          type: string
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Coordinate'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /events/events/top_per_user/:
     get:
       operationId: events_events_top_per_user_list
@@ -3919,55 +3949,9 @@ paths:
         schema:
           type: string
       - in: query
-        name: client_ip
-        schema:
-          type: string
-      - in: query
-        name: context_authorized_app
-        schema:
-          type: string
-        description: Context Authorized application
-      - in: query
-        name: context_model_app
-        schema:
-          type: string
-        description: Context Model App
-      - in: query
-        name: context_model_name
-        schema:
-          type: string
-        description: Context Model Name
-      - in: query
-        name: context_model_pk
-        schema:
-          type: string
-        description: Context Model Primary Key
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: tenant_name
-        schema:
-          type: string
-        description: Tenant name
-      - in: query
         name: top_n
         schema:
           type: integer
-      - in: query
-        name: username
-        schema:
-          type: string
-        description: Username
       tags:
       - events
       security:
@@ -7539,6 +7523,7 @@ paths:
           - configuration_error
           - custom_
           - email_sent
+          - flow_execution
           - impersonation_ended
           - impersonation_started
           - invitation_used
@@ -15395,6 +15380,14 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: user_verification
+        schema:
+          type: string
+          enum:
+          - discouraged
+          - preferred
+          - required
       tags:
       - stages
       security:
@@ -19086,6 +19079,46 @@ components:
       - authentik.managed
       - authentik.core
       type: string
+    AppleChallengeResponseRequest:
+      type: object
+      description: Pseudo class for plex response
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-flow-sources-oauth-apple
+    AppleLoginChallenge:
+      type: object
+      description: Special challenge for apple-native authentication flow, which happens
+        on the client.
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-flow-sources-oauth-apple
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        client_id:
+          type: string
+        scope:
+          type: string
+        redirect_uri:
+          type: string
+        state:
+          type: string
+      required:
+      - client_id
+      - redirect_uri
+      - scope
+      - state
+      - type
     Application:
       type: object
       description: Application Serializer
@@ -19200,6 +19233,8 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
       required:
       - component
       - meta_model_name
@@ -19224,6 +19259,8 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
       required:
       - name
     AuthenticatedSession:
@@ -20225,6 +20262,7 @@ components:
     ChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/AccessDeniedChallenge'
+      - $ref: '#/components/schemas/AppleLoginChallenge'
       - $ref: '#/components/schemas/AuthenticatorDuoChallenge'
       - $ref: '#/components/schemas/AuthenticatorSMSChallenge'
       - $ref: '#/components/schemas/AuthenticatorStaticChallenge'
@@ -20246,6 +20284,7 @@ components:
         propertyName: component
         mapping:
           ak-stage-access-denied: '#/components/schemas/AccessDeniedChallenge'
+          ak-flow-sources-oauth-apple: '#/components/schemas/AppleLoginChallenge'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallenge'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallenge'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallenge'
@@ -21080,6 +21119,7 @@ components:
       - source_linked
       - impersonation_started
       - impersonation_ended
+      - flow_execution
       - policy_execution
       - policy_exception
       - property_mapping_exception
@@ -21387,6 +21427,7 @@ components:
       - title
     FlowChallengeResponseRequest:
       oneOf:
+      - $ref: '#/components/schemas/AppleChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorSMSChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
@@ -21405,6 +21446,7 @@ components:
       discriminator:
         propertyName: component
         mapping:
+          ak-flow-sources-oauth-apple: '#/components/schemas/AppleChallengeResponseRequest'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallengeResponseRequest'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
@@ -22071,7 +22113,7 @@ components:
           additionalProperties: {}
         created_by:
           allOf:
-          - $ref: '#/components/schemas/User'
+          - $ref: '#/components/schemas/GroupMember'
           readOnly: true
         single_use:
           type: boolean
@@ -22711,11 +22753,13 @@ components:
       oneOf:
       - $ref: '#/components/schemas/RedirectChallenge'
       - $ref: '#/components/schemas/PlexAuthenticationChallenge'
+      - $ref: '#/components/schemas/AppleLoginChallenge'
       discriminator:
         propertyName: component
         mapping:
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
           ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallenge'
+          ak-flow-sources-oauth-apple: '#/components/schemas/AppleLoginChallenge'
     LoginMetrics:
       type: object
       description: Login Metrics per 1h
@@ -26565,6 +26609,8 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
     PatchedAuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer
@@ -28992,6 +29038,7 @@ components:
       - github
       - google
       - openidconnect
+      - okta
       - reddit
       - twitter
       type: string
@@ -31188,6 +31235,12 @@ components:
       - pk
       - source
       - user
+    UserVerificationEnum:
+      enum:
+      - required
+      - preferred
+      - discouraged
+      type: string
     UserWriteStage:
       type: object
       description: UserWriteStage Serializer

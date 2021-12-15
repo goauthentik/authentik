@@ -66,6 +66,7 @@ class Migration(migrations.Migration):
                             ("source_linked", "Source Linked"),
                             ("impersonation_started", "Impersonation Started"),
                             ("impersonation_ended", "Impersonation Ended"),
+                            ("flow_execution", "Flow Execution"),
                             ("policy_execution", "Policy Execution"),
                             ("policy_exception", "Policy Exception"),
                             ("property_mapping_exception", "Property Mapping Exception"),

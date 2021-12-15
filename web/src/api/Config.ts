@@ -3,6 +3,7 @@ import { getCookie } from "../utils";
 import { APIMiddleware } from "../elements/notifications/APIDrawer";
 import { MessageMiddleware } from "../elements/messages/Middleware";
 import { VERSION } from "../constants";
+import { getMetaContent } from "@sentry/tracing/dist/browser/browsertracing";
 
 export class LoggingMiddleware implements Middleware {
 
@@ -53,6 +54,7 @@ export const DEFAULT_CONFIG = new Configuration({
     basePath: process.env.AK_API_BASE_PATH + "/api/v3",
     headers: {
         "X-CSRFToken": getCookie("authentik_csrf"),
+        "sentry-trace": getMetaContent("sentry-trace") || "",
     },
     middleware: [
         new APIMiddleware(),

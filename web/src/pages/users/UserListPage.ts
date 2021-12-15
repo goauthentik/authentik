@@ -4,12 +4,14 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { CoreApi, User } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG, tenant } from "../../api/Config";
+import { me } from "../../api/Users";
 import { uiConfig } from "../../common/config";
 import { PFColor } from "../../elements/Label";
 import "../../elements/buttons/ActionButton";
@@ -51,7 +53,7 @@ export class UserListPage extends TablePage<User> {
     hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
+        return super.styles.concat(PFDescriptionList, PFAlert);
     }
 
     async apiEndpoint(page: number): Promise<AKResponse<User>> {
@@ -79,13 +81,14 @@ export class UserListPage extends TablePage<User> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
-        return html` <ak-forms-delete-bulk
+        return html`<ak-forms-delete-bulk
             objectLabel=${t`User(s)`}
             .objects=${this.selectedElements}
             .metadata=${(item: User) => {
                 return [
                     { key: t`Username`, value: item.username },
                     { key: t`ID`, value: item.pk.toString() },
+                    { key: t`UID`, value: item.uid },
                 ];
             }}
             .usedBy=${(item: User) => {
@@ -99,6 +102,28 @@ export class UserListPage extends TablePage<User> {
                 });
             }}
         >
+            ${until(
+                me().then((user) => {
+                    const shouldShowWarning = this.selectedElements.find((el) => {
+                        return el.pk === user.user.pk || el.pk == user.original?.pk;
+                    });
+                    if (shouldShowWarning) {
+                        return html`
+                            <div slot="notice" class="pf-c-form__alert">
+                                <div class="pf-c-alert pf-m-inline pf-m-warning">
+                                    <div class="pf-c-alert__icon">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                                    <h4 class="pf-c-alert__title">
+                                        ${t`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`}
+                                    </h4>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    return html``;
+                }),
+            )}
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>

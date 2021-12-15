@@ -40,7 +40,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         sleep(1)
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="beryju.org/oidc-test-client:latest",
+            image="ghcr.io/beryju/oidc-test-client:latest",
             detach=True,
             network_mode="host",
             auto_remove=True,
@@ -145,7 +145,6 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
         sleep(1)
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
-        print(body)
         self.assertEqual(body["profile"]["nickname"], self.user.username)
         self.assertEqual(body["profile"]["name"], self.user.name)
         self.assertEqual(body["profile"]["email"], self.user.email)

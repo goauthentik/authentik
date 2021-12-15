@@ -80,8 +80,9 @@ class BaseEvaluator:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
         If any exception is raised during execution, it is raised.
         The result is returned without any type-checking."""
-        with Hub.current.start_span(op="lib.evaluator.evaluate") as span:
+        with Hub.current.start_span(op="authentik.lib.evaluator.evaluate") as span:
             span: Span
+            span.description = self._filename
             span.set_data("expression", expression_source)
             param_keys = self._context.keys()
             try:

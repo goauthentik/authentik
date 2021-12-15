@@ -27,7 +27,10 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                 ],
                 tracesSampleRate: config.errorReporting.tracesSampleRate,
                 environment: config.errorReporting.environment,
-                beforeSend: async (event: Sentry.Event, hint: Sentry.EventHint): Promise<Sentry.Event | null> => {
+                beforeSend: async (event: Sentry.Event, hint: Sentry.EventHint | undefined): Promise<Sentry.Event | null> => {
+                    if (!hint) {
+                        return event;
+                    }
                     if (hint.originalException instanceof SentryIgnoredError) {
                         return null;
                     }
@@ -40,8 +43,13 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
             Sentry.setTag(TAG_SENTRY_CAPABILITIES, config.capabilities.join(","));
             if (window.location.pathname.includes("if/")) {
                 // Get the interface name from URL
-                const intf = window.location.pathname.replace(/.+if\/(.+)\//, "$1");
-                Sentry.setTag(TAG_SENTRY_COMPONENT, `web/${intf}`);
+                const pathMatches = window.location.pathname.match(/.+if\/(\w+)\//);
+                let currentInterface = "unknown";
+                if (pathMatches && pathMatches.length >= 2) {
+                    currentInterface = pathMatches[1];
+                }
+                Sentry.setTag(TAG_SENTRY_COMPONENT, `web/${currentInterface}`);
+                Sentry.configureScope((scope) => scope.setTransactionName(`authentik.web.if.${currentInterface}`));
             }
             if (config.errorReporting.sendPii && canDoPpi) {
                 me().then(user => {

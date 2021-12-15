@@ -11,9 +11,12 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from structlog.stdlib import get_logger
 
 from authentik.lib.models import CreatedUpdatedModel
 from authentik.managed.models import ManagedModel
+
+LOGGER = get_logger()
 
 
 class CertificateKeyPair(ManagedModel, CreatedUpdatedModel):
@@ -62,7 +65,8 @@ class CertificateKeyPair(ManagedModel, CreatedUpdatedModel):
                     password=None,
                     backend=default_backend(),
                 )
-            except ValueError:
+            except ValueError as exc:
+                LOGGER.warning(exc)
                 return None
         return self._private_key
 

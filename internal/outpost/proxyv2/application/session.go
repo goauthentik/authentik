@@ -2,6 +2,7 @@ package application
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 
@@ -18,6 +19,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
 		if err != nil {
 			panic(err)
 		}
+		rs.SetMaxLength(math.MaxInt64)
 		if p.TokenValidity.IsSet() {
 			t := p.TokenValidity.Get()
 			// Add one to the validity to ensure we don't have a session with indefinite length
@@ -27,14 +29,22 @@ func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
 		a.log.Info("using redis session backend")
 		store = rs
 	} else {
-		cs := sessions.NewFilesystemStore(os.TempDir(), []byte(*p.CookieSecret))
+		dir := os.TempDir()
+		cs := sessions.NewFilesystemStore(dir, []byte(*p.CookieSecret))
 		cs.Options.Domain = *p.CookieDomain
+		// https://github.com/markbates/goth/commit/7276be0fdf719ddff753f3574ef0f967e4a5a5f7
+		// set the maxLength of the cookies stored on the disk to a larger number to prevent issues with:
+		// securecookie: the value is too long
+		// when using OpenID Connect , since this can contain a large amount of extra information in the id_token
+
+		// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
+		cs.MaxLength(math.MaxInt64)
 		if p.TokenValidity.IsSet() {
 			t := p.TokenValidity.Get()
 			// Add one to the validity to ensure we don't have a session with indefinite length
 			cs.Options.MaxAge = int(*t) + 1
 		}
-		a.log.Info("using filesystem session backend")
+		a.log.WithField("dir", dir).Info("using filesystem session backend")
 		store = cs
 	}
 	return store

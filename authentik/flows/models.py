@@ -75,7 +75,6 @@ class Stage(SerializerModel):
         """Return component used to edit this object"""
         raise NotImplementedError
 
-    @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or a challenge."""

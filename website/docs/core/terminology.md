@@ -28,7 +28,7 @@ At a base level a policy is a yes/no gate. It will either evaluate to True or Fa
 
 See [Policies](./policies/)
 
-### Stages & Stages
+### Flows & Stages
 
 Flows are an ordered sequence of stages. These flows can be used to define how a user authenticates, enrolls, etc.
 

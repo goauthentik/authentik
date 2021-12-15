@@ -25,7 +25,7 @@ import "./saml/SAMLSourceForm";
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
     pageTitle(): string {
-        return t`Sources`;
+        return t`Federation & Social login`;
     }
     pageDescription(): string | undefined {
         return t`Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.`;
@@ -139,8 +139,7 @@ export class SourceListPage extends TablePage<Source> {
                                         >
                                         </ak-proxy-form>
                                         <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                            ${type.name}<br />
-                                            <small>${type.description}</small>
+                                            ${type.name}
                                         </button>
                                     </ak-forms-modal>
                                 </li>`;

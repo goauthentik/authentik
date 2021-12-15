@@ -15,8 +15,29 @@ from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
 
 
+class UserVerification(models.TextChoices):
+    """The degree to which the Relying Party wishes to verify a user's identity.
+
+    Members:
+        `REQUIRED`: User verification must occur
+        `PREFERRED`: User verification would be great, but if not that's okay too
+        `DISCOURAGED`: User verification should not occur, but it's okay if it does
+
+    https://www.w3.org/TR/webauthn-2/#enumdef-userverificationrequirement
+    """
+
+    REQUIRED = "required"
+    PREFERRED = "preferred"
+    DISCOURAGED = "discouraged"
+
+
 class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
     """WebAuthn stage"""
+
+    user_verification = models.TextField(
+        choices=UserVerification.choices,
+        default=UserVerification.PREFERRED,
+    )
 
     @property
     def serializer(self) -> BaseSerializer:
@@ -34,7 +55,6 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-webauthn-form"
 
-    @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={

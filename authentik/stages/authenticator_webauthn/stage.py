@@ -14,7 +14,6 @@ from webauthn.helpers.structs import (
     PublicKeyCredentialCreationOptions,
     RegistrationCredential,
     ResidentKeyRequirement,
-    UserVerificationRequirement,
 )
 from webauthn.registration.verify_registration_response import VerifiedRegistration
 
@@ -27,7 +26,7 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnStage, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
 LOGGER = get_logger()
@@ -83,7 +82,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         # clear session variables prior to starting a new registration
         self.request.session.pop("challenge", None)
-
+        stage: AuthenticateWebAuthnStage = self.executor.current_stage
         user = self.get_pending_user()
 
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
@@ -94,10 +93,9 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             user_display_name=user.name,
             authenticator_selection=AuthenticatorSelectionCriteria(
                 resident_key=ResidentKeyRequirement.PREFERRED,
-                user_verification=UserVerificationRequirement.PREFERRED,
+                user_verification=str(stage.user_verification),
             ),
         )
-        registration_options.user.id = user.uid
 
         self.request.session["challenge"] = registration_options.challenge
         return AuthenticatorWebAuthnChallenge(

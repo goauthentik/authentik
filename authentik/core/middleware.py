@@ -5,6 +5,7 @@ from typing import Callable
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
+from sentry_sdk.api import set_tag
 
 SESSION_IMPERSONATE_USER = "authentik_impersonate_user"
 SESSION_IMPERSONATE_ORIGINAL_USER = "authentik_impersonate_original_user"
@@ -50,6 +51,7 @@ class RequestIDMiddleware:
                 "request_id": request_id,
                 "host": request.get_host(),
             }
+            set_tag("authentik.request_id", request_id)
         response = self.get_response(request)
         response[RESPONSE_HEADER_ID] = request.request_id
         setattr(response, "ak_context", {})

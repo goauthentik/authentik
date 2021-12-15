@@ -36,37 +36,41 @@ export class LDAPSyncStatusChart extends AKChart<LDAPSyncStats> {
     async apiRequest(): Promise<LDAPSyncStats> {
         const api = new SourcesApi(DEFAULT_CONFIG);
         const sources = await api.sourcesLdapList({});
-        let healthy = 0;
-        let failed = 0;
-        let unsynced = 0;
+        const metrics: { [key: string]: number } = {
+            healthy: 0,
+            failed: 0,
+            unsynced: 0,
+        };
         await Promise.all(
             sources.results.map(async (element) => {
+                // Each source should have 3 successful tasks, so the worst task overwrites
+                let sourceKey = "healthy";
                 try {
                     const health = await api.sourcesLdapSyncStatusList({
                         slug: element.slug,
                     });
+
                     health.forEach((task) => {
                         if (task.status !== StatusEnum.Successful) {
-                            failed += 1;
+                            sourceKey = "failed";
                         }
                         const now = new Date().getTime();
                         const maxDelta = 3600000; // 1 hour
                         if (!health || now - task.taskFinishTimestamp.getTime() > maxDelta) {
-                            unsynced += 1;
-                        } else {
-                            healthy += 1;
+                            sourceKey = "unsynced";
                         }
                     });
                 } catch {
-                    unsynced += 1;
+                    sourceKey = "unsynced";
                 }
+                metrics[sourceKey] += 1;
             }),
         );
         this.centerText = sources.pagination.count.toString();
         return {
-            healthy: sources.pagination.count === 0 ? -1 : healthy,
-            failed,
-            unsynced,
+            healthy: sources.pagination.count === 0 ? -1 : metrics.healthy,
+            failed: metrics.failed,
+            unsynced: metrics.unsynced,
         };
     }
 

@@ -31,6 +31,8 @@ export function ActionToLabel(action?: EventActions): string {
             return t`Impersonation started`;
         case EventActions.ImpersonationEnded:
             return t`Impersonation ended`;
+        case EventActions.FlowExecution:
+            return t`Flow execution`;
         case EventActions.PolicyExecution:
             return t`Policy execution`;
         case EventActions.PolicyException:

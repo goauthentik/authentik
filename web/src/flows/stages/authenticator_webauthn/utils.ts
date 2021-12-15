@@ -8,15 +8,26 @@ export function b64RawEnc(buf: Uint8Array): string {
     return base64js.fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_");
 }
 
+export function u8arr(input: string): Uint8Array {
+    return Uint8Array.from(atob(input.replace(/_/g, "/").replace(/-/g, "+")), (c) =>
+        c.charCodeAt(0),
+    );
+}
+
 /**
  * Transforms items in the credentialCreateOptions generated on the server
  * into byte arrays expected by the navigator.credentials.create() call
  */
 export function transformCredentialCreateOptions(
     credentialCreateOptions: PublicKeyCredentialCreationOptions,
+    userId: string,
 ): PublicKeyCredentialCreationOptions {
     const user = credentialCreateOptions.user;
-    user.id = u8arr(b64enc(credentialCreateOptions.user.id as Uint8Array));
+    // Because json can't contain raw bytes, the server base64-encodes the User ID
+    // So to get the base64 encoded byte array, we first need to convert it to a regular
+    // string, then a byte array, re-encode it and wrap that in an array.
+    const stringId = decodeURIComponent(escape(window.atob(userId)));
+    user.id = u8arr(b64enc(u8arr(stringId)));
     const challenge = u8arr(credentialCreateOptions.challenge.toString());
 
     const transformedCredentialCreateOptions = Object.assign({}, credentialCreateOptions, {
@@ -61,12 +72,6 @@ export function transformNewAssertionForServer(newAssertion: PublicKeyCredential
             attestationObject: b64enc(attObj),
         },
     };
-}
-
-function u8arr(input: string): Uint8Array {
-    return Uint8Array.from(atob(input.replace(/_/g, "/").replace(/-/g, "+")), (c) =>
-        c.charCodeAt(0),
-    );
 }
 
 export function transformCredentialRequestOptions(

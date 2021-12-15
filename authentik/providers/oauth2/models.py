@@ -8,7 +8,6 @@ from datetime import datetime
 from hashlib import sha256
 from typing import Any, Optional, Type
 from urllib.parse import urlparse
-from uuid import uuid4
 
 from dacite import from_dict
 from django.db import models
@@ -225,7 +224,7 @@ class OAuth2Provider(Provider):
         token = RefreshToken(
             user=user,
             provider=self,
-            refresh_token=uuid4().hex,
+            refresh_token=generate_key(),
             expires=timezone.now() + timedelta_from_string(self.token_validity),
             scope=scope,
         )
@@ -434,7 +433,7 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         """Create access token with a similar format as Okta, Keycloak, ADFS"""
         token = self.create_id_token(user, request).to_dict()
         token["cid"] = self.provider.client_id
-        token["uid"] = uuid4().hex
+        token["uid"] = generate_key()
         return self.provider.encode(token)
 
     def create_id_token(self, user: User, request: HttpRequest) -> IDToken:

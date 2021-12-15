@@ -92,10 +92,17 @@ export class ProxyProviderViewPage extends LitElement {
 
     renderConfigTemplate(tmpl: string): TemplateResult {
         // See website/docs/providers/proxy/forward_auth.mdx
-        const final = tmpl
-            .replaceAll("authentik.company", window.location.hostname)
-            .replaceAll("outpost.company", window.location.hostname)
-            .replaceAll("app.company", this.provider?.externalHost || "");
+        let final = "";
+        if (this.provider?.mode === ProxyMode.ForwardSingle) {
+            final = tmpl
+                .replaceAll("authentik.company", window.location.hostname)
+                .replaceAll("outpost.company", window.location.hostname)
+                .replaceAll("app.company", this.provider?.externalHost || "");
+        } else if (this.provider?.mode == ProxyMode.ForwardDomain) {
+            final = tmpl
+                .replaceAll("authentik.company", window.location.hostname)
+                .replaceAll("outpost.company", this.provider?.externalHost || "");
+        }
         return html`${unsafeHTML(final)}`;
     }
 
@@ -233,50 +240,56 @@ export class ProxyProviderViewPage extends LitElement {
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__title">${t`Setup`}</div>
                     <div class="pf-c-card__body">
-                        <ak-tabs pageIdentifier="proxy-setup">
-                            <section
-                                slot="page-nginx-ingress"
-                                data-tab-title="${t`Nginx (Ingress)`}"
-                                class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
-                            >
-                                ${this.renderConfigTemplate(MDNginxIngress.html)}
-                            </section>
-                            <section
-                                slot="page-nginx-proxy-manager"
-                                data-tab-title="${t`Nginx (Proxy Manager)`}"
-                                class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
-                            >
-                                ${this.renderConfigTemplate(MDNginxPM.html)}
-                            </section>
-                            <section
-                                slot="page-nginx-standalone"
-                                data-tab-title="${t`Nginx (standalone)`}"
-                                class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
-                            >
-                                ${this.renderConfigTemplate(MDNginxStandalone.html)}
-                            </section>
-                            <section
-                                slot="page-traefik-ingress"
-                                data-tab-title="${t`Traefik (Ingress)`}"
-                                class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
-                            >
-                                ${this.renderConfigTemplate(MDTraefikIngres.html)}
-                            </section>
-                            <section
-                                slot="page-traefik-compose"
-                                data-tab-title="${t`Traefik (Compose)`}"
-                                class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
-                            >
-                                ${this.renderConfigTemplate(MDTraefikCompose.html)}
-                            </section>
-                            <section
-                                slot="page-traefik-standalone"
-                                data-tab-title="${t`Traefik (Standalone)`}"
-                                class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
-                            >
-                                ${this.renderConfigTemplate(MDTraefikStandalone.html)}
-                            </section>
-                        </ak-tabs>
+                        ${[ProxyMode.ForwardSingle, ProxyMode.ForwardDomain].includes(
+                            this.provider?.mode || ProxyMode.Proxy,
+                        )
+                            ? html`
+                                  <ak-tabs pageIdentifier="proxy-setup">
+                                      <section
+                                          slot="page-nginx-ingress"
+                                          data-tab-title="${t`Nginx (Ingress)`}"
+                                          class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
+                                      >
+                                          ${this.renderConfigTemplate(MDNginxIngress.html)}
+                                      </section>
+                                      <section
+                                          slot="page-nginx-proxy-manager"
+                                          data-tab-title="${t`Nginx (Proxy Manager)`}"
+                                          class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
+                                      >
+                                          ${this.renderConfigTemplate(MDNginxPM.html)}
+                                      </section>
+                                      <section
+                                          slot="page-nginx-standalone"
+                                          data-tab-title="${t`Nginx (standalone)`}"
+                                          class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
+                                      >
+                                          ${this.renderConfigTemplate(MDNginxStandalone.html)}
+                                      </section>
+                                      <section
+                                          slot="page-traefik-ingress"
+                                          data-tab-title="${t`Traefik (Ingress)`}"
+                                          class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
+                                      >
+                                          ${this.renderConfigTemplate(MDTraefikIngres.html)}
+                                      </section>
+                                      <section
+                                          slot="page-traefik-compose"
+                                          data-tab-title="${t`Traefik (Compose)`}"
+                                          class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
+                                      >
+                                          ${this.renderConfigTemplate(MDTraefikCompose.html)}
+                                      </section>
+                                      <section
+                                          slot="page-traefik-standalone"
+                                          data-tab-title="${t`Traefik (Standalone)`}"
+                                          class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
+                                      >
+                                          ${this.renderConfigTemplate(MDTraefikStandalone.html)}
+                                      </section>
+                                  </ak-tabs>
+                              `
+                            : html` <p>${t`No additional setup is required.`}</p> `}
                     </div>
                 </div>
             </div>`;

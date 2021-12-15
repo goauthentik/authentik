@@ -58,8 +58,6 @@ RUN apt-get update && \
         curl ca-certificates gnupg git runit libpq-dev \
         postgresql-client build-essential libxmlsec1-dev \
         pkg-config libmaxminddb0 && \
-    pip install lxml==4.6.4 --no-cache-dir && \
-    export C_INCLUDE_PATH=/usr/local/lib/python3.10/site-packages/lxml/includes && \
     pip install -r /requirements.txt --no-cache-dir && \
     apt-get remove --purge -y build-essential git && \
     apt-get autoremove --purge -y && \
