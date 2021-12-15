@@ -67,7 +67,7 @@ if [[ "$1" == "server" ]]; then
     /authentik-proxy
 elif [[ "$1" == "worker" ]]; then
     echo "worker" > $MODE_FILE
-    check_if_root "celery -A authentik.root.celery worker --autoscale 3,1 -E -B -s /tmp/celerybeat-schedule -Q authentik,authentik_scheduled,authentik_events"
+    check_if_root "celery -A authentik.root.celery worker -Ofair --autoscale 3,1 -E -B -s /tmp/celerybeat-schedule -Q authentik,authentik_scheduled,authentik_events"
 elif [[ "$1" == "flower" ]]; then
     echo "flower" > $MODE_FILE
     celery -A authentik.root.celery flower
