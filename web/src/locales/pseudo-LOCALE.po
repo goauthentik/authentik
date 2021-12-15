@@ -5185,6 +5185,7 @@ msgid "UI settings"
 msgstr ""
 
 #: src/pages/events/EventInfo.ts
+#: src/pages/users/UserListPage.ts
 msgid "UID"
 msgstr ""
 
@@ -5748,6 +5749,10 @@ msgstr ""
 
 #: src/pages/providers/ProviderListPage.ts
 msgid "Warning: Provider not assigned to any application."
+msgstr ""
+
+#: src/pages/users/UserListPage.ts
+msgid "Warning: You're about to delete the user you're logged in as ({0}). Proceed at your own risk."
 msgstr ""
 
 #: src/pages/outposts/OutpostListPage.ts
