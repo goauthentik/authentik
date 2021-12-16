@@ -2,6 +2,7 @@ package search
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"strings"
 
@@ -27,10 +28,15 @@ func NewRequest(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (*Re
 	bindDN = strings.ToLower(bindDN)
 	searchReq.BaseDN = strings.ToLower(searchReq.BaseDN)
 	span := sentry.StartSpan(context.TODO(), "authentik.providers.ldap.search", sentry.TransactionName("authentik.providers.ldap.search"))
+	span.Description = fmt.Sprintf("%s (%s)", searchReq.BaseDN, ldap.ScopeMap[searchReq.Scope])
 	span.SetTag("request_uid", rid)
-	span.SetTag("user.username", bindDN)
-	span.SetTag("ak_filter", searchReq.Filter)
-	span.SetTag("ak_base_dn", searchReq.BaseDN)
+	sentry.GetHubFromContext(span.Context()).Scope().SetUser(sentry.User{
+		Username:  bindDN,
+		ID:        bindDN,
+		IPAddress: utils.GetIP(conn.RemoteAddr()),
+	})
+	span.SetTag("ldap_filter", searchReq.Filter)
+	span.SetTag("ldap_base_dn", searchReq.BaseDN)
 	return &Request{
 		SearchRequest: searchReq,
 		BindDN:        bindDN,
