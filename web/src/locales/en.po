@@ -122,6 +122,10 @@ msgstr "API Token (can be used to access the API programmatically)"
 msgid "API request failed"
 msgstr "API request failed"
 
+#: src/pages/applications/ApplicationListPage.ts
+msgid "About applications"
+msgstr "About applications"
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Access Key"
 msgstr "Access Key"

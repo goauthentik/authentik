@@ -2,7 +2,7 @@
 import time
 from collections import Counter
 from datetime import timedelta
-from inspect import getmodule, stack
+from inspect import currentframe
 from smtplib import SMTPException
 from typing import TYPE_CHECKING, Optional, Type, Union
 from uuid import uuid4
@@ -192,14 +192,15 @@ class Event(ExpiringModel):
     def new(
         action: Union[str, EventAction],
         app: Optional[str] = None,
-        _inspect_offset: int = 1,
         **kwargs,
     ) -> "Event":
         """Create new Event instance from arguments. Instance is NOT saved."""
         if not isinstance(action, EventAction):
             action = EventAction.CUSTOM_PREFIX + action
         if not app:
-            app = getmodule(stack()[_inspect_offset][0]).__name__
+            current = currentframe()
+            parent = current.f_back
+            app = parent.f_globals["__name__"]
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event

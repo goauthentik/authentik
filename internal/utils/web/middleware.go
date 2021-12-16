@@ -99,8 +99,8 @@ func (h loggingHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	h.handler.ServeHTTP(responseLogger, req)
 	duration := float64(time.Since(t)) / float64(time.Millisecond)
 	h.afterHandler(h.logger.WithFields(log.Fields{
-		"host":              req.RemoteAddr,
-		"vhost":             GetHost(req),
+		"remote":            req.RemoteAddr,
+		"host":              GetHost(req),
 		"request_protocol":  req.Proto,
 		"runtime":           fmt.Sprintf("%0.3f", duration),
 		"method":            req.Method,

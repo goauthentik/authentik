@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/coreos/go-oidc"
+	"github.com/getsentry/sentry-go"
+	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/pkg/errors"
@@ -109,6 +111,15 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 			user := ""
 			if c != nil {
 				user = c.PreferredUsername
+				hub := sentry.GetHubFromContext(r.Context())
+				if hub == nil {
+					hub = sentry.CurrentHub()
+				}
+				hub.Scope().SetUser(sentry.User{
+					Username:  user,
+					ID:        c.Sub,
+					IPAddress: r.RemoteAddr,
+				})
 			}
 			before := time.Now()
 			inner.ServeHTTP(rw, r)
@@ -124,6 +135,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 			}).Observe(float64(after))
 		})
 	})
+	mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 
 	// Support /start and /sign_in for backwards compatibility
 	mux.HandleFunc("/akprox/start", a.handleRedirect)

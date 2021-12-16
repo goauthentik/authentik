@@ -60,6 +60,7 @@ type FlowExecutor struct {
 
 func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Configuration, logFields log.Fields) *FlowExecutor {
 	rsp := sentry.StartSpan(ctx, "authentik.outposts.flow_executor")
+	rsp.Description = flowSlug
 
 	l := log.WithField("flow", flowSlug).WithFields(logFields)
 	jar, err := cookiejar.New(nil)
@@ -153,8 +154,8 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 	}
 	ch := challenge.GetActualInstance().(ChallengeInt)
 	fe.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got challenge")
-	gcsp.SetTag("ak_challenge", string(ch.GetType()))
-	gcsp.SetTag("ak_component", ch.GetComponent())
+	gcsp.SetTag("authentik.flow.challenge", string(ch.GetType()))
+	gcsp.SetTag("authentik.flow.component", ch.GetComponent())
 	gcsp.Finish()
 	FlowTimingGet.With(prometheus.Labels{
 		"stage":  ch.GetComponent(),
@@ -202,8 +203,8 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 	response, _, err := responseReq.Execute()
 	ch = response.GetActualInstance().(ChallengeInt)
 	fe.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got response")
-	scsp.SetTag("ak_challenge", string(ch.GetType()))
-	scsp.SetTag("ak_component", ch.GetComponent())
+	scsp.SetTag("authentik.flow.challenge", string(ch.GetType()))
+	scsp.SetTag("authentik.flow.component", ch.GetComponent())
 	scsp.Finish()
 
 	switch ch.GetComponent() {

@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
@@ -52,6 +53,7 @@ func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
 
 	globalMux := rootMux.NewRoute().Subrouter()
 	globalMux.Use(web.NewLoggingHandler(l.WithField("logger", "authentik.outpost.proxyv2.http"), nil))
+	globalMux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	s := &ProxyServer{
 		Listen:     "0.0.0.0:%d",
 		PortOffset: portOffset,

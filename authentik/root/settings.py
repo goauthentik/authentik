@@ -28,6 +28,7 @@ from sentry_sdk.integrations.boto3 import Boto3Integration
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
+from sentry_sdk.integrations.threading import ThreadingIntegration
 
 from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.core.middleware import structlog_add_request_id
@@ -424,6 +425,7 @@ if _ERROR_REPORTING:
             CeleryIntegration(),
             RedisIntegration(),
             Boto3Integration(),
+            ThreadingIntegration(propagate_hub=True),
         ],
         before_send=before_send,
         release=f"authentik@{__version__}",

@@ -122,6 +122,10 @@ msgstr ""
 msgid "API request failed"
 msgstr ""
 
+#: src/pages/applications/ApplicationListPage.ts
+msgid "About applications"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Access Key"
 msgstr ""

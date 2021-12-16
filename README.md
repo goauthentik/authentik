@@ -38,3 +38,23 @@ See [Development Documentation](https://goauthentik.io/developer-docs/?utm_sourc
 ## Security
 
 See [SECURITY.md](SECURITY.md)
+
+## Sponsors
+
+This project is proudly sponsored by:
+
+<p>
+    <a href="https://www.digitalocean.com/?utm_medium=opensource&utm_source=goauthentik.io">
+        <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/SVG/DO_Logo_horizontal_blue.svg" width="201px">
+    </a>
+</p>
+
+DigitalOcean provides development and testing resources for authentik.
+
+<p>
+    <a href="https://www.netlify.com">
+        <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg" alt="Deploys by Netlify" />
+    </a>
+</p>
+
+Netlify hosts the [goauthentik.io](goauthentik.io) site.

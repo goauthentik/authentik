@@ -5,12 +5,15 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
 
+import MDApplication from "../../../../website/docs/core/applications.md";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import "../../elements/Markdown";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
@@ -52,6 +55,7 @@ export class ApplicationListPage extends TablePage<Application> {
     static get styles(): CSSResult[] {
         return super.styles.concat(
             PFAvatar,
+            PFCard,
             css`
                 tr td:first-child {
                     width: auto;
@@ -72,6 +76,17 @@ export class ApplicationListPage extends TablePage<Application> {
             new TableColumn(t`Provider Type`),
             new TableColumn(t`Actions`),
         ];
+    }
+
+    renderSidebarAfter(): TemplateResult {
+        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
+            <div class="pf-c-card">
+                <div class="pf-c-card__title">${t`About applications`}</div>
+                <div class="pf-c-card__body">
+                    <ak-markdown .md=${MDApplication}></ak-markdown>
+                </div>
+            </div>
+        </div>`;
     }
 
     renderToolbarSelected(): TemplateResult {

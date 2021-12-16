@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 
+	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
@@ -13,6 +14,7 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/proxyv2"
+	"goauthentik.io/internal/utils/web"
 )
 
 type WebServer struct {
@@ -34,13 +36,11 @@ type WebServer struct {
 func NewWebServer(g *gounicorn.GoUnicorn) *WebServer {
 	l := log.WithField("logger", "authentik.router")
 	mainHandler := mux.NewRouter()
-	if config.G.ErrorReporting.Enabled {
-		mainHandler.Use(recoveryMiddleware())
-	}
+	mainHandler.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	mainHandler.Use(handlers.ProxyHeaders)
 	mainHandler.Use(handlers.CompressHandler)
 	logginRouter := mainHandler.NewRoute().Subrouter()
-	logginRouter.Use(loggingMiddleware(l))
+	logginRouter.Use(web.NewLoggingHandler(l, nil))
 
 	ws := &WebServer{
 		LegacyProxy: true,
@@ -72,7 +72,7 @@ func (ws *WebServer) Shutdown() {
 func (ws *WebServer) listenPlain() {
 	ln, err := net.Listen("tcp", config.G.Web.Listen)
 	if err != nil {
-		ws.log.WithError(err).Fatalf("failed to listen")
+		ws.log.WithError(err).Fatal("failed to listen")
 	}
 	ws.log.WithField("listen", config.G.Web.Listen).Info("Listening")
 
@@ -83,7 +83,7 @@ func (ws *WebServer) listenPlain() {
 
 	err = http.ListenAndServe(config.G.Web.Listen, ws.m)
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
-		ws.log.Errorf("ERROR: http.Serve() - %s", err)
+		ws.log.WithError(err).Error("failed to listen")
 	}
 }
 
@@ -100,14 +100,14 @@ func (ws *WebServer) serve(listener net.Listener) {
 		// We received an interrupt signal, shut down.
 		if err := srv.Shutdown(context.Background()); err != nil {
 			// Error from closing listeners, or context timeout:
-			ws.log.Printf("HTTP server Shutdown: %v", err)
+			ws.log.WithError(err).Warning("HTTP server Shutdown")
 		}
 		close(idleConnsClosed)
 	}()
 
 	err := srv.Serve(listener)
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
-		ws.log.Errorf("ERROR: http.Serve() - %s", err)
+		ws.log.WithError(err).Error("ERROR: http.Serve()")
 	}
 	<-idleConnsClosed
 }

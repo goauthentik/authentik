@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
-import { unsafeHTML } from "lit-html/directives/unsafe-html.js";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "../../../authentik.css";
@@ -28,6 +27,8 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import { EVENT_REFRESH } from "../../../constants";
 import "../../../elements/CodeMirror";
 import { PFColor } from "../../../elements/Label";
+import "../../../elements/Markdown";
+import { MarkdownDocument } from "../../../elements/Markdown";
 import "../../../elements/Tabs";
 import "../../../elements/buttons/ModalButton";
 import "../../../elements/buttons/SpinnerButton";
@@ -90,20 +91,19 @@ export class ProxyProviderViewPage extends LitElement {
         });
     }
 
-    renderConfigTemplate(tmpl: string): TemplateResult {
+    renderConfigTemplate(markdown: MarkdownDocument): MarkdownDocument {
         // See website/docs/providers/proxy/forward_auth.mdx
-        let final = "";
         if (this.provider?.mode === ProxyMode.ForwardSingle) {
-            final = tmpl
+            markdown.html = markdown.html
                 .replaceAll("authentik.company", window.location.hostname)
                 .replaceAll("outpost.company", window.location.hostname)
                 .replaceAll("app.company", this.provider?.externalHost || "");
         } else if (this.provider?.mode == ProxyMode.ForwardDomain) {
-            final = tmpl
+            markdown.html = markdown.html
                 .replaceAll("authentik.company", window.location.hostname)
                 .replaceAll("outpost.company", this.provider?.externalHost || "");
         }
-        return html`${unsafeHTML(final)}`;
+        return markdown;
     }
 
     render(): TemplateResult {
@@ -250,42 +250,54 @@ export class ProxyProviderViewPage extends LitElement {
                                           data-tab-title="${t`Nginx (Ingress)`}"
                                           class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
                                       >
-                                          ${this.renderConfigTemplate(MDNginxIngress.html)}
+                                          <ak-markdown
+                                              .md=${this.renderConfigTemplate(MDNginxIngress)}
+                                          ></ak-markdown>
                                       </section>
                                       <section
                                           slot="page-nginx-proxy-manager"
                                           data-tab-title="${t`Nginx (Proxy Manager)`}"
                                           class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
                                       >
-                                          ${this.renderConfigTemplate(MDNginxPM.html)}
+                                          <ak-markdown
+                                              .md=${this.renderConfigTemplate(MDNginxPM)}
+                                          ></ak-markdown>
                                       </section>
                                       <section
                                           slot="page-nginx-standalone"
                                           data-tab-title="${t`Nginx (standalone)`}"
                                           class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
                                       >
-                                          ${this.renderConfigTemplate(MDNginxStandalone.html)}
+                                          <ak-markdown
+                                              .md=${this.renderConfigTemplate(MDNginxStandalone)}
+                                          ></ak-markdown>
                                       </section>
                                       <section
                                           slot="page-traefik-ingress"
                                           data-tab-title="${t`Traefik (Ingress)`}"
                                           class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
                                       >
-                                          ${this.renderConfigTemplate(MDTraefikIngres.html)}
+                                          <ak-markdown
+                                              .md=${this.renderConfigTemplate(MDTraefikIngres)}
+                                          ></ak-markdown>
                                       </section>
                                       <section
                                           slot="page-traefik-compose"
                                           data-tab-title="${t`Traefik (Compose)`}"
                                           class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
                                       >
-                                          ${this.renderConfigTemplate(MDTraefikCompose.html)}
+                                          <ak-markdown
+                                              .md=${this.renderConfigTemplate(MDTraefikCompose)}
+                                          ></ak-markdown>
                                       </section>
                                       <section
                                           slot="page-traefik-standalone"
                                           data-tab-title="${t`Traefik (Standalone)`}"
                                           class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
                                       >
-                                          ${this.renderConfigTemplate(MDTraefikStandalone.html)}
+                                          <ak-markdown
+                                              .md=${this.renderConfigTemplate(MDTraefikStandalone)}
+                                          ></ak-markdown>
                                       </section>
                                   </ak-tabs>
                               `
