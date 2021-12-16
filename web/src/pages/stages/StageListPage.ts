@@ -107,11 +107,15 @@ export class StageListPage extends TablePage<Stage> {
                 <div>${item.name}</div>
                 <small>${item.verboseName}</small>
             </div>`,
-            html`${item.flowSet?.map((flow) => {
-                return html`<a href="#/flow/flows/${flow.slug}">
-                    <code>${flow.slug}</code>
-                </a>`;
-            })}`,
+            html`<ul class="pf-c-list">
+                ${item.flowSet?.map((flow) => {
+                    return html`<li>
+                        <a href="#/flow/flows/${flow.slug}">
+                            <code>${flow.slug}</code>
+                        </a>
+                    </li>`;
+                })}
+            </ul>`,
             html` <ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update ${item.verboseName}`} </span>
