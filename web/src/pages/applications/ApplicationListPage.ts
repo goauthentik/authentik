@@ -4,6 +4,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import AKGlobal from "../../authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
@@ -56,6 +57,7 @@ export class ApplicationListPage extends TablePage<Application> {
         return super.styles.concat(
             PFAvatar,
             PFCard,
+            AKGlobal,
             css`
                 tr td:first-child {
                     width: auto;
