@@ -26,7 +26,11 @@ func NewRequest(bindDN string, bindPW string, conn net.Conn) (*Request, *sentry.
 	span.Description = bindDN
 	rid := uuid.New().String()
 	span.SetTag("request_uid", rid)
-	sentry.GetHubFromContext(span.Context()).Scope().SetUser(sentry.User{
+	hub := sentry.GetHubFromContext(span.Context())
+	if hub == nil {
+		hub = sentry.CurrentHub()
+	}
+	hub.Scope().SetUser(sentry.User{
 		Username:  bindDN,
 		ID:        bindDN,
 		IPAddress: utils.GetIP(conn.RemoteAddr()),

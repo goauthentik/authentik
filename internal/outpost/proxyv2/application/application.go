@@ -111,7 +111,11 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 			user := ""
 			if c != nil {
 				user = c.PreferredUsername
-				sentry.GetHubFromContext(r.Context()).Scope().SetUser(sentry.User{
+				hub := sentry.GetHubFromContext(r.Context())
+				if hub == nil {
+					hub = sentry.CurrentHub()
+				}
+				hub.Scope().SetUser(sentry.User{
 					Username:  user,
 					ID:        c.Sub,
 					IPAddress: r.RemoteAddr,

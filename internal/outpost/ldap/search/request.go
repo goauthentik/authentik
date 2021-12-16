@@ -30,7 +30,11 @@ func NewRequest(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (*Re
 	span := sentry.StartSpan(context.TODO(), "authentik.providers.ldap.search", sentry.TransactionName("authentik.providers.ldap.search"))
 	span.Description = fmt.Sprintf("%s (%s)", searchReq.BaseDN, ldap.ScopeMap[searchReq.Scope])
 	span.SetTag("request_uid", rid)
-	sentry.GetHubFromContext(span.Context()).Scope().SetUser(sentry.User{
+	hub := sentry.GetHubFromContext(span.Context())
+	if hub == nil {
+		hub = sentry.CurrentHub()
+	}
+	hub.Scope().SetUser(sentry.User{
 		Username:  bindDN,
 		ID:        bindDN,
 		IPAddress: utils.GetIP(conn.RemoteAddr()),
