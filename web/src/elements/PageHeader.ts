@@ -81,7 +81,7 @@ export class PageHeader extends LitElement {
                     font-size: 24px;
                 }
                 .notification-trigger.has-notifications {
-                    color: #2b9af3;
+                    color: var(--pf-global--active-color--100);
                 }
             `,
         ];
