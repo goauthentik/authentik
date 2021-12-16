@@ -1,7 +1,7 @@
 declare module "*.css";
 declare module "*.md" {
     const html: string;
-    const metadata: object;
+    const metadata: { [key: string]: string };
     const filename: string;
 }
 
