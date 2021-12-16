@@ -191,9 +191,12 @@ class TestCrypto(APITestCase):
             with CONFIG.patch("cert_discovery_dir", temp_dir):
                 # pyright: reportGeneralTypeIssues=false
                 certificate_discovery()  # pylint: disable=no-value-for-parameter
-        self.assertTrue(
-            CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % "foo").exists()
-        )
+        keypair: CertificateKeyPair = CertificateKeyPair.objects.filter(
+            managed=MANAGED_DISCOVERED % "foo"
+        ).first()
+        self.assertIsNotNone(keypair)
+        self.assertIsNotNone(keypair.certificate)
+        self.assertIsNotNone(keypair.private_key)
         self.assertTrue(
             CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % "foo.bar").exists()
         )

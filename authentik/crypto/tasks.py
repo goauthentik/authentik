@@ -79,7 +79,7 @@ def certificate_discovery(self: MonitoredTask):
             cert.certificate_data = cert_data
             dirty = True
         if name in private_keys:
-            if cert.key_data == private_keys[name]:
+            if cert.key_data != private_keys[name]:
                 cert.key_data = private_keys[name]
                 dirty = True
         if dirty:
