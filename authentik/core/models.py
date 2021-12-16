@@ -456,6 +456,14 @@ class Token(ManagedModel, ExpiringModel):
         """Handler which is called when this object is expired."""
         from authentik.events.models import Event, EventAction
 
+        if self.intent in [
+            TokenIntents.INTENT_RECOVERY,
+            TokenIntents.INTENT_VERIFICATION,
+            TokenIntents.INTENT_APP_PASSWORD,
+        ]:
+            super().expire_action(*args, **kwargs)
+            return
+
         self.key = default_token_key()
         self.expires = default_token_duration()
         self.save(*args, **kwargs)

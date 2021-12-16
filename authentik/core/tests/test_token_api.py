@@ -54,7 +54,9 @@ class TestTokenAPI(APITestCase):
 
     def test_token_expire(self):
         """Test Token expire task"""
-        token: Token = Token.objects.create(expires=now(), user=get_anonymous_user())
+        token: Token = Token.objects.create(
+            expires=now(), user=get_anonymous_user(), intent=TokenIntents.INTENT_API
+        )
         key = token.key
         clean_expired_models.delay().get()
         token.refresh_from_db()
