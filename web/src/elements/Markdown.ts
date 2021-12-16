@@ -25,7 +25,7 @@ export class Markdown extends LitElement {
         if (!this.md) {
             return html``;
         }
-        const finalHTML = this.md?.html.replace("<ul>", "<ul class=\"pf-c-list\">");
+        const finalHTML = this.md?.html.replace("<ul>", "<ul class='pf-c-list'>");
         return html`${this.md?.metadata.title ? html`<h2>${this.md.metadata.title}</h2>` : html``}
         ${unsafeHTML(finalHTML)}`;
     }
