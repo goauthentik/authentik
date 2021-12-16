@@ -183,9 +183,15 @@ export class NotificationDrawer extends LitElement {
                                             composed: true,
                                         }),
                                     );
+                                    this.dispatchEvent(
+                                        new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
+                                            bubbles: true,
+                                            composed: true,
+                                        }),
+                                    );
                                 });
                         }}
-                        class="pf-c-button pf-m-secondary pf-m-block"
+                        class="pf-c-button pf-m-primary pf-m-block"
                         type="button"
                         aria-label=${t`Clear all`}
                     >
