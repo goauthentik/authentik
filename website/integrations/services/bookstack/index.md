@@ -101,3 +101,9 @@ BookStack will attempt to match the SAML user to an existing BookStack user base
 :::note
 SAML Group Sync is supported by Bookstack.  Review the BookStack documentation on the required Environment variables.  https://www.bookstackapp.com/docs/admin/saml2-auth/
 :::
+
+:::note
+In some cases you might need to define the full SAML property name.
+i.e.: `SAML2_GROUP_ATTRIBUTE="http://schemas.xmlsoap.org/claims/Group"`
+See https://github.com/BookStackApp/BookStack/issues/3109 for more details.
+:::
