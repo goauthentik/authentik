@@ -1,7 +1,6 @@
 package ak
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -37,16 +36,15 @@ func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
 	log.WithField("logger", "authentik.outpost").WithField("hash", constants.BUILD()).WithField("version", constants.VERSION).Info("Starting authentik outpost")
 
 	if globalConfig.ErrorReporting.Enabled {
-		sentryEnv := fmt.Sprintf("%s-outpost-%s", globalConfig.ErrorReporting.Environment, outpost.Type)
 		dsn := "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
-		log.WithField("env", sentryEnv).Debug("Error reporting enabled")
+		log.WithField("env", globalConfig.ErrorReporting.Environment).Debug("Error reporting enabled")
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn:              dsn,
-			Environment:      sentryEnv,
+			Environment:      globalConfig.ErrorReporting.Environment,
 			TracesSampleRate: float64(globalConfig.ErrorReporting.TracesSampleRate),
 		})
 		if err != nil {
-			log.WithField("env", sentryEnv).WithError(err).Warning("Failed to initialise sentry")
+			log.WithField("env", globalConfig.ErrorReporting.Environment).WithError(err).Warning("Failed to initialise sentry")
 		}
 	}
 }
