@@ -961,8 +961,8 @@ msgstr "Configure how the outpost queries the core authentik server's users."
 #~ msgstr "Configure settings relevant to your user profile."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid "Configure the maximum allowed time drift for an asseration."
-msgstr "Configure the maximum allowed time drift for an asseration."
+msgid "Configure the maximum allowed time drift for an assertion."
+msgstr "Configure the maximum allowed time drift for an assertion."
 
 #: src/pages/tenants/TenantListPage.ts
 msgid "Configure visual settings and defaults for different domains."

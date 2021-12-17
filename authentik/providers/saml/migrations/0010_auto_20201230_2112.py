@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             field=models.TextField(
                 blank=True,
                 default="",
-                help_text="Value of the audience restriction field of the asseration. When left empty, no audience restriction will be added.",
+                help_text="Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added.",
             ),
         ),
     ]
