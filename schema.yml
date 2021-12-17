@@ -27952,7 +27952,7 @@ components:
           maxLength: 200
         audience:
           type: string
-          description: Value of the audience restriction field of the asseration.
+          description: Value of the audience restriction field of the assertion.
             When left empty, no audience restriction will be added.
         issuer:
           type: string
@@ -29559,7 +29559,7 @@ components:
           maxLength: 200
         audience:
           type: string
-          description: Value of the audience restriction field of the asseration.
+          description: Value of the audience restriction field of the assertion.
             When left empty, no audience restriction will be added.
         issuer:
           type: string
@@ -29661,7 +29661,7 @@ components:
           maxLength: 200
         audience:
           type: string
-          description: Value of the audience restriction field of the asseration.
+          description: Value of the audience restriction field of the assertion.
             When left empty, no audience restriction will be added.
         issuer:
           type: string

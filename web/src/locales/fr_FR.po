@@ -959,7 +959,7 @@ msgstr ""
 #~ msgstr "Configure les paramètre applicable à votre profil."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid "Configure the maximum allowed time drift for an asseration."
+msgid "Configure the maximum allowed time drift for an assertion."
 msgstr "Configure la dérive temporelle maximale d'une assetion."
 
 #: src/pages/tenants/TenantListPage.ts
