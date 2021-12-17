@@ -91,10 +91,55 @@ jobs:
           docker pull ghcr.io/goauthentik/${{ matrix.type }}:latest
           docker tag ghcr.io/goauthentik/${{ matrix.type }}:latest ghcr.io/goauthentik/${{ matrix.type }}:stable
           docker push ghcr.io/goauthentik/${{ matrix.type }}:stable
+  build-outpost-binary:
+    timeout-minutes: 120
+    needs:
+      - ci-outpost-mark
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        type:
+          - proxy
+          - ldap
+        goos: [linux, windows, darwin]
+        goarch: ["386", amd64, arm64]
+        exclude:
+          - goarch: "386"
+            goos: darwin
+          - goarch: arm64
+            goos: windows
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      - name: Build web
+        run: |
+          cd web
+          npm install
+          npm run build-proxy
+      - name: Build outpost
+        run: |
+          set -x
+          export GOOS=${{ matrix.goos }}
+          export GOARCH=${{ matrix.goarch }}
+          go build -tags=outpost_static_embed -v -o ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }} ./cmd/${{ matrix.type }}
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
+          asset_name: hentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
+          tag: ${{ github.ref }}
   test-release:
     needs:
       - build-server
       - build-outpost
+      - build-outpost-binary
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

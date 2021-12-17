@@ -89,13 +89,8 @@ jobs:
         type:
           - proxy
           - ldap
-        goos: [linux, windows, darwin]
-        goarch: ["386", amd64, arm64]
-        exclude:
-          - goarch: "386"
-            goos: darwin
-          - goarch: arm64
-            goos: windows
+        goos: [linux]
+        goarch: [amd64, arm64]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
