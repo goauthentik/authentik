@@ -176,7 +176,7 @@ jobs:
           testspace [integration]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v2
-  test-e2e:
+  test-e2e-provider:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -215,12 +215,59 @@ jobs:
           npm run build
       - name: run e2e
         run: |
-          pipenv run make test-e2e
+          pipenv run make test-e2e-provider
           pipenv run coverage xml
       - name: run testspace
         if: ${{ always() }}
         run: |
-          testspace [e2e]unittest.xml --link=codecov
+          testspace [e2e-provider]unittest.xml --link=codecov
+      - if: ${{ always() }}
+        uses: codecov/codecov-action@v2
+  test-e2e-rest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      - uses: testspace-com/setup-testspace@v1
+        with:
+          domain: ${{github.repository_owner}}
+      - id: cache-pipenv
+        uses: actions/cache@v2.1.7
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
+      - name: prepare
+        env:
+          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+        run: |
+          scripts/ci_prepare.sh
+          docker-compose -f tests/e2e/docker-compose.yml up -d
+      - id: cache-web
+        uses: actions/cache@v2.1.7
+        with:
+          path: web/dist
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
+      - name: prepare web ui
+        if: steps.cache-web.outputs.cache-hit != 'true'
+        run: |
+          cd web
+          npm i
+          npm run build
+      - name: run e2e
+        run: |
+          pipenv run make test-e2e-rest
+          pipenv run coverage xml
+      - name: run testspace
+        if: ${{ always() }}
+        run: |
+          testspace [e2e-rest]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v2
   ci-core-mark:
@@ -230,7 +277,8 @@ jobs:
       - test-migrations-from-stable
       - test-unittest
       - test-integration
-      - test-e2e
+      - test-e2e-rest
+      - test-e2e-provider
     runs-on: ubuntu-latest
     steps:
       - run: echo mark

@@ -9,8 +9,11 @@ all: lint-fix lint test gen web
 test-integration:
 	coverage run manage.py test tests/integration
 
-test-e2e:
-	coverage run manage.py test tests/e2e
+test-e2e-provider:
+	coverage run manage.py test tests/e2e/test_provider*
+
+test-e2e-rest:
+	coverage run manage.py test tests/e2e/test_flows* tests/e2e/test_source*
 
 test:
 	coverage run manage.py test authentik
