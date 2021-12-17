@@ -56,6 +56,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.17"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
       - name: Set up Docker Buildx
@@ -112,6 +114,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.17"
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
