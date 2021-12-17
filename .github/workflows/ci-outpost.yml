@@ -16,8 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
-        with:
-          go-version: '^1.16.3'
       - name: Run linter
         run: |
           # Create folder structure for go embeds
@@ -80,3 +78,34 @@ jobs:
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
           platforms: ${{ matrix.arch }}
+  build-outpost-binary:
+    timeout-minutes: 120
+    needs:
+      - ci-outpost-mark
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        type:
+          - proxy
+          - ldap
+        goos: [linux, windows, darwin]
+        goarch: ["386", amd64, arm64]
+        exclude:
+          - goarch: "386"
+            goos: darwin
+          - goarch: arm64
+            goos: windows
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+      - name: Build outpost
+        run: |
+          set -x
+          export GOOS=${{ matrix.goos }}
+          export GOARCH=${{ matrix.goarch }}
+          go build -tags=outpost_static_embed -v -o ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_{{ matrix.goarch }} ./cmd/${{ matrix.type }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_{{ matrix.goarch }}
+          path: ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_{{ matrix.goarch }}
