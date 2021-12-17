@@ -110,7 +110,7 @@ class DockerController(BaseController):
         image = self.get_container_image()
         try:
             self.client.images.pull(image)
-        except DockerException:
+        except DockerException:  # pragma: no cover
             image = f"goauthentik.io/{self.outpost.type}:latest"
             self.client.images.pull(image)
         return image
@@ -144,7 +144,7 @@ class DockerController(BaseController):
                 True,
             )
 
-    def _migrate_container_name(self):
+    def _migrate_container_name(self):  # pragma: no cover
         """Migrate 2021.9 to 2021.10+"""
         old_name = f"authentik-proxy-{self.outpost.uuid.hex}"
         try:
