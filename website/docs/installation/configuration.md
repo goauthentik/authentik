@@ -152,7 +152,7 @@ Configure how authentik should show avatars for users. Following values can be s
 ### AUTHENTIK_DEFAULT_USER_CHANGE_EMAIL
 
 :::info
-Requires authentik 2021.10.5
+Requires authentik 2021.12.1
 :::
 
 Enable the ability for users to change their Email address, defaults to `true`.
@@ -160,7 +160,7 @@ Enable the ability for users to change their Email address, defaults to `true`.
 ### AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME
 
 :::info
-Requires authentik 2021.10.5
+Requires authentik 2021.12.1
 :::
 
 Enable the ability for users to change their Usernames, defaults to `true`.
@@ -168,7 +168,7 @@ Enable the ability for users to change their Usernames, defaults to `true`.
 ### AUTHENTIK_GDPR_COMPLIANCE
 
 :::info
-Requires authentik 2021.10.5
+Requires authentik 2021.12.1
 :::
 
 When enabled, all the events caused by a user will be deleted upon the user's deletion. Defaults to `true`.
@@ -176,7 +176,7 @@ When enabled, all the events caused by a user will be deleted upon the user's de
 ### AUTHENTIK_FOOTER_LINKS
 
 :::info
-Requires authentik 2021.10.5
+Requires authentik 2021.12.1
 :::
 
 This option configures the footer links on the flow executor pages.
