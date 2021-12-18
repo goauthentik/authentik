@@ -300,7 +300,7 @@ jobs:
       - name: prepare variables
         id: ev
         env:
-          DOCKER_USERNAME: ${{ secrets.HARBOR_USERNAME }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
           python ./scripts/gh_env.py
       - name: Login to Container Registry
