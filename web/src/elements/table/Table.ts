@@ -343,6 +343,7 @@ export abstract class Table<T> extends LitElement {
             return html``;
         }
         return html`<ak-table-search
+            class="pf-c-toolbar__item pf-m-search-filter"
             value=${ifDefined(this.search)}
             .onSearch=${(value: string) => {
                 this.search = value;
@@ -363,7 +364,7 @@ export abstract class Table<T> extends LitElement {
     renderToolbarContainer(): TemplateResult {
         return html`<div class="pf-c-toolbar">
             <div class="pf-c-toolbar__content">
-                <div class="pf-m-search-filter">${this.renderSearch()}</div>
+                <div class="pf-c-toolbar__group pf-m-search-filter">${this.renderSearch()}</div>
                 <div class="pf-c-toolbar__bulk-select">${this.renderToolbar()}</div>
                 <div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>
                 <div class="pf-c-toolbar__group">${this.renderToolbarSelected()}</div>
