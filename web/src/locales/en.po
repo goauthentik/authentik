@@ -2837,6 +2837,10 @@ msgid "Metadata"
 msgstr "Metadata"
 
 #: src/pages/policies/password/PasswordPolicyForm.ts
+msgid "Minimum amount of Digits"
+msgstr "Minimum amount of Digits"
+
+#: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Minimum amount of Lowercase Characters"
 msgstr "Minimum amount of Lowercase Characters"
 

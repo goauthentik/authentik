@@ -13,6 +13,7 @@ from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 LOGGER = get_logger()
 RE_LOWER = re.compile("[a-z]")
 RE_UPPER = re.compile("[A-Z]")
+RE_DIGITS = re.compile("[0-9]")
 
 
 class PasswordPolicy(Policy):
@@ -23,10 +24,11 @@ class PasswordPolicy(Policy):
         help_text=_("Field key to check, field keys defined in Prompt stages are available."),
     )
 
-    amount_uppercase = models.IntegerField(default=0)
-    amount_lowercase = models.IntegerField(default=0)
-    amount_symbols = models.IntegerField(default=0)
-    length_min = models.IntegerField(default=0)
+    amount_digits = models.PositiveIntegerField(default=0)
+    amount_uppercase = models.PositiveIntegerField(default=0)
+    amount_lowercase = models.PositiveIntegerField(default=0)
+    amount_symbols = models.PositiveIntegerField(default=0)
+    length_min = models.PositiveIntegerField(default=0)
     symbol_charset = models.TextField(default=r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ")
     error_message = models.TextField()
 
@@ -40,6 +42,7 @@ class PasswordPolicy(Policy):
     def component(self) -> str:
         return "ak-policy-password-form"
 
+    # pylint: disable=too-many-return-statements
     def passes(self, request: PolicyRequest) -> PolicyResult:
         if (
             self.password_field not in request.context
@@ -62,6 +65,9 @@ class PasswordPolicy(Policy):
             LOGGER.debug("password failed", reason="length")
             return PolicyResult(False, self.error_message)
 
+        if self.amount_digits > 0 and len(RE_DIGITS.findall(password)) < self.amount_digits:
+            LOGGER.debug("password failed", reason="amount_digits")
+            return PolicyResult(False, self.error_message)
         if self.amount_lowercase > 0 and len(RE_LOWER.findall(password)) < self.amount_lowercase:
             LOGGER.debug("password failed", reason="amount_lowercase")
             return PolicyResult(False, self.error_message)

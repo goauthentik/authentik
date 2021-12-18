@@ -8310,6 +8310,10 @@ paths:
       description: Password Policy Viewset
       parameters:
       - in: query
+        name: amount_digits
+        schema:
+          type: integer
+      - in: query
         name: amount_lowercase
         schema:
           type: integer
@@ -26413,22 +26417,26 @@ components:
           type: string
           description: Field key to check, field keys defined in Prompt stages are
             available.
+        amount_digits:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
         amount_uppercase:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         amount_lowercase:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         amount_symbols:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         length_min:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         symbol_charset:
           type: string
         error_message:
@@ -26457,22 +26465,26 @@ components:
           minLength: 1
           description: Field key to check, field keys defined in Prompt stages are
             available.
+        amount_digits:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
         amount_uppercase:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         amount_lowercase:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         amount_symbols:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         length_min:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         symbol_charset:
           type: string
           minLength: 1
@@ -27630,22 +27642,26 @@ components:
           minLength: 1
           description: Field key to check, field keys defined in Prompt stages are
             available.
+        amount_digits:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
         amount_uppercase:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         amount_lowercase:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         amount_symbols:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         length_min:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         symbol_charset:
           type: string
           minLength: 1

@@ -123,6 +123,18 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${t`Minimum amount of Digits`}
+                        ?required=${true}
+                        name="amountDigits"
+                    >
+                        <input
+                            type="number"
+                            value="${first(this.instance?.amountDigits, 2)}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${t`Minimum amount of Symbols Characters`}
                         ?required=${true}
                         name="amountSymbols"
