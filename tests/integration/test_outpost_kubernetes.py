@@ -1,5 +1,9 @@
 """outpost tests"""
+from unittest.mock import MagicMock, patch
+
 from django.test import TestCase
+from kubernetes.client import AppsV1Api
+from kubernetes.client.exceptions import OpenApiException
 
 from authentik.core.tests.utils import create_test_flow
 from authentik.lib.config import CONFIG
@@ -58,3 +62,29 @@ class OutpostKubernetesTests(TestCase):
                 )
 
         deployment_reconciler.delete(deployment_reconciler.get_reference_object())
+
+    def test_controller_rename(self):
+        """test that objects get deleted and re-created with new names"""
+        controller = ProxyKubernetesController(self.outpost, self.service_connection)
+
+        self.assertIsNone(controller.up())
+        self.outpost.name = "foo"
+        self.assertIsNone(controller.up())
+        apps = AppsV1Api(controller.client)
+        with self.assertRaises(OpenApiException):
+            apps.read_namespaced_deployment("test", self.outpost.config.kubernetes_namespace)
+        controller.down()
+
+    def test_controller_full_update(self):
+        """Test an update that triggers all objects"""
+        controller = ProxyKubernetesController(self.outpost, self.service_connection)
+
+        self.assertIsNone(controller.up())
+        with patch(
+            "authentik.outposts.controllers.k8s.base.get_version", MagicMock(return_value="1234")
+        ):
+            self.assertIsNone(controller.up())
+        deployment_reconciler = DeploymentReconciler(controller)
+        deployment = deployment_reconciler.retrieve()
+        self.assertEqual(deployment.metadata.labels["app.kubernetes.io/version"], "1234")
+        controller.down()
