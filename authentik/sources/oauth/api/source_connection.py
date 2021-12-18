@@ -16,7 +16,6 @@ class UserOAuthSourceConnectionSerializer(SourceSerializer):
         model = UserOAuthSourceConnection
         fields = ["pk", "user", "source", "identifier", "access_token"]
         extra_kwargs = {
-            "user": {"read_only": True},
             "access_token": {"write_only": True},
         }
 

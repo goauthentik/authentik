@@ -27952,8 +27952,8 @@ components:
           maxLength: 200
         audience:
           type: string
-          description: Value of the audience restriction field of the assertion.
-            When left empty, no audience restriction will be added.
+          description: Value of the audience restriction field of the assertion. When
+            left empty, no audience restriction will be added.
         issuer:
           type: string
           minLength: 1
@@ -28252,6 +28252,8 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
+        user:
+          type: integer
         source:
           type: string
           format: uuid
@@ -29559,8 +29561,8 @@ components:
           maxLength: 200
         audience:
           type: string
-          description: Value of the audience restriction field of the assertion.
-            When left empty, no audience restriction will be added.
+          description: Value of the audience restriction field of the assertion. When
+            left empty, no audience restriction will be added.
         issuer:
           type: string
           description: Also known as EntityID
@@ -29661,8 +29663,8 @@ components:
           maxLength: 200
         audience:
           type: string
-          description: Value of the audience restriction field of the assertion.
-            When left empty, no audience restriction will be added.
+          description: Value of the audience restriction field of the assertion. When
+            left empty, no audience restriction will be added.
         issuer:
           type: string
           minLength: 1
@@ -30987,7 +30989,6 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
           type: string
           format: uuid
@@ -31003,6 +31004,8 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
+        user:
+          type: integer
         source:
           type: string
           format: uuid
@@ -31017,6 +31020,7 @@ components:
       required:
       - identifier
       - source
+      - user
     UserReputation:
       type: object
       description: UserReputation Serializer
