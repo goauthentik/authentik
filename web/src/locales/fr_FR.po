@@ -3743,8 +3743,12 @@ msgid "Register device"
 msgstr "Enregistrer un appareil"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
-msgstr "Expression régulière pour laquelle l'authentification n'est pas nécessaire. Chaque nouvelle ligne est interprétée comme une nouvelle expression régulière."
+#~ msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
+#~ msgstr "Expression régulière pour laquelle l'authentification n'est pas nécessaire. Chaque nouvelle ligne est interprétée comme une nouvelle expression régulière."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression."
+msgstr ""
 
 #: src/pages/users/UserListPage.ts
 msgid "Regular user"
@@ -4218,8 +4222,8 @@ msgid "Single use"
 msgstr "Usage unique"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Skip path regex"
-msgstr "Regex chemins exclus"
+#~ msgid "Skip path regex"
+#~ msgstr "Regex chemins exclus"
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
@@ -5187,6 +5191,14 @@ msgstr "URL utilisée par authentik pour récupérer les jetons."
 msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr "URL utilisée pour demander le jeton initial. Cette URL est uniquement requise pour OAuth 1."
 
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Unauthenticated Paths"
+msgstr ""
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "Unauthenticated URLs"
+msgstr ""
+
 #: src/pages/admin-overview/charts/PolicyStatusChart.ts
 msgid "Unbound policies"
 msgstr "Politiques non liées"
@@ -5798,6 +5810,10 @@ msgstr ""
 #: src/pages/tenants/TenantForm.ts
 msgid "When using an external logging solution for archiving, this can be set to \"minutes=5\"."
 msgstr "En cas d'utilisation d'une solution de journalisation externe pour l'archivage, cette valeur peut être fixée à \"minutes=5\"."
+
+#: src/pages/providers/proxy/ProxyProviderForm.ts
+msgid "When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions."
+msgstr ""
 
 #: src/flows/FlowExecutor.ts
 msgid "Whoops!"

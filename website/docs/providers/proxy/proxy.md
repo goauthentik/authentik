@@ -46,7 +46,7 @@ Besides these user-specific headers, some application specific headers are also 
 
     The authentik outpost's version.
 
-# HTTPS
+## HTTPS
 
 The outpost listens on both 9000 for HTTP and 9443 for HTTPS.
 
@@ -54,7 +54,7 @@ The outpost listens on both 9000 for HTTP and 9443 for HTTPS.
 If your upstream host is HTTPS, and you're not using forward auth, you need to access the outpost over HTTPS too.
 :::
 
-# Logging out
+## Logging out
 
 Login is done automatically when you visit the domain without a valid cookie.
 
@@ -63,3 +63,19 @@ When using single-application mode, navigate to `app.domain.tld/akprox/sign_out`
 When using domain-level mode, navigate to `auth.domain.tld/akprox/sign_out`, where auth.domain.tld is the external host configured for the provider.
 
 To log out, navigate to `/akprox/sign_out`.
+
+## Allowing unauthenticated requests
+
+To allow un-authenticated requests to certain paths/URLs, you can use the *Unauthenticated URLs* / *Unauthenticated Paths* field.
+
+Each new line is interpreted as a regular expression, and is compiled and checked using the standard Golang regex parser.
+
+The behaviour of this field changes depending on which mode you're in.
+
+### Proxy and Forward auth (single application)
+
+In this mode, the regular expressions are matched against the Request's Path.
+
+### Forward auth (domain level)
+
+In this mode, the regular expressions are matched against the Request's full URL.

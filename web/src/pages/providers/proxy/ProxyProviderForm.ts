@@ -401,12 +401,20 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         </p>
                     </ak-form-element-horizontal>
 
-                    <ak-form-element-horizontal label=${t`Skip path regex`} name="skipPathRegex">
+                    <ak-form-element-horizontal
+                        label="${this.mode === ProxyMode.ForwardDomain
+                            ? t`Unauthenticated URLs`
+                            : t`Unauthenticated Paths`}${t``}"
+                        name="skipPathRegex"
+                    >
                         <textarea class="pf-c-form-control">
 ${this.instance?.skipPathRegex}</textarea
                         >
                         <p class="pf-c-form__helper-text">
-                            ${t`Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.`}
+                            ${t`Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions.`}
                         </p>
                     </ak-form-element-horizontal>
 
