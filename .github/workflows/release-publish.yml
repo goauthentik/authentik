@@ -95,8 +95,6 @@ jobs:
           docker push ghcr.io/goauthentik/${{ matrix.type }}:stable
   build-outpost-binary:
     timeout-minutes: 120
-    needs:
-      - ci-outpost-mark
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
