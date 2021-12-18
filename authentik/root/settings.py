@@ -220,15 +220,16 @@ REDIS_CELERY_TLS_REQUIREMENTS = ""
 if CONFIG.y_bool("redis.tls", False):
     REDIS_PROTOCOL_PREFIX = "rediss://"
     REDIS_CELERY_TLS_REQUIREMENTS = f"?ssl_cert_reqs={CONFIG.y('redis.tls_reqs')}"
+_redis_url = (
+    f"{REDIS_PROTOCOL_PREFIX}:"
+    f"{quote(CONFIG.y('redis.password'))}@{quote(CONFIG.y('redis.host'))}:"
+    f"{int(CONFIG.y('redis.port'))}"
+)
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": (
-            f"{REDIS_PROTOCOL_PREFIX}:"
-            f"{quote(CONFIG.y('redis.password'))}@{quote(CONFIG.y('redis.host'))}:"
-            f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.cache_db')}"
-        ),
+        "LOCATION": f"{_redis_url}/{CONFIG.y('redis.cache_db')}",
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
     }
@@ -287,11 +288,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [
-                f"{REDIS_PROTOCOL_PREFIX}:"
-                f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
-                f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.ws_db')}"
-            ],
+            "hosts": [f"{_redis_url}/{CONFIG.y('redis.ws_db')}"],
         },
     },
 }
@@ -367,16 +364,10 @@ CELERY_BEAT_SCHEDULE = {
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
 CELERY_BROKER_URL = (
-    f"{REDIS_PROTOCOL_PREFIX}:"
-    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
-    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
-    f"{REDIS_CELERY_TLS_REQUIREMENTS}"
+    f"{_redis_url}/{CONFIG.y('redis.message_queue_db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
 )
 CELERY_RESULT_BACKEND = (
-    f"{REDIS_PROTOCOL_PREFIX}:"
-    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
-    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
-    f"{REDIS_CELERY_TLS_REQUIREMENTS}"
+    f"{_redis_url}/{CONFIG.y('redis.message_queue_db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
 )
 
 # Database backup
