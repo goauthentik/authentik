@@ -13,7 +13,7 @@ from authentik.stages.email.models import get_template_choices
 def get_templates_setting(temp_dir: str) -> dict[str, Any]:
     """Patch settings TEMPLATE's dir property"""
     templates_setting = settings.TEMPLATES
-    templates_setting[0]["DIRS"] = [temp_dir]
+    templates_setting[0]["DIRS"] = [temp_dir, "foo"]
     return templates_setting
 
 

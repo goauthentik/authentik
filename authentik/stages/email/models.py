@@ -37,7 +37,7 @@ def get_template_choices():
 
     dirs = [Path(x) for x in settings.TEMPLATES[0]["DIRS"]]
     for template_dir in dirs:
-        if not template_dir.exists():
+        if not template_dir.exists() or not template_dir.is_dir():
             continue
         for template in template_dir.glob("**/*.html"):
             path = str(template)
