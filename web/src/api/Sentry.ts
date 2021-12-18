@@ -17,6 +17,9 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                 ignoreErrors: [
                     /network/ig,
                     /fetch/ig,
+                    // Error on edge on ios,
+                    // https://stackoverflow.com/questions/69261499/what-is-instantsearchsdkjsbridgeclearhighlight
+                    /instantSearchSDKJSBridgeClearHighlight/ig,
                 ],
                 release: `authentik@${VERSION}`,
                 tunnel: "/api/v3/sentry/",
