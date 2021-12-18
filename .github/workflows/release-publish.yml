@@ -130,7 +130,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
-          asset_name: hentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
+          asset_name: authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
           tag: ${{ github.ref }}
   test-release:
     needs:
