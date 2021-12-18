@@ -95,6 +95,12 @@ class TokenParams:
                 self.refresh_token = RefreshToken.objects.get(
                     refresh_token=raw_token, provider=self.provider
                 )
+                if self.refresh_token.is_expired:
+                    LOGGER.warning(
+                        "Refresh token is expired",
+                        token=raw_token,
+                    )
+                    raise TokenError("invalid_grant")
                 # https://tools.ietf.org/html/rfc6749#section-6
                 # Fallback to original token's scopes when none are given
                 if not self.scope:
@@ -138,6 +144,12 @@ class TokenParams:
 
         try:
             self.authorization_code = AuthorizationCode.objects.get(code=raw_code)
+            if self.authorization_code.is_expired:
+                LOGGER.warning(
+                    "Code is expired",
+                    token=raw_code,
+                )
+                raise TokenError("invalid_grant")
         except AuthorizationCode.DoesNotExist:
             LOGGER.warning("Code does not exist", code=raw_code)
             raise TokenError("invalid_grant")
