@@ -3175,6 +3175,10 @@ msgstr "Code d'autorisation OAuth"
 msgid "OAuth Refresh Codes"
 msgstr "Code de rafraîchissement OAuth"
 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "OK"
+msgstr ""
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 msgid "Object"

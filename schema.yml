@@ -5724,6 +5724,14 @@ paths:
       description: Outpost Viewset
       parameters:
       - in: query
+        name: managed__icontains
+        schema:
+          type: string
+      - in: query
+        name: managed__iexact
+        schema:
+          type: string
+      - in: query
         name: name__icontains
         schema:
           type: string
@@ -5931,6 +5939,14 @@ paths:
       operationId: outposts_instances_health_list
       description: Get outposts current health
       parameters:
+      - in: query
+        name: managed__icontains
+        schema:
+          type: string
+      - in: query
+        name: managed__iexact
+        schema:
+          type: string
       - in: query
         name: name__icontains
         schema:

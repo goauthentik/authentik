@@ -3199,6 +3199,10 @@ msgstr "OAuth Authorization Codes"
 msgid "OAuth Refresh Codes"
 msgstr "OAuth Refresh Codes"
 
+#: src/pages/admin-overview/cards/SystemStatusCard.ts
+msgid "OK"
+msgstr "OK"
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 msgid "Object"

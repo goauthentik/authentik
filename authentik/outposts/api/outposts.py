@@ -116,6 +116,7 @@ class OutpostFilter(FilterSet):
             "providers": ["isnull"],
             "name": ["iexact", "icontains"],
             "service_connection__name": ["iexact", "icontains"],
+            "managed": ["iexact", "icontains"]
         }
 
 
