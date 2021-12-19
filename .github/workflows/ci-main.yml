@@ -47,7 +47,7 @@ jobs:
         env:
           INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
-      - name: run pylint
+      - name: run job
         run: pipenv run make ci-${{ matrix.job }}
   test-migrations:
     runs-on: ubuntu-latest
