@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "../../authentik.css";
@@ -17,7 +17,15 @@ export class OutpostHealthElement extends LitElement {
     outpostHealth?: OutpostHealth;
 
     static get styles(): CSSResult[] {
-        return [PFBase, AKGlobal];
+        return [
+            PFBase,
+            AKGlobal,
+            css`
+                li {
+                    margin: 5px 0;
+                }
+            `,
+        ];
     }
 
     render(): TemplateResult {
@@ -25,12 +33,12 @@ export class OutpostHealthElement extends LitElement {
             return html`<ak-spinner></ak-spinner>`;
         }
         return html` <ul>
-            <li role="cell">
+            <li>
                 <ak-label color=${PFColor.Green}>
                     ${t`Last seen: ${this.outpostHealth.lastSeen?.toLocaleTimeString()}`}
                 </ak-label>
             </li>
-            <li role="cell">
+            <li>
                 ${this.outpostHealth.versionOutdated
                     ? html`<ak-label color=${PFColor.Red}
                           >${t`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`}
