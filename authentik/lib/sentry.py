@@ -108,6 +108,7 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
             "multiprocessing",
             "django_redis",
             "django.security.DisallowedHost",
+            "django_redis.cache",
         ]:
             return None
     LOGGER.debug("sending event to sentry", exc=exc_value, source_logger=event.get("logger", None))
