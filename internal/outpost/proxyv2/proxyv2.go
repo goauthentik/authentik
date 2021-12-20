@@ -66,6 +66,7 @@ func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
 		defaultCert: defaultCert,
 	}
 	globalMux.PathPrefix("/akprox/static").HandlerFunc(s.HandleStatic)
+	globalMux.Path("/akprox/ping").HandlerFunc(s.HandlePing)
 	rootMux.PathPrefix("/").HandlerFunc(s.Handle)
 	return s
 }
