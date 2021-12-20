@@ -169,7 +169,7 @@ class DockerController(BaseController):
             # Check if the container is out of date, delete it and retry
             if len(container.image.tags) > 0:
                 should_image = self.try_pull_image()
-                if should_image not in container.image.tags:
+                if should_image not in container.image.tags:  # pragma: no cover
                     self.logger.info(
                         "Container has mismatched image, re-creating...",
                         has=container.image.tags,

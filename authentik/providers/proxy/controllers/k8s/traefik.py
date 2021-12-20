@@ -116,7 +116,7 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
                 forwardAuth=TraefikMiddlewareSpecForwardAuth(
                     address=f"http://{self.name}.{self.namespace}:9000/akprox/auth/traefik",
                     authResponseHeaders=[],
-                    authResponseHeadersRegex="^(Auth|Remote|X).*$",
+                    authResponseHeadersRegex="^(Auth|Remote|X|Set).*$",
                     trustForwardHeader=True,
                 )
             ),
