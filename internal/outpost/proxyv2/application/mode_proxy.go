@@ -10,6 +10,7 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	"goauthentik.io/internal/outpost/proxyv2/templates"
@@ -45,6 +46,13 @@ func (a *Application) configureProxy() error {
 		}
 		before := time.Now()
 		rp.ServeHTTP(rw, r)
+		defer func() {
+			err := recover()
+			if err == nil || err == http.ErrAbortHandler {
+				return
+			}
+			log.WithError(err.(error)).Error("recover in reverse proxy")
+		}()
 		after := time.Since(before)
 
 		user := ""

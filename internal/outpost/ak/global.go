@@ -42,6 +42,9 @@ func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
 			Dsn:              dsn,
 			Environment:      globalConfig.ErrorReporting.Environment,
 			TracesSampleRate: float64(globalConfig.ErrorReporting.TracesSampleRate),
+			IgnoreErrors: []string{
+				http.ErrAbortHandler.Error(),
+			},
 		})
 		if err != nil {
 			log.WithField("env", globalConfig.ErrorReporting.Environment).WithError(err).Warning("Failed to initialise sentry")

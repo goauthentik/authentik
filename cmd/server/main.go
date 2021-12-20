@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 	"time"
 
@@ -44,6 +45,9 @@ func main() {
 			TracesSampleRate: config.G.ErrorReporting.SampleRate,
 			Release:          fmt.Sprintf("authentik@%s", constants.VERSION),
 			Environment:      config.G.ErrorReporting.Environment,
+			IgnoreErrors: []string{
+				http.ErrAbortHandler.Error(),
+			},
 		})
 		if err != nil {
 			l.WithError(err).Warning("failed to init sentry")
