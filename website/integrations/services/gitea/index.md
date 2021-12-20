@@ -62,6 +62,76 @@ Change the following fields
 - Icon URL: https://raw.githubusercontent.com/goauthentik/authentik/master/web/icons/icon.png
 - OpenID Connect Auto Discovery URL: https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration
 
-![](./gitea1.png)
+
+(./gitea1.png)
 
 `Add Authentication Source` and you should be done. Your Gitea login page should now have a `Sign in With` followed by the authentik logo which you can click on to sign-in to Gitea with Authentik creds.
+
+
+
+
+### Step 4 (Optional)
+
+
+
+:::note
+In some cases (depending on your setup) GitTea might throw HTTP 500 Errors when doing OIDC authentication trough Auhtentik.
+If this is the case, keep on reading.
+:::
+
+
+
+__Symptoms__
+
+
+Gitea's log will show an error to the likes of:
+
+`auth.go:638:SignInOAuthCallback() [E] CreateUser: OAuth2 Provider Authentik returned empty or missing fields: [email nickname]`
+
+This can be resolved by creating our own Property mapping in Authentik and instructing Gitea to request that mapping through OIDC.
+
+
+__Resolution__
+
+
+Firstly, in Authentik navigate to: _Customisation -> Property Mappings._ Then click `Create` -> _Scope Mapping_
+
+There you'll enter the following information:
+
+- Name: `OAuth2 Gitea Mapping`
+- Scope Name: `gitea`
+- Description: `Gitea requires your basic profile information and e-mail address.`
+- Expression:
+
+```
+return {
+    "name": request.user.name,
+    "given_name": request.user.name,
+    "family_name": "",
+    "preferred_username": request.user.username,
+    "nickname": request.user.username,
+    "groups": [group.name for group in request.user.ak_groups.all()],
+    "email": request.user.email,
+    "email_verified": True
+}
+```
+
+Then navigate to _Applications -> Providers_ and edit your Gitea Provider.
+
+Under _Advanced Protocol Settings -> Scope_ select:
+
+- Authentik default OAuth mapping: OpenID 'openid'
+- OAuth2 Gitea Mapping
+
+Save your changes.
+
+Then, in your Gitea's `app.ini` file:
+
+- If it doesn't exist yet, create a `[oauth2_client]` section
+- Set `OPENID_CONNECT_SCOPES` to `gitea` 
+
+
+Restart Gitea and you should be done!
+
+
+![]
