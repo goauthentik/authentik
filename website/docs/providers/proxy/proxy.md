@@ -30,7 +30,7 @@ If you enable *Set HTTP-Basic Authentication* option, the HTTP Authorization hea
 
 Besides these user-specific headers, some application specific headers are also set:
 
-- X-authentik-meta-outpost: `authentik Embedded Outpost`
+- X-authentik-meta-outpost: `authentik Core`
 
     The authentik outpost's name.
 
