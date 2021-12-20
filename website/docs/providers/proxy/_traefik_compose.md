@@ -34,7 +34,7 @@ services:
       # `authentik-proxy` refers to the service name in the compose file.
       traefik.http.middlewares.authentik.forwardauth.address: http://authentik-proxy:9000/akprox/auth/traefik
       traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
-      traefik.http.middlewares.authentik.forwardauth.authResponseHeadersRegex: ^.*$$
+      traefik.http.middlewares.authentik.forwardauth.authResponseHeadersRegex: ^(Remote|X).*$$
     restart: unless-stopped
 
   whoami:

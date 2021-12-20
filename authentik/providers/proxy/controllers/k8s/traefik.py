@@ -96,6 +96,11 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
         super().reconcile(current, reference)
         if current.spec.forwardAuth.address != reference.spec.forwardAuth.address:
             raise NeedsUpdate()
+        if (
+            current.spec.forwardAuth.authResponseHeadersRegex
+            != reference.spec.forwardAuth.authResponseHeadersRegex
+        ):
+            raise NeedsUpdate()
 
     def get_reference_object(self) -> TraefikMiddleware:
         """Get deployment object for outpost"""
@@ -111,7 +116,7 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
                 forwardAuth=TraefikMiddlewareSpecForwardAuth(
                     address=f"http://{self.name}.{self.namespace}:9000/akprox/auth/traefik",
                     authResponseHeaders=[],
-                    authResponseHeadersRegex="^.*$",
+                    authResponseHeadersRegex="^(Remote|X).*$",
                     trustForwardHeader=True,
                 )
             ),
