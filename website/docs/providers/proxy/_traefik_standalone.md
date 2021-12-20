@@ -5,7 +5,7 @@ http:
       forwardAuth:
         address: http://outpost.company:9000/akprox/auth/traefik
         trustForwardHeader: true
-        authResponseHeadersRegex: ^(Remote|X).*$
+        authResponseHeadersRegex: ^(Auth|Remote|X).*$
   routers:
     default-router:
       rule: "Host(`app.company`)"

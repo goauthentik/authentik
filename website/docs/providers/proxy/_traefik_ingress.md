@@ -9,7 +9,7 @@ spec:
   forwardAuth:
     address: http://outpost.company:9000/akprox/auth/traefik
     trustForwardHeader: true
-    authResponseHeadersRegex: ^(Remote|X).*$
+    authResponseHeadersRegex: ^(Auth|Remote|X).*$
 ```
 
 Add the following settings to your IngressRoute
