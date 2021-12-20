@@ -178,22 +178,6 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	return a, nil
 }
 
-func (a *Application) IsAllowlisted(r *http.Request) bool {
-	for _, u := range a.UnauthenticatedRegex {
-		var testString string
-		if a.Mode() == api.PROXYMODE_PROXY || a.Mode() == api.PROXYMODE_FORWARD_SINGLE {
-			testString = r.URL.Path
-		} else {
-			testString = r.URL.String()
-		}
-		a.log.WithField("regex", u.String()).WithField("url", testString).Trace("Matching URL against allow list")
-		if u.MatchString(testString) {
-			return true
-		}
-	}
-	return false
-}
-
 func (a *Application) Mode() api.ProxyMode {
 	return *a.proxyConfig.Mode
 }

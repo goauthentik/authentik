@@ -110,6 +110,7 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
             "django.security.DisallowedHost",
             "django_redis.cache",
             "celery.backends.redis",
+            "celery.worker",
         ]:
             return None
     LOGGER.debug("sending event to sentry", exc=exc_value, source_logger=event.get("logger", None))
