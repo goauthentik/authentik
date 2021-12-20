@@ -160,11 +160,8 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                                     })
                                     .then((keys) => {
                                         return keys.results.map((key) => {
-                                            let selected =
+                                            const selected =
                                                 this.instance?.peerCertificate === key.pk;
-                                            if (keys.results.length === 1) {
-                                                selected = true;
-                                            }
                                             return html`<option
                                                 value=${ifDefined(key.pk)}
                                                 ?selected=${selected}
