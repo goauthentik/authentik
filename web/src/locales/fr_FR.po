@@ -2500,6 +2500,10 @@ msgstr "Paire de clés utilisée pour signer le requêtes sortantes. Laisser vid
 msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
+#: src/pages/outposts/OutpostListPage.ts
+msgid "LDAP"
+msgstr ""
+
 #: src/pages/outposts/OutpostForm.ts
 msgid "LDAP (Technical preview)"
 msgstr "LDAP (aperçu technique)"
@@ -3614,6 +3618,7 @@ msgid "Providers"
 msgstr "Fournisseurs"
 
 #: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Proxy"
@@ -5146,6 +5151,7 @@ msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts

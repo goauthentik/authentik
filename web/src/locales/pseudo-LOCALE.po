@@ -2510,6 +2510,10 @@ msgstr ""
 msgid "Kubeconfig"
 msgstr ""
 
+#: src/pages/outposts/OutpostListPage.ts
+msgid "LDAP"
+msgstr ""
+
 #: src/pages/outposts/OutpostForm.ts
 msgid "LDAP (Technical preview)"
 msgstr ""
@@ -3636,6 +3640,7 @@ msgid "Providers"
 msgstr ""
 
 #: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Proxy"
@@ -5185,6 +5190,7 @@ msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts

@@ -2520,6 +2520,10 @@ msgstr "Keypair which is used to sign outgoing requests. Leave empty to disable 
 msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
+#: src/pages/outposts/OutpostListPage.ts
+msgid "LDAP"
+msgstr "LDAP"
+
 #: src/pages/outposts/OutpostForm.ts
 msgid "LDAP (Technical preview)"
 msgstr "LDAP (Technical preview)"
@@ -3646,6 +3650,7 @@ msgid "Providers"
 msgstr "Providers"
 
 #: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Proxy"
@@ -5205,6 +5210,7 @@ msgstr "Twilio Auth Token"
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
