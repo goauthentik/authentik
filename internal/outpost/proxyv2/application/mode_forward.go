@@ -54,10 +54,24 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		r.Header.Get("X-Forwarded-Host"),
 		r.Header.Get("X-Forwarded-Uri"),
 	)
+	if r.Header.Get("X-Forwarded-Uri") == "/akprox/start" {
+		a.log.Info("Detected potential redirect loop")
+		if val, ok := s.Values[constants.SessionLoopDetection]; !ok {
+			s.Values[constants.SessionLoopDetection] = 1
+		} else {
+			s.Values[constants.SessionLoopDetection] = val.(int) + 1
+			if val.(int) > 10 {
+				a.log.Error("Stopped redirect loop")
+				rw.WriteHeader(http.StatusBadRequest)
+				return
+			}
+		}
+	}
 	err = s.Save(r, rw)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session before redirect")
 	}
+
 	proto := r.Header.Get("X-Forwarded-Proto")
 	if proto != "" {
 		proto = proto + ":"
