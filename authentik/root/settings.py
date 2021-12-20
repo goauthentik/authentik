@@ -461,6 +461,11 @@ TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 # We can't check TEST here as its set later by the test runner
 LOG_LEVEL = CONFIG.y("log_level").upper() if "TF_BUILD" not in os.environ else "DEBUG"
+# We could add a custom level to stdlib logging and structlog, but it's not easy or clean
+# https://stackoverflow.com/questions/54505487/custom-log-level-not-working-with-structlog
+# Additionally, the entire code uses debug as highest level so that would have to be re-written too
+if LOG_LEVEL == "TRACE":
+    LOG_LEVEL = "DEBUG"
 
 structlog.configure_once(
     processors=[
