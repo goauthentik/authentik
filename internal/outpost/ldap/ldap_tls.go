@@ -45,7 +45,7 @@ func (ls *LDAPServer) StartLDAPTLSServer() error {
 
 	tln := tls.NewListener(proxyListener, tlsConfig)
 
-	ls.log.WithField("listen", listen).Info("Starting ldap tls server")
+	ls.log.WithField("listen", listen).Info("Starting LDAP SSL server")
 	err = ls.s.Serve(tln)
 	if err != nil {
 		return err

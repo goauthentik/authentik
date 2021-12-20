@@ -57,7 +57,7 @@ func (ls *LDAPServer) StartLDAPServer() error {
 	proxyListener := &proxyproto.Listener{Listener: ln}
 	defer proxyListener.Close()
 
-	ls.log.WithField("listen", listen).Info("Starting ldap server")
+	ls.log.WithField("listen", listen).Info("Starting LDAP server")
 	err = ls.s.Serve(proxyListener)
 	if err != nil {
 		return err
