@@ -146,6 +146,7 @@ func (a *APIController) OnRefresh() error {
 	a.Outpost = outposts.Results[0]
 
 	a.logger.WithField("name", a.Outpost.Name).Debug("Fetched outpost configuration")
+	doGlobalSetup(a.Outpost, a.GlobalConfig)
 	return a.Server.Refresh()
 }
 
