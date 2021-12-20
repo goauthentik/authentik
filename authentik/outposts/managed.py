@@ -35,7 +35,7 @@ class OutpostManager(ObjectManager):
                 Outpost,
                 MANAGED_OUTPOST,
                 created_callback=outpost_created,
-                name="authentik Core",
+                name="authentik Embedded Outpost",
                 type=OutpostType.PROXY,
             ),
         ]
