@@ -13,31 +13,30 @@ import (
 )
 
 func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
-	log.SetFormatter(&log.JSONFormatter{
-		FieldMap: log.FieldMap{
-			log.FieldKeyMsg:  "event",
-			log.FieldKeyTime: "timestamp",
-		},
-	})
-	switch outpost.Config[ConfigLogLevel].(string) {
-	case "trace":
-		log.SetLevel(log.TraceLevel)
-	case "debug":
-		log.SetLevel(log.DebugLevel)
-	case "info":
-		log.SetLevel(log.InfoLevel)
-	case "warning":
-		log.SetLevel(log.WarnLevel)
-	case "error":
-		log.SetLevel(log.ErrorLevel)
-	default:
-		log.SetLevel(log.DebugLevel)
+	l := log.WithField("logger", "authentik.outpost")
+	if !outpost.Managed.IsSet() {
+		switch outpost.Config[ConfigLogLevel].(string) {
+		case "trace":
+			log.SetLevel(log.TraceLevel)
+		case "debug":
+			log.SetLevel(log.DebugLevel)
+		case "info":
+			log.SetLevel(log.InfoLevel)
+		case "warning":
+			log.SetLevel(log.WarnLevel)
+		case "error":
+			log.SetLevel(log.ErrorLevel)
+		default:
+			log.SetLevel(log.DebugLevel)
+		}
+	} else {
+		l.Debug("Managed outpost, not seting global log level")
 	}
-	log.WithField("logger", "authentik.outpost").WithField("hash", constants.BUILD()).WithField("version", constants.VERSION).Info("Starting authentik outpost")
+	l.WithField("hash", constants.BUILD()).WithField("version", constants.VERSION).Info("Starting authentik outpost")
 
 	if globalConfig.ErrorReporting.Enabled {
 		dsn := "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
-		log.WithField("env", globalConfig.ErrorReporting.Environment).Debug("Error reporting enabled")
+		l.WithField("env", globalConfig.ErrorReporting.Environment).Debug("Error reporting enabled")
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn:              dsn,
 			Environment:      globalConfig.ErrorReporting.Environment,
@@ -47,7 +46,7 @@ func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
 			},
 		})
 		if err != nil {
-			log.WithField("env", globalConfig.ErrorReporting.Environment).WithError(err).Warning("Failed to initialise sentry")
+			l.WithField("env", globalConfig.ErrorReporting.Environment).WithError(err).Warning("Failed to initialise sentry")
 		}
 	}
 }

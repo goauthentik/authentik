@@ -2,6 +2,7 @@ package config
 
 import (
 	"io/ioutil"
+	"strings"
 
 	env "github.com/Netflix/go-env"
 	"github.com/imdario/mergo"
@@ -62,7 +63,7 @@ func FromEnv() error {
 }
 
 func ConfigureLogger() {
-	switch G.LogLevel {
+	switch strings.ToLower(G.LogLevel) {
 	case "trace":
 		log.SetLevel(log.TraceLevel)
 	case "debug":
@@ -77,14 +78,14 @@ func ConfigureLogger() {
 		log.SetLevel(log.DebugLevel)
 	}
 
+	fm := log.FieldMap{
+		log.FieldKeyMsg:  "event",
+		log.FieldKeyTime: "timestamp",
+	}
+
 	if G.Debug {
-		log.SetFormatter(&log.TextFormatter{})
+		log.SetFormatter(&log.TextFormatter{FieldMap: fm})
 	} else {
-		log.SetFormatter(&log.JSONFormatter{
-			FieldMap: log.FieldMap{
-				log.FieldKeyMsg:  "event",
-				log.FieldKeyTime: "timestamp",
-			},
-		})
+		log.SetFormatter(&log.JSONFormatter{FieldMap: fm})
 	}
 }

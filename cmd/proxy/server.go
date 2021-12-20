@@ -26,6 +26,12 @@ Optionally, you can set these:
 
 func main() {
 	log.SetLevel(log.DebugLevel)
+	log.SetFormatter(&log.JSONFormatter{
+		FieldMap: log.FieldMap{
+			log.FieldKeyMsg:  "event",
+			log.FieldKeyTime: "timestamp",
+		},
+	})
 	akURL, found := os.LookupEnv("AUTHENTIK_HOST")
 	if !found {
 		fmt.Println("env AUTHENTIK_HOST not set!")
