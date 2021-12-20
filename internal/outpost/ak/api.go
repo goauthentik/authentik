@@ -106,7 +106,11 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 // Start Starts all handlers, non-blocking
 func (a *APIController) Start() error {
-	err := a.StartBackgorundTasks()
+	err := a.Server.Refresh()
+	if err != nil {
+		return err
+	}
+	err = a.StartBackgorundTasks()
 	if err != nil {
 		return err
 	}
