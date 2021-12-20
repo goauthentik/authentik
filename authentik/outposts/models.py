@@ -481,6 +481,8 @@ class OutpostState:
     def for_outpost(outpost: Outpost) -> list["OutpostState"]:
         """Get all states for an outpost"""
         keys = cache.keys(f"{outpost.state_cache_prefix}_*")
+        if not keys:
+            return []
         states = []
         for key in keys:
             instance_uid = key.replace(f"{outpost.state_cache_prefix}_", "")
