@@ -41,7 +41,7 @@ func main() {
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn:              config.G.ErrorReporting.DSN,
 			AttachStacktrace: true,
-			TracesSampleRate: 0.6,
+			TracesSampleRate: config.G.ErrorReporting.SampleRate,
 			Release:          fmt.Sprintf("authentik@%s", constants.VERSION),
 			Environment:      config.G.ErrorReporting.Environment,
 		})
