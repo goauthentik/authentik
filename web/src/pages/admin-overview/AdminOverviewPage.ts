@@ -98,6 +98,7 @@ export class AdminOverviewPage extends LitElement {
                                 <li>
                                     <a
                                         class="pf-u-mb-xl"
+                                        target="_blank"
                                         href="https://goauthentik.io/integrations/"
                                         >${t`Explore integrations`}</a
                                     >
