@@ -92,8 +92,6 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
             # Buffer sizes for large headers with JWTs
             "nginx.ingress.kubernetes.io/proxy-buffers-number": "4",
             "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k",
-            # Ensure ingress can receive TLS traffic
-            "traefik.ingress.kubernetes.io/router.tls": "true",
         }
         annotations.update(self.controller.outpost.config.kubernetes_ingress_annotations)
         return annotations
