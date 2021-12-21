@@ -16,6 +16,13 @@ func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session")
 	}
+	if loop, ok := s.Values[constants.SessionLoopDetection]; ok {
+		if loop.(int) > 10 {
+			rw.WriteHeader(http.StatusBadRequest)
+			a.ErrorPage(rw, r, "Detected redirect loop, make sure /akprox is accessible without authentication.")
+			return
+		}
+	}
 	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(state), http.StatusFound)
 }
 

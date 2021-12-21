@@ -60,11 +60,6 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 			s.Values[constants.SessionLoopDetection] = 1
 		} else {
 			s.Values[constants.SessionLoopDetection] = val.(int) + 1
-			if val.(int) > 10 {
-				a.log.Error("Stopped redirect loop")
-				rw.WriteHeader(http.StatusBadRequest)
-				return
-			}
 		}
 	}
 	err = s.Save(r, rw)
