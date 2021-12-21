@@ -270,8 +270,8 @@ class Application(PolicyBindingModel):
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
         if self.meta_launch_url:
             return self.meta_launch_url
-        if self.provider:
-            return self.get_provider().launch_url
+        if provider := self.get_provider():
+            return provider.launch_url
         return None
 
     def get_provider(self) -> Optional[Provider]:
