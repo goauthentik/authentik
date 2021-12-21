@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"goauthentik.io/api"
@@ -64,13 +65,37 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	}
 }
 
+func (a *Application) getTraefikForwardUrl(r *http.Request) *url.URL {
+	u, err := url.Parse(fmt.Sprintf(
+		"%s://%s%s",
+		r.Header.Get("X-Forwarded-Proto"),
+		r.Header.Get("X-Forwarded-Host"),
+		r.Header.Get("X-Forwarded-Uri"),
+	))
+	if err != nil {
+		a.log.WithError(err).Warning("Failed to parse URL from traefik")
+		return r.URL
+	}
+	return u
+}
+
 func (a *Application) IsAllowlisted(r *http.Request) bool {
+	url := r.URL
+	// In Forward auth mode, we can't directly match against the requested URL
+	// Since that would be /akprox/auth/...
+	if a.Mode() == api.PROXYMODE_FORWARD_SINGLE || a.Mode() == api.PROXYMODE_FORWARD_DOMAIN {
+		// For traefik, we can get the Upstream URL from headers
+		// For nginx we can attempt to as well, but it's not guranteed to work.
+		if strings.HasPrefix(r.URL.Path, "/akprox/auth") {
+			url = a.getTraefikForwardUrl(r)
+		}
+	}
 	for _, u := range a.UnauthenticatedRegex {
 		var testString string
 		if a.Mode() == api.PROXYMODE_PROXY || a.Mode() == api.PROXYMODE_FORWARD_SINGLE {
-			testString = r.URL.Path
+			testString = url.Path
 		} else {
-			testString = r.URL.String()
+			testString = url.String()
 		}
 		a.log.WithField("regex", u.String()).WithField("url", testString).Trace("Matching URL against allow list")
 		if u.MatchString(testString) {
