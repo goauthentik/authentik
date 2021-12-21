@@ -19,7 +19,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
 		if err != nil {
 			panic(err)
 		}
-		rs.SetMaxLength(math.MaxInt)
+		rs.SetMaxLength(math.MaxInt64)
 		if p.TokenValidity.IsSet() {
 			t := p.TokenValidity.Get()
 			// Add one to the validity to ensure we don't have a session with indefinite length
@@ -39,7 +39,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
 		// when using OpenID Connect , since this can contain a large amount of extra information in the id_token
 
 		// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
-		cs.MaxLength(math.MaxInt)
+		cs.MaxLength(math.MaxInt64)
 		if p.TokenValidity.IsSet() {
 			t := p.TokenValidity.Get()
 			// Add one to the validity to ensure we don't have a session with indefinite length

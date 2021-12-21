@@ -62,6 +62,9 @@ Secret key used for cookie signing and unique user IDs, don't change this after 
 ### AUTHENTIK_LOG_LEVEL
 
 Log level for the server and worker containers. Possible values: debug, info, warning, error
+
+Starting with 2021.12.3, you can also set the log level to *trace*. This has no affect on the core authentik server, but shows additional messages for the embedded outpost.
+
 Defaults to `info`.
 
 ### AUTHENTIK_COOKIE_DOMAIN

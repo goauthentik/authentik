@@ -26,6 +26,7 @@ Outposts fetch their configuration from authentik. Below are all the options you
 
 ```yaml
 # Log level that the outpost will set
+# Allowed levels: trace, debug, info, warning, error
 log_level: debug
 ########################################
 # The settings below are only relevant when using a managed outpost
