@@ -62,6 +62,9 @@ Secret key used for cookie signing and unique user IDs, don't change this after 
 ### AUTHENTIK_LOG_LEVEL
 
 Log level for the server and worker containers. Possible values: debug, info, warning, error
+
+Starting with 2021.12.3, you can also set the log level to *trace*. This has no affect on the core authentik server, but shows additional messages for the embedded outpost.
+
 Defaults to `info`.
 
 ### AUTHENTIK_COOKIE_DOMAIN
@@ -133,7 +136,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
    - `%(version)s`: Current version; 2021.4.1
    - `%(build_hash)s`: Build hash if you're running a beta version
 
-  Placeholder for outpost docker images. Default: `goauthentik.io/%(type)s:%(version)s`.
+  Placeholder for outpost docker images. Default: `ghcr.io/goauthentik/%(type)s:%(version)s`.
 
 ### AUTHENTIK_AVATARS
 

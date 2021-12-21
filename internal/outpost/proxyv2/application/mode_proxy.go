@@ -13,7 +13,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
-	"goauthentik.io/internal/outpost/proxyv2/templates"
 	"goauthentik.io/internal/utils/web"
 )
 
@@ -32,7 +31,7 @@ func (a *Application) configureProxy() error {
 	rp := &httputil.ReverseProxy{Director: a.proxyModifyRequest(u)}
 	rsp := sentry.StartSpan(context.TODO(), "authentik.outposts.proxy.application_transport")
 	rp.Transport = ak.NewTracingTransport(rsp.Context(), a.getUpstreamTransport())
-	rp.ErrorHandler = a.newProxyErrorHandler(templates.GetTemplates())
+	rp.ErrorHandler = a.newProxyErrorHandler()
 	rp.ModifyResponse = a.proxyModifyResponse
 	a.mux.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		claims, err := a.getClaims(r)

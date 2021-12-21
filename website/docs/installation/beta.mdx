@@ -17,9 +17,9 @@ import TabItem from '@theme/TabItem';
 Add the following block to your `.env` file:
 
 ```shell
-AUTHENTIK_IMAGE=goauthentik.io/dev-server
+AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server
 AUTHENTIK_TAG=gh-next
-AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=goauthentik.io/dev-%(type)s:gh-next
+AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-next
 ```
 
 Afterwards, run the upgrade commands from the latest releasae notes.
@@ -30,9 +30,9 @@ Add the following block to your `values.yml` file:
 ```yaml
 authentik:
   outposts:
-    container_image_base: goauthentik.io/dev-%(type)s:gh-%(build_hash)s
+    container_image_base: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
 image:
-  repository: goauthentik.io/dev-server
+  repository: ghcr.io/goauthentik/dev-server
   tag: gh-next
   # pullPolicy: Always to ensure you always get the latest version
   pullPolicy: Always

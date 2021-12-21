@@ -3,6 +3,7 @@ package application
 import (
 	"encoding/base64"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/securecookie"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
@@ -15,6 +16,13 @@ func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
 	err := s.Save(r, rw)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session")
+	}
+	if loop, ok := s.Values[constants.SessionLoopDetection]; ok {
+		if loop.(int) > 10 {
+			rw.WriteHeader(http.StatusBadRequest)
+			a.ErrorPage(rw, r, "Detected redirect loop, make sure /akprox is accessible without authentication.")
+			return
+		}
 	}
 	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(state), http.StatusFound)
 }
@@ -42,7 +50,7 @@ func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	s.Options.MaxAge = claims.Exp / 1000
+	s.Options.MaxAge = int(time.Until(time.Unix(int64(claims.Exp), 0)).Seconds())
 	s.Values[constants.SessionClaims] = &claims
 	err = s.Save(r, rw)
 	if err != nil {

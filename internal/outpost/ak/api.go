@@ -81,7 +81,8 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	}
 	log.Debug("Fetched global configuration")
 
-	doGlobalSetup(outpost, akConfig)
+	// doGlobalSetup is called by the OnRefresh handler, which ticks on start
+	// doGlobalSetup(outpost, akConfig)
 
 	ac := &APIController{
 		Client:       apiClient,

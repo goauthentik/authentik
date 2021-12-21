@@ -86,7 +86,11 @@ jobs:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: checkout stable
+        id: stable
         run: |
+          # Save current branch
+          current=$(git branch --show)
+          echo ##[set-output name=originalBranch]$current
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           cp -R .github ..
@@ -108,7 +112,7 @@ jobs:
           set -x
           git fetch
           git reset --hard HEAD
-          git checkout $GITHUB_HEAD_REF
+          git checkout ${{ steps.stable.outputs.originalBranch }}
           pipenv sync --dev
       - name: prepare
         env:

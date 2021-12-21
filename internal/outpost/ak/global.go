@@ -31,7 +31,7 @@ func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
 			log.SetLevel(log.DebugLevel)
 		}
 	} else {
-		l.Debug("Managed outpost, not seting global log level")
+		l.Debug("Managed outpost, not setting global log level")
 	}
 	l.WithField("hash", constants.BUILD()).WithField("version", constants.VERSION).Info("Starting authentik outpost")
 

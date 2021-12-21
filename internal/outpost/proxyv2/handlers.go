@@ -48,6 +48,10 @@ func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
 		ps.HandleStatic(rw, r)
 		return
 	}
+	if strings.HasPrefix(r.URL.Path, "/akprox/ping") {
+		ps.HandlePing(rw, r)
+		return
+	}
 	host := web.GetHost(r)
 	a, ok := ps.apps[host]
 	if !ok {

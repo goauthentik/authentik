@@ -89,6 +89,7 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
             # goes to the same pod
             "nginx.ingress.kubernetes.io/affinity": "cookie",
             "traefik.ingress.kubernetes.io/affinity": "true",
+            # Buffer sizes for large headers with JWTs
             "nginx.ingress.kubernetes.io/proxy-buffers-number": "4",
             "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k",
         }

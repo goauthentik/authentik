@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/gob"
 	"fmt"
+	"html/template"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -24,6 +25,7 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/hs256"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
+	"goauthentik.io/internal/outpost/proxyv2/templates"
 	"goauthentik.io/internal/utils/web"
 	"golang.org/x/oauth2"
 )
@@ -44,6 +46,8 @@ type Application struct {
 
 	log *log.Entry
 	mux *mux.Router
+
+	errorTemplates *template.Template
 }
 
 func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore, ak *ak.APIController) (*Application, error) {
@@ -79,15 +83,16 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	}
 	mux := mux.NewRouter()
 	a := &Application{
-		Host:          externalHost.Host,
-		log:           log.WithField("logger", "authentik.outpost.proxy.bundle").WithField("provider", p.Name),
-		outpostName:   ak.Outpost.Name,
-		endpint:       endpoint,
-		oauthConfig:   oauth2Config,
-		tokenVerifier: verifier,
-		proxyConfig:   p,
-		httpClient:    c,
-		mux:           mux,
+		Host:           externalHost.Host,
+		log:            log.WithField("logger", "authentik.outpost.proxy.bundle").WithField("provider", p.Name),
+		outpostName:    ak.Outpost.Name,
+		endpint:        endpoint,
+		oauthConfig:    oauth2Config,
+		tokenVerifier:  verifier,
+		proxyConfig:    p,
+		httpClient:     c,
+		mux:            mux,
+		errorTemplates: templates.GetTemplates(),
 	}
 	a.sessions = a.getStore(p)
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {

@@ -101,6 +101,11 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
             != reference.spec.forwardAuth.authResponseHeadersRegex
         ):
             raise NeedsUpdate()
+        # Ensure all of our headers are set, others can be added by the user.
+        if not set(current.spec.forwardAuth.authResponseHeaders).issubset(
+            reference.spec.forwardAuth.authResponseHeaders
+        ):
+            raise NeedsUpdate()
 
     def get_reference_object(self) -> TraefikMiddleware:
         """Get deployment object for outpost"""
@@ -115,8 +120,27 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
             spec=TraefikMiddlewareSpec(
                 forwardAuth=TraefikMiddlewareSpecForwardAuth(
                     address=f"http://{self.name}.{self.namespace}:9000/akprox/auth/traefik",
-                    authResponseHeaders=[],
-                    authResponseHeadersRegex="^(Auth|Remote|X).*$",
+                    authResponseHeaders=[
+                        # Legacy headers, remove after 2022.1
+                        "X-Auth-Username",
+                        "X-Auth-Groups",
+                        "X-Forwarded-Email",
+                        "X-Forwarded-Preferred-Username",
+                        "X-Forwarded-User",
+                        # New headers, unique prefix
+                        "X-authentik-username",
+                        "X-authentik-groups",
+                        "X-authentik-email",
+                        "X-authentik-name",
+                        "X-authentik-uid",
+                        "X-authentik-jwt",
+                        "X-authentik-meta-jwks",
+                        "X-authentik-meta-outpost",
+                        "X-authentik-meta-provider",
+                        "X-authentik-meta-app",
+                        "X-authentik-meta-version",
+                    ],
+                    authResponseHeadersRegex="",
                     trustForwardHeader=True,
                 )
             ),
