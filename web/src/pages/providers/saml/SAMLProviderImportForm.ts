@@ -12,6 +12,7 @@ import {
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
+import { SentryIgnoredError } from "../../../common/errors";
 import { Form } from "../../../elements/forms/Form";
 import "../../../elements/forms/HorizontalFormElement";
 
@@ -25,7 +26,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
     send = (data: SAMLProvider): Promise<void> => {
         const file = this.getFormFile();
         if (!file) {
-            throw new Error("No form data");
+            throw new SentryIgnoredError("No form data");
         }
         return new ProvidersApi(DEFAULT_CONFIG).providersSamlImportMetadataCreate({
             file: file,
