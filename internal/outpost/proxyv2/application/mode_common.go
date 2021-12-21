@@ -85,7 +85,7 @@ func (a *Application) IsAllowlisted(r *http.Request) bool {
 	// Since that would be /akprox/auth/...
 	if a.Mode() == api.PROXYMODE_FORWARD_SINGLE || a.Mode() == api.PROXYMODE_FORWARD_DOMAIN {
 		// For traefik, we can get the Upstream URL from headers
-		// For nginx we can attempt to as well, but it's not guranteed to work.
+		// For nginx we can attempt to as well, but it's not guaranteed to work.
 		if strings.HasPrefix(r.URL.Path, "/akprox/auth") {
 			url = a.getTraefikForwardUrl(r)
 		}

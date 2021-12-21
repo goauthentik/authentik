@@ -48,12 +48,7 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	// to the application
 	// see https://doc.traefik.io/traefik/middlewares/forwardauth/
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
-	s.Values[constants.SessionRedirect] = fmt.Sprintf(
-		"%s://%s%s",
-		r.Header.Get("X-Forwarded-Proto"),
-		r.Header.Get("X-Forwarded-Host"),
-		r.Header.Get("X-Forwarded-Uri"),
-	)
+	s.Values[constants.SessionRedirect] = a.getTraefikForwardUrl(r).String()
 	if r.Header.Get("X-Forwarded-Uri") == "/akprox/start" {
 		a.log.Info("Detected potential redirect loop")
 		if val, ok := s.Values[constants.SessionLoopDetection]; !ok {
