@@ -150,7 +150,9 @@ jobs:
           docker-compose run -u root server test
   sentry-release:
     needs:
-      - test-release
+      - build-server
+      - build-outpost
+      - build-outpost-binary
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
