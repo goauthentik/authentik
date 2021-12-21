@@ -79,7 +79,7 @@
         "base64-js": "^1.5.1",
         "chart.js": "^3.6.2",
         "chartjs-adapter-moment": "^1.0.0",
-        "codemirror": "^5.64.0",
+        "codemirror": "^5.65.0",
         "construct-style-sheets-polyfill": "^3.0.5",
         "eslint": "^8.5.0",
         "eslint-config-google": "^0.14.0",
