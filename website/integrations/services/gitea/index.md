@@ -88,47 +88,16 @@ Gitea's log will show an error to the likes of:
 
 `auth.go:638:SignInOAuthCallback() [E] CreateUser: OAuth2 Provider Authentik returned empty or missing fields: [email nickname]`
 
-This can be resolved by creating our own Property mapping in Authentik and instructing Gitea to request that mapping through OIDC.
+This can be resolved by creating a simple setting in Gitea's app.ini.
 
 
 __Resolution__
 
 
-Firstly, in Authentik navigate to: _Customisation -> Property Mappings._ Then click `Create` -> _Scope Mapping_
-
-There you'll enter the following information:
-
-- Name: `OAuth2 Gitea Mapping`
-- Scope Name: `gitea`
-- Description: `Gitea requires your basic profile information and e-mail address.`
-- Expression:
-
-```
-return {
-    "name": request.user.name,
-    "given_name": request.user.name,
-    "family_name": "",
-    "preferred_username": request.user.username,
-    "nickname": request.user.username,
-    "groups": [group.name for group in request.user.ak_groups.all()],
-    "email": request.user.email,
-    "email_verified": True
-}
-```
-
-Then navigate to _Applications -> Providers_ and edit your Gitea Provider.
-
-Under _Advanced Protocol Settings -> Scope_ select:
-
-- Authentik default OAuth mapping: OpenID 'openid'
-- OAuth2 Gitea Mapping
-
-Save your changes.
-
-Then, in your Gitea's `app.ini` file:
+In your Gitea instance, navigate to your app.ini and make the following changes
 
 - If it doesn't exist yet, create a `[oauth2_client]` section
-- Set `OPENID_CONNECT_SCOPES` to `gitea` 
+- Set `OPENID_CONNECT_SCOPES` to `email profile` 
 
 
 Restart Gitea and you should be done!
