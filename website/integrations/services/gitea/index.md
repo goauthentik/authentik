@@ -63,35 +63,11 @@ Change the following fields
 - OpenID Connect Auto Discovery URL: https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration
 
 
-(./gitea1.png)
+![](./gitea1.png)
 
-`Add Authentication Source` and you should be done. Your Gitea login page should now have a `Sign in With` followed by the authentik logo which you can click on to sign-in to Gitea with Authentik creds.
+`Add Authentication Source` 
 
-
-
-
-### Step 4 (Optional)
-
-
-
-:::note
-In some cases (depending on your setup) GitTea might throw HTTP 500 Errors when doing OIDC authentication trough Auhtentik.
-If this is the case, keep on reading.
-:::
-
-
-
-__Symptoms__
-
-
-Gitea's log will show an error to the likes of:
-
-`auth.go:638:SignInOAuthCallback() [E] CreateUser: OAuth2 Provider Authentik returned empty or missing fields: [email nickname]`
-
-This can be resolved by creating a simple setting in Gitea's app.ini.
-
-
-__Resolution__
+Next you should edit your Gitea's 'app.ini' to make Gitea request the proper OIDC Scope from Authentik. (It'll by default only ask for the 'openid' scope which doesn't provide us with the relevant information.)
 
 
 In your Gitea instance, navigate to your app.ini and make the following changes
@@ -103,4 +79,4 @@ In your Gitea instance, navigate to your app.ini and make the following changes
 Restart Gitea and you should be done!
 
 
-![]
+
