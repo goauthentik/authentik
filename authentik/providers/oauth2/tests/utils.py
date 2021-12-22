@@ -2,7 +2,7 @@
 from django.test import TestCase
 from jwt import decode
 
-from authentik.providers.oauth2.models import OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider, RefreshToken
 
 
 class OAuthTestCase(TestCase):
@@ -20,6 +20,8 @@ class OAuthTestCase(TestCase):
     def validate_jwt(self, token: RefreshToken, provider: OAuth2Provider):
         """Validate that all required fields are set"""
         key, alg = provider.get_jwt_key()
+        if alg != JWTAlgorithms.HS256:
+            key = provider.signing_key.public_key
         jwt = decode(
             token.access_token,
             key,
