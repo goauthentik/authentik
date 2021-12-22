@@ -42,7 +42,7 @@ def ensure_certificate_valid(body: str):
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 @prefill_task
 def certificate_discovery(self: MonitoredTask):
-    """Discover and update certificates form the filesystem"""
+    """Discover, import and update certificates from the filesystem"""
     certs = {}
     private_keys = {}
     discovered = 0
