@@ -30,6 +30,8 @@ export class APIError extends Error {
 
 @customElement("ak-form")
 export class Form<T> extends LitElement {
+    viewportCheck = true;
+
     @property()
     successMessage = "";
 
@@ -274,7 +276,7 @@ export class Form<T> extends LitElement {
     }
 
     render(): TemplateResult {
-        if (!this.isInViewport) {
+        if (this.viewportCheck && !this.isInViewport) {
             return html``;
         }
         return this.renderVisible();

@@ -5,8 +5,6 @@ import { EVENT_REFRESH } from "../../constants";
 import { Form } from "./Form";
 
 export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
-    viewportCheck = true;
-
     abstract loadInstance(pk: PKT): Promise<T>;
 
     @property({ attribute: false })
