@@ -11,7 +11,6 @@ import {
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     IssuerModeEnum,
-    JwtAlgEnum,
     OAuth2Provider,
     PropertymappingsApi,
     ProvidersApi,
