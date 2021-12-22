@@ -24,7 +24,7 @@ MANAGED_DISCOVERED = "goauthentik.io/crypto/discovered/%s"
 
 
 def ensure_private_key_valid(body: str):
-    """Attempt loading of an RSA Private key without password"""
+    """Attempt loading of a PEM Private key without password"""
     load_pem_private_key(
         str.encode("\n".join([x.strip() for x in body.split("\n")])),
         password=None,
@@ -60,7 +60,7 @@ def certificate_discovery(self: MonitoredTask):
         try:
             with open(path, "r+", encoding="utf-8") as _file:
                 body = _file.read()
-                if "BEGIN RSA PRIVATE KEY" in body:
+                if "PRIVATE KEY" in body:
                     private_keys[cert_name] = ensure_private_key_valid(body)
                 else:
                     certs[cert_name] = ensure_certificate_valid(body)

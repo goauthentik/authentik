@@ -72,7 +72,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
         return value
 
     def validate_key_data(self, value: str) -> str:
-        """Verify that input is a valid PEM RSA Key"""
+        """Verify that input is a valid PEM Key"""
         # Since this field is optional, data can be empty.
         if value != "":
             try:

@@ -34,7 +34,7 @@ You can also bind mount single files into the folder, as long as they fall under
 
     `/foo.pem` Will be imported as the keypair `foo`. Based on its content its either imported as certificate or private key.
 
-    Currently, only RSA Keys are supported, so if the file contains `BEGIN RSA PRIVATE KEY` it will imported as private key.
+    Files containing `PRIVATE KEY` it will imported as private key.
 
     Otherwise it will be imported as certificate.
 

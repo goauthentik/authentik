@@ -6,6 +6,11 @@ from uuid import uuid4
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric.ec import (
+    EllipticCurvePrivateKey,
+    EllipticCurvePublicKey,
+)
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import Certificate, load_pem_x509_certificate
@@ -36,8 +41,8 @@ class CertificateKeyPair(ManagedModel, CreatedUpdatedModel):
     )
 
     _cert: Optional[Certificate] = None
-    _private_key: Optional[RSAPrivateKey] = None
-    _public_key: Optional[RSAPublicKey] = None
+    _private_key: Optional[RSAPrivateKey | EllipticCurvePrivateKey | Ed25519PrivateKey] = None
+    _public_key: Optional[RSAPublicKey | EllipticCurvePublicKey | Ed25519PublicKey] = None
 
     @property
     def certificate(self) -> Certificate:
@@ -49,14 +54,14 @@ class CertificateKeyPair(ManagedModel, CreatedUpdatedModel):
         return self._cert
 
     @property
-    def public_key(self) -> Optional[RSAPublicKey]:
+    def public_key(self) -> Optional[RSAPublicKey | EllipticCurvePublicKey]:
         """Get public key of the private key"""
         if not self._public_key:
             self._public_key = self.private_key.public_key()
         return self._public_key
 
     @property
-    def private_key(self) -> Optional[RSAPrivateKey]:
+    def private_key(self) -> Optional[RSAPrivateKey | EllipticCurvePrivateKey]:
         """Get python cryptography PrivateKey instance"""
         if not self._private_key and self.key_data != "":
             try:
