@@ -50,6 +50,6 @@ func (ls *LDAPServer) StartLDAPTLSServer() error {
 	if err != nil {
 		return err
 	}
-	ls.log.Printf("closing %s", ln.Addr())
-	return ls.s.ListenAndServe(listen)
+	ls.log.WithField("listen", listen).Info("Stopping LDAP SSL Server")
+	return nil
 }

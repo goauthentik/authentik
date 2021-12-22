@@ -62,7 +62,7 @@ func (ls *LDAPServer) StartLDAPServer() error {
 	if err != nil {
 		return err
 	}
-	ls.log.Printf("closing %s", ln.Addr())
+	ls.log.WithField("listen", listen).Info("Stopping LDAP server")
 	return ls.s.ListenAndServe(listen)
 }
 

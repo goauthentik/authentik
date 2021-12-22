@@ -52,9 +52,10 @@ func RunMetricsServer() {
 			return
 		}
 	})
-	l.WithField("listen", config.G.Web.ListenMetrics).Info("Listening (metrics)")
+	l.WithField("listen", config.G.Web.ListenMetrics).Info("Starting Metrics server")
 	err := http.ListenAndServe(config.G.Web.ListenMetrics, m)
 	if err != nil {
-		panic(err)
+		l.WithError(err).Warning("Failed to start metrics server")
 	}
+	l.WithField("listen", config.G.Web.ListenMetrics).Info("Stopping Metrics server")
 }

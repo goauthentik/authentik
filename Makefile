@@ -35,6 +35,7 @@ lint-fix:
 lint:
 	bandit -r authentik tests lifecycle -x node_modules
 	pylint authentik tests lifecycle
+	golangci-lint run -v
 
 i18n-extract: i18n-extract-core web-extract
 

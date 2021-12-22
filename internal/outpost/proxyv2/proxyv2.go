@@ -8,7 +8,6 @@ import (
 	"net"
 	"net/http"
 	"sync"
-	"time"
 
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/mux"
@@ -119,9 +118,9 @@ func (ps *ProxyServer) ServeHTTP() {
 	proxyListener := &proxyproto.Listener{Listener: listener}
 	defer proxyListener.Close()
 
-	ps.log.Printf("listening on %s", listener.Addr())
+	ps.log.WithField("listen", listenAddress).Info("Starting HTTP server")
 	ps.serve(proxyListener)
-	ps.log.Printf("closing %s", listener.Addr())
+	ps.log.WithField("listen", listenAddress).Info("Stopping HTTP server")
 }
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
@@ -135,16 +134,15 @@ func (ps *ProxyServer) ServeHTTPS() {
 
 	ln, err := net.Listen("tcp", listenAddress)
 	if err != nil {
-		ps.log.Fatalf("listen (%s) failed - %s", listenAddress, err)
+		ps.log.WithError(err).Warning("Failed to listen for HTTPS")
 	}
-	ps.log.Printf("listening on %s", ln.Addr())
-
-	proxyListener := &proxyproto.Listener{Listener: tcpKeepAliveListener{ln.(*net.TCPListener)}}
+	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}}
 	defer proxyListener.Close()
 
 	tlsListener := tls.NewListener(proxyListener, config)
+	ps.log.WithField("listen", listenAddress).Info("Starting HTTPS server")
 	ps.serve(tlsListener)
-	ps.log.Printf("closing %s", tlsListener.Addr())
+	ps.log.WithField("listen", listenAddress).Info("Stopping HTTPS server")
 }
 
 func (ps *ProxyServer) Start() error {
@@ -179,7 +177,7 @@ func (ps *ProxyServer) serve(listener net.Listener) {
 		// We received an interrupt signal, shut down.
 		if err := srv.Shutdown(context.Background()); err != nil {
 			// Error from closing listeners, or context timeout:
-			ps.log.Printf("HTTP server Shutdown: %v", err)
+			ps.log.WithError(err).Info("HTTP server Shutdown")
 		}
 		close(idleConnsClosed)
 	}()
@@ -189,28 +187,4 @@ func (ps *ProxyServer) serve(listener net.Listener) {
 		ps.log.Errorf("ERROR: http.Serve() - %s", err)
 	}
 	<-idleConnsClosed
-}
-
-// tcpKeepAliveListener sets TCP keep-alive timeouts on accepted
-// connections. It's used by ListenAndServe and ListenAndServeTLS so
-// dead TCP connections (e.g. closing laptop mid-download) eventually
-// go away.
-type tcpKeepAliveListener struct {
-	*net.TCPListener
-}
-
-func (ln tcpKeepAliveListener) Accept() (net.Conn, error) {
-	tc, err := ln.AcceptTCP()
-	if err != nil {
-		return nil, err
-	}
-	err = tc.SetKeepAlive(true)
-	if err != nil {
-		log.Printf("Error setting Keep-Alive: %v", err)
-	}
-	err = tc.SetKeepAlivePeriod(3 * time.Minute)
-	if err != nil {
-		log.Printf("Error setting Keep-Alive period: %v", err)
-	}
-	return tc, nil
 }
