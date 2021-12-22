@@ -1,7 +1,10 @@
 """authentik OAuth2 JWKS Views"""
 from base64 import urlsafe_b64encode
-from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey, EllipticCurvePublicKey
 
+from cryptography.hazmat.primitives.asymmetric.ec import (
+    EllipticCurvePrivateKey,
+    EllipticCurvePublicKey,
+)
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -57,7 +60,6 @@ class JWKSView(View):
                         "e": b64_enc(public_numbers.e),
                     }
                 ]
-
 
         response = JsonResponse(response_data)
         response["Access-Control-Allow-Origin"] = "*"

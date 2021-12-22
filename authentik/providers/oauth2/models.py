@@ -8,9 +8,9 @@ from datetime import datetime
 from hashlib import sha256
 from typing import Any, Optional, Type
 from urllib.parse import urlparse
+
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
-
 from dacite import from_dict
 from django.db import models
 from django.http import HttpRequest

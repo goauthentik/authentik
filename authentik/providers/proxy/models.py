@@ -16,11 +16,7 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
 )
-from authentik.providers.oauth2.models import (
-    ClientTypes,
-    OAuth2Provider,
-    ScopeMapping,
-)
+from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
 
 SCOPE_AK_PROXY = "ak_proxy"
 
