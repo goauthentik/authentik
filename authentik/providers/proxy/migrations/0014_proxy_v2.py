@@ -6,7 +6,8 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 
 def migrate_defaults(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    from authentik.providers.proxy.models import JWTAlgorithms, ProxyProvider
+    from authentik.providers.oauth2.models import JWTAlgorithms
+    from authentik.providers.proxy.models import ProxyProvider
 
     db_alias = schema_editor.connection.alias
     for provider in ProxyProvider.objects.using(db_alias).filter(jwt_alg=JWTAlgorithms.RS256):
