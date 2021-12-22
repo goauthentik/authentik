@@ -6,6 +6,7 @@ from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
+from authentik.events.utils import cleanse_dict, sanitize_dict
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
 from authentik.flows.models import NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -14,12 +15,15 @@ from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
     get_challenge_for_device,
+    get_webauthn_challenge_userless,
     select_challenge,
     validate_challenge_code,
     validate_challenge_duo,
     validate_challenge_webauthn,
 )
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
+from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
 
@@ -129,15 +133,33 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             LOGGER.debug("adding challenge for device", challenge=challenge)
         return challenges
 
+    def get_userless_webauthn_challenge(self) -> list[dict]:
+        """Get a WebAuthn challenge when no pending user is set."""
+        challenge = DeviceChallenge(
+            data={
+                "device_class": DeviceClasses.WEBAUTHN,
+                "device_uid": -1,
+                "challenge": get_webauthn_challenge_userless(self.request),
+            }
+        )
+        challenge.is_valid()
+        return [challenge.data]
+
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Check if a user is set, and check if the user has any devices
         if not, we can skip this entire stage"""
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
-        if not user:
-            LOGGER.debug("No pending user, continuing")
-            return self.executor.stage_ok()
         stage: AuthenticatorValidateStage = self.executor.current_stage
-        challenges = self.get_device_challenges()
+        if user:
+            challenges = self.get_device_challenges()
+        else:
+            # Passwordless auth, with just webauthn
+            if DeviceClasses.WEBAUTHN in stage.device_classes:
+                LOGGER.debug("Userless flow, getting generic webauthn challenge")
+                challenges = self.get_userless_webauthn_challenge()
+            else:
+                LOGGER.debug("No pending user, continuing")
+                return self.executor.stage_ok()
         self.request.session["device_challenges"] = challenges
 
         # No allowed devices
@@ -181,4 +203,19 @@ class AuthenticatorValidateStageView(ChallengeStageView):
     # pylint: disable=unused-argument
     def challenge_valid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
         # All validation is done by the serializer
+        user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
+        if not user:
+            webauthn_device: WebAuthnDevice = response.data.get("webauthn", None)
+            if not webauthn_device:
+                return self.executor.stage_ok()
+            LOGGER.debug("Set user from userless flow", user=webauthn_device.user)
+            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = webauthn_device.user
+            self.executor.plan.context[PLAN_CONTEXT_METHOD] = "auth_webauthn_pwl"
+            self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS] = cleanse_dict(
+                sanitize_dict(
+                    {
+                        "device": webauthn_device,
+                    }
+                )
+            )
         return self.executor.stage_ok()

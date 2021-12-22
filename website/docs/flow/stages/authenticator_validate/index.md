@@ -17,3 +17,49 @@ Using the `Not configured action`, you can choose what happens when a user does 
 - Skip: Validation is skipped and the flow continues
 - Deny: Access is denied, the flow execution ends
 - Configure: This option requires a *Configuration stage* to be set. The validation stage will be marked as successful, and the configuration stage will be injected into the flow.
+
+## Passwordless authentication
+
+:::
+Requires authentik 2021.12.4
+:::
+
+Passwordless authentication currently only supports WebAuthn devices, like security keys and biometrics.
+
+To configure passwordless authentication, create a new Flow with the delegation set to *Authentication*.
+
+As first stage, add an *Authentication validation* stage, with the WebAuthn device class allowed.
+After this stage you can bind any additional verification stages.
+As final stage, bind a *User login* stage.
+
+This flow will return an error for users without a WebAuthn device. To circumvent this, you can add an identification and password stage
+after the initial validation stage, and use a policy to skip them if the first stage already set a user. You can use a policy like this:
+
+```python
+return bool(request.user)
+```
+
+#### Logging
+
+Logins which used Passwordless authentication have the *auth_method* context variable set to `auth_webauthn_pwl`, and the device used is saved in the arguments. Example:
+
+```json
+{
+    "auth_method": "auth_webauthn_pwl",
+    "http_request": {
+        "args": {
+            "query": ""
+        },
+        "path": "/api/v3/flows/executor/test/",
+        "method": "GET"
+    },
+    "auth_method_args": {
+        "device": {
+            "pk": 1,
+            "app": "authentik_stages_authenticator_webauthn",
+            "name": "test device",
+            "model_name": "webauthndevice"
+        }
+    }
+}
+```

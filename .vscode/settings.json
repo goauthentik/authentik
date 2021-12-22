@@ -11,7 +11,8 @@
         "saml",
         "totp",
         "webauthn",
-        "traefik"
+        "traefik",
+        "passwordless"
     ],
     "python.linting.pylintEnabled": true,
     "todo-tree.tree.showCountsInTree": true,
