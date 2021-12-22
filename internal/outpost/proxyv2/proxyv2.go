@@ -88,17 +88,25 @@ func (ps *ProxyServer) Type() string {
 
 func (ps *ProxyServer) TimerFlowCacheExpiry() {}
 
-func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
-	app, ok := ps.apps[info.ServerName]
+func (ps *ProxyServer) GetCertificate(serverName string) *tls.Certificate {
+	app, ok := ps.apps[serverName]
 	if !ok {
-		ps.log.WithField("server-name", info.ServerName).Debug("app does not exist")
-		return &ps.defaultCert, nil
+		ps.log.WithField("server-name", serverName).Debug("app does not exist")
+		return nil
 	}
 	if app.Cert == nil {
-		ps.log.WithField("server-name", info.ServerName).Debug("app does not have a certificate")
+		ps.log.WithField("server-name", serverName).Debug("app does not have a certificate")
+		return nil
+	}
+	return app.Cert
+}
+
+func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
+	appCert := ps.GetCertificate(info.ServerName)
+	if appCert == nil {
 		return &ps.defaultCert, nil
 	}
-	return app.Cert, nil
+	return appCert, nil
 }
 
 // ServeHTTP constructs a net.Listener and starts handling HTTP requests
