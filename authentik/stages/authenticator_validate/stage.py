@@ -8,7 +8,7 @@ from structlog.stdlib import get_logger
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import cleanse_dict, sanitize_dict
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
-from authentik.flows.models import NotConfiguredAction, Stage
+from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_sms.models import SMSDevice
@@ -153,6 +153,9 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         if user:
             challenges = self.get_device_challenges()
         else:
+            if self.executor.flow.designation != FlowDesignation.AUTHENTICATION:
+                LOGGER.debug("Refusing passwordless flow in non-authentication flow")
+                return self.executor.stage_ok()
             # Passwordless auth, with just webauthn
             if DeviceClasses.WEBAUTHN in stage.device_classes:
                 LOGGER.debug("Userless flow, getting generic webauthn challenge")
