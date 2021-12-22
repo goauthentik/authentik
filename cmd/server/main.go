@@ -116,6 +116,9 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 		tw := tenant_tls.NewWatcher(ac.Client)
 		go tw.Start()
 		ws.TenantTLS = tw
+		ac.AddRefreshHandler(func() {
+			tw.Check()
+		})
 
 		srv := proxyv2.NewProxyServer(ac, 0)
 		ws.ProxyServer = srv

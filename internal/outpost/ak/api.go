@@ -41,6 +41,7 @@ type APIController struct {
 	lastWsReconnect     time.Time
 	wsIsReconnecting    bool
 	wsBackoffMultiplier int
+	refreshHandlers     []func()
 
 	instanceUUID uuid.UUID
 }
@@ -95,6 +96,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		instanceUUID:        uuid.New(),
 		Outpost:             outpost,
 		wsBackoffMultiplier: 1,
+		refreshHandlers:     make([]func(), 0),
 	}
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
 	err = ac.initWS(akURL, outpost.Pk)
@@ -139,6 +141,10 @@ func (a *APIController) configureRefreshSignal() {
 	a.logger.Debug("Enabled USR1 hook to reload")
 }
 
+func (a *APIController) AddRefreshHandler(handler func()) {
+	a.refreshHandlers = append(a.refreshHandlers, handler)
+}
+
 func (a *APIController) OnRefresh() error {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
@@ -152,7 +158,11 @@ func (a *APIController) OnRefresh() error {
 
 	a.logger.WithField("name", a.Outpost.Name).Debug("Fetched outpost configuration")
 	doGlobalSetup(a.Outpost, a.GlobalConfig)
-	return a.Server.Refresh()
+	err = a.Server.Refresh()
+	for _, handler := range a.refreshHandlers {
+		handler()
+	}
+	return err
 }
 
 func (a *APIController) StartBackgorundTasks() error {

@@ -44,6 +44,7 @@ func (w *Watcher) Start() {
 }
 
 func (w *Watcher) Check() {
+	w.log.Info("updating tenant certificates")
 	tenants, _, err := w.client.CoreApi.CoreTenantsListExecute(api.ApiCoreTenantsListRequest{})
 	if err != nil {
 		w.log.WithError(err).Warning("failed to get tenants")
