@@ -145,6 +145,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         challenge.is_valid()
         return [challenge.data]
 
+    # pylint: disable=too-many-return-statements
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Check if a user is set, and check if the user has any devices
         if not, we can skip this entire stage"""
