@@ -52,6 +52,9 @@ def certificate_discovery(self: MonitoredTask):
             continue
         if path.is_dir():
             continue
+        # For certbot setups, we want to ignore archive.
+        if "archive" in file:
+            continue
         # Support certbot's directory structure
         if path.name in ["fullchain.pem", "privkey.pem"]:
             cert_name = path.parent.name

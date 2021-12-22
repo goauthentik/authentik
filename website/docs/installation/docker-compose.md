@@ -67,6 +67,22 @@ AUTHENTIK_AUTHENTIK__GEOIP=/geoip/GeoLite2-City.mmdb
 
 The GeoIP database will automatically be updated every 8 hours.
 
+## Running on Port 80/443
+
+By default, authentik listens on port 9000 for HTTP and 9443 for HTTPS. To change this, you can use a [docker-compose override file](https://docs.docker.com/compose/extends/#adding-and-overriding-configuration).
+
+Create a file called `docker-compose.override.yml` with the following contents:
+
+```yaml
+version: '3.2'
+
+services:
+  server:
+    ports:
+      - "0.0.0.0:80:9000"
+      - "0.0.0.0:443:9443"
+```
+
 ## Startup
 
 Afterwards, run these commands to finish

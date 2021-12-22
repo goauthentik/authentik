@@ -40,6 +40,7 @@ You can also bind mount single files into the folder, as long as they fall under
 
 - If the file is called `fullchain.pem` or `privkey.pem` (the output naming of certbot), they will get the name of the parent folder.
 - Files can be in any arbitrary file structure, and can have extension.
+- If the path contains `archive`, the files will be ignored (to better support certbot setups).
 
 ```
 certs/
@@ -55,3 +56,52 @@ certs/
 ```
 
 Files are checked every 5 minutes, and will trigger an Outpost refresh if the files differ.
+
+## Web certificates
+
+Starting with authentik 2021.12.4, you can configure the certificate authentik uses for its core webserver. For most deployments this will not be relevant and reverse proxies are used, but this can be used to create a very compact and self-contained authentik install.
+
+#### Let's Encrypt
+
+To use let's encrypt certificates with this setup, using certbot, you can use this compose file:
+
+```yaml
+version: '3.6'
+
+services:
+  certbot:
+    image: certbot/dns-route53:v1.22.0
+    volumes:
+      - ../authentik/certs/:/etc/letsencrypt
+      - ./letsencrypt:/var/lib/letsencrypt
+    # Variables depending on DNS Plugin
+    environment:
+      AWS_ACCESS_KEY_ID: ...
+    command:
+      - certonly
+      - --non-interactive
+      - --agree-tos
+      - -m your.email@company
+      - -d authentik.company
+      # Again, match with your provider
+      - --dns-route53
+```
+
+This compose file expects a folder structure like this:
+
+```
+certbot/
+├── docker-compose.yaml
+└── letsencrypt/
+authentik/
+├── certs
+├── custom-templates
+├── docker-compose.yml
+└── media
+```
+
+After you've created the certbot stack, and let it run, you should see a new Certificate appear in authentik. (If the certificate does not appear, restart the worker container. This is caused by incompatible permissions set by certbot).
+
+Navigate to *System -> Tenants*, edit any tenant and select the certificate of your choice.
+
+Keep in mind this certbot container will only run once, but there are a variety of ways to schedule regular renewals.
