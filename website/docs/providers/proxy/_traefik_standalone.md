@@ -5,7 +5,18 @@ http:
       forwardAuth:
         address: http://outpost.company:9000/akprox/auth/traefik
         trustForwardHeader: true
-        authResponseHeadersRegex: ^(Auth|Remote|X).*$
+        authResponseHeaders:
+          - X-authentik-username
+          - X-authentik-groups
+          - X-authentik-email
+          - X-authentik-name
+          - X-authentik-uid
+          - X-authentik-jwt
+          - X-authentik-meta-jwks
+          - X-authentik-meta-outpost
+          - X-authentik-meta-provider
+          - X-authentik-meta-app
+          - X-authentik-meta-version
   routers:
     default-router:
       rule: "Host(`app.company`)"
