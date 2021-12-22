@@ -20,7 +20,7 @@ Using the `Not configured action`, you can choose what happens when a user does 
 
 ## Passwordless authentication
 
-:::
+:::info
 Requires authentik 2021.12.4
 :::
 

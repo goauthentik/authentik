@@ -35,6 +35,6 @@ authentik:
 
 Container images can be pulled from the following URLs:
 
-- goauthentik.io/server (https://goauthentik.io)
 - ghcr.io/goauthentik/server (https://ghcr.io)
+- goauthentik.io/server (https://goauthentik.io)
 - beryju/authentik (https://index.docker.io)
