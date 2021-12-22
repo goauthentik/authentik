@@ -15,12 +15,14 @@ from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.models import (
+    Event,
     Notification,
     NotificationSeverity,
     NotificationTransport,
     NotificationTransportError,
     TransportMode,
 )
+from authentik.events.utils import get_user
 
 
 class NotificationTransportSerializer(ModelSerializer):
@@ -86,6 +88,12 @@ class NotificationTransportViewSet(UsedByMixin, ModelViewSet):
             severity=NotificationSeverity.NOTICE,
             body=f"Test Notification from transport {transport.name}",
             user=request.user,
+            event=Event(
+                action="Test",
+                user=get_user(request.user),
+                app=self.__class__.__module__,
+                context={"foo": "bar"},
+            ),
         )
         try:
             response = NotificationTransportTestSerializer(
