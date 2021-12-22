@@ -148,7 +148,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Check if a user is set, and check if the user has any devices
         if not, we can skip this entire stage"""
-        user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
+        user = self.get_pending_user()
         stage: AuthenticatorValidateStage = self.executor.current_stage
         if user:
             challenges = self.get_device_challenges()
