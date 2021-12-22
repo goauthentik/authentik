@@ -93,7 +93,7 @@ export class NotificationDrawer extends LitElement {
                 html`
                     <a
                         class="pf-c-dropdown__toggle pf-m-plain"
-                        href="#/events/log/${item.event?.pk}"
+                        href="/if/admin/#/events/log/${item.event?.pk}"
                     >
                         <i class="fas fa-share-square"></i>
                     </a>
