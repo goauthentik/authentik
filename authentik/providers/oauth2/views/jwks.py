@@ -1,7 +1,8 @@
 """authentik OAuth2 JWKS Views"""
 from base64 import urlsafe_b64encode
+from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey, EllipticCurvePublicKey
 
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views import View
@@ -25,22 +26,38 @@ class JWKSView(View):
         """Show RSA Key data for Provider"""
         application = get_object_or_404(Application, slug=application_slug)
         provider: OAuth2Provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
+        private_key = provider.signing_key
 
         response_data = {}
 
-        if provider.jwt_alg == JWTAlgorithms.RS256 and provider.rsa_key:
-            public_key: RSAPublicKey = provider.rsa_key.private_key.public_key()
-            public_numbers = public_key.public_numbers()
-            response_data["keys"] = [
-                {
-                    "kty": "RSA",
-                    "alg": "RS256",
-                    "use": "sig",
-                    "kid": provider.rsa_key.kid,
-                    "n": b64_enc(public_numbers.n),
-                    "e": b64_enc(public_numbers.e),
-                }
-            ]
+        if private_key:
+            if isinstance(private_key, RSAPrivateKey):
+                public_key: RSAPublicKey = private_key.public_key()
+                public_numbers = public_key.public_numbers()
+                response_data["keys"] = [
+                    {
+                        "kty": "RSA",
+                        "alg": JWTAlgorithms.RS256,
+                        "use": "sig",
+                        "kid": private_key.kid,
+                        "n": b64_enc(public_numbers.n),
+                        "e": b64_enc(public_numbers.e),
+                    }
+                ]
+            elif isinstance(private_key, EllipticCurvePrivateKey):
+                public_key: EllipticCurvePublicKey = private_key.public_key()
+                public_numbers = public_key.public_numbers()
+                response_data["keys"] = [
+                    {
+                        "kty": "EC",
+                        "alg": JWTAlgorithms.EC256,
+                        "use": "sig",
+                        "kid": private_key.kid,
+                        "n": b64_enc(public_numbers.n),
+                        "e": b64_enc(public_numbers.e),
+                    }
+                ]
+
 
         response = JsonResponse(response_data)
         response["Access-Control-Allow-Origin"] = "*"

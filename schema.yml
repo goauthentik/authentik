@@ -10859,15 +10859,6 @@ paths:
           - per_provider
         description: Configure how the issuer field of the ID Token should be filled.
       - in: query
-        name: jwt_alg
-        schema:
-          type: string
-          title: JWT Algorithm
-          enum:
-          - HS256
-          - RS256
-        description: Algorithm used to sign the JWT Token
-      - in: query
         name: name
         schema:
           type: string
@@ -10902,17 +10893,17 @@ paths:
         name: redirect_uris
         schema:
           type: string
-      - in: query
-        name: rsa_key
-        schema:
-          type: string
-          format: uuid
       - name: search
         required: false
         in: query
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: signing_key
+        schema:
+          type: string
+          format: uuid
       - in: query
         name: sub_mode
         schema:
@@ -22221,11 +22212,6 @@ components:
       - global
       - per_provider
       type: string
-    JwtAlgEnum:
-      enum:
-      - HS256
-      - RS256
-      type: string
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -23099,15 +23085,11 @@ components:
           type: boolean
           description: Include User claims from scopes in the id_token, for applications
             that don't access the userinfo endpoint.
-        jwt_alg:
-          allOf:
-          - $ref: '#/components/schemas/JwtAlgEnum'
-          title: JWT Algorithm
-          description: Algorithm used to sign the JWT Token
-        rsa_key:
+        signing_key:
           type: string
           format: uuid
           nullable: true
+          title: RSA Key
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
         redirect_uris:
@@ -23175,15 +23157,11 @@ components:
           type: boolean
           description: Include User claims from scopes in the id_token, for applications
             that don't access the userinfo endpoint.
-        jwt_alg:
-          allOf:
-          - $ref: '#/components/schemas/JwtAlgEnum'
-          title: JWT Algorithm
-          description: Algorithm used to sign the JWT Token
-        rsa_key:
+        signing_key:
           type: string
           format: uuid
           nullable: true
+          title: RSA Key
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
         redirect_uris:
@@ -27509,15 +27487,11 @@ components:
           type: boolean
           description: Include User claims from scopes in the id_token, for applications
             that don't access the userinfo endpoint.
-        jwt_alg:
-          allOf:
-          - $ref: '#/components/schemas/JwtAlgEnum'
-          title: JWT Algorithm
-          description: Algorithm used to sign the JWT Token
-        rsa_key:
+        signing_key:
           type: string
           format: uuid
           nullable: true
+          title: RSA Key
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
         redirect_uris:

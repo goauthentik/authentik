@@ -81,7 +81,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:3000/",
             authorization_flow=authorization_flow,
         )
@@ -123,7 +123,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:3000/login/generic_oauth",
             authorization_flow=authorization_flow,
         )
@@ -178,7 +178,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:3000/login/generic_oauth",
             authorization_flow=authorization_flow,
         )
@@ -243,7 +243,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:3000/login/generic_oauth",
         )
         provider.property_mappings.set(
@@ -315,7 +315,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:3000/login/generic_oauth",
         )
         provider.property_mappings.set(

@@ -20,7 +20,6 @@ The following placeholders will be used:
 Create an OAuth2/OpenID provider with the following parameters:
 
 - Client Type: `Confidential`
-- JWT Algorithm: `RS256`
 - Redirect URIs: `https://harbor.company/c/oidc/callback`
 - Scopes: OpenID, Email and Profile
 

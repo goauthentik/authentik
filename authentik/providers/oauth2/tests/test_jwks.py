@@ -25,7 +25,7 @@ class TestJWKS(OAuthTestCase):
             client_id="test",
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)
         response = self.client.get(

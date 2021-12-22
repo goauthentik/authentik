@@ -35,7 +35,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
@@ -62,7 +62,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         request = self.factory.post(
@@ -85,7 +85,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
@@ -114,7 +114,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
         )
         # Needs to be assigned to an application for iss to be set
         self.app.provider = provider
@@ -156,7 +156,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
         )
         # Needs to be assigned to an application for iss to be set
         self.app.provider = provider
@@ -205,7 +205,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
@@ -250,7 +250,7 @@ class TestToken(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
         )
         # Needs to be assigned to an application for iss to be set
         self.app.provider = provider

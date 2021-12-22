@@ -27,7 +27,7 @@ class TestUserinfo(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="",
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())
         # Needs to be assigned to an application for iss to be set

@@ -146,7 +146,7 @@ class TestCrypto(APITestCase):
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://localhost",
-            rsa_key=keypair,
+            signing_key=keypair,
         )
         response = self.client.get(
             reverse(

@@ -8,6 +8,8 @@ from datetime import datetime
 from hashlib import sha256
 from typing import Any, Optional, Type
 from urllib.parse import urlparse
+from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 
 from dacite import from_dict
 from django.db import models
@@ -88,6 +90,7 @@ class JWTAlgorithms(models.TextChoices):
 
     HS256 = "HS256", _("HS256 (Symmetric Encryption)")
     RS256 = "RS256", _("RS256 (Asymmetric Encryption)")
+    EC256 = "EC256", _("EC256 (Asymmetric Encryption)")
 
 
 class ScopeMapping(PropertyMapping):
@@ -145,13 +148,6 @@ class OAuth2Provider(Provider):
         verbose_name=_("Client Secret"),
         default=generate_key,
     )
-    jwt_alg = models.CharField(
-        max_length=10,
-        choices=JWTAlgorithms.choices,
-        default=JWTAlgorithms.RS256,
-        verbose_name=_("JWT Algorithm"),
-        help_text=_(JWTAlgorithms.__doc__),
-    )
     redirect_uris = models.TextField(
         default="",
         blank=True,
@@ -207,7 +203,7 @@ class OAuth2Provider(Provider):
         help_text=_(("Configure how the issuer field of the ID Token should be filled.")),
     )
 
-    rsa_key = models.ForeignKey(
+    signing_key = models.ForeignKey(
         CertificateKeyPair,
         verbose_name=_("RSA Key"),
         on_delete=models.SET_NULL,
@@ -231,29 +227,18 @@ class OAuth2Provider(Provider):
         token.access_token = token.create_access_token(user, request)
         return token
 
-    def get_jwt_key(self) -> str:
-        """
-        Takes a provider and returns the set of keys associated with it.
-        Returns a list of keys.
-        """
-        if self.jwt_alg == JWTAlgorithms.RS256:
-            # if the user selected RS256 but didn't select a
-            # CertificateKeyPair, we fall back to HS256
-            if not self.rsa_key:
-                Event.new(
-                    EventAction.CONFIGURATION_ERROR,
-                    provider=self,
-                    message="Provider was configured for RS256, but no key was selected.",
-                ).save()
-                self.jwt_alg = JWTAlgorithms.HS256
-                self.save()
-            else:
-                return self.rsa_key.key_data
-
-        if self.jwt_alg == JWTAlgorithms.HS256:
-            return self.client_secret
-
-        raise Exception("Unsupported key algorithm.")
+    def get_jwt_key(self) -> tuple[str, str]:
+        """Get either the configured certificate or the client secret"""
+        if not self.signing_key:
+            # No Certificate at all, assume HS256
+            return self.client_secret, JWTAlgorithms.HS256
+        key: CertificateKeyPair = self.signing_key
+        private_key = key.private_key
+        if isinstance(private_key, RSAPrivateKey):
+            return key.key_data, JWTAlgorithms.RS256
+        if isinstance(private_key, EllipticCurvePrivateKey):
+            return key.key_data, JWTAlgorithms.EC256
+        raise Exception(f"Invalid private key type: {type(private_key)}")
 
     def get_issuer(self, request: HttpRequest) -> Optional[str]:
         """Get issuer, based on request"""
@@ -293,13 +278,13 @@ class OAuth2Provider(Provider):
     def encode(self, payload: dict[str, Any]) -> str:
         """Represent the ID Token as a JSON Web Token (JWT)."""
         headers = {}
-        if self.rsa_key:
-            headers["kid"] = self.rsa_key.kid
-        key = self.get_jwt_key()
+        if self.signing_key:
+            headers["kid"] = self.signing_key.kid
+        key, alg = self.get_jwt_key()
         # If the provider does not have an RSA Key assigned, it was switched to Symmetric
         self.refresh_from_db()
         # pyright: reportGeneralTypeIssues=false
-        return encode(payload, key, algorithm=self.jwt_alg, headers=headers)
+        return encode(payload, key, algorithm=alg, headers=headers)
 
     class Meta:
 

@@ -80,7 +80,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:9009/",
             authorization_flow=authorization_flow,
         )
@@ -122,7 +122,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:9009/implicit/",
             authorization_flow=authorization_flow,
         )
@@ -168,7 +168,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:9009/implicit/",
         )
         provider.property_mappings.set(
@@ -228,7 +228,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:9009/implicit/",
         )
         provider.property_mappings.set(

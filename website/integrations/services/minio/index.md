@@ -28,7 +28,6 @@ return {
 Create an application in authentik. Create an _OAuth2/OpenID Provider_ with the following parameters:
 
 - Client Type: `Public`
-- JWT Algorithm: `RS256`
 - Scopes: OpenID, Email, Profile and the scope you created above
 - RSA Key: Select any available key
 - Redirect URIs: `https://minio.company/oauth_callback`

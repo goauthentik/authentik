@@ -218,7 +218,7 @@ class TestAuthorize(OAuthTestCase):
             client_secret=generate_key(),
             authorization_flow=flow,
             redirect_uris="http://localhost",
-            rsa_key=create_test_cert(),
+            signing_key=create_test_cert(),
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()

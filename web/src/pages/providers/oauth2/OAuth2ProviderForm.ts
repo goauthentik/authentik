@@ -175,9 +175,9 @@ ${this.instance?.redirectUris}</textarea
                             ${t`If no explicit redirect URIs are specified, any redirect URI is allowed.`}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`RSA Key`} name="rsaKey">
+                    <ak-form-element-horizontal label=${t`Signing Key`} name="signingKey">
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.rsaKey === undefined}>
+                            <option value="" ?selected=${this.instance?.signingKey === undefined}>
                                 ---------
                             </option>
                             ${until(
@@ -188,7 +188,7 @@ ${this.instance?.redirectUris}</textarea
                                     })
                                     .then((keys) => {
                                         return keys.results.map((key) => {
-                                            let selected = this.instance?.rsaKey === key.pk;
+                                            let selected = this.instance?.signingKey === key.pk;
                                             if (keys.results.length === 1) {
                                                 selected = true;
                                             }
@@ -203,9 +203,7 @@ ${this.instance?.redirectUris}</textarea
                                 html`<option>${t`Loading...`}</option>`,
                             )}
                         </select>
-                        <p class="pf-c-form__helper-text">
-                            ${t`Key used to sign the tokens. Only required when JWT Algorithm is set to RS256.`}
-                        </p>
+                        <p class="pf-c-form__helper-text">${t`Key used to sign the tokens.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
@@ -250,29 +248,6 @@ ${this.instance?.redirectUris}</textarea
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`JWT Algorithm`}
-                        ?required=${true}
-                        name="jwtAlg"
-                    >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=${JwtAlgEnum.Rs256}
-                                ?selected=${this.instance?.jwtAlg === JwtAlgEnum.Rs256}
-                            >
-                                ${t`RS256 (Asymmetric Encryption)`}
-                            </option>
-                            <option
-                                value=${JwtAlgEnum.Hs256}
-                                ?selected=${this.instance?.jwtAlg === JwtAlgEnum.Hs256}
-                            >
-                                ${t`HS256 (Symmetric Encryption)`}
-                            </option>
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${t`Algorithm used to sign the JWT Tokens.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Scopes`} name="propertyMappings">

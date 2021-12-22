@@ -21,7 +21,6 @@ The following placeholders will be used:
 Create an application in authentik. Create an OAuth2/OpenID provider with the following parameters:
 
 - Client Type: `Confidential`
-- JWT Algorithm: `RS256`
 - Scopes: OpenID, Email and Profile
 - RSA Key: Select any available key
 - Redirect URIs: `https://matrix.company/_synapse/client/oidc/callback`
