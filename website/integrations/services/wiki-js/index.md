@@ -35,7 +35,7 @@ In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these s
 - JWT Algorithm: RS256
 - Redirect URI: The _Callback URL / Redirect URI_ you noted from the previous step.
 - Scopes: Default OAUth mappings for: OpenID, email, profile.
-- RSA Key: Choose a certificate.
+- RSA Key: Select any available key
 - Sub Mode: Based on username.
 
 Note the _client ID_ and _client secret_, then save the provider. If you need to retrieve these values, you can do so by editing the provider.

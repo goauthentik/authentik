@@ -15,7 +15,7 @@ From https://sssd.io/
 **SSSD** is an acronym for System Security Services Daemon. It is the client component of centralized identity management solutions such as FreeIPA, 389 Directory Server, Microsoft Active Directory, OpenLDAP and other directory servers. The client serves and caches the information stored in the remote directory server and provides identity, authentication and authorization services to the host machine.
 :::
 
-Note that Authentik supports _only_ user and group objects. As
+Note that authentik supports _only_ user and group objects. As
 a consequence, it cannot be used to provide automount or sudo
 configuration nor can it provide netgroups or services to `nss`.
 Kerberos is also not supported.
@@ -31,15 +31,15 @@ The following placeholders will be used:
   `ldap.baseDN` is `dc=ldap,dc=goauthentik,dc=io` then the domain
   might be `ldap.goauthentik.io`.
 - `ldap.searchGroup` is the "Search Group" that can can see all
-  users and groups in Authentik.
-- `sssd.serviceAccount` is a service account created in Authentik
+  users and groups in authentik.
+- `sssd.serviceAccount` is a service account created in authentik
 - `sssd.serviceAccountToken` is the service account token generated
-  by Authentik.
+  by authentik.
 
 Create an LDAP Provider if you don't already have one setup.
 This guide assumes you will be running with TLS and that you've
-correctly setup certificates both in Authentik and on the host
-running sssd. See the [ldap provider docs](../../../docs/providers/ldap) for setting up SSL on the Authentik side.
+correctly setup certificates both in authentik and on the host
+running sssd. See the [ldap provider docs](../../../docs/providers/ldap) for setting up SSL on the authentik side.
 
 Remember the Base DN you have configured for the provider as you'll
 need it in the sssd configuration.
@@ -130,7 +130,7 @@ The setup of sssd may vary based on Linux distribution and version,
 here are some resources that can help you get this setup:
 
 :::note
-Authentik is providing a simple LDAP server, not an Active Directory
+authentik is providing a simple LDAP server, not an Active Directory
 domain. Be sure you're looking at the correct sections in these guides.
 :::
 

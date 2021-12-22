@@ -30,8 +30,9 @@ Only settings that have been modified from default have been listed.
 :::
 
 **Protocol Settings**
+
 - Name: Gitea
-- RSA Key: authentik Self-signed certificate
+- RSA Key: Select any available key
 
 :::note
 Take note of the `Client ID` and `Client Secret`, you'll need to give them to Gitea in _Step 3_.
@@ -62,21 +63,15 @@ Change the following fields
 - Icon URL: https://raw.githubusercontent.com/goauthentik/authentik/master/web/icons/icon.png
 - OpenID Connect Auto Discovery URL: https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration
 
-
 ![](./gitea1.png)
 
-`Add Authentication Source` 
+`Add Authentication Source`
 
-Next you should edit your Gitea's 'app.ini' to make Gitea request the proper OIDC Scope from Authentik. (It'll by default only ask for the 'openid' scope which doesn't provide us with the relevant information.)
-
+Next you should edit your Gitea's 'app.ini' to make Gitea request the proper OIDC Scope from authentik. (It'll by default only ask for the 'openid' scope which doesn't provide us with the relevant information.)
 
 In your Gitea instance, navigate to your app.ini and make the following changes
 
 - If it doesn't exist yet, create a `[oauth2_client]` section
-- Set `OPENID_CONNECT_SCOPES` to `email profile` 
-
+- Set `OPENID_CONNECT_SCOPES` to `email profile`
 
 Restart Gitea and you should be done!
-
-
-

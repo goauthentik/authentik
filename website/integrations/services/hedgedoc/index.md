@@ -34,7 +34,7 @@ You need to set the following `env` Variables for Docker based installations.
 Set the following values:
 
 ```yaml
-CMD_OAUTH2_PROVIDERNAME: 'Authentik'
+CMD_OAUTH2_PROVIDERNAME: 'authentik'
 CMD_OAUTH2_CLIENT_ID: '<Client ID from above>'
 CMD_OAUTH2_CLIENT_SECRET: '<Client Secret from above>'
 CMD_OAUTH2_SCOPE: 'openid email profile'

@@ -33,11 +33,11 @@ Application:
 
 ## FortiManager Configuration
 
-Navigate to `https://fgm.company/p/app/#!/sys/sso_settings` and select SAML SSO settings to configure SAML. 
+Navigate to `https://fgm.company/p/app/#!/sys/sso_settings` and select SAML SSO settings to configure SAML.
 
 Select 'Service Provider (SP)' under Single Sign-On Mode to enable SAML authentication.
 
-Set the Field 'SP Address' to the FortiManager FQDN 'fgm.company'. (This gives you the URLs to configure in Authentik)
+Set the Field 'SP Address' to the FortiManager FQDN 'fgm.company'. (This gives you the URLs to configure in authentik)
 
 Set the Default Login Page to either 'Normal' or 'Single-Sign On'. (Normal allows both local and SAML authentication vs only SAML SSO)
 
@@ -51,4 +51,4 @@ Set the Field `IdP Login URL` to `https://authentik.company/application/saml/fgm
 
 Set the Field `IdP Logout URL` to `https://authentik.company/`
 
-For the Field 'IdP Certificate" Import your Authentik cert. (Self Signed or real)
+For the Field 'IdP Certificate" Import your authentik cert. (Self Signed or real)
