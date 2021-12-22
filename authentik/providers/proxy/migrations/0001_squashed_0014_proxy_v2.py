@@ -2,6 +2,7 @@
 
 import django.db.models.deletion
 from django.apps.registry import Apps
+from django.core.exceptions import FieldError
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
@@ -14,9 +15,13 @@ def migrate_defaults(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     from authentik.providers.proxy.models import ProxyProvider
 
     db_alias = schema_editor.connection.alias
-    for provider in ProxyProvider.objects.using(db_alias).filter(jwt_alg=JWTAlgorithms.RS256):
-        provider.set_oauth_defaults()
-        provider.save()
+    try:
+        for provider in ProxyProvider.objects.using(db_alias).filter(jwt_alg=JWTAlgorithms.RS256):
+            provider.set_oauth_defaults()
+            provider.save()
+    except FieldError:
+        # If the jwt_alg field doesn't exist, just ignore this migration
+        pass
 
 
 def migrate_mode(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
