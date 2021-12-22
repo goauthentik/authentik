@@ -39,6 +39,7 @@ class TenantSerializer(ModelSerializer):
             "flow_recovery",
             "flow_unenrollment",
             "event_retention",
+            "web_certificate",
         ]
 
 
@@ -69,6 +70,7 @@ class TenantViewSet(UsedByMixin, ModelViewSet):
     search_fields = [
         "domain",
         "branding_title",
+        "web_certificate__name",
     ]
     filterset_fields = "__all__"
     ordering = ["domain"]

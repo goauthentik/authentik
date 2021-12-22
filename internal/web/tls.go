@@ -22,6 +22,9 @@ func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Certif
 				return appCert, nil
 			}
 		}
+		if ws.TenantTLS != nil {
+			return ws.TenantTLS.GetCertificate(ch)
+		}
 		ws.log.Trace("using default, self-signed certificate")
 		return &cert, nil
 	}

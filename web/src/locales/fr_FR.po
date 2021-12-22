@@ -2688,6 +2688,7 @@ msgstr "Chargement en cours"
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantForm.ts
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserResetEmailForm.ts
@@ -5746,6 +5747,10 @@ msgstr ""
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Warning: authentik Domain is not configured, authentication will not work."
 msgstr "Avertissement : le domaine d'authentik n'est pas configuré, l'authentification ne fonctionnera pas."
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Web Certificate"
+msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "WebAuthn Authenticators"

@@ -2371,6 +2371,11 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: web_certificate
+        schema:
+          type: string
+          format: uuid
       tags:
       - core
       security:
@@ -28211,6 +28216,11 @@ components:
           type: string
           minLength: 1
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        web_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Web Certificate used by the authentik Core webserver.
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -30575,6 +30585,11 @@ components:
         event_retention:
           type: string
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        web_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Web Certificate used by the authentik Core webserver.
       required:
       - domain
       - tenant_uuid
@@ -30618,6 +30633,11 @@ components:
           type: string
           minLength: 1
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        web_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Web Certificate used by the authentik Core webserver.
       required:
       - domain
     Token:

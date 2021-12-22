@@ -2,9 +2,16 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import { CoreApi, FlowsApi, FlowsInstancesListDesignationEnum, Tenant } from "@goauthentik/api";
+import {
+    CoreApi,
+    CryptoApi,
+    FlowsApi,
+    FlowsInstancesListDesignationEnum,
+    Tenant,
+} from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/FormGroup";
@@ -296,6 +303,35 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         <p class="pf-c-form__helper-text">
                             ${t`Format: "weeks=3;days=2;hours=3,seconds=2".`}
                         </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Web Certificate`} name="webCertificate">
+                        <select class="pf-c-form-control">
+                            <option
+                                value=""
+                                ?selected=${this.instance?.webCertificate === undefined}
+                            >
+                                ---------
+                            </option>
+                            ${until(
+                                new CryptoApi(DEFAULT_CONFIG)
+                                    .cryptoCertificatekeypairsList({
+                                        ordering: "name",
+                                        hasKey: true,
+                                    })
+                                    .then((keys) => {
+                                        return keys.results.map((key) => {
+                                            return html`<option
+                                                value=${ifDefined(key.pk)}
+                                                ?selected=${this.instance?.webCertificate ===
+                                                key.pk}
+                                            >
+                                                ${key.name}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

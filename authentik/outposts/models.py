@@ -45,6 +45,7 @@ from authentik.lib.utils.errors import exception_to_string
 from authentik.managed.models import ManagedModel
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.outposts.docker_tls import DockerInlineTLS
+from authentik.tenants.models import Tenant
 
 OUR_VERSION = parse(__version__)
 OUTPOST_HELLO_INTERVAL = 10
@@ -385,7 +386,8 @@ class Outpost(ManagedModel):
                     user.user_permissions.add(permission.first())
         LOGGER.debug(
             "Updated service account's permissions",
-            perms=UserObjectPermission.objects.filter(user=user),
+            obj_perms=UserObjectPermission.objects.filter(user=user),
+            perms=user.user_permissions.all(),
         )
 
     @property
@@ -449,6 +451,10 @@ class Outpost(ManagedModel):
                 objects.extend(provider.get_required_objects())
             else:
                 objects.append(provider)
+        if self.managed:
+            for tenant in Tenant.objects.filter(web_certificate__isnull=False):
+                objects.append(tenant)
+                objects.append(tenant.web_certificate)
         return objects
 
     def __str__(self) -> str:

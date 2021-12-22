@@ -15,17 +15,17 @@ import (
 	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/proxyv2"
 	"goauthentik.io/internal/utils/web"
+	"goauthentik.io/internal/web/tenant_tls"
 )
 
 type WebServer struct {
 	Bind    string
 	BindTLS bool
 
-	LegacyProxy bool
-
 	stop chan struct{} // channel for waiting shutdown
 
 	ProxyServer *proxyv2.ProxyServer
+	TenantTLS   *tenant_tls.Watcher
 
 	m   *mux.Router
 	lh  *mux.Router
@@ -43,8 +43,6 @@ func NewWebServer(g *gounicorn.GoUnicorn) *WebServer {
 	logginRouter.Use(web.NewLoggingHandler(l, nil))
 
 	ws := &WebServer{
-		LegacyProxy: true,
-
 		m:   mainHandler,
 		lh:  logginRouter,
 		log: l,

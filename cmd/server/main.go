@@ -15,6 +15,7 @@ import (
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
 	"goauthentik.io/internal/web"
+	"goauthentik.io/internal/web/tenant_tls"
 )
 
 var running = true
@@ -110,6 +111,12 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 			}
 			continue
 		}
+		// Init tenant_tls here too since it requires an API Client,
+		// so we just re-use the same one as the outpost uses
+		tw := tenant_tls.NewWatcher(ac.Client)
+		go tw.Start()
+		ws.TenantTLS = tw
+
 		srv := proxyv2.NewProxyServer(ac, 0)
 		ws.ProxyServer = srv
 		ac.Server = srv

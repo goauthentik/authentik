@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/getsentry/sentry-go"
-	log "github.com/sirupsen/logrus"
 )
 
 type tracingTransport struct {
@@ -26,9 +25,5 @@ func (tt *tracingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	span.SetTag("method", r.Method)
 	defer span.Finish()
 	res, err := tt.inner.RoundTrip(r.WithContext(span.Context()))
-	log.WithFields(log.Fields{
-		"url":    r.URL.String(),
-		"method": r.Method,
-	}).Trace("http request")
 	return res, err
 }

@@ -4,6 +4,7 @@ from uuid import uuid4
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.lib.utils.time import timedelta_string_validator
 
@@ -49,6 +50,14 @@ class Tenant(models.Model):
                 "(Format: weeks=3;days=2;hours=3,seconds=2)."
             )
         ),
+    )
+
+    web_certificate = models.ForeignKey(
+        CertificateKeyPair,
+        null=True,
+        default=None,
+        on_delete=models.SET_DEFAULT,
+        help_text=_(("Web Certificate used by the authentik Core webserver.")),
     )
 
     def __str__(self) -> str:
