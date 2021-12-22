@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 
 from authentik.core.models import Application
+from authentik.crypto.models import CertificateKeyPair
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
 
 
@@ -29,11 +30,13 @@ class JWKSView(View):
         """Show RSA Key data for Provider"""
         application = get_object_or_404(Application, slug=application_slug)
         provider: OAuth2Provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
-        private_key = provider.signing_key
+        signing_key: CertificateKeyPair = provider.signing_key
 
         response_data = {}
 
-        if private_key:
+        if signing_key:
+            private_key = signing_key.private_key
+            print(type(private_key))
             if isinstance(private_key, RSAPrivateKey):
                 public_key: RSAPublicKey = private_key.public_key()
                 public_numbers = public_key.public_numbers()
@@ -42,7 +45,7 @@ class JWKSView(View):
                         "kty": "RSA",
                         "alg": JWTAlgorithms.RS256,
                         "use": "sig",
-                        "kid": private_key.kid,
+                        "kid": signing_key.kid,
                         "n": b64_enc(public_numbers.n),
                         "e": b64_enc(public_numbers.e),
                     }
@@ -55,7 +58,7 @@ class JWKSView(View):
                         "kty": "EC",
                         "alg": JWTAlgorithms.EC256,
                         "use": "sig",
-                        "kid": private_key.kid,
+                        "kid": signing_key.kid,
                         "n": b64_enc(public_numbers.n),
                         "e": b64_enc(public_numbers.e),
                     }
