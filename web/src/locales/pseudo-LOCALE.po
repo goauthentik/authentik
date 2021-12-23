@@ -21,8 +21,11 @@ msgstr ""
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
-#: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
+msgstr ""
+
+#: src/pages/stages/user_login/UserLoginStageForm.ts
+msgid "(Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts
