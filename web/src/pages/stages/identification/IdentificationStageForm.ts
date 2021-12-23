@@ -217,11 +217,15 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                             ${t`When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.`}
                         </p>
                     </ak-form-element-horizontal>
+                </div>
             </ak-form-group>
             <ak-form-group>
                 <span slot="header">${t`Flow settings`}</span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`Passwordless flow`} name="passwordlessFlow">
+                    <ak-form-element-horizontal
+                        label=${t`Passwordless flow`}
+                        name="passwordlessFlow"
+                    >
                         <select class="pf-c-form-control">
                             <option
                                 value=""
