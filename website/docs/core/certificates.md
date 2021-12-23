@@ -63,17 +63,17 @@ Starting with authentik 2021.12.4, you can configure the certificate authentik u
 
 #### Let's Encrypt
 
-To use let's encrypt certificates with this setup, using certbot, you can use this compose file:
+To use let's encrypt certificates with this setup, using certbot, you can use this compose override (create or edit a file called `docker-compose.override.yml` in the same folder as the authentik docker-compose file)
 
 ```yaml
-version: '3.6'
+version: '3.2'
 
 services:
   certbot:
     image: certbot/dns-route53:v1.22.0
     volumes:
-      - ../authentik/certs/:/etc/letsencrypt
-      - ./letsencrypt:/var/lib/letsencrypt
+      - ./letsencrypt:/etc/letsencrypt
+      - ../authentik/certs/:/etc/letsencrypt/live
     # Variables depending on DNS Plugin
     environment:
       AWS_ACCESS_KEY_ID: ...
@@ -87,20 +87,7 @@ services:
       - --dns-route53
 ```
 
-This compose file expects a folder structure like this:
-
-```
-certbot/
-├── docker-compose.yaml
-└── letsencrypt/
-authentik/
-├── certs
-├── custom-templates
-├── docker-compose.yml
-└── media
-```
-
-After you've created the certbot stack, and let it run, you should see a new Certificate appear in authentik. (If the certificate does not appear, restart the worker container. This is caused by incompatible permissions set by certbot).
+Afterwards, run `docker-compose up -d`, which will start certbot and generate your certificate. Within a few minutes, you'll see the certificate in your authentik interface. (If the certificate does not appear, restart the worker container. This is caused by incompatible permissions set by certbot).
 
 Navigate to *System -> Tenants*, edit any tenant and select the certificate of your choice.
 
