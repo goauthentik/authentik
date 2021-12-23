@@ -32,12 +32,7 @@ As first stage, add an *Authentication validation* stage, with the WebAuthn devi
 After this stage you can bind any additional verification stages.
 As final stage, bind a *User login* stage.
 
-This flow will return an error for users without a WebAuthn device. To circumvent this, you can add an identification and password stage
-after the initial validation stage, and use a policy to skip them if the first stage already set a user. You can use a policy like this:
-
-```python
-return bool(request.user)
-```
+Users can either access this flow directly via it's URL, or you can modify any Identification stage to add a direct link to this flow.
 
 #### Logging
 

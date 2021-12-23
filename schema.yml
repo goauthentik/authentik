@@ -16791,6 +16791,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: passwordless_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: recovery_flow
         schema:
           type: string
@@ -21942,6 +21947,8 @@ components:
           type: string
         recovery_url:
           type: string
+        passwordless_url:
+          type: string
         primary_action:
           type: string
         sources:
@@ -22031,6 +22038,12 @@ components:
           nullable: true
           description: Optional recovery flow, which is linked at the bottom of the
             page.
+        passwordless_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optional passwordless flow, which is linked at the bottom of
+            the page.
         sources:
           type: array
           items:
@@ -22089,6 +22102,12 @@ components:
           nullable: true
           description: Optional recovery flow, which is linked at the bottom of the
             page.
+        passwordless_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optional passwordless flow, which is linked at the bottom of
+            the page.
         sources:
           type: array
           items:
@@ -27155,6 +27174,12 @@ components:
           nullable: true
           description: Optional recovery flow, which is linked at the bottom of the
             page.
+        passwordless_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optional passwordless flow, which is linked at the bottom of
+            the page.
         sources:
           type: array
           items:

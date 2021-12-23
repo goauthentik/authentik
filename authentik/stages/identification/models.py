@@ -77,6 +77,15 @@ class IdentificationStage(Stage):
         default=None,
         help_text=_("Optional recovery flow, which is linked at the bottom of the page."),
     )
+    passwordless_flow = models.ForeignKey(
+        Flow,
+        on_delete=models.SET_DEFAULT,
+        null=True,
+        blank=True,
+        related_name="+",
+        default=None,
+        help_text=_("Optional passwordless flow, which is linked at the bottom of the page."),
+    )
 
     sources = models.ManyToManyField(
         Source, default=list, help_text=_("Specify which sources should be shown.")

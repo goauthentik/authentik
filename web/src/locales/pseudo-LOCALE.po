@@ -249,8 +249,8 @@ msgid "Alert"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Algorithm used to sign the JWT Tokens."
-msgstr ""
+#~ msgid "Algorithm used to sign the JWT Tokens."
+#~ msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Allow IDP-initiated logins"
@@ -1997,6 +1997,7 @@ msgstr ""
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Flow settings"
 msgstr ""
 
@@ -2205,8 +2206,8 @@ msgid "Groups"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "HS256 (Symmetric Encryption)"
-msgstr ""
+#~ msgid "HS256 (Symmetric Encryption)"
+#~ msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "HTTP-Basic Password Key"
@@ -2495,12 +2496,16 @@ msgid "Issuer mode"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "JWT Algorithm"
+#~ msgid "JWT Algorithm"
+#~ msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Key used to sign the tokens."
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
-msgstr ""
+#~ msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
+#~ msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
@@ -2686,6 +2691,7 @@ msgstr ""
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/pages/stages/email/EmailStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
@@ -3270,6 +3276,10 @@ msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "Optional passwordless flow, which is linked at the bottom of the page. When configured, users can use this flow to authenticate with a WebAuthn authenticator, without entering any details."
+msgstr ""
+
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Optional recovery flow, which is linked at the bottom of the page."
 msgstr ""
 
@@ -3408,6 +3418,10 @@ msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
+msgstr ""
+
+#: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "Passwordless flow"
 msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -3680,12 +3694,12 @@ msgid "RETRY returns the error message and a similar challenge to the executor."
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "RS256 (Asymmetric Encryption)"
-msgstr ""
+#~ msgid "RS256 (Asymmetric Encryption)"
+#~ msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "RSA Key"
-msgstr ""
+#~ msgid "RSA Key"
+#~ msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -4248,6 +4262,10 @@ msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Signing Certificate"
+msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Signing Key"
 msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -5465,6 +5483,10 @@ msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Use a code-based authenticator."
+msgstr ""
+
+#: src/flows/stages/identification/IdentificationStage.ts
+msgid "Use a security key"
 msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts

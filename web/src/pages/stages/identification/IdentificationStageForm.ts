@@ -217,6 +217,44 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                             ${t`When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.`}
                         </p>
                     </ak-form-element-horizontal>
+            </ak-form-group>
+            <ak-form-group>
+                <span slot="header">${t`Flow settings`}</span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${t`Passwordless flow`} name="passwordlessFlow">
+                        <select class="pf-c-form-control">
+                            <option
+                                value=""
+                                ?selected=${this.instance?.passwordlessFlow === undefined}
+                            >
+                                ---------
+                            </option>
+                            ${until(
+                                new FlowsApi(DEFAULT_CONFIG)
+                                    .flowsInstancesList({
+                                        ordering: "slug",
+                                        designation:
+                                            FlowsInstancesListDesignationEnum.Authentication,
+                                    })
+                                    .then((flows) => {
+                                        return flows.results.map((flow) => {
+                                            const selected =
+                                                this.instance?.passwordlessFlow === flow.pk;
+                                            return html`<option
+                                                value=${ifDefined(flow.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${flow.name} (${flow.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Optional passwordless flow, which is linked at the bottom of the page. When configured, users can use this flow to authenticate with a WebAuthn authenticator, without entering any details.`}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Enrollment flow`} name="enrollmentFlow">
                         <select class="pf-c-form-control">
                             <option

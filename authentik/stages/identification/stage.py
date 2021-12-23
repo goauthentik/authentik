@@ -68,6 +68,7 @@ class IdentificationChallenge(Challenge):
 
     enroll_url = CharField(required=False)
     recovery_url = CharField(required=False)
+    passwordless_url = CharField(required=False)
     primary_action = CharField()
     sources = LoginSourceSerializer(many=True, required=False)
     show_source_labels = BooleanField()
@@ -194,6 +195,11 @@ class IdentificationStageView(ChallengeStageView):
             challenge.initial_data["recovery_url"] = reverse(
                 "authentik_core:if-flow",
                 kwargs={"flow_slug": current_stage.recovery_flow.slug},
+            )
+        if current_stage.passwordless_flow:
+            challenge.initial_data["passwordless_url"] = reverse(
+                "authentik_core:if-flow",
+                kwargs={"flow_slug": current_stage.passwordless_flow.slug},
             )
 
         # Check all enabled source, add them if they have a UI Login button.

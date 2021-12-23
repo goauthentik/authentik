@@ -253,8 +253,8 @@ msgid "Alert"
 msgstr "Alerte"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Algorithm used to sign the JWT Tokens."
-msgstr "Algorithme de signature utilisé pour les jetons JWT"
+#~ msgid "Algorithm used to sign the JWT Tokens."
+#~ msgstr "Algorithme de signature utilisé pour les jetons JWT"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Allow IDP-initiated logins"
@@ -1990,6 +1990,7 @@ msgstr "Inspecteur de flux"
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Flow settings"
 msgstr "Paramètres du flux"
 
@@ -2196,8 +2197,8 @@ msgid "Groups"
 msgstr "Groupes"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "HS256 (Symmetric Encryption)"
-msgstr "HS256 (chiffrement symétrique)"
+#~ msgid "HS256 (Symmetric Encryption)"
+#~ msgstr "HS256 (chiffrement symétrique)"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "HTTP-Basic Password Key"
@@ -2485,12 +2486,16 @@ msgid "Issuer mode"
 msgstr "Mode de l'émetteur"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "JWT Algorithm"
-msgstr "Algorithme JWT"
+#~ msgid "JWT Algorithm"
+#~ msgstr "Algorithme JWT"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
-msgstr "Clé utilisée pour signer les jetons. Nécessaire uniquement lorsque l'algorithme JWT est réglé sur RS256."
+msgid "Key used to sign the tokens."
+msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
+#~ msgstr "Clé utilisée pour signer les jetons. Nécessaire uniquement lorsque l'algorithme JWT est réglé sur RS256."
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
@@ -2675,6 +2680,7 @@ msgstr "Chargement en cours"
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/pages/stages/email/EmailStageForm.ts
+#: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
@@ -3255,6 +3261,10 @@ msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr "Flux d'inscription facultatif, qui sera accessible en bas de page."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "Optional passwordless flow, which is linked at the bottom of the page. When configured, users can use this flow to authenticate with a WebAuthn authenticator, without entering any details."
+msgstr ""
+
+#: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Optional recovery flow, which is linked at the bottom of the page."
 msgstr "Flux de récupération facultatif, qui sera accessible en bas de page."
 
@@ -3391,6 +3401,10 @@ msgstr "Étape de mot de passe"
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
 msgstr "Mot de passe : Entrée masquée, le mot de passe est vérifié par les sources. Les politiques doivent encore être appliquées à cette étape. Si deux d'entre elles sont utilisées dans la même étape, on s'assure qu'elles sont identiques."
+
+#: src/pages/stages/identification/IdentificationStageForm.ts
+msgid "Passwordless flow"
+msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Persistent"
@@ -3658,12 +3672,12 @@ msgid "RETRY returns the error message and a similar challenge to the executor."
 msgstr "RETRY indiquer le message d'erreur et présenter un challenge similaire à l'utilisateur"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "RS256 (Asymmetric Encryption)"
-msgstr "RS256 (chiffrement asymétrique)"
+#~ msgid "RS256 (Asymmetric Encryption)"
+#~ msgstr "RS256 (chiffrement asymétrique)"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "RSA Key"
-msgstr "Clé RSA"
+#~ msgid "RSA Key"
+#~ msgstr "Clé RSA"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -4222,6 +4236,10 @@ msgstr "Algorithme de signature"
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Signing Certificate"
 msgstr "Certificat de signature"
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Signing Key"
+msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Signing keypair"
@@ -5426,6 +5444,10 @@ msgstr "Utiliser TLS"
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Use a code-based authenticator."
 msgstr "Utiliser un authentifieur à code."
+
+#: src/flows/stages/identification/IdentificationStage.ts
+msgid "Use a security key"
+msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Use a security key to prove your identity."

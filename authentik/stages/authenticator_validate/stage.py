@@ -151,7 +151,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         if not, we can skip this entire stage"""
         user = self.get_pending_user()
         stage: AuthenticatorValidateStage = self.executor.current_stage
-        if user:
+        if user and not user.is_anonymous:
             challenges = self.get_device_challenges()
         else:
             if self.executor.flow.designation != FlowDesignation.AUTHENTICATION:

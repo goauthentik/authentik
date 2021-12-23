@@ -244,7 +244,17 @@ export class IdentificationStage extends BaseStage<
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}
                 </button>
-            </div>`;
+            </div>
+            ${this.challenge.passwordlessUrl
+                ? html`<div class="pf-c-form__group pf-m-action">
+                      <a
+                          href=${this.challenge.passwordlessUrl}
+                          class="pf-c-button pf-m-secondary pf-m-block"
+                      >
+                          ${t`Use a security key`}
+                      </a>
+                  </div>`
+                : html``}`;
     }
 
     render(): TemplateResult {
