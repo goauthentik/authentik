@@ -1,6 +1,7 @@
 package ak
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -42,6 +43,7 @@ func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
 			Dsn:              dsn,
 			Environment:      globalConfig.ErrorReporting.Environment,
 			TracesSampleRate: float64(globalConfig.ErrorReporting.TracesSampleRate),
+			Release:          fmt.Sprintf("authentik@%s", constants.VERSION),
 			IgnoreErrors: []string{
 				http.ErrAbortHandler.Error(),
 			},
