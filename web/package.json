@@ -69,7 +69,7 @@
         "@sentry/tracing": "^6.16.1",
         "@squoosh/cli": "^0.7.2",
         "@trivago/prettier-plugin-sort-imports": "^3.1.1",
-        "@types/chart.js": "^2.9.34",
+        "@types/chart.js": "^2.9.35",
         "@types/codemirror": "5.60.5",
         "@types/grecaptcha": "^3.0.3",
         "@typescript-eslint/eslint-plugin": "^5.8.0",
