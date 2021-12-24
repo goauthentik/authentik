@@ -106,20 +106,24 @@ web-extract:
 # These targets are use by GitHub actions to allow usage of matrix
 # which makes the YAML File a lot smaller
 
-ci-pylint:
+ci--meta-debug:
+	python -V
+	node --version
+
+ci-pylint: ci--meta-debug
 	pylint authentik tests lifecycle
 
-ci-black:
+ci-black: ci--meta-debug
 	black --check authentik tests lifecycle
 
-ci-isort:
+ci-isort: ci--meta-debug
 	isort --check authentik tests lifecycle
 
-ci-bandit:
+ci-bandit: ci--meta-debug
 	bandit -r authentik tests lifecycle
 
-ci-pyright:
+ci-pyright: ci--meta-debug
 	pyright e2e lifecycle
 
-ci-pending-migrations:
+ci-pending-migrations: ci--meta-debug
 	./manage.py makemigrations --check
