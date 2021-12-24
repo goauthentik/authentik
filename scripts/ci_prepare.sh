@@ -8,6 +8,5 @@ poetry env use python3.10
 if [[ "$INSTALL" != "true" ]]; then
     poetry install
 fi
-poetry run pip install backports.zoneinfo
 poetry run python -m scripts.generate_ci_config
 npm install -g pyright@1.1.136
