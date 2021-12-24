@@ -11,7 +11,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api"
-	"goauthentik.io/internal/outpost"
+	"goauthentik.io/internal/outpost/flow"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	"goauthentik.io/internal/outpost/ldap/flags"
 	"goauthentik.io/internal/outpost/ldap/metrics"
@@ -53,7 +53,7 @@ func (db *DirectBinder) GetUsername(dn string) (string, error) {
 }
 
 func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResultCode, error) {
-	fe := outpost.NewFlowExecutor(req.Context(), db.si.GetFlowSlug(), db.si.GetAPIClient().GetConfig(), log.Fields{
+	fe := flow.NewFlowExecutor(req.Context(), db.si.GetFlowSlug(), db.si.GetAPIClient().GetConfig(), log.Fields{
 		"bindDN":    req.BindDN,
 		"client":    req.RemoteAddr(),
 		"requestId": req.ID(),
@@ -61,8 +61,8 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 	fe.DelegateClientIP(req.RemoteAddr())
 	fe.Params.Add("goauthentik.io/outpost/ldap", "true")
 
-	fe.Answers[outpost.StageIdentification] = username
-	fe.Answers[outpost.StagePassword] = req.BindPW
+	fe.Answers[flow.StageIdentification] = username
+	fe.Answers[flow.StagePassword] = req.BindPW
 
 	passed, err := fe.Execute()
 	if !passed {
@@ -152,7 +152,7 @@ func (db *DirectBinder) SearchAccessCheck(user api.UserSelf) *string {
 }
 
 func (db *DirectBinder) TimerFlowCacheExpiry() {
-	fe := outpost.NewFlowExecutor(context.Background(), db.si.GetFlowSlug(), db.si.GetAPIClient().GetConfig(), log.Fields{})
+	fe := flow.NewFlowExecutor(context.Background(), db.si.GetFlowSlug(), db.si.GetAPIClient().GetConfig(), log.Fields{})
 	fe.Params.Add("goauthentik.io/outpost/ldap", "true")
 	fe.Params.Add("goauthentik.io/outpost/ldap-warmup", "true")
 

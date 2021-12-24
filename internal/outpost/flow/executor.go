@@ -1,4 +1,4 @@
-package outpost
+package flow
 
 import (
 	"context"
@@ -19,8 +19,6 @@ import (
 	"goauthentik.io/internal/outpost/ak"
 )
 
-type StageComponent string
-
 var (
 	FlowTimingGet = promauto.NewHistogramVec(prometheus.HistogramOpts{
 		Name: "authentik_outpost_flow_timing_get",
@@ -30,18 +28,6 @@ var (
 		Name: "authentik_outpost_flow_timing_post",
 		Help: "Duration it took to send a challenge",
 	}, []string{"stage", "flow", "client", "user"})
-)
-
-const (
-	StageIdentification        = StageComponent("ak-stage-identification")
-	StagePassword              = StageComponent("ak-stage-password")
-	StageAuthenticatorValidate = StageComponent("ak-stage-authenticator-validate")
-	StageAccessDenied          = StageComponent("ak-stage-access-denied")
-)
-
-const (
-	HeaderAuthentikRemoteIP     = "X-authentik-remote-ip"
-	HeaderAuthentikOutpostToken = "X-authentik-outpost-token"
 )
 
 type FlowExecutor struct {
@@ -183,7 +169,7 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 			}
 		}
 		if deviceChallenge == nil {
-			return false, errors.New("got ak-stage-authenticator-validate without duo")
+			return false, errors.New("no compatible authenticator class found")
 		}
 		devId, err := strconv.Atoi(deviceChallenge.DeviceUid)
 		if err != nil {
