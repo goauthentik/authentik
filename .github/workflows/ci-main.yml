@@ -102,9 +102,8 @@ jobs:
           # Sync anyways since stable will have different dependencies
           if [[ -f "Pipfile.lock" ]]; then
             pipenv install --dev
-          else
-            poetry install
           fi
+          poetry install
       - name: run migrations to stable
         run: poetry run python -m lifecycle.migrate
       - name: checkout current code
@@ -115,9 +114,8 @@ jobs:
           git checkout ${{ steps.stable.outputs.originalBranch }}
           if [[ -f "Pipfile.lock" ]]; then
             pipenv install --dev
-          else
-            poetry install
           fi
+          poetry install
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
