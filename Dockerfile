@@ -1,14 +1,14 @@
 # Stage 1: Lock python dependencies
 FROM docker.io/python:3.10.1-slim-bullseye as locker
 
-COPY ./Pipfile /app/
-COPY ./Pipfile.lock /app/
+COPY ./pyproject.toml /app/
+COPY ./poetry.lock /app/
 
 WORKDIR /app/
 
-RUN pip install pipenv && \
-    pipenv lock -r > requirements.txt && \
-    pipenv lock -r --dev-only > requirements-dev.txt
+RUN pip install poetry && \
+    poetry export -f requirements.txt --output requirements.txt && \
+    poetry export --dev -f requirements.txt --output requirements-dev.txt
 
 # Stage 2: Build website
 FROM --platform=${BUILDPLATFORM} docker.io/node:16 as website-builder
