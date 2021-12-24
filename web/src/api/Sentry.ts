@@ -45,14 +45,8 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
             });
             Sentry.setTag(TAG_SENTRY_CAPABILITIES, config.capabilities.join(","));
             if (window.location.pathname.includes("if/")) {
-                // Get the interface name from URL
-                const pathMatches = window.location.pathname.match(/.+if\/(\w+)\//);
-                let currentInterface = "unknown";
-                if (pathMatches && pathMatches.length >= 2) {
-                    currentInterface = pathMatches[1];
-                }
-                Sentry.setTag(TAG_SENTRY_COMPONENT, `web/${currentInterface}`);
-                Sentry.configureScope((scope) => scope.setTransactionName(`authentik.web.if.${currentInterface}`));
+                Sentry.setTag(TAG_SENTRY_COMPONENT, `web/${currentInterface()}`);
+                Sentry.configureScope((scope) => scope.setTransactionName(`authentik.web.if.${currentInterface()}`));
             }
             if (config.errorReporting.sendPii && canDoPpi) {
                 me().then(user => {
@@ -65,4 +59,14 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
         }
         return config;
     });
+}
+
+// Get the interface name from URL
+export function currentInterface(): string {
+    const pathMatches = window.location.pathname.match(/.+if\/(\w+)\//);
+    let currentInterface = "unknown";
+    if (pathMatches && pathMatches.length >= 2) {
+        currentInterface = pathMatches[1];
+    }
+    return currentInterface;
 }

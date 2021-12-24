@@ -1,3 +1,5 @@
+import { t } from "@lingui/macro";
+
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -10,6 +12,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { EventsApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
+import { currentInterface } from "../api/Sentry";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
@@ -32,11 +35,15 @@ export class PageHeader extends LitElement {
     @property()
     set header(value: string) {
         tenant().then((tenant) => {
-            if (value !== "") {
-                document.title = `${value} - ${tenant.brandingTitle}`;
-            } else {
-                document.title = tenant.brandingTitle || TITLE_DEFAULT;
+            const currentIf = currentInterface();
+            let title = tenant.brandingTitle || TITLE_DEFAULT;
+            if (currentIf === "admin") {
+                title = `${t`Admin`} - ${title}`;
             }
+            if (value !== "") {
+                title = `${value} - ${title}`;
+            }
+            document.title = title;
         });
         this._header = value;
     }

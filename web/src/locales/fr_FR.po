@@ -229,8 +229,9 @@ msgstr "Paramètres supplémentaire"
 msgid "Additional user DN, prepended to the Base DN."
 msgstr "DN à préfixer au DN de base pour les utilisateurs"
 
-#~ msgid "Admin"
-#~ msgstr "Administrateur"
+#: src/elements/PageHeader.ts
+msgid "Admin"
+msgstr "Administrateur"
 
 #: src/interfaces/UserInterface.ts
 msgid "Admin interface"
