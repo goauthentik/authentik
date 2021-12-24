@@ -83,9 +83,10 @@ jobs:
       - name: checkout stable
         id: stable
         run: |
+          set -x
           # Save current branch
-          current=$(git branch --show)
-          echo ##[set-output name=originalBranch]$current
+          echo $GITHUB_REF_NAME
+          echo ##[set-output name=originalBranch]$GITHUB_REF_NAME
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           cp -R .github ..
