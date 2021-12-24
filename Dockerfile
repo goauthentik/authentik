@@ -6,9 +6,11 @@ COPY ./poetry.lock /app/
 
 WORKDIR /app/
 
+# --without-hashes is currently required for the two packages from git
+# poetry doesn't remove hashes automatically
 RUN pip install poetry && \
-    poetry export -f requirements.txt --output requirements.txt && \
-    poetry export --dev -f requirements.txt --output requirements-dev.txt
+    poetry export --without-hashes -f requirements.txt --output requirements.txt && \
+    poetry export --without-hashes --dev -f requirements.txt --output requirements-dev.txt
 
 # Stage 2: Build website
 FROM --platform=${BUILDPLATFORM} docker.io/node:16 as website-builder
