@@ -74,6 +74,7 @@ jobs:
         id: ev
         run: |
           python ./scripts/gh_env.py
+          sudo pip install -U pipenv
       - id: cache-poetry
         uses: actions/cache@v2.1.7
         with:
@@ -98,7 +99,11 @@ jobs:
         run: |
           scripts/ci_prepare.sh
           # Sync anyways since stable will have different dependencies
-          pipenv install --dev
+          if [[ -f "Pipfile.lock" ]]; then
+            pipenv install --dev
+          else
+            poetry install
+          fi
       - name: run migrations to stable
         run: poetry run python -m lifecycle.migrate
       - name: checkout current code
@@ -107,7 +112,11 @@ jobs:
           git fetch
           git reset --hard HEAD
           git checkout ${{ steps.stable.outputs.originalBranch }}
-          pipenv install --dev
+          if [[ -f "Pipfile.lock" ]]; then
+            pipenv install --dev
+          else
+            poetry install
+          fi
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
