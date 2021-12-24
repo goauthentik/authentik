@@ -46,7 +46,7 @@ jobs:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: run job
-        run: poetry run make ci-${{ matrix.job }}
+        run: python3 -m poetry run make ci-${{ matrix.job }}
   test-migrations:
     runs-on: ubuntu-latest
     steps:
@@ -62,7 +62,7 @@ jobs:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: run migrations
-        run: poetry run python -m lifecycle.migrate
+        run: python3 -m poetry run make python -m lifecycle.migrate
   test-migrations-from-stable:
     runs-on: ubuntu-latest
     steps:
@@ -105,7 +105,7 @@ jobs:
             poetry install
           fi
       - name: run migrations to stable
-        run: poetry run python -m lifecycle.migrate
+        run: python3 -m poetry run make python -m lifecycle.migrate
       - name: checkout current code
         run: |
           set -x
@@ -122,7 +122,7 @@ jobs:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: migrate to latest
-        run: poetry run python -m lifecycle.migrate
+        run: python3 -m poetry run make python -m lifecycle.migrate
   test-unittest:
     runs-on: ubuntu-latest
     steps:
@@ -142,7 +142,7 @@ jobs:
           domain: ${{github.repository_owner}}
       - name: run unittest
         run: |
-          poetry run make test
+          python3 -m poetry run make test
           poetry run coverage xml
       - name: run testspace
         if: ${{ always() }}
@@ -171,7 +171,7 @@ jobs:
         uses: helm/kind-action@v1.2.0
       - name: run integration
         run: |
-          poetry run make test-integration
+          python3 -m poetry run make test-integration
           poetry run coverage xml
       - name: run testspace
         if: ${{ always() }}
@@ -216,7 +216,7 @@ jobs:
           npm run build
       - name: run e2e
         run: |
-          poetry run make test-e2e-provider
+          python3 -m poetry run make test-e2e-provider
           poetry run coverage xml
       - name: run testspace
         if: ${{ always() }}
@@ -261,7 +261,7 @@ jobs:
           npm run build
       - name: run e2e
         run: |
-          poetry run make test-e2e-rest
+          python3 -m poetry run make test-e2e-rest
           poetry run coverage xml
       - name: run testspace
         if: ${{ always() }}
