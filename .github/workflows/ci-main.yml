@@ -81,12 +81,7 @@ jobs:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-cache-v3-${{ hashFiles('**/poetry.lock') }}
       - name: checkout stable
-        id: stable
         run: |
-          set -x
-          # Save current branch
-          echo $GITHUB_REF_NAME
-          echo ##[set-output name=originalBranch]$GITHUB_REF_NAME
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           cp -R .github ..
@@ -112,7 +107,7 @@ jobs:
           set -x
           git fetch
           git reset --hard HEAD
-          git checkout ${{ steps.stable.outputs.originalBranch }}
+          git checkout $GITHUB_SHA
           if [[ -f "Pipfile.lock" ]]; then
             pipenv install --dev
           fi
