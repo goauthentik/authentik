@@ -52,8 +52,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-        with:
-          python-version: '3.10.1'
       - id: cache-poetry
         uses: actions/cache@v2.1.7
         with:
@@ -72,8 +70,6 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v2
-        with:
-          python-version: '3.10.1'
       - name: prepare variables
         id: ev
         run: |
@@ -123,8 +119,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-        with:
-          python-version: '3.10.1'
       - id: cache-poetry
         uses: actions/cache@v2.1.7
         with:
@@ -152,8 +146,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-        with:
-          python-version: '3.10.1'
       - id: cache-poetry
         uses: actions/cache@v2.1.7
         with:
@@ -183,8 +175,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-        with:
-          python-version: '3.10.1'
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
@@ -230,8 +220,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-        with:
-          python-version: '3.10.1'
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
