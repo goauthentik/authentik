@@ -26,7 +26,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-cache-v3-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
@@ -35,7 +35,7 @@ jobs:
           sudo apt-get install -y gettext
           scripts/ci_prepare.sh
       - name: run compile
-        run: python3 -m poetry run make ./manage.py compilemessages
+        run: poetry run make ./manage.py compilemessages
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         id: cpr
