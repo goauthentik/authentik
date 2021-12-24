@@ -1336,11 +1336,11 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:8244876a37456ccbcbe1247b4cba1b015f4e42dfebfadd6a5488bfc12060f21b",
-                "sha256:dae4d7933ca671d51fa44c10b4ef8165319d9be3aa41807dd4c73f1c1ba81dc3"
+                "sha256:a4377723c53721515f72a3dfc1bfacdcd61edfa19a4cccf82e72e4f50d9cecbd",
+                "sha256:ad0ea3d172404abb14d8f7bd7f54f2ccd4ed9dd00c9da0b1398862e69eb22c03"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==60.0.4"
+            "version": "==60.1.0"
         },
         "six": {
             "hashes": [
@@ -1462,9 +1462,7 @@
             "version": "==4.1.1"
         },
         "urllib3": {
-            "extras": [
-                "secure"
-            ],
+            "extras": [],
             "hashes": [
                 "sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece",
                 "sha256:c4fdf4019605b6e5423637e01bc9fe4daef873709a7973e195ceba0a62bbc844"
@@ -2081,7 +2079,7 @@
                 "sha256:6f62d78e2f89b4500b080fe3a81690850cd254227f27f75c3a0c491a1f351ba7",
                 "sha256:e8443a5e7a020e9d7f97f1d7d9cd17c88bcb3bc7e218bf9cf5095fe550be2951"
             ],
-            "markers": "python_version < '4' and python_full_version >= '3.6.1'",
+            "markers": "python_version < '4.0' and python_full_version >= '3.6.1'",
             "version": "==5.10.1"
         },
         "lazy-object-proxy": {
@@ -2410,11 +2408,11 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:8244876a37456ccbcbe1247b4cba1b015f4e42dfebfadd6a5488bfc12060f21b",
-                "sha256:dae4d7933ca671d51fa44c10b4ef8165319d9be3aa41807dd4c73f1c1ba81dc3"
+                "sha256:a4377723c53721515f72a3dfc1bfacdcd61edfa19a4cccf82e72e4f50d9cecbd",
+                "sha256:ad0ea3d172404abb14d8f7bd7f54f2ccd4ed9dd00c9da0b1398862e69eb22c03"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==60.0.4"
+            "version": "==60.1.0"
         },
         "six": {
             "hashes": [
@@ -2496,9 +2494,7 @@
             "version": "==4.0.1"
         },
         "urllib3": {
-            "extras": [
-                "secure"
-            ],
+            "extras": [],
             "hashes": [
                 "sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece",
                 "sha256:c4fdf4019605b6e5423637e01bc9fe4daef873709a7973e195ceba0a62bbc844"
