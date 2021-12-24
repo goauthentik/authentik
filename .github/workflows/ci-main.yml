@@ -90,9 +90,10 @@ jobs:
           cp authentik/lib/default.yml local.env.yml
           cp -R .github ..
           cp -R scripts ..
+          cp -R poetry.lock pyproject.toml ..
           git checkout $(git describe --abbrev=0 --match 'version/*')
           rm -rf .github/ scripts/
-          mv ../.github ../scripts .
+          mv ../.github ../scripts ../poetry.lock ../pyproject.toml .
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
