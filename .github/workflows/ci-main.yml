@@ -96,6 +96,7 @@ jobs:
         run: |
           scripts/ci_prepare.sh
           # Sync anyways since stable will have different dependencies
+          # TODO: Remove after next stable release
           if [[ -f "Pipfile.lock" ]]; then
             pipenv install --dev
           fi
@@ -107,7 +108,10 @@ jobs:
           set -x
           git fetch
           git reset --hard HEAD
+          # TODO: Remove after next stable release
+          rm -f poetry.lock
           git checkout $GITHUB_SHA
+          # TODO: Remove after next stable release
           if [[ -f "Pipfile.lock" ]]; then
             pipenv install --dev
           fi
