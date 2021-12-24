@@ -20,7 +20,7 @@ For PostgreSQL and Redis, you can use the docker-compose file in `scripts/`. You
 
 ```shell
 poetry shell # Creates a python virtualenv, and activates it in a new shell
-poetry install --dev # Install all required dependencies, including development dependencies
+poetry install # Install all required dependencies, including development dependencies
 ```
 
 To configure authentik to use the local databases, create a file in the authentik directory called `local.env.yml`, with the following contents
