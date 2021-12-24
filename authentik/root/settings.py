@@ -425,6 +425,7 @@ if _ERROR_REPORTING:
     set_tag("authentik.build_hash", build_hash)
     set_tag("authentik.env", env)
     set_tag("authentik.component", "backend")
+    set_tag("authentik.uuid", sha512(SECRET_KEY.encode("ascii")).hexdigest()[:16])
     j_print(
         "Error reporting is enabled",
         env=CONFIG.y("error_reporting.environment", "customer"),
