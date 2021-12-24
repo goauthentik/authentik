@@ -25,7 +25,7 @@ jobs:
       - id: cache-poetry
         uses: actions/cache@v2.1.7
         with:
-          path: ~/.local/share/virtualenvs
+          path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
         env:
