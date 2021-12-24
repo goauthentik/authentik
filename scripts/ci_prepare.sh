@@ -3,9 +3,10 @@ docker-compose -f scripts/ci.docker-compose.yml up -d
 
 sudo apt update
 sudo apt install -y libxmlsec1-dev pkg-config
-sudo pip install -U wheel poetry
+sudo pip install -U wheel poetry backports.zoneinfo
 if [[ "$INSTALL" != "true" ]]; then
     poetry install
 fi
+poetry run pip install backports.zoneinfo
 poetry run python -m scripts.generate_ci_config
 npm install -g pyright@1.1.136
