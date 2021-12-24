@@ -1,18 +1,4 @@
-# Stage 1: Lock python dependencies
-FROM docker.io/python:3.10.1-slim-bullseye as locker
-
-COPY ./pyproject.toml /app/
-COPY ./poetry.lock /app/
-
-WORKDIR /app/
-
-# --without-hashes is currently required for the two packages from git
-# poetry doesn't remove hashes automatically
-RUN pip install poetry && \
-    poetry export --without-hashes -f requirements.txt --output requirements.txt && \
-    poetry export --without-hashes --dev -f requirements.txt --output requirements-dev.txt
-
-# Stage 2: Build website
+# Stage 1: Build website
 FROM --platform=${BUILDPLATFORM} docker.io/node:16 as website-builder
 
 COPY ./website /work/website/
@@ -20,7 +6,7 @@ COPY ./website /work/website/
 ENV NODE_ENV=production
 RUN cd /work/website && npm i && npm run build-docs-only
 
-# Stage 3: Build webui
+# Stage 2: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:16 as web-builder
 
 COPY ./web /work/web/
@@ -29,7 +15,7 @@ COPY ./website /work/website/
 ENV NODE_ENV=production
 RUN cd /work/web && npm i && npm run build
 
-# Stage 4: Build go proxy
+# Stage 3: Build go proxy
 FROM docker.io/golang:1.17.5-bullseye AS builder
 
 WORKDIR /work
@@ -45,22 +31,26 @@ COPY ./go.sum /work/go.sum
 
 RUN go build -o /work/authentik ./cmd/server/main.go
 
-# Stage 5: Run
+# Stage 4: Run
 FROM docker.io/python:3.10.1-slim-bullseye
 
 WORKDIR /
-COPY --from=locker /app/requirements.txt /
-COPY --from=locker /app/requirements-dev.txt /
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
+
+COPY ./pyproject.toml /
+COPY ./poetry.lock /
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg git runit libpq-dev \
         postgresql-client build-essential libxmlsec1-dev \
         pkg-config libmaxminddb0 && \
-    pip install -r /requirements.txt --no-cache-dir && \
+    pip install poetry && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-dev && \
+    rm -rf ~/.cache/pypoetry && \
     apt-get remove --purge -y build-essential git && \
     apt-get autoremove --purge -y && \
     apt-get clean && \
