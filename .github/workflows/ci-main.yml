@@ -40,7 +40,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
@@ -56,7 +56,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
@@ -79,7 +79,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: checkout stable
         id: stable
         run: |
@@ -132,7 +132,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
@@ -159,7 +159,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
@@ -196,7 +196,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
@@ -241,7 +241,7 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
