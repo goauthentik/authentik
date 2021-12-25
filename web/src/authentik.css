@@ -26,6 +26,8 @@ html > form > input {
 
 .pf-c-page__header {
     z-index: 0;
+    background-color: var(--ak-dark-background-light);
+    box-shadow: var(--pf-global--BoxShadow--lg-bottom);
 }
 
 /*****************************
@@ -123,10 +125,10 @@ html > form > input {
     }
     .sidebar-trigger,
     .notification-trigger {
-        background-color: var(--ak-dark-background-light) !important;
+        background-color: transparent !important;
     }
     .pf-c-page__main-section.pf-m-light {
-        background-color: var(--ak-dark-background-light);
+        background-color: transparent;
     }
     .pf-c-content {
         color: var(--ak-dark-foreground);
