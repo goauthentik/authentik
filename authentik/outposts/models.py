@@ -11,21 +11,11 @@ from django.core.cache import cache
 from django.db import IntegrityError, models, transaction
 from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
-from docker.client import DockerClient
-from docker.errors import DockerException
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
-from kubernetes.client import VersionApi, VersionInfo
-from kubernetes.client.api_client import ApiClient
-from kubernetes.client.configuration import Configuration
-from kubernetes.client.exceptions import OpenApiException
-from kubernetes.config.config_exception import ConfigException
-from kubernetes.config.incluster_config import load_incluster_config
-from kubernetes.config.kube_config import load_kube_config_from_dict
 from model_utils.managers import InheritanceManager
 from packaging.version import LegacyVersion, Version, parse
 from structlog.stdlib import get_logger
-from urllib3.exceptions import HTTPError
 
 from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.core.models import (
@@ -44,7 +34,6 @@ from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.managed.models import ManagedModel
 from authentik.outposts.controllers.k8s.utils import get_namespace
-from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.tenants.models import Tenant
 
 OUR_VERSION = parse(__version__)
@@ -150,10 +139,6 @@ class OutpostServiceConnection(models.Model):
             return OutpostServiceConnectionState("", False)
         return state
 
-    def fetch_state(self) -> OutpostServiceConnectionState:
-        """Fetch current Service Connection state"""
-        raise NotImplementedError
-
     @property
     def component(self) -> str:
         """Return component used to edit this object"""
@@ -211,35 +196,6 @@ class DockerServiceConnection(OutpostServiceConnection):
     def __str__(self) -> str:
         return f"Docker Service-Connection {self.name}"
 
-    def client(self) -> DockerClient:
-        """Get DockerClient"""
-        try:
-            client = None
-            if self.local:
-                client = DockerClient.from_env()
-            else:
-                client = DockerClient(
-                    base_url=self.url,
-                    tls=DockerInlineTLS(
-                        verification_kp=self.tls_verification,
-                        authentication_kp=self.tls_authentication,
-                    ).write(),
-                )
-            client.containers.list()
-        except DockerException as exc:
-            LOGGER.warning(exc)
-            raise ServiceConnectionInvalid from exc
-        return client
-
-    def fetch_state(self) -> OutpostServiceConnectionState:
-        try:
-            client = self.client()
-            return OutpostServiceConnectionState(
-                version=client.info()["ServerVersion"], healthy=True
-            )
-        except ServiceConnectionInvalid:
-            return OutpostServiceConnectionState(version="", healthy=False)
-
     class Meta:
 
         verbose_name = _("Docker Service-Connection")
@@ -265,27 +221,6 @@ class KubernetesServiceConnection(OutpostServiceConnection):
 
     def __str__(self) -> str:
         return f"Kubernetes Service-Connection {self.name}"
-
-    def fetch_state(self) -> OutpostServiceConnectionState:
-        try:
-            client = self.client()
-            api_instance = VersionApi(client)
-            version: VersionInfo = api_instance.get_code()
-            return OutpostServiceConnectionState(version=version.git_version, healthy=True)
-        except (OpenApiException, HTTPError, ServiceConnectionInvalid):
-            return OutpostServiceConnectionState(version="", healthy=False)
-
-    def client(self) -> ApiClient:
-        """Get Kubernetes client configured from kubeconfig"""
-        config = Configuration()
-        try:
-            if self.local:
-                load_incluster_config(client_configuration=config)
-            else:
-                load_kube_config_from_dict(self.kubeconfig, client_configuration=config)
-            return ApiClient(config)
-        except ConfigException as exc:
-            raise ServiceConnectionInvalid from exc
 
     class Meta:
 

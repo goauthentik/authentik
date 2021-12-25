@@ -2,19 +2,53 @@
 from io import StringIO
 from typing import Type
 
+from kubernetes.client import VersionApi, VersionInfo
 from kubernetes.client.api_client import ApiClient
+from kubernetes.client.configuration import Configuration
 from kubernetes.client.exceptions import OpenApiException
+from kubernetes.config.config_exception import ConfigException
+from kubernetes.config.incluster_config import load_incluster_config
+from kubernetes.config.kube_config import load_kube_config_from_dict
 from structlog.testing import capture_logs
 from urllib3.exceptions import HTTPError
 from yaml import dump_all
 
-from authentik.outposts.controllers.base import BaseController, ControllerException
+from authentik.outposts.controllers.base import BaseClient, BaseController, ControllerException
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
 from authentik.outposts.controllers.k8s.secret import SecretReconciler
 from authentik.outposts.controllers.k8s.service import ServiceReconciler
 from authentik.outposts.controllers.k8s.service_monitor import PrometheusServiceMonitorReconciler
-from authentik.outposts.models import KubernetesServiceConnection, Outpost, ServiceConnectionInvalid
+from authentik.outposts.models import (
+    KubernetesServiceConnection,
+    Outpost,
+    OutpostServiceConnectionState,
+    ServiceConnectionInvalid,
+)
+
+
+class KubernetesClient(ApiClient, BaseClient):
+    """Custom kubernetes client based on service connection"""
+
+    def __init__(self, connection: KubernetesServiceConnection):
+        config = Configuration()
+        try:
+            if connection.local:
+                load_incluster_config(client_configuration=config)
+            else:
+                load_kube_config_from_dict(connection.kubeconfig, client_configuration=config)
+            super().__init__(config)
+        except ConfigException as exc:
+            raise ServiceConnectionInvalid from exc
+
+    def fetch_state(self) -> OutpostServiceConnectionState:
+        """Get version info"""
+        try:
+            api_instance = VersionApi(self)
+            version: VersionInfo = api_instance.get_code()
+            return OutpostServiceConnectionState(version=version.git_version, healthy=True)
+        except (OpenApiException, HTTPError, ServiceConnectionInvalid):
+            return OutpostServiceConnectionState(version="", healthy=False)
 
 
 class KubernetesController(BaseController):
@@ -23,12 +57,12 @@ class KubernetesController(BaseController):
     reconcilers: dict[str, Type[KubernetesObjectReconciler]]
     reconcile_order: list[str]
 
-    client: ApiClient
+    client: KubernetesClient
     connection: KubernetesServiceConnection
 
     def __init__(self, outpost: Outpost, connection: KubernetesServiceConnection) -> None:
         super().__init__(outpost, connection)
-        self.client = connection.client()
+        self.client = KubernetesClient(connection)
         self.reconcilers = {
             "secret": SecretReconciler,
             "deployment": DeploymentReconciler,

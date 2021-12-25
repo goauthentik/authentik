@@ -669,8 +669,12 @@ msgid "Callback URL"
 msgstr "URL de rappel"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
-msgstr "Peut être au format \"unix://\" pour une connexion à un service docker local, ou \"https://:2376\" pour une connexion à un système distant."
+#~ msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
+#~ msgstr "Peut être au format \"unix://\" pour une connexion à un service docker local, ou \"https://:2376\" pour une connexion à un système distant."
+
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system."
+msgstr ""
 
 #: src/elements/forms/ConfirmationForm.ts
 #: src/elements/forms/DeleteBulkForm.ts
@@ -4841,8 +4845,12 @@ msgid "System task execution"
 msgstr "Exécution de tâche système"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-msgid "TLS Authentication Certificate"
-msgstr "Certificat TLS d'authentification"
+#~ msgid "TLS Authentication Certificate"
+#~ msgstr "Certificat TLS d'authentification"
+
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+msgid "TLS Authentication Certificate/SSH Keypair"
+msgstr ""
 
 #~ msgid "TLS Server name"
 #~ msgstr "Nom TLS du serveur"
@@ -5816,6 +5824,10 @@ msgstr "Lorsqu'un nom d'utilisateur/email valide a été saisi, et si cette opti
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
+msgstr ""
+
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+msgid "When connecting via SSH, this keypair is used for authentication."
 msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts

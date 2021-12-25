@@ -666,8 +666,12 @@ msgid "Callback URL"
 msgstr "Callback URL"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
-msgstr "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
+#~ msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
+#~ msgstr "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
+
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system."
+msgstr "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system."
 
 #: src/elements/forms/ConfirmationForm.ts
 #: src/elements/forms/DeleteBulkForm.ts
@@ -4885,8 +4889,12 @@ msgid "System task execution"
 msgstr "System task execution"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-msgid "TLS Authentication Certificate"
-msgstr "TLS Authentication Certificate"
+#~ msgid "TLS Authentication Certificate"
+#~ msgstr "TLS Authentication Certificate"
+
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+msgid "TLS Authentication Certificate/SSH Keypair"
+msgstr "TLS Authentication Certificate/SSH Keypair"
 
 #: 
 #~ msgid "TLS Server name"
@@ -5878,6 +5886,10 @@ msgstr "When a valid username/email has been entered, and this option is enabled
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
 msgstr "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
+
+#: src/pages/outposts/ServiceConnectionDockerForm.ts
+msgid "When connecting via SSH, this keypair is used for authentication."
+msgstr "When connecting via SSH, this keypair is used for authentication."
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."

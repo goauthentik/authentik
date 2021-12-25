@@ -145,6 +145,7 @@ webauthn = "*"
 xmlsec = "*"
 flower = "*"
 wsproto = "*"
+paramiko = "^2.9.1"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"

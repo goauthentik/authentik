@@ -25,6 +25,8 @@ from authentik.events.monitored_tasks import (
 )
 from authentik.lib.utils.reflection import path_to_class
 from authentik.outposts.controllers.base import BaseController, ControllerException
+from authentik.outposts.controllers.docker import DockerClient
+from authentik.outposts.controllers.kubernetes import KubernetesClient
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
@@ -45,21 +47,21 @@ LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "outpost_teardown_%s"
 
 
-def controller_for_outpost(outpost: Outpost) -> Optional[BaseController]:
+def controller_for_outpost(outpost: Outpost) -> Optional[type[BaseController]]:
     """Get a controller for the outpost, when a service connection is defined"""
     if not outpost.service_connection:
         return None
     service_connection = outpost.service_connection
     if outpost.type == OutpostType.PROXY:
         if isinstance(service_connection, DockerServiceConnection):
-            return ProxyDockerController(outpost, service_connection)
+            return ProxyDockerController
         if isinstance(service_connection, KubernetesServiceConnection):
-            return ProxyKubernetesController(outpost, service_connection)
+            return ProxyKubernetesController
     if outpost.type == OutpostType.LDAP:
         if isinstance(service_connection, DockerServiceConnection):
-            return LDAPDockerController(outpost, service_connection)
+            return LDAPDockerController
         if isinstance(service_connection, KubernetesServiceConnection):
-            return LDAPKubernetesController(outpost, service_connection)
+            return LDAPKubernetesController
     return None
 
 
@@ -71,7 +73,12 @@ def outpost_service_connection_state(connection_pk: Any):
     )
     if not connection:
         return
-    state = connection.fetch_state()
+    if isinstance(connection, DockerServiceConnection):
+        cls = DockerClient
+    if isinstance(connection, KubernetesServiceConnection):
+        cls = KubernetesClient
+    with cls(connection) as client:
+        state = client.fetch_state()
     cache.set(connection.state_key, state, timeout=None)
 
 
@@ -114,14 +121,15 @@ def outpost_controller(
         return
     self.set_uid(slugify(outpost.name))
     try:
-        controller = controller_for_outpost(outpost)
-        if not controller:
+        controller_type = controller_for_outpost(outpost)
+        if not controller_type:
             return
-        logs = getattr(controller, f"{action}_with_logs")()
-        LOGGER.debug("---------------Outpost Controller logs starting----------------")
-        for log in logs:
-            LOGGER.debug(log)
-        LOGGER.debug("-----------------Outpost Controller logs end-------------------")
+        with controller_type(outpost, outpost.service_connection) as controller:
+            logs = getattr(controller, f"{action}_with_logs")()
+            LOGGER.debug("---------------Outpost Controller logs starting----------------")
+            for log in logs:
+                LOGGER.debug(log)
+            LOGGER.debug("-----------------Outpost Controller logs end-------------------")
     except (ControllerException, ServiceConnectionInvalid) as exc:
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
     else:
