@@ -99,7 +99,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             html`<div>${item.name}</div>
                 ${item.managed ? html`<small>${managedSubText}</small>` : html``}`,
             html`<ak-label color=${item.privateKeyAvailable ? PFColor.Green : PFColor.Grey}>
-                ${item.privateKeyAvailable ? t`Yes` : t`No`}
+                ${item.privateKeyAvailable ? t`Yes (${item.privateKeyType?.toUpperCase()})` : t`No`}
             </ak-label>`,
             html`<ak-label color=${item.certExpiry > new Date() ? PFColor.Green : PFColor.Orange}>
                 ${item.certExpiry?.toLocaleString()}
