@@ -1050,7 +1050,7 @@ zookeeper = ["kazoo (>=1.3.1)"]
 
 [[package]]
 name = "kubernetes"
-version = "19.15.0"
+version = "21.7.0"
 description = "Kubernetes python client"
 category = "main"
 optional = false
@@ -2075,7 +2075,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "39b437e0cbd49396c867f8a7cfd3d0581facfbb830e069f758c71c89be09d1f6"
+content-hash = "979c03e0b7174b99535fa0766480eeb396650c3ed38b1ac0868aa548c99f2c28"
 
 [metadata.files]
 aiohttp = [
@@ -2719,8 +2719,8 @@ kombu = [
     {file = "kombu-5.2.2.tar.gz", hash = "sha256:0f5d0763fb916808f617b886697b2be28e6bc35026f08e679697fc814b48a608"},
 ]
 kubernetes = [
-    {file = "kubernetes-19.15.0-py2.py3-none-any.whl", hash = "sha256:52312adda60d92ba45b325f2c1505924656389222005f7e089718e1ad03bc07f"},
-    {file = "kubernetes-19.15.0.tar.gz", hash = "sha256:08c93f300a9837104282ecc81458b903a56444c5c1ec3d990d237557312af47f"},
+    {file = "kubernetes-21.7.0-py2.py3-none-any.whl", hash = "sha256:044c20253f8577491a87af8f9edea1f929ed6d62ce306376a6cb8aed24e572c5"},
+    {file = "kubernetes-21.7.0.tar.gz", hash = "sha256:c9849afc2eafdce60efa210049ee7a94e7ef6cf3a7afa14a69b3bf0447825977"},
 ]
 lazy-object-proxy = [
     {file = "lazy-object-proxy-1.7.1.tar.gz", hash = "sha256:d609c75b986def706743cdebe5e47553f4a5a1da9c5ff66d76013ef396b5a8a4"},

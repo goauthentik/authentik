@@ -97,7 +97,6 @@ description = ""
 authors = ["Jens Langhammer <jens.langhammer@beryju.org>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
 boto3 = "*"
 celery = "*"
 channels = "*"
@@ -122,30 +121,31 @@ docker = "*"
 drf-spectacular = "*"
 duo-client = "*"
 facebook-sdk = "*"
+flower = "*"
 geoip2 = "*"
 gunicorn = "*"
-kubernetes = "==v19.15.0"
+kubernetes = "*"
 ldap3 = "*"
 lxml = "*"
 packaging = "*"
+paramiko = "*"
 psycopg2-binary = "*"
 pycryptodome = "*"
 pyjwt = "*"
+python = "^3.10"
 pyyaml = "*"
 requests-oauthlib = "*"
 sentry-sdk = { git = 'https://github.com/beryju/sentry-python.git', rev = '379aee28b15d3b87b381317746c4efd24b3d7bc3' }
 service_identity = "*"
 structlog = "*"
 swagger-spec-validator = "*"
-twisted = "==21.7.0"
+twisted = "*"
 ua-parser = "*"
 urllib3 = {extras = ["secure"],version = "*"}
 uvicorn = {extras = ["standard"],version = "*"}
 webauthn = "*"
-xmlsec = "*"
-flower = "*"
 wsproto = "*"
-paramiko = "^2.9.1"
+xmlsec = "*"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"
@@ -153,6 +153,7 @@ black = "*"
 bump2version = "*"
 colorama = "*"
 coverage = {extras = ["toml"],version = "*"}
+importlib-metadata = "*"
 pylint = "*"
 pylint-django = "*"
 pytest = "*"
@@ -160,7 +161,6 @@ pytest-django = "*"
 pytest-randomly = "*"
 requests-mock = "*"
 selenium = "*"
-importlib-metadata = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
