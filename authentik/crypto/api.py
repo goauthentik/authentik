@@ -1,4 +1,6 @@
 """Crypto API Views"""
+from typing import Optional
+
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
@@ -31,6 +33,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
     cert_expiry = DateTimeField(source="certificate.not_valid_after", read_only=True)
     cert_subject = SerializerMethodField()
     private_key_available = SerializerMethodField()
+    private_key_type = SerializerMethodField()
 
     certificate_download_url = SerializerMethodField()
     private_key_download_url = SerializerMethodField()
@@ -42,6 +45,13 @@ class CertificateKeyPairSerializer(ModelSerializer):
     def get_private_key_available(self, instance: CertificateKeyPair) -> bool:
         """Show if this keypair has a private key configured or not"""
         return instance.key_data != "" and instance.key_data is not None
+
+    def get_private_key_type(self, instance: CertificateKeyPair) -> Optional[str]:
+        """Get the private key's type, if set"""
+        key = instance.private_key
+        if key:
+            return key.__class__.__name__.replace("_", "").lower().replace("privatekey", "")
+        return None
 
     def get_certificate_download_url(self, instance: CertificateKeyPair) -> str:
         """Get URL to download certificate"""
@@ -98,6 +108,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
             "cert_expiry",
             "cert_subject",
             "private_key_available",
+            "private_key_type",
             "certificate_download_url",
             "private_key_download_url",
             "managed",

@@ -20221,6 +20221,10 @@ components:
         private_key_available:
           type: boolean
           readOnly: true
+        private_key_type:
+          type: string
+          nullable: true
+          readOnly: true
         certificate_download_url:
           type: string
           readOnly: true
@@ -20245,6 +20249,7 @@ components:
       - pk
       - private_key_available
       - private_key_download_url
+      - private_key_type
     CertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer

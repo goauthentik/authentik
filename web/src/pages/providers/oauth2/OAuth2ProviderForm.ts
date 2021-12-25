@@ -195,7 +195,7 @@ ${this.instance?.redirectUris}</textarea
                                                 value=${ifDefined(key.pk)}
                                                 ?selected=${selected}
                                             >
-                                                ${key.name}
+                                                ${key.name} (${key.privateKeyType?.toUpperCase()})
                                             </option>`;
                                         });
                                     }),
