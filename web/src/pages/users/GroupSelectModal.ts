@@ -61,12 +61,14 @@ export class GroupSelectModal extends TableModal<Group> {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-page__main-section pf-m-light">
+        return html`<section class="pf-c-modal-box__header pf-c-page__main-section">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${t`Select groups to add user to`}</h1>
                 </div>
             </section>
-            <section class="pf-c-page__main-section pf-m-light">${this.renderTable()}</section>
+            <section class="pf-c-modal-box__body pf-c-page__main-section">
+                ${this.renderTable()}
+            </section>
             <footer class="pf-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {

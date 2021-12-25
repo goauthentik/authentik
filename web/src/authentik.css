@@ -170,9 +170,6 @@ html > form > input {
     }
     /* tabs */
     .pf-c-tabs {
-        background-color: var(--ak-dark-background-light);
-    }
-    .pf-c-tabs.pf-m-vertical {
         background-color: transparent;
     }
     .pf-c-tabs.pf-m-box.pf-m-vertical .pf-c-tabs__list::before {
@@ -294,14 +291,11 @@ html > form > input {
         color: var(--ak-dark-foreground);
     }
     /* modal */
-    .pf-c-modal-box__header {
-        background-color: var(--ak-dark-background-light);
-    }
+    .pf-c-modal-box,
+    .pf-c-modal-box__header,
+    .pf-c-modal-box__footer,
     .pf-c-modal-box__body {
-        background-color: var(--ak-dark-background-light);
-    }
-    .pf-c-modal-box__footer {
-        background-color: var(--ak-dark-background-light);
+        background-color: var(--ak-dark-background);
     }
     /* sidebar */
     .pf-c-nav {

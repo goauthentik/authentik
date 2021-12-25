@@ -5959,7 +5959,6 @@ msgstr "X509 Subject"
 
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
-#: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
@@ -5973,6 +5972,10 @@ msgstr "X509 Subject"
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Yes"
 msgstr "Yes"
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Yes ({0})"
+msgstr "Yes ({0})"
 
 #: src/pages/outposts/OutpostForm.ts
 msgid "You can only select providers that match the type of the outpost."

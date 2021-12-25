@@ -5937,7 +5937,6 @@ msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
-#: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
@@ -5950,6 +5949,10 @@ msgstr ""
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Yes"
+msgstr ""
+
+#: src/pages/crypto/CertificateKeyPairListPage.ts
+msgid "Yes ({0})"
 msgstr ""
 
 #: src/pages/outposts/OutpostForm.ts
