@@ -36,7 +36,7 @@ class DockerClient(UpstreamDockerClient, BaseClient):
         self.ssh = None
         if connection.local:
             # Same result as DockerClient.from_env
-            super().__init__(kwargs_from_env())
+            super().__init__(**kwargs_from_env())
         else:
             parsed_url = urlparse(connection.url)
             tls_config = False
