@@ -4674,7 +4674,7 @@ msgstr ""
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Stage used to configure an SMS-based TOTP authenticator."
 msgstr ""
-"Aşama alanı, SMS tabanlı bir TOTP kimlik doğrulayıcısını yapılandırmak için "
+"Aşama, SMS tabanlı bir TOTP kimlik doğrulayıcısını yapılandırmak için "
 "kullanılır."
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
