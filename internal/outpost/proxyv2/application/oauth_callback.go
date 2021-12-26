@@ -8,10 +8,19 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func (a *Application) redeemCallback(r *http.Request, shouldState string) (*Claims, error) {
+func (a *Application) redeemCallback(r *http.Request, states []string) (*Claims, error) {
 	state := r.URL.Query().Get("state")
-	if state == "" || state != shouldState {
-		return nil, fmt.Errorf("blank/invalid state")
+	if len(states) < 1 {
+		return nil, fmt.Errorf("no states")
+	}
+	found := false
+	for _, fstate := range states {
+		if fstate == state {
+			found = true
+		}
+	}
+	if !found {
+		return nil, fmt.Errorf("invalid state")
 	}
 
 	code := r.URL.Query().Get("code")

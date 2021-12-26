@@ -76,6 +76,7 @@ func (a *Application) getTraefikForwardUrl(r *http.Request) *url.URL {
 		a.log.WithError(err).Warning("Failed to parse URL from traefik")
 		return r.URL
 	}
+	a.log.WithField("url", u.String()).Trace("traefik forwarded url")
 	return u
 }
 

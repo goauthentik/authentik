@@ -10,10 +10,14 @@ import (
 )
 
 func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
-	state := base64.RawStdEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
-	s, _ := a.sessions.Get(r, constants.SeesionName)
-	s.Values[constants.SessionOAuthState] = state
-	err := s.Save(r, rw)
+	newState := base64.RawStdEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
+	s, err := a.sessions.Get(r, constants.SeesionName)
+	if err != nil {
+		s.Values[constants.SessionOAuthState] = []string{}
+	}
+	state := s.Values[constants.SessionOAuthState].([]string)
+	s.Values[constants.SessionOAuthState] = append(state, newState)
+	err = s.Save(r, rw)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session")
 	}
@@ -24,7 +28,7 @@ func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(state), http.StatusFound)
+	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(newState), http.StatusFound)
 }
 
 func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
@@ -35,7 +39,7 @@ func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
 		http.Redirect(rw, r, a.proxyConfig.ExternalHost, http.StatusFound)
 		return
 	}
-	claims, err := a.redeemCallback(r, state.(string))
+	claims, err := a.redeemCallback(r, state.([]string))
 	if err != nil {
 		a.log.WithError(err).Warning("failed to redeem code")
 		rw.WriteHeader(400)
@@ -61,6 +65,7 @@ func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
 	redirect := a.proxyConfig.ExternalHost
 	redirectR, ok := s.Values[constants.SessionRedirect]
 	if ok {
+		a.log.WithField("redirect", redirectR).Trace("got final redirect from session")
 		redirect = redirectR.(string)
 	}
 	http.Redirect(rw, r, redirect, http.StatusFound)
