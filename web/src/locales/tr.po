@@ -257,8 +257,8 @@ msgstr "IDP tarafından başlatılan oturumlara izin ver"
 msgid ""
 "Allow friends to authenticate via Plex, even if you don't share any servers"
 msgstr ""
-"Herhangi bir sunucu paylaşmasan bile arkadaşlarınızın Plex aracılığıyla "
-"kimlik doğrulamasına izin verin"
+"Herhangi bir sunucu paylaşmasan bile arkadaşlarının Plex aracılığıyla kimlik"
+" doğrulamasına izin ver"
 
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 msgid "Allow up to N occurrences in the HIBP database."
@@ -4674,7 +4674,7 @@ msgstr ""
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Stage used to configure an SMS-based TOTP authenticator."
 msgstr ""
-"Aşama alanı, SMS tabanlı bir TOTP kimlik doğrulayıcısını yapılandırmak için "
+"Aşama, SMS tabanlı bir TOTP kimlik doğrulayıcısını yapılandırmak için "
 "kullanılır."
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
