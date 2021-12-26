@@ -86,7 +86,8 @@ class BaseController:
 
     def __exit__(self, exc_type, exc_value, traceback):
         """Cleanup after usage"""
-        self.client.__exit__(exc_type, exc_value, traceback)
+        if hasattr(self, "client"):
+            self.client.__exit__(exc_type, exc_value, traceback)
 
     def get_static_deployment(self) -> str:
         """Return a static deployment configuration"""
