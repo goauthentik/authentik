@@ -1263,7 +1263,7 @@ msgstr "Hizmet hesabı oluştur"
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "Create Stage"
-msgstr "Aşama Alanı Oluştur"
+msgstr "Aşama Oluştur"
 
 #: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
 msgid "Create Stage binding"
