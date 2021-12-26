@@ -6,6 +6,7 @@ import { ErrorDetail } from "@goauthentik/api";
 export interface StageHost {
     challenge?: unknown;
     flowSlug: string;
+    loading: boolean;
     submit(payload: unknown): Promise<void>;
 }
 

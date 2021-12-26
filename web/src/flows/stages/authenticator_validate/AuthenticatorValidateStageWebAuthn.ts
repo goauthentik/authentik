@@ -19,7 +19,6 @@ import {
     DeviceChallenge,
 } from "@goauthentik/api";
 
-import { PFSize } from "../../../elements/Spinner";
 import {
     transformAssertionForServer,
     transformCredentialRequestOptions,
@@ -35,11 +34,8 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     @property({ attribute: false })
     deviceChallenge?: DeviceChallenge;
 
-    @property({ type: Boolean })
-    authenticateRunning = false;
-
     @property()
-    authenticateMessage = "";
+    authenticateMessage?: string;
 
     @property({ type: Boolean })
     showBackButton = false;
@@ -101,31 +97,24 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     }
 
     async authenticateWrapper(): Promise<void> {
-        if (this.authenticateRunning) {
+        if (this.host.loading) {
             return;
         }
-        this.authenticateRunning = true;
+        this.host.loading = true;
         this.authenticate()
             .catch((e) => {
                 console.error(e);
                 this.authenticateMessage = e.toString();
             })
             .finally(() => {
-                this.authenticateRunning = false;
+                this.host.loading = false;
             });
     }
 
     render(): TemplateResult {
         return html`<div class="pf-c-login__main-body">
-                ${this.authenticateRunning
-                    ? html`<div class="pf-c-empty-state__content">
-                          <div class="pf-l-bullseye">
-                              <div class="pf-l-bullseye__item">
-                                  <ak-spinner size="${PFSize.XLarge}"></ak-spinner>
-                              </div>
-                          </div>
-                      </div>`
-                    : html` <div class="pf-c-form__group pf-m-action">
+                ${this.authenticateMessage
+                    ? html`<div class="pf-c-form__group pf-m-action">
                           <p class="pf-m-block">${this.authenticateMessage}</p>
                           <button
                               class="pf-c-button pf-m-primary pf-m-block"
@@ -135,7 +124,12 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
                           >
                               ${t`Retry authentication`}
                           </button>
-                      </div>`}
+                      </div>`
+                    : html`<div class="pf-c-form__group pf-m-action">
+                          <p class="pf-m-block">&nbsp;</p>
+                          <p class="pf-m-block">&nbsp;</p>
+                          <p class="pf-m-block">&nbsp;</p>
+                      </div> `}
             </div>
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links">

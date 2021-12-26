@@ -37,6 +37,13 @@ export class AuthenticatorValidateStage
 {
     flowSlug = "";
 
+    set loading(value: boolean) {
+        this.host.loading = value;
+    }
+    get loading(): boolean {
+        return this.host.loading;
+    }
+
     @state()
     _selectedDeviceChallenge?: DeviceChallenge;
 
