@@ -93,8 +93,7 @@ msgstr "TÜM, erişim vermek için tüm politikaların eşleşmesi gerekir."
 #: src/pages/flows/StageBindingForm.ts
 msgid "ALL, all policies must match to include this stage access."
 msgstr ""
-"TÜM, bu aşama alanı erişimini içerecek şekilde tüm ilkelerin eşleşmesi "
-"gerekir."
+"TÜM, bu alanı erişimini içerecek şekilde tüm ilkelerin eşleşmesi gerekir."
 
 #: src/pages/applications/ApplicationForm.ts src/pages/flows/FlowForm.ts
 msgid "ANY, any policy must match to grant access."
@@ -1263,7 +1262,7 @@ msgstr "Hizmet hesabı oluştur"
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "Create Stage"
-msgstr "Aşama Alanı Oluştur"
+msgstr "Aşama Oluştur"
 
 #: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
 msgid "Create Stage binding"
@@ -1822,7 +1821,7 @@ msgstr "Plana göre değerlendirin"
 
 #: src/pages/flows/StageBindingForm.ts
 msgid "Evaluate policies before the Stage is present to the user."
-msgstr "Aşama Alanı kullanıcıya sunulmadan önce ilkeleri değerlendirin."
+msgstr "Aşama kullanıcıya sunulmadan önce ilkeleri değerlendirin."
 
 #: src/pages/flows/StageBindingForm.ts
 msgid ""
@@ -2129,8 +2128,8 @@ msgid ""
 "Flow used by an authenticated user to configure this Stage. If empty, user "
 "will not be able to configure this stage."
 msgstr ""
-"Bu Aşama Alanı'nı yapılandırmak için kimliği doğrulanmış bir kullanıcı "
-"tarafından kullanılan akış. Boşsa, kullanıcı bu aşamayı yapılandıramaz."
+"Bu Aşama'yı yapılandırmak için kimliği doğrulanmış bir kullanıcı tarafından "
+"kullanılan akış. Boşsa, kullanıcı bu aşamayı yapılandıramaz."
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid ""
@@ -3614,8 +3613,8 @@ msgid ""
 " stage, they are ensured to be identical."
 msgstr ""
 "Şifre: Maskeli giriş, parola kaynaklara karşı doğrulanır. İlkeler yine de bu"
-" Aşama Alanı'na uygulanmalıdır. Bunlardan ikisi aynı aşamada kullanılıyorsa,"
-" aynı olmaları sağlanır."
+" Aşama'ya uygulanmalıdır. Bunlardan ikisi aynı aşamada kullanılıyorsa, aynı "
+"olmaları sağlanır."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Passwordless flow"
@@ -4333,8 +4332,7 @@ msgid ""
 "Selected policies are executed when the stage is submitted to validate the "
 "data."
 msgstr ""
-"Seçilen ilkeler, verileri doğrulamak için aşama alanı gönderildiğinde "
-"yürütülür."
+"Seçilen ilkeler, verileri doğrulamak için aşama gönderildiğinde yürütülür."
 
 #~ msgid ""
 #~ "Selecting a service-connection enables the management of the outpost by "
@@ -4626,7 +4624,7 @@ msgstr "Aşama adı"
 
 #: src/flows/FlowInspector.ts
 msgid "Stage object"
-msgstr "Aşama Alanı nesnesi"
+msgstr "Aşama nesnesi"
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "Stage type"
@@ -4639,8 +4637,8 @@ msgid ""
 "again."
 msgstr ""
 "Kullanıcının uyumlu bir aygıtı olmadığında Kimlik Doğrulayıcısı'nı "
-"yapılandırmak için kullanılan Aşama Alanı. Bu yapılandırma Stage geçtikten "
-"sonra kullanıcıya yeniden istenmez."
+"yapılandırmak için kullanılan Aşama. Bu yapılandırma Stage geçtikten sonra "
+"kullanıcıya yeniden istenmez."
 
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid ""
@@ -4655,16 +4653,16 @@ msgid ""
 "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, "
 "FaceID/Windows Hello)."
 msgstr ""
-"Aşama alanı bir WebAutnn kimlik doğrulayıcısını (örn. Yubikey, "
-"FaceID/Windows Hello) yapılandırmak için kullanılır."
+"Aşama bir WebAutnn kimlik doğrulayıcısını (örn. Yubikey, FaceID/Windows "
+"Hello) yapılandırmak için kullanılır."
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid ""
 "Stage used to configure a duo-based authenticator. This stage should be used"
 " for configuration flows."
 msgstr ""
-"Aşama alanı ikili tabanlı kimlik doğrulayıcısını yapılandırmak için "
-"kullanılır. Bu aşama yapılandırma akışları için kullanılmalıdır."
+"Aşama ikili tabanlı kimlik doğrulayıcısını yapılandırmak için kullanılır. Bu"
+" aşama yapılandırma akışları için kullanılmalıdır."
 
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 msgid ""
@@ -4672,7 +4670,7 @@ msgid ""
 "stage should be used for configuration flows."
 msgstr ""
 "Statik kimlik doğrulayıcısını (yani statik belirteçleri) yapılandırmak için "
-"kullanılan aşama alanı. Bu aşama yapılandırma akışları için kullanılmalıdır."
+"kullanılan aşama. Bu aşama yapılandırma akışları için kullanılmalıdır."
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Stage used to configure an SMS-based TOTP authenticator."
@@ -4685,8 +4683,8 @@ msgid ""
 "Stage used to validate any authenticator. This stage should be used during "
 "authentication or authorization flows."
 msgstr ""
-"Aşama Alanı, herhangi bir kimlik doğrulayıcıyı doğrulamak için kullanılır. "
-"Bu aşama kimlik doğrulama veya yetkilendirme akışları sırasında "
+"Aşama, herhangi bir kimlik doğrulayıcıyı doğrulamak için kullanılır. Bu "
+"aşama kimlik doğrulama veya yetkilendirme akışları sırasında "
 "kullanılmalıdır."
 
 #: src/pages/stages/StageListPage.ts
@@ -5766,7 +5764,7 @@ msgstr "SAML Kaynağını Güncelle"
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "Update Stage binding"
-msgstr "Aşama Alanı bağlamasını Güncelle"
+msgstr "Aşama bağlamasını Güncelle"
 
 #: src/pages/tenants/TenantListPage.ts
 msgid "Update Tenant"
