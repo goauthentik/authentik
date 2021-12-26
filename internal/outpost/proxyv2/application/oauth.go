@@ -15,7 +15,11 @@ func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.Values[constants.SessionOAuthState] = []string{}
 	}
-	state := s.Values[constants.SessionOAuthState].([]string)
+	state, ok := s.Values[constants.SessionOAuthState].([]string)
+	if !ok {
+		s.Values[constants.SessionOAuthState] = []string{}
+		state = []string{}
+	}
 	s.Values[constants.SessionOAuthState] = append(state, newState)
 	err = s.Save(r, rw)
 	if err != nil {

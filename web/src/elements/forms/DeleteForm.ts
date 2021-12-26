@@ -88,7 +88,9 @@ export class DeleteForm extends ModalButton {
                               return html``;
                           }
                           return html`
-                              <section class="pf-c-modal-box__body pf-c-page__main-section pf-m-light">
+                              <section
+                                  class="pf-c-modal-box__body pf-c-page__main-section pf-m-light"
+                              >
                                   <form class="pf-c-form pf-m-horizontal">
                                       <p>${t`The following objects use ${objName} `}</p>
                                       <ul class="pf-c-list">
