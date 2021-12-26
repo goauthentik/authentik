@@ -4663,8 +4663,8 @@ msgid ""
 "Stage used to configure a duo-based authenticator. This stage should be used"
 " for configuration flows."
 msgstr ""
-"Aşama alanı ikili tabanlı kimlik doğrulayıcısını yapılandırmak için "
-"kullanılır. Bu aşama yapılandırma akışları için kullanılmalıdır."
+"Aşama ikili tabanlı kimlik doğrulayıcısını yapılandırmak için kullanılır. Bu"
+" aşama yapılandırma akışları için kullanılmalıdır."
 
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 msgid ""
