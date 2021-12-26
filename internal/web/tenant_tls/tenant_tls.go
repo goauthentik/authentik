@@ -51,8 +51,8 @@ func (w *Watcher) Check() {
 		return
 	}
 	for _, t := range tenants.Results {
-		if t.WebCertificate.IsSet() {
-			err := w.cs.AddKeypair(*t.WebCertificate.Get())
+		if kp := t.WebCertificate.Get(); kp != nil {
+			err := w.cs.AddKeypair(*kp)
 			if err != nil {
 				w.log.WithError(err).Warning("failed to add certificate")
 			}
