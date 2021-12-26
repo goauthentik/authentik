@@ -5766,7 +5766,7 @@ msgstr "SAML Kaynağını Güncelle"
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "Update Stage binding"
-msgstr "Aşama Alanı bağlamasını Güncelle"
+msgstr "Aşama bağlamasını Güncelle"
 
 #: src/pages/tenants/TenantListPage.ts
 msgid "Update Tenant"
