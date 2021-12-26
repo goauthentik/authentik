@@ -63,12 +63,12 @@ export class MemberSelectTable extends TableModal<User> {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section">
+        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${t`Select users to add`}</h1>
                 </div>
             </section>
-            <section class="pf-c-modal-box__body pf-c-page__main-section">
+            <section class="pf-c-modal-box__body pf-c-page__main-section pf-m-light">
                 ${this.renderTable()}
             </section>
             <footer class="pf-c-modal-box__footer">

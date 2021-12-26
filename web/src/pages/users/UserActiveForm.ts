@@ -25,12 +25,12 @@ export class UserActiveForm extends DeleteForm {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section">
+        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${t`Update ${this.objectLabel}`}</h1>
                 </div>
             </section>
-            <section class="pf-c-modal-box__body pf-c-page__main-section">
+            <section class="pf-c-modal-box__body pf-c-page__main-section pf-m-light">
                 <form class="pf-c-form pf-m-horizontal">
                     <p>
                         ${t`Are you sure you want to update ${this.objectLabel} "${this.obj?.name}"?`}
