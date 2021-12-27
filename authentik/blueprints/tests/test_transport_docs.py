@@ -5,7 +5,7 @@ from typing import Callable
 
 from django.test import TransactionTestCase
 
-from authentik.managed.transport.importer import Importer
+from authentik.blueprints.v1.importer import Importer
 
 
 class TestTransportDocs(TransactionTestCase):

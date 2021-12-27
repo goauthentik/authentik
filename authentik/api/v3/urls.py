@@ -12,6 +12,7 @@ from authentik.admin.api.version import VersionView
 from authentik.admin.api.workers import WorkerView
 from authentik.api.v3.config import ConfigView
 from authentik.api.views import APIBrowserView
+from authentik.blueprints.api import BlueprintInstanceViewSet
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
 from authentik.core.api.devices import DeviceViewSet
@@ -32,7 +33,6 @@ from authentik.flows.api.flows import FlowViewSet
 from authentik.flows.api.stages import StageViewSet
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.flows.views.inspector import FlowInspectorView
-from authentik.managed.api import BlueprintInstanceViewSet
 from authentik.outposts.api.outposts import OutpostViewSet
 from authentik.outposts.api.service_connections import (
     DockerServiceConnectionViewSet,

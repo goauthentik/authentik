@@ -55,7 +55,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.managed.api import BlueprintInstanceSerializer
+        from authentik.blueprints.api import BlueprintInstanceSerializer
 
         return BlueprintInstanceSerializer
 

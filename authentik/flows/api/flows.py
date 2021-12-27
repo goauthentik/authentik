@@ -19,6 +19,9 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
+from authentik.blueprints.v1.common import DataclassEncoder
+from authentik.blueprints.v1.exporter import Exporter
+from authentik.blueprints.v1.importer import Importer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     CacheSerializer,
@@ -31,9 +34,6 @@ from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
 from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
-from authentik.managed.transport.common import DataclassEncoder
-from authentik.managed.transport.exporter import Exporter
-from authentik.managed.transport.importer import Importer
 
 LOGGER = get_logger()
 

@@ -5,8 +5,8 @@ from uuid import UUID
 
 from django.db.models import Q
 
+from authentik.blueprints.v1.common import DataclassEncoder, FlowBundle, FlowBundleEntry
 from authentik.flows.models import Flow, FlowStageBinding, Stage
-from authentik.managed.transport.common import DataclassEncoder, FlowBundle, FlowBundleEntry
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.stages.prompt.models import PromptStage
 

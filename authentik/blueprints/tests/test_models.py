@@ -4,8 +4,8 @@ from typing import Callable, Type
 from django.apps import apps
 from django.test import TestCase
 
+from authentik.blueprints.v1.importer import EXCLUDED_MODELS
 from authentik.lib.models import SerializerModel
-from authentik.managed.transport.importer import EXCLUDED_MODELS
 
 
 class TestModels(TestCase):

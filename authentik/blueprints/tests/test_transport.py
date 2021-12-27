@@ -3,11 +3,11 @@ from json import dumps
 
 from django.test import TransactionTestCase
 
+from authentik.blueprints.v1.common import DataclassEncoder
+from authentik.blueprints.v1.exporter import Exporter
+from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.lib.generators import generate_id
-from authentik.managed.transport.common import DataclassEncoder
-from authentik.managed.transport.exporter import Exporter
-from authentik.managed.transport.importer import Importer, transaction_rollback
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage

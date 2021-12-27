@@ -15,6 +15,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.blueprints.v1.common import EntryInvalidError, FlowBundle, FlowBundleEntry
 from authentik.core.models import (
     AuthenticatedSession,
     PropertyMapping,
@@ -24,7 +25,6 @@ from authentik.core.models import (
 )
 from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
-from authentik.managed.transport.common import EntryInvalidError, FlowBundle, FlowBundleEntry
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 

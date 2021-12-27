@@ -19,8 +19,8 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.blueprints.models import ManagedModel
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
-from authentik.managed.models import ManagedModel
 
 LOGGER = get_logger()
 

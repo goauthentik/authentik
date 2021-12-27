@@ -141,7 +141,7 @@ INSTALLED_APPS = [
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
     "authentik.tenants",
-    "authentik.managed",
+    "authentik.blueprints",
     "rest_framework",
     "django_filters",
     "drf_spectacular",

@@ -1,5 +1,6 @@
 """blueprint spec"""
 from dataclasses import dataclass, field
+from typing import Any, Optional
 
 from authentik import __version__
 
@@ -9,8 +10,7 @@ class BlueprintMeta:
     """Meta information about a blueprint"""
 
     author: str = field(default="")
-    version: str = field(default="")
-    required_authentik_version: str = field(default=__version__)
+    version_constraints: dict = field(default_factory=dict)
     verified: bool = field(default=False)
 
 
@@ -28,18 +28,32 @@ class BlueprintSpec:
 class BlueprintInputs:
     """Single input, modeled after stages/prompt's Prompt"""
 
-    field_key: str
+    # pylint: disable=invalid-name
+    id: str
     label: str
     type: str  # FieldTypes.choices
     required: bool
     placeholder: str = field(default="")
     order: int = field(default=0)
+    validators: list[str] = field(default_factory=list)
+
+
+@dataclass
+class BlueprintFilter:
+    """Blueprint filter"""
+
+    attribute: str
+    value: Any
+    type: str = field(default="query")
+    children: Optional[list["BlueprintFilter"]] = field(default_factory=list)
 
 
 @dataclass
 class BlueprintResource:
     """an individual blueprint resource"""
 
-    model: str
-    identifiers: dict
-    attrs: dict
+    model_name: str
+    # pylint: disable=invalid-name
+    id: Optional[str] = field(default=None)
+    filters: list["BlueprintFilter"] = field(default_factory=list)
+    _with: dict = field(default_factory=dict)

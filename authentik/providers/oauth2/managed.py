@@ -1,5 +1,5 @@
 """OAuth2 Provider managed objects"""
-from authentik.managed.manager import EnsureExists, ObjectManager
+from authentik.blueprints.manager import EnsureExists, ObjectManager
 from authentik.providers.oauth2.models import ScopeMapping
 
 SCOPE_OPENID_EXPRESSION = """

@@ -10,8 +10,8 @@ from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.blueprints.models import BlueprintInstance
 from authentik.lib.config import CONFIG
-from authentik.managed.models import BlueprintInstance
 
 
 class ManagedSerializer:

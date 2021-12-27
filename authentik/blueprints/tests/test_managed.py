@@ -1,7 +1,7 @@
 """managed tests"""
 from django.test import TestCase
 
-from authentik.managed.tasks import managed_reconcile
+from authentik.blueprints.tasks import managed_reconcile
 
 
 class TestManaged(TestCase):

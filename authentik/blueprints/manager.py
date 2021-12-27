@@ -3,7 +3,7 @@ from typing import Callable, Optional, Type
 
 from structlog.stdlib import get_logger
 
-from authentik.managed.models import ManagedModel
+from authentik.blueprints.models import ManagedModel
 
 LOGGER = get_logger()
 

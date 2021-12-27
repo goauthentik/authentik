@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
                         "authentik Stages.OTP.Validate",
                     ),
                     ("authentik.stages.password", "authentik Stages.Password"),
-                    ("authentik.managed", "authentik Managed"),
+                    ("authentik.blueprints", "authentik Blueprints"),
                     ("authentik.core", "authentik Core"),
                 ],
                 default="",

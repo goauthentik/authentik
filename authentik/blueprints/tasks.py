@@ -1,6 +1,7 @@
 """managed tasks"""
 from django.db import DatabaseError
 
+from authentik.blueprints.manager import ObjectManager
 from authentik.core.tasks import CELERY_APP
 from authentik.events.monitored_tasks import (
     MonitoredTask,
@@ -8,7 +9,6 @@ from authentik.events.monitored_tasks import (
     TaskResultStatus,
     prefill_task,
 )
-from authentik.managed.manager import ObjectManager
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)

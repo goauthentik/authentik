@@ -1,6 +1,6 @@
 """Core managed objects"""
+from authentik.blueprints.manager import EnsureExists, ObjectManager
 from authentik.core.models import Source
-from authentik.managed.manager import EnsureExists, ObjectManager
 
 
 class CoreManager(ObjectManager):

@@ -4,10 +4,10 @@ from unittest.mock import PropertyMock, patch
 from django.db.models import Q
 from django.test import TestCase
 
+from authentik.blueprints.manager import ObjectManager
 from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_key
-from authentik.managed.manager import ObjectManager
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer

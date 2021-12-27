@@ -22,6 +22,7 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import get_logger
 
+from authentik.blueprints.models import ManagedModel
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton, UserSettingSerializer
@@ -29,7 +30,6 @@ from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator, SerializerModel
 from authentik.lib.utils.http import get_client_ip
-from authentik.managed.models import ManagedModel
 from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()

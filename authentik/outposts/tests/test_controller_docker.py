@@ -2,7 +2,7 @@
 from django.test import TestCase
 from docker.models.containers import Container
 
-from authentik.managed.manager import ObjectManager
+from authentik.blueprints.manager import ObjectManager
 from authentik.outposts.controllers.base import ControllerException
 from authentik.outposts.controllers.docker import DockerController
 from authentik.outposts.managed import MANAGED_OUTPOST

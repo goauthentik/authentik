@@ -1,7 +1,7 @@
 """Apply flow from commandline"""
 from django.core.management.base import BaseCommand, no_translations
 
-from authentik.managed.transport.importer import Importer
+from authentik.blueprints.v1.importer import Importer
 
 
 class Command(BaseCommand):  # pragma: no cover

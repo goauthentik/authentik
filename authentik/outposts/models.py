@@ -19,6 +19,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik import ENV_GIT_HASH_KEY, __version__
+from authentik.blueprints.models import ManagedModel
 from authentik.core.models import (
     USER_ATTRIBUTE_CAN_OVERRIDE_IP,
     USER_ATTRIBUTE_SA,
@@ -33,7 +34,6 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
-from authentik.managed.models import ManagedModel
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.tenants.models import Tenant
 
