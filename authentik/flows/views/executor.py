@@ -371,12 +371,6 @@ class FlowExecutorView(APIView):
             NEXT_ARG_NAME, "authentik_core:root-redirect"
         )
         self.cancel()
-        Event.new(
-            action=EventAction.FLOW_EXECUTION,
-            flow=self.flow,
-            designation=self.flow.designation,
-            successful=True,
-        ).from_http(self.request)
         return to_stage_response(self.request, redirect_with_qs(next_param))
 
     def stage_ok(self) -> HttpResponse:
