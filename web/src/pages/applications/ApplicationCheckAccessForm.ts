@@ -7,8 +7,10 @@ import { until } from "lit/directives/until.js";
 import { Application, CoreApi, PolicyTestResult } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { PFColor } from "../../elements/Label";
 import { Form } from "../../elements/forms/Form";
 import "../../elements/forms/HorizontalFormElement";
+import { UserOption } from "../../elements/user/utils";
 
 @customElement("ak-application-check-access-form")
 export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
@@ -44,9 +46,11 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         return html` <ak-form-element-horizontal label=${t`Passing`}>
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
-                        <span class="pf-c-form__label-text"
-                            >${this.result?.passing ? t`Yes` : t`No`}</span
-                        >
+                        <span class="pf-c-form__label-text">
+                            <ak-label color=${this.result?.passing ? PFColor.Green : PFColor.Red}>
+                                ${this.result?.passing ? t`Yes` : t`No`}
+                            </ak-label>
+                        </span>
                     </div>
                 </div>
             </ak-form-element-horizontal>
@@ -84,7 +88,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                                         ?selected=${user.pk.toString() === this.request?.toString()}
                                         value=${user.pk}
                                     >
-                                        ${user.username}
+                                        ${UserOption(user)}
                                     </option>`;
                                 });
                             }),

@@ -43,6 +43,20 @@ def get_challenge_for_device(request: HttpRequest, device: Device) -> dict:
     return {}
 
 
+def get_webauthn_challenge_userless(request: HttpRequest) -> dict:
+    """Same as `get_webauthn_challenge`, but allows any client device. We can then later check
+    who the device belongs to."""
+    request.session.pop("challenge", None)
+    authentication_options = generate_authentication_options(
+        rp_id=get_rp_id(request),
+        allow_credentials=[],
+    )
+
+    request.session["challenge"] = authentication_options.challenge
+
+    return loads(options_to_json(authentication_options))
+
+
 def get_webauthn_challenge(request: HttpRequest, device: Optional[WebAuthnDevice] = None) -> dict:
     """Send the client a challenge that we'll check later"""
     request.session.pop("challenge", None)
@@ -87,7 +101,7 @@ def validate_challenge_code(code: str, request: HttpRequest, user: User) -> str:
 
 
 # pylint: disable=unused-argument
-def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) -> dict:
+def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) -> Device:
     """Validate WebAuthn Challenge"""
     challenge = request.session.get("challenge")
     credential_id = data.get("id")
@@ -107,12 +121,12 @@ def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) ->
             require_user_verification=False,
         )
 
-    except (InvalidAuthenticationResponse) as exc:
+    except InvalidAuthenticationResponse as exc:
         LOGGER.warning("Assertion failed", exc=exc)
         raise ValidationError("Assertion failed") from exc
 
     device.set_sign_count(authentication_verification.new_sign_count)
-    return data
+    return device
 
 
 def validate_challenge_duo(device_pk: int, request: HttpRequest, user: User) -> int:

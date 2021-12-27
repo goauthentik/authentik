@@ -8,8 +8,8 @@ import (
 	"net"
 	"net/http"
 	"sync"
-	"time"
 
+	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
@@ -52,6 +52,7 @@ func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
 
 	globalMux := rootMux.NewRoute().Subrouter()
 	globalMux.Use(web.NewLoggingHandler(l.WithField("logger", "authentik.outpost.proxyv2.http"), nil))
+	globalMux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	s := &ProxyServer{
 		Listen:     "0.0.0.0:%d",
 		PortOffset: portOffset,
@@ -64,6 +65,7 @@ func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
 		defaultCert: defaultCert,
 	}
 	globalMux.PathPrefix("/akprox/static").HandlerFunc(s.HandleStatic)
+	globalMux.Path("/akprox/ping").HandlerFunc(s.HandlePing)
 	rootMux.PathPrefix("/").HandlerFunc(s.Handle)
 	return s
 }
@@ -85,17 +87,25 @@ func (ps *ProxyServer) Type() string {
 
 func (ps *ProxyServer) TimerFlowCacheExpiry() {}
 
-func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
-	app, ok := ps.apps[info.ServerName]
+func (ps *ProxyServer) GetCertificate(serverName string) *tls.Certificate {
+	app, ok := ps.apps[serverName]
 	if !ok {
-		ps.log.WithField("server-name", info.ServerName).Debug("app does not exist")
-		return &ps.defaultCert, nil
+		ps.log.WithField("server-name", serverName).Debug("app does not exist")
+		return nil
 	}
 	if app.Cert == nil {
-		ps.log.WithField("server-name", info.ServerName).Debug("app does not have a certificate")
+		ps.log.WithField("server-name", serverName).Debug("app does not have a certificate")
+		return nil
+	}
+	return app.Cert
+}
+
+func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
+	appCert := ps.GetCertificate(info.ServerName)
+	if appCert == nil {
 		return &ps.defaultCert, nil
 	}
-	return app.Cert, nil
+	return appCert, nil
 }
 
 // ServeHTTP constructs a net.Listener and starts handling HTTP requests
@@ -103,14 +113,14 @@ func (ps *ProxyServer) ServeHTTP() {
 	listenAddress := fmt.Sprintf(ps.Listen, 9000+ps.PortOffset)
 	listener, err := net.Listen("tcp", listenAddress)
 	if err != nil {
-		ps.log.Fatalf("FATAL: listen (%s) failed - %s", listenAddress, err)
+		ps.log.WithField("listen", listenAddress).WithError(err).Fatalf("listen failed")
 	}
 	proxyListener := &proxyproto.Listener{Listener: listener}
 	defer proxyListener.Close()
 
-	ps.log.Printf("listening on %s", listener.Addr())
+	ps.log.WithField("listen", listenAddress).Info("Starting HTTP server")
 	ps.serve(proxyListener)
-	ps.log.Printf("closing %s", listener.Addr())
+	ps.log.WithField("listen", listenAddress).Info("Stopping HTTP server")
 }
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
@@ -124,16 +134,15 @@ func (ps *ProxyServer) ServeHTTPS() {
 
 	ln, err := net.Listen("tcp", listenAddress)
 	if err != nil {
-		ps.log.Fatalf("listen (%s) failed - %s", listenAddress, err)
+		ps.log.WithError(err).Warning("Failed to listen for HTTPS")
 	}
-	ps.log.Printf("listening on %s", ln.Addr())
-
-	proxyListener := &proxyproto.Listener{Listener: tcpKeepAliveListener{ln.(*net.TCPListener)}}
+	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}}
 	defer proxyListener.Close()
 
 	tlsListener := tls.NewListener(proxyListener, config)
+	ps.log.WithField("listen", listenAddress).Info("Starting HTTPS server")
 	ps.serve(tlsListener)
-	ps.log.Printf("closing %s", tlsListener.Addr())
+	ps.log.WithField("listen", listenAddress).Info("Stopping HTTPS server")
 }
 
 func (ps *ProxyServer) Start() error {
@@ -168,7 +177,7 @@ func (ps *ProxyServer) serve(listener net.Listener) {
 		// We received an interrupt signal, shut down.
 		if err := srv.Shutdown(context.Background()); err != nil {
 			// Error from closing listeners, or context timeout:
-			ps.log.Printf("HTTP server Shutdown: %v", err)
+			ps.log.WithError(err).Info("HTTP server Shutdown")
 		}
 		close(idleConnsClosed)
 	}()
@@ -178,28 +187,4 @@ func (ps *ProxyServer) serve(listener net.Listener) {
 		ps.log.Errorf("ERROR: http.Serve() - %s", err)
 	}
 	<-idleConnsClosed
-}
-
-// tcpKeepAliveListener sets TCP keep-alive timeouts on accepted
-// connections. It's used by ListenAndServe and ListenAndServeTLS so
-// dead TCP connections (e.g. closing laptop mid-download) eventually
-// go away.
-type tcpKeepAliveListener struct {
-	*net.TCPListener
-}
-
-func (ln tcpKeepAliveListener) Accept() (net.Conn, error) {
-	tc, err := ln.AcceptTCP()
-	if err != nil {
-		return nil, err
-	}
-	err = tc.SetKeepAlive(true)
-	if err != nil {
-		log.Printf("Error setting Keep-Alive: %v", err)
-	}
-	err = tc.SetKeepAlivePeriod(3 * time.Minute)
-	if err != nil {
-		log.Printf("Error setting Keep-Alive period: %v", err)
-	}
-	return tc, nil
 }

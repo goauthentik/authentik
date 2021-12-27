@@ -5,18 +5,6 @@ module.exports = {
             id: "index",
         },
         {
-            type: "doc",
-            id: "terminology",
-        },
-        {
-            type: "category",
-            label: "Users & Groups",
-            items: [
-                "user-group/user",
-                "user-group/group",
-            ]
-        },
-        {
             type: "category",
             label: "Installation",
             items: [
@@ -32,6 +20,17 @@ module.exports = {
         },
         {
             type: "category",
+            label: "Core Concepts",
+            collapsed: false,
+            items: [
+                "core/terminology",
+                "core/applications",
+                "core/tenants",
+                "core/certificates",
+            ],
+        },
+        {
+            type: "category",
             label: "Providers",
             items: [
                 "providers/oauth2",
@@ -41,6 +40,7 @@ module.exports = {
                     label: "Proxy Provider",
                     items: [
                         "providers/proxy/proxy",
+                        "providers/proxy/custom_headers",
                         "providers/proxy/forward_auth",
                     ],
                 },
@@ -51,8 +51,16 @@ module.exports = {
             type: "category",
             label: "Outposts",
             items: [
-                "outposts/outposts",
+                "outposts/index",
                 "outposts/embedded/embedded",
+                {
+                    type: "category",
+                    label: "Integrations",
+                    items: [
+                        "outposts/integrations/docker",
+                        "outposts/integrations/kubernetes",
+                    ],
+                },
                 {
                     type: "category",
                     label: "Running and upgrading",
@@ -66,65 +74,8 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Integrations",
-            items: [
-                {
-                    type: "category",
-                    label: "as Source",
-                    items: [
-                        "integrations/sources/index",
-                        "integrations/sources/active-directory/index",
-                        "integrations/sources/apple/index",
-                        "integrations/sources/azure-ad/index",
-                        "integrations/sources/discord/index",
-                        "integrations/sources/freeipa/index",
-                        "integrations/sources/github/index",
-                        "integrations/sources/google/index",
-                        "integrations/sources/ldap/index",
-                        "integrations/sources/oauth/index",
-                        "integrations/sources/plex/index",
-                        "integrations/sources/saml/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "as Provider",
-                    items: [
-                        "integrations/services/apache-guacamole/index",
-                        "integrations/services/aws/index",
-                        "integrations/services/awx-tower/index",
-                        "integrations/services/bookstack/index",
-                        "integrations/services/gitea/index",
-                        "integrations/services/gitlab/index",
-                        "integrations/services/grafana/index",
-                        "integrations/services/harbor/index",
-                        "integrations/services/home-assistant/index",
-                        "integrations/services/matrix-synapse/index",
-                        "integrations/services/minio/index",
-                        "integrations/services/nextcloud/index",
-                        "integrations/services/opnsense/index",
-                        "integrations/services/portainer/index",
-                        "integrations/services/proxmox-ve/index",
-                        "integrations/services/rancher/index",
-                        "integrations/services/sentry/index",
-                        "integrations/services/sonarr/index",
-                        "integrations/services/tautulli/index",
-                        "integrations/services/ubuntu-landscape/index",
-                        "integrations/services/veeam-enterprise-manager/index",
-                        "integrations/services/vikunja/index",
-                        "integrations/services/vmware-vcenter/index",
-                        "integrations/services/wekan/index",
-                        "integrations/services/wiki-js/index",
-                        "integrations/services/wordpress/index",
-                        "integrations/services/zabbix/index",
-                    ],
-                },
-            ],
-        },
-        {
-            type: "category",
             label: "Flows",
-            items: ["flow/flows", "flow/examples"],
+            items: ["flow/index", "flow/examples"],
         },
         {
             type: "category",
@@ -165,12 +116,13 @@ module.exports = {
             items: [
                 "events/index",
                 "events/notifications",
-                "events/transports"
+                "events/transports",
             ],
         },
         {
-            type: "doc",
-            id: "tenants",
+            type: "category",
+            label: "Users & Groups",
+            items: ["user-group/user", "user-group/group"],
         },
         {
             type: "category",
@@ -181,6 +133,7 @@ module.exports = {
             type: "category",
             label: "Release Notes",
             items: [
+                "releases/v2021.12",
                 "releases/v2021.10",
                 "releases/v2021.9",
                 "releases/v2021.8",

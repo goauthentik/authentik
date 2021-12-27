@@ -9,17 +9,15 @@ from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
-from authentik.crypto.models import CertificateKeyPair
+from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
-
-LOGGER = get_logger()
+from authentik.sources.saml.processors.constants import SAML_BINDING_POST
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -28,11 +26,20 @@ class TestProviderSAML(SeleniumTestCase):
 
     container: Container
 
-    def setup_client(self, provider: SAMLProvider) -> Container:
+    def setup_client(self, provider: SAMLProvider, force_post: bool = False) -> Container:
         """Setup client saml-sp container which we test SAML against"""
         client: DockerClient = from_env()
+        metadata_url = (
+            self.url(
+                "authentik_api:samlprovider-metadata",
+                pk=provider.pk,
+            )
+            + "?download"
+        )
+        if force_post:
+            metadata_url += f"&force_binding={SAML_BINDING_POST}"
         container = client.containers.run(
-            image="beryju.org/saml-test-sp:latest",
+            image="ghcr.io/beryju/saml-test-sp:latest",
             detach=True,
             network_mode="host",
             auto_remove=True,
@@ -44,13 +51,7 @@ class TestProviderSAML(SeleniumTestCase):
             environment={
                 "SP_ENTITY_ID": provider.issuer,
                 "SP_SSO_BINDING": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-                "SP_METADATA_URL": (
-                    self.url(
-                        "authentik_api:samlprovider-metadata",
-                        pk=provider.pk,
-                    )
-                    + "?download"
-                ),
+                "SP_METADATA_URL": metadata_url,
             },
         )
         while True:
@@ -58,11 +59,10 @@ class TestProviderSAML(SeleniumTestCase):
             status = container.attrs.get("State", {}).get("Health", {}).get("Status")
             if status == "healthy":
                 return container
-            LOGGER.info("Container failed healthcheck")
+            self.logger.info("Container failed healthcheck")
             sleep(1)
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -81,7 +81,7 @@ class TestProviderSAML(SeleniumTestCase):
             issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
-            signing_kp=CertificateKeyPair.objects.first(),
+            signing_kp=create_test_cert(),
         )
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()
@@ -99,33 +99,32 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-            [USER().name],
+            [self.user.name],
         )
         self.assertEqual(
             body["attr"][
                 "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
             ],
-            [USER().username],
+            [self.user.username],
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
-            [USER().username],
+            [self.user.username],
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
-            [str(USER().pk)],
+            [str(self.user.pk)],
         )
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
-            [USER().email],
+            [self.user.email],
         )
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
-            [USER().email],
+            [self.user.email],
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -144,7 +143,7 @@ class TestProviderSAML(SeleniumTestCase):
             issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
-            signing_kp=CertificateKeyPair.objects.first(),
+            signing_kp=create_test_cert(),
         )
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()
@@ -177,33 +176,109 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-            [USER().name],
+            [self.user.name],
         )
         self.assertEqual(
             body["attr"][
                 "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
             ],
-            [USER().username],
+            [self.user.username],
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
-            [USER().username],
+            [self.user.username],
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
-            [str(USER().pk)],
+            [str(self.user.pk)],
         )
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
-            [USER().email],
+            [self.user.email],
         )
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
-            [USER().email],
+            [self.user.email],
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0011_flow_title")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
+    def test_sp_initiated_explicit_post(self):
+        """test SAML Provider flow SP-initiated flow (explicit consent) (POST binding)"""
+        # Bootstrap all needed objects
+        authorization_flow = Flow.objects.get(
+            slug="default-provider-authorization-explicit-consent"
+        )
+        provider: SAMLProvider = SAMLProvider.objects.create(
+            name="saml-test",
+            acs_url="http://localhost:9009/saml/acs",
+            audience="authentik-e2e",
+            issuer="authentik-e2e",
+            sp_binding=SAMLBindings.POST,
+            authorization_flow=authorization_flow,
+            signing_kp=create_test_cert(),
+        )
+        provider.property_mappings.set(SAMLPropertyMapping.objects.all())
+        provider.save()
+        app = Application.objects.create(
+            name="SAML",
+            slug="authentik-saml",
+            provider=provider,
+        )
+        self.container = self.setup_client(provider, True)
+        self.driver.get("http://localhost:9009")
+        self.login()
+
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+
+        self.assertIn(
+            app.name,
+            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+        )
+        consent_stage.find_element(
+            By.CSS_SELECTOR,
+            ("[type=submit]"),
+        ).click()
+
+        self.wait_for_url("http://localhost:9009/")
+
+        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+
+        self.assertEqual(
+            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+            [self.user.name],
+        )
+        self.assertEqual(
+            body["attr"][
+                "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
+            ],
+            [self.user.username],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
+            [self.user.username],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
+            [str(self.user.pk)],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
+            [self.user.email],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
+            [self.user.email],
+        )
+
+    @retry()
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -222,7 +297,7 @@ class TestProviderSAML(SeleniumTestCase):
             issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
-            signing_kp=CertificateKeyPair.objects.first(),
+            signing_kp=create_test_cert(),
         )
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()
@@ -246,33 +321,32 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-            [USER().name],
+            [self.user.name],
         )
         self.assertEqual(
             body["attr"][
                 "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
             ],
-            [USER().username],
+            [self.user.username],
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
-            [USER().username],
+            [self.user.username],
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
-            [str(USER().pk)],
+            [str(self.user.pk)],
         )
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
-            [USER().email],
+            [self.user.email],
         )
         self.assertEqual(
             body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
-            [USER().email],
+            [self.user.email],
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -294,7 +368,7 @@ class TestProviderSAML(SeleniumTestCase):
             issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
-            signing_kp=CertificateKeyPair.objects.first(),
+            signing_kp=create_test_cert(),
         )
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()

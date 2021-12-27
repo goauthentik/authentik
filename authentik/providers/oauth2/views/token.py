@@ -95,9 +95,15 @@ class TokenParams:
                 self.refresh_token = RefreshToken.objects.get(
                     refresh_token=raw_token, provider=self.provider
                 )
+                if self.refresh_token.is_expired:
+                    LOGGER.warning(
+                        "Refresh token is expired",
+                        token=raw_token,
+                    )
+                    raise TokenError("invalid_grant")
                 # https://tools.ietf.org/html/rfc6749#section-6
                 # Fallback to original token's scopes when none are given
-                if self.scope == []:
+                if not self.scope:
                     self.scope = self.refresh_token.scope
             except RefreshToken.DoesNotExist:
                 LOGGER.warning(
@@ -138,6 +144,12 @@ class TokenParams:
 
         try:
             self.authorization_code = AuthorizationCode.objects.get(code=raw_code)
+            if self.authorization_code.is_expired:
+                LOGGER.warning(
+                    "Code is expired",
+                    token=raw_code,
+                )
+                raise TokenError("invalid_grant")
         except AuthorizationCode.DoesNotExist:
             LOGGER.warning("Code does not exist", code=raw_code)
             raise TokenError("invalid_grant")
@@ -194,8 +206,10 @@ class TokenView(View):
             self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
 
             if self.params.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
+                LOGGER.info("Converting authorization code to refresh token")
                 return TokenResponse(self.create_code_response())
             if self.params.grant_type == GRANT_TYPE_REFRESH_TOKEN:
+                LOGGER.info("Refreshing refresh token")
                 return TokenResponse(self.create_refresh_response())
             raise ValueError(f"Invalid grant_type: {self.params.grant_type}")
         except TokenError as error:

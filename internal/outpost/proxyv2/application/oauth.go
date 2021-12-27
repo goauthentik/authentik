@@ -3,20 +3,36 @@ package application
 import (
 	"encoding/base64"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/securecookie"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 
 func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
-	state := base64.RawStdEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
-	s, _ := a.sessions.Get(r, constants.SeesionName)
-	s.Values[constants.SessionOAuthState] = state
-	err := s.Save(r, rw)
+	newState := base64.RawStdEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
+	s, err := a.sessions.Get(r, constants.SeesionName)
+	if err != nil {
+		s.Values[constants.SessionOAuthState] = []string{}
+	}
+	state, ok := s.Values[constants.SessionOAuthState].([]string)
+	if !ok {
+		s.Values[constants.SessionOAuthState] = []string{}
+		state = []string{}
+	}
+	s.Values[constants.SessionOAuthState] = append(state, newState)
+	err = s.Save(r, rw)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session")
 	}
-	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(state), http.StatusFound)
+	if loop, ok := s.Values[constants.SessionLoopDetection]; ok {
+		if loop.(int) > 10 {
+			rw.WriteHeader(http.StatusBadRequest)
+			a.ErrorPage(rw, r, "Detected redirect loop, make sure /akprox is accessible without authentication.")
+			return
+		}
+	}
+	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(newState), http.StatusFound)
 }
 
 func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
@@ -27,7 +43,7 @@ func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
 		http.Redirect(rw, r, a.proxyConfig.ExternalHost, http.StatusFound)
 		return
 	}
-	claims, err := a.redeemCallback(r, state.(string))
+	claims, err := a.redeemCallback(r, state.([]string))
 	if err != nil {
 		a.log.WithError(err).Warning("failed to redeem code")
 		rw.WriteHeader(400)
@@ -42,7 +58,7 @@ func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	s.Options.MaxAge = claims.Exp / 1000
+	s.Options.MaxAge = int(time.Until(time.Unix(int64(claims.Exp), 0)).Seconds())
 	s.Values[constants.SessionClaims] = &claims
 	err = s.Save(r, rw)
 	if err != nil {
@@ -53,6 +69,7 @@ func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
 	redirect := a.proxyConfig.ExternalHost
 	redirectR, ok := s.Values[constants.SessionRedirect]
 	if ok {
+		a.log.WithField("redirect", redirectR).Trace("got final redirect from session")
 		redirect = redirectR.(string)
 	}
 	http.Redirect(rw, r, redirect, http.StatusFound)

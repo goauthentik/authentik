@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             name="audience",
             field=models.TextField(
                 default="",
-                help_text="Value of the audience restriction field of the asseration.",
+                help_text="Value of the audience restriction field of the assertion.",
             ),
         ),
         migrations.AlterField(

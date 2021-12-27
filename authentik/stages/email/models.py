@@ -4,8 +4,8 @@ from pathlib import Path
 from typing import Type
 
 from django.conf import settings
-from django.core.mail import get_connection
 from django.core.mail.backends.base import BaseEmailBackend
+from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
 from django.utils.translation import gettext as _
 from django.views import View
@@ -37,7 +37,7 @@ def get_template_choices():
 
     dirs = [Path(x) for x in settings.TEMPLATES[0]["DIRS"]]
     for template_dir in dirs:
-        if not template_dir.exists():
+        if not template_dir.exists() or not template_dir.is_dir():
             continue
         for template in template_dir.glob("**/*.html"):
             path = str(template)
@@ -98,11 +98,16 @@ class EmailStage(Stage):
         return "ak-stage-email-form"
 
     @property
+    def backend_class(self) -> Type[BaseEmailBackend]:
+        """Get the email backend class to use"""
+        return EmailBackend
+
+    @property
     def backend(self) -> BaseEmailBackend:
         """Get fully configured Email Backend instance"""
         if self.use_global_settings:
-            return get_connection()
-        return get_connection(
+            return self.backend_class()
+        return self.backend_class(
             host=self.host,
             port=self.port,
             username=self.username,

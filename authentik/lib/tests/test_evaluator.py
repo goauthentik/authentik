@@ -1,7 +1,7 @@
 """Test Evaluator base functions"""
 from django.test import TestCase
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.expression.evaluator import BaseEvaluator
 
 
@@ -19,12 +19,11 @@ class TestEvaluator(TestCase):
 
     def test_user_by(self):
         """Test expr_user_by"""
-        self.assertIsNotNone(BaseEvaluator.expr_user_by(username="akadmin"))
+        user = create_test_admin_user()
+        self.assertIsNotNone(BaseEvaluator.expr_user_by(username=user.username))
         self.assertIsNone(BaseEvaluator.expr_user_by(username="bar"))
         self.assertIsNone(BaseEvaluator.expr_user_by(foo="bar"))
 
     def test_is_group_member(self):
         """Test expr_is_group_member"""
-        self.assertFalse(
-            BaseEvaluator.expr_is_group_member(User.objects.get(username="akadmin"), name="test")
-        )
+        self.assertFalse(BaseEvaluator.expr_is_group_member(create_test_admin_user(), name="test"))

@@ -29,7 +29,7 @@ class UserWriteStageView(StageView):
         """Allow use of attributes.foo.bar when writing to a user, with full
         recursion"""
         parts = key.replace("_", ".").split(".")
-        if len(parts) < 1:
+        if len(parts) < 1:  # pragma: no cover
             return
         # Function will always be called with a key like attribute.
         # this is just a sanity check to ensure that is removed

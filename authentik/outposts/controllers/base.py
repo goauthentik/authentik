@@ -9,7 +9,11 @@ from structlog.testing import capture_logs
 from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.outposts.models import Outpost, OutpostServiceConnection
+from authentik.outposts.models import (
+    Outpost,
+    OutpostServiceConnection,
+    OutpostServiceConnectionState,
+)
 
 FIELD_MANAGER = "goauthentik.io"
 
@@ -28,11 +32,25 @@ class DeploymentPort:
     inner_port: Optional[int] = None
 
 
+class BaseClient:
+    """Base class for custom clients"""
+
+    def fetch_state(self) -> OutpostServiceConnectionState:
+        """Get state, version info"""
+        raise NotImplementedError
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Cleanup after usage"""
+
+
 class BaseController:
     """Base Outpost deployment controller"""
 
     deployment_ports: list[DeploymentPort]
-
+    client: BaseClient
     outpost: Outpost
     connection: OutpostServiceConnection
 
@@ -62,6 +80,14 @@ class BaseController:
         with capture_logs() as logs:
             self.down()
         return [x["event"] for x in logs]
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Cleanup after usage"""
+        if hasattr(self, "client"):
+            self.client.__exit__(exc_type, exc_value, traceback)
 
     def get_static_deployment(self) -> str:
         """Return a static deployment configuration"""

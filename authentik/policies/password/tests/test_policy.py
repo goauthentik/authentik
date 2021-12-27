@@ -13,6 +13,7 @@ class TestPasswordPolicy(TestCase):
     def setUp(self) -> None:
         self.policy = PasswordPolicy.objects.create(
             name="test_false",
+            amount_digits=1,
             amount_uppercase=1,
             amount_lowercase=2,
             amount_symbols=3,
@@ -38,7 +39,7 @@ class TestPasswordPolicy(TestCase):
     def test_failed_lowercase(self):
         """not enough lowercase"""
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = "TTTTTTTTTTTTTTTTTTTTTTTe"  # nosec
+        request.context["password"] = "1TTTTTTTTTTTTTTTTTTTTTTe"  # nosec
         result: PolicyResult = self.policy.passes(request)
         self.assertFalse(result.passing)
         self.assertEqual(result.messages, ("test message",))
@@ -46,15 +47,23 @@ class TestPasswordPolicy(TestCase):
     def test_failed_uppercase(self):
         """not enough uppercase"""
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = "tttttttttttttttttttttttE"  # nosec
+        request.context["password"] = "1tttttttttttttttttttttE"  # nosec
         result: PolicyResult = self.policy.passes(request)
         self.assertFalse(result.passing)
         self.assertEqual(result.messages, ("test message",))
 
     def test_failed_symbols(self):
-        """not enough uppercase"""
+        """not enough symbols"""
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = "TETETETETETETETETETETETETe!!!"  # nosec
+        request.context["password"] = "1ETETETETETETETETETETETETe!!!"  # nosec
+        result: PolicyResult = self.policy.passes(request)
+        self.assertFalse(result.passing)
+        self.assertEqual(result.messages, ("test message",))
+
+    def test_failed_digits(self):
+        """not enough digits"""
+        request = PolicyRequest(get_anonymous_user())
+        request.context["password"] = "TETETETETETETETETETETE1e!!!"  # nosec
         result: PolicyResult = self.policy.passes(request)
         self.assertFalse(result.passing)
         self.assertEqual(result.messages, ("test message",))
@@ -62,7 +71,7 @@ class TestPasswordPolicy(TestCase):
     def test_true(self):
         """Positive password case"""
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = generate_key() + "ee!!!"  # nosec
+        request.context["password"] = generate_key() + "1ee!!!"  # nosec
         result: PolicyResult = self.policy.passes(request)
         self.assertTrue(result.passing)
         self.assertEqual(result.messages, tuple())

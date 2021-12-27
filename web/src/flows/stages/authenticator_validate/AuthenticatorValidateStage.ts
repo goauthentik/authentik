@@ -37,6 +37,13 @@ export class AuthenticatorValidateStage
 {
     flowSlug = "";
 
+    set loading(value: boolean) {
+        this.host.loading = value;
+    }
+    get loading(): boolean {
+        return this.host.loading;
+    }
+
     @state()
     _selectedDeviceChallenge?: DeviceChallenge;
 
@@ -100,9 +107,7 @@ export class AuthenticatorValidateStage
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
                         <p>${t`Duo push-notifications`}</p>
-                        <small
-                            >${t`Receive a push notification on your phone to prove your identity.`}</small
-                        >
+                        <small>${t`Receive a push notification on your device.`}</small>
                     </div>`;
             case DeviceClassesEnum.Webauthn:
                 return html`<i class="fas fa-mobile-alt"></i>
@@ -160,29 +165,32 @@ export class AuthenticatorValidateStage
             case DeviceClassesEnum.Static:
             case DeviceClassesEnum.Totp:
             case DeviceClassesEnum.Sms:
-                return html`<ak-stage-authenticator-validate-code
-                    .host=${this}
-                    .challenge=${this.challenge}
-                    .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
-                >
-                </ak-stage-authenticator-validate-code>`;
+                return html`<!-- @ts-ignore -->
+                    <ak-stage-authenticator-validate-code
+                        .host=${this}
+                        .challenge=${this.challenge}
+                        .deviceChallenge=${this.selectedDeviceChallenge}
+                        .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
+                    >
+                    </ak-stage-authenticator-validate-code>`;
             case DeviceClassesEnum.Webauthn:
-                return html`<ak-stage-authenticator-validate-webauthn
-                    .host=${this}
-                    .challenge=${this.challenge}
-                    .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
-                >
-                </ak-stage-authenticator-validate-webauthn>`;
+                return html`<!-- @ts-ignore -->
+                    <ak-stage-authenticator-validate-webauthn
+                        .host=${this}
+                        .challenge=${this.challenge}
+                        .deviceChallenge=${this.selectedDeviceChallenge}
+                        .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
+                    >
+                    </ak-stage-authenticator-validate-webauthn>`;
             case DeviceClassesEnum.Duo:
-                return html`<ak-stage-authenticator-validate-duo
-                    .host=${this}
-                    .challenge=${this.challenge}
-                    .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
-                >
-                </ak-stage-authenticator-validate-duo>`;
+                return html`<!-- @ts-ignore -->
+                    <ak-stage-authenticator-validate-duo
+                        .host=${this}
+                        .challenge=${this.challenge}
+                        .deviceChallenge=${this.selectedDeviceChallenge}
+                        .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
+                    >
+                    </ak-stage-authenticator-validate-duo>`;
         }
         return html``;
     }

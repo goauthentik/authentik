@@ -43,6 +43,7 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "assigned_application_name",
             "verbose_name",
             "verbose_name_plural",
+            "meta_model_name",
         ]
 
 

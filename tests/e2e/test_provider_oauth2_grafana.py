@@ -7,10 +7,9 @@ from unittest.case import skipUnless
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
-from authentik.crypto.models import CertificateKeyPair
+from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
@@ -21,10 +20,7 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_PROFILE,
 )
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
-
-LOGGER = get_logger()
-APPLICATION_SLUG = "grafana"
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -34,6 +30,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
     def setUp(self):
         self.client_id = generate_id()
         self.client_secret = generate_key()
+        self.app_slug = generate_id(20)
         super().setUp()
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
@@ -60,7 +57,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 "GF_AUTH_SIGNOUT_REDIRECT_URL": (
                     self.url(
                         "authentik_core:if-session-end",
-                        application_slug=APPLICATION_SLUG,
+                        application_slug=self.app_slug,
                     )
                 ),
                 "GF_LOG_LEVEL": "debug",
@@ -68,7 +65,6 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         }
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -85,7 +81,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:3000/",
             authorization_flow=authorization_flow,
         )
@@ -97,7 +93,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="Grafana",
-            slug=APPLICATION_SLUG,
+            slug=self.app_slug,
             provider=provider,
         )
 
@@ -110,7 +106,6 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -128,7 +123,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:3000/login/generic_oauth",
             authorization_flow=authorization_flow,
         )
@@ -137,10 +132,9 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 scope_name__in=[SCOPE_OPENID, SCOPE_OPENID_EMAIL, SCOPE_OPENID_PROFILE]
             )
         )
-        provider.save()
         Application.objects.create(
             name="Grafana",
-            slug=APPLICATION_SLUG,
+            slug=self.app_slug,
             provider=provider,
         )
 
@@ -151,23 +145,22 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.get("http://localhost:3000/profile")
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
-            USER().name,
+            self.user.name,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
-            USER().name,
+            self.user.name,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -185,7 +178,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:3000/login/generic_oauth",
             authorization_flow=authorization_flow,
         )
@@ -197,7 +190,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="Grafana",
-            slug=APPLICATION_SLUG,
+            slug=self.app_slug,
             provider=provider,
         )
 
@@ -208,31 +201,30 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.get("http://localhost:3000/profile")
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
-            USER().name,
+            self.user.name,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
-            USER().name,
+            self.user.name,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
         self.driver.get("http://localhost:3000/logout")
         self.wait_for_url(
             self.url(
                 "authentik_core:if-session-end",
-                application_slug=APPLICATION_SLUG,
+                application_slug=self.app_slug,
             )
         )
         self.driver.find_element(By.ID, "logout").click()
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -251,7 +243,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:3000/login/generic_oauth",
         )
         provider.property_mappings.set(
@@ -262,7 +254,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider.save()
         app = Application.objects.create(
             name="Grafana",
-            slug=APPLICATION_SLUG,
+            slug=self.app_slug,
             provider=provider,
         )
 
@@ -290,23 +282,22 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
-            USER().name,
+            self.user.name,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
-            USER().name,
+            self.user.name,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -324,7 +315,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:3000/login/generic_oauth",
         )
         provider.property_mappings.set(
@@ -335,7 +326,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider.save()
         app = Application.objects.create(
             name="Grafana",
-            slug=APPLICATION_SLUG,
+            slug=self.app_slug,
             provider=provider,
         )
 

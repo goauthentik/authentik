@@ -18,18 +18,18 @@
             </tr>
             {% if key_value %}
             <tr>
-                <td class="content-block aligncenter">
-                    <table class="invoice">
+                <td class="content-block align-center">
+                    <table class="body">
                         <tr>
                             <td>{% trans "Additional Information" %}</td>
                         </tr>
                         <tr>
                             <td>
-                                <table class="invoice-items" cellpadding="0" cellspacing="0">
+                                <table class="body-items" cellpadding="0" cellspacing="0">
                                     {% for key, value in key_value.items %}
                                     <tr>
                                         <td>{{ key }}</td>
-                                        <td class="alignright">{{ value }}</td>
+                                        <td class="align-right">{{ value }}</td>
                                     </tr>
                                     {% endfor %}
                                 </table>

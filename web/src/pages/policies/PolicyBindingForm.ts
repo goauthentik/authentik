@@ -14,6 +14,7 @@ import { CoreApi, PoliciesApi, Policy, PolicyBinding } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { UserOption } from "../../elements/user/utils";
 import { first, groupBy } from "../../utils";
 
 enum target {
@@ -237,7 +238,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             ${until(
                                 new CoreApi(DEFAULT_CONFIG)
                                     .coreUsersList({
-                                        ordering: "name",
+                                        ordering: "username",
                                     })
                                     .then((users) => {
                                         return users.results.map((user) => {
@@ -245,7 +246,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                                                 value=${ifDefined(user.pk)}
                                                 ?selected=${user.pk === this.instance?.user}
                                             >
-                                                ${user.name}
+                                                ${UserOption(user)}
                                             </option>`;
                                         });
                                     }),

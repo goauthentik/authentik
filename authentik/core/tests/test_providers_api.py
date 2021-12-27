@@ -2,7 +2,8 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import PropertyMapping, User
+from authentik.core.models import PropertyMapping
+from authentik.core.tests.utils import create_test_admin_user
 
 
 class TestProvidersAPI(APITestCase):
@@ -13,7 +14,7 @@ class TestProvidersAPI(APITestCase):
         self.mapping = PropertyMapping.objects.create(
             name="dummy", expression="""return {'foo': 'bar'}"""
         )
-        self.user = User.objects.get(username="akadmin")
+        self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
     def test_types(self):

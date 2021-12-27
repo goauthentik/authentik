@@ -19,6 +19,7 @@
         <script src="{% static 'dist/poly.js' %}" type="module"></script>
         {% block head %}
         {% endblock %}
+        <meta name="sentry-trace" content="{{ sentry_trace }}" />
     </head>
     <body>
         {% block body %}

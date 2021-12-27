@@ -36,7 +36,7 @@ class TaskSerializer(PassiveSerializer):
         are pickled in cache. In that case, just delete the info"""
         try:
             return super().to_representation(instance)
-        except AttributeError:
+        except AttributeError:  # pragma: no cover
             if isinstance(self.instance, list):
                 for inst in self.instance:
                     inst.delete()

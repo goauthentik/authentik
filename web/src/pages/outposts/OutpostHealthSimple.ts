@@ -58,11 +58,10 @@ export class OutpostHealthSimpleElement extends LitElement {
             return html`<ak-spinner></ak-spinner>`;
         }
         if (!this.outpostHealth) {
-            return html`<ak-label color=${PFColor.Grey} text=${t`Not available`}></ak-label>`;
+            return html`<ak-label color=${PFColor.Grey}>${t`Not available`}</ak-label>`;
         }
-        return html` <ak-label
-            color=${PFColor.Green}
-            text=${t`Last seen: ${this.outpostHealth.lastSeen?.toLocaleTimeString()}`}
-        ></ak-label>`;
+        return html`<ak-label color=${PFColor.Green}>
+            ${t`Last seen: ${this.outpostHealth.lastSeen?.toLocaleTimeString()}`}</ak-label
+        >`;
     }
 }

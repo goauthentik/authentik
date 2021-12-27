@@ -4,7 +4,6 @@ from time import sleep
 from typing import Any, Optional
 from unittest.case import skipUnless
 
-from django.test import override_settings
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -17,7 +16,7 @@ from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.user_login.models import UserLoginStage
 from authentik.stages.user_write.models import UserWriteStage
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -38,7 +37,6 @@ class TestFlowsEnroll(SeleniumTestCase):
         }
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     def test_enroll_2_step(self):
@@ -108,10 +106,8 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.assertEqual(user.email, "foo@bar.baz")
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
-    @override_settings(EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend")
     def test_enroll_email(self):
         """Test enroll with Email verification"""
         # First stage fields
@@ -220,10 +216,10 @@ class TestFlowsEnroll(SeleniumTestCase):
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=username]")))
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys("foo")
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
-            USER().username
+            self.user.username
         )
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=password_repeat]").send_keys(
-            USER().username
+            self.user.username
         )
         prompt_stage.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
 

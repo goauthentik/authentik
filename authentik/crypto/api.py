@@ -1,4 +1,6 @@
 """Crypto API Views"""
+from typing import Optional
+
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
@@ -20,6 +22,7 @@ from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.builder import CertificateBuilder
+from authentik.crypto.managed import MANAGED_KEY
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 
@@ -30,6 +33,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
     cert_expiry = DateTimeField(source="certificate.not_valid_after", read_only=True)
     cert_subject = SerializerMethodField()
     private_key_available = SerializerMethodField()
+    private_key_type = SerializerMethodField()
 
     certificate_download_url = SerializerMethodField()
     private_key_download_url = SerializerMethodField()
@@ -41,6 +45,13 @@ class CertificateKeyPairSerializer(ModelSerializer):
     def get_private_key_available(self, instance: CertificateKeyPair) -> bool:
         """Show if this keypair has a private key configured or not"""
         return instance.key_data != "" and instance.key_data is not None
+
+    def get_private_key_type(self, instance: CertificateKeyPair) -> Optional[str]:
+        """Get the private key's type, if set"""
+        key = instance.private_key
+        if key:
+            return key.__class__.__name__.replace("_", "").lower().replace("privatekey", "")
+        return None
 
     def get_certificate_download_url(self, instance: CertificateKeyPair) -> str:
         """Get URL to download certificate"""
@@ -71,7 +82,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
         return value
 
     def validate_key_data(self, value: str) -> str:
-        """Verify that input is a valid PEM RSA Key"""
+        """Verify that input is a valid PEM Key"""
         # Since this field is optional, data can be empty.
         if value != "":
             try:
@@ -97,6 +108,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
             "cert_expiry",
             "cert_subject",
             "private_key_available",
+            "private_key_type",
             "certificate_download_url",
             "private_key_download_url",
             "managed",
@@ -141,9 +153,11 @@ class CertificateKeyPairFilter(FilterSet):
 class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
     """CertificateKeyPair Viewset"""
 
-    queryset = CertificateKeyPair.objects.exclude(managed__isnull=False)
+    queryset = CertificateKeyPair.objects.exclude(managed=MANAGED_KEY)
     serializer_class = CertificateKeyPairSerializer
     filterset_class = CertificateKeyPairFilter
+    ordering = ["name"]
+    search_fields = ["name"]
 
     @permission_required(None, ["authentik_crypto.add_certificatekeypair"])
     @extend_schema(
@@ -189,7 +203,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
             secret=certificate,
             type="certificate",
         ).from_http(request)
-        if "download" in request._request.GET:
+        if "download" in request.query_params:
             # Mime type from https://pki-tutorial.readthedocs.io/en/latest/mime.html
             response = HttpResponse(
                 certificate.certificate_data, content_type="application/x-pem-file"
@@ -220,7 +234,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
             secret=certificate,
             type="private_key",
         ).from_http(request)
-        if "download" in request._request.GET:
+        if "download" in request.query_params:
             # Mime type from https://pki-tutorial.readthedocs.io/en/latest/mime.html
             response = HttpResponse(certificate.key_data, content_type="application/x-pem-file")
             response[

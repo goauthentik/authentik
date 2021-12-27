@@ -45,6 +45,7 @@ class AssertionProcessor:
     _assertion_id: str
 
     _valid_not_before: str
+    _session_not_on_or_after: str
     _valid_not_on_or_after: str
 
     def __init__(self, provider: SAMLProvider, request: HttpRequest, auth_n_request: AuthNRequest):
@@ -58,6 +59,9 @@ class AssertionProcessor:
         self._valid_not_before = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_before)
         )
+        self._session_not_on_or_after = get_time_string(
+            timedelta_from_string(self.provider.session_valid_not_on_or_after)
+        )
         self._valid_not_on_or_after = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_on_or_after)
         )
@@ -66,13 +70,14 @@ class AssertionProcessor:
         """Get AttributeStatement Element with Attributes from Property Mappings."""
         # https://commons.lbl.gov/display/IDMgmt/Attribute+Definitions
         attribute_statement = Element(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
+        user = self.http_request.user
         for mapping in self.provider.property_mappings.all().select_subclasses():
             if not isinstance(mapping, SAMLPropertyMapping):
                 continue
             try:
                 mapping: SAMLPropertyMapping
                 value = mapping.evaluate(
-                    user=self.http_request.user,
+                    user=user,
                     request=self.http_request,
                     provider=self.provider,
                 )
@@ -97,7 +102,8 @@ class AssertionProcessor:
 
                 attribute_statement.append(attribute)
 
-            except PropertyMappingExpressionException as exc:
+            except (PropertyMappingExpressionException, ValueError) as exc:
+                # Value error can be raised when assigning invalid data to an attribute
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
                     message=f"Failed to evaluate property-mapping: {str(exc)}",
@@ -117,6 +123,7 @@ class AssertionProcessor:
         auth_n_statement = Element(f"{{{NS_SAML_ASSERTION}}}AuthnStatement")
         auth_n_statement.attrib["AuthnInstant"] = self._valid_not_before
         auth_n_statement.attrib["SessionIndex"] = self._assertion_id
+        auth_n_statement.attrib["SessionNotOnOrAfter"] = self._session_not_on_or_after
 
         auth_n_context = SubElement(auth_n_statement, f"{{{NS_SAML_ASSERTION}}}AuthnContext")
         auth_n_context_class_ref = SubElement(

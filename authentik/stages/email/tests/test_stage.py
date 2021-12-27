@@ -1,7 +1,9 @@
 """email tests"""
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.core import mail
+from django.core.mail.backends.locmem import EmailBackend
+from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.urls import reverse
 from django.utils.encoding import force_str
 from django.utils.http import urlencode
@@ -67,7 +69,10 @@ class TestEmailStage(APITestCase):
         session.save()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        with self.settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"):
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
             response = self.client.post(url)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(mail.outbox), 1)
@@ -76,10 +81,12 @@ class TestEmailStage(APITestCase):
     def test_use_global_settings(self):
         """Test use_global_settings"""
         host = "some-unique-string"
-        with self.settings(
-            EMAIL_HOST=host, EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=SMTPEmailBackend),
         ):
-            self.assertEqual(EmailStage(use_global_settings=True).backend.host, host)
+            with self.settings(EMAIL_HOST=host):
+                self.assertEqual(EmailStage(use_global_settings=True).backend.host, host)
 
     def test_token(self):
         """Test with token"""

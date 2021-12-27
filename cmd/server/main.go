@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 	"time"
 
@@ -14,13 +15,19 @@ import (
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
 	"goauthentik.io/internal/web"
+	"goauthentik.io/internal/web/tenant_tls"
 )
 
 var running = true
 
 func main() {
 	log.SetLevel(log.DebugLevel)
-	log.SetFormatter(&log.JSONFormatter{})
+	log.SetFormatter(&log.JSONFormatter{
+		FieldMap: log.FieldMap{
+			log.FieldKeyMsg:  "event",
+			log.FieldKeyTime: "timestamp",
+		},
+	})
 	l := log.WithField("logger", "authentik.root")
 	config.DefaultConfig()
 	err := config.LoadConfig("./authentik/lib/default.yml")
@@ -41,9 +48,12 @@ func main() {
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn:              config.G.ErrorReporting.DSN,
 			AttachStacktrace: true,
-			TracesSampleRate: 0.6,
+			TracesSampleRate: config.G.ErrorReporting.SampleRate,
 			Release:          fmt.Sprintf("authentik@%s", constants.VERSION),
 			Environment:      config.G.ErrorReporting.Environment,
+			IgnoreErrors: []string{
+				http.ErrAbortHandler.Error(),
+			},
 		})
 		if err != nil {
 			l.WithError(err).Warning("failed to init sentry")
@@ -69,9 +79,9 @@ func main() {
 
 		<-ex
 		running = false
-		l.WithField("logger", "authentik").Info("shutting down gunicorn")
+		l.Info("shutting down gunicorn")
 		go g.Kill()
-		l.WithField("logger", "authentik").Info("shutting down webserver")
+		l.Info("shutting down webserver")
 		go ws.Shutdown()
 	}
 }
@@ -89,8 +99,9 @@ func attemptStartBackend(g *gounicorn.GoUnicorn) {
 func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 	maxTries := 100
 	attempt := 0
+	l := log.WithField("logger", "authentik.server")
 	for {
-		log.WithField("logger", "authentik").Debug("attempting to init outpost")
+		l.Debug("attempting to init outpost")
 		ac := ak.NewAPIController(*u, config.G.SecretKey)
 		if ac == nil {
 			attempt += 1
@@ -100,13 +111,22 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 			}
 			continue
 		}
+		// Init tenant_tls here too since it requires an API Client,
+		// so we just re-use the same one as the outpost uses
+		tw := tenant_tls.NewWatcher(ac.Client)
+		go tw.Start()
+		ws.TenantTLS = tw
+		ac.AddRefreshHandler(func() {
+			tw.Check()
+		})
+
 		srv := proxyv2.NewProxyServer(ac, 0)
 		ws.ProxyServer = srv
 		ac.Server = srv
-		log.WithField("logger", "authentik").Debug("attempting to start outpost")
+		l.Debug("attempting to start outpost")
 		err := ac.StartBackgorundTasks()
 		if err != nil {
-			log.WithField("logger", "authentik").WithError(err).Warning("outpost failed to start")
+			l.WithError(err).Warning("outpost failed to start")
 			attempt += 1
 			time.Sleep(15 * time.Second)
 			if attempt > maxTries {

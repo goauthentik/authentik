@@ -2,10 +2,15 @@
 from time import time
 from typing import Any, Optional
 
+from django.http.request import HttpRequest
+from django.urls.base import reverse
 from jwt import decode, encode
+from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
+from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
+from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -13,18 +18,34 @@ from authentik.sources.oauth.views.redirect import OAuthRedirect
 LOGGER = get_logger()
 
 
+class AppleLoginChallenge(Challenge):
+    """Special challenge for apple-native authentication flow, which happens on the client."""
+
+    client_id = CharField()
+    component = CharField(default="ak-flow-sources-oauth-apple")
+    scope = CharField()
+    redirect_uri = CharField()
+    state = CharField()
+
+
+class AppleChallengeResponse(ChallengeResponse):
+    """Pseudo class for plex response"""
+
+    component = CharField(default="ak-flow-sources-oauth-apple")
+
+
 class AppleOAuthClient(OAuth2Client):
     """Apple OAuth2 client"""
 
     def get_client_id(self) -> str:
-        parts = self.source.consumer_key.split(";")
+        parts: list[str] = self.source.consumer_key.split(";")
         if len(parts) < 3:
             return self.source.consumer_key
-        return parts[0]
+        return parts[0].strip()
 
     def get_client_secret(self) -> str:
         now = time()
-        parts = self.source.consumer_key.split(";")
+        parts: list[str] = self.source.consumer_key.split(";")
         if len(parts) < 3:
             raise ValueError(
                 (
@@ -34,14 +55,14 @@ class AppleOAuthClient(OAuth2Client):
             )
         LOGGER.debug("got values from client_id", team=parts[1], kid=parts[2])
         payload = {
-            "iss": parts[1],
+            "iss": parts[1].strip(),
             "iat": now,
             "exp": now + 86400 * 180,
             "aud": "https://appleid.apple.com",
-            "sub": parts[0],
+            "sub": parts[0].strip(),
         }
         # pyright: reportGeneralTypeIssues=false
-        jwt = encode(payload, self.source.consumer_secret, "ES256", {"kid": parts[2]})
+        jwt = encode(payload, self.source.consumer_secret, "ES256", {"kid": parts[2].strip()})
         LOGGER.debug("signing payload as secret key", payload=payload, jwt=jwt)
         return jwt
 
@@ -55,7 +76,7 @@ class AppleOAuthRedirect(OAuthRedirect):
 
     client_class = AppleOAuthClient
 
-    def get_additional_parameters(self, source):  # pragma: no cover
+    def get_additional_parameters(self, source: OAuthSource):  # pragma: no cover
         return {
             "scope": "name email",
             "response_mode": "form_post",
@@ -74,7 +95,6 @@ class AppleOAuth2Callback(OAuthCallback):
         self,
         info: dict[str, Any],
     ) -> dict[str, Any]:
-        print(info)
         return {
             "email": info.get("email"),
             "name": info.get("name"),
@@ -96,3 +116,24 @@ class AppleType(SourceType):
 
     def icon_url(self) -> str:
         return "https://appleid.cdn-apple.com/appleid/button/logo"
+
+    def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
+        """Pre-general all the things required for the JS SDK"""
+        apple_client = AppleOAuthClient(
+            source,
+            request,
+            callback=reverse(
+                "authentik_sources_oauth:oauth-client-callback",
+                kwargs={"source_slug": source.slug},
+            ),
+        )
+        args = apple_client.get_redirect_args()
+        return AppleLoginChallenge(
+            instance={
+                "client_id": apple_client.get_client_id(),
+                "scope": "name email",
+                "redirect_uri": args["redirect_uri"],
+                "state": args["state"],
+                "type": ChallengeTypes.NATIVE.value,
+            }
+        )

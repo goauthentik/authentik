@@ -1,3 +1,4 @@
+import markdown from "@jackfranklin/rollup-plugin-markdown";
 import babel from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
@@ -9,7 +10,7 @@ import { terser } from "rollup-plugin-terser";
 
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
-const resources = [
+export const resources = [
     { src: "node_modules/rapidoc/dist/rapidoc-min.js", dest: "dist/" },
 
     {
@@ -43,12 +44,15 @@ const resources = [
 ];
 
 // eslint-disable-next-line no-undef
-const isProdBuild = process.env.NODE_ENV === "production";
+export const isProdBuild = process.env.NODE_ENV === "production";
 // eslint-disable-next-line no-undef
-const apiBasePath = process.env.AK_API_BASE_PATH || "";
+export const apiBasePath = process.env.AK_API_BASE_PATH || "";
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-function manualChunks(id) {
+export function manualChunks(id) {
+    if (id.endsWith(".md")) {
+        return "docs";
+    }
     if (id.includes("@goauthentik/api")) {
         return "api";
     }
@@ -65,8 +69,9 @@ function manualChunks(id) {
     }
 }
 
-const PLUGINS = [
+export const PLUGINS = [
     cssimport(),
+    markdown(),
     nodeResolve({ extensions, browser: true }),
     commonjs(),
     babel({
@@ -83,31 +88,33 @@ const PLUGINS = [
     isProdBuild && terser(),
 ].filter((p) => p);
 
-export default [
-    // Polyfills (imported first)
-    {
-        input: "./poly.ts",
-        output: [
-            {
-                format: "iife",
-                file: "dist/poly.js",
-                sourcemap: true,
-            },
-        ],
-        plugins: [
-            cssimport(),
-            nodeResolve({ browser: true }),
-            commonjs(),
-            isProdBuild && terser(),
-            copy({
-                targets: [...resources],
-                copyOnce: false,
-            }),
-        ].filter((p) => p),
-        watch: {
-            clearScreen: false,
+// Polyfills (imported first)
+export const POLY = {
+    input: "./poly.ts",
+    output: [
+        {
+            format: "iife",
+            file: "dist/poly.js",
+            sourcemap: true,
         },
+    ],
+    plugins: [
+        cssimport(),
+        nodeResolve({ browser: true }),
+        commonjs(),
+        isProdBuild && terser(),
+        copy({
+            targets: [...resources],
+            copyOnce: false,
+        }),
+    ].filter((p) => p),
+    watch: {
+        clearScreen: false,
     },
+};
+
+export default [
+    POLY,
     // Flow interface
     {
         input: "./src/interfaces/FlowInterface.ts",

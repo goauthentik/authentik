@@ -100,13 +100,12 @@ class AuthNRequestParser:
         xmlsec.tree.add_ids(root, ["ID"])
         signature_nodes = root.xpath("/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP)
         # No signatures, no verifier configured -> decode xml directly
-        if len(signature_nodes) < 1 and not verifier:
-            return self._parse_xml(decoded_xml, relay_state)
+        if len(signature_nodes) < 1:
+            if not verifier:
+                return self._parse_xml(decoded_xml, relay_state)
+            raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
 
         signature_node = signature_nodes[0]
-
-        if verifier and signature_node is None:
-            raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
 
         if signature_node is not None:
             if not verifier:

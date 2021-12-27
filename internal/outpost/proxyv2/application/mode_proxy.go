@@ -8,10 +8,11 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
-	"goauthentik.io/internal/outpost/proxyv2/templates"
 	"goauthentik.io/internal/utils/web"
 )
 
@@ -28,8 +29,9 @@ func (a *Application) configureProxy() error {
 		return err
 	}
 	rp := &httputil.ReverseProxy{Director: a.proxyModifyRequest(u)}
-	rp.Transport = ak.NewTracingTransport(context.TODO(), a.getUpstreamTransport())
-	rp.ErrorHandler = a.newProxyErrorHandler(templates.GetTemplates())
+	rsp := sentry.StartSpan(context.TODO(), "authentik.outposts.proxy.application_transport")
+	rp.Transport = ak.NewTracingTransport(rsp.Context(), a.getUpstreamTransport())
+	rp.ErrorHandler = a.newProxyErrorHandler()
 	rp.ModifyResponse = a.proxyModifyResponse
 	a.mux.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		claims, err := a.getClaims(r)
@@ -39,10 +41,17 @@ func (a *Application) configureProxy() error {
 			a.redirectToStart(rw, r)
 			return
 		} else {
-			a.addHeaders(r, claims)
+			a.addHeaders(r.Header, claims)
 		}
 		before := time.Now()
 		rp.ServeHTTP(rw, r)
+		defer func() {
+			err := recover()
+			if err == nil || err == http.ErrAbortHandler {
+				return
+			}
+			log.WithError(err.(error)).Error("recover in reverse proxy")
+		}()
 		after := time.Since(before)
 
 		user := ""

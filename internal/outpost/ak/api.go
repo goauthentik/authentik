@@ -6,12 +6,15 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
-	"github.com/go-openapi/strfmt"
+	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
+	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/recws-org/recws"
 	"goauthentik.io/api"
 	"goauthentik.io/internal/constants"
 
@@ -19,8 +22,6 @@ import (
 )
 
 const ConfigLogLevel = "log_level"
-const ConfigErrorReportingEnabled = "error_reporting_enabled"
-const ConfigErrorReportingEnvironment = "error_reporting_environment"
 
 // APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
@@ -34,20 +35,26 @@ type APIController struct {
 
 	logger *log.Entry
 
-	reloadOffset    time.Duration
-	lastWsReconnect time.Time
+	reloadOffset time.Duration
 
-	wsConn       *recws.RecConn
+	wsConn              *websocket.Conn
+	lastWsReconnect     time.Time
+	wsIsReconnecting    bool
+	wsBackoffMultiplier int
+	refreshHandlers     []func()
+
 	instanceUUID uuid.UUID
 }
 
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
+	rsp := sentry.StartSpan(context.Background(), "authentik.outposts.init")
+
 	config := api.NewConfiguration()
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
-		Transport: NewUserAgentTransport(constants.OutpostUserAgent(), NewTracingTransport(context.TODO(), GetTLSTransport())),
+		Transport: NewUserAgentTransport(constants.OutpostUserAgent(), NewTracingTransport(rsp.Context(), GetTLSTransport())),
 	}
 	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 
@@ -65,7 +72,6 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		return nil
 	}
 	outpost := outposts.Results[0]
-	doGlobalSetup(outpost.Config)
 
 	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
 
@@ -76,6 +82,9 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	}
 	log.Debug("Fetched global configuration")
 
+	// doGlobalSetup is called by the OnRefresh handler, which ticks on start
+	// doGlobalSetup(outpost, akConfig)
+
 	ac := &APIController{
 		Client:       apiClient,
 		GlobalConfig: akConfig,
@@ -83,18 +92,28 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		token:  token,
 		logger: log,
 
-		reloadOffset: time.Duration(rand.Intn(10)) * time.Second,
-		instanceUUID: uuid.New(),
-		Outpost:      outpost,
+		reloadOffset:        time.Duration(rand.Intn(10)) * time.Second,
+		instanceUUID:        uuid.New(),
+		Outpost:             outpost,
+		wsBackoffMultiplier: 1,
+		refreshHandlers:     make([]func(), 0),
 	}
-	ac.logger.WithField("offset", ac.reloadOffset).Debug("HA Reload offset")
-	ac.initWS(akURL, strfmt.UUID(outpost.Pk))
+	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
+	err = ac.initWS(akURL, outpost.Pk)
+	if err != nil {
+		go ac.reconnectWS()
+	}
+	ac.configureRefreshSignal()
 	return ac
 }
 
 // Start Starts all handlers, non-blocking
 func (a *APIController) Start() error {
-	err := a.StartBackgorundTasks()
+	err := a.Server.Refresh()
+	if err != nil {
+		return err
+	}
+	err = a.StartBackgorundTasks()
 	if err != nil {
 		return err
 	}
@@ -105,6 +124,25 @@ func (a *APIController) Start() error {
 		}
 	}()
 	return nil
+}
+
+func (a *APIController) configureRefreshSignal() {
+	s := make(chan os.Signal, 1)
+	go func() {
+		for {
+			<-s
+			err := a.OnRefresh()
+			if err != nil {
+				a.logger.WithError(err).Warning("failed to refresh")
+			}
+		}
+	}()
+	signal.Notify(s, syscall.SIGUSR1)
+	a.logger.Debug("Enabled USR1 hook to reload")
+}
+
+func (a *APIController) AddRefreshHandler(handler func()) {
+	a.refreshHandlers = append(a.refreshHandlers, handler)
 }
 
 func (a *APIController) OnRefresh() error {
@@ -119,7 +157,12 @@ func (a *APIController) OnRefresh() error {
 	a.Outpost = outposts.Results[0]
 
 	a.logger.WithField("name", a.Outpost.Name).Debug("Fetched outpost configuration")
-	return a.Server.Refresh()
+	doGlobalSetup(a.Outpost, a.GlobalConfig)
+	err = a.Server.Refresh()
+	for _, handler := range a.refreshHandlers {
+		handler()
+	}
+	return err
 }
 
 func (a *APIController) StartBackgorundTasks() error {
@@ -130,10 +173,6 @@ func (a *APIController) StartBackgorundTasks() error {
 		"version":      constants.VERSION,
 		"build":        constants.BUILD(),
 	}).Set(1)
-	go func() {
-		a.logger.Debug("Starting WS re-connector...")
-		a.startWSReConnector()
-	}()
 	go func() {
 		a.logger.Debug("Starting WS Handler...")
 		a.startWSHandler()

@@ -26,6 +26,8 @@ html > form > input {
 
 .pf-c-page__header {
     z-index: 0;
+    background-color: var(--ak-dark-background-light);
+    box-shadow: var(--pf-global--BoxShadow--lg-bottom);
 }
 
 /*****************************
@@ -83,9 +85,6 @@ html > form > input {
     color: var(--pf-global--danger-color--100);
 }
 
-.ak-static-page h1 {
-    color: var(--ak-dark-foreground);
-}
 .form-help-text {
     color: var(--pf-global--Color--100);
 }
@@ -96,6 +95,9 @@ html > form > input {
 }
 
 @media (prefers-color-scheme: dark) {
+    .ak-static-page h1 {
+        color: var(--ak-dark-foreground);
+    }
     body {
         background-color: var(--ak-dark-background) !important;
     }
@@ -123,10 +125,10 @@ html > form > input {
     }
     .sidebar-trigger,
     .notification-trigger {
-        background-color: var(--ak-dark-background-light) !important;
+        background-color: transparent !important;
     }
     .pf-c-page__main-section.pf-m-light {
-        background-color: var(--ak-dark-background-light);
+        background-color: transparent;
     }
     .pf-c-content {
         color: var(--ak-dark-foreground);
@@ -168,14 +170,22 @@ html > form > input {
     }
     /* tabs */
     .pf-c-tabs {
-        background-color: var(--ak-dark-background-light);
+        background-color: transparent;
+    }
+    .pf-c-tabs.pf-m-box.pf-m-vertical .pf-c-tabs__list::before {
+        border-color: transparent;
+    }
+    .pf-c-tabs.pf-m-box .pf-c-tabs__item.pf-m-current:first-child .pf-c-tabs__link::before {
+        border-color: transparent;
+    }
+    .pf-c-tabs__link::before {
+        border-color: transparent;
     }
     .pf-c-tabs__item.pf-m-current {
         --pf-c-tabs__link--after--BorderColor: #fd4b2d;
     }
-    /* tabs, vertical */
     .pf-c-tabs.pf-m-vertical .pf-c-tabs__link {
-        background-color: var(--ak-dark-background-light);
+        background-color: transparent;
     }
     /* table, on mobile */
     @media screen and (max-width: 1200px) {
@@ -281,14 +291,11 @@ html > form > input {
         color: var(--ak-dark-foreground);
     }
     /* modal */
-    .pf-c-modal-box__header {
-        background-color: var(--ak-dark-background-light);
-    }
+    .pf-c-modal-box,
+    .pf-c-modal-box__header,
+    .pf-c-modal-box__footer,
     .pf-c-modal-box__body {
-        background-color: var(--ak-dark-background-light);
-    }
-    .pf-c-modal-box__footer {
-        background-color: var(--ak-dark-background-light);
+        background-color: var(--ak-dark-background);
     }
     /* sidebar */
     .pf-c-nav {
@@ -327,6 +334,9 @@ html > form > input {
     .pf-c-notification-drawer__list-item {
         background-color: var(--ak-dark-background-light-ish);
         color: var(--ak-dark-foreground);
+        --pf-c-notification-drawer__list-item--BorderBottomColor: var(
+            --ak-dark-background-lighter
+        ) !important;
     }
     /* data list */
     .pf-c-data-list__item {

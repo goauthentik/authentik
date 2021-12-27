@@ -18,14 +18,17 @@ from hashlib import sha512
 from json import dumps
 from tempfile import gettempdir
 from time import time
+from urllib.parse import quote
 
 import structlog
 from celery.schedules import crontab
 from sentry_sdk import init as sentry_init
 from sentry_sdk.api import set_tag
+from sentry_sdk.integrations.boto3 import Boto3Integration
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
+from sentry_sdk.integrations.threading import ThreadingIntegration
 
 from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.core.middleware import structlog_add_request_id
@@ -64,7 +67,7 @@ SECRET_KEY = CONFIG.y("secret_key")
 INTERNAL_IPS = ["127.0.0.1"]
 ALLOWED_HOSTS = ["*"]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 LOGIN_URL = "authentik_flows:default-authentication"
 
 # Custom user model
@@ -138,6 +141,7 @@ INSTALLED_APPS = [
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
     "authentik.tenants",
+    "authentik.managed",
     "rest_framework",
     "django_filters",
     "drf_spectacular",
@@ -216,19 +220,21 @@ REDIS_CELERY_TLS_REQUIREMENTS = ""
 if CONFIG.y_bool("redis.tls", False):
     REDIS_PROTOCOL_PREFIX = "rediss://"
     REDIS_CELERY_TLS_REQUIREMENTS = f"?ssl_cert_reqs={CONFIG.y('redis.tls_reqs')}"
+_redis_url = (
+    f"{REDIS_PROTOCOL_PREFIX}:"
+    f"{quote(CONFIG.y('redis.password'))}@{quote(CONFIG.y('redis.host'))}:"
+    f"{int(CONFIG.y('redis.port'))}"
+)
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": (
-            f"{REDIS_PROTOCOL_PREFIX}:"
-            f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
-            f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.cache_db')}"
-        ),
+        "LOCATION": f"{_redis_url}/{CONFIG.y('redis.cache_db')}",
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
     }
 }
+DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
@@ -241,6 +247,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
 
 MIDDLEWARE = [
+    "authentik.root.middleware.LoggingMiddleware",
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "authentik.root.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -275,17 +282,13 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = "authentik.root.asgi.app.application"
+ASGI_APPLICATION = "authentik.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [
-                f"{REDIS_PROTOCOL_PREFIX}:"
-                f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
-                f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.ws_db')}"
-            ],
+            "hosts": [f"{_redis_url}/{CONFIG.y('redis.ws_db')}"],
         },
     },
 }
@@ -339,8 +342,6 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
 
 LOCALE_PATHS = ["./locale"]
@@ -363,16 +364,10 @@ CELERY_BEAT_SCHEDULE = {
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
 CELERY_BROKER_URL = (
-    f"{REDIS_PROTOCOL_PREFIX}:"
-    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
-    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
-    f"{REDIS_CELERY_TLS_REQUIREMENTS}"
+    f"{_redis_url}/{CONFIG.y('redis.message_queue_db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
 )
 CELERY_RESULT_BACKEND = (
-    f"{REDIS_PROTOCOL_PREFIX}:"
-    f"{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:"
-    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.message_queue_db')}"
-    f"{REDIS_CELERY_TLS_REQUIREMENTS}"
+    f"{_redis_url}/{CONFIG.y('redis.message_queue_db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
 )
 
 # Database backup
@@ -418,16 +413,19 @@ if _ERROR_REPORTING:
             DjangoIntegration(transaction_style="function_name"),
             CeleryIntegration(),
             RedisIntegration(),
+            Boto3Integration(),
+            ThreadingIntegration(propagate_hub=True),
         ],
         before_send=before_send,
         release=f"authentik@{__version__}",
-        traces_sample_rate=0.6,
+        traces_sample_rate=float(CONFIG.y("error_reporting.sample_rate", 0.5)),
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )
     set_tag("authentik.build_hash", build_hash)
     set_tag("authentik.env", env)
     set_tag("authentik.component", "backend")
+    set_tag("authentik.uuid", sha512(SECRET_KEY.encode("ascii")).hexdigest()[:16])
     j_print(
         "Error reporting is enabled",
         env=CONFIG.y("error_reporting.environment", "customer"),
@@ -464,6 +462,11 @@ TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 # We can't check TEST here as its set later by the test runner
 LOG_LEVEL = CONFIG.y("log_level").upper() if "TF_BUILD" not in os.environ else "DEBUG"
+# We could add a custom level to stdlib logging and structlog, but it's not easy or clean
+# https://stackoverflow.com/questions/54505487/custom-log-level-not-working-with-structlog
+# Additionally, the entire code uses debug as highest level so that would have to be re-written too
+if LOG_LEVEL == "TRACE":
+    LOG_LEVEL = "DEBUG"
 
 structlog.configure_once(
     processors=[
@@ -534,6 +537,7 @@ _LOGGING_HANDLER_MAP = {
     "asyncio": "WARNING",
     "aioredis": "WARNING",
     "s3transfer": "WARNING",
+    "botocore": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
@@ -572,6 +576,5 @@ if DEBUG:
     os.environ[ENV_GIT_HASH_KEY] = "dev"
 
 INSTALLED_APPS.append("authentik.core")
-INSTALLED_APPS.append("authentik.managed")
 
 j_print("Booting authentik", version=__version__)

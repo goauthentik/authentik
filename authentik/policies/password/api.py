@@ -13,6 +13,7 @@ class PasswordPolicySerializer(PolicySerializer):
         model = PasswordPolicy
         fields = PolicySerializer.Meta.fields + [
             "password_field",
+            "amount_digits",
             "amount_uppercase",
             "amount_lowercase",
             "amount_symbols",

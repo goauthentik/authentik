@@ -1,15 +1,14 @@
 package web
 
-import "embed"
-
-//go:embed dist/*
-var StaticDist embed.FS
-
-//go:embed authentik
-var StaticAuthentik embed.FS
+import (
+	_ "embed"
+	"net/http"
+)
 
 //go:embed robots.txt
 var RobotsTxt []byte
 
 //go:embed security.txt
 var SecurityTxt []byte
+
+var StaticHandler = http.FileServer(http.Dir("./web/dist/"))

@@ -46,6 +46,7 @@ class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
             "component",
             "verbose_name",
             "verbose_name_plural",
+            "meta_model_name",
         ]
 
 

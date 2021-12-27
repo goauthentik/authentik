@@ -5,6 +5,7 @@ from typing import Callable
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
+from sentry_sdk.api import set_tag
 
 SESSION_IMPERSONATE_USER = "authentik_impersonate_user"
 SESSION_IMPERSONATE_ORIGINAL_USER = "authentik_impersonate_original_user"
@@ -12,7 +13,6 @@ LOCAL = local()
 RESPONSE_HEADER_ID = "X-authentik-id"
 KEY_AUTH_VIA = "auth_via"
 KEY_USER = "user"
-INTERNAL_HEADER_PREFIX = "X-authentik-internal-"
 
 
 class ImpersonateMiddleware:
@@ -51,11 +51,12 @@ class RequestIDMiddleware:
                 "request_id": request_id,
                 "host": request.get_host(),
             }
+            set_tag("authentik.request_id", request_id)
         response = self.get_response(request)
         response[RESPONSE_HEADER_ID] = request.request_id
-        if auth_via := LOCAL.authentik.get(KEY_AUTH_VIA, None):
-            response[INTERNAL_HEADER_PREFIX + KEY_AUTH_VIA] = auth_via
-        response[INTERNAL_HEADER_PREFIX + KEY_USER] = request.user.username
+        setattr(response, "ak_context", {})
+        response.ak_context.update(LOCAL.authentik)
+        response.ak_context[KEY_USER] = request.user.username
         for key in list(LOCAL.authentik.keys()):
             del LOCAL.authentik[key]
         return response
@@ -66,4 +67,6 @@ def structlog_add_request_id(logger: Logger, method_name: str, event_dict: dict)
     """If threadlocal has authentik defined, add request_id to log"""
     if hasattr(LOCAL, "authentik"):
         event_dict.update(LOCAL.authentik)
+    if hasattr(LOCAL, "authentik_task"):
+        event_dict.update(LOCAL.authentik_task)
     return event_dict

@@ -29,14 +29,16 @@ class MetadataProcessor:
 
     provider: SAMLProvider
     http_request: HttpRequest
+    force_binding: Optional[str]
 
     def __init__(self, provider: SAMLProvider, request: HttpRequest):
         self.provider = provider
         self.http_request = request
+        self.force_binding = None
         self.xml_id = get_random_id()
 
     def get_signing_key_descriptor(self) -> Optional[Element]:
-        """Get Singing KeyDescriptor, if enabled for the provider"""
+        """Get Signing KeyDescriptor, if enabled for the provider"""
         if not self.provider.signing_kp:
             return None
         key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
@@ -79,6 +81,8 @@ class MetadataProcessor:
             ),
         }
         for binding, url in binding_url_map.items():
+            if self.force_binding and self.force_binding != binding:
+                continue
             element = Element(f"{{{NS_SAML_METADATA}}}SingleSignOnService")
             element.attrib["Binding"] = binding
             element.attrib["Location"] = url

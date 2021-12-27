@@ -6,6 +6,7 @@ from django.utils.encoding import force_str
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 
 
 class TestAuthenticatedSessionsAPI(APITestCase):
@@ -13,7 +14,7 @@ class TestAuthenticatedSessionsAPI(APITestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        self.user = User.objects.get(username="akadmin")
+        self.user = create_test_admin_user()
         self.other_user = User.objects.create(username="normal-user")
 
     def test_list(self):

@@ -1,13 +1,20 @@
 """authentik events models"""
+import time
+from collections import Counter
 from datetime import timedelta
-from inspect import getmodule, stack
+from inspect import currentframe
 from smtplib import SMTPException
 from typing import TYPE_CHECKING, Optional, Type, Union
 from uuid import uuid4
 
 from django.conf import settings
-from django.core.validators import URLValidator
 from django.db import models
+from django.db.models import Count, ExpressionWrapper, F
+from django.db.models.fields import DurationField
+from django.db.models.functions import ExtractHour
+from django.db.models.functions.datetime import ExtractDay
+from django.db.models.manager import Manager
+from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
@@ -20,7 +27,7 @@ from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
 from authentik.events.geo import GEOIP_READER
 from authentik.events.utils import cleanse_dict, get_user, model_to_dict, sanitize_dict
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import DomainlessURLValidator, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_client_ip, get_http_session
 from authentik.lib.utils.time import timedelta_from_string
@@ -30,9 +37,6 @@ from authentik.tenants.models import Tenant
 from authentik.tenants.utils import DEFAULT_TENANT
 
 LOGGER = get_logger("authentik.events")
-if TYPE_CHECKING:
-    from rest_framework.serializers import Serializer
-
 if TYPE_CHECKING:
     from rest_framework.serializers import Serializer
 
@@ -74,6 +78,7 @@ class EventAction(models.TextChoices):
     IMPERSONATION_STARTED = "impersonation_started"
     IMPERSONATION_ENDED = "impersonation_ended"
 
+    FLOW_EXECUTION = "flow_execution"
     POLICY_EXECUTION = "policy_execution"
     POLICY_EXCEPTION = "policy_exception"
     PROPERTY_MAPPING_EXCEPTION = "property_mapping_exception"
@@ -94,6 +99,72 @@ class EventAction(models.TextChoices):
     CUSTOM_PREFIX = "custom_"
 
 
+class EventQuerySet(QuerySet):
+    """Custom events query set with helper functions"""
+
+    def get_events_per_hour(self) -> list[dict[str, int]]:
+        """Get event count by hour in the last day, fill with zeros"""
+        date_from = now() - timedelta(days=1)
+        result = (
+            self.filter(created__gte=date_from)
+            .annotate(age=ExpressionWrapper(now() - F("created"), output_field=DurationField()))
+            .annotate(age_hours=ExtractHour("age"))
+            .values("age_hours")
+            .annotate(count=Count("pk"))
+            .order_by("age_hours")
+        )
+        data = Counter({int(d["age_hours"]): d["count"] for d in result})
+        results = []
+        _now = now()
+        for hour in range(0, -24, -1):
+            results.append(
+                {
+                    "x_cord": time.mktime((_now + timedelta(hours=hour)).timetuple()) * 1000,
+                    "y_cord": data[hour * -1],
+                }
+            )
+        return results
+
+    def get_events_per_day(self) -> list[dict[str, int]]:
+        """Get event count by hour in the last day, fill with zeros"""
+        date_from = now() - timedelta(weeks=4)
+        result = (
+            self.filter(created__gte=date_from)
+            .annotate(age=ExpressionWrapper(now() - F("created"), output_field=DurationField()))
+            .annotate(age_days=ExtractDay("age"))
+            .values("age_days")
+            .annotate(count=Count("pk"))
+            .order_by("age_days")
+        )
+        data = Counter({int(d["age_days"]): d["count"] for d in result})
+        results = []
+        _now = now()
+        for day in range(0, -30, -1):
+            results.append(
+                {
+                    "x_cord": time.mktime((_now + timedelta(days=day)).timetuple()) * 1000,
+                    "y_cord": data[day * -1],
+                }
+            )
+        return results
+
+
+class EventManager(Manager):
+    """Custom helper methods for Events"""
+
+    def get_queryset(self) -> QuerySet:
+        """use custom queryset"""
+        return EventQuerySet(self.model, using=self._db)
+
+    def get_events_per_hour(self) -> list[dict[str, int]]:
+        """Wrap method from queryset"""
+        return self.get_queryset().get_events_per_hour()
+
+    def get_events_per_day(self) -> list[dict[str, int]]:
+        """Wrap method from queryset"""
+        return self.get_queryset().get_events_per_day()
+
+
 class Event(SerializerModel, ExpiringModel):
     """An individual Audit/Metrics/Notification/Error Event"""
 
@@ -109,6 +180,8 @@ class Event(SerializerModel, ExpiringModel):
     # Shadow the expires attribute from ExpiringModel to override the default duration
     expires = models.DateTimeField(default=default_event_duration)
 
+    objects = EventManager()
+
     @staticmethod
     def _get_app_from_request(request: HttpRequest) -> str:
         if not isinstance(request, HttpRequest):
@@ -119,14 +192,15 @@ class Event(SerializerModel, ExpiringModel):
     def new(
         action: Union[str, EventAction],
         app: Optional[str] = None,
-        _inspect_offset: int = 1,
         **kwargs,
     ) -> "Event":
         """Create new Event instance from arguments. Instance is NOT saved."""
         if not isinstance(action, EventAction):
             action = EventAction.CUSTOM_PREFIX + action
         if not app:
-            app = getmodule(stack()[_inspect_offset][0]).__name__
+            current = currentframe()
+            parent = current.f_back
+            app = parent.f_globals["__name__"]
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
@@ -234,7 +308,7 @@ class NotificationTransport(SerializerModel):
     name = models.TextField(unique=True)
     mode = models.TextField(choices=TransportMode.choices)
 
-    webhook_url = models.TextField(blank=True, validators=[URLValidator()])
+    webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
     webhook_mapping = models.ForeignKey(
         "NotificationWebhookMapping", on_delete=models.SET_DEFAULT, null=True, default=None
     )

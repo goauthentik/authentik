@@ -66,3 +66,11 @@ class DomainlessURLValidator(URLValidator):
             r"\Z",
             re.IGNORECASE,
         )
+        self.schemes = ["http", "https", "blank"] + list(self.schemes)
+
+    def __call__(self, value: str):
+        # Check if the scheme is valid.
+        scheme = value.split("://")[0].lower()
+        if scheme not in self.schemes:
+            value = "default" + value
+        super().__call__(value)

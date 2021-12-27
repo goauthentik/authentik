@@ -39,6 +39,7 @@ class ProviderInfoView(View):
         )
         if SCOPE_OPENID not in scopes:
             scopes.append(SCOPE_OPENID)
+        _, supported_alg = provider.get_jwt_key()
         return {
             "issuer": provider.get_issuer(self.request),
             "authorization_endpoint": self.request.build_absolute_uri(
@@ -78,7 +79,7 @@ class ProviderInfoView(View):
                 GRANT_TYPE_REFRESH_TOKEN,
                 GrantTypes.IMPLICIT,
             ],
-            "id_token_signing_alg_values_supported": [provider.jwt_alg],
+            "id_token_signing_alg_values_supported": [supported_alg],
             # See: http://openid.net/specs/openid-connect-core-1_0.html#SubjectIDTypes
             "subject_types_supported": ["public"],
             "token_endpoint_auth_methods_supported": [

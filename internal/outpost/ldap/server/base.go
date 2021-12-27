@@ -19,6 +19,7 @@ type LDAPServerInstance interface {
 
 	GetBaseDN() string
 	GetBaseGroupDN() string
+	GetBaseVirtualGroupDN() string
 	GetBaseUserDN() string
 
 	GetUserDN(string) string
@@ -32,4 +33,7 @@ type LDAPServerInstance interface {
 
 	GetFlags(string) (flags.UserFlags, bool)
 	SetFlags(string, flags.UserFlags)
+
+	GetBaseEntry() *ldap.Entry
+	GetNeededObjects(int, string, string) (bool, bool)
 }

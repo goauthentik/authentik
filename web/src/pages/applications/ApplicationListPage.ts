@@ -2,17 +2,23 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
+import AKGlobal from "../../authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
 
+import MDApplication from "../../../../website/docs/core/applications.md";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import "../../elements/Markdown";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
+import { getURLParam } from "../../elements/router/RouteMatch";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import "./ApplicationForm";
@@ -50,6 +56,8 @@ export class ApplicationListPage extends TablePage<Application> {
     static get styles(): CSSResult[] {
         return super.styles.concat(
             PFAvatar,
+            PFCard,
+            AKGlobal,
             css`
                 tr td:first-child {
                     width: auto;
@@ -70,6 +78,17 @@ export class ApplicationListPage extends TablePage<Application> {
             new TableColumn(t`Provider Type`),
             new TableColumn(t`Actions`),
         ];
+    }
+
+    renderSidebarAfter(): TemplateResult {
+        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
+            <div class="pf-c-card">
+                <div class="pf-c-card__title">${t`About applications`}</div>
+                <div class="pf-c-card__body">
+                    <ak-markdown .md=${MDApplication}></ak-markdown>
+                </div>
+            </div>
+        </div>`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -94,15 +113,24 @@ export class ApplicationListPage extends TablePage<Application> {
         </ak-forms-delete-bulk>`;
     }
 
+    renderIcon(item: Application): TemplateResult {
+        if (item?.metaIcon) {
+            if (item.metaIcon.startsWith("fa://")) {
+                const icon = item.metaIcon.replaceAll("fa://", "");
+                return html`<i class="fas ${icon}"></i>`;
+            }
+            return html`<img
+                class="app-icon pf-c-avatar"
+                src="${ifDefined(item.metaIcon)}"
+                alt="${t`Application Icon`}"
+            />`;
+        }
+        return html`<i class="fas fa-share-square"></i>`;
+    }
+
     row(item: Application): TemplateResult[] {
         return [
-            item.metaIcon
-                ? html`<img
-                      class="app-icon pf-c-avatar"
-                      src="${item.metaIcon}"
-                      alt="${t`Application Icon`}"
-                  />`
-                : html`<i class="fas fa-question-circle"></i>`,
+            this.renderIcon(item),
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
@@ -125,7 +153,7 @@ export class ApplicationListPage extends TablePage<Application> {
                 </ak-forms-modal>
                 ${item.launchUrl
                     ? html`<a href=${item.launchUrl} target="_blank" class="pf-c-button pf-m-plain">
-                          <i class="fas fas fa-share-square"></i>
+                          <i class="fas fa-share-square"></i>
                       </a>`
                     : html``}`,
         ];
@@ -133,7 +161,7 @@ export class ApplicationListPage extends TablePage<Application> {
 
     renderToolbar(): TemplateResult {
         return html`
-            <ak-forms-modal>
+            <ak-forms-modal .open=${getURLParam("createForm", false)}>
                 <span slot="submit"> ${t`Create`} </span>
                 <span slot="header"> ${t`Create Application`} </span>
                 <ak-application-form slot="form"> </ak-application-form>

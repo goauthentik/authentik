@@ -1,3 +1,4 @@
+import { SentryIgnoredError } from "../common/errors";
 import { VERSION } from "../constants";
 
 export interface PlexPinResponse {
@@ -73,7 +74,7 @@ export class PlexAPIClient {
             headers: headers,
         });
         if (pinResponse.status > 200) {
-            throw new Error("Invalid response code")
+            throw new SentryIgnoredError("Invalid response code")
         }
         const pin: PlexPinResponse = await pinResponse.json();
         console.debug(`authentik/plex: polling Pin`);

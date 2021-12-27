@@ -4,7 +4,6 @@ import uuid
 from datetime import timedelta
 from typing import Iterable
 
-import django.core.validators
 import django.db.models.deletion
 from django.apps.registry import Apps
 from django.conf import settings
@@ -12,6 +11,7 @@ from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 import authentik.events.models
+import authentik.lib.models
 from authentik.events.models import EventAction, NotificationSeverity, TransportMode
 
 
@@ -314,168 +314,9 @@ class Migration(migrations.Migration):
             old_name="user_json",
             new_name="user",
         ),
-        migrations.AlterField(
-            model_name="event",
-            name="action",
-            field=models.TextField(
-                choices=[
-                    ("login", "Login"),
-                    ("login_failed", "Login Failed"),
-                    ("logout", "Logout"),
-                    ("sign_up", "Sign Up"),
-                    ("authorize_application", "Authorize Application"),
-                    ("suspicious_request", "Suspicious Request"),
-                    ("password_set", "Password Set"),
-                    ("invitation_created", "Invite Created"),
-                    ("invitation_used", "Invite Used"),
-                    ("source_linked", "Source Linked"),
-                    ("impersonation_started", "Impersonation Started"),
-                    ("impersonation_ended", "Impersonation Ended"),
-                    ("model_created", "Model Created"),
-                    ("model_updated", "Model Updated"),
-                    ("model_deleted", "Model Deleted"),
-                    ("custom_", "Custom Prefix"),
-                ]
-            ),
-        ),
-        migrations.AlterField(
-            model_name="event",
-            name="action",
-            field=models.TextField(
-                choices=[
-                    ("login", "Login"),
-                    ("login_failed", "Login Failed"),
-                    ("logout", "Logout"),
-                    ("user_write", "User Write"),
-                    ("suspicious_request", "Suspicious Request"),
-                    ("password_set", "Password Set"),
-                    ("invitation_created", "Invite Created"),
-                    ("invitation_used", "Invite Used"),
-                    ("authorize_application", "Authorize Application"),
-                    ("source_linked", "Source Linked"),
-                    ("impersonation_started", "Impersonation Started"),
-                    ("impersonation_ended", "Impersonation Ended"),
-                    ("model_created", "Model Created"),
-                    ("model_updated", "Model Updated"),
-                    ("model_deleted", "Model Deleted"),
-                    ("custom_", "Custom Prefix"),
-                ]
-            ),
-        ),
         migrations.RemoveField(
             model_name="event",
             name="date",
-        ),
-        migrations.AlterField(
-            model_name="event",
-            name="action",
-            field=models.TextField(
-                choices=[
-                    ("login", "Login"),
-                    ("login_failed", "Login Failed"),
-                    ("logout", "Logout"),
-                    ("user_write", "User Write"),
-                    ("suspicious_request", "Suspicious Request"),
-                    ("password_set", "Password Set"),
-                    ("token_view", "Token View"),
-                    ("invitation_created", "Invite Created"),
-                    ("invitation_used", "Invite Used"),
-                    ("authorize_application", "Authorize Application"),
-                    ("source_linked", "Source Linked"),
-                    ("impersonation_started", "Impersonation Started"),
-                    ("impersonation_ended", "Impersonation Ended"),
-                    ("model_created", "Model Created"),
-                    ("model_updated", "Model Updated"),
-                    ("model_deleted", "Model Deleted"),
-                    ("custom_", "Custom Prefix"),
-                ]
-            ),
-        ),
-        migrations.AlterField(
-            model_name="event",
-            name="action",
-            field=models.TextField(
-                choices=[
-                    ("login", "Login"),
-                    ("login_failed", "Login Failed"),
-                    ("logout", "Logout"),
-                    ("user_write", "User Write"),
-                    ("suspicious_request", "Suspicious Request"),
-                    ("password_set", "Password Set"),
-                    ("token_view", "Token View"),
-                    ("invitation_created", "Invite Created"),
-                    ("invitation_used", "Invite Used"),
-                    ("authorize_application", "Authorize Application"),
-                    ("source_linked", "Source Linked"),
-                    ("impersonation_started", "Impersonation Started"),
-                    ("impersonation_ended", "Impersonation Ended"),
-                    ("policy_execution", "Policy Execution"),
-                    ("policy_exception", "Policy Exception"),
-                    ("property_mapping_exception", "Property Mapping Exception"),
-                    ("model_created", "Model Created"),
-                    ("model_updated", "Model Updated"),
-                    ("model_deleted", "Model Deleted"),
-                    ("custom_", "Custom Prefix"),
-                ]
-            ),
-        ),
-        migrations.AlterField(
-            model_name="event",
-            name="action",
-            field=models.TextField(
-                choices=[
-                    ("login", "Login"),
-                    ("login_failed", "Login Failed"),
-                    ("logout", "Logout"),
-                    ("user_write", "User Write"),
-                    ("suspicious_request", "Suspicious Request"),
-                    ("password_set", "Password Set"),
-                    ("token_view", "Token View"),
-                    ("invitation_created", "Invite Created"),
-                    ("invitation_used", "Invite Used"),
-                    ("authorize_application", "Authorize Application"),
-                    ("source_linked", "Source Linked"),
-                    ("impersonation_started", "Impersonation Started"),
-                    ("impersonation_ended", "Impersonation Ended"),
-                    ("policy_execution", "Policy Execution"),
-                    ("policy_exception", "Policy Exception"),
-                    ("property_mapping_exception", "Property Mapping Exception"),
-                    ("model_created", "Model Created"),
-                    ("model_updated", "Model Updated"),
-                    ("model_deleted", "Model Deleted"),
-                    ("update_available", "Update Available"),
-                    ("custom_", "Custom Prefix"),
-                ]
-            ),
-        ),
-        migrations.AlterField(
-            model_name="event",
-            name="action",
-            field=models.TextField(
-                choices=[
-                    ("login", "Login"),
-                    ("login_failed", "Login Failed"),
-                    ("logout", "Logout"),
-                    ("user_write", "User Write"),
-                    ("suspicious_request", "Suspicious Request"),
-                    ("password_set", "Password Set"),
-                    ("token_view", "Token View"),
-                    ("invitation_used", "Invite Used"),
-                    ("authorize_application", "Authorize Application"),
-                    ("source_linked", "Source Linked"),
-                    ("impersonation_started", "Impersonation Started"),
-                    ("impersonation_ended", "Impersonation Ended"),
-                    ("policy_execution", "Policy Execution"),
-                    ("policy_exception", "Policy Exception"),
-                    ("property_mapping_exception", "Property Mapping Exception"),
-                    ("configuration_error", "Configuration Error"),
-                    ("model_created", "Model Created"),
-                    ("model_updated", "Model Updated"),
-                    ("model_deleted", "Model Deleted"),
-                    ("update_available", "Update Available"),
-                    ("custom_", "Custom Prefix"),
-                ]
-            ),
         ),
         migrations.CreateModel(
             name="NotificationTransport",
@@ -610,68 +451,6 @@ class Migration(migrations.Migration):
                 help_text="Only send notification once, for example when sending a webhook into a chat channel.",
             ),
         ),
-        migrations.AlterField(
-            model_name="event",
-            name="action",
-            field=models.TextField(
-                choices=[
-                    ("login", "Login"),
-                    ("login_failed", "Login Failed"),
-                    ("logout", "Logout"),
-                    ("user_write", "User Write"),
-                    ("suspicious_request", "Suspicious Request"),
-                    ("password_set", "Password Set"),
-                    ("token_view", "Token View"),
-                    ("invitation_used", "Invite Used"),
-                    ("authorize_application", "Authorize Application"),
-                    ("source_linked", "Source Linked"),
-                    ("impersonation_started", "Impersonation Started"),
-                    ("impersonation_ended", "Impersonation Ended"),
-                    ("policy_execution", "Policy Execution"),
-                    ("policy_exception", "Policy Exception"),
-                    ("property_mapping_exception", "Property Mapping Exception"),
-                    ("system_task_execution", "System Task Execution"),
-                    ("system_task_exception", "System Task Exception"),
-                    ("configuration_error", "Configuration Error"),
-                    ("model_created", "Model Created"),
-                    ("model_updated", "Model Updated"),
-                    ("model_deleted", "Model Deleted"),
-                    ("update_available", "Update Available"),
-                    ("custom_", "Custom Prefix"),
-                ]
-            ),
-        ),
-        migrations.AlterField(
-            model_name="event",
-            name="action",
-            field=models.TextField(
-                choices=[
-                    ("login", "Login"),
-                    ("login_failed", "Login Failed"),
-                    ("logout", "Logout"),
-                    ("user_write", "User Write"),
-                    ("suspicious_request", "Suspicious Request"),
-                    ("password_set", "Password Set"),
-                    ("secret_view", "Secret View"),
-                    ("invitation_used", "Invite Used"),
-                    ("authorize_application", "Authorize Application"),
-                    ("source_linked", "Source Linked"),
-                    ("impersonation_started", "Impersonation Started"),
-                    ("impersonation_ended", "Impersonation Ended"),
-                    ("policy_execution", "Policy Execution"),
-                    ("policy_exception", "Policy Exception"),
-                    ("property_mapping_exception", "Property Mapping Exception"),
-                    ("system_task_execution", "System Task Execution"),
-                    ("system_task_exception", "System Task Exception"),
-                    ("configuration_error", "Configuration Error"),
-                    ("model_created", "Model Created"),
-                    ("model_updated", "Model Updated"),
-                    ("model_deleted", "Model Deleted"),
-                    ("update_available", "Update Available"),
-                    ("custom_", "Custom Prefix"),
-                ]
-            ),
-        ),
         migrations.RunPython(
             code=token_view_to_secret_view,
         ),
@@ -688,75 +467,10 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             code=update_expires,
         ),
-        migrations.AlterField(
-            model_name="event",
-            name="action",
-            field=models.TextField(
-                choices=[
-                    ("login", "Login"),
-                    ("login_failed", "Login Failed"),
-                    ("logout", "Logout"),
-                    ("user_write", "User Write"),
-                    ("suspicious_request", "Suspicious Request"),
-                    ("password_set", "Password Set"),
-                    ("secret_view", "Secret View"),
-                    ("invitation_used", "Invite Used"),
-                    ("authorize_application", "Authorize Application"),
-                    ("source_linked", "Source Linked"),
-                    ("impersonation_started", "Impersonation Started"),
-                    ("impersonation_ended", "Impersonation Ended"),
-                    ("policy_execution", "Policy Execution"),
-                    ("policy_exception", "Policy Exception"),
-                    ("property_mapping_exception", "Property Mapping Exception"),
-                    ("system_task_execution", "System Task Execution"),
-                    ("system_task_exception", "System Task Exception"),
-                    ("configuration_error", "Configuration Error"),
-                    ("model_created", "Model Created"),
-                    ("model_updated", "Model Updated"),
-                    ("model_deleted", "Model Deleted"),
-                    ("email_sent", "Email Sent"),
-                    ("update_available", "Update Available"),
-                    ("custom_", "Custom Prefix"),
-                ]
-            ),
-        ),
         migrations.AddField(
             model_name="event",
             name="tenant",
             field=models.JSONField(blank=True, default=authentik.events.models.default_tenant),
-        ),
-        migrations.AlterField(
-            model_name="event",
-            name="action",
-            field=models.TextField(
-                choices=[
-                    ("login", "Login"),
-                    ("login_failed", "Login Failed"),
-                    ("logout", "Logout"),
-                    ("user_write", "User Write"),
-                    ("suspicious_request", "Suspicious Request"),
-                    ("password_set", "Password Set"),
-                    ("secret_view", "Secret View"),
-                    ("invitation_used", "Invite Used"),
-                    ("authorize_application", "Authorize Application"),
-                    ("source_linked", "Source Linked"),
-                    ("impersonation_started", "Impersonation Started"),
-                    ("impersonation_ended", "Impersonation Ended"),
-                    ("policy_execution", "Policy Execution"),
-                    ("policy_exception", "Policy Exception"),
-                    ("property_mapping_exception", "Property Mapping Exception"),
-                    ("system_task_execution", "System Task Execution"),
-                    ("system_task_exception", "System Task Exception"),
-                    ("system_exception", "System Exception"),
-                    ("configuration_error", "Configuration Error"),
-                    ("model_created", "Model Created"),
-                    ("model_updated", "Model Updated"),
-                    ("model_deleted", "Model Deleted"),
-                    ("email_sent", "Email Sent"),
-                    ("update_available", "Update Available"),
-                    ("custom_", "Custom Prefix"),
-                ]
-            ),
         ),
         migrations.AlterField(
             model_name="event",
@@ -776,6 +490,7 @@ class Migration(migrations.Migration):
                     ("source_linked", "Source Linked"),
                     ("impersonation_started", "Impersonation Started"),
                     ("impersonation_ended", "Impersonation Ended"),
+                    ("flow_execution", "Flow Execution"),
                     ("policy_execution", "Policy Execution"),
                     ("policy_exception", "Policy Exception"),
                     ("property_mapping_exception", "Property Mapping Exception"),
@@ -826,6 +541,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="notificationtransport",
             name="webhook_url",
-            field=models.TextField(blank=True, validators=[django.core.validators.URLValidator()]),
+            field=models.TextField(
+                blank=True, validators=[authentik.lib.models.DomainlessURLValidator()]
+            ),
         ),
     ]

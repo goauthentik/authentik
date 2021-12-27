@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 from drf_spectacular.utils import extend_schema_field
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ListField, SerializerMethodField
+from rest_framework.fields import CharField, ListField, ReadOnlyField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
@@ -109,6 +109,9 @@ class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
 class ProxyOutpostConfigSerializer(ModelSerializer):
     """Proxy provider serializer for outposts"""
 
+    assigned_application_slug = ReadOnlyField(source="application.slug")
+    assigned_application_name = ReadOnlyField(source="application.name")
+
     oidc_configuration = SerializerMethodField()
     token_validity = SerializerMethodField()
     scopes_to_request = SerializerMethodField()
@@ -152,6 +155,8 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "cookie_domain",
             "token_validity",
             "scopes_to_request",
+            "assigned_application_slug",
+            "assigned_application_name",
         ]
 
 

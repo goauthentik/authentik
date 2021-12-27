@@ -14,8 +14,6 @@ This installation method is for test-setups and small-scale productive setups.
 
 Download the latest `docker-compose.yml` from [here](https://goauthentik.io/docker-compose.yml). Place it in a directory of your choice.
 
-To optionally deploy a different version run `echo AUTHENTIK_TAG=2021.10.4 >> .env`
-
 If this is a fresh authentik install run the following commands to generate a password:
 
 ```shell
@@ -31,7 +29,7 @@ echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
 
 ## Email configuration (optional, but recommended)
 
-It is also recommended to configure global email credentials. These are used by authentik to notify you about alerts and configuration issues. They can also be used by [Email stages](flow/stages/email/index.md) to send verification/recovery emails.
+It is also recommended to configure global email credentials. These are used by authentik to notify you about alerts and configuration issues. They can also be used by [Email stages](../flow/stages/email/) to send verification/recovery emails.
 
 Append this block to your `.env` file
 
@@ -39,9 +37,9 @@ Append this block to your `.env` file
 # SMTP Host Emails are sent to
 AUTHENTIK_EMAIL__HOST=localhost
 AUTHENTIK_EMAIL__PORT=25
-# Optionally authenticate
-AUTHENTIK_EMAIL__USERNAME=""
-AUTHENTIK_EMAIL__PASSWORD=""
+# Optionally authenticate (don't add quotation marks to you password)
+AUTHENTIK_EMAIL__USERNAME=
+AUTHENTIK_EMAIL__PASSWORD=
 # Use StartTLS
 AUTHENTIK_EMAIL__USE_TLS=false
 # Use SSL
@@ -66,6 +64,22 @@ AUTHENTIK_AUTHENTIK__GEOIP=/geoip/GeoLite2-City.mmdb
 ```
 
 The GeoIP database will automatically be updated every 8 hours.
+
+## Running on Port 80/443
+
+By default, authentik listens on port 9000 for HTTP and 9443 for HTTPS. To change this, you can use a [docker-compose override file](https://docs.docker.com/compose/extends/#adding-and-overriding-configuration).
+
+Create a file called `docker-compose.override.yml` with the following contents:
+
+```yaml
+version: '3.2'
+
+services:
+  server:
+    ports:
+      - "0.0.0.0:80:9000"
+      - "0.0.0.0:443:9443"
+```
 
 ## Startup
 

@@ -38,7 +38,6 @@ class AuthenticatorTOTPStage(ConfigurableStage, Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-totp-form"
 
-    @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={

@@ -93,9 +93,9 @@ export class NotificationDrawer extends LitElement {
                 html`
                     <a
                         class="pf-c-dropdown__toggle pf-m-plain"
-                        href="#/events/log/${item.event?.pk}"
+                        href="/if/admin/#/events/log/${item.event?.pk}"
                     >
-                        <i class="fas fas fa-share-square"></i>
+                        <i class="fas fa-share-square"></i>
                     </a>
                 `}
                 <button
@@ -183,9 +183,15 @@ export class NotificationDrawer extends LitElement {
                                             composed: true,
                                         }),
                                     );
+                                    this.dispatchEvent(
+                                        new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
+                                            bubbles: true,
+                                            composed: true,
+                                        }),
+                                    );
                                 });
                         }}
-                        class="pf-c-button pf-m-secondary pf-m-block"
+                        class="pf-c-button pf-m-primary pf-m-block"
                         type="button"
                         aria-label=${t`Clear all`}
                     >

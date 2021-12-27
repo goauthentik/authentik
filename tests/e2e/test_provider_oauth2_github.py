@@ -14,7 +14,7 @@ from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -56,7 +56,6 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         }
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -89,23 +88,22 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.driver.get("http://localhost:3000/profile")
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
-            USER().username,
+            self.user.username,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
-            USER().username,
+            self.user.username,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
-            USER().username,
+            self.user.username,
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -157,23 +155,22 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.driver.get("http://localhost:3000/profile")
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
-            USER().username,
+            self.user.username,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
-            USER().username,
+            self.user.username,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
-            USER().email,
+            self.user.email,
         )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
-            USER().username,
+            self.user.username,
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")

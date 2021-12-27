@@ -177,19 +177,20 @@ export class DeleteBulkForm extends ModalButton {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-page__main-section pf-m-light">
+        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${t`Delete ${this.objectLabel}`}</h1>
                 </div>
             </section>
-            <section class="pf-c-page__main-section pf-m-light">
+            <section class="pf-c-modal-box__body pf-c-page__main-section pf-m-light">
                 <form class="pf-c-form pf-m-horizontal">
                     <p class="pf-c-title">
                         ${t`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`}
                     </p>
+                    <slot name="notice"></slot>
                 </form>
             </section>
-            <section class="pf-c-page__main-section">
+            <section class="pf-c-modal-box__body pf-c-page__main-section pf-m-light">
                 <ak-delete-objects-table
                     .objects=${this.objects}
                     .usedBy=${this.usedBy}

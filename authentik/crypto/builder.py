@@ -44,7 +44,7 @@ class CertificateBuilder:
         """Build self-signed certificate"""
         one_day = datetime.timedelta(1, 0, 0)
         self.__private_key = rsa.generate_private_key(
-            public_exponent=65537, key_size=2048, backend=default_backend()
+            public_exponent=65537, key_size=4096, backend=default_backend()
         )
         self.__public_key = self.__private_key.public_key()
         alt_names: list[x509.GeneralName] = [x509.DNSName(x) for x in subject_alt_names or []]

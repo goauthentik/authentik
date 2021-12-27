@@ -8,6 +8,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenIntents, User
 from authentik.core.tasks import clean_expired_models
+from authentik.core.tests.utils import create_test_admin_user
 
 
 class TestTokenAPI(APITestCase):
@@ -16,7 +17,7 @@ class TestTokenAPI(APITestCase):
     def setUp(self) -> None:
         super().setUp()
         self.user = User.objects.create(username="testuser")
-        self.admin = User.objects.get(username="akadmin")
+        self.admin = create_test_admin_user()
         self.client.force_login(self.user)
 
     def test_token_create(self):
@@ -53,7 +54,9 @@ class TestTokenAPI(APITestCase):
 
     def test_token_expire(self):
         """Test Token expire task"""
-        token: Token = Token.objects.create(expires=now(), user=get_anonymous_user())
+        token: Token = Token.objects.create(
+            expires=now(), user=get_anonymous_user(), intent=TokenIntents.INTENT_API
+        )
         key = token.key
         clean_expired_models.delay().get()
         token.refresh_from_db()

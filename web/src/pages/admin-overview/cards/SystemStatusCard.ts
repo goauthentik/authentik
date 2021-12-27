@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { AdminApi, System } from "@goauthentik/api";
+import { AdminApi, OutpostsApi, System } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
@@ -12,11 +12,34 @@ import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 export class SystemStatusCard extends AdminStatusCard<System> {
     now?: Date;
 
-    header = "OK";
+    header = t`OK`;
 
-    getPrimaryValue(): Promise<System> {
+    async getPrimaryValue(): Promise<System> {
         this.now = new Date();
-        return new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
+        let status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
+        if (status.embeddedOutpostHost === "") {
+            // First install, ensure the embedded outpost host is set
+            await this.setOutpostHost();
+            status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
+        }
+        return status;
+    }
+
+    // Called on fresh installations and whenever the embedded outpost is deleted
+    // automatically send the login URL when the user first visits the admin dashboard.
+    async setOutpostHost(): Promise<void> {
+        const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList({
+            managedIexact: "goauthentik.io/outposts/embedded",
+        });
+        if (outposts.results.length < 1) {
+            return;
+        }
+        const outpost = outposts.results[0];
+        outpost.config["authentik_host"] = window.location.origin;
+        await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUpdate({
+            uuid: outpost.pk,
+            outpostRequest: outpost,
+        });
     }
 
     getStatus(value: System): Promise<AdminStatus> {

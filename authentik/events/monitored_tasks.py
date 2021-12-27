@@ -46,7 +46,7 @@ class TaskResult:
 
     def with_error(self, exc: Exception) -> "TaskResult":
         """Since errors might not always be pickle-able, set the traceback"""
-        self.messages.extend(exception_to_string(exc).splitlines())
+        self.messages.append(str(exc))
         return self
 
 
@@ -110,30 +110,6 @@ class TaskInfo:
             self.task_name += f"_{self.result.uid}"
         self.set_prom_metrics()
         cache.set(key, self, timeout=timeout_hours * 60 * 60)
-
-
-def prefill_task():
-    """Ensure a task's details are always in cache, so it can always be triggered via API"""
-
-    def inner_wrap(func):
-        status = TaskInfo.by_name(func.__name__)
-        if status:
-            return func
-        TaskInfo(
-            task_name=func.__name__,
-            task_description=func.__doc__,
-            result=TaskResult(TaskResultStatus.UNKNOWN, messages=[_("Task has not been run yet.")]),
-            task_call_module=func.__module__,
-            task_call_func=func.__name__,
-            # We don't have real values for these attributes but they cannot be null
-            start_timestamp=default_timer(),
-            finish_timestamp=default_timer(),
-            finish_time=datetime.now(),
-        ).save(86400)
-        LOGGER.debug("prefilled task", task_name=func.__name__)
-        return func
-
-    return inner_wrap
 
 
 class MonitoredTask(Task):
@@ -210,5 +186,21 @@ class MonitoredTask(Task):
         raise NotImplementedError
 
 
-for task in TaskInfo.all().values():
-    task.set_prom_metrics()
+def prefill_task(func):
+    """Ensure a task's details are always in cache, so it can always be triggered via API"""
+    status = TaskInfo.by_name(func.__name__)
+    if status:
+        return func
+    TaskInfo(
+        task_name=func.__name__,
+        task_description=func.__doc__,
+        result=TaskResult(TaskResultStatus.UNKNOWN, messages=[_("Task has not been run yet.")]),
+        task_call_module=func.__module__,
+        task_call_func=func.__name__,
+        # We don't have real values for these attributes but they cannot be null
+        start_timestamp=default_timer(),
+        finish_timestamp=default_timer(),
+        finish_time=datetime.now(),
+    ).save(86400)
+    LOGGER.debug("prefilled task", task_name=func.__name__)
+    return func

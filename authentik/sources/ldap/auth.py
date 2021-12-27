@@ -58,7 +58,7 @@ class LDAPBackend(InbuiltBackend):
         LOGGER.debug("Attempting Binding as user", user=user)
         try:
             temp_connection = ldap3.Connection(
-                source.connection.server,
+                source.server,
                 user=user.attributes.get(LDAP_DISTINGUISHED_NAME),
                 password=password,
                 raise_exceptions=True,

@@ -9,7 +9,6 @@ from deepmerge import always_merger
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
-from django.core import validators
 from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
@@ -26,10 +25,9 @@ from structlog.stdlib import get_logger
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton, UserSettingSerializer
-from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
-from authentik.lib.models import CreatedUpdatedModel, SerializerModel
+from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator, SerializerModel
 from authentik.lib.utils.http import get_client_ip
 from authentik.managed.models import ManagedModel
 from authentik.policies.models import PolicyBindingModel
@@ -216,7 +214,7 @@ class Provider(SerializerModel):
     name = models.TextField()
 
     authorization_flow = models.ForeignKey(
-        Flow,
+        "authentik_flows.Flow",
         on_delete=models.CASCADE,
         help_text=_("Flow used when authorizing this provider."),
         related_name="provider_authorization",
@@ -258,7 +256,7 @@ class Application(SerializerModel, PolicyBindingModel):
     )
 
     meta_launch_url = models.TextField(
-        default="", blank=True, validators=[validators.URLValidator()]
+        default="", blank=True, validators=[DomainlessURLValidator()]
     )
     # For template applications, this can be set to /static/authentik/applications/*
     meta_icon = models.FileField(
@@ -282,7 +280,7 @@ class Application(SerializerModel, PolicyBindingModel):
         it is returned as-is"""
         if not self.meta_icon:
             return None
-        if self.meta_icon.name.startswith("http") or self.meta_icon.name.startswith("/static"):
+        if "://" in self.meta_icon.name or self.meta_icon.name.startswith("/static"):
             return self.meta_icon.name
         return self.meta_icon.url
 
@@ -290,15 +288,21 @@ class Application(SerializerModel, PolicyBindingModel):
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
         if self.meta_launch_url:
             return self.meta_launch_url
-        if self.provider:
-            return self.get_provider().launch_url
+        if provider := self.get_provider():
+            return provider.launch_url
         return None
 
     def get_provider(self) -> Optional[Provider]:
         """Get casted provider instance"""
         if not self.provider:
             return None
-        return Provider.objects.get_subclass(pk=self.provider.pk)
+        # if the Application class has been cache, self.provider is set
+        # but doing a direct query lookup will fail.
+        # In that case, just return None
+        try:
+            return Provider.objects.get_subclass(pk=self.provider.pk)
+        except Provider.DoesNotExist:
+            return None
 
     def __str__(self):
         return self.name
@@ -343,7 +347,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
 
     authentication_flow = models.ForeignKey(
-        Flow,
+        "authentik_flows.Flow",
         blank=True,
         null=True,
         default=None,
@@ -352,7 +356,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         related_name="source_authentication",
     )
     enrollment_flow = models.ForeignKey(
-        Flow,
+        "authentik_flows.Flow",
         blank=True,
         null=True,
         default=None,
@@ -379,13 +383,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Return component used to edit this object"""
         raise NotImplementedError
 
-    @property
-    def ui_login_button(self) -> Optional[UILoginButton]:
+    def ui_login_button(self, request: HttpRequest) -> Optional[UILoginButton]:
         """If source uses a http-based flow, return UI Information about the login
         button. If source doesn't use http-based flow, return None."""
         return None
 
-    @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or UserSettingSerializer."""
@@ -482,6 +484,14 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
     def expire_action(self, *args, **kwargs):
         """Handler which is called when this object is expired."""
         from authentik.events.models import Event, EventAction
+
+        if self.intent in [
+            TokenIntents.INTENT_RECOVERY,
+            TokenIntents.INTENT_VERIFICATION,
+            TokenIntents.INTENT_APP_PASSWORD,
+        ]:
+            super().expire_action(*args, **kwargs)
+            return
 
         self.key = default_token_key()
         self.expires = default_token_duration()

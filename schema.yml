@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.10.4
+  version: 2021.12.4
   description: Making authentication simple.
   contact:
     email: hello@beryju.org
@@ -26,54 +26,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/App'
           description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /admin/config_files/:
-    get:
-      operationId: admin_config_files_list
-      description: List config files
-      tags:
-      - admin
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ConfigFile'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /admin/config_files/{id}/:
-    get:
-      operationId: admin_config_files_retrieve
-      description: Get a single config file
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
-      tags:
-      - admin
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConfigFile'
-          description: ''
-        '404':
-          description: Config file not found
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -2107,6 +2059,11 @@ paths:
       description: Group Viewset
       parameters:
       - in: query
+        name: attributes
+        schema:
+          type: string
+        description: Attributes
+      - in: query
         name: is_superuser
         schema:
           type: boolean
@@ -2411,6 +2368,11 @@ paths:
           type: string
       - in: query
         name: tenant_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: web_certificate
         schema:
           type: string
           format: uuid
@@ -3952,6 +3914,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /events/events/per_month/:
+    get:
+      operationId: events_events_per_month_list
+      description: Get the count of events per month
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: query
+        schema:
+          type: string
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Coordinate'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /events/events/top_per_user/:
     get:
       operationId: events_events_top_per_user_list
@@ -3962,55 +3954,9 @@ paths:
         schema:
           type: string
       - in: query
-        name: client_ip
-        schema:
-          type: string
-      - in: query
-        name: context_authorized_app
-        schema:
-          type: string
-        description: Context Authorized application
-      - in: query
-        name: context_model_app
-        schema:
-          type: string
-        description: Context Model App
-      - in: query
-        name: context_model_name
-        schema:
-          type: string
-        description: Context Model Name
-      - in: query
-        name: context_model_pk
-        schema:
-          type: string
-        description: Context Model Primary Key
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: tenant_name
-        schema:
-          type: string
-        description: Tenant name
-      - in: query
         name: top_n
         schema:
           type: integer
-      - in: query
-        name: username
-        schema:
-          type: string
-        description: Username
       tags:
       - events
       security:
@@ -5381,7 +5327,7 @@ paths:
               schema:
                 type: string
                 format: binary
-          description: null
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -5521,6 +5467,207 @@ paths:
           description: Successfully imported flow
         '400':
           description: Bad request
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /managed/blueprints/:
+    get:
+      operationId: managed_blueprints_list
+      description: Blueprint instances
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBlueprintInstanceList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: managed_blueprints_create
+      description: Blueprint instances
+      tags:
+      - managed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlueprintInstanceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /managed/blueprints/{instance_uuid}/:
+    get:
+      operationId: managed_blueprints_retrieve
+      description: Blueprint instances
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: managed_blueprints_update
+      description: Blueprint instances
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlueprintInstanceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: managed_blueprints_partial_update
+      description: Blueprint instances
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBlueprintInstanceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: managed_blueprints_destroy
+      description: Blueprint instances
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /managed/blueprints/available/:
+    get:
+      operationId: managed_blueprints_available_list
+      description: Get blueprints
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
   /oauth2/authorization_codes/:
@@ -5783,6 +5930,14 @@ paths:
       description: Outpost Viewset
       parameters:
       - in: query
+        name: managed__icontains
+        schema:
+          type: string
+      - in: query
+        name: managed__iexact
+        schema:
+          type: string
+      - in: query
         name: name__icontains
         schema:
           type: string
@@ -5812,6 +5967,14 @@ paths:
         name: providers__isnull
         schema:
           type: boolean
+      - in: query
+        name: providers_by_pk
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - name: search
         required: false
         in: query
@@ -5983,6 +6146,14 @@ paths:
       description: Get outposts current health
       parameters:
       - in: query
+        name: managed__icontains
+        schema:
+          type: string
+      - in: query
+        name: managed__iexact
+        schema:
+          type: string
+      - in: query
         name: name__icontains
         schema:
           type: string
@@ -6000,6 +6171,14 @@ paths:
         name: providers__isnull
         schema:
           type: boolean
+      - in: query
+        name: providers_by_pk
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - name: search
         required: false
         in: query
@@ -7566,6 +7745,7 @@ paths:
           - configuration_error
           - custom_
           - email_sent
+          - flow_execution
           - impersonation_ended
           - impersonation_started
           - invitation_used
@@ -8351,6 +8531,10 @@ paths:
       operationId: policies_password_list
       description: Password Policy Viewset
       parameters:
+      - in: query
+        name: amount_digits
+        schema:
+          type: integer
       - in: query
         name: amount_lowercase
         schema:
@@ -10876,15 +11060,6 @@ paths:
           - per_provider
         description: Configure how the issuer field of the ID Token should be filled.
       - in: query
-        name: jwt_alg
-        schema:
-          type: string
-          title: JWT Algorithm
-          enum:
-          - HS256
-          - RS256
-        description: Algorithm used to sign the JWT Token
-      - in: query
         name: name
         schema:
           type: string
@@ -10919,17 +11094,17 @@ paths:
         name: redirect_uris
         schema:
           type: string
-      - in: query
-        name: rsa_key
-        schema:
-          type: string
-          format: uuid
       - name: search
         required: false
         in: query
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: signing_key
+        schema:
+          type: string
+          format: uuid
       - in: query
         name: sub_mode
         schema:
@@ -11693,6 +11868,14 @@ paths:
         name: download
         schema:
           type: boolean
+      - in: query
+        name: force_binding
+        schema:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+        description: Optionally force the metadata to only include one binding.
       - in: path
         name: id
         schema:
@@ -11870,6 +12053,7 @@ paths:
           - ml
           - mn
           - mr
+          - ms
           - my
           - nb
           - ne
@@ -12107,11 +12291,6 @@ paths:
         schema:
           type: string
       - in: query
-        name: authentication_flow
-        schema:
-          type: string
-          format: uuid
-      - in: query
         name: base_dn
         schema:
           type: string
@@ -12123,11 +12302,6 @@ paths:
         name: enabled
         schema:
           type: boolean
-      - in: query
-        name: enrollment_flow
-        schema:
-          type: string
-          format: uuid
       - in: query
         name: group_membership_field
         schema:
@@ -12163,12 +12337,10 @@ paths:
         schema:
           type: integer
       - in: query
-        name: policy_engine_mode
+        name: peer_certificate
         schema:
           type: string
-          enum:
-          - all
-          - any
+          format: uuid
       - in: query
         name: property_mappings
         schema:
@@ -13622,6 +13794,30 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: sources_user_connections_oauth_create
+      description: Source Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserOAuthSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOAuthSourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /sources/user_connections/oauth/{id}/:
     get:
       operationId: sources_user_connections_oauth_retrieve
@@ -13801,6 +13997,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedPlexSourceConnectionList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: sources_user_connections_plex_create
+      description: Plex Source connection Serializer
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlexSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlexSourceConnection'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -15377,6 +15597,14 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: user_verification
+        schema:
+          type: string
+          enum:
+          - discouraged
+          - preferred
+          - required
       tags:
       - stages
       security:
@@ -16760,6 +16988,11 @@ paths:
           type: integer
       - in: query
         name: password_stage
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: passwordless_flow
         schema:
           type: string
           format: uuid
@@ -19065,9 +19298,49 @@ components:
       - authentik.stages.user_logout
       - authentik.stages.user_write
       - authentik.tenants
-      - authentik.core
       - authentik.managed
+      - authentik.core
       type: string
+    AppleChallengeResponseRequest:
+      type: object
+      description: Pseudo class for plex response
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-flow-sources-oauth-apple
+    AppleLoginChallenge:
+      type: object
+      description: Special challenge for apple-native authentication flow, which happens
+        on the client.
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-flow-sources-oauth-apple
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        client_id:
+          type: string
+        scope:
+          type: string
+        redirect_uri:
+          type: string
+        state:
+          type: string
+      required:
+      - client_id
+      - redirect_uri
+      - scope
+      - state
+      - type
     Application:
       type: object
       description: Application Serializer
@@ -19119,9 +19392,11 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: Application's display Name.
         slug:
           type: string
+          minLength: 1
           description: Internal application name, used in URLs.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
@@ -19167,6 +19442,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -19177,8 +19455,11 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -19189,6 +19470,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -19199,6 +19481,8 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
       required:
       - name
     AuthenticatedSession:
@@ -19327,6 +19611,7 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-authenticator-duo
     AuthenticatorDuoStage:
       type: object
@@ -19348,6 +19633,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -19366,6 +19654,7 @@ components:
       - api_hostname
       - client_id
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -19376,6 +19665,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -19388,11 +19678,14 @@ components:
             If empty, user will not be able to configure this stage.
         client_id:
           type: string
+          minLength: 1
         client_secret:
           type: string
           writeOnly: true
+          minLength: 1
         api_hostname:
           type: string
+          minLength: 1
       required:
       - api_hostname
       - client_id
@@ -19432,11 +19725,13 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-authenticator-sms
         code:
           type: integer
         phone_number:
           type: string
+          minLength: 1
     AuthenticatorSMSStage:
       type: object
       description: AuthenticatorSMSStage Serializer
@@ -19455,6 +19750,9 @@ components:
           type: string
           readOnly: true
         verbose_name_plural:
+          type: string
+          readOnly: true
+        meta_model_name:
           type: string
           readOnly: true
         flow_set:
@@ -19484,6 +19782,7 @@ components:
       - auth
       - component
       - from_number
+      - meta_model_name
       - name
       - pk
       - provider
@@ -19495,6 +19794,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -19509,10 +19809,13 @@ components:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
           type: string
+          minLength: 1
         account_sid:
           type: string
+          minLength: 1
         auth:
           type: string
+          minLength: 1
         auth_password:
           type: string
         auth_type:
@@ -19559,6 +19862,7 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-authenticator-static
     AuthenticatorStaticStage:
       type: object
@@ -19580,6 +19884,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -19596,6 +19903,7 @@ components:
           minimum: -2147483648
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -19606,6 +19914,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -19656,6 +19965,7 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-authenticator-totp
         code:
           type: integer
@@ -19681,6 +19991,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -19699,6 +20012,7 @@ components:
       required:
       - component
       - digits
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -19709,6 +20023,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -19747,6 +20062,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -19767,6 +20085,7 @@ components:
             is not prompted again.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -19777,6 +20096,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -19833,11 +20153,13 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-authenticator-validate
         selected_challenge:
           $ref: '#/components/schemas/DeviceChallengeRequest'
         code:
           type: string
+          minLength: 1
         webauthn:
           type: object
           additionalProperties: {}
@@ -19878,6 +20200,7 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-authenticator-webauthn
         response:
           type: object
@@ -19890,6 +20213,7 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-autosubmit
     AutosubmitChallenge:
       type: object
@@ -19929,6 +20253,49 @@ components:
       - REDIRECT
       - POST
       - POST_AUTO
+      type: string
+    BlueprintInstance:
+      type: object
+      description: Info about a single blueprint instance file
+      properties:
+        path:
+          type: string
+        context:
+          type: object
+          additionalProperties: {}
+        last_applied:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+      required:
+      - context
+      - last_applied
+      - path
+      - status
+    BlueprintInstanceRequest:
+      type: object
+      description: Info about a single blueprint instance file
+      properties:
+        path:
+          type: string
+          minLength: 1
+        context:
+          type: object
+          additionalProperties: {}
+        status:
+          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+      required:
+      - context
+      - path
+      - status
+    BlueprintInstanceStatusEnum:
+      enum:
+      - successful
+      - warning
+      - error
+      - unknown
       type: string
     Cache:
       type: object
@@ -19979,9 +20346,11 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-captcha
         token:
           type: string
+          minLength: 1
       required:
       - token
     CaptchaStage:
@@ -20004,6 +20373,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -20013,6 +20385,7 @@ components:
           description: Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - public_key
@@ -20024,16 +20397,19 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/FlowRequest'
         public_key:
           type: string
+          minLength: 1
           description: Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
         private_key:
           type: string
           writeOnly: true
+          minLength: 1
           description: Private key, acquired from https://www.google.com/recaptcha/intro/v3.html
       required:
       - name
@@ -20054,6 +20430,7 @@ components:
       properties:
         common_name:
           type: string
+          minLength: 1
         subject_alt_name:
           type: string
         validity_days:
@@ -20088,6 +20465,10 @@ components:
         private_key_available:
           type: boolean
           readOnly: true
+        private_key_type:
+          type: string
+          nullable: true
+          readOnly: true
         certificate_download_url:
           type: string
           readOnly: true
@@ -20112,15 +20493,18 @@ components:
       - pk
       - private_key_available
       - private_key_download_url
+      - private_key_type
     CertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer
       properties:
         name:
           type: string
+          minLength: 1
         certificate_data:
           type: string
           writeOnly: true
+          minLength: 1
           description: PEM-encoded Certificate data
         key_data:
           type: string
@@ -20130,6 +20514,7 @@ components:
         managed:
           type: string
           nullable: true
+          minLength: 1
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
             and updated automatically. This is flag only indicates that an object
@@ -20147,6 +20532,7 @@ components:
     ChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/AccessDeniedChallenge'
+      - $ref: '#/components/schemas/AppleLoginChallenge'
       - $ref: '#/components/schemas/AuthenticatorDuoChallenge'
       - $ref: '#/components/schemas/AuthenticatorSMSChallenge'
       - $ref: '#/components/schemas/AuthenticatorStaticChallenge'
@@ -20168,6 +20554,7 @@ components:
         propertyName: component
         mapping:
           ak-stage-access-denied: '#/components/schemas/AccessDeniedChallenge'
+          ak-flow-sources-oauth-apple: '#/components/schemas/AppleLoginChallenge'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallenge'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallenge'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallenge'
@@ -20194,15 +20581,8 @@ components:
       type: object
       description: Serialize authentik Config into DRF Object
       properties:
-        error_reporting_enabled:
-          type: boolean
-          readOnly: true
-        error_reporting_environment:
-          type: string
-          readOnly: true
-        error_reporting_send_pii:
-          type: boolean
-          readOnly: true
+        error_reporting:
+          $ref: '#/components/schemas/ErrorReportingConfig'
         capabilities:
           type: array
           items:
@@ -20221,31 +20601,7 @@ components:
       - cache_timeout_policies
       - cache_timeout_reputation
       - capabilities
-      - error_reporting_enabled
-      - error_reporting_environment
-      - error_reporting_send_pii
-    ConfigFile:
-      type: object
-      description: Info about a single configuration file
-      properties:
-        name:
-          type: string
-          readOnly: true
-        last_applied:
-          type: string
-          format: date-time
-          readOnly: true
-        status:
-          type: string
-          readOnly: true
-        message:
-          type: string
-          readOnly: true
-      required:
-      - last_applied
-      - message
-      - name
-      - status
+      - error_reporting
     ConsentChallenge:
       type: object
       description: Challenge info for consent screens
@@ -20285,6 +20641,7 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-consent
     ConsentStage:
       type: object
@@ -20306,6 +20663,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -20318,6 +20678,7 @@ components:
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -20334,6 +20695,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -20342,6 +20704,7 @@ components:
           $ref: '#/components/schemas/ConsentStageModeEnum'
         consent_expire_in:
           type: string
+          minLength: 1
           title: Consent expires in
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
       required:
@@ -20427,12 +20790,16 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -20443,6 +20810,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -20459,6 +20827,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         pk:
           type: integer
         name:
@@ -20467,6 +20838,7 @@ components:
           type: string
           readOnly: true
       required:
+      - meta_model_name
       - name
       - pk
       - type
@@ -20493,8 +20865,10 @@ components:
       properties:
         device_class:
           type: string
+          minLength: 1
         device_uid:
           type: string
+          minLength: 1
         challenge:
           type: object
           additionalProperties: {}
@@ -20546,6 +20920,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         url:
           type: string
           description: Can be in the format of 'unix://<path>' when connecting to
@@ -20565,6 +20942,7 @@ components:
             for no authentication.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - url
@@ -20576,12 +20954,14 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         local:
           type: boolean
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
         url:
           type: string
+          minLength: 1
           description: Can be in the format of 'unix://<path>' when connecting to
             a local docker daemon, or 'https://<hostname>:2376' when connecting to
             a remote system.
@@ -20625,6 +21005,7 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-dummy
     DummyPolicy:
       type: object
@@ -20651,6 +21032,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -20667,6 +21051,7 @@ components:
       required:
       - bound_to
       - component
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -20711,12 +21096,16 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -20727,6 +21116,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -20754,6 +21144,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
       required:
@@ -20785,6 +21176,7 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-email
     EmailStage:
       type: object
@@ -20804,6 +21196,9 @@ components:
           type: string
           readOnly: true
         verbose_name_plural:
+          type: string
+          readOnly: true
+        meta_model_name:
           type: string
           readOnly: true
         flow_set:
@@ -20848,6 +21243,7 @@ components:
           description: Activate users upon completion of stage.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -20858,6 +21254,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -20868,6 +21265,7 @@ components:
             and connection settings below will be ignored.
         host:
           type: string
+          minLength: 1
         port:
           type: integer
           maximum: 2147483647
@@ -20888,6 +21286,7 @@ components:
         from_address:
           type: string
           format: email
+          minLength: 1
           maxLength: 254
         token_expiry:
           type: integer
@@ -20896,8 +21295,10 @@ components:
           description: Time in minutes the token sent is valid.
         subject:
           type: string
+          minLength: 1
         template:
           type: string
+          minLength: 1
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
@@ -20914,6 +21315,28 @@ components:
       required:
       - code
       - string
+    ErrorReportingConfig:
+      type: object
+      description: Config for error reporting
+      properties:
+        enabled:
+          type: boolean
+          readOnly: true
+        environment:
+          type: string
+          readOnly: true
+        send_pii:
+          type: boolean
+          readOnly: true
+        traces_sample_rate:
+          type: number
+          format: float
+          readOnly: true
+      required:
+      - enabled
+      - environment
+      - send_pii
+      - traces_sample_rate
     Event:
       type: object
       description: Event Serializer
@@ -20966,6 +21389,7 @@ components:
       - source_linked
       - impersonation_started
       - impersonation_ended
+      - flow_execution
       - policy_execution
       - policy_exception
       - property_mapping_exception
@@ -21005,6 +21429,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -21025,6 +21452,7 @@ components:
       required:
       - bound_to
       - component
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -21064,12 +21492,14 @@ components:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
+          minLength: 1
         context:
           type: object
           additionalProperties: {}
         client_ip:
           type: string
           nullable: true
+          minLength: 1
         expires:
           type: string
           format: date-time
@@ -21147,6 +21577,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -21156,6 +21589,7 @@ components:
       - bound_to
       - component
       - expression
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -21172,6 +21606,7 @@ components:
             will be logged. By default, only execution errors are logged.
         expression:
           type: string
+          minLength: 1
       required:
       - expression
     FilePathRequest:
@@ -21180,6 +21615,7 @@ components:
       properties:
         url:
           type: string
+          minLength: 1
       required:
       - url
     FileUploadRequest:
@@ -21261,6 +21697,7 @@ components:
       - title
     FlowChallengeResponseRequest:
       oneOf:
+      - $ref: '#/components/schemas/AppleChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorSMSChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
@@ -21279,6 +21716,7 @@ components:
       discriminator:
         propertyName: component
         mapping:
+          ak-flow-sources-oauth-apple: '#/components/schemas/AppleChallengeResponseRequest'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallengeResponseRequest'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
@@ -21358,13 +21796,16 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         slug:
           type: string
+          minLength: 1
           description: Visible in the URL.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         title:
           type: string
+          minLength: 1
           description: Shown as the Title in Flow pages.
         designation:
           allOf:
@@ -21582,12 +22023,14 @@ components:
       properties:
         username:
           type: string
+          minLength: 1
           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
             only.
           pattern: ^[\w.@+-]+$
           maxLength: 150
         name:
           type: string
+          minLength: 1
           description: User's display name.
         is_active:
           type: boolean
@@ -21615,6 +22058,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           maxLength: 80
         is_superuser:
           type: boolean
@@ -21659,6 +22103,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -21673,6 +22120,7 @@ components:
       required:
       - bound_to
       - component
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -21689,6 +22137,7 @@ components:
             will be logged. By default, only execution errors are logged.
         password_field:
           type: string
+          minLength: 1
           description: Field key to check, field keys defined in Prompt stages are
             available.
         allowed_count:
@@ -21747,6 +22196,8 @@ components:
           type: string
         recovery_url:
           type: string
+        passwordless_url:
+          type: string
         primary_action:
           type: string
         sources:
@@ -21767,9 +22218,11 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-identification
         uid_field:
           type: string
+          minLength: 1
         password:
           type: string
           nullable: true
@@ -21793,6 +22246,9 @@ components:
           type: string
           readOnly: true
         verbose_name_plural:
+          type: string
+          readOnly: true
+        meta_model_name:
           type: string
           readOnly: true
         flow_set:
@@ -21831,6 +22287,12 @@ components:
           nullable: true
           description: Optional recovery flow, which is linked at the bottom of the
             page.
+        passwordless_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optional passwordless flow, which is linked at the bottom of
+            the page.
         sources:
           type: array
           items:
@@ -21841,6 +22303,7 @@ components:
           type: boolean
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -21851,6 +22314,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -21887,6 +22351,12 @@ components:
           nullable: true
           description: Optional recovery flow, which is linked at the bottom of the
             page.
+        passwordless_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optional passwordless flow, which is linked at the bottom of
+            the page.
         sources:
           type: array
           items:
@@ -21927,7 +22397,7 @@ components:
           additionalProperties: {}
         created_by:
           allOf:
-          - $ref: '#/components/schemas/User'
+          - $ref: '#/components/schemas/GroupMember'
           readOnly: true
         single_use:
           type: boolean
@@ -21968,6 +22438,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -21979,6 +22452,7 @@ components:
             when no invitation is given.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -21989,6 +22463,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -22004,11 +22479,6 @@ components:
       enum:
       - global
       - per_provider
-      type: string
-    JwtAlgEnum:
-      enum:
-      - HS256
-      - RS256
       type: string
     KubernetesServiceConnection:
       type: object
@@ -22034,6 +22504,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         kubeconfig:
           type: object
           additionalProperties: {}
@@ -22041,6 +22514,7 @@ components:
             the currently selected context.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -22051,6 +22525,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         local:
           type: boolean
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
@@ -22143,11 +22618,15 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         object_field:
           type: string
       required:
       - component
       - expression
+      - meta_model_name
       - name
       - object_field
       - pk
@@ -22160,6 +22639,7 @@ components:
         managed:
           type: string
           nullable: true
+          minLength: 1
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
             and updated automatically. This is flag only indicates that an object
@@ -22167,10 +22647,13 @@ components:
             the API, but expect changes to be overwritten in a later update.
         name:
           type: string
+          minLength: 1
         expression:
           type: string
+          minLength: 1
         object_field:
           type: string
+          minLength: 1
       required:
       - expression
       - name
@@ -22209,6 +22692,9 @@ components:
           type: string
           readOnly: true
         verbose_name_plural:
+          type: string
+          readOnly: true
+        meta_model_name:
           type: string
           readOnly: true
         base_dn:
@@ -22253,6 +22739,7 @@ components:
       - assigned_application_slug
       - authorization_flow
       - component
+      - meta_model_name
       - name
       - outpost_set
       - pk
@@ -22264,6 +22751,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         authorization_flow:
           type: string
           format: uuid
@@ -22275,6 +22763,7 @@ components:
             format: uuid
         base_dn:
           type: string
+          minLength: 1
           description: DN under which objects are accessible.
         search_group:
           type: string
@@ -22346,6 +22835,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -22356,6 +22848,12 @@ components:
         server_uri:
           type: string
           format: uri
+        peer_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally verify the LDAP Server's Certificate against the
+            CA Chain in this keypair.
         bind_cn:
           type: string
         start_tls:
@@ -22409,6 +22907,7 @@ components:
       required:
       - base_dn
       - component
+      - meta_model_name
       - name
       - pk
       - server_uri
@@ -22421,9 +22920,11 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: Source's display Name.
         slug:
           type: string
+          minLength: 1
           description: Internal source name, used in URLs.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
@@ -22448,7 +22949,14 @@ components:
             or a new user enrolled.
         server_uri:
           type: string
+          minLength: 1
           format: uri
+        peer_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally verify the LDAP Server's Certificate against the
+            CA Chain in this keypair.
         bind_cn:
           type: string
         bind_password:
@@ -22459,6 +22967,7 @@ components:
           title: Enable Start TLS
         base_dn:
           type: string
+          minLength: 1
         additional_user_dn:
           type: string
           title: Addition User DN
@@ -22469,15 +22978,19 @@ components:
           description: Prepended to Base DN for Group-queries.
         user_object_filter:
           type: string
+          minLength: 1
           description: Consider Objects matching this filter to be Users.
         group_object_filter:
           type: string
+          minLength: 1
           description: Consider Objects matching this filter to be Groups.
         group_membership_field:
           type: string
+          minLength: 1
           description: Field which contains members of a group.
         object_uniqueness_field:
           type: string
+          minLength: 1
           description: Field which contains a unique Identifier.
         sync_users:
           type: boolean
@@ -22519,11 +23032,13 @@ components:
       oneOf:
       - $ref: '#/components/schemas/RedirectChallenge'
       - $ref: '#/components/schemas/PlexAuthenticationChallenge'
+      - $ref: '#/components/schemas/AppleLoginChallenge'
       discriminator:
         propertyName: component
         mapping:
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
           ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallenge'
+          ak-flow-sources-oauth-apple: '#/components/schemas/AppleLoginChallenge'
     LoginMetrics:
       type: object
       description: Login Metrics per 1h
@@ -22651,6 +23166,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         transports:
           type: array
           items:
@@ -22717,6 +23233,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         mode:
           $ref: '#/components/schemas/NotificationTransportModeEnum'
         webhook_url:
@@ -22766,8 +23283,10 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         expression:
           type: string
+          minLength: 1
       required:
       - expression
       - name
@@ -22807,6 +23326,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
@@ -22831,15 +23353,11 @@ components:
           type: boolean
           description: Include User claims from scopes in the id_token, for applications
             that don't access the userinfo endpoint.
-        jwt_alg:
-          allOf:
-          - $ref: '#/components/schemas/JwtAlgEnum'
-          title: JWT Algorithm
-          description: Algorithm used to sign the JWT Token
-        rsa_key:
+        signing_key:
           type: string
           format: uuid
           nullable: true
+          title: RSA Key
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
         redirect_uris:
@@ -22859,6 +23377,7 @@ components:
       - assigned_application_slug
       - authorization_flow
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -22869,6 +23388,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         authorization_flow:
           type: string
           format: uuid
@@ -22886,31 +23406,30 @@ components:
                 of their credentials. Public clients are incapable.
         client_id:
           type: string
+          minLength: 1
           maxLength: 255
         client_secret:
           type: string
           maxLength: 255
         access_code_validity:
           type: string
+          minLength: 1
           description: 'Access codes not valid on or after current time + this value
             (Format: hours=1;minutes=2;seconds=3).'
         token_validity:
           type: string
+          minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
         include_claims_in_id_token:
           type: boolean
           description: Include User claims from scopes in the id_token, for applications
             that don't access the userinfo endpoint.
-        jwt_alg:
-          allOf:
-          - $ref: '#/components/schemas/JwtAlgEnum'
-          title: JWT Algorithm
-          description: Algorithm used to sign the JWT Token
-        rsa_key:
+        signing_key:
           type: string
           format: uuid
           nullable: true
+          title: RSA Key
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
         redirect_uris:
@@ -22995,6 +23514,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -23038,6 +23560,7 @@ components:
       - callback_url
       - component
       - consumer_key
+      - meta_model_name
       - name
       - pk
       - provider_type
@@ -23051,9 +23574,11 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: Source's display Name.
         slug:
           type: string
+          minLength: 1
           description: Internal source name, used in URLs.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
@@ -23081,29 +23606,35 @@ components:
         request_token_url:
           type: string
           nullable: true
+          minLength: 1
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
           maxLength: 255
         authorization_url:
           type: string
           nullable: true
+          minLength: 1
           description: URL the user is redirect to to conest the flow.
           maxLength: 255
         access_token_url:
           type: string
           nullable: true
+          minLength: 1
           description: URL used by authentik to retrieve tokens.
           maxLength: 255
         profile_url:
           type: string
           nullable: true
+          minLength: 1
           description: URL used by authentik to get user information.
           maxLength: 255
         consumer_key:
           type: string
+          minLength: 1
         consumer_secret:
           type: string
           writeOnly: true
+          minLength: 1
       required:
       - consumer_key
       - consumer_secret
@@ -23249,6 +23780,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         type:
           $ref: '#/components/schemas/OutpostTypeEnum'
         providers:
@@ -23267,6 +23799,7 @@ components:
         managed:
           type: string
           nullable: true
+          minLength: 1
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
             and updated automatically. This is flag only indicates that an object
@@ -23559,6 +24092,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorValidateStage'
+      required:
+      - pagination
+      - results
+    PaginatedBlueprintInstanceList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlueprintInstance'
       required:
       - pagination
       - results
@@ -26045,9 +26613,11 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-password
         password:
           type: string
+          minLength: 1
       required:
       - password
     PasswordExpiryPolicy:
@@ -26075,6 +26645,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -26088,6 +26661,7 @@ components:
       - bound_to
       - component
       - days
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -26135,6 +26709,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -26142,22 +26719,26 @@ components:
           type: string
           description: Field key to check, field keys defined in Prompt stages are
             available.
+        amount_digits:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
         amount_uppercase:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         amount_lowercase:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         amount_symbols:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         length_min:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         symbol_charset:
           type: string
         error_message:
@@ -26166,6 +26747,7 @@ components:
       - bound_to
       - component
       - error_message
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -26182,28 +26764,35 @@ components:
             will be logged. By default, only execution errors are logged.
         password_field:
           type: string
+          minLength: 1
           description: Field key to check, field keys defined in Prompt stages are
             available.
+        amount_digits:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
         amount_uppercase:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         amount_lowercase:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         amount_symbols:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         length_min:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         symbol_charset:
           type: string
+          minLength: 1
         error_message:
           type: string
+          minLength: 1
       required:
       - error_message
     PasswordStage:
@@ -26224,6 +26813,9 @@ components:
           type: string
           readOnly: true
         verbose_name_plural:
+          type: string
+          readOnly: true
+        meta_model_name:
           type: string
           readOnly: true
         flow_set:
@@ -26250,6 +26842,7 @@ components:
       required:
       - backends
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -26260,6 +26853,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26290,9 +26884,11 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: Application's display Name.
         slug:
           type: string
+          minLength: 1
           description: Internal application name, used in URLs.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
@@ -26316,6 +26912,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26326,12 +26923,15 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
     PatchedAuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26344,17 +26944,21 @@ components:
             If empty, user will not be able to configure this stage.
         client_id:
           type: string
+          minLength: 1
         client_secret:
           type: string
           writeOnly: true
+          minLength: 1
         api_hostname:
           type: string
+          minLength: 1
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26369,10 +26973,13 @@ components:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
           type: string
+          minLength: 1
         account_sid:
           type: string
+          minLength: 1
         auth:
           type: string
+          minLength: 1
         auth_password:
           type: string
         auth_type:
@@ -26383,6 +26990,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26403,6 +27011,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26424,6 +27033,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26442,22 +27052,37 @@ components:
           description: Stage used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
+    PatchedBlueprintInstanceRequest:
+      type: object
+      description: Info about a single blueprint instance file
+      properties:
+        path:
+          type: string
+          minLength: 1
+        context:
+          type: object
+          additionalProperties: {}
+        status:
+          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
     PatchedCaptchaStageRequest:
       type: object
       description: CaptchaStage Serializer
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/FlowRequest'
         public_key:
           type: string
+          minLength: 1
           description: Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
         private_key:
           type: string
           writeOnly: true
+          minLength: 1
           description: Private key, acquired from https://www.google.com/recaptcha/intro/v3.html
     PatchedCertificateKeyPairRequest:
       type: object
@@ -26465,9 +27090,11 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         certificate_data:
           type: string
           writeOnly: true
+          minLength: 1
           description: PEM-encoded Certificate data
         key_data:
           type: string
@@ -26477,6 +27104,7 @@ components:
         managed:
           type: string
           nullable: true
+          minLength: 1
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
             and updated automatically. This is flag only indicates that an object
@@ -26488,6 +27116,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26496,6 +27125,7 @@ components:
           $ref: '#/components/schemas/ConsentStageModeEnum'
         consent_expire_in:
           type: string
+          minLength: 1
           title: Consent expires in
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
     PatchedDenyStageRequest:
@@ -26504,6 +27134,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26514,12 +27145,14 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         local:
           type: boolean
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
         url:
           type: string
+          minLength: 1
           description: Can be in the format of 'unix://<path>' when connecting to
             a local docker daemon, or 'https://<hostname>:2376' when connecting to
             a remote system.
@@ -26562,6 +27195,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26572,6 +27206,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
     PatchedEmailStageRequest:
@@ -26580,6 +27215,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26590,6 +27226,7 @@ components:
             and connection settings below will be ignored.
         host:
           type: string
+          minLength: 1
         port:
           type: integer
           maximum: 2147483647
@@ -26610,6 +27247,7 @@ components:
         from_address:
           type: string
           format: email
+          minLength: 1
           maxLength: 254
         token_expiry:
           type: integer
@@ -26618,8 +27256,10 @@ components:
           description: Time in minutes the token sent is valid.
         subject:
           type: string
+          minLength: 1
         template:
           type: string
+          minLength: 1
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
@@ -26659,12 +27299,14 @@ components:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
+          minLength: 1
         context:
           type: object
           additionalProperties: {}
         client_ip:
           type: string
           nullable: true
+          minLength: 1
         expires:
           type: string
           format: date-time
@@ -26684,19 +27326,23 @@ components:
             will be logged. By default, only execution errors are logged.
         expression:
           type: string
+          minLength: 1
     PatchedFlowRequest:
       type: object
       description: Flow Serializer
       properties:
         name:
           type: string
+          minLength: 1
         slug:
           type: string
+          minLength: 1
           description: Visible in the URL.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         title:
           type: string
+          minLength: 1
           description: Shown as the Title in Flow pages.
         designation:
           allOf:
@@ -26745,6 +27391,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           maxLength: 80
         is_superuser:
           type: boolean
@@ -26773,6 +27420,7 @@ components:
             will be logged. By default, only execution errors are logged.
         password_field:
           type: string
+          minLength: 1
           description: Field key to check, field keys defined in Prompt stages are
             available.
         allowed_count:
@@ -26785,6 +27433,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26821,6 +27470,12 @@ components:
           nullable: true
           description: Optional recovery flow, which is linked at the bottom of the
             page.
+        passwordless_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optional passwordless flow, which is linked at the bottom of
+            the page.
         sources:
           type: array
           items:
@@ -26848,6 +27503,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -26863,6 +27519,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         local:
           type: boolean
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
@@ -26879,6 +27536,7 @@ components:
         managed:
           type: string
           nullable: true
+          minLength: 1
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
             and updated automatically. This is flag only indicates that an object
@@ -26886,16 +27544,20 @@ components:
             the API, but expect changes to be overwritten in a later update.
         name:
           type: string
+          minLength: 1
         expression:
           type: string
+          minLength: 1
         object_field:
           type: string
+          minLength: 1
     PatchedLDAPProviderRequest:
       type: object
       description: LDAPProvider Serializer
       properties:
         name:
           type: string
+          minLength: 1
         authorization_flow:
           type: string
           format: uuid
@@ -26907,6 +27569,7 @@ components:
             format: uuid
         base_dn:
           type: string
+          minLength: 1
           description: DN under which objects are accessible.
         search_group:
           type: string
@@ -26943,9 +27606,11 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: Source's display Name.
         slug:
           type: string
+          minLength: 1
           description: Internal source name, used in URLs.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
@@ -26970,7 +27635,14 @@ components:
             or a new user enrolled.
         server_uri:
           type: string
+          minLength: 1
           format: uri
+        peer_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally verify the LDAP Server's Certificate against the
+            CA Chain in this keypair.
         bind_cn:
           type: string
         bind_password:
@@ -26981,6 +27653,7 @@ components:
           title: Enable Start TLS
         base_dn:
           type: string
+          minLength: 1
         additional_user_dn:
           type: string
           title: Addition User DN
@@ -26991,15 +27664,19 @@ components:
           description: Prepended to Base DN for Group-queries.
         user_object_filter:
           type: string
+          minLength: 1
           description: Consider Objects matching this filter to be Users.
         group_object_filter:
           type: string
+          minLength: 1
           description: Consider Objects matching this filter to be Groups.
         group_membership_field:
           type: string
+          minLength: 1
           description: Field which contains members of a group.
         object_uniqueness_field:
           type: string
+          minLength: 1
           description: Field which contains a unique Identifier.
         sync_users:
           type: boolean
@@ -27038,6 +27715,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         transports:
           type: array
           items:
@@ -27063,6 +27741,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         mode:
           $ref: '#/components/schemas/NotificationTransportModeEnum'
         webhook_url:
@@ -27082,14 +27761,17 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         expression:
           type: string
+          minLength: 1
     PatchedOAuth2ProviderRequest:
       type: object
       description: OAuth2Provider Serializer
       properties:
         name:
           type: string
+          minLength: 1
         authorization_flow:
           type: string
           format: uuid
@@ -27107,31 +27789,30 @@ components:
                 of their credentials. Public clients are incapable.
         client_id:
           type: string
+          minLength: 1
           maxLength: 255
         client_secret:
           type: string
           maxLength: 255
         access_code_validity:
           type: string
+          minLength: 1
           description: 'Access codes not valid on or after current time + this value
             (Format: hours=1;minutes=2;seconds=3).'
         token_validity:
           type: string
+          minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
         include_claims_in_id_token:
           type: boolean
           description: Include User claims from scopes in the id_token, for applications
             that don't access the userinfo endpoint.
-        jwt_alg:
-          allOf:
-          - $ref: '#/components/schemas/JwtAlgEnum'
-          title: JWT Algorithm
-          description: Algorithm used to sign the JWT Token
-        rsa_key:
+        signing_key:
           type: string
           format: uuid
           nullable: true
+          title: RSA Key
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
         redirect_uris:
@@ -27152,9 +27833,11 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: Source's display Name.
         slug:
           type: string
+          minLength: 1
           description: Internal source name, used in URLs.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
@@ -27182,35 +27865,42 @@ components:
         request_token_url:
           type: string
           nullable: true
+          minLength: 1
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
           maxLength: 255
         authorization_url:
           type: string
           nullable: true
+          minLength: 1
           description: URL the user is redirect to to conest the flow.
           maxLength: 255
         access_token_url:
           type: string
           nullable: true
+          minLength: 1
           description: URL used by authentik to retrieve tokens.
           maxLength: 255
         profile_url:
           type: string
           nullable: true
+          minLength: 1
           description: URL used by authentik to get user information.
           maxLength: 255
         consumer_key:
           type: string
+          minLength: 1
         consumer_secret:
           type: string
           writeOnly: true
+          minLength: 1
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
       properties:
         name:
           type: string
+          minLength: 1
         type:
           $ref: '#/components/schemas/OutpostTypeEnum'
         providers:
@@ -27229,6 +27919,7 @@ components:
         managed:
           type: string
           nullable: true
+          minLength: 1
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
             and updated automatically. This is flag only indicates that an object
@@ -27264,34 +27955,42 @@ components:
             will be logged. By default, only execution errors are logged.
         password_field:
           type: string
+          minLength: 1
           description: Field key to check, field keys defined in Prompt stages are
             available.
+        amount_digits:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
         amount_uppercase:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         amount_lowercase:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         amount_symbols:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         length_min:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         symbol_charset:
           type: string
+          minLength: 1
         error_message:
           type: string
+          minLength: 1
     PatchedPasswordStageRequest:
       type: object
       description: PasswordStage Serializer
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -27322,17 +28021,21 @@ components:
           format: uuid
         identifier:
           type: string
+          minLength: 1
         plex_token:
           type: string
+          minLength: 1
     PatchedPlexSourceRequest:
       type: object
       description: Plex Source Serializer
       properties:
         name:
           type: string
+          minLength: 1
           description: Source's display Name.
         slug:
           type: string
+          minLength: 1
           description: Internal source name, used in URLs.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
@@ -27357,11 +28060,13 @@ components:
             or a new user enrolled.
         client_id:
           type: string
+          minLength: 1
           description: Client identifier used to talk to Plex.
         allowed_servers:
           type: array
           items:
             type: string
+            minLength: 1
           description: Which servers a user has to be a member of to be granted access.
             Empty list allows every server.
         allow_friends:
@@ -27369,6 +28074,7 @@ components:
           description: Allow friends to authenticate, even if you don't share a server.
         plex_token:
           type: string
+          minLength: 1
           description: Plex token used to check friends
     PatchedPolicyBindingRequest:
       type: object
@@ -27408,9 +28114,11 @@ components:
       properties:
         field_key:
           type: string
+          minLength: 1
           description: Name of the form field, also used to store the value
         label:
           type: string
+          minLength: 1
         type:
           $ref: '#/components/schemas/PromptTypeEnum'
         required:
@@ -27433,6 +28141,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -27453,6 +28162,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         authorization_flow:
           type: string
           format: uuid
@@ -27467,6 +28177,7 @@ components:
           format: uri
         external_host:
           type: string
+          minLength: 1
           format: uri
         internal_host_ssl_validation:
           type: boolean
@@ -27503,6 +28214,7 @@ components:
           type: string
         token_validity:
           type: string
+          minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
     PatchedReputationPolicyRequest:
@@ -27531,6 +28243,7 @@ components:
         managed:
           type: string
           nullable: true
+          minLength: 1
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
             and updated automatically. This is flag only indicates that an object
@@ -27538,10 +28251,13 @@ components:
             the API, but expect changes to be overwritten in a later update.
         name:
           type: string
+          minLength: 1
         expression:
           type: string
+          minLength: 1
         saml_name:
           type: string
+          minLength: 1
         friendly_name:
           type: string
           nullable: true
@@ -27551,6 +28267,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         authorization_flow:
           type: string
           format: uuid
@@ -27563,24 +28280,29 @@ components:
         acs_url:
           type: string
           format: uri
+          minLength: 1
           maxLength: 200
         audience:
           type: string
-          description: Value of the audience restriction field of the asseration.
-            When left empty, no audience restriction will be added.
+          description: Value of the audience restriction field of the assertion. When
+            left empty, no audience restriction will be added.
         issuer:
           type: string
+          minLength: 1
           description: Also known as EntityID
         assertion_valid_not_before:
           type: string
+          minLength: 1
           description: 'Assertion valid not before current time + this value (Format:
             hours=-1;minutes=-2;seconds=-3).'
         assertion_valid_not_on_or_after:
           type: string
+          minLength: 1
           description: 'Assertion not valid on or after current time + this value
             (Format: hours=1;minutes=2;seconds=3).'
         session_valid_not_on_or_after:
           type: string
+          minLength: 1
           description: 'Session not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
         name_id_mapping:
@@ -27620,9 +28342,11 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: Source's display Name.
         slug:
           type: string
+          minLength: 1
           description: Internal source name, used in URLs.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
@@ -27655,6 +28379,7 @@ components:
         sso_url:
           type: string
           format: uri
+          minLength: 1
           description: URL that the initial Login request is sent to.
           maxLength: 200
         slo_url:
@@ -27678,7 +28403,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: Singing Keypair
+          title: Signing Keypair
           description: Keypair which is used to sign outgoing requests. Leave empty
             to disable signing.
         digest_algorithm:
@@ -27687,6 +28412,7 @@ components:
           $ref: '#/components/schemas/SignatureAlgorithmEnum'
         temporary_user_delete_after:
           type: string
+          minLength: 1
           title: Delete temporary users after
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
@@ -27697,6 +28423,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
     PatchedScopeMappingRequest:
@@ -27706,6 +28433,7 @@ components:
         managed:
           type: string
           nullable: true
+          minLength: 1
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
             and updated automatically. This is flag only indicates that an object
@@ -27713,10 +28441,13 @@ components:
             the API, but expect changes to be overwritten in a later update.
         name:
           type: string
+          minLength: 1
         expression:
           type: string
+          minLength: 1
         scope_name:
           type: string
+          minLength: 1
           description: Scope used by the client
         description:
           type: string
@@ -27728,6 +28459,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
     PatchedTOTPDeviceRequest:
@@ -27736,6 +28468,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
     PatchedTenantRequest:
@@ -27744,16 +28477,20 @@ components:
       properties:
         domain:
           type: string
+          minLength: 1
           description: Domain that activates this tenant. Can be a superset, i.e.
             `a.b` for `aa.b` and `ba.b`
         default:
           type: boolean
         branding_title:
           type: string
+          minLength: 1
         branding_logo:
           type: string
+          minLength: 1
         branding_favicon:
           type: string
+          minLength: 1
         flow_authentication:
           type: string
           format: uuid
@@ -27772,7 +28509,13 @@ components:
           nullable: true
         event_retention:
           type: string
+          minLength: 1
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        web_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Web Certificate used by the authentik Core webserver.
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -27780,6 +28523,7 @@ components:
         managed:
           type: string
           nullable: true
+          minLength: 1
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
             and updated automatically. This is flag only indicates that an object
@@ -27787,6 +28531,7 @@ components:
             the API, but expect changes to be overwritten in a later update.
         identifier:
           type: string
+          minLength: 1
           maxLength: 255
           pattern: ^[-a-zA-Z0-9_]+$
         intent:
@@ -27808,6 +28553,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -27818,12 +28564,14 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/FlowRequest'
         session_duration:
           type: string
+          minLength: 1
           description: 'Determines how long a session lasts. Default of 0 means that
             the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
     PatchedUserLogoutStageRequest:
@@ -27832,6 +28580,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -27840,18 +28589,26 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
+        user:
+          type: integer
         source:
           type: string
           format: uuid
         identifier:
           type: string
+          minLength: 1
           maxLength: 255
+        access_token:
+          type: string
+          writeOnly: true
+          nullable: true
     PatchedUserRequest:
       type: object
       description: User Serializer
       properties:
         username:
           type: string
+          minLength: 1
           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
             only.
           pattern: ^[\w.@+-]+$
@@ -27887,6 +28644,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -27905,6 +28663,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           maxLength: 200
     Permission:
       type: object
@@ -27948,6 +28707,7 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-flow-sources-plex
     PlexSource:
       type: object
@@ -27987,6 +28747,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -28011,6 +28774,7 @@ components:
           description: Plex token used to check friends
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - plex_token
@@ -28050,8 +28814,10 @@ components:
           format: uuid
         identifier:
           type: string
+          minLength: 1
         plex_token:
           type: string
+          minLength: 1
       required:
       - identifier
       - plex_token
@@ -28062,9 +28828,11 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: Source's display Name.
         slug:
           type: string
+          minLength: 1
           description: Internal source name, used in URLs.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
@@ -28089,11 +28857,13 @@ components:
             or a new user enrolled.
         client_id:
           type: string
+          minLength: 1
           description: Client identifier used to talk to Plex.
         allowed_servers:
           type: array
           items:
             type: string
+            minLength: 1
           description: Which servers a user has to be a member of to be granted access.
             Empty list allows every server.
         allow_friends:
@@ -28101,6 +28871,7 @@ components:
           description: Allow friends to authenticate, even if you don't share a server.
         plex_token:
           type: string
+          minLength: 1
           description: Plex token used to check friends
       required:
       - name
@@ -28112,6 +28883,7 @@ components:
       properties:
         plex_token:
           type: string
+          minLength: 1
       required:
       - plex_token
     Policy:
@@ -28139,12 +28911,16 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
       required:
       - bound_to
       - component
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -28347,6 +29123,7 @@ components:
       properties:
         component:
           type: string
+          minLength: 1
           default: ak-stage-prompt
       additionalProperties: {}
     PromptRequest:
@@ -28355,9 +29132,11 @@ components:
       properties:
         field_key:
           type: string
+          minLength: 1
           description: Name of the form field, also used to store the value
         label:
           type: string
+          minLength: 1
         type:
           $ref: '#/components/schemas/PromptTypeEnum'
         required:
@@ -28398,6 +29177,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -28415,6 +29197,7 @@ components:
       required:
       - component
       - fields
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -28425,6 +29208,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -28487,9 +29271,13 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
       required:
       - component
       - expression
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -28543,11 +29331,15 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
       - authorization_flow
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -28563,6 +29355,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         authorization_flow:
           type: string
           format: uuid
@@ -28584,6 +29377,7 @@ components:
       - github
       - google
       - openidconnect
+      - okta
       - reddit
       - twitter
       type: string
@@ -28664,7 +29458,17 @@ components:
           items:
             type: string
           readOnly: true
+        assigned_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
       required:
+      - assigned_application_name
+      - assigned_application_slug
       - external_host
       - name
       - oidc_configuration
@@ -28705,6 +29509,9 @@ components:
           type: string
           readOnly: true
         verbose_name_plural:
+          type: string
+          readOnly: true
+        meta_model_name:
           type: string
           readOnly: true
         internal_host:
@@ -28764,6 +29571,7 @@ components:
       - authorization_flow
       - component
       - external_host
+      - meta_model_name
       - name
       - outpost_set
       - pk
@@ -28776,6 +29584,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         authorization_flow:
           type: string
           format: uuid
@@ -28790,6 +29599,7 @@ components:
           format: uri
         external_host:
           type: string
+          minLength: 1
           format: uri
         internal_host_ssl_validation:
           type: boolean
@@ -28826,6 +29636,7 @@ components:
           type: string
         token_validity:
           type: string
+          minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
       required:
@@ -28913,6 +29724,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         bound_to:
           type: integer
           readOnly: true
@@ -28927,6 +29741,7 @@ components:
       required:
       - bound_to
       - component
+      - meta_model_name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -28992,6 +29807,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         saml_name:
           type: string
         friendly_name:
@@ -29000,6 +29818,7 @@ components:
       required:
       - component
       - expression
+      - meta_model_name
       - name
       - pk
       - saml_name
@@ -29012,6 +29831,7 @@ components:
         managed:
           type: string
           nullable: true
+          minLength: 1
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
             and updated automatically. This is flag only indicates that an object
@@ -29019,10 +29839,13 @@ components:
             the API, but expect changes to be overwritten in a later update.
         name:
           type: string
+          minLength: 1
         expression:
           type: string
+          minLength: 1
         saml_name:
           type: string
+          minLength: 1
         friendly_name:
           type: string
           nullable: true
@@ -29066,14 +29889,17 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         acs_url:
           type: string
           format: uri
           maxLength: 200
         audience:
           type: string
-          description: Value of the audience restriction field of the asseration.
-            When left empty, no audience restriction will be added.
+          description: Value of the audience restriction field of the assertion. When
+            left empty, no audience restriction will be added.
         issuer:
           type: string
           description: Also known as EntityID
@@ -29129,6 +29955,7 @@ components:
       - assigned_application_slug
       - authorization_flow
       - component
+      - meta_model_name
       - metadata_download_url
       - name
       - pk
@@ -29140,6 +29967,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         authorization_flow:
           type: string
         file:
@@ -29155,6 +29983,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         authorization_flow:
           type: string
           format: uuid
@@ -29167,24 +29996,29 @@ components:
         acs_url:
           type: string
           format: uri
+          minLength: 1
           maxLength: 200
         audience:
           type: string
-          description: Value of the audience restriction field of the asseration.
-            When left empty, no audience restriction will be added.
+          description: Value of the audience restriction field of the assertion. When
+            left empty, no audience restriction will be added.
         issuer:
           type: string
+          minLength: 1
           description: Also known as EntityID
         assertion_valid_not_before:
           type: string
+          minLength: 1
           description: 'Assertion valid not before current time + this value (Format:
             hours=-1;minutes=-2;seconds=-3).'
         assertion_valid_not_on_or_after:
           type: string
+          minLength: 1
           description: 'Assertion not valid on or after current time + this value
             (Format: hours=1;minutes=2;seconds=3).'
         session_valid_not_on_or_after:
           type: string
+          minLength: 1
           description: 'Session not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
         name_id_mapping:
@@ -29260,6 +30094,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -29300,7 +30137,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: Singing Keypair
+          title: Signing Keypair
           description: Keypair which is used to sign outgoing requests. Leave empty
             to disable signing.
         digest_algorithm:
@@ -29315,6 +30152,7 @@ components:
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - pre_authentication_flow
@@ -29328,9 +30166,11 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: Source's display Name.
         slug:
           type: string
+          minLength: 1
           description: Internal source name, used in URLs.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
@@ -29363,6 +30203,7 @@ components:
         sso_url:
           type: string
           format: uri
+          minLength: 1
           description: URL that the initial Login request is sent to.
           maxLength: 200
         slo_url:
@@ -29386,7 +30227,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: Singing Keypair
+          title: Signing Keypair
           description: Keypair which is used to sign outgoing requests. Leave empty
             to disable signing.
         digest_algorithm:
@@ -29395,6 +30236,7 @@ components:
           $ref: '#/components/schemas/SignatureAlgorithmEnum'
         temporary_user_delete_after:
           type: string
+          minLength: 1
           title: Delete temporary users after
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
@@ -29429,6 +30271,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
       required:
@@ -29463,6 +30306,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         scope_name:
           type: string
           description: Scope used by the client
@@ -29473,6 +30319,7 @@ components:
       required:
       - component
       - expression
+      - meta_model_name
       - name
       - pk
       - scope_name
@@ -29485,6 +30332,7 @@ components:
         managed:
           type: string
           nullable: true
+          minLength: 1
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
             and updated automatically. This is flag only indicates that an object
@@ -29492,10 +30340,13 @@ components:
             the API, but expect changes to be overwritten in a later update.
         name:
           type: string
+          minLength: 1
         expression:
           type: string
+          minLength: 1
         scope_name:
           type: string
+          minLength: 1
           description: Scope used by the client
         description:
           type: string
@@ -29534,8 +30385,12 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -29546,6 +30401,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         local:
           type: boolean
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
@@ -29651,6 +30507,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -29660,6 +30519,7 @@ components:
             or a new user enrolled.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - slug
@@ -29671,9 +30531,11 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: Source's display Name.
         slug:
           type: string
+          minLength: 1
           description: Internal source name, used in URLs.
           maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
@@ -29758,12 +30620,16 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -29800,6 +30666,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -29833,6 +30700,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
       required:
@@ -29852,16 +30720,10 @@ components:
       properties:
         token:
           type: string
+          minLength: 1
           maxLength: 16
       required:
       - token
-    StatusEnum:
-      enum:
-      - SUCCESSFUL
-      - WARNING
-      - ERROR
-      - UNKNOWN
-      type: string
     SubModeEnum:
       enum:
       - hashed_user_id
@@ -29945,6 +30807,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
       required:
@@ -29961,7 +30824,7 @@ components:
           type: string
           format: date-time
         status:
-          $ref: '#/components/schemas/StatusEnum'
+          $ref: '#/components/schemas/TaskStatusEnum'
         messages:
           type: array
           items: {}
@@ -29971,6 +30834,13 @@ components:
       - task_description
       - task_finish_timestamp
       - task_name
+    TaskStatusEnum:
+      enum:
+      - SUCCESSFUL
+      - WARNING
+      - ERROR
+      - UNKNOWN
+      type: string
     Tenant:
       type: object
       description: Tenant Serializer
@@ -30010,6 +30880,11 @@ components:
         event_retention:
           type: string
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        web_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Web Certificate used by the authentik Core webserver.
       required:
       - domain
       - tenant_uuid
@@ -30019,16 +30894,20 @@ components:
       properties:
         domain:
           type: string
+          minLength: 1
           description: Domain that activates this tenant. Can be a superset, i.e.
             `a.b` for `aa.b` and `ba.b`
         default:
           type: boolean
         branding_title:
           type: string
+          minLength: 1
         branding_logo:
           type: string
+          minLength: 1
         branding_favicon:
           type: string
+          minLength: 1
         flow_authentication:
           type: string
           format: uuid
@@ -30047,7 +30926,13 @@ components:
           nullable: true
         event_retention:
           type: string
+          minLength: 1
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        web_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Web Certificate used by the authentik Core webserver.
       required:
       - domain
     Token:
@@ -30094,6 +30979,7 @@ components:
         managed:
           type: string
           nullable: true
+          minLength: 1
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
             and updated automatically. This is flag only indicates that an object
@@ -30101,6 +30987,7 @@ components:
             the API, but expect changes to be overwritten in a later update.
         identifier:
           type: string
+          minLength: 1
           maxLength: 255
           pattern: ^[-a-zA-Z0-9_]+$
         intent:
@@ -30272,12 +31159,16 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -30288,6 +31179,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -30320,6 +31212,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -30330,6 +31225,7 @@ components:
             the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -30340,12 +31236,14 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/FlowRequest'
         session_duration:
           type: string
+          minLength: 1
           description: 'Determines how long a session lasts. Default of 0 means that
             the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
@@ -30370,12 +31268,16 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -30386,6 +31288,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -30433,7 +31336,6 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
           type: string
           format: uuid
@@ -30449,15 +31351,23 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
+        user:
+          type: integer
         source:
           type: string
           format: uuid
         identifier:
           type: string
+          minLength: 1
           maxLength: 255
+        access_token:
+          type: string
+          writeOnly: true
+          nullable: true
       required:
       - identifier
       - source
+      - user
     UserReputation:
       type: object
       description: UserReputation Serializer
@@ -30486,6 +31396,7 @@ components:
       properties:
         username:
           type: string
+          minLength: 1
           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
             only.
           pattern: ^[\w.@+-]+$
@@ -30595,6 +31506,7 @@ components:
       properties:
         username:
           type: string
+          minLength: 1
           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
             only.
           pattern: ^[\w.@+-]+$
@@ -30618,6 +31530,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         create_group:
           type: boolean
           default: false
@@ -30673,6 +31586,12 @@ components:
       - pk
       - source
       - user
+    UserVerificationEnum:
+      enum:
+      - required
+      - preferred
+      - discouraged
+      type: string
     UserWriteStage:
       type: object
       description: UserWriteStage Serializer
@@ -30693,6 +31612,9 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
         flow_set:
           type: array
           items:
@@ -30707,6 +31629,7 @@ components:
           description: Optionally add newly created users to this group.
       required:
       - component
+      - meta_model_name
       - name
       - pk
       - verbose_name
@@ -30717,6 +31640,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         flow_set:
           type: array
           items:
@@ -30788,6 +31712,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           maxLength: 200
       required:
       - name

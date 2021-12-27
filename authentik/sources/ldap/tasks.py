@@ -1,5 +1,4 @@
 """LDAP Sync tasks"""
-from django.utils.text import slugify
 from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
 
@@ -39,7 +38,7 @@ def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str):
         # to set the state with
         return
     sync = path_to_class(sync_class)
-    self.set_uid(f"{slugify(source.name)}-{sync.__name__}")
+    self.set_uid(f"{source.slug}_{sync.__name__.replace('LDAPSynchronizer', '').lower()}")
     try:
         sync_inst = sync(source)
         count = sync_inst.sync()

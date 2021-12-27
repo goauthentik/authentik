@@ -116,7 +116,7 @@ class SAMLSource(Source):
         default=None,
         blank=True,
         null=True,
-        verbose_name=_("Singing Keypair"),
+        verbose_name=_("Signing Keypair"),
         help_text=_(
             "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
         ),
@@ -167,8 +167,7 @@ class SAMLSource(Source):
             reverse(f"authentik_sources_saml:{view}", kwargs={"source_slug": self.slug})
         )
 
-    @property
-    def ui_login_button(self) -> UILoginButton:
+    def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
             challenge=RedirectChallenge(
                 instance={

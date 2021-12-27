@@ -66,6 +66,7 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
             "component",
             "verbose_name",
             "verbose_name_plural",
+            "meta_model_name",
             "bound_to",
         ]
         depth = 3

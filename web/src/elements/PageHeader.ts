@@ -1,3 +1,5 @@
+import { t } from "@lingui/macro";
+
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -10,6 +12,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { EventsApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
+import { currentInterface } from "../api/Sentry";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
@@ -32,11 +35,15 @@ export class PageHeader extends LitElement {
     @property()
     set header(value: string) {
         tenant().then((tenant) => {
-            if (value !== "") {
-                document.title = `${value} - ${tenant.brandingTitle}`;
-            } else {
-                document.title = tenant.brandingTitle || TITLE_DEFAULT;
+            const currentIf = currentInterface();
+            let title = tenant.brandingTitle || TITLE_DEFAULT;
+            if (currentIf === "admin") {
+                title = `${t`Admin`} - ${title}`;
             }
+            if (value !== "") {
+                title = `${value} - ${title}`;
+            }
+            document.title = title;
         });
         this._header = value;
     }
@@ -81,7 +88,7 @@ export class PageHeader extends LitElement {
                     font-size: 24px;
                 }
                 .notification-trigger.has-notifications {
-                    color: #2b9af3;
+                    color: var(--pf-global--active-color--100);
                 }
             `,
         ];
@@ -108,10 +115,11 @@ export class PageHeader extends LitElement {
 
     renderIcon(): TemplateResult {
         if (this.icon) {
-            if (this.iconImage) {
+            if (this.iconImage && !this.icon.startsWith("fa://")) {
                 return html`<img class="pf-icon" src="${this.icon}" />&nbsp;`;
             }
-            return html`<i class=${this.icon}></i>&nbsp;`;
+            const icon = this.icon.replaceAll("fa://", "fa ");
+            return html`<i class=${icon}></i>&nbsp;`;
         }
         return html``;
     }
@@ -132,7 +140,10 @@ export class PageHeader extends LitElement {
             </button>
             <section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1>${this.renderIcon()} ${this.header}</h1>
+                    <h1>
+                        ${this.renderIcon()}
+                        <slot name="header"> ${this.header} </slot>
+                    </h1>
                     ${this.description ? html`<p>${this.description}</p>` : html``}
                 </div>
             </section>

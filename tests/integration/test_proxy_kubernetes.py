@@ -5,7 +5,7 @@ import yaml
 from django.test import TestCase
 from structlog.stdlib import get_logger
 
-from authentik.flows.models import Flow
+from authentik.core.tests.utils import create_test_flow
 from authentik.outposts.controllers.kubernetes import KubernetesController
 from authentik.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
 from authentik.outposts.tasks import outpost_local_connection
@@ -38,7 +38,7 @@ class TestProxyKubernetes(TestCase):
             name="test",
             internal_host="http://localhost",
             external_host="http://localhost",
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
         )
         service_connection = KubernetesServiceConnection.objects.first()
         outpost: Outpost = Outpost.objects.create(
@@ -59,14 +59,14 @@ class TestProxyKubernetes(TestCase):
             name="test",
             internal_host="http://localhost",
             external_host="https://localhost",
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
         )
         provider2: ProxyProvider = ProxyProvider.objects.create(
             name="test2",
             internal_host="http://otherhost",
             external_host="https://otherhost",
             mode=ProxyMode.FORWARD_SINGLE,
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
         )
 
         service_connection = KubernetesServiceConnection.objects.first()

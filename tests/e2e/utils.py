@@ -19,7 +19,6 @@ from docker.models.containers import Container
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -28,14 +27,10 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.managed.manager import ObjectManager
 
 RETRIES = int(environ.get("RETRIES", "5"))
-
-# pylint: disable=invalid-name
-def USER() -> User:  # noqa
-    """Cached function that always returns akadmin"""
-    return User.objects.get(username="akadmin")
 
 
 def get_docker_tag() -> str:
@@ -54,9 +49,11 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     container: Optional[Container] = None
     wait_timeout: int
+    user: User
 
     def setUp(self):
         super().setUp()
+        # pylint: disable=invalid-name
         self.maxDiff = None
         self.wait_timeout = 60
         self.driver = self._get_driver()
@@ -64,6 +61,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.driver.implicitly_wait(30)
         self.wait = WebDriverWait(self.driver, self.wait_timeout)
         self.logger = get_logger()
+        self.user = create_test_admin_user()
         if specs := self.get_container_specs():
             self.container = self._start_container(specs)
 
@@ -94,11 +92,11 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def output_container_logs(self, container: Optional[Container] = None):
         """Output the container logs to our STDOUT"""
-        ct = container or self.container
-        self.logger.debug("--------container logs", container=ct.image.tags[0])
-        for log in ct.logs().decode().split("\n"):
-            self.logger.debug(log, container=ct.image.tags[0])
-        self.logger.debug("--------end container logs", container=ct.image.tags[0])
+        _container = container or self.container
+        print(f"--------container logs {_container.image.tags[0]}")
+        for log in _container.logs().decode().split("\n"):
+            print(log)
+        print(f"--------end container logs {_container.image.tags[0]}")
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
         """Optionally get container specs which will launched on setup, wait for the container to
@@ -111,7 +109,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             try:
                 return webdriver.Remote(
                     command_executor="http://localhost:4444/wd/hub",
-                    desired_capabilities=DesiredCapabilities.CHROME,
+                    options=webdriver.ChromeOptions(),
                 )
             except WebDriverException:
                 count += 1
@@ -163,7 +161,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
         identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").click()
         identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
-            USER().username
+            self.user.username
         )
         identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
             Keys.ENTER
@@ -172,7 +170,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         flow_executor = self.get_shadow_root("ak-flow-executor")
         password_stage = self.get_shadow_root("ak-stage-password", flow_executor)
         password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
-            USER().username
+            self.user.username
         )
         password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(Keys.ENTER)
         sleep(1)

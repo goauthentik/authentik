@@ -37,7 +37,7 @@ func (ls *LDAPServer) StartLDAPTLSServer() error {
 
 	ln, err := net.Listen("tcp", listen)
 	if err != nil {
-		ls.log.WithField("listen", listen).WithError(err).Fatalf("FATAL: listen failed")
+		ls.log.WithField("listen", listen).WithError(err).Fatalf("listen failed")
 	}
 
 	proxyListener := &proxyproto.Listener{Listener: ln}
@@ -45,11 +45,11 @@ func (ls *LDAPServer) StartLDAPTLSServer() error {
 
 	tln := tls.NewListener(proxyListener, tlsConfig)
 
-	ls.log.WithField("listen", listen).Info("Starting ldap tls server")
+	ls.log.WithField("listen", listen).Info("Starting LDAP SSL server")
 	err = ls.s.Serve(tln)
 	if err != nil {
 		return err
 	}
-	ls.log.Printf("closing %s", ln.Addr())
-	return ls.s.ListenAndServe(listen)
+	ls.log.WithField("listen", listen).Info("Stopping LDAP SSL Server")
+	return nil
 }

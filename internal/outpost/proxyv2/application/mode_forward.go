@@ -26,8 +26,9 @@ func (a *Application) configureForward() error {
 func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Request) {
 	claims, err := a.getClaims(r)
 	if claims != nil && err == nil {
-		a.addHeaders(r, claims)
-		copyHeadersToResponse(rw, r)
+		a.addHeaders(rw.Header(), claims)
+		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
+		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
 		return
 	} else if claims == nil && a.IsAllowlisted(r) {
 		a.log.Trace("path can be accessed without authentication")
@@ -47,16 +48,20 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	// to the application
 	// see https://doc.traefik.io/traefik/middlewares/forwardauth/
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
-	s.Values[constants.SessionRedirect] = fmt.Sprintf(
-		"%s://%s%s",
-		r.Header.Get("X-Forwarded-Proto"),
-		r.Header.Get("X-Forwarded-Host"),
-		r.Header.Get("X-Forwarded-Uri"),
-	)
+	s.Values[constants.SessionRedirect] = a.getTraefikForwardUrl(r).String()
+	if r.Header.Get("X-Forwarded-Uri") == "/akprox/start" {
+		a.log.Info("Detected potential redirect loop")
+		if val, ok := s.Values[constants.SessionLoopDetection]; !ok {
+			s.Values[constants.SessionLoopDetection] = 1
+		} else {
+			s.Values[constants.SessionLoopDetection] = val.(int) + 1
+		}
+	}
 	err = s.Save(r, rw)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session before redirect")
 	}
+
 	proto := r.Header.Get("X-Forwarded-Proto")
 	if proto != "" {
 		proto = proto + ":"
@@ -69,9 +74,10 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request) {
 	claims, err := a.getClaims(r)
 	if claims != nil && err == nil {
-		a.addHeaders(r, claims)
-		copyHeadersToResponse(rw, r)
+		a.addHeaders(rw.Header(), claims)
+		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
 		rw.WriteHeader(200)
+		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
 		return
 	} else if claims == nil && a.IsAllowlisted(r) {
 		a.log.Trace("path can be accessed without authentication")

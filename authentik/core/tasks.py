@@ -29,7 +29,7 @@ LOGGER = get_logger()
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task()
+@prefill_task
 def clean_expired_models(self: MonitoredTask):
     """Remove expired objects"""
     messages = []
@@ -69,7 +69,7 @@ def should_backup() -> bool:
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task()
+@prefill_task
 def backup_database(self: MonitoredTask):  # pragma: no cover
     """Database backup"""
     self.result_timeout_hours = 25

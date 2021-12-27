@@ -8,7 +8,7 @@ import { until } from "lit/directives/until.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { Outpost, OutpostsApi } from "@goauthentik/api";
+import { Outpost, OutpostTypeEnum, OutpostsApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -23,6 +23,16 @@ import "./OutpostDeploymentModal";
 import "./OutpostForm";
 import "./OutpostHealth";
 import "./OutpostHealthSimple";
+
+export function TypeToLabel(type?: OutpostTypeEnum): string {
+    if (!type) return "";
+    switch (type) {
+        case OutpostTypeEnum.Proxy:
+            return t`Proxy`;
+        case OutpostTypeEnum.Ldap:
+            return t`LDAP`;
+    }
+}
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
@@ -51,6 +61,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     columns(): TableColumn[] {
         return [
             new TableColumn(t`Name`, "name"),
+            new TableColumn(t`Type`, "type"),
             new TableColumn(t`Providers`),
             new TableColumn(t`Integration`, "service_connection__name"),
             new TableColumn(t`Health and Version`),
@@ -79,6 +90,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                     : html`<i class="pf-icon pf-icon-ok"></i>
                           <small> ${t`Logging in via ${item.config.authentik_host}.`} </small>`}
             </div>`,
+            html`${TypeToLabel(item.type)}`,
             html`<ul>
                 ${item.providersObj?.map((p) => {
                     return html`<li>

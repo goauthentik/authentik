@@ -30,7 +30,6 @@ type WebConfig struct {
 	Listen                 string `yaml:"listen"`
 	ListenTLS              string `yaml:"listen_tls"`
 	ListenMetrics          string `yaml:"listen_metrics"`
-	LoadLocalFiles         bool   `yaml:"load_local_files" env:"AUTHENTIK_WEB_LOAD_LOCAL_FILES"`
 	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"AUTHENTIK_WEB__DISABLE_EMBEDDED_OUTPOST"`
 }
 
@@ -43,4 +42,5 @@ type ErrorReportingConfig struct {
 	Environment string `yaml:"environment" env:"AUTHENTIK_ERROR_REPORTING__ENVIRONMENT"`
 	SendPII     bool   `yaml:"send_pii" env:"AUTHENTIK_ERROR_REPORTING__SEND_PII"`
 	DSN         string
+	SampleRate  float64 `yaml:"sample_rate" env:"AUTHENTIK_ERROR_REPORTING__SAMPLE_RATE"`
 }

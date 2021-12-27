@@ -38,7 +38,7 @@ func NewGoUnicorn() *GoUnicorn {
 
 func (g *GoUnicorn) initCmd() {
 	command := "gunicorn"
-	args := []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi.app:application"}
+	args := []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi:application"}
 	if config.G.Debug {
 		command = "./manage.py"
 		args = []string{"runserver"}

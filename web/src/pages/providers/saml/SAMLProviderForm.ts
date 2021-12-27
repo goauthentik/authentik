@@ -297,7 +297,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Configure the maximum allowed time drift for an asseration.`}
+                            ${t`Configure the maximum allowed time drift for an assertion.`}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}

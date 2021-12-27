@@ -1,13 +1,6 @@
 """authentik administration metrics"""
-import time
-from collections import Counter
-from datetime import timedelta
-
-from django.db.models import Count, ExpressionWrapper, F
-from django.db.models.fields import DurationField
-from django.db.models.functions import ExtractHour
-from django.utils.timezone import now
 from drf_spectacular.utils import extend_schema, extend_schema_field
+from guardian.shortcuts import get_objects_for_user
 from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
@@ -15,31 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.events.models import Event, EventAction
-
-
-def get_events_per_1h(**filter_kwargs) -> list[dict[str, int]]:
-    """Get event count by hour in the last day, fill with zeros"""
-    date_from = now() - timedelta(days=1)
-    result = (
-        Event.objects.filter(created__gte=date_from, **filter_kwargs)
-        .annotate(age=ExpressionWrapper(now() - F("created"), output_field=DurationField()))
-        .annotate(age_hours=ExtractHour("age"))
-        .values("age_hours")
-        .annotate(count=Count("pk"))
-        .order_by("age_hours")
-    )
-    data = Counter({int(d["age_hours"]): d["count"] for d in result})
-    results = []
-    _now = now()
-    for hour in range(0, -24, -1):
-        results.append(
-            {
-                "x_cord": time.mktime((_now + timedelta(hours=hour)).timetuple()) * 1000,
-                "y_cord": data[hour * -1],
-            }
-        )
-    return results
+from authentik.events.models import EventAction
 
 
 class CoordinateSerializer(PassiveSerializer):
@@ -58,12 +27,22 @@ class LoginMetricsSerializer(PassiveSerializer):
     @extend_schema_field(CoordinateSerializer(many=True))
     def get_logins_per_1h(self, _):
         """Get successful logins per hour for the last 24 hours"""
-        return get_events_per_1h(action=EventAction.LOGIN)
+        user = self.context["user"]
+        return (
+            get_objects_for_user(user, "authentik_events.view_event")
+            .filter(action=EventAction.LOGIN)
+            .get_events_per_hour()
+        )
 
     @extend_schema_field(CoordinateSerializer(many=True))
     def get_logins_failed_per_1h(self, _):
         """Get failed logins per hour for the last 24 hours"""
-        return get_events_per_1h(action=EventAction.LOGIN_FAILED)
+        user = self.context["user"]
+        return (
+            get_objects_for_user(user, "authentik_events.view_event")
+            .filter(action=EventAction.LOGIN_FAILED)
+            .get_events_per_hour()
+        )
 
 
 class AdministrationMetricsViewSet(APIView):
@@ -75,4 +54,5 @@ class AdministrationMetricsViewSet(APIView):
     def get(self, request: Request) -> Response:
         """Login Metrics per 1h"""
         serializer = LoginMetricsSerializer(True)
+        serializer.context["user"] = request.user
         return Response(serializer.data)

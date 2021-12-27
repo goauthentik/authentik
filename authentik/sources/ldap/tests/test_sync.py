@@ -120,9 +120,9 @@ class LDAPSyncTests(TestCase):
         self.source.property_mappings_group.set(
             LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/default-name")
         )
-        self.source.save()
         connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            self.source.save()
             group_sync = GroupLDAPSynchronizer(self.source)
             group_sync.sync()
             membership_sync = MembershipLDAPSynchronizer(self.source)
@@ -143,9 +143,9 @@ class LDAPSyncTests(TestCase):
         self.source.property_mappings_group.set(
             LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/openldap-cn")
         )
-        self.source.save()
         connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            self.source.save()
             group_sync = GroupLDAPSynchronizer(self.source)
             group_sync.sync()
             membership_sync = MembershipLDAPSynchronizer(self.source)
@@ -168,9 +168,9 @@ class LDAPSyncTests(TestCase):
         self.source.property_mappings_group.set(
             LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/openldap-cn")
         )
-        self.source.save()
         connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            self.source.save()
             user_sync = UserLDAPSynchronizer(self.source)
             user_sync.sync()
             group_sync = GroupLDAPSynchronizer(self.source)

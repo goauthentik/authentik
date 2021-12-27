@@ -20,6 +20,11 @@ if TYPE_CHECKING:
 T = TypeVar("T", V1Pod, V1Deployment)
 
 
+def get_version() -> str:
+    """Wrapper for __version__ to make testing easier"""
+    return __version__
+
+
 class KubernetesObjectReconciler(Generic[T]):
     """Base Kubernetes Reconciler, handles the basic logic."""
 
@@ -146,13 +151,13 @@ class KubernetesObjectReconciler(Generic[T]):
         return V1ObjectMeta(
             namespace=self.namespace,
             labels={
-                "app.kubernetes.io/name": f"authentik-{self.controller.outpost.type.lower()}",
                 "app.kubernetes.io/instance": slugify(self.controller.outpost.name),
-                "app.kubernetes.io/version": __version__,
                 "app.kubernetes.io/managed-by": "goauthentik.io",
-                "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
-                "goauthentik.io/outpost-type": str(self.controller.outpost.type),
+                "app.kubernetes.io/name": f"authentik-{self.controller.outpost.type.lower()}",
+                "app.kubernetes.io/version": get_version(),
                 "goauthentik.io/outpost-name": slugify(self.controller.outpost.name),
+                "goauthentik.io/outpost-type": str(self.controller.outpost.type),
+                "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
             },
             **kwargs,
         )

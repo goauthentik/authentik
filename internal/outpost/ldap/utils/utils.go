@@ -5,6 +5,7 @@ import (
 
 	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
+	ldapConstants "goauthentik.io/internal/outpost/ldap/constants"
 )
 
 func BoolToString(in bool) string {
@@ -83,4 +84,36 @@ func MustHaveAttribute(attrs []*ldap.EntryAttribute, name string, value []string
 		})
 	}
 	return attrs
+}
+
+func IncludeObjectClass(searchOC string, ocs map[string]bool) bool {
+	if searchOC == "" {
+		return true
+	}
+
+	return ocs[searchOC]
+}
+
+func GetContainerEntry(filterOC string, dn string, ou string) *ldap.Entry {
+	if IncludeObjectClass(filterOC, ldapConstants.GetContainerOCs()) {
+		return &ldap.Entry{
+			DN: dn,
+			Attributes: []*ldap.EntryAttribute{
+				{
+					Name:   "distinguishedName",
+					Values: []string{dn},
+				},
+				{
+					Name:   "objectClass",
+					Values: []string{"top", "nsContainer"},
+				},
+				{
+					Name:   "commonName",
+					Values: []string{ou},
+				},
+			},
+		}
+	}
+
+	return nil
 }

@@ -6,7 +6,7 @@ from django.test.client import RequestFactory
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, InvalidResponseAction
 from authentik.stages.dummy.models import DummyStage
@@ -18,7 +18,7 @@ class TestFlowInspector(APITestCase):
 
     def setUp(self):
         self.request_factory = RequestFactory()
-        self.admin = User.objects.get(username="akadmin")
+        self.admin = create_test_admin_user()
         self.client.force_login(self.admin)
 
     def test(self):
@@ -77,7 +77,7 @@ class TestFlowInspector(APITestCase):
 
         self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {"uid_field": "akadmin"},
+            {"uid_field": self.admin.username},
             follow=True,
         )
 
@@ -89,5 +89,5 @@ class TestFlowInspector(APITestCase):
         self.assertEqual(content["plans"][0]["current_stage"]["stage_obj"]["name"], "ident")
         self.assertEqual(content["current_plan"]["current_stage"]["stage_obj"]["name"], "dummy2")
         self.assertEqual(
-            content["current_plan"]["plan_context"]["pending_user"]["username"], "akadmin"
+            content["current_plan"]["plan_context"]["pending_user"]["username"], self.admin.username
         )

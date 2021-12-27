@@ -3,7 +3,8 @@ from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import USER_ATTRIBUTE_CHANGE_EMAIL, USER_ATTRIBUTE_CHANGE_USERNAME, User
-from authentik.flows.models import Flow, FlowDesignation
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
+from authentik.flows.models import FlowDesignation
 from authentik.stages.email.models import EmailStage
 from authentik.tenants.models import Tenant
 
@@ -12,7 +13,7 @@ class TestUsersAPI(APITestCase):
     """Test Users API"""
 
     def setUp(self) -> None:
-        self.admin = User.objects.get(username="akadmin")
+        self.admin = create_test_admin_user()
         self.user = User.objects.create(username="test-user")
 
     def test_update_self(self):
@@ -69,10 +70,8 @@ class TestUsersAPI(APITestCase):
 
     def test_recovery(self):
         """Test user recovery link (no recovery flow set)"""
-        flow = Flow.objects.create(
-            name="test", title="test", slug="test", designation=FlowDesignation.RECOVERY
-        )
-        tenant: Tenant = Tenant.objects.first()
+        flow = create_test_flow(FlowDesignation.RECOVERY)
+        tenant: Tenant = create_test_tenant()
         tenant.flow_recovery = flow
         tenant.save()
         self.client.force_login(self.admin)
@@ -99,10 +98,8 @@ class TestUsersAPI(APITestCase):
         """Test user recovery link (no email stage)"""
         self.user.email = "foo@bar.baz"
         self.user.save()
-        flow = Flow.objects.create(
-            name="test", title="test", slug="test", designation=FlowDesignation.RECOVERY
-        )
-        tenant: Tenant = Tenant.objects.first()
+        flow = create_test_flow(designation=FlowDesignation.RECOVERY)
+        tenant: Tenant = create_test_tenant()
         tenant.flow_recovery = flow
         tenant.save()
         self.client.force_login(self.admin)
@@ -115,10 +112,8 @@ class TestUsersAPI(APITestCase):
         """Test user recovery link"""
         self.user.email = "foo@bar.baz"
         self.user.save()
-        flow = Flow.objects.create(
-            name="test", title="test", slug="test", designation=FlowDesignation.RECOVERY
-        )
-        tenant: Tenant = Tenant.objects.first()
+        flow = create_test_flow(FlowDesignation.RECOVERY)
+        tenant: Tenant = create_test_tenant()
         tenant.flow_recovery = flow
         tenant.save()
 

@@ -17,8 +17,10 @@ import { AKResponse } from "../../api/Client";
 import { EVENT_REFRESH } from "../../constants";
 import { groupBy } from "../../utils";
 import "../EmptyState";
+import "../buttons/SpinnerButton";
 import "../chips/Chip";
 import "../chips/ChipGroup";
+import { getURLParam, updateURLParams } from "../router/RouteMatch";
 import "./TablePagination";
 import "./TableSearch";
 
@@ -115,7 +117,7 @@ export abstract class Table<T> extends LitElement {
     order?: string;
 
     @property({ type: String })
-    search?: string;
+    search: string = getURLParam("search", "");
 
     @property({ type: Boolean })
     checkbox = false;
@@ -161,12 +163,12 @@ export abstract class Table<T> extends LitElement {
         });
     }
 
-    public fetch(): void {
+    public async fetch(): Promise<void> {
         if (this.isLoading) {
             return;
         }
         this.isLoading = true;
-        this.apiEndpoint(this.page)
+        return this.apiEndpoint(this.page)
             .then((r) => {
                 this.data = r;
                 this.page = r.pagination.current;
@@ -318,19 +320,14 @@ export abstract class Table<T> extends LitElement {
     }
 
     renderToolbar(): TemplateResult {
-        return html`<button
-            @click=${() => {
-                this.dispatchEvent(
-                    new CustomEvent(EVENT_REFRESH, {
-                        bubbles: true,
-                        composed: true,
-                    }),
-                );
+        return html` <ak-spinner-button
+            .callAction=${() => {
+                return this.fetch();
             }}
-            class="pf-c-button pf-m-secondary"
+            class="pf-m-secondary"
         >
-            ${t`Refresh`}
-        </button>`;
+            ${t`Refresh`}</ak-spinner-button
+        >`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -346,15 +343,14 @@ export abstract class Table<T> extends LitElement {
             return html``;
         }
         return html`<ak-table-search
+            class="pf-c-toolbar__item pf-m-search-filter"
             value=${ifDefined(this.search)}
             .onSearch=${(value: string) => {
                 this.search = value;
-                this.dispatchEvent(
-                    new CustomEvent(EVENT_REFRESH, {
-                        bubbles: true,
-                        composed: true,
-                    }),
-                );
+                this.fetch();
+                updateURLParams({
+                    search: value,
+                });
             }}
         >
         </ak-table-search>`;
@@ -368,7 +364,7 @@ export abstract class Table<T> extends LitElement {
     renderToolbarContainer(): TemplateResult {
         return html`<div class="pf-c-toolbar">
             <div class="pf-c-toolbar__content">
-                <div class="pf-m-search-filter">${this.renderSearch()}</div>
+                <div class="pf-c-toolbar__group pf-m-search-filter">${this.renderSearch()}</div>
                 <div class="pf-c-toolbar__bulk-select">${this.renderToolbar()}</div>
                 <div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>
                 <div class="pf-c-toolbar__group">${this.renderToolbarSelected()}</div>
@@ -378,12 +374,7 @@ export abstract class Table<T> extends LitElement {
                           .pages=${this.data?.pagination}
                           .pageChangeHandler=${(page: number) => {
                               this.page = page;
-                              this.dispatchEvent(
-                                  new CustomEvent(EVENT_REFRESH, {
-                                      bubbles: true,
-                                      composed: true,
-                                  }),
-                              );
+                              this.fetch();
                           }}
                       >
                       </ak-table-pagination>`
@@ -438,12 +429,7 @@ export abstract class Table<T> extends LitElement {
                           .pages=${this.data?.pagination}
                           .pageChangeHandler=${(page: number) => {
                               this.page = page;
-                              this.dispatchEvent(
-                                  new CustomEvent(EVENT_REFRESH, {
-                                      bubbles: true,
-                                      composed: true,
-                                  }),
-                              );
+                              this.fetch();
                           }}
                       >
                       </ak-table-pagination>

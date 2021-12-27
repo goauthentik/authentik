@@ -29,14 +29,15 @@ def check_plex_token(self: MonitoredTask, source_slug: int):
         auth.get_user_info()
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, ["Plex token is valid."]))
     except RequestException as exc:
+        error = exception_to_string(exc).replace(source.plex_token, "$PLEX_TOKEN")
         self.set_status(
             TaskResult(
                 TaskResultStatus.ERROR,
-                ["Plex token is invalid/an error occurred:", exception_to_string(exc)],
+                ["Plex token is invalid/an error occurred:", error],
             )
         )
         Event.new(
             EventAction.CONFIGURATION_ERROR,
-            message=f"Plex token invalid, please re-authenticate source.\n{str(exc)}",
+            message=f"Plex token invalid, please re-authenticate source.\n{error}",
             source=source,
         ).save()

@@ -3,7 +3,6 @@
 import uuid
 from os import environ
 
-import django.core.validators
 import django.db.models.deletion
 from django.apps.registry import Apps
 from django.conf import settings
@@ -12,6 +11,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from django.db.models import Count
 
 import authentik.core.models
+import authentik.lib.models
 
 
 def migrate_sessions(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
@@ -161,7 +161,7 @@ class Migration(migrations.Migration):
             model_name="application",
             name="meta_launch_url",
             field=models.TextField(
-                blank=True, default="", validators=[django.core.validators.URLValidator()]
+                blank=True, default="", validators=[authentik.lib.models.DomainlessURLValidator()]
             ),
         ),
         migrations.RunPython(

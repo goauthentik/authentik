@@ -6,14 +6,12 @@ from typing import Any, Optional
 from unittest.case import skipUnless
 from unittest.mock import Mock, patch
 
-from django.test import override_settings
 from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from structlog.stdlib import get_logger
 from yaml import safe_dump
 
 from authentik.core.models import User
@@ -26,7 +24,6 @@ from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 CONFIG_PATH = "/tmp/dex.yml"  # nosec
-LOGGER = get_logger()
 
 
 class OAUth1Type(SourceType):
@@ -130,7 +127,6 @@ class TestSourceOAuth2(SeleniumTestCase):
         ident_stage.save()
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")
@@ -180,44 +176,6 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0009_source_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
-    @override_settings(SESSION_COOKIE_SAMESITE="strict")
-    def test_oauth_samesite_strict(self):
-        """test OAuth Source With SameSite set to strict
-        (=will fail because session is not carried over)"""
-        self.create_objects()
-        self.driver.get(self.live_server_url)
-
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
-        wait = WebDriverWait(identification_stage, self.wait_timeout)
-
-        wait.until(
-            ec.presence_of_element_located(
-                (By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button")
-            )
-        )
-        identification_stage.find_element(
-            By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button"
-        ).click()
-
-        # Now we should be at the IDP, wait for the login field
-        self.wait.until(ec.presence_of_element_located((By.ID, "login")))
-        self.driver.find_element(By.ID, "login").send_keys("admin@example.com")
-        self.driver.find_element(By.ID, "password").send_keys("password")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
-
-        # Wait until we're logged in
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
-        self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
-
-    @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")
@@ -271,7 +229,7 @@ class TestSourceOAuth1(SeleniumTestCase):
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
         return {
-            "image": "beryju.org/oauth1-test-server:latest",
+            "image": "ghcr.io/beryju/oauth1-test-server:latest",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,
@@ -307,7 +265,6 @@ class TestSourceOAuth1(SeleniumTestCase):
         ident_stage.save()
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")

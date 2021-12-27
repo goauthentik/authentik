@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
-          go-version: '^1.16.3'
+          go-version: "^1.17"
       - name: Run linter
         run: |
           # Create folder structure for go embeds
@@ -30,24 +30,35 @@ jobs:
             -w /app \
             golangci/golangci-lint:v1.39.0 \
             golangci-lint run -v --timeout 200s
+  ci-outpost-mark:
+    needs:
+      - lint-golint
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo mark
   build:
     timeout-minutes: 120
     needs:
-      - lint-golint
+      - ci-outpost-mark
     strategy:
+      fail-fast: false
       matrix:
         type:
           - proxy
           - ldap
+        arch:
+          - 'linux/amd64'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1.2.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: prepare variables
         id: ev
         env:
-          DOCKER_USERNAME: ${{ secrets.HARBOR_USERNAME }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
           python ./scripts/gh_env.py
       - name: Login to Container Registry
@@ -68,3 +79,42 @@ jobs:
           file: ${{ matrix.type }}.Dockerfile
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
+          platforms: ${{ matrix.arch }}
+  build-outpost-binary:
+    timeout-minutes: 120
+    needs:
+      - ci-outpost-mark
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        type:
+          - proxy
+          - ldap
+        goos: [linux]
+        goarch: [amd64, arm64]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.17"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      - name: Build web
+        run: |
+          cd web
+          npm install
+          npm run build-proxy
+      - name: Build outpost
+        run: |
+          set -x
+          export GOOS=${{ matrix.goos }}
+          export GOARCH=${{ matrix.goarch }}
+          go build -tags=outpost_static_embed -v -o ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }} ./cmd/${{ matrix.type }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
+          path: ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}

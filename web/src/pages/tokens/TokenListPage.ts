@@ -8,6 +8,7 @@ import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import { PFColor } from "../../elements/Label";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/TokenCopyButton";
 import "../../elements/forms/DeleteBulkForm";
@@ -110,7 +111,9 @@ export class TokenListPage extends TablePage<Token> {
                 ${item.managed ? html`<small>${t`Token is managed by authentik.`}</small>` : html``}
             </div>`,
             html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
-            html`${item.expiring ? t`Yes` : t`No`}`,
+            html` <ak-label color=${item.expiring ? PFColor.Green : PFColor.Orange}>
+                ${item.expiring ? t`Yes` : t`No`}
+            </ak-label>`,
             html`${item.expiring ? item.expires?.toLocaleString() : t`-`}`,
             html`${IntentToLabel(item.intent || IntentEnum.Api)}`,
             html`

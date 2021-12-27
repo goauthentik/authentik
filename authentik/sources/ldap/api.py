@@ -1,7 +1,6 @@
 """Source API Views"""
 from typing import Any
 
-from django.utils.text import slugify
 from django_filters.filters import AllValuesMultipleFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
@@ -43,6 +42,7 @@ class LDAPSourceSerializer(SourceSerializer):
         model = LDAPSource
         fields = SourceSerializer.Meta.fields + [
             "server_uri",
+            "peer_certificate",
             "bind_cn",
             "bind_password",
             "start_tls",
@@ -73,11 +73,9 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "name",
         "slug",
         "enabled",
-        "authentication_flow",
-        "enrollment_flow",
-        "policy_engine_mode",
         "server_uri",
         "bind_cn",
+        "peer_certificate",
         "start_tls",
         "base_dn",
         "additional_user_dn",
@@ -111,7 +109,8 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
             GroupLDAPSynchronizer,
             MembershipLDAPSynchronizer,
         ]:
-            task = TaskInfo.by_name(f"ldap_sync_{slugify(source.name)}-{sync_class.__name__}")
+            sync_name = sync_class.__name__.replace("LDAPSynchronizer", "").lower()
+            task = TaskInfo.by_name(f"ldap_sync_{source.slug}_{sync_name}")
             if task:
                 results.append(task)
         return Response(TaskSerializer(results, many=True).data)

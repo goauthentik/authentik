@@ -10,7 +10,9 @@
         "plex",
         "saml",
         "totp",
-        "webauthn"
+        "webauthn",
+        "traefik",
+        "passwordless"
     ],
     "python.linting.pylintEnabled": true,
     "todo-tree.tree.showCountsInTree": true,

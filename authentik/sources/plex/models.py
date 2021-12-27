@@ -3,6 +3,7 @@ from typing import Optional
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.http.request import HttpRequest
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
@@ -62,8 +63,7 @@ class PlexSource(Source):
 
         return PlexSourceSerializer
 
-    @property
-    def ui_login_button(self) -> UILoginButton:
+    def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
             challenge=PlexAuthenticationChallenge(
                 {
@@ -77,7 +77,6 @@ class PlexSource(Source):
             name=self.name,
         )
 
-    @property
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={

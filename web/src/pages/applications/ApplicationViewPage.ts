@@ -1,10 +1,11 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import AKGlobal from "../../authentik.css";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -13,7 +14,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Application, CoreApi } from "@goauthentik/api";
+import { Application, CoreApi, OutpostsApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/EmptyState";
@@ -36,14 +37,45 @@ export class ApplicationViewPage extends LitElement {
             })
             .then((app) => {
                 this.application = app;
+                if (
+                    app.providerObj &&
+                    [
+                        "authentik_providers_proxy.proxyprovider",
+                        "authentik_providers_ldap.ldapprovider",
+                    ].includes(app.providerObj.metaModelName)
+                ) {
+                    new OutpostsApi(DEFAULT_CONFIG)
+                        .outpostsInstancesList({
+                            providersByPk: [app.provider || 0],
+                            pageSize: 1,
+                        })
+                        .then((outposts) => {
+                            if (outposts.pagination.count < 1) {
+                                this.missingOutpost = true;
+                            }
+                        });
+                }
             });
     }
 
     @property({ attribute: false })
     application!: Application;
 
+    @state()
+    missingOutpost = false;
+
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFContent, PFButton, PFDescriptionList, PFGrid, PFCard, AKGlobal];
+        return [
+            PFBase,
+            PFBanner,
+            PFPage,
+            PFContent,
+            PFButton,
+            PFDescriptionList,
+            PFGrid,
+            PFCard,
+            AKGlobal,
+        ];
     }
 
     render(): TemplateResult {
@@ -61,7 +93,12 @@ export class ApplicationViewPage extends LitElement {
         if (!this.application) {
             return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
-        return html` <ak-tabs>
+        return html`<ak-tabs>
+            ${this.missingOutpost
+                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                      ${t`Warning: Application is not used by any Outpost.`}
+                  </div>`
+                : html``}
             <section
                 slot="page-overview"
                 data-tab-title="${t`Overview`}"
@@ -88,6 +125,7 @@ export class ApplicationViewPage extends LitElement {
                                                           .providerObj?.pk}"
                                                   >
                                                       ${this.application.providerObj?.name}
+                                                      (${this.application.providerObj?.verboseName})
                                                   </a>
                                               </div>
                                           </dd>

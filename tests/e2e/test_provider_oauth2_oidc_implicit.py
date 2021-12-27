@@ -9,10 +9,9 @@ from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
-from authentik.crypto.models import CertificateKeyPair
+from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
@@ -23,9 +22,7 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_PROFILE,
 )
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
-
-LOGGER = get_logger()
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -43,7 +40,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         sleep(1)
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="beryju.org/oidc-test-client:latest",
+            image="ghcr.io/beryju/oidc-test-client:latest",
             detach=True,
             network_mode="host",
             auto_remove=True,
@@ -63,11 +60,10 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             status = container.attrs.get("State", {}).get("Health", {}).get("Status")
             if status == "healthy":
                 return container
-            LOGGER.info("Container failed healthcheck")
+            self.logger.info("Container failed healthcheck")
             sleep(1)
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -84,7 +80,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:9009/",
             authorization_flow=authorization_flow,
         )
@@ -109,7 +105,6 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -127,7 +122,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:9009/implicit/",
             authorization_flow=authorization_flow,
         )
@@ -150,13 +145,11 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
         sleep(1)
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
-        print(body)
-        self.assertEqual(body["profile"]["nickname"], USER().username)
-        self.assertEqual(body["profile"]["name"], USER().name)
-        self.assertEqual(body["profile"]["email"], USER().email)
+        self.assertEqual(body["profile"]["nickname"], self.user.username)
+        self.assertEqual(body["profile"]["name"], self.user.name)
+        self.assertEqual(body["profile"]["email"], self.user.email)
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -175,7 +168,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:9009/implicit/",
         )
         provider.property_mappings.set(
@@ -213,12 +206,11 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         sleep(1)
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
 
-        self.assertEqual(body["profile"]["nickname"], USER().username)
-        self.assertEqual(body["profile"]["name"], USER().name)
-        self.assertEqual(body["profile"]["email"], USER().email)
+        self.assertEqual(body["profile"]["nickname"], self.user.username)
+        self.assertEqual(body["profile"]["name"], self.user.name)
+        self.assertEqual(body["profile"]["email"], self.user.email)
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -236,7 +228,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            rsa_key=CertificateKeyPair.objects.first(),
+            signing_key=create_test_cert(),
             redirect_uris="http://localhost:9009/implicit/",
         )
         provider.property_mappings.set(

@@ -8,6 +8,7 @@ import { CoreApi, Group } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import { PFColor } from "../../elements/Label";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
@@ -80,7 +81,9 @@ export class GroupListPage extends TablePage<Group> {
             html`${item.name}`,
             html`${item.parentName || t`-`}`,
             html`${Array.from(item.users || []).length}`,
-            html`${item.isSuperuser ? t`Yes` : t`No`}`,
+            html` <ak-label color=${item.isSuperuser ? PFColor.Green : PFColor.Grey}>
+                ${item.isSuperuser ? t`Yes` : t`No`}
+            </ak-label>`,
             html` <ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update Group`} </span>

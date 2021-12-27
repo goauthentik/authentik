@@ -30,14 +30,14 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik:2021.10.4,
+            beryju/authentik:2021.12.4,
             beryju/authentik:latest,
-            ghcr.io/goauthentik/server:2021.10.4,
+            ghcr.io/goauthentik/server:2021.12.4,
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
           context: .
       - name: Building Docker Image (stable)
-        if: ${{ github.event_name == 'release' && !contains('2021.10.4', 'rc') }}
+        if: ${{ github.event_name == 'release' && !contains('2021.12.4', 'rc') }}
         run: |
           docker pull beryju/authentik:latest
           docker tag beryju/authentik:latest beryju/authentik:stable
@@ -45,13 +45,19 @@ jobs:
           docker pull ghcr.io/goauthentik/server:latest
           docker tag ghcr.io/goauthentik/server:latest ghcr.io/goauthentik/server:stable
           docker push ghcr.io/goauthentik/server:stable
-  build-proxy:
+  build-outpost:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        type:
+          - proxy
+          - ldap
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
-          go-version: "^1.15"
+          go-version: "^1.17"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
       - name: Set up Docker Buildx
@@ -72,68 +78,65 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-proxy:2021.10.4,
-            beryju/authentik-proxy:latest,
-            ghcr.io/goauthentik/proxy:2021.10.4,
-            ghcr.io/goauthentik/proxy:latest
-          file: proxy.Dockerfile
+            beryju/authentik-${{ matrix.type }}:2021.12.4,
+            beryju/authentik-${{ matrix.type }}:latest,
+            ghcr.io/goauthentik/${{ matrix.type }}:2021.12.4,
+            ghcr.io/goauthentik/${{ matrix.type }}:latest
+          file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
       - name: Building Docker Image (stable)
-        if: ${{ github.event_name == 'release' && !contains('2021.10.4', 'rc') }}
+        if: ${{ github.event_name == 'release' && !contains('2021.12.4', 'rc') }}
         run: |
-          docker pull beryju/authentik-proxy:latest
-          docker tag beryju/authentik-proxy:latest beryju/authentik-proxy:stable
-          docker push beryju/authentik-proxy:stable
-          docker pull ghcr.io/goauthentik/proxy:latest
-          docker tag ghcr.io/goauthentik/proxy:latest ghcr.io/goauthentik/proxy:stable
-          docker push ghcr.io/goauthentik/proxy:stable
-  build-ldap:
+          docker pull beryju/authentik-${{ matrix.type }}:latest
+          docker tag beryju/authentik-${{ matrix.type }}:latest beryju/authentik-${{ matrix.type }}:stable
+          docker push beryju/authentik-${{ matrix.type }}:stable
+          docker pull ghcr.io/goauthentik/${{ matrix.type }}:latest
+          docker tag ghcr.io/goauthentik/${{ matrix.type }}:latest ghcr.io/goauthentik/${{ matrix.type }}:stable
+          docker push ghcr.io/goauthentik/${{ matrix.type }}:stable
+  build-outpost-binary:
+    timeout-minutes: 120
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        type:
+          - proxy
+          - ldap
+        goos: [linux, darwin]
+        goarch: [amd64, arm64]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
-          go-version: "^1.15"
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1.2.0
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Docker Login Registry
-        uses: docker/login-action@v1
+          go-version: "^1.17"
+      - uses: actions/setup-node@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Building Docker Image
-        uses: docker/build-push-action@v2
-        with:
-          push: ${{ github.event_name == 'release' }}
-          tags: |
-            beryju/authentik-ldap:2021.10.4,
-            beryju/authentik-ldap:latest,
-            ghcr.io/goauthentik/ldap:2021.10.4,
-            ghcr.io/goauthentik/ldap:latest
-          file: ldap.Dockerfile
-          platforms: linux/amd64,linux/arm64
-      - name: Building Docker Image (stable)
-        if: ${{ github.event_name == 'release' && !contains('2021.10.4', 'rc') }}
+          node-version: '16'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      - name: Build web
         run: |
-          docker pull beryju/authentik-ldap:latest
-          docker tag beryju/authentik-ldap:latest beryju/authentik-ldap:stable
-          docker push beryju/authentik-ldap:stable
-          docker pull ghcr.io/goauthentik/ldap:latest
-          docker tag ghcr.io/goauthentik/ldap:latest ghcr.io/goauthentik/ldap:stable
-          docker push ghcr.io/goauthentik/ldap:stable
+          cd web
+          npm install
+          npm run build-proxy
+      - name: Build outpost
+        run: |
+          set -x
+          export GOOS=${{ matrix.goos }}
+          export GOARCH=${{ matrix.goarch }}
+          go build -tags=outpost_static_embed -v -o ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }} ./cmd/${{ matrix.type }}
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
+          asset_name: authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
+          tag: ${{ github.ref }}
   test-release:
     needs:
       - build-server
-      - build-proxy
-      - build-ldap
+      - build-outpost
+      - build-outpost-binary
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -147,20 +150,17 @@ jobs:
           docker-compose run -u root server test
   sentry-release:
     needs:
-      - test-release
+      - build-server
+      - build-outpost
+      - build-outpost-binary
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-      - name: Build web api client and web ui
+      - name: Get static files from docker image
         run: |
-          export NODE_ENV=production
-          cd web
-          npm i
-          npm run build
+          docker pull ghcr.io/goauthentik/server:latest
+          container=$(docker container create ghcr.io/goauthentik/server:latest)
+          docker cp ${container}:web/ .
       - name: Create a Sentry.io release
         uses: getsentry/action-release@v1
         if: ${{ github.event_name == 'release' }}
@@ -170,7 +170,7 @@ jobs:
           SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
-          version: authentik@2021.10.4
+          version: authentik@2021.12.4
           environment: beryjuorg-prod
           sourcemaps: './web/dist'
           url_prefix: '~/static/dist'

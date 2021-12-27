@@ -1,20 +1,28 @@
 """authentik crypto models"""
 from binascii import hexlify
 from hashlib import md5
-from typing import Optional
+from typing import Optional, Union
 from uuid import uuid4
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric.ec import (
+    EllipticCurvePrivateKey,
+    EllipticCurvePublicKey,
+)
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 from authentik.managed.models import ManagedModel
+
+LOGGER = get_logger()
 
 
 class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
@@ -34,8 +42,8 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     )
 
     _cert: Optional[Certificate] = None
-    _private_key: Optional[RSAPrivateKey] = None
-    _public_key: Optional[RSAPublicKey] = None
+    _private_key: Optional[Union[RSAPrivateKey, EllipticCurvePrivateKey, Ed25519PrivateKey]] = None
+    _public_key: Optional[Union[RSAPublicKey, EllipticCurvePublicKey, Ed25519PublicKey]] = None
 
     @property
     def serializer(self) -> Serializer:
@@ -53,23 +61,26 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         return self._cert
 
     @property
-    def public_key(self) -> Optional[RSAPublicKey]:
+    def public_key(self) -> Optional[Union[RSAPublicKey, EllipticCurvePublicKey, Ed25519PublicKey]]:
         """Get public key of the private key"""
         if not self._public_key:
             self._public_key = self.private_key.public_key()
         return self._public_key
 
     @property
-    def private_key(self) -> Optional[RSAPrivateKey]:
+    def private_key(
+        self,
+    ) -> Optional[Union[RSAPrivateKey, EllipticCurvePrivateKey, Ed25519PrivateKey]]:
         """Get python cryptography PrivateKey instance"""
-        if not self._private_key and self._private_key != "":
+        if not self._private_key and self.key_data != "":
             try:
                 self._private_key = load_pem_private_key(
                     str.encode("\n".join([x.strip() for x in self.key_data.split("\n")])),
                     password=None,
                     backend=default_backend(),
                 )
-            except ValueError:
+            except ValueError as exc:
+                LOGGER.warning(exc)
                 return None
         return self._private_key
 

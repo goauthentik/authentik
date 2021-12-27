@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from glob import glob
 from json import dumps, loads
 from json.decoder import JSONDecodeError
+from sys import argv, stderr
 from time import time
 from typing import Any
 from urllib.parse import urlparse
@@ -60,7 +61,7 @@ class ConfigLoader:
             "timestamp": time(),
         }
         output.update(kwargs)
-        print(dumps(output))
+        print(dumps(output), file=stderr)
 
     def update(self, root: dict[str, Any], updatee: dict[str, Any]) -> dict[str, Any]:
         """Recursively update dictionary"""
@@ -82,8 +83,8 @@ class ConfigLoader:
             try:
                 with open(url.path, "r", encoding="utf8") as _file:
                     value = _file.read()
-            except OSError:
-                self._log("error", f"Failed to read config value from {url.path}")
+            except OSError as exc:
+                self._log("error", f"Failed to read config value from {url.path}: {exc}")
                 value = url.query
         return value
 
@@ -180,3 +181,9 @@ class ConfigLoader:
 
 
 CONFIG = ConfigLoader()
+
+if __name__ == "__main__":
+    if len(argv) < 2:
+        print(dumps(CONFIG.raw, indent=4))
+    else:
+        print(CONFIG.y(argv[1]))

@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 
+import { SentryIgnoredError } from "./common/errors";
 import "./elements/EmptyState";
 
 export function getCookie(name: string): string {
@@ -73,7 +74,7 @@ export function first<T>(...args: Array<T | undefined | null>): T {
             return element;
         }
     }
-    throw new Error(`No compatible arg given: ${args}`);
+    throw new SentryIgnoredError(`No compatible arg given: ${args}`);
 }
 
 export function hexEncode(buf: Uint8Array): string {

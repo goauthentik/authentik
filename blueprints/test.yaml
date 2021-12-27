@@ -1,8 +1,24 @@
 version: v2
 meta:
   author: test
-  version: 2021.9.8
-  required_authentik_version: 2021.9.8
+  version_constraints:
+    authentik: 2022.1.1
   verified: true
-inputs: []
-resources: []
+inputs:
+  - id: username
+    label: Username
+    type: text
+    validators:
+      - authentik:username
+resources:
+  - model_name: user
+    app: authentik_core
+    filters:
+      # list of strings which are passed to .filter()
+      - attributes__foo=bar
+    # id: abc to reference internally
+    with:
+      username: ${inputs.username}
+      name: bar
+      attributes:
+        foo: bar

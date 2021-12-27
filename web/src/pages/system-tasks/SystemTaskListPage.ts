@@ -68,13 +68,13 @@ export class SystemTaskListPage extends TablePage<Task> {
     taskStatus(task: Task): TemplateResult {
         switch (task.status) {
             case StatusEnum.Successful:
-                return html`<ak-label color=${PFColor.Green} text=${t`Successful`}></ak-label>`;
+                return html`<ak-label color=${PFColor.Green}>${t`Successful`}</ak-label>`;
             case StatusEnum.Warning:
-                return html`<ak-label color=${PFColor.Orange} text=${t`Warning`}></ak-label>`;
+                return html`<ak-label color=${PFColor.Orange}>${t`Warning`}</ak-label>`;
             case StatusEnum.Error:
-                return html`<ak-label color=${PFColor.Red} text=${t`Error`}></ak-label>`;
+                return html`<ak-label color=${PFColor.Red}>${t`Error`}</ak-label>`;
             default:
-                return html`<ak-label color=${PFColor.Grey} text=${t`Unknown`}></ak-label>`;
+                return html`<ak-label color=${PFColor.Grey}>${t`Unknown`}</ak-label>`;
         }
     }
 

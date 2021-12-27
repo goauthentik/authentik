@@ -8,6 +8,7 @@ import { CoreApi, User } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import { PFColor } from "../../elements/Label";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { TableModal } from "../../elements/table/TableModal";
@@ -50,7 +51,9 @@ export class MemberSelectTable extends TableModal<User> {
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </div>`,
-            html`${item.isActive ? t`Yes` : t`No`}`,
+            html` <ak-label color=${item.isActive ? PFColor.Green : PFColor.Orange}>
+                ${item.isActive ? t`Yes` : t`No`}
+            </ak-label>`,
             html`${first(item.lastLogin?.toLocaleString(), t`-`)}`,
         ];
     }
@@ -60,12 +63,14 @@ export class MemberSelectTable extends TableModal<User> {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-page__main-section pf-m-light">
+        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${t`Select users to add`}</h1>
                 </div>
             </section>
-            <section class="pf-c-page__main-section pf-m-light">${this.renderTable()}</section>
+            <section class="pf-c-modal-box__body pf-c-page__main-section pf-m-light">
+                ${this.renderTable()}
+            </section>
             <footer class="pf-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {

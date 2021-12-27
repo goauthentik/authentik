@@ -16,7 +16,7 @@ LOGGER = get_logger()
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task()
+@prefill_task
 def save_ip_reputation(self: MonitoredTask):
     """Save currently cached reputation to database"""
     objects_to_update = []
@@ -30,7 +30,7 @@ def save_ip_reputation(self: MonitoredTask):
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task()
+@prefill_task
 def save_user_reputation(self: MonitoredTask):
     """Save currently cached reputation to database"""
     objects_to_update = []

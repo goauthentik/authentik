@@ -16,7 +16,7 @@ from authentik.flows.models import Flow
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
 from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -42,10 +42,9 @@ class TestProviderProxy(SeleniumTestCase):
         """Start proxy container based on outpost created"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image=self.get_container_image("goauthentik.io/dev-proxy"),
+            image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
             detach=True,
             network_mode="host",
-            auto_remove=True,
             environment={
                 "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
@@ -54,7 +53,6 @@ class TestProviderProxy(SeleniumTestCase):
         return container
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -63,9 +61,8 @@ class TestProviderProxy(SeleniumTestCase):
     def test_proxy_simple(self):
         """Test simple outpost setup with single provider"""
         # set additionalHeaders to test later
-        user = USER()
-        user.attributes["additionalHeaders"] = {"X-Foo": "bar"}
-        user.save()
+        self.user.attributes["additionalHeaders"] = {"X-Foo": "bar"}
+        self.user.save()
 
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name="proxy_provider",
@@ -85,7 +82,6 @@ class TestProviderProxy(SeleniumTestCase):
             type=OutpostType.PROXY,
         )
         outpost.providers.add(proxy)
-        outpost.save()
         outpost.build_user_permissions(outpost.user)
 
         self.proxy_container = self.start_proxy(outpost)
@@ -99,13 +95,14 @@ class TestProviderProxy(SeleniumTestCase):
                     break
             healthcheck_retries += 1
             sleep(0.5)
+        sleep(5)
 
         self.driver.get("http://localhost:9000")
         self.login()
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn("X-Forwarded-Preferred-Username: akadmin", full_body_text)
+        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
         self.assertIn("X-Foo: bar", full_body_text)
 
         self.driver.get("http://localhost:9000/akprox/sign_out")
@@ -119,7 +116,6 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     """Test Proxy connectivity over websockets"""
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0010_provider_flows")
@@ -149,7 +145,6 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
             _config=asdict(OutpostConfig(authentik_host=self.live_server_url, log_level="debug")),
         )
         outpost.providers.add(proxy)
-        outpost.save()
         outpost.build_user_permissions(outpost.user)
 
         # Wait until outpost healthcheck succeeds
@@ -163,8 +158,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
             sleep(0.5)
 
         state = outpost.state
-        self.assertEqual(len(state), 1)
-        self.assertEqual(state[0].version, __version__)
+        self.assertTrue(len(state) >= 1)
 
         # Make sure to delete the outpost to remove the container
         outpost.delete()

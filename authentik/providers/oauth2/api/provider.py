@@ -1,30 +1,22 @@
 """OAuth2Provider API Views"""
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Provider
-from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
+from authentik.providers.oauth2.models import OAuth2Provider
 
 
 class OAuth2ProviderSerializer(ProviderSerializer):
     """OAuth2Provider Serializer"""
-
-    def validate_jwt_alg(self, value):
-        """Ensure that when RS256 is selected, a certificate-key-pair is selected"""
-        if self.initial_data.get("rsa_key", None) is None and value == JWTAlgorithms.RS256:
-            raise ValidationError(_("RS256 requires a Certificate-Key-Pair to be selected."))
-        return value
 
     class Meta:
 
@@ -37,8 +29,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "access_code_validity",
             "token_validity",
             "include_claims_in_id_token",
-            "jwt_alg",
-            "rsa_key",
+            "signing_key",
             "redirect_uris",
             "sub_mode",
             "property_mappings",
@@ -73,8 +64,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         "access_code_validity",
         "token_validity",
         "include_claims_in_id_token",
-        "jwt_alg",
-        "rsa_key",
+        "signing_key",
         "redirect_uris",
         "sub_mode",
         "property_mappings",

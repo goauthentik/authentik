@@ -20,9 +20,11 @@ class TraefikMiddlewareSpecForwardAuth:
 
     address: str
     # pylint: disable=invalid-name
-    authResponseHeaders: list[str]
+    authResponseHeadersRegex: str = field(default="")
     # pylint: disable=invalid-name
-    trustForwardHeader: bool
+    authResponseHeaders: list[str] = field(default_factory=list)
+    # pylint: disable=invalid-name
+    trustForwardHeader: bool = field(default=True)
 
 
 @dataclass
@@ -94,6 +96,16 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
         super().reconcile(current, reference)
         if current.spec.forwardAuth.address != reference.spec.forwardAuth.address:
             raise NeedsUpdate()
+        if (
+            current.spec.forwardAuth.authResponseHeadersRegex
+            != reference.spec.forwardAuth.authResponseHeadersRegex
+        ):
+            raise NeedsUpdate()
+        # Ensure all of our headers are set, others can be added by the user.
+        if not set(current.spec.forwardAuth.authResponseHeaders).issubset(
+            reference.spec.forwardAuth.authResponseHeaders
+        ):
+            raise NeedsUpdate()
 
     def get_reference_object(self) -> TraefikMiddleware:
         """Get deployment object for outpost"""
@@ -109,7 +121,6 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
                 forwardAuth=TraefikMiddlewareSpecForwardAuth(
                     address=f"http://{self.name}.{self.namespace}:9000/akprox/auth/traefik",
                     authResponseHeaders=[
-                        "Set-Cookie",
                         # Legacy headers, remove after 2022.1
                         "X-Auth-Username",
                         "X-Auth-Groups",
@@ -122,7 +133,14 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware])
                         "X-authentik-email",
                         "X-authentik-name",
                         "X-authentik-uid",
+                        "X-authentik-jwt",
+                        "X-authentik-meta-jwks",
+                        "X-authentik-meta-outpost",
+                        "X-authentik-meta-provider",
+                        "X-authentik-meta-app",
+                        "X-authentik-meta-version",
                     ],
+                    authResponseHeadersRegex="",
                     trustForwardHeader=True,
                 )
             ),

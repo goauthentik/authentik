@@ -32,6 +32,7 @@ import "../elements/LoadingOverlay";
 import { first } from "../utils";
 import "./FlowInspector";
 import "./access_denied/FlowAccessDenied";
+import "./sources/apple/AppleLoginInit";
 import "./sources/plex/PlexLoginInit";
 import "./stages/RedirectStage";
 import "./stages/authenticator_duo/AuthenticatorDuoStage";
@@ -321,6 +322,11 @@ export class FlowExecutor extends LitElement implements StageHost {
                             .host=${this as StageHost}
                             .challenge=${this.challenge}
                         ></ak-flow-sources-plex>`;
+                    case "ak-flow-sources-oauth-apple":
+                        return html`<ak-flow-sources-oauth-apple
+                            .host=${this as StageHost}
+                            .challenge=${this.challenge}
+                        ></ak-flow-sources-oauth-apple>`;
                     default:
                         break;
                 }

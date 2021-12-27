@@ -10,7 +10,7 @@ import (
 var ErrorTemplate string
 
 func GetTemplates() *template.Template {
-	t, err := template.New("foo").Parse(ErrorTemplate)
+	t, err := template.New("authentik.outpost.proxy.errors").Parse(ErrorTemplate)
 	if err != nil {
 		log.Fatalf("failed parsing template %s", err)
 	}

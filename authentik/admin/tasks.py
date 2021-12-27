@@ -54,7 +54,7 @@ def clear_update_notifications():
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
-@prefill_task()
+@prefill_task
 def update_latest_version(self: MonitoredTask):
     """Update latest version info"""
     if CONFIG.y_bool("disable_update_check"):

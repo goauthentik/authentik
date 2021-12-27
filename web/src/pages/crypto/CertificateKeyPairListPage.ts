@@ -10,6 +10,7 @@ import { CertificateKeyPair, CryptoApi } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import { PFColor } from "../../elements/Label";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
@@ -90,11 +91,20 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     }
 
     row(item: CertificateKeyPair): TemplateResult[] {
+        let managedSubText = t`Managed by authentik`;
+        if (item.managed && item.managed.startsWith("goauthentik.io/crypto/discovered")) {
+            managedSubText = t`Managed by authentik (Discovered)`;
+        }
         return [
-            html`${item.name}`,
-            html`${item.privateKeyAvailable ? t`Yes` : t`No`}`,
-            html`${item.certExpiry?.toLocaleString()}`,
-            html` <ak-forms-modal>
+            html`<div>${item.name}</div>
+                ${item.managed ? html`<small>${managedSubText}</small>` : html``}`,
+            html`<ak-label color=${item.privateKeyAvailable ? PFColor.Green : PFColor.Grey}>
+                ${item.privateKeyAvailable ? t`Yes (${item.privateKeyType?.toUpperCase()})` : t`No`}
+            </ak-label>`,
+            html`<ak-label color=${item.certExpiry > new Date() ? PFColor.Green : PFColor.Orange}>
+                ${item.certExpiry?.toLocaleString()}
+            </ak-label>`,
+            html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update Certificate-Key Pair`} </span>
                 <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>

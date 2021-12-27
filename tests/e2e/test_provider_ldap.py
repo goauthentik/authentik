@@ -1,4 +1,5 @@
 """LDAP and Outpost e2e tests"""
+from dataclasses import asdict
 from sys import platform
 from time import sleep
 from unittest.case import skipUnless
@@ -9,13 +10,13 @@ from guardian.shortcuts import get_anonymous_user
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 
-from authentik.core.models import Application, Group, User
+from authentik.core.models import Application, User
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
 from authentik.outposts.managed import MANAGED_OUTPOST
-from authentik.outposts.models import Outpost, OutpostType
+from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import LDAPProvider, SearchModes
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -33,7 +34,7 @@ class TestProviderLDAP(SeleniumTestCase):
         """Start ldap container based on outpost created"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image=self.get_container_image("goauthentik.io/dev-ldap"),
+            image=self.get_container_image("ghcr.io/goauthentik/dev-ldap"),
             detach=True,
             network_mode="host",
             auto_remove=True,
@@ -47,14 +48,13 @@ class TestProviderLDAP(SeleniumTestCase):
     def _prepare(self) -> User:
         """prepare user, provider, app and container"""
         # set additionalHeaders to test later
-        user = USER()
-        user.attributes["extraAttribute"] = "bar"
-        user.save()
+        self.user.attributes["extraAttribute"] = "bar"
+        self.user.save()
 
         ldap: LDAPProvider = LDAPProvider.objects.create(
             name="ldap_provider",
             authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
-            search_group=Group.objects.first(),
+            search_group=self.user.ak_groups.first(),
             search_mode=SearchModes.CACHED,
         )
         # we need to create an application to actually access the ldap
@@ -62,10 +62,9 @@ class TestProviderLDAP(SeleniumTestCase):
         outpost: Outpost = Outpost.objects.create(
             name="ldap_outpost",
             type=OutpostType.LDAP,
+            _config=asdict(OutpostConfig(log_level="debug")),
         )
         outpost.providers.add(ldap)
-        outpost.save()
-        user = outpost.user
 
         self.ldap_container = self.start_ldap(outpost)
 
@@ -78,10 +77,10 @@ class TestProviderLDAP(SeleniumTestCase):
                     break
             healthcheck_retries += 1
             sleep(0.5)
-        return user
+        sleep(5)
+        return outpost
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
     def test_ldap_bind_success(self):
@@ -91,23 +90,22 @@ class TestProviderLDAP(SeleniumTestCase):
         _connection = Connection(
             server,
             raise_exceptions=True,
-            user=f"cn={USER().username},ou=users,DC=ldap,DC=goauthentik,DC=io",
-            password=USER().username,
+            user=f"cn={self.user.username},ou=users,DC=ldap,DC=goauthentik,DC=io",
+            password=self.user.username,
         )
         _connection.bind()
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.LOGIN,
                 user={
-                    "pk": USER().pk,
-                    "email": USER().email,
-                    "username": USER().username,
+                    "pk": self.user.pk,
+                    "email": self.user.email,
+                    "username": self.user.username,
                 },
             )
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
     def test_ldap_bind_success_ssl(self):
@@ -117,23 +115,22 @@ class TestProviderLDAP(SeleniumTestCase):
         _connection = Connection(
             server,
             raise_exceptions=True,
-            user=f"cn={USER().username},ou=users,DC=ldap,DC=goauthentik,DC=io",
-            password=USER().username,
+            user=f"cn={self.user.username},ou=users,DC=ldap,DC=goauthentik,DC=io",
+            password=self.user.username,
         )
         _connection.bind()
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.LOGIN,
                 user={
-                    "pk": USER().pk,
-                    "email": USER().email,
-                    "username": USER().username,
+                    "pk": self.user.pk,
+                    "email": self.user.email,
+                    "username": self.user.username,
                 },
             )
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
     def test_ldap_bind_fail(self):
@@ -143,8 +140,8 @@ class TestProviderLDAP(SeleniumTestCase):
         _connection = Connection(
             server,
             raise_exceptions=True,
-            user=f"cn={USER().username},ou=users,DC=ldap,DC=goauthentik,DC=io",
-            password=USER().username + "fqwerwqer",
+            user=f"cn={self.user.username},ou=users,DC=ldap,DC=goauthentik,DC=io",
+            password=self.user.username + "fqwerwqer",
         )
         with self.assertRaises(LDAPInvalidCredentialsResult):
             _connection.bind()
@@ -157,35 +154,36 @@ class TestProviderLDAP(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @object_manager
     def test_ldap_bind_search(self):
         """Test simple bind + search"""
-        outpost_user = self._prepare()
+        outpost = self._prepare()
         server = Server("ldap://localhost:3389", get_info=ALL)
         _connection = Connection(
             server,
             raise_exceptions=True,
-            user=f"cn={USER().username},ou=users,dc=ldap,dc=goauthentik,dc=io",
-            password=USER().username,
+            user=f"cn={self.user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+            password=self.user.username,
         )
         _connection.bind()
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.LOGIN,
                 user={
-                    "pk": USER().pk,
-                    "email": USER().email,
-                    "username": USER().username,
+                    "pk": self.user.pk,
+                    "email": self.user.email,
+                    "username": self.user.username,
                 },
             )
         )
 
         embedded_account = Outpost.objects.filter(managed=MANAGED_OUTPOST).first().user
+        # Remove akadmin to ensure list is correct
+        User.objects.filter(username="akadmin").delete()
 
         _connection.search(
-            "ou=users,dc=ldap,dc=goauthentik,dc=io",
+            "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
             "(objectClass=user)",
             search_scope=SUBTREE,
             attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
@@ -195,17 +193,18 @@ class TestProviderLDAP(SeleniumTestCase):
         for obj in response:
             del obj["raw_attributes"]
             del obj["raw_dn"]
+        o_user = outpost.user
         self.assertCountEqual(
             response,
             [
                 {
-                    "dn": f"cn={outpost_user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+                    "dn": f"cn={o_user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
                     "attributes": {
-                        "cn": [outpost_user.username],
-                        "sAMAccountName": [outpost_user.username],
-                        "uid": [outpost_user.uid],
-                        "name": [""],
-                        "displayName": [""],
+                        "cn": [o_user.username],
+                        "sAMAccountName": [o_user.username],
+                        "uid": [o_user.uid],
+                        "name": [o_user.name],
+                        "displayName": [o_user.name],
                         "mail": [""],
                         "objectClass": [
                             "user",
@@ -213,8 +212,8 @@ class TestProviderLDAP(SeleniumTestCase):
                             "inetOrgPerson",
                             "goauthentik.io/ldap/user",
                         ],
-                        "uidNumber": [str(2000 + outpost_user.pk)],
-                        "gidNumber": [str(2000 + outpost_user.pk)],
+                        "uidNumber": [str(2000 + o_user.pk)],
+                        "gidNumber": [str(2000 + o_user.pk)],
                         "memberOf": [],
                         "accountStatus": ["true"],
                         "superuser": ["false"],
@@ -231,8 +230,8 @@ class TestProviderLDAP(SeleniumTestCase):
                         "cn": [embedded_account.username],
                         "sAMAccountName": [embedded_account.username],
                         "uid": [embedded_account.uid],
-                        "name": [""],
-                        "displayName": [""],
+                        "name": [embedded_account.name],
+                        "displayName": [embedded_account.name],
                         "mail": [""],
                         "objectClass": [
                             "user",
@@ -253,23 +252,26 @@ class TestProviderLDAP(SeleniumTestCase):
                     "type": "searchResEntry",
                 },
                 {
-                    "dn": f"cn={USER().username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+                    "dn": f"cn={self.user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
                     "attributes": {
-                        "cn": [USER().username],
-                        "sAMAccountName": [USER().username],
-                        "uid": [USER().uid],
-                        "name": [USER().name],
-                        "displayName": [USER().name],
-                        "mail": [USER().email],
+                        "cn": [self.user.username],
+                        "sAMAccountName": [self.user.username],
+                        "uid": [self.user.uid],
+                        "name": [self.user.name],
+                        "displayName": [self.user.name],
+                        "mail": [self.user.email],
                         "objectClass": [
                             "user",
                             "organizationalPerson",
                             "inetOrgPerson",
                             "goauthentik.io/ldap/user",
                         ],
-                        "uidNumber": [str(2000 + USER().pk)],
-                        "gidNumber": [str(2000 + USER().pk)],
-                        "memberOf": ["cn=authentik Admins,ou=groups,dc=ldap,dc=goauthentik,dc=io"],
+                        "uidNumber": [str(2000 + self.user.pk)],
+                        "gidNumber": [str(2000 + self.user.pk)],
+                        "memberOf": [
+                            f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
+                            for group in self.user.ak_groups.all()
+                        ],
                         "accountStatus": ["true"],
                         "superuser": ["true"],
                         "goauthentik.io/ldap/active": ["true"],

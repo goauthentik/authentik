@@ -19,8 +19,9 @@ class AuthentikOutpostConfig(AppConfig):
         import_module("authentik.outposts.signals")
         import_module("authentik.outposts.managed")
         try:
-            from authentik.outposts.tasks import outpost_local_connection
+            from authentik.outposts.tasks import outpost_controller_all, outpost_local_connection
 
             outpost_local_connection.delay()
+            outpost_controller_all.delay()
         except ProgrammingError:
             pass

@@ -270,7 +270,7 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                         <div class="pf-l-stack__item">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">${t`Current plan cntext`}</div>
+                                    <div class="pf-c-card__title">${t`Current plan context`}</div>
                                 </div>
                                 <div class="pf-c-card__body">
                                     <pre>

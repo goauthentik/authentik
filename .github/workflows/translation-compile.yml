@@ -4,6 +4,9 @@ on:
     branches: [ master ]
     paths:
       - '/locale/'
+  pull_request:
+    paths:
+      - '/locale/'
   schedule:
   - cron: "0 */2 * * *"
   workflow_dispatch:
@@ -19,28 +22,35 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
+      - id: cache-poetry
+        uses: actions/cache@v2.1.7
         with:
-          python-version: '3.9'
-      - id: cache-pipenv
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-cache-v3-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
         env:
-          INSTALL: ${{ steps.cache-pipenv.outputs.cache-hit }}
+          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: |
           sudo apt-get update
           sudo apt-get install -y gettext
           scripts/ci_prepare.sh
       - name: run compile
-        run: pipenv run ./manage.py compilemessages
+        run: poetry run ./manage.py compilemessages
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
+        id: cpr
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: compile-backend-translation
           commit-message: "core: compile backend translations"
           title: "core: compile backend translations"
+          body: "core: compile backend translations"
           delete-branch: true
           signoff: true
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        uses: peter-evans/enable-pull-request-automerge@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash

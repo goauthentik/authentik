@@ -15,6 +15,7 @@ import "../../elements/chips/Chip";
 import "../../elements/chips/ChipGroup";
 import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { UserOption } from "../../elements/user/utils";
 import { first } from "../../utils";
 import "./MemberSelectModal";
 
@@ -138,7 +139,7 @@ export class GroupForm extends ModelForm<Group, string> {
                                                     this.requestUpdate();
                                                 }}
                                             >
-                                                ${user.username}
+                                                ${UserOption(user)}
                                             </ak-chip>`;
                                         });
                                     }),

@@ -17,13 +17,13 @@ def model_tester_factory(test_model: Type[Stage]) -> Callable:
 
     def tester(self: TestModels):
         model_class = None
-        if test_model._meta.abstract:
+        if test_model._meta.abstract:  # pragma: no cover
             model_class = test_model.__bases__[0]()
         else:
             model_class = test_model()
         self.assertTrue(issubclass(model_class.type, StageView))
         self.assertIsNotNone(test_model.component)
-        _ = test_model.ui_user_settings
+        _ = model_class.ui_user_settings()
 
     return tester
 

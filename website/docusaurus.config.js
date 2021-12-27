@@ -18,13 +18,19 @@ module.exports = {
                 {
                     to: "docs/",
                     activeBasePath: "docs",
-                    label: "Docs",
+                    label: "Documentation",
+                    position: "left",
+                },
+                {
+                    to: "integrations/",
+                    activeBasePath: "integrations",
+                    label: "Integrations",
                     position: "left",
                 },
                 {
                     to: "developer-docs/",
                     activeBasePath: "developer-docs",
-                    label: "Developer Docs",
+                    label: "Developer",
                     position: "left",
                 },
                 {
@@ -75,6 +81,11 @@ module.exports = {
                             label: "Discord",
                             href: "https://goauthentik.io/discord",
                         },
+                        {
+                            html: `<a href="https://www.netlify.com" target="_blank" rel="noreferrer noopener" aria-label="Deploys by Netlify">
+                                    <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg" alt="Deploys by Netlify" />
+                                </a>`,
+                        },
                     ],
                 },
             ],
@@ -84,8 +95,8 @@ module.exports = {
             respectPrefersColorScheme: true,
         },
         algolia: {
-            apiKey: '1b60b8f630b127697cbe0d3b31841470',
-            indexName: 'goauthentik',
+            apiKey: "1b60b8f630b127697cbe0d3b31841470",
+            indexName: "goauthentik",
         },
     },
     presets: [
@@ -95,7 +106,8 @@ module.exports = {
                 docs: {
                     id: "docs",
                     sidebarPath: require.resolve("./sidebars.js"),
-                    editUrl: "https://github.com/goauthentik/authentik/edit/master/website/",
+                    editUrl:
+                        "https://github.com/goauthentik/authentik/edit/master/website/",
                 },
                 theme: {
                     customCss: require.resolve("./src/css/custom.css"),
@@ -105,13 +117,25 @@ module.exports = {
     ],
     plugins: [
         [
-            '@docusaurus/plugin-content-docs',
+            "@docusaurus/plugin-content-docs",
             {
-                id: 'docsDevelopers',
-                path: 'developer-docs',
-                routeBasePath: 'developer-docs',
-                sidebarPath: require.resolve('./sidebarsDev.js'),
-                editUrl: "https://github.com/goauthentik/authentik/edit/master/website/",
+                id: "docsIntegrations",
+                path: "integrations",
+                routeBasePath: "integrations",
+                sidebarPath: require.resolve("./sidebarsIntegrations.js"),
+                editUrl:
+                    "https://github.com/goauthentik/authentik/edit/master/website/",
+            },
+        ],
+        [
+            "@docusaurus/plugin-content-docs",
+            {
+                id: "docsDevelopers",
+                path: "developer-docs",
+                routeBasePath: "developer-docs",
+                sidebarPath: require.resolve("./sidebarsDev.js"),
+                editUrl:
+                    "https://github.com/goauthentik/authentik/edit/master/website/",
             },
         ],
     ],
@@ -143,5 +167,5 @@ module.exports = {
     <% }); %>
     <%~ it.postBodyTags %>
   </body>
-</html>`
+</html>`,
 };

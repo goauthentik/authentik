@@ -1,4 +1,5 @@
 """Create Docker TLSConfig from CertificateKeyPair"""
+from os import unlink
 from pathlib import Path
 from tempfile import gettempdir
 from typing import Optional
@@ -14,6 +15,8 @@ class DockerInlineTLS:
     verification_kp: Optional[CertificateKeyPair]
     authentication_kp: Optional[CertificateKeyPair]
 
+    _paths: list[str]
+
     def __init__(
         self,
         verification_kp: Optional[CertificateKeyPair],
@@ -21,13 +24,20 @@ class DockerInlineTLS:
     ) -> None:
         self.verification_kp = verification_kp
         self.authentication_kp = authentication_kp
+        self._paths = []
 
     def write_file(self, name: str, contents: str) -> str:
         """Wrapper for mkstemp that uses fdopen"""
         path = Path(gettempdir(), name)
         with open(path, "w", encoding="utf8") as _file:
             _file.write(contents)
+        self._paths.append(str(path))
         return str(path)
+
+    def cleanup(self):
+        """Clean up certificates when we're done"""
+        for path in self._paths:
+            unlink(path)
 
     def write(self) -> TLSConfig:
         """Create TLSConfig with Certificate Key pairs"""

@@ -10,7 +10,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.crypto.models import CertificateKeyPair
@@ -18,8 +17,6 @@ from authentik.flows.models import Flow
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
-
-LOGGER = get_logger()
 
 IDP_CERT = """-----BEGIN CERTIFICATE-----
 MIIDXTCCAkWgAwIBAgIJALmVVuDWu4NYMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
@@ -97,7 +94,6 @@ class TestSourceSAML(SeleniumTestCase):
         }
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")
@@ -160,11 +156,11 @@ class TestSourceSAML(SeleniumTestCase):
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
             .exclude(pk=get_anonymous_user().pk)
+            .exclude(pk=self.user.pk)
             .first()
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")
@@ -240,11 +236,11 @@ class TestSourceSAML(SeleniumTestCase):
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
             .exclude(pk=get_anonymous_user().pk)
+            .exclude(pk=self.user.pk)
             .first()
         )
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")
@@ -307,5 +303,6 @@ class TestSourceSAML(SeleniumTestCase):
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
             .exclude(pk=get_anonymous_user().pk)
+            .exclude(pk=self.user.pk)
             .first()
         )

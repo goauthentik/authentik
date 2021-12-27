@@ -10,6 +10,7 @@ import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
+import { PFColor } from "../../elements/Label";
 import { PFSize } from "../../elements/Spinner";
 import "../../elements/Tabs";
 import "../../elements/buttons/Dropdown";
@@ -51,7 +52,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         ];
     }
 
-    getPolicyUserGroupRow(item: PolicyBinding): string {
+    getPolicyUserGroupRowLabel(item: PolicyBinding): string {
         if (item.policy) {
             return t`Policy ${item.policyObj?.name}`;
         } else if (item.group) {
@@ -63,9 +64,17 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         }
     }
 
+    getPolicyUserGroupRow(item: PolicyBinding): TemplateResult {
+        const label = this.getPolicyUserGroupRowLabel(item);
+        if (item.user) {
+            return html` <a href=${`#/identity/users/${item.user}`}> ${label} </a> `;
+        }
+        return html`${label}`;
+    }
+
     getObjectEditButton(item: PolicyBinding): TemplateResult {
         if (item.policy) {
-            return html` <ak-forms-modal>
+            return html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update ${item.policyObj?.name}`} </span>
                 <ak-proxy-form
@@ -105,7 +114,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             .metadata=${(item: PolicyBinding) => {
                 return [
                     { key: t`Order`, value: item.order.toString() },
-                    { key: t`Policy / User / Group`, value: this.getPolicyUserGroupRow(item) },
+                    { key: t`Policy / User / Group`, value: this.getPolicyUserGroupRowLabel(item) },
                 ];
             }}
             .usedBy=${(item: PolicyBinding) => {
@@ -128,7 +137,9 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     row(item: PolicyBinding): TemplateResult[] {
         return [
             html`${this.getPolicyUserGroupRow(item)}`,
-            html`${item.enabled ? t`Yes` : t`No`}`,
+            html` <ak-label color=${item.enabled ? PFColor.Green : PFColor.Orange}>
+                ${item.enabled ? t`Yes` : t`No`}
+            </ak-label>`,
             html`${item.order}`,
             html`${item.timeout}`,
             html` ${this.getObjectEditButton(item)}

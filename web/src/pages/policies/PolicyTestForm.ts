@@ -16,8 +16,10 @@ import {
 
 import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/CodeMirror";
+import { PFColor } from "../../elements/Label";
 import { Form } from "../../elements/forms/Form";
 import "../../elements/forms/HorizontalFormElement";
+import { UserOption } from "../../elements/user/utils";
 import { first } from "../../utils";
 
 @customElement("ak-policy-test-form")
@@ -49,9 +51,11 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         return html` <ak-form-element-horizontal label=${t`Passing`}>
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
-                        <span class="pf-c-form__label-text"
-                            >${this.result?.passing ? t`Yes` : t`No`}</span
-                        >
+                        <span class="pf-c-form__label-text">
+                            <ak-label color=${this.result?.passing ? PFColor.Green : PFColor.Red}>
+                                ${this.result?.passing ? t`Yes` : t`No`}
+                            </ak-label>
+                        </span>
                     </div>
                 </div>
             </ak-form-element-horizontal>
@@ -90,7 +94,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                                         user.pk.toString()}
                                         value=${user.pk}
                                     >
-                                        ${user.username}
+                                        ${UserOption(user)}
                                     </option>`;
                                 });
                             }),

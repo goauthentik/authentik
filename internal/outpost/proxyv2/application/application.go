@@ -1,9 +1,11 @@
 package application
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/gob"
 	"fmt"
+	"html/template"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -11,6 +13,8 @@ import (
 	"time"
 
 	"github.com/coreos/go-oidc"
+	"github.com/getsentry/sentry-go"
+	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/pkg/errors"
@@ -21,6 +25,7 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/hs256"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
+	"goauthentik.io/internal/outpost/proxyv2/templates"
 	"goauthentik.io/internal/utils/web"
 	"golang.org/x/oauth2"
 )
@@ -41,6 +46,8 @@ type Application struct {
 
 	log *log.Entry
 	mux *mux.Router
+
+	errorTemplates *template.Template
 }
 
 func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore, ak *ak.APIController) (*Application, error) {
@@ -52,11 +59,17 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		return nil, fmt.Errorf("failed to parse URL, skipping provider")
 	}
 
-	ks := hs256.NewKeySet(*p.ClientSecret)
+	var ks oidc.KeySet
+	if contains(p.OidcConfiguration.IdTokenSigningAlgValuesSupported, "HS256") {
+		ks = hs256.NewKeySet(*p.ClientSecret)
+	} else {
+		ctx := context.WithValue(context.Background(), oauth2.HTTPClient, c)
+		ks = oidc.NewRemoteKeySet(ctx, p.OidcConfiguration.JwksUri)
+	}
 
 	var verifier = oidc.NewVerifier(p.OidcConfiguration.Issuer, ks, &oidc.Config{
 		ClientID:             *p.ClientId,
-		SupportedSigningAlgs: []string{"HS256"},
+		SupportedSigningAlgs: []string{"RS256", "HS256"},
 	})
 
 	// Configure an OpenID Connect aware OAuth2 client.
@@ -70,15 +83,16 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	}
 	mux := mux.NewRouter()
 	a := &Application{
-		Host:          externalHost.Host,
-		log:           log.WithField("logger", "authentik.outpost.proxy.bundle").WithField("provider", p.Name),
-		outpostName:   ak.Outpost.Name,
-		endpint:       endpoint,
-		oauthConfig:   oauth2Config,
-		tokenVerifier: verifier,
-		proxyConfig:   p,
-		httpClient:    c,
-		mux:           mux,
+		Host:           externalHost.Host,
+		log:            log.WithField("logger", "authentik.outpost.proxy.bundle").WithField("provider", p.Name),
+		outpostName:    ak.Outpost.Name,
+		endpint:        endpoint,
+		oauthConfig:    oauth2Config,
+		tokenVerifier:  verifier,
+		proxyConfig:    p,
+		httpClient:     c,
+		mux:            mux,
+		errorTemplates: templates.GetTemplates(),
 	}
 	a.sessions = a.getStore(p)
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
@@ -94,14 +108,23 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		if !ok {
 			return l
 		}
-		return l.WithField("request_username", c.Email)
+		return l.WithField("request_username", c.PreferredUsername)
 	}))
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 			c, _ := a.getClaims(r)
 			user := ""
 			if c != nil {
-				user = c.Email
+				user = c.PreferredUsername
+				hub := sentry.GetHubFromContext(r.Context())
+				if hub == nil {
+					hub = sentry.CurrentHub()
+				}
+				hub.Scope().SetUser(sentry.User{
+					Username:  user,
+					ID:        c.Sub,
+					IPAddress: r.RemoteAddr,
+				})
 			}
 			before := time.Now()
 			inner.ServeHTTP(rw, r)
@@ -117,6 +140,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 			}).Observe(float64(after))
 		})
 	})
+	mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 
 	// Support /start and /sign_in for backwards compatibility
 	mux.HandleFunc("/akprox/start", a.handleRedirect)
@@ -149,22 +173,14 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 			re, err := regexp.Compile(regex)
 			if err != nil {
 				// TODO: maybe create event for this?
-				return nil, errors.Wrap(err, "failed to compile SkipPathRegex")
+				a.log.WithError(err).Warning("failed to compile SkipPathRegex")
+				continue
 			} else {
 				a.UnauthenticatedRegex = append(a.UnauthenticatedRegex, re)
 			}
 		}
 	}
 	return a, nil
-}
-
-func (a *Application) IsAllowlisted(r *http.Request) bool {
-	for _, u := range a.UnauthenticatedRegex {
-		if u.MatchString(r.URL.Path) {
-			return true
-		}
-	}
-	return false
 }
 
 func (a *Application) Mode() api.ProxyMode {

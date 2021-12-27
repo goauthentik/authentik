@@ -52,17 +52,17 @@ func (ls *LDAPServer) StartLDAPServer() error {
 
 	ln, err := net.Listen("tcp", listen)
 	if err != nil {
-		ls.log.WithField("listen", listen).WithError(err).Fatalf("FATAL: listen failed")
+		ls.log.WithField("listen", listen).WithError(err).Fatalf("listen failed")
 	}
 	proxyListener := &proxyproto.Listener{Listener: ln}
 	defer proxyListener.Close()
 
-	ls.log.WithField("listen", listen).Info("Starting ldap server")
+	ls.log.WithField("listen", listen).Info("Starting LDAP server")
 	err = ls.s.Serve(proxyListener)
 	if err != nil {
 		return err
 	}
-	ls.log.Printf("closing %s", ln.Addr())
+	ls.log.WithField("listen", listen).Info("Stopping LDAP server")
 	return ls.s.ListenAndServe(listen)
 }
 

@@ -72,7 +72,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system.`}
+                    ${t`Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
@@ -106,7 +106,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`TLS Authentication Certificate`}
+                label=${t`TLS Authentication Certificate/SSH Keypair`}
                 name="tlsAuthentication"
             >
                 <select class="pf-c-form-control">
@@ -133,6 +133,9 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 </select>
                 <p class="pf-c-form__helper-text">
                     ${t`Certificate/Key used for authentication. Can be left empty for no authentication.`}
+                </p>
+                <p class="pf-c-form__helper-text">
+                    ${t`When connecting via SSH, this keypair is used for authentication.`}
                 </p>
             </ak-form-element-horizontal>
         </form>`;

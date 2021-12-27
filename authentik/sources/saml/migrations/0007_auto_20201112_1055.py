@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.SET_DEFAULT,
                 to="authentik_crypto.certificatekeypair",
-                verbose_name="Singing Keypair",
+                verbose_name="Signing Keypair",
             ),
         ),
     ]

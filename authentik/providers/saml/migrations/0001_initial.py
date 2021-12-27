@@ -110,14 +110,14 @@ class Migration(migrations.Migration):
                     "require_signing",
                     models.BooleanField(
                         default=False,
-                        help_text="Require Requests to be signed by an X509 Certificate. Must match the Certificate selected in `Singing Keypair`.",
+                        help_text="Require Requests to be signed by an X509 Certificate. Must match the Certificate selected in `Signing Keypair`.",
                     ),
                 ),
                 (
                     "signing_kp",
                     models.ForeignKey(
                         default=None,
-                        help_text="Singing is enabled upon selection of a Key Pair.",
+                        help_text="Signing is enabled upon selection of a Key Pair.",
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
                         to="authentik_crypto.CertificateKeyPair",

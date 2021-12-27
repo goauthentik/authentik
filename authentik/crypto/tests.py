@@ -1,25 +1,37 @@
 """Crypto tests"""
 import datetime
+from os import makedirs
+from tempfile import TemporaryDirectory
 
-from django.test import TestCase
 from django.urls import reverse
+from rest_framework.test import APITestCase
 
 from authentik.core.api.used_by import DeleteAction
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.models import Flow
+from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
+from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_key
 from authentik.providers.oauth2.models import OAuth2Provider
 
 
-class TestCrypto(TestCase):
+class TestCrypto(APITestCase):
     """Test Crypto validation"""
+
+    def test_model_private(self):
+        """Test model private key"""
+        cert = CertificateKeyPair.objects.create(
+            name="test",
+            certificate_data="foo",
+            key_data="foo",
+        )
+        self.assertIsNone(cert.private_key)
 
     def test_serializer(self):
         """Test API Validation"""
-        keypair = CertificateKeyPair.objects.first()
+        keypair = create_test_cert()
         self.assertTrue(
             CertificateKeyPairSerializer(
                 data={
@@ -54,10 +66,38 @@ class TestCrypto(TestCase):
         self.assertEqual(instance.name, "test-cert")
         self.assertEqual((instance.certificate.not_valid_after - now).days, 2)
 
+    def test_builder_api(self):
+        """Test Builder (via API)"""
+        self.client.force_login(create_test_admin_user())
+        self.client.post(
+            reverse("authentik_api:certificatekeypair-generate"),
+            data={"common_name": "foo", "subject_alt_name": "bar,baz", "validity_days": 3},
+        )
+        self.assertTrue(CertificateKeyPair.objects.filter(name="foo").exists())
+
+    def test_builder_api_invalid(self):
+        """Test Builder (via API) (invalid)"""
+        self.client.force_login(create_test_admin_user())
+        response = self.client.post(
+            reverse("authentik_api:certificatekeypair-generate"),
+            data={},
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_list(self):
+        """Test API List"""
+        self.client.force_login(create_test_admin_user())
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-list",
+            )
+        )
+        self.assertEqual(200, response.status_code)
+
     def test_certificate_download(self):
         """Test certificate export (download)"""
-        self.client.force_login(User.objects.get(username="akadmin"))
-        keypair = CertificateKeyPair.objects.first()
+        self.client.force_login(create_test_admin_user())
+        keypair = create_test_cert()
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-view-certificate",
@@ -77,8 +117,8 @@ class TestCrypto(TestCase):
 
     def test_private_key_download(self):
         """Test private_key export (download)"""
-        self.client.force_login(User.objects.get(username="akadmin"))
-        keypair = CertificateKeyPair.objects.first()
+        self.client.force_login(create_test_admin_user())
+        keypair = create_test_cert()
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-view-private-key",
@@ -98,15 +138,15 @@ class TestCrypto(TestCase):
 
     def test_used_by(self):
         """Test used_by endpoint"""
-        self.client.force_login(User.objects.get(username="akadmin"))
-        keypair = CertificateKeyPair.objects.first()
+        self.client.force_login(create_test_admin_user())
+        keypair = create_test_cert()
         provider = OAuth2Provider.objects.create(
             name="test",
             client_id="test",
             client_secret=generate_key(),
-            authorization_flow=Flow.objects.first(),
+            authorization_flow=create_test_flow(),
             redirect_uris="http://localhost",
-            rsa_key=CertificateKeyPair.objects.first(),
+            signing_key=keypair,
         )
         response = self.client.get(
             reverse(
@@ -126,4 +166,37 @@ class TestCrypto(TestCase):
                     "action": DeleteAction.SET_NULL.name,
                 }
             ],
+        )
+
+    def test_discovery(self):
+        """Test certificate discovery"""
+        builder = CertificateBuilder()
+        builder.common_name = "test-cert"
+        with self.assertRaises(ValueError):
+            builder.save()
+        builder.build(
+            subject_alt_names=[],
+            validity_days=3,
+        )
+        with TemporaryDirectory() as temp_dir:
+            with open(f"{temp_dir}/foo.pem", "w+", encoding="utf-8") as _cert:
+                _cert.write(builder.certificate)
+            with open(f"{temp_dir}/foo.key", "w+", encoding="utf-8") as _key:
+                _key.write(builder.private_key)
+            makedirs(f"{temp_dir}/foo.bar", exist_ok=True)
+            with open(f"{temp_dir}/foo.bar/fullchain.pem", "w+", encoding="utf-8") as _cert:
+                _cert.write(builder.certificate)
+            with open(f"{temp_dir}/foo.bar/privkey.pem", "w+", encoding="utf-8") as _key:
+                _key.write(builder.private_key)
+            with CONFIG.patch("cert_discovery_dir", temp_dir):
+                # pyright: reportGeneralTypeIssues=false
+                certificate_discovery()  # pylint: disable=no-value-for-parameter
+        keypair: CertificateKeyPair = CertificateKeyPair.objects.filter(
+            managed=MANAGED_DISCOVERED % "foo"
+        ).first()
+        self.assertIsNotNone(keypair)
+        self.assertIsNotNone(keypair.certificate)
+        self.assertIsNotNone(keypair.private_key)
+        self.assertTrue(
+            CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % "foo.bar").exists()
         )

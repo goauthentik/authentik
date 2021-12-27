@@ -4,16 +4,19 @@ UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
 
-all: lint-fix lint test gen
+all: lint-fix lint test gen web
 
 test-integration:
-	coverage run manage.py test -v 3 tests/integration
+	coverage run manage.py test tests/integration
 
-test-e2e:
-	coverage run manage.py test --failfast -v 3 tests/e2e
+test-e2e-provider:
+	coverage run manage.py test tests/e2e/test_provider*
+
+test-e2e-rest:
+	coverage run manage.py test tests/e2e/test_flows* tests/e2e/test_source*
 
 test:
-	coverage run manage.py test -v 3 authentik
+	coverage run manage.py test authentik
 	coverage html
 	coverage report
 
@@ -32,10 +35,12 @@ lint-fix:
 lint:
 	bandit -r authentik tests lifecycle -x node_modules
 	pylint authentik tests lifecycle
+	golangci-lint run -v
 
-i18n-extract:
+i18n-extract: i18n-extract-core web-extract
+
+i18n-extract-core:
 	./manage.py makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
-	cd web && npm run extract
 
 gen-build:
 	./manage.py spectacular --file schema.yml
@@ -48,7 +53,7 @@ gen-web:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		ghcr.io/beryju/openapi-generator generate \
+		openapitools/openapi-generator-cli generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/web-api \
@@ -67,12 +72,13 @@ gen-outpost:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		openapitools/openapi-generator-cli generate \
+		openapitools/openapi-generator-cli:v5.2.1 generate \
 		-i /local/schema.yml \
 		-g go \
 		-o /local/api \
 		-c /local/config.yaml
 	go mod edit -replace goauthentik.io/api=./api
+	rm -rf config.yaml ./templates/
 
 gen: gen-build gen-clean gen-web
 
@@ -81,3 +87,43 @@ migrate:
 
 run:
 	go run -v cmd/server/main.go
+
+web-watch:
+	cd web && npm run watch
+
+web: web-lint-fix web-lint web-extract
+
+web-lint-fix:
+	cd web && npm run prettier
+
+web-lint:
+	cd web && npm run lint
+	cd web && npm run lit-analyse
+
+web-extract:
+	cd web && npm run extract
+
+# These targets are use by GitHub actions to allow usage of matrix
+# which makes the YAML File a lot smaller
+
+ci--meta-debug:
+	python -V
+	node --version
+
+ci-pylint: ci--meta-debug
+	pylint authentik tests lifecycle
+
+ci-black: ci--meta-debug
+	black --check authentik tests lifecycle
+
+ci-isort: ci--meta-debug
+	isort --check authentik tests lifecycle
+
+ci-bandit: ci--meta-debug
+	bandit -r authentik tests lifecycle
+
+ci-pyright: ci--meta-debug
+	pyright e2e lifecycle
+
+ci-pending-migrations: ci--meta-debug
+	./manage.py makemigrations --check

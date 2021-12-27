@@ -27,7 +27,7 @@ class TestUserDenyStage(APITestCase):
         self.stage = DenyStage.objects.create(name="logout")
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
-    def test_valid_password(self):
+    def test_valid_get(self):
         """Test with a valid pending user and backend"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
@@ -35,6 +35,32 @@ class TestUserDenyStage(APITestCase):
         session.save()
 
         response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "component": "ak-stage-access-denied",
+                "error_message": None,
+                "flow_info": {
+                    "background": self.flow.background_url,
+                    "cancel_url": reverse("authentik_flows:cancel"),
+                    "title": "",
+                },
+                "type": ChallengeTypes.NATIVE.value,
+            },
+        )
+
+    def test_valid_post(self):
+        """Test with a valid pending user and backend"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 

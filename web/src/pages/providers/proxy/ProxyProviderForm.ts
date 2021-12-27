@@ -7,6 +7,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
@@ -32,6 +33,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
         return super.styles.concat(
             PFToggleGroup,
             PFContent,
+            PFList,
             PFSpacing,
             css`
                 .pf-c-toggle-group {
@@ -162,7 +164,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     renderSettings(): TemplateResult {
         switch (this.mode) {
             case ProxyMode.Proxy:
-                return html` <p class="pf-u-mb-xl">
+                return html`<p class="pf-u-mb-xl">
                         ${t`This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well.`}
                     </p>
                     <ak-form-element-horizontal
@@ -211,7 +213,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         </p>
                     </ak-form-element-horizontal>`;
             case ProxyMode.ForwardSingle:
-                return html` <p class="pf-u-mb-xl">
+                return html`<p class="pf-u-mb-xl">
                         ${t`Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you).`}
                     </p>
                     <ak-form-element-horizontal
@@ -230,11 +232,19 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         </p>
                     </ak-form-element-horizontal>`;
             case ProxyMode.ForwardDomain:
-                return html` <p class="pf-u-mb-xl">
+                return html`<p class="pf-u-mb-xl">
                         ${t`Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.`}
                     </p>
+                    <div class="pf-u-mb-xl">
+                        ${t`An example setup can look like this:`}
+                        <ul class="pf-c-list">
+                            <li>${t`authentik running on auth.example.com`}</li>
+                            <li>${t`app1 running on app1.example.com`}</li>
+                        </ul>
+                        ${t`In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com.`}
+                    </div>
                     <ak-form-element-horizontal
-                        label=${t`External host`}
+                        label=${t`Authentication URL`}
                         ?required=${true}
                         name="externalHost"
                     >
@@ -245,10 +255,14 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`The external URL you'll authenticate at. Can be the same domain as authentik.`}
+                            ${t`The external URL you'll authenticate at. The authentik core server should be reachable under this URL.`}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Cookie domain`} name="cookieDomain">
+                    <ak-form-element-horizontal
+                        label=${t`Cookie domain`}
+                        name="cookieDomain"
+                        ?required=${true}
+                    >
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.cookieDomain)}"
@@ -256,7 +270,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.`}
+                            ${t`Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.`}
                         </p>
                     </ak-form-element-horizontal>`;
         }
@@ -387,12 +401,20 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         </p>
                     </ak-form-element-horizontal>
 
-                    <ak-form-element-horizontal label=${t`Skip path regex`} name="skipPathRegex">
+                    <ak-form-element-horizontal
+                        label="${this.mode === ProxyMode.ForwardDomain
+                            ? t`Unauthenticated URLs`
+                            : t`Unauthenticated Paths`}${t``}"
+                        name="skipPathRegex"
+                    >
                         <textarea class="pf-c-form-control">
 ${this.instance?.skipPathRegex}</textarea
                         >
                         <p class="pf-c-form__helper-text">
-                            ${t`Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.`}
+                            ${t`Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions.`}
                         </p>
                     </ak-form-element-horizontal>
 

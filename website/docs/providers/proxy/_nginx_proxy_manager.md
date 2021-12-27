@@ -2,7 +2,8 @@ For Nginx Proxy Manager you can use this snippet
 
 ```
 # Increase buffer size for large headers
-# This is needed only if you get 'upstream sent too big header while reading response header from upstream' error when trying to access an application protected by goauthentik
+# This is needed only if you get 'upstream sent too big header while reading response
+# header from upstream' error when trying to access an application protected by goauthentik
 proxy_buffers 8 16k;
 proxy_buffer_size 32k;
 fastcgi_buffers 16 16k;
@@ -32,7 +33,7 @@ location / {
 
 # all requests to /akprox must be accessible without authentication
 location /akprox {
-    proxy_pass          http://*ip or hostname of the authentik OUTPOST*:9000/akprox;
+    proxy_pass          http://outpost.company:9000/akprox;
     # ensure the host of this vserver matches your external URL you've configured
     # in authentik
     proxy_set_header    Host $host;

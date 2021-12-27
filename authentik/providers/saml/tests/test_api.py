@@ -4,8 +4,9 @@ from tempfile import TemporaryFile
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Application, User
-from authentik.flows.models import Flow, FlowDesignation
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.flows.models import FlowDesignation
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.tests.test_metadata import METADATA_SIMPLE
 
@@ -15,7 +16,7 @@ class TestSAMLProviderAPI(APITestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        self.user = User.objects.get(username="akadmin")
+        self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
     def test_metadata(self):
@@ -23,9 +24,7 @@ class TestSAMLProviderAPI(APITestCase):
         self.client.logout()
         provider = SAMLProvider.objects.create(
             name="test",
-            authorization_flow=Flow.objects.get(
-                slug="default-provider-authorization-implicit-consent"
-            ),
+            authorization_flow=create_test_flow(),
         )
         Application.objects.create(name="test", provider=provider, slug="test")
         response = self.client.get(
@@ -38,9 +37,7 @@ class TestSAMLProviderAPI(APITestCase):
         self.client.logout()
         provider = SAMLProvider.objects.create(
             name="test",
-            authorization_flow=Flow.objects.get(
-                slug="default-provider-authorization-implicit-consent"
-            ),
+            authorization_flow=create_test_flow(),
         )
         Application.objects.create(name="test", provider=provider, slug="test")
         response = self.client.get(
@@ -56,9 +53,7 @@ class TestSAMLProviderAPI(APITestCase):
         # Provider without application
         provider = SAMLProvider.objects.create(
             name="test",
-            authorization_flow=Flow.objects.get(
-                slug="default-provider-authorization-implicit-consent"
-            ),
+            authorization_flow=create_test_flow(),
         )
         response = self.client.get(
             reverse("authentik_api:samlprovider-metadata", kwargs={"pk": provider.pk}),
@@ -79,11 +74,7 @@ class TestSAMLProviderAPI(APITestCase):
                 {
                     "file": metadata,
                     "name": "test",
-                    "authorization_flow": Flow.objects.filter(
-                        designation=FlowDesignation.AUTHORIZATION
-                    )
-                    .first()
-                    .slug,
+                    "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).slug,
                 },
                 format="multipart",
             )
@@ -100,11 +91,7 @@ class TestSAMLProviderAPI(APITestCase):
                 {
                     "file": metadata,
                     "name": "test",
-                    "authorization_flow": Flow.objects.filter(
-                        designation=FlowDesignation.AUTHORIZATION
-                    )
-                    .first()
-                    .slug,
+                    "authorization_flow": create_test_flow().slug,
                 },
                 format="multipart",
             )

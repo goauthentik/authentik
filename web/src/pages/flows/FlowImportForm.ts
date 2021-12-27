@@ -6,6 +6,7 @@ import { customElement } from "lit/decorators.js";
 import { Flow, FlowsApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { SentryIgnoredError } from "../../common/errors";
 import { Form } from "../../elements/forms/Form";
 import "../../elements/forms/HorizontalFormElement";
 
@@ -19,7 +20,7 @@ export class FlowImportForm extends Form<Flow> {
     send = (data: Flow): Promise<void> => {
         const file = this.getFormFile();
         if (!file) {
-            throw new Error("No form data");
+            throw new SentryIgnoredError("No form data");
         }
         return new FlowsApi(DEFAULT_CONFIG).flowsInstancesImportFlowCreate({
             file: file,

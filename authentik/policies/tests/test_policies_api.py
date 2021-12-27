@@ -2,7 +2,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.policies.dummy.models import DummyPolicy
 
 
@@ -12,7 +12,7 @@ class TestPoliciesAPI(APITestCase):
     def setUp(self) -> None:
         super().setUp()
         self.policy = DummyPolicy.objects.create(name="dummy", result=True)
-        self.user = User.objects.get(username="akadmin")
+        self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
     def test_test_call(self):

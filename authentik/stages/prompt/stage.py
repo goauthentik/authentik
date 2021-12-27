@@ -18,7 +18,7 @@ from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTyp
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.policies.engine import PolicyEngine
-from authentik.policies.models import PolicyBinding, PolicyBindingModel
+from authentik.policies.models import PolicyBinding, PolicyBindingModel, PolicyEngineMode
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.prompt.signals import password_validate
 
@@ -110,6 +110,7 @@ class PromptChallengeResponse(ChallengeResponse):
 
         user = self.plan.context.get(PLAN_CONTEXT_PENDING_USER, get_anonymous_user())
         engine = ListPolicyEngine(self.stage.validation_policies.all(), user, self.request)
+        engine.mode = PolicyEngineMode.MODE_ALL
         engine.request.context[PLAN_CONTEXT_PROMPT] = attrs
         engine.request.context.update(attrs)
         engine.build()

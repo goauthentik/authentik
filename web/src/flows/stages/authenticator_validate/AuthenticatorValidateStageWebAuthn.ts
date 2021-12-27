@@ -5,10 +5,12 @@ import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
@@ -17,7 +19,6 @@ import {
     DeviceChallenge,
 } from "@goauthentik/api";
 
-import { PFSize } from "../../../elements/Spinner";
 import {
     transformAssertionForServer,
     transformCredentialRequestOptions,
@@ -33,17 +34,24 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     @property({ attribute: false })
     deviceChallenge?: DeviceChallenge;
 
-    @property({ type: Boolean })
-    authenticateRunning = false;
-
     @property()
-    authenticateMessage = "";
+    authenticateMessage?: string;
 
     @property({ type: Boolean })
     showBackButton = false;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
+        return [
+            PFBase,
+            PFLogin,
+            PFEmptyState,
+            PFBullseye,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            PFButton,
+            AKGlobal,
+        ];
     }
 
     async authenticate(): Promise<void> {
@@ -89,31 +97,24 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     }
 
     async authenticateWrapper(): Promise<void> {
-        if (this.authenticateRunning) {
+        if (this.host.loading) {
             return;
         }
-        this.authenticateRunning = true;
+        this.host.loading = true;
         this.authenticate()
             .catch((e) => {
                 console.error(e);
                 this.authenticateMessage = e.toString();
             })
             .finally(() => {
-                this.authenticateRunning = false;
+                this.host.loading = false;
             });
     }
 
     render(): TemplateResult {
         return html`<div class="pf-c-login__main-body">
-                ${this.authenticateRunning
-                    ? html`<div class="pf-c-empty-state__content">
-                          <div class="pf-l-bullseye">
-                              <div class="pf-l-bullseye__item">
-                                  <ak-spinner size="${PFSize.XLarge}"></ak-spinner>
-                              </div>
-                          </div>
-                      </div>`
-                    : html` <div class="pf-c-form__group pf-m-action">
+                ${this.authenticateMessage
+                    ? html`<div class="pf-c-form__group pf-m-action">
                           <p class="pf-m-block">${this.authenticateMessage}</p>
                           <button
                               class="pf-c-button pf-m-primary pf-m-block"
@@ -123,7 +124,12 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
                           >
                               ${t`Retry authentication`}
                           </button>
-                      </div>`}
+                      </div>`
+                    : html`<div class="pf-c-form__group pf-m-action">
+                          <p class="pf-m-block">&nbsp;</p>
+                          <p class="pf-m-block">&nbsp;</p>
+                          <p class="pf-m-block">&nbsp;</p>
+                      </div> `}
             </div>
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links">

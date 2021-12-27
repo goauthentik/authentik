@@ -17,7 +17,7 @@ from authentik.flows.models import Flow, FlowStageBinding
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -25,15 +25,13 @@ class TestFlowsAuthenticator(SeleniumTestCase):
     """test flow with otp stages"""
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     def test_totp_validate(self):
         """test flow with otp stages"""
         sleep(1)
         # Setup TOTP Device
-        user = USER()
-        device = TOTPDevice.objects.create(user=user, confirmed=True, digits=6)
+        device = TOTPDevice.objects.create(user=self.user, confirmed=True, digits=6)
 
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
         FlowStageBinding.objects.create(
@@ -53,10 +51,9 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(totp.token())
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(Keys.ENTER)
         self.wait_for_url(self.if_user_url("/library"))
-        self.assert_user(USER())
+        self.assert_user(self.user)
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_stages_authenticator_totp", "0006_default_setup_flow")
@@ -68,7 +65,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.login()
 
         self.wait_for_url(self.if_user_url("/library"))
-        self.assert_user(USER())
+        self.assert_user(self.user)
 
         self.driver.get(
             self.url(
@@ -98,10 +95,9 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         totp_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(Keys.ENTER)
         sleep(3)
 
-        self.assertTrue(TOTPDevice.objects.filter(user=USER(), confirmed=True).exists())
+        self.assertTrue(TOTPDevice.objects.filter(user=self.user, confirmed=True).exists())
 
     @retry()
-    @apply_migration("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_stages_authenticator_static", "0005_default_setup_flow")
@@ -113,7 +109,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.login()
 
         self.wait_for_url(self.if_user_url("/library"))
-        self.assert_user(USER())
+        self.assert_user(self.user)
 
         self.driver.get(
             self.url(
@@ -134,6 +130,6 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.wait_for_url(destination_url)
         sleep(1)
 
-        self.assertTrue(StaticDevice.objects.filter(user=USER(), confirmed=True).exists())
-        device = StaticDevice.objects.filter(user=USER(), confirmed=True).first()
+        self.assertTrue(StaticDevice.objects.filter(user=self.user, confirmed=True).exists())
+        device = StaticDevice.objects.filter(user=self.user, confirmed=True).first()
         self.assertTrue(StaticToken.objects.filter(token=token, device=device).exists())

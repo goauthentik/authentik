@@ -9,9 +9,13 @@ import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 
 import { CURRENT_CLASS, ROUTE_SEPARATOR } from "../constants";
+import { getURLParams, updateURLParams } from "./router/RouteMatch";
 
 @customElement("ak-tabs")
 export class Tabs extends LitElement {
+    @property()
+    pageIdentifier = "page";
+
     @property()
     currentPage?: string;
 
@@ -65,9 +69,9 @@ export class Tabs extends LitElement {
 
     onClick(slot?: string): void {
         this.currentPage = slot;
-        const currentUrl = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
-        const newUrl = `#${currentUrl};${slot}`;
-        history.replaceState(undefined, "", newUrl);
+        const params: { [key: string]: string | undefined } = {};
+        params[this.pageIdentifier] = slot;
+        updateURLParams(params);
     }
 
     renderTab(page: Element): TemplateResult {
@@ -81,18 +85,20 @@ export class Tabs extends LitElement {
 
     render(): TemplateResult {
         const pages = Array.from(this.querySelectorAll("[slot^='page-']"));
+        if (window.location.hash.includes(ROUTE_SEPARATOR)) {
+            const params = getURLParams();
+            if (this.pageIdentifier in params) {
+                if (this.querySelector(`[slot='${params[this.pageIdentifier]}']`) !== null) {
+                    // To update the URL to match with the current slot
+                    this.currentPage = params[this.pageIdentifier];
+                }
+            }
+        }
         if (!this.currentPage) {
             if (pages.length < 1) {
                 return html`<h1>${t`no tabs defined`}</h1>`;
             }
-            let wantedPage = pages[0].attributes.getNamedItem("slot")?.value;
-            if (window.location.hash.includes(ROUTE_SEPARATOR)) {
-                const urlParts = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR);
-                if (this.querySelector(`[slot='${urlParts[1]}']`) !== null) {
-                    // To update the URL to match with the current slot
-                    wantedPage = urlParts[1];
-                }
-            }
+            const wantedPage = pages[0].attributes.getNamedItem("slot")?.value;
             this.onClick(wantedPage);
         }
         return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">

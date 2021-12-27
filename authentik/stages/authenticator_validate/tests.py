@@ -9,7 +9,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
 from webauthn.helpers import bytes_to_base64url
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
 from authentik.lib.generators import generate_id, generate_key
@@ -31,7 +31,7 @@ class AuthenticatorValidateStageTests(APITestCase):
     """Test validator stage"""
 
     def setUp(self) -> None:
-        self.user = User.objects.get(username="akadmin")
+        self.user = create_test_admin_user()
         self.request_factory = RequestFactory()
 
     def test_not_configured_action(self):
@@ -53,7 +53,7 @@ class AuthenticatorValidateStageTests(APITestCase):
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {"uid_field": "akadmin"},
+            {"uid_field": self.user.username},
         )
         self.assertEqual(response.status_code, 302)
         response = self.client.get(
@@ -87,6 +87,10 @@ class AuthenticatorValidateStageTests(APITestCase):
         )
         self.assertFalse(serializer.is_valid())
         self.assertIn("not_configured_action", serializer.errors)
+        serializer = AuthenticatorValidateStageSerializer(
+            data={"name": "foo", "not_configured_action": NotConfiguredAction.DENY}
+        )
+        self.assertTrue(serializer.is_valid())
 
     def test_device_challenge_totp(self):
         """Test device challenge"""

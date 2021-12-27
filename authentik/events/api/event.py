@@ -1,4 +1,6 @@
 """Events API Views"""
+from json import loads
+
 import django_filters
 from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform
@@ -12,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.core.api.utils import PassiveSerializer, TypeCreateSerializer
 from authentik.events.models import Event, EventAction
 
@@ -110,13 +113,20 @@ class EventViewSet(ModelViewSet):
     @extend_schema(
         methods=["GET"],
         responses={200: EventTopPerUserSerializer(many=True)},
+        filters=[],
         parameters=[
+            OpenApiParameter(
+                "action",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                required=False,
+            ),
             OpenApiParameter(
                 "top_n",
                 type=OpenApiTypes.INT,
                 location=OpenApiParameter.QUERY,
                 required=False,
-            )
+            ),
         ],
     )
     @action(detail=False, methods=["GET"], pagination_class=None)
@@ -135,6 +145,40 @@ class EventViewSet(ModelViewSet):
             .annotate(unique_users=Count("user_pk", distinct=True))
             .values("unique_users", "application", "counted_events")
             .order_by("-counted_events")[:top_n]
+        )
+
+    @extend_schema(
+        methods=["GET"],
+        responses={200: CoordinateSerializer(many=True)},
+        filters=[],
+        parameters=[
+            OpenApiParameter(
+                "action",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                required=False,
+            ),
+            OpenApiParameter(
+                "query",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                required=False,
+            ),
+        ],
+    )
+    @action(detail=False, methods=["GET"], pagination_class=None)
+    def per_month(self, request: Request):
+        """Get the count of events per month"""
+        filtered_action = request.query_params.get("action", EventAction.LOGIN)
+        try:
+            query = loads(request.query_params.get("query", "{}"))
+        except ValueError:
+            return Response(status=400)
+        return Response(
+            get_objects_for_user(request.user, "authentik_events.view_event")
+            .filter(action=filtered_action)
+            .filter(**query)
+            .get_events_per_day()
         )
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})

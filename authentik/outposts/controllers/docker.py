@@ -1,17 +1,75 @@
 """Docker controller"""
 from time import sleep
+from typing import Optional
+from urllib.parse import urlparse
 
 from django.conf import settings
 from django.utils.text import slugify
-from docker import DockerClient
+from docker import DockerClient as UpstreamDockerClient
 from docker.errors import DockerException, NotFound
 from docker.models.containers import Container
+from docker.utils.utils import kwargs_from_env
+from structlog.stdlib import get_logger
 from yaml import safe_dump
 
 from authentik import __version__
-from authentik.outposts.controllers.base import BaseController, ControllerException
+from authentik.outposts.controllers.base import BaseClient, BaseController, ControllerException
+from authentik.outposts.docker_ssh import DockerInlineSSH
+from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.outposts.managed import MANAGED_OUTPOST
-from authentik.outposts.models import DockerServiceConnection, Outpost, ServiceConnectionInvalid
+from authentik.outposts.models import (
+    DockerServiceConnection,
+    Outpost,
+    OutpostServiceConnectionState,
+    ServiceConnectionInvalid,
+)
+
+
+class DockerClient(UpstreamDockerClient, BaseClient):
+    """Custom docker client, which can handle TLS and SSH from a database."""
+
+    tls: Optional[DockerInlineTLS]
+    ssh: Optional[DockerInlineSSH]
+
+    def __init__(self, connection: DockerServiceConnection):
+        self.tls = None
+        self.ssh = None
+        if connection.local:
+            # Same result as DockerClient.from_env
+            super().__init__(**kwargs_from_env())
+        else:
+            parsed_url = urlparse(connection.url)
+            tls_config = False
+            if parsed_url.scheme == "ssh":
+                self.ssh = DockerInlineSSH(parsed_url.hostname, connection.tls_authentication)
+                self.ssh.write()
+            else:
+                self.tls = DockerInlineTLS(
+                    verification_kp=connection.tls_verification,
+                    authentication_kp=connection.tls_authentication,
+                )
+                tls_config = self.tls.write()
+            super().__init__(
+                base_url=connection.url,
+                tls=tls_config,
+            )
+        self.logger = get_logger()
+        # Ensure the client actually works
+        self.containers.list()
+
+    def fetch_state(self) -> OutpostServiceConnectionState:
+        try:
+            return OutpostServiceConnectionState(version=self.info()["ServerVersion"], healthy=True)
+        except (ServiceConnectionInvalid, DockerException):
+            return OutpostServiceConnectionState(version="", healthy=False)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if self.tls:
+            self.logger.debug("Cleaning up TLS")
+            self.tls.cleanup()
+        if self.ssh:
+            self.logger.debug("Cleaning up SSH")
+            self.ssh.cleanup()
 
 
 class DockerController(BaseController):
@@ -24,9 +82,12 @@ class DockerController(BaseController):
 
     def __init__(self, outpost: Outpost, connection: DockerServiceConnection) -> None:
         super().__init__(outpost, connection)
+        if outpost.managed == MANAGED_OUTPOST:
+            return
         try:
-            self.client = connection.client()
-        except ServiceConnectionInvalid as exc:
+            self.client = DockerClient(connection)
+        except DockerException as exc:
+            self.logger.warning(exc)
             raise ControllerException from exc
 
     @property
@@ -108,7 +169,7 @@ class DockerController(BaseController):
         image = self.get_container_image()
         try:
             self.client.images.pull(image)
-        except DockerException:
+        except DockerException:  # pragma: no cover
             image = f"goauthentik.io/{self.outpost.type}:latest"
             self.client.images.pull(image)
         return image
@@ -142,7 +203,7 @@ class DockerController(BaseController):
                 True,
             )
 
-    def _migrate_container_name(self):
+    def _migrate_container_name(self):  # pragma: no cover
         """Migrate 2021.9 to 2021.10+"""
         old_name = f"authentik-proxy-{self.outpost.uuid.hex}"
         try:
@@ -167,7 +228,7 @@ class DockerController(BaseController):
             # Check if the container is out of date, delete it and retry
             if len(container.image.tags) > 0:
                 should_image = self.try_pull_image()
-                if should_image not in container.image.tags:
+                if should_image not in container.image.tags:  # pragma: no cover
                     self.logger.info(
                         "Container has mismatched image, re-creating...",
                         has=container.image.tags,
@@ -225,12 +286,14 @@ class DockerController(BaseController):
             raise ControllerException(str(exc)) from exc
 
     def down(self):
-        if self.outpost.managed != MANAGED_OUTPOST:
+        if self.outpost.managed == MANAGED_OUTPOST:
             return
         try:
             container, _ = self._get_container()
             if container.status == "running":
+                self.logger.info("Stopping container.")
                 container.kill()
+            self.logger.info("Removing container.")
             container.remove(force=True)
         except DockerException as exc:
             raise ControllerException(str(exc)) from exc

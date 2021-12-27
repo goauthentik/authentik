@@ -45,11 +45,7 @@ export class IPReputationListPage extends TablePage<IPReputation> {
     }
 
     columns(): TableColumn[] {
-        return [
-            new TableColumn(t`IP`, "ip"),
-            new TableColumn(t`Score`, "score"),
-            new TableColumn(t`Actions`),
-        ];
+        return [new TableColumn(t`IP`, "ip"), new TableColumn(t`Score`, "score")];
     }
 
     renderToolbarSelected(): TemplateResult {

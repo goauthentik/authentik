@@ -53,41 +53,37 @@ export class ApplicationForm extends ModelForm<Application, string> {
         return super.styles.concat(PFDropdown);
     }
 
-    send = (data: Application): Promise<Application | void> => {
-        let writeOp: Promise<Application>;
+    send = async (data: Application): Promise<Application | void> => {
+        let app: Application;
         if (this.instance) {
-            writeOp = new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
+            app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
                 slug: this.instance.slug,
                 applicationRequest: data,
             });
         } else {
-            writeOp = new CoreApi(DEFAULT_CONFIG).coreApplicationsCreate({
+            app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsCreate({
                 applicationRequest: data,
             });
         }
-        return config().then((c) => {
-            if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
-                const icon = this.getFormFile();
-                if (icon || this.clearIcon) {
-                    return writeOp.then((app) => {
-                        return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
-                            slug: app.slug,
-                            file: icon,
-                            clear: this.clearIcon,
-                        });
-                    });
-                }
-            } else {
-                return writeOp.then((app) => {
-                    return new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconUrlCreate({
-                        slug: app.slug,
-                        filePathRequest: {
-                            url: data.metaIcon || "",
-                        },
-                    });
+        const c = await config();
+        if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
+            const icon = this.getFormFile();
+            if (icon || this.clearIcon) {
+                await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
+                    slug: app.slug,
+                    file: icon,
+                    clear: this.clearIcon,
                 });
             }
-        });
+        } else {
+            await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconUrlCreate({
+                slug: app.slug,
+                filePathRequest: {
+                    url: data.metaIcon || "",
+                },
+            });
+        }
+        return app;
     };
 
     groupProviders(providers: Provider[]): TemplateResult {
@@ -270,20 +266,23 @@ export class ApplicationForm extends ModelForm<Application, string> {
                                     value="${first(this.instance?.metaIcon, "")}"
                                     class="pf-c-form-control"
                                 />
+                                <p class="pf-c-form__helper-text">
+                                    ${t`Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".`}
+                                </p>
                             </ak-form-element-horizontal>`;
                         }),
                     )}
-                    <ak-form-element-horizontal label=${t`Description`} name="metaDescription">
-                        <textarea class="pf-c-form-control">
-${ifDefined(this.instance?.metaDescription)}</textarea
-                        >
-                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Publisher`} name="metaPublisher">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.metaPublisher)}"
                             class="pf-c-form-control"
                         />
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Description`} name="metaDescription">
+                        <textarea class="pf-c-form-control">
+${ifDefined(this.instance?.metaDescription)}</textarea
+                        >
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

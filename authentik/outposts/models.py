@@ -11,22 +11,12 @@ from django.core.cache import cache
 from django.db import IntegrityError, models, transaction
 from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
-from docker.client import DockerClient
-from docker.errors import DockerException
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
-from kubernetes.client import VersionApi, VersionInfo
-from kubernetes.client.api_client import ApiClient
-from kubernetes.client.configuration import Configuration
-from kubernetes.client.exceptions import OpenApiException
-from kubernetes.config.config_exception import ConfigException
-from kubernetes.config.incluster_config import load_incluster_config
-from kubernetes.config.kube_config import load_kube_config_from_dict
 from model_utils.managers import InheritanceManager
 from packaging.version import LegacyVersion, Version, parse
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
-from urllib3.exceptions import HTTPError
 
 from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.core.models import (
@@ -45,7 +35,7 @@ from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.managed.models import ManagedModel
 from authentik.outposts.controllers.k8s.utils import get_namespace
-from authentik.outposts.docker_tls import DockerInlineTLS
+from authentik.tenants.models import Tenant
 
 OUR_VERSION = parse(__version__)
 OUTPOST_HELLO_INTERVAL = 10
@@ -68,8 +58,6 @@ class OutpostConfig:
     authentik_host_browser: str = ""
 
     log_level: str = CONFIG.y("log_level")
-    error_reporting_enabled: bool = CONFIG.y_bool("error_reporting.enabled")
-    error_reporting_environment: str = CONFIG.y("error_reporting.environment", "customer")
     object_naming_template: str = field(default="ak-outpost-%(name)s")
 
     docker_network: Optional[str] = field(default=None)
@@ -152,10 +140,6 @@ class OutpostServiceConnection(models.Model):
             return OutpostServiceConnectionState("", False)
         return state
 
-    def fetch_state(self) -> OutpostServiceConnectionState:
-        """Fetch current Service Connection state"""
-        raise NotImplementedError
-
     @property
     def component(self) -> str:
         """Return component used to edit this object"""
@@ -219,35 +203,6 @@ class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
     def __str__(self) -> str:
         return f"Docker Service-Connection {self.name}"
 
-    def client(self) -> DockerClient:
-        """Get DockerClient"""
-        try:
-            client = None
-            if self.local:
-                client = DockerClient.from_env()
-            else:
-                client = DockerClient(
-                    base_url=self.url,
-                    tls=DockerInlineTLS(
-                        verification_kp=self.tls_verification,
-                        authentication_kp=self.tls_authentication,
-                    ).write(),
-                )
-            client.containers.list()
-        except DockerException as exc:
-            LOGGER.warning(exc)
-            raise ServiceConnectionInvalid from exc
-        return client
-
-    def fetch_state(self) -> OutpostServiceConnectionState:
-        try:
-            client = self.client()
-            return OutpostServiceConnectionState(
-                version=client.info()["ServerVersion"], healthy=True
-            )
-        except ServiceConnectionInvalid:
-            return OutpostServiceConnectionState(version="", healthy=False)
-
     class Meta:
 
         verbose_name = _("Docker Service-Connection")
@@ -279,27 +234,6 @@ class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
 
     def __str__(self) -> str:
         return f"Kubernetes Service-Connection {self.name}"
-
-    def fetch_state(self) -> OutpostServiceConnectionState:
-        try:
-            client = self.client()
-            api_instance = VersionApi(client)
-            version: VersionInfo = api_instance.get_code()
-            return OutpostServiceConnectionState(version=version.git_version, healthy=True)
-        except (OpenApiException, HTTPError, ServiceConnectionInvalid):
-            return OutpostServiceConnectionState(version="", healthy=False)
-
-    def client(self) -> ApiClient:
-        """Get Kubernetes client configured from kubeconfig"""
-        config = Configuration()
-        try:
-            if self.local:
-                load_incluster_config(client_configuration=config)
-            else:
-                load_kube_config_from_dict(self.kubeconfig, client_configuration=config)
-            return ApiClient(config)
-        except ConfigException as exc:
-            raise ServiceConnectionInvalid from exc
 
     class Meta:
 
@@ -406,7 +340,8 @@ class Outpost(SerializerModel, ManagedModel):
                     user.user_permissions.add(permission.first())
         LOGGER.debug(
             "Updated service account's permissions",
-            perms=UserObjectPermission.objects.filter(user=user),
+            obj_perms=UserObjectPermission.objects.filter(user=user),
+            perms=user.user_permissions.all(),
         )
 
     @property
@@ -422,6 +357,7 @@ class Outpost(SerializerModel, ManagedModel):
             user = users.first()
         user.attributes[USER_ATTRIBUTE_SA] = True
         user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
+        user.name = f"Outpost {self.name} Service-Account"
         user.save()
         if should_create_user:
             self.build_user_permissions(user)
@@ -469,6 +405,10 @@ class Outpost(SerializerModel, ManagedModel):
                 objects.extend(provider.get_required_objects())
             else:
                 objects.append(provider)
+        if self.managed:
+            for tenant in Tenant.objects.filter(web_certificate__isnull=False):
+                objects.append(tenant)
+                objects.append(tenant.web_certificate)
         return objects
 
     def __str__(self) -> str:
@@ -501,6 +441,8 @@ class OutpostState:
     def for_outpost(outpost: Outpost) -> list["OutpostState"]:
         """Get all states for an outpost"""
         keys = cache.keys(f"{outpost.state_cache_prefix}_*")
+        if not keys:
+            return []
         states = []
         for key in keys:
             instance_uid = key.replace(f"{outpost.state_cache_prefix}_", "")

@@ -10,6 +10,7 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/forms/FormGroup";
 import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
+import { UserOption } from "../../elements/user/utils";
 import { dateTimeLocal, first } from "../../utils";
 
 @customElement("ak-token-form")
@@ -67,7 +68,7 @@ export class TokenForm extends ModelForm<Token, string> {
                                         value=${user.pk}
                                         ?selected=${this.instance?.user === user.pk}
                                     >
-                                        ${user.username}
+                                        ${UserOption(user)}
                                     </option>`;
                                 });
                             }),

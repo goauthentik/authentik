@@ -16,12 +16,7 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
 )
-from authentik.providers.oauth2.models import (
-    ClientTypes,
-    JWTAlgorithms,
-    OAuth2Provider,
-    ScopeMapping,
-)
+from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
 
 SCOPE_AK_PROXY = "ak_proxy"
 
@@ -128,8 +123,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     def set_oauth_defaults(self):
         """Ensure all OAuth2-related settings are correct"""
         self.client_type = ClientTypes.CONFIDENTIAL
-        self.jwt_alg = JWTAlgorithms.HS256
-        self.rsa_key = None
+        self.signing_key = None
         scopes = ScopeMapping.objects.filter(
             scope_name__in=[
                 SCOPE_OPENID,

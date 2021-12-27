@@ -13,4 +13,6 @@ type Claims struct {
 	Name              string      `json:"name"`
 	PreferredUsername string      `json:"preferred_username"`
 	Groups            []string    `json:"groups"`
+
+	RawToken string
 }
