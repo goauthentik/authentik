@@ -10,8 +10,8 @@ def add_title_for_defaults(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         "default-invalidation-flow": "Default Invalidation Flow",
         "default-source-enrollment": "Welcome to authentik! Please select a username.",
         "default-source-authentication": "Welcome to authentik!",
-        "default-provider-authorization-implicit-consent": "Default Provider Authorization Flow (implicit consent)",
-        "default-provider-authorization-explicit-consent": "Default Provider Authorization Flow (explicit consent)",
+        "default-provider-authorization-implicit-consent": "Redirecting to %(app)s",
+        "default-provider-authorization-explicit-consent": "Redirecting to %(app)s",
         "default-password-change": "Change password",
     }
     db_alias = schema_editor.connection.alias
