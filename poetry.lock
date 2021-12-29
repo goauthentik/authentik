@@ -109,17 +109,17 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
 name = "attrs"
-version = "21.2.0"
+version = "21.3.0"
 description = "Classes Without Boilerplate"
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [package.extras]
-dev = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface", "furo", "sphinx", "sphinx-notfound-page", "pre-commit"]
+dev = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface", "furo", "sphinx", "sphinx-notfound-page", "pre-commit"]
 docs = ["furo", "sphinx", "zope.interface", "sphinx-notfound-page"]
-tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface"]
-tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins"]
+tests = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface"]
+tests_no_zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins"]
 
 [[package]]
 name = "autobahn"
@@ -298,7 +298,7 @@ test = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "celery"
-version = "5.2.2"
+version = "5.2.3"
 description = "Distributed Task Queue."
 category = "main"
 optional = false
@@ -306,12 +306,12 @@ python-versions = ">=3.7,"
 
 [package.dependencies]
 billiard = ">=3.6.4.0,<4.0"
-click = ">=8.0,<9.0"
+click = ">=8.0.3,<9.0"
 click-didyoumean = ">=0.0.3"
 click-plugins = ">=1.1.1"
 click-repl = ">=0.2.0"
-kombu = ">=5.2.2,<6.0"
-pytz = ">0.dev.0"
+kombu = ">=5.2.3,<6.0"
+pytz = ">=2021.3"
 vine = ">=5.0.0,<6.0"
 
 [package.extras]
@@ -331,12 +331,12 @@ eventlet = ["eventlet (>=0.32.0)"]
 gevent = ["gevent (>=1.5.0)"]
 librabbitmq = ["librabbitmq (>=1.5.0)"]
 memcache = ["pylibmc"]
-mongodb = ["pymongo[srv] (>=3.3.0,<3.12.1)"]
+mongodb = ["pymongo[srv] (>=3.11.1)"]
 msgpack = ["msgpack"]
 pymemcache = ["python-memcached"]
 pyro = ["pyro4"]
 pytest = ["pytest-celery"]
-redis = ["redis (>=3.4.1,<4.0.0)"]
+redis = ["redis (>=3.4.1,!=4.0.0,!=4.0.1)"]
 s3 = ["boto3 (>=1.9.125)"]
 slmq = ["softlayer-messaging (>=1.0.3)"]
 solar = ["ephem"]
@@ -1022,14 +1022,14 @@ format_nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-
 
 [[package]]
 name = "kombu"
-version = "5.2.2"
+version = "5.2.3"
 description = "Messaging library for Python."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
-amqp = ">=5.0.6,<6.0.0"
+amqp = ">=5.0.9,<6.0.0"
 vine = "*"
 
 [package.extras]
@@ -1041,7 +1041,7 @@ mongodb = ["pymongo (>=3.3.0,<3.12.1)"]
 msgpack = ["msgpack"]
 pyro = ["pyro4"]
 qpid = ["qpid-python (>=0.26)", "qpid-tools (>=0.26)"]
-redis = ["redis (>=3.4.1,<4.0.0)"]
+redis = ["redis (>=3.4.1,!=4.0.0,!=4.0.1)"]
 slmq = ["softlayer-messaging (>=1.0.3)"]
 sqlalchemy = ["sqlalchemy"]
 sqs = ["boto3 (>=1.9.12)", "pycurl (>=7.44.1,<7.45.0)", "urllib3 (>=1.26.7)"]
@@ -1358,11 +1358,11 @@ with_django = ["django"]
 
 [[package]]
 name = "pylint-plugin-utils"
-version = "0.6"
+version = "0.7"
 description = "Utilities and helpers for writing Pylint plugins"
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6.2"
 
 [package.dependencies]
 pylint = ">=1.7"
@@ -2191,8 +2191,8 @@ atomicwrites = [
     {file = "atomicwrites-1.4.0.tar.gz", hash = "sha256:ae70396ad1a434f9c7046fd2dd196fc04b12f9e91ffb859164193be8b6168a7a"},
 ]
 attrs = [
-    {file = "attrs-21.2.0-py2.py3-none-any.whl", hash = "sha256:149e90d6d8ac20db7a955ad60cf0e6881a3f20d37096140088356da6c716b0b1"},
-    {file = "attrs-21.2.0.tar.gz", hash = "sha256:ef6aaac3ca6cd92904cdd0d83f629a15f18053ec84e6432106f7a4d04ae4f5fb"},
+    {file = "attrs-21.3.0-py2.py3-none-any.whl", hash = "sha256:8f7335278dedd26b58c38e006338242cc0977f06d51579b2b8b87b9b33bff66c"},
+    {file = "attrs-21.3.0.tar.gz", hash = "sha256:50f3c9b216dc9021042f71b392859a773b904ce1a029077f58f6598272432045"},
 ]
 autobahn = [
     {file = "autobahn-21.11.1.tar.gz", hash = "sha256:bd6f46315419ca0a5be4109f737410208ad5f19718f67ca6a4a674cc66ca9b18"},
@@ -2258,8 +2258,8 @@ cbor2 = [
     {file = "cbor2-5.4.2.tar.gz", hash = "sha256:e283e70b55a049ff364cc5e648fde587e4d9b0e87e4b2664c69e639135e6b3b8"},
 ]
 celery = [
-    {file = "celery-5.2.2-py3-none-any.whl", hash = "sha256:5a68a351076cfac4f678fa5ffd898105c28825a2224902da006970005196d061"},
-    {file = "celery-5.2.2.tar.gz", hash = "sha256:2844eb040e915398623a43253a8e1016723442ece6b0751a3c416d8a2b34216f"},
+    {file = "celery-5.2.3-py3-none-any.whl", hash = "sha256:8aacd02fc23a02760686d63dde1eb0daa9f594e735e73ea8fb15c2ff15cb608c"},
+    {file = "celery-5.2.3.tar.gz", hash = "sha256:e2cd41667ad97d4f6a2f4672d1c6a6ebada194c619253058b5f23704aaadaa82"},
 ]
 certifi = [
     {file = "certifi-2021.10.8-py2.py3-none-any.whl", hash = "sha256:d62a0163eb4c2344ac042ab2bdf75399a71a2d8c7d47eac2e2ee91b9d6339569"},
@@ -2717,8 +2717,8 @@ jsonschema = [
     {file = "jsonschema-4.3.2.tar.gz", hash = "sha256:cca171fb7544de15ccda236bf78d58434d769c9a2ce21d44e0d209e39eeb8876"},
 ]
 kombu = [
-    {file = "kombu-5.2.2-py3-none-any.whl", hash = "sha256:d36f0cde6a18d9eb7b6b3aa62a59bfdff7f5724689850e447eca5be8efc9d501"},
-    {file = "kombu-5.2.2.tar.gz", hash = "sha256:0f5d0763fb916808f617b886697b2be28e6bc35026f08e679697fc814b48a608"},
+    {file = "kombu-5.2.3-py3-none-any.whl", hash = "sha256:eeaeb8024f3a5cfc71c9250e45cddb8493f269d74ada2f74909a93c59c4b4179"},
+    {file = "kombu-5.2.3.tar.gz", hash = "sha256:81a90c1de97e08d3db37dbf163eaaf667445e1068c98bfd89f051a40e9f6dbbd"},
 ]
 kubernetes = [
     {file = "kubernetes-21.7.0-py2.py3-none-any.whl", hash = "sha256:044c20253f8577491a87af8f9edea1f929ed6d62ce306376a6cb8aed24e572c5"},
@@ -3114,8 +3114,8 @@ pylint-django = [
     {file = "pylint_django-2.4.4-py3-none-any.whl", hash = "sha256:aff49d9602a39c027b4ed7521a041438893205918f405800063b7ff692b7371b"},
 ]
 pylint-plugin-utils = [
-    {file = "pylint-plugin-utils-0.6.tar.gz", hash = "sha256:57625dcca20140f43731311cd8fd879318bf45a8b0fd17020717a8781714a25a"},
-    {file = "pylint_plugin_utils-0.6-py3-none-any.whl", hash = "sha256:2f30510e1c46edf268d3a195b2849bd98a1b9433229bb2ba63b8d776e1fc4d0a"},
+    {file = "pylint-plugin-utils-0.7.tar.gz", hash = "sha256:ce48bc0516ae9415dd5c752c940dfe601b18fe0f48aa249f2386adfa95a004dd"},
+    {file = "pylint_plugin_utils-0.7-py3-none-any.whl", hash = "sha256:b3d43e85ab74c4f48bb46ae4ce771e39c3a20f8b3d56982ab17aa73b4f98d535"},
 ]
 pynacl = [
     {file = "PyNaCl-1.4.0-cp27-cp27m-macosx_10_10_x86_64.whl", hash = "sha256:ea6841bc3a76fa4942ce00f3bda7d436fda21e2d91602b9e21b7ca9ecab8f3ff"},
