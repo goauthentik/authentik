@@ -126,7 +126,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
 
     renderExpanded(item: Outpost): TemplateResult {
-        return html`<td role="cell" colspan="3">
+        return html`<td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <h3>
                     ${t`Detailed health (one instance per column, data is cached so may be out of data)`}
