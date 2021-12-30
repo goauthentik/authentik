@@ -2063,11 +2063,14 @@ msgid "Flow(s)"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts
-#: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/stages/StageListPage.ts
 msgid "Flows"
+msgstr ""
+
+#: src/interfaces/AdminInterface.ts
+msgid "Flows & Stages"
 msgstr ""
 
 #: src/pages/flows/FlowListPage.ts

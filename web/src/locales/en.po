@@ -2071,12 +2071,15 @@ msgid "Flow(s)"
 msgstr "Flow(s)"
 
 #: src/interfaces/AdminInterface.ts
-#: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/stages/StageListPage.ts
 msgid "Flows"
 msgstr "Flows"
+
+#: src/interfaces/AdminInterface.ts
+msgid "Flows & Stages"
+msgstr "Flows & Stages"
 
 #: src/pages/flows/FlowListPage.ts
 msgid "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them."

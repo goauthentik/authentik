@@ -95,7 +95,7 @@ export class ProviderListPage extends TablePage<Provider> {
                 : html`<i class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
                       ${t`Warning: Provider not assigned to any application.`}`,
             html`${item.verboseName}`,
-            html` <ak-forms-modal>
+            html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update ${item.verboseName}`} </span>
                 <ak-proxy-form

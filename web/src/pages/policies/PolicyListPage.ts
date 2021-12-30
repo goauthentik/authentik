@@ -75,7 +75,7 @@ export class PolicyListPage extends TablePage<Policy> {
                 <div>${item.name}</div>
                 ${(item.boundTo || 0) > 0
                     ? html`<i class="pf-icon pf-icon-ok"></i>
-                          <small> ${t`Assigned to ${item.boundTo} object(s).`} </small>`
+                          <small>${t`Assigned to ${item.boundTo} object(s).`}</small>`
                     : html`<i class="pf-icon pf-icon-warning-triangle"></i>
                           <small>${t`Warning: Policy is not assigned.`}</small>`}
             </div>`,

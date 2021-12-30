@@ -253,7 +253,7 @@ export class AdminInterface extends LitElement {
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
-                <span slot="label">${t`Flows`}</span>
+                <span slot="label">${t`Flows & Stages`}</span>
                 <ak-sidebar-item
                     path="/flow/flows"
                     .activeWhen=${[`^/flow/flows/(?<slug>${SLUG_REGEX})$`]}
