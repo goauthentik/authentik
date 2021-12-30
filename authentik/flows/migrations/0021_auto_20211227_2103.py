@@ -12,10 +12,9 @@ def update_title_for_defaults(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
     db_alias = schema_editor.connection.alias
     Flow = apps.get_model("authentik_flows", "Flow")
     for flow in Flow.objects.using(db_alias).all():
-        if flow.slug in slug_title_map:
-            flow.title = slug_title_map[flow.slug]
-        else:
-            flow.title = flow.name
+        if flow.slug not in slug_title_map:
+            continue
+        flow.title = slug_title_map[flow.slug]
         flow.save()
 
 
