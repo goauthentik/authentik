@@ -32,6 +32,13 @@ export class OutpostHealthElement extends LitElement {
         if (!this.outpostHealth) {
             return html`<ak-spinner></ak-spinner>`;
         }
+        let versionString = this.outpostHealth.version;
+        if (this.outpostHealth.buildHash) {
+            versionString = `${versionString} (build ${this.outpostHealth.buildHash.substring(
+                0,
+                8,
+            )})`;
+        }
         return html` <ul>
             <li>
                 <ak-label color=${PFColor.Green}>
@@ -44,7 +51,7 @@ export class OutpostHealthElement extends LitElement {
                           >${t`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`}
                       </ak-label>`
                     : html`<ak-label color=${PFColor.Green}
-                          >${t`Version: ${this.outpostHealth.version || ""}`}
+                          >${t`Version: ${versionString}`}
                       </ak-label>`}
             </li>
         </ul>`;

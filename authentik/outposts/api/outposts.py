@@ -1,4 +1,6 @@
 """Outpost API Views"""
+from os import environ
+
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from django_filters.filters import ModelMultipleChoiceFilter
@@ -12,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import JSONField, ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
+from authentik import ENV_GIT_HASH_KEY
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, is_dict
@@ -98,7 +101,11 @@ class OutpostHealthSerializer(PassiveSerializer):
     last_seen = DateTimeField(read_only=True)
     version = CharField(read_only=True)
     version_should = CharField(read_only=True)
+
     version_outdated = BooleanField(read_only=True)
+
+    build_hash = CharField(read_only=True, required=False)
+    build_hash_should = CharField(read_only=True, required=False)
 
 
 class OutpostFilter(FilterSet):
@@ -146,6 +153,8 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
                     "version": state.version,
                     "version_should": state.version_should,
                     "version_outdated": state.version_outdated,
+                    "build_hash": state.build_hash,
+                    "build_hash_should": environ.get(ENV_GIT_HASH_KEY, ""),
                 }
             )
         return Response(OutpostHealthSerializer(states, many=True).data)

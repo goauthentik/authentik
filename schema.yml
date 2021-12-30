@@ -23525,7 +23525,15 @@ components:
         version_outdated:
           type: boolean
           readOnly: true
+        build_hash:
+          type: string
+          readOnly: true
+        build_hash_should:
+          type: string
+          readOnly: true
       required:
+      - build_hash
+      - build_hash_should
       - last_seen
       - version
       - version_outdated
