@@ -31275,8 +31275,11 @@ components:
           type: string
         configure_url:
           type: string
+        icon_url:
+          type: string
       required:
       - component
+      - icon_url
       - object_uid
       - title
     UserSourceConnection:

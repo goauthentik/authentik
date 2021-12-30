@@ -988,14 +988,18 @@ msgstr "Connect"
 msgid "Connect to the LDAP Server on port 389:"
 msgstr "Connect to the LDAP Server on port 389:"
 
+#: src/user/user-settings/sources/SourceSettings.ts
+msgid "Connect your user account to the services listed below, to allow you to login using the service instead of traditional credentials."
+msgstr "Connect your user account to the services listed below, to allow you to login using the service instead of traditional credentials."
+
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "Connected services"
 msgstr "Connected services"
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
-msgid "Connected."
-msgstr "Connected."
+#~ msgid "Connected."
+#~ msgstr "Connected."
 
 #: src/common/ws.ts
 msgid "Connection error, reconnecting..."
@@ -3138,8 +3142,8 @@ msgstr "Not configured action"
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
-msgid "Not connected."
-msgstr "Not connected."
+#~ msgid "Not connected."
+#~ msgstr "Not connected."
 
 #: src/elements/router/Router404.ts
 msgid "Not found"
@@ -4329,8 +4333,8 @@ msgstr "Source linked"
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
-msgid "Source {0}"
-msgstr "Source {0}"
+#~ msgid "Source {0}"
+#~ msgstr "Source {0}"
 
 #: src/pages/sources/SourcesListPage.ts
 msgid "Source(s)"

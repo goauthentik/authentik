@@ -16,13 +16,6 @@ export class SourceSettingsPlex extends BaseUserSettings {
     @property()
     title!: string;
 
-    render(): TemplateResult {
-        return html`<div class="pf-c-card">
-            <div class="pf-c-card__title">${t`Source ${this.title}`}</div>
-            <div class="pf-c-card__body">${this.renderInner()}</div>
-        </div>`;
-    }
-
     async doPlex(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.configureUrl || "");
         const authWindow = popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
@@ -43,7 +36,7 @@ export class SourceSettingsPlex extends BaseUserSettings {
         );
     }
 
-    renderInner(): TemplateResult {
+    render(): TemplateResult {
         return html`${until(
             new SourcesApi(DEFAULT_CONFIG)
                 .sourcesUserConnectionsPlexList({
@@ -51,24 +44,22 @@ export class SourceSettingsPlex extends BaseUserSettings {
                 })
                 .then((connection) => {
                     if (connection.results.length > 0) {
-                        return html`<p>${t`Connected.`}</p>
-                            <button
-                                class="pf-c-button pf-m-danger"
-                                @click=${() => {
-                                    return new SourcesApi(
-                                        DEFAULT_CONFIG,
-                                    ).sourcesUserConnectionsPlexDestroy({
-                                        id: connection.results[0].pk || 0,
-                                    });
-                                }}
-                            >
-                                ${t`Disconnect`}
-                            </button>`;
-                    }
-                    return html`<p>${t`Not connected.`}</p>
-                        <button @click=${this.doPlex} class="pf-c-button pf-m-primary">
-                            ${t`Connect`}
+                        return html` <button
+                            class="pf-c-button pf-m-danger"
+                            @click=${() => {
+                                return new SourcesApi(
+                                    DEFAULT_CONFIG,
+                                ).sourcesUserConnectionsPlexDestroy({
+                                    id: connection.results[0].pk || 0,
+                                });
+                            }}
+                        >
+                            ${t`Disconnect`}
                         </button>`;
+                    }
+                    return html` <button @click=${this.doPlex} class="pf-c-button pf-m-primary">
+                        ${t`Connect`}
+                    </button>`;
                 }),
         )}`;
     }

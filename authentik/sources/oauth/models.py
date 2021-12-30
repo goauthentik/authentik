@@ -75,14 +75,17 @@ class OAuthSource(Source):
         )
 
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+        provider_type = self.type
+        provider = provider_type()
         return UserSettingSerializer(
             data={
-                "title": f"OAuth {self.name}",
+                "title": self.name,
                 "component": "ak-user-settings-source-oauth",
                 "configure_url": reverse(
                     "authentik_sources_oauth:oauth-client-login",
                     kwargs={"source_slug": self.slug},
                 ),
+                "icon_url": provider.icon_url(),
             }
         )
 

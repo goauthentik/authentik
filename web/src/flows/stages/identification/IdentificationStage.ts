@@ -168,13 +168,13 @@ export class IdentificationStage extends BaseStage<
         }
         return html`<div class="pf-c-login__main-footer-band">
             ${this.challenge.enrollUrl
-                ? html` <p class="pf-c-login__main-footer-band-item">
+                ? html`<p class="pf-c-login__main-footer-band-item">
                       ${t`Need an account?`}
                       <a id="enroll" href="${this.challenge.enrollUrl}">${t`Sign up.`}</a>
                   </p>`
                 : html``}
             ${this.challenge.recoveryUrl
-                ? html` <p class="pf-c-login__main-footer-band-item">
+                ? html`<p class="pf-c-login__main-footer-band-item">
                       <a id="recovery" href="${this.challenge.recoveryUrl}"
                           >${t`Forgot username or password?`}</a
                       >

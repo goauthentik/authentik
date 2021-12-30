@@ -339,9 +339,16 @@ html > form > input {
         ) !important;
     }
     /* data list */
+    .pf-c-data-list {
+        border-top-color: var(--ak-dark-background-lighter);
+    }
     .pf-c-data-list__item {
-        --pf-c-data-list__item--BackgroundColor: var(--ak-dark-background-light);
+        --pf-c-data-list__item--BackgroundColor: transparent;
         --pf-c-data-list__item--BorderBottomColor: var(--ak-dark-background-lighter);
         color: var(--ak-dark-foreground);
     }
+}
+
+.pf-c-data-list__item {
+    background-color: transparent;
 }
