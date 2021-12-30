@@ -1,4 +1,4 @@
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import AKGlobal from "../../authentik.css";
@@ -12,7 +12,18 @@ import { Chip } from "./Chip";
 @customElement("ak-chip-group")
 export class ChipGroup extends LitElement {
     static get styles(): CSSResult[] {
-        return [PFBase, PFChip, PFChipGroup, PFButton, AKGlobal];
+        return [
+            PFBase,
+            PFChip,
+            PFChipGroup,
+            PFButton,
+            AKGlobal,
+            css`
+                ::slotted(*) {
+                    margin: 0 2px;
+                }
+            `,
+        ];
     }
 
     set value(v: (string | number | undefined)[]) {
