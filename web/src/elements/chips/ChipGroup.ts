@@ -22,6 +22,9 @@ export class ChipGroup extends LitElement {
                 ::slotted(*) {
                     margin: 0 2px;
                 }
+                .pf-c-chip-group {
+                    margin-bottom: 8px;
+                }
             `,
         ];
     }
