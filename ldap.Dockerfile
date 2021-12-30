@@ -10,6 +10,10 @@ RUN go build -o /go/ldap ./cmd/ldap
 # Stage 2: Run
 FROM gcr.io/distroless/static-debian11:debug
 
+LABEL org.opencontainers.image.url https://goauthentik.io
+LABEL org.opencontainers.image.description goauthentik.io LDAP outpost, see https://goauthentik.io for more info.
+LABEL org.opencontainers.image.source https://github.com/goauthentik/authentik
+
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 

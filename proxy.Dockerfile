@@ -19,6 +19,10 @@ RUN go build -o /go/proxy ./cmd/proxy
 # Stage 3: Run
 FROM gcr.io/distroless/static-debian11:debug
 
+LABEL org.opencontainers.image.url https://goauthentik.io
+LABEL org.opencontainers.image.description goauthentik.io Proxy outpost image, see https://goauthentik.io for more info.
+LABEL org.opencontainers.image.source https://github.com/goauthentik/authentik
+
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
