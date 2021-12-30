@@ -1,5 +1,5 @@
 """stage view tests"""
-from typing import Callable, Type
+from typing import Callable
 
 from django.test import RequestFactory, TestCase
 
@@ -16,7 +16,7 @@ class TestViews(TestCase):
         self.exec = FlowExecutorView(request=self.factory.get("/"))
 
 
-def view_tester_factory(view_class: Type[StageView]) -> Callable:
+def view_tester_factory(view_class: type[StageView]) -> Callable:
     """Test a form"""
 
     def tester(self: TestViews):

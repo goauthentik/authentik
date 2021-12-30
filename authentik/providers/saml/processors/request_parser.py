@@ -1,7 +1,7 @@
 """SAML AuthNRequest Parser and dataclass"""
 from base64 import b64decode
 from dataclasses import dataclass
-from typing import Optional, Union
+from typing import Optional
 from urllib.parse import quote_plus
 
 import xmlsec
@@ -54,9 +54,7 @@ class AuthNRequestParser:
     def __init__(self, provider: SAMLProvider):
         self.provider = provider
 
-    def _parse_xml(
-        self, decoded_xml: Union[str, bytes], relay_state: Optional[str]
-    ) -> AuthNRequest:
+    def _parse_xml(self, decoded_xml: str | bytes, relay_state: Optional[str]) -> AuthNRequest:
         root = ElementTree.fromstring(decoded_xml)
 
         # http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf

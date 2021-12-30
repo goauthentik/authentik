@@ -1,6 +1,5 @@
 """Kubernetes deployment controller"""
 from io import StringIO
-from typing import Type
 
 from kubernetes.client import VersionApi, VersionInfo
 from kubernetes.client.api_client import ApiClient
@@ -54,7 +53,7 @@ class KubernetesClient(ApiClient, BaseClient):
 class KubernetesController(BaseController):
     """Manage deployment of outpost in kubernetes"""
 
-    reconcilers: dict[str, Type[KubernetesObjectReconciler]]
+    reconcilers: dict[str, type[KubernetesObjectReconciler]]
     reconcile_order: list[str]
 
     client: KubernetesClient

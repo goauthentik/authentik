@@ -1,5 +1,4 @@
 """invitation stage models"""
-from typing import Type
 from uuid import uuid4
 
 from django.db import models
@@ -33,7 +32,7 @@ class InvitationStage(Stage):
         return InvitationStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.invitation.stage import InvitationStageView
 
         return InvitationStageView

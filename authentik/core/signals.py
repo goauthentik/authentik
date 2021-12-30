@@ -1,5 +1,5 @@
 """authentik core signals"""
-from typing import TYPE_CHECKING, Type
+from typing import TYPE_CHECKING
 
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.sessions.backends.cache import KEY_PREFIX
@@ -62,7 +62,7 @@ def user_logged_out_session(sender, request: HttpRequest, user: "User", **_):
 
 
 @receiver(pre_delete)
-def authenticated_session_delete(sender: Type[Model], instance: "AuthenticatedSession", **_):
+def authenticated_session_delete(sender: type[Model], instance: "AuthenticatedSession", **_):
     """Delete session when authenticated session is deleted"""
     from authentik.core.models import AuthenticatedSession
 

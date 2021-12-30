@@ -6,7 +6,7 @@ import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from hashlib import sha256
-from typing import Any, Optional, Type
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
@@ -112,7 +112,7 @@ class ScopeMapping(PropertyMapping):
         return "ak-property-mapping-scope-form"
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.providers.oauth2.api.scope import ScopeMappingSerializer
 
         return ScopeMappingSerializer
@@ -267,7 +267,7 @@ class OAuth2Provider(Provider):
         return "ak-provider-oauth2-form"
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.providers.oauth2.api.provider import OAuth2ProviderSerializer
 
         return OAuth2ProviderSerializer

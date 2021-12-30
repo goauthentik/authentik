@@ -2,7 +2,7 @@
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from os import environ
-from typing import Iterable, Optional, Union
+from typing import Iterable, Optional
 from uuid import uuid4
 
 from dacite import from_dict
@@ -76,7 +76,7 @@ class OutpostConfig:
 class OutpostModel(Model):
     """Base model for providers that need more objects than just themselves"""
 
-    def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
+    def get_required_objects(self) -> Iterable[models.Model | str]:
         """Return a list of all required objects"""
         return [self]
 
@@ -375,9 +375,9 @@ class Outpost(ManagedModel):
             Token.objects.filter(identifier=self.token_identifier).delete()
             return self.token
 
-    def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
+    def get_required_objects(self) -> Iterable[models.Model | str]:
         """Get an iterator of all objects the user needs read access to"""
-        objects: list[Union[models.Model, str]] = [
+        objects: list[models.Model | str] = [
             self,
             "authentik_events.add_event",
         ]
@@ -404,7 +404,7 @@ class OutpostState:
     channel_ids: list[str] = field(default_factory=list)
     last_seen: Optional[datetime] = field(default=None)
     version: Optional[str] = field(default=None)
-    version_should: Union[Version, LegacyVersion] = field(default=OUR_VERSION)
+    version_should: Version | LegacyVersion = field(default=OUR_VERSION)
     build_hash: str = field(default="")
 
     _outpost: Optional[Outpost] = field(default=None)

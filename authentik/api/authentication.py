@@ -1,7 +1,7 @@
 """API Authentication"""
 from base64 import b64decode
 from binascii import Error
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from django.conf import settings
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
@@ -69,7 +69,7 @@ def token_secret_key(value: str) -> Optional[User]:
 class TokenAuthentication(BaseAuthentication):
     """Token-based authentication using HTTP Bearer authentication"""
 
-    def authenticate(self, request: Request) -> Union[tuple[User, Any], None]:
+    def authenticate(self, request: Request) -> tuple[User, Any] | None:
         """Token-based authentication using HTTP Bearer authentication"""
         auth = get_authorization_header(request)
 

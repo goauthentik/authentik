@@ -12,7 +12,6 @@ import authentik.core.models
 
 
 def migrate_sessions(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    db_alias = schema_editor.connection.alias
     from django.contrib.sessions.backends.cache import KEY_PREFIX
     from django.core.cache import cache
 

@@ -1,5 +1,5 @@
 """Managed objects manager"""
-from typing import Callable, Optional, Type
+from typing import Callable, Optional
 
 from structlog.stdlib import get_logger
 
@@ -11,11 +11,11 @@ LOGGER = get_logger()
 class EnsureOp:
     """Ensure operation, executed as part of an ObjectManager run"""
 
-    _obj: Type[ManagedModel]
+    _obj: type[ManagedModel]
     _managed_uid: str
     _kwargs: dict
 
-    def __init__(self, obj: Type[ManagedModel], managed_uid: str, **kwargs) -> None:
+    def __init__(self, obj: type[ManagedModel], managed_uid: str, **kwargs) -> None:
         self._obj = obj
         self._managed_uid = managed_uid
         self._kwargs = kwargs
@@ -32,7 +32,7 @@ class EnsureExists(EnsureOp):
 
     def __init__(
         self,
-        obj: Type[ManagedModel],
+        obj: type[ManagedModel],
         managed_uid: str,
         created_callback: Optional[Callable] = None,
         **kwargs,

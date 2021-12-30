@@ -48,7 +48,7 @@ class OAuthSource(Source):
     consumer_secret = models.TextField()
 
     @property
-    def type(self) -> Type["SourceType"]:
+    def type(self) -> type["SourceType"]:
         """Return the provider instance for this source"""
         from authentik.sources.oauth.types.manager import MANAGER
 
@@ -58,6 +58,7 @@ class OAuthSource(Source):
     def component(self) -> str:
         return "ak-source-oauth-form"
 
+    # we're using Type[] instead of type[] here since type[] interferes with the property above
     @property
     def serializer(self) -> Type[Serializer]:
         from authentik.sources.oauth.api.source import OAuthSourceSerializer

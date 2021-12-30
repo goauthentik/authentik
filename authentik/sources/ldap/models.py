@@ -1,6 +1,5 @@
 """authentik LDAP Models"""
 from ssl import CERT_REQUIRED
-from typing import Type
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -101,7 +100,7 @@ class LDAPSource(Source):
         return "ak-source-ldap-form"
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.sources.ldap.api import LDAPSourceSerializer
 
         return LDAPSourceSerializer
@@ -157,7 +156,7 @@ class LDAPPropertyMapping(PropertyMapping):
         return "ak-property-mapping-ldap-form"
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.sources.ldap.api import LDAPPropertyMappingSerializer
 
         return LDAPPropertyMappingSerializer

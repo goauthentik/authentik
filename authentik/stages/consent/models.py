@@ -1,5 +1,4 @@
 """authentik consent stage"""
-from typing import Type
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -39,7 +38,7 @@ class ConsentStage(Stage):
         return ConsentStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.consent.stage import ConsentStageView
 
         return ConsentStageView

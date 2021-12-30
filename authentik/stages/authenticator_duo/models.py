@@ -1,5 +1,5 @@
 """Duo stage"""
-from typing import Optional, Type
+from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -28,7 +28,7 @@ class AuthenticatorDuoStage(ConfigurableStage, Stage):
         return AuthenticatorDuoStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.authenticator_duo.stage import AuthenticatorDuoStageView
 
         return AuthenticatorDuoStageView

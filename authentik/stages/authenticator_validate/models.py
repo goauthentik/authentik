@@ -1,5 +1,4 @@
 """Authenticator Validation Stage"""
-from typing import Type
 
 from django.contrib.postgres.fields.array import ArrayField
 from django.db import models
@@ -67,7 +66,7 @@ class AuthenticatorValidateStage(Stage):
         return AuthenticatorValidateStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.authenticator_validate.stage import AuthenticatorValidateStageView
 
         return AuthenticatorValidateStageView

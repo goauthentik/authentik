@@ -1,5 +1,5 @@
 """prompt models"""
-from typing import Any, Optional, Type
+from typing import Any, Optional
 from uuid import uuid4
 
 from django.db import models
@@ -146,7 +146,7 @@ class PromptStage(Stage):
         return PromptStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.prompt.stage import PromptStageView
 
         return PromptStageView

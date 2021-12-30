@@ -1,5 +1,5 @@
 """OAuth Base views"""
-from typing import Optional, Type
+from typing import Optional
 
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
@@ -18,7 +18,7 @@ class OAuthClientMixin:
 
     request: HttpRequest  # Set by View class
 
-    client_class: Optional[Type[BaseOAuthClient]] = None
+    client_class: Optional[type[BaseOAuthClient]] = None
 
     def get_client(self, source: OAuthSource, **kwargs) -> BaseOAuthClient:
         "Get instance of the OAuth client for this source."

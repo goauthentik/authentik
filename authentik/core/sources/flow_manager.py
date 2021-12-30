@@ -1,6 +1,6 @@
 """Source decision helper"""
 from enum import Enum
-from typing import Any, Optional, Type
+from typing import Any, Optional
 
 from django.contrib import messages
 from django.db import IntegrityError
@@ -50,7 +50,7 @@ class SourceFlowManager:
 
     identifier: str
 
-    connection_type: Type[UserSourceConnection] = UserSourceConnection
+    connection_type: type[UserSourceConnection] = UserSourceConnection
 
     def __init__(
         self,

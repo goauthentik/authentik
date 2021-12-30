@@ -4,7 +4,7 @@ from collections import Counter
 from datetime import timedelta
 from inspect import currentframe
 from smtplib import SMTPException
-from typing import TYPE_CHECKING, Optional, Type, Union
+from typing import TYPE_CHECKING, Optional
 from uuid import uuid4
 
 from django.conf import settings
@@ -190,7 +190,7 @@ class Event(ExpiringModel):
 
     @staticmethod
     def new(
-        action: Union[str, EventAction],
+        action: str | EventAction,
         app: Optional[str] = None,
         **kwargs,
     ) -> "Event":
@@ -517,7 +517,7 @@ class NotificationWebhookMapping(PropertyMapping):
         return "ak-property-mapping-notification-form"
 
     @property
-    def serializer(self) -> Type["Serializer"]:
+    def serializer(self) -> type["Serializer"]:
         from authentik.events.api.notification_mapping import NotificationWebhookMappingSerializer
 
         return NotificationWebhookMappingSerializer

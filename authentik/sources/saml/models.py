@@ -1,5 +1,4 @@
 """saml sp models"""
-from typing import Type
 
 from django.db import models
 from django.http import HttpRequest
@@ -150,7 +149,7 @@ class SAMLSource(Source):
         return "ak-source-saml-form"
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.sources.saml.api import SAMLSourceSerializer
 
         return SAMLSourceSerializer

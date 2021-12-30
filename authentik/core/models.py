@@ -1,7 +1,7 @@
 """authentik core models"""
 from datetime import timedelta
 from hashlib import md5, sha256
-from typing import Any, Optional, Type
+from typing import Any, Optional
 from urllib.parse import urlencode
 from uuid import uuid4
 
@@ -224,7 +224,7 @@ class Provider(SerializerModel):
         raise NotImplementedError
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         """Get serializer for this model"""
         raise NotImplementedError
 
@@ -505,7 +505,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         raise NotImplementedError
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         """Get serializer for this model"""
         raise NotImplementedError
 

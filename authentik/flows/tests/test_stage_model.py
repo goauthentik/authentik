@@ -1,5 +1,5 @@
 """base model tests"""
-from typing import Callable, Type
+from typing import Callable
 
 from django.test import TestCase
 
@@ -12,7 +12,7 @@ class TestModels(TestCase):
     """Generic model properties tests"""
 
 
-def model_tester_factory(test_model: Type[Stage]) -> Callable:
+def model_tester_factory(test_model: type[Stage]) -> Callable:
     """Test a form"""
 
     def tester(self: TestModels):

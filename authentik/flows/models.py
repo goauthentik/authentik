@@ -1,7 +1,7 @@
 """Flow models"""
 from base64 import b64decode, b64encode
 from pickle import dumps, loads  # nosec
-from typing import TYPE_CHECKING, Optional, Type
+from typing import TYPE_CHECKING, Optional
 from uuid import uuid4
 
 from django.db import models
@@ -63,7 +63,7 @@ class Stage(SerializerModel):
     objects = InheritanceManager()
 
     @property
-    def type(self) -> Type["StageView"]:
+    def type(self) -> type["StageView"]:
         """Return StageView class that implements logic for this stage"""
         # This is a bit of a workaround, since we can't set class methods with setattr
         if hasattr(self, "__in_memory_type"):
@@ -86,7 +86,7 @@ class Stage(SerializerModel):
         return f"Stage {self.name}"
 
 
-def in_memory_stage(view: Type["StageView"]) -> Stage:
+def in_memory_stage(view: type["StageView"]) -> Stage:
     """Creates an in-memory stage instance, based on a `view` as view."""
     stage = Stage()
     # Because we can't pickle a locally generated function,

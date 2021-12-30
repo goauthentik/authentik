@@ -2,7 +2,6 @@
 import os
 from importlib import import_module
 from pathlib import Path
-from typing import Union
 
 from django.conf import settings
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
@@ -30,7 +29,7 @@ def class_to_path(cls: type) -> str:
     return f"{cls.__module__}.{cls.__name__}"
 
 
-def path_to_class(path: Union[str, None]) -> Union[type, None]:
+def path_to_class(path: str | None) -> type | None:
     """Import module and return class"""
     if not path:
         return None
