@@ -5756,7 +5756,11 @@ msgid "Version"
 msgstr ""
 
 #: src/pages/outposts/OutpostHealth.ts
-msgid "Version: {0}"
+#~ msgid "Version: {0}"
+#~ msgstr ""
+
+#: src/pages/outposts/OutpostHealth.ts
+msgid "Version: {versionString}"
 msgstr ""
 
 #: src/pages/outposts/OutpostListPage.ts

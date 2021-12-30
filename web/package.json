@@ -19,7 +19,8 @@
         "locales": [
             "en",
             "pseudo-LOCALE",
-            "fr_FR"
+            "fr_FR",
+            "tr"
         ],
         "formatOptions": {
             "lineNumbers": false
