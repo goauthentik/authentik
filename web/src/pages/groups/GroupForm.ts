@@ -2,7 +2,7 @@ import YAML from "yaml";
 
 import { t } from "@lingui/macro";
 
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
@@ -21,6 +21,17 @@ import "./MemberSelectModal";
 
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
+    static get styles(): CSSResult[] {
+        return super.styles.concat(css`
+            .pf-c-button.pf-m-control {
+                height: 100%;
+            }
+            .pf-c-form-control {
+                height: auto !important;
+            }
+        `);
+    }
+
     loadInstance(pk: string): Promise<Group> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({
             groupUuid: pk,
