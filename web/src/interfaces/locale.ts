@@ -1,4 +1,4 @@
-import { en, fr } from "make-plural/plurals";
+import { en, fr, tr } from "make-plural/plurals";
 
 import { i18n } from "@lingui/core";
 import { detect, fromNavigator, fromStorage, fromUrl } from "@lingui/detect-locale";
@@ -6,11 +6,14 @@ import { detect, fromNavigator, fromStorage, fromUrl } from "@lingui/detect-loca
 import { messages as localeEN } from "../locales/en";
 import { messages as localeFR_FR } from "../locales/fr_FR";
 import { messages as localeDEBUG } from "../locales/pseudo-LOCALE";
+import { messages as localeTR } from "../locales/tr";
 
 i18n.loadLocaleData("en", { plurals: en });
 i18n.loadLocaleData("debug", { plurals: en });
+i18n.loadLocaleData("tr", { plurals: tr });
 i18n.loadLocaleData("fr_FR", { plurals: fr });
 i18n.load("en", localeEN);
+i18n.load("tr", localeTR);
 i18n.load("fr_FR", localeFR_FR);
 i18n.load("debug", localeDEBUG);
 
