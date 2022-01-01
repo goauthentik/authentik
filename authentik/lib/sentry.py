@@ -114,6 +114,6 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         ]:
             return None
     LOGGER.debug("sending event to sentry", exc=exc_value, source_logger=event.get("logger", None))
-    if settings.DEBUG:
+    if settings.DEBUG or settings.TEST:
         return None
     return event
