@@ -1,6 +1,5 @@
 """Test Applications API"""
 from django.urls import reverse
-from django.utils.encoding import force_str
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
@@ -32,7 +31,7 @@ class TestApplicationsAPI(APITestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(force_str(response.content), {"messages": [], "passing": True})
+        self.assertJSONEqual(response.content.decode(), {"messages": [], "passing": True})
         response = self.client.get(
             reverse(
                 "authentik_api:application-check-access",
@@ -40,14 +39,14 @@ class TestApplicationsAPI(APITestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(force_str(response.content), {"messages": ["dummy"], "passing": False})
+        self.assertJSONEqual(response.content.decode(), {"messages": ["dummy"], "passing": False})
 
     def test_list(self):
         """Test list operation without superuser_full_list"""
         self.client.force_login(self.user)
         response = self.client.get(reverse("authentik_api:application-list"))
         self.assertJSONEqual(
-            force_str(response.content),
+            response.content.decode(),
             {
                 "pagination": {
                     "next": 0,
@@ -83,7 +82,7 @@ class TestApplicationsAPI(APITestCase):
             reverse("authentik_api:application-list") + "?superuser_full_list=true"
         )
         self.assertJSONEqual(
-            force_str(response.content),
+            response.content.decode(),
             {
                 "pagination": {
                     "next": 0,

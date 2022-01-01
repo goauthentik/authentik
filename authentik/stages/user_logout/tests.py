@@ -1,20 +1,18 @@
 """logout tests"""
 from django.urls import reverse
-from django.utils.encoding import force_str
-from rest_framework.test import APITestCase
 
 from authentik.core.models import User
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.user_logout.models import UserLogoutStage
 
 
-class TestUserLogoutStage(APITestCase):
+class TestUserLogoutStage(FlowTestCase):
     """Logout tests"""
 
     def setUp(self):
@@ -44,15 +42,7 @@ class TestUserLogoutStage(APITestCase):
 
         # pylint: disable=no-member
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            # pylint: disable=no-member
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_valid_post(self):
         """Test with a valid pending user and backend"""
@@ -69,12 +59,4 @@ class TestUserLogoutStage(APITestCase):
 
         # pylint: disable=no-member
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            # pylint: disable=no-member
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))

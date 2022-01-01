@@ -4,16 +4,14 @@ from unittest.mock import MagicMock, PropertyMock, patch
 from django.http import HttpRequest, HttpResponse
 from django.test.client import RequestFactory
 from django.urls import reverse
-from django.utils.encoding import force_str
-from rest_framework.test import APITestCase
 
 from authentik.core.models import User
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, InvalidResponseAction
 from authentik.flows.planner import FlowPlan, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
+from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
 from authentik.policies.dummy.models import DummyPolicy
@@ -37,7 +35,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse):
 TO_STAGE_RESPONSE_MOCK = MagicMock(side_effect=to_stage_response)
 
 
-class TestFlowExecutor(APITestCase):
+class TestFlowExecutor(FlowTestCase):
     """Test executor"""
 
     def setUp(self):
@@ -90,18 +88,11 @@ class TestFlowExecutor(APITestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-access-denied",
-                "error_message": FlowNonApplicableException.__doc__,
-                "flow_info": {
-                    "background": flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-                "type": ChallengeTypes.NATIVE.value,
-            },
+        self.assertStageResponse(
+            response,
+            flow=flow,
+            error_message=FlowNonApplicableException.__doc__,
+            component="ak-stage-access-denied",
         )
 
     @patch(
@@ -283,14 +274,7 @@ class TestFlowExecutor(APITestCase):
         # We do this request without the patch, so the policy results in false
         response = self.client.post(exec_url)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_reevaluate_keep(self):
         """Test planner with re-evaluate (everything is kept)"""
@@ -360,14 +344,7 @@ class TestFlowExecutor(APITestCase):
         # We do this request without the patch, so the policy results in false
         response = self.client.post(exec_url)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_reevaluate_remove_consecutive(self):
         """Test planner with re-evaluate (consecutive stages are removed)"""
@@ -407,18 +384,7 @@ class TestFlowExecutor(APITestCase):
             # First request, run the planner
             response = self.client.get(exec_url)
             self.assertEqual(response.status_code, 200)
-            self.assertJSONEqual(
-                force_str(response.content),
-                {
-                    "type": ChallengeTypes.NATIVE.value,
-                    "component": "ak-stage-dummy",
-                    "flow_info": {
-                        "background": flow.background_url,
-                        "cancel_url": reverse("authentik_flows:cancel"),
-                        "title": "",
-                    },
-                },
-            )
+            self.assertStageResponse(response, flow, component="ak-stage-dummy")
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
@@ -441,31 +407,13 @@ class TestFlowExecutor(APITestCase):
         # but it won't save it, hence we can't check the plan
         response = self.client.get(exec_url)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-dummy",
-                "flow_info": {
-                    "background": flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-            },
-        )
+        self.assertStageResponse(response, flow, component="ak-stage-dummy")
 
         # fourth request, this confirms the last stage (dummy4)
         # We do this request without the patch, so the policy results in false
         response = self.client.post(exec_url)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_stageview_user_identifier(self):
         """Test PLAN_CONTEXT_PENDING_USER_IDENTIFIER"""
@@ -532,35 +480,16 @@ class TestFlowExecutor(APITestCase):
         # First request, run the planner
         response = self.client.get(exec_url)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-identification",
-                "flow_info": {
-                    "background": flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-                "password_fields": False,
-                "primary_action": "Log in",
-                "sources": [],
-                "show_source_labels": False,
-                "user_fields": [UserFields.E_MAIL],
-            },
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-identification",
+            password_fields=False,
+            primary_action="Log in",
+            sources=[],
+            show_source_labels=False,
+            user_fields=[UserFields.E_MAIL],
         )
         response = self.client.post(exec_url, {"uid_field": "invalid-string"}, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-access-denied",
-                "error_message": None,
-                "flow_info": {
-                    "background": flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-                "type": ChallengeTypes.NATIVE.value,
-            },
-        )
+        self.assertStageResponse(response, flow, component="ak-stage-access-denied")

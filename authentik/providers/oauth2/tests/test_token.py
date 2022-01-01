@@ -3,7 +3,6 @@ from base64 import b64encode
 
 from django.test import RequestFactory
 from django.urls import reverse
-from django.utils.encoding import force_str
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
@@ -135,7 +134,7 @@ class TestToken(OAuthTestCase):
         )
         new_token: RefreshToken = RefreshToken.objects.filter(user=user).first()
         self.assertJSONEqual(
-            force_str(response.content),
+            response.content.decode(),
             {
                 "access_token": new_token.access_token,
                 "refresh_token": new_token.refresh_token,
@@ -184,7 +183,7 @@ class TestToken(OAuthTestCase):
         self.assertEqual(response["Access-Control-Allow-Credentials"], "true")
         self.assertEqual(response["Access-Control-Allow-Origin"], "http://local.invalid")
         self.assertJSONEqual(
-            force_str(response.content),
+            response.content.decode(),
             {
                 "access_token": new_token.access_token,
                 "refresh_token": new_token.refresh_token,
@@ -230,7 +229,7 @@ class TestToken(OAuthTestCase):
         self.assertNotIn("Access-Control-Allow-Credentials", response)
         self.assertNotIn("Access-Control-Allow-Origin", response)
         self.assertJSONEqual(
-            force_str(response.content),
+            response.content.decode(),
             {
                 "access_token": new_token.access_token,
                 "refresh_token": new_token.refresh_token,

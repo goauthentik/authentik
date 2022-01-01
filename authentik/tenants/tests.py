@@ -2,7 +2,6 @@
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.urls import reverse
-from django.utils.encoding import force_str
 
 from authentik.core.tests.utils import create_test_tenant
 from authentik.events.models import Event, EventAction
@@ -18,7 +17,7 @@ class TestTenants(TestCase):
         """Test Current tenant API"""
         tenant = create_test_tenant()
         self.assertJSONEqual(
-            force_str(self.client.get(reverse("authentik_api:tenant-current")).content),
+            self.client.get(reverse("authentik_api:tenant-current")).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
@@ -33,11 +32,9 @@ class TestTenants(TestCase):
         Tenant.objects.all().delete()
         Tenant.objects.create(domain="bar.baz", branding_title="custom")
         self.assertJSONEqual(
-            force_str(
-                self.client.get(
-                    reverse("authentik_api:tenant-current"), HTTP_HOST="foo.bar.baz"
-                ).content
-            ),
+            self.client.get(
+                reverse("authentik_api:tenant-current"), HTTP_HOST="foo.bar.baz"
+            ).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
@@ -51,7 +48,7 @@ class TestTenants(TestCase):
         """Test fallback tenant"""
         Tenant.objects.all().delete()
         self.assertJSONEqual(
-            force_str(self.client.get(reverse("authentik_api:tenant-current")).content),
+            self.client.get(reverse("authentik_api:tenant-current")).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",

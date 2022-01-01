@@ -19036,9 +19036,15 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         error_message:
           type: string
       required:
+      - pending_user
+      - pending_user_avatar
       - type
     App:
       type: object

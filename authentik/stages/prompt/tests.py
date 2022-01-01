@@ -2,23 +2,21 @@
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
-from django.utils.encoding import force_str
 from rest_framework.exceptions import ErrorDetail
-from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan
+from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptChallengeResponse
 
 
-class TestPromptStage(APITestCase):
+class TestPromptStage(FlowTestCase):
     """Prompt tests"""
 
     def setUp(self):
@@ -123,9 +121,9 @@ class TestPromptStage(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
         for prompt in self.stage.fields.all():
-            self.assertIn(prompt.field_key, force_str(response.content))
-            self.assertIn(prompt.label, force_str(response.content))
-            self.assertIn(prompt.placeholder, force_str(response.content))
+            self.assertIn(prompt.field_key, response.content.decode())
+            self.assertIn(prompt.label, response.content.decode())
+            self.assertIn(prompt.placeholder, response.content.decode())
 
     def test_valid_challenge_with_policy(self) -> PromptChallengeResponse:
         """Test challenge_response validation"""
@@ -171,14 +169,7 @@ class TestPromptStage(APITestCase):
                 challenge_response.validated_data,
             )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
         # Check that valid data has been saved
         session = self.client.session

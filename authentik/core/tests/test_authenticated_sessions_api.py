@@ -2,7 +2,6 @@
 from json import loads
 
 from django.urls.base import reverse
-from django.utils.encoding import force_str
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
@@ -28,5 +27,5 @@ class TestAuthenticatedSessionsAPI(APITestCase):
         self.client.force_login(self.other_user)
         response = self.client.get(reverse("authentik_api:authenticatedsession-list"))
         self.assertEqual(response.status_code, 200)
-        body = loads(force_str(response.content))
+        body = loads(response.content.decode())
         self.assertEqual(body["pagination"]["count"], 1)

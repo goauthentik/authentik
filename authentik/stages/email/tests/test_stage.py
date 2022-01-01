@@ -5,21 +5,19 @@ from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.urls import reverse
-from django.utils.encoding import force_str
 from django.utils.http import urlencode
-from rest_framework.test import APITestCase
 
 from authentik.core.models import Token, User
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.stage import QS_KEY_TOKEN
 
 
-class TestEmailStage(APITestCase):
+class TestEmailStage(FlowTestCase):
     """Email tests"""
 
     def setUp(self):
@@ -123,14 +121,7 @@ class TestEmailStage(APITestCase):
             )
 
             self.assertEqual(response.status_code, 200)
-            self.assertJSONEqual(
-                force_str(response.content),
-                {
-                    "component": "xak-flow-redirect",
-                    "to": reverse("authentik_core:root-redirect"),
-                    "type": ChallengeTypes.REDIRECT.value,
-                },
-            )
+            self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
             session = self.client.session
             plan: FlowPlan = session[SESSION_KEY_PLAN]

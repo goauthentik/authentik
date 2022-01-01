@@ -1,18 +1,16 @@
 """deny tests"""
 from django.urls import reverse
-from django.utils.encoding import force_str
-from rest_framework.test import APITestCase
 
 from authentik.core.models import User
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan
+from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.deny.models import DenyStage
 
 
-class TestUserDenyStage(APITestCase):
+class TestUserDenyStage(FlowTestCase):
     """Deny tests"""
 
     def setUp(self):
@@ -39,19 +37,7 @@ class TestUserDenyStage(APITestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-access-denied",
-                "error_message": None,
-                "flow_info": {
-                    "background": self.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-                "type": ChallengeTypes.NATIVE.value,
-            },
-        )
+        self.assertStageResponse(response, self.flow, component="ak-stage-access-denied")
 
     def test_valid_post(self):
         """Test with a valid pending user and backend"""
@@ -65,16 +51,4 @@ class TestUserDenyStage(APITestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-access-denied",
-                "error_message": None,
-                "flow_info": {
-                    "background": self.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-                "type": ChallengeTypes.NATIVE.value,
-            },
-        )
+        self.assertStageResponse(response, self.flow, component="ak-stage-access-denied")

@@ -1,7 +1,6 @@
 """Test authorize view"""
 from django.test import RequestFactory
 from django.urls import reverse
-from django.utils.encoding import force_str
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
@@ -201,7 +200,7 @@ class TestAuthorize(OAuthTestCase):
         )
         code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
         self.assertJSONEqual(
-            force_str(response.content),
+            response.content.decode(),
             {
                 "component": "xak-flow-redirect",
                 "type": ChallengeTypes.REDIRECT.value,
@@ -240,7 +239,7 @@ class TestAuthorize(OAuthTestCase):
         )
         token: RefreshToken = RefreshToken.objects.filter(user=user).first()
         self.assertJSONEqual(
-            force_str(response.content),
+            response.content.decode(),
             {
                 "component": "xak-flow-redirect",
                 "type": ChallengeTypes.REDIRECT.value,

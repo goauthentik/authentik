@@ -1,11 +1,10 @@
 """identification tests"""
 from django.urls import reverse
-from django.utils.encoding import force_str
-from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_key
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage, UserFields
@@ -13,7 +12,7 @@ from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
 
 
-class TestIdentificationStage(APITestCase):
+class TestIdentificationStage(FlowTestCase):
     """Identification tests"""
 
     def setUp(self):
@@ -56,14 +55,7 @@ class TestIdentificationStage(APITestCase):
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_valid_with_password(self):
         """Test with valid email and password in single step"""
@@ -74,14 +66,7 @@ class TestIdentificationStage(APITestCase):
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_invalid_with_password(self):
         """Test with valid email and invalid password in single step"""
@@ -95,37 +80,28 @@ class TestIdentificationStage(APITestCase):
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-identification",
-                "password_fields": True,
-                "primary_action": "Log in",
-                "response_errors": {
-                    "non_field_errors": [
-                        {"code": "invalid", "string": "Failed to " "authenticate."}
-                    ]
-                },
-                "flow_info": {
-                    "background": self.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-                "sources": [
-                    {
-                        "challenge": {
-                            "component": "xak-flow-redirect",
-                            "to": "/source/oauth/login/test/",
-                            "type": ChallengeTypes.REDIRECT.value,
-                        },
-                        "icon_url": "/static/authentik/sources/default.svg",
-                        "name": "test",
-                    }
-                ],
-                "show_source_labels": False,
-                "user_fields": ["email"],
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            password_fields=True,
+            primary_action="Log in",
+            response_errors={
+                "non_field_errors": [{"code": "invalid", "string": "Failed to " "authenticate."}]
             },
+            sources=[
+                {
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": "/source/oauth/login/test/",
+                        "type": ChallengeTypes.REDIRECT.value,
+                    },
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": "test",
+                }
+            ],
+            show_source_labels=False,
+            user_fields=["email"],
         )
 
     def test_invalid_with_username(self):
@@ -147,37 +123,28 @@ class TestIdentificationStage(APITestCase):
             form_data,
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-identification",
-                "password_fields": False,
-                "primary_action": "Log in",
-                "response_errors": {
-                    "non_field_errors": [
-                        {"code": "invalid", "string": "Failed to " "authenticate."}
-                    ]
-                },
-                "show_source_labels": False,
-                "flow_info": {
-                    "background": self.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-                "sources": [
-                    {
-                        "challenge": {
-                            "component": "xak-flow-redirect",
-                            "to": "/source/oauth/login/test/",
-                            "type": ChallengeTypes.REDIRECT.value,
-                        },
-                        "icon_url": "/static/authentik/sources/default.svg",
-                        "name": "test",
-                    }
-                ],
-                "user_fields": [],
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            password_fields=False,
+            primary_action="Log in",
+            response_errors={
+                "non_field_errors": [{"code": "invalid", "string": "Failed to " "authenticate."}]
             },
+            show_source_labels=False,
+            sources=[
+                {
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": "/source/oauth/login/test/",
+                        "type": ChallengeTypes.REDIRECT.value,
+                    },
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": "test",
+                }
+            ],
+            user_fields=[],
         )
 
     def test_invalid_with_invalid_email(self):
@@ -209,36 +176,29 @@ class TestIdentificationStage(APITestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-identification",
-                "user_fields": ["email"],
-                "password_fields": False,
-                "enroll_url": reverse(
-                    "authentik_core:if-flow",
-                    kwargs={"flow_slug": "unique-enrollment-string"},
-                ),
-                "show_source_labels": False,
-                "primary_action": "Log in",
-                "flow_info": {
-                    "background": flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": self.flow.title,
-                },
-                "sources": [
-                    {
-                        "icon_url": "/static/authentik/sources/default.svg",
-                        "name": "test",
-                        "challenge": {
-                            "component": "xak-flow-redirect",
-                            "to": "/source/oauth/login/test/",
-                            "type": ChallengeTypes.REDIRECT.value,
-                        },
-                    }
-                ],
-            },
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            user_fields=["email"],
+            password_fields=False,
+            enroll_url=reverse(
+                "authentik_core:if-flow",
+                kwargs={"flow_slug": "unique-enrollment-string"},
+            ),
+            show_source_labels=False,
+            primary_action="Log in",
+            sources=[
+                {
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": "test",
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": "/source/oauth/login/test/",
+                        "type": ChallengeTypes.REDIRECT.value,
+                    },
+                }
+            ],
         )
 
     def test_recovery_flow(self):
@@ -259,34 +219,27 @@ class TestIdentificationStage(APITestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-identification",
-                "user_fields": ["email"],
-                "password_fields": False,
-                "recovery_url": reverse(
-                    "authentik_core:if-flow",
-                    kwargs={"flow_slug": "unique-recovery-string"},
-                ),
-                "show_source_labels": False,
-                "primary_action": "Log in",
-                "flow_info": {
-                    "background": flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": self.flow.title,
-                },
-                "sources": [
-                    {
-                        "challenge": {
-                            "component": "xak-flow-redirect",
-                            "to": "/source/oauth/login/test/",
-                            "type": ChallengeTypes.REDIRECT.value,
-                        },
-                        "icon_url": "/static/authentik/sources/default.svg",
-                        "name": "test",
-                    }
-                ],
-            },
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            user_fields=["email"],
+            password_fields=False,
+            recovery_url=reverse(
+                "authentik_core:if-flow",
+                kwargs={"flow_slug": "unique-recovery-string"},
+            ),
+            show_source_labels=False,
+            primary_action="Log in",
+            sources=[
+                {
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": "/source/oauth/login/test/",
+                        "type": ChallengeTypes.REDIRECT.value,
+                    },
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": "test",
+                }
+            ],
         )

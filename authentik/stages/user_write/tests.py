@@ -4,23 +4,21 @@ from random import SystemRandom
 from unittest.mock import patch
 
 from django.urls import reverse
-from django.utils.encoding import force_str
-from rest_framework.test import APITestCase
 
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, Group, Source, User, UserSourceConnection
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserWriteStage
 
 
-class TestUserWriteStage(APITestCase):
+class TestUserWriteStage(FlowTestCase):
     """Write tests"""
 
     def setUp(self):
@@ -60,14 +58,7 @@ class TestUserWriteStage(APITestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(password))
@@ -98,14 +89,7 @@ class TestUserWriteStage(APITestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(new_password))
@@ -128,18 +112,10 @@ class TestUserWriteStage(APITestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-access-denied",
-                "error_message": None,
-                "type": ChallengeTypes.NATIVE.value,
-                "flow_info": {
-                    "background": self.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-            },
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
         )
 
     @patch(
@@ -163,18 +139,10 @@ class TestUserWriteStage(APITestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-access-denied",
-                "error_message": None,
-                "type": ChallengeTypes.NATIVE.value,
-                "flow_info": {
-                    "background": self.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-            },
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
         )
 
     @patch(
@@ -199,16 +167,8 @@ class TestUserWriteStage(APITestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-access-denied",
-                "error_message": None,
-                "type": ChallengeTypes.NATIVE.value,
-                "flow_info": {
-                    "background": self.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-            },
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
         )

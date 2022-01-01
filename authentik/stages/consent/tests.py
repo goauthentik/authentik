@@ -2,20 +2,18 @@
 from time import sleep
 
 from django.urls import reverse
-from django.utils.encoding import force_str
-from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, User
 from authentik.core.tasks import clean_expired_models
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan
+from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
 
 
-class TestConsentStage(APITestCase):
+class TestConsentStage(FlowTestCase):
     """Consent tests"""
 
     def setUp(self):
@@ -46,15 +44,7 @@ class TestConsentStage(APITestCase):
         )
         # pylint: disable=no-member
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            # pylint: disable=no-member
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertFalse(UserConsent.objects.filter(user=self.user).exists())
 
     def test_permanent(self):
@@ -82,14 +72,7 @@ class TestConsentStage(APITestCase):
             {},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertTrue(
             UserConsent.objects.filter(user=self.user, application=self.application).exists()
         )
@@ -121,14 +104,7 @@ class TestConsentStage(APITestCase):
             {},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertTrue(
             UserConsent.objects.filter(user=self.user, application=self.application).exists()
         )

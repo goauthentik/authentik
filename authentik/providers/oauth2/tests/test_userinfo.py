@@ -3,7 +3,6 @@ import json
 from dataclasses import asdict
 
 from django.urls import reverse
-from django.utils.encoding import force_str
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
@@ -54,7 +53,7 @@ class TestUserinfo(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.token.access_token}",
         )
         self.assertJSONEqual(
-            force_str(res.content),
+            res.content.decode(),
             {
                 "name": self.user.name,
                 "given_name": self.user.name,
@@ -77,7 +76,7 @@ class TestUserinfo(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.token.access_token}",
         )
         self.assertJSONEqual(
-            force_str(res.content),
+            res.content.decode(),
             {
                 "name": self.user.name,
                 "given_name": self.user.name,

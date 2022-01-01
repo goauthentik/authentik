@@ -3,15 +3,13 @@ from unittest.mock import MagicMock, patch
 
 from django.test.client import RequestFactory
 from django.urls.base import reverse
-from django.utils.encoding import force_str
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.exceptions import ValidationError
-from rest_framework.test import APITestCase
 from webauthn.helpers import bytes_to_base64url
 
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
+from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.tests.utils import get_request
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
@@ -27,7 +25,7 @@ from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
-class AuthenticatorValidateStageTests(APITestCase):
+class AuthenticatorValidateStageTests(FlowTestCase):
     """Test validator stage"""
 
     def setUp(self) -> None:
@@ -61,22 +59,15 @@ class AuthenticatorValidateStageTests(APITestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-identification",
-                "password_fields": False,
-                "primary_action": "Log in",
-                "flow_info": {
-                    "background": flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": flow.title,
-                },
-                "user_fields": ["username"],
-                "sources": [],
-                "show_source_labels": False,
-            },
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-identification",
+            password_fields=False,
+            primary_action="Log in",
+            user_fields=["username"],
+            sources=[],
+            show_source_labels=False,
         )
 
     def test_stage_validation(self):
