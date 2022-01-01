@@ -2642,7 +2642,7 @@ msgstr ""
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowInspector.ts
-#: src/flows/access_denied/FlowAccessDenied.ts
+#: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
@@ -3170,6 +3170,7 @@ msgstr ""
 msgid "Not used by any other object."
 msgstr ""
 
+#: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -3869,7 +3870,7 @@ msgstr ""
 msgid "Request"
 msgstr ""
 
-#: src/flows/access_denied/FlowAccessDenied.ts
+#: src/flows/stages/access_denied/AccessDeniedStage.ts
 msgid "Request has been denied."
 msgstr ""
 

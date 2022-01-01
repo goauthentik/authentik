@@ -2652,7 +2652,7 @@ msgstr "Load servers"
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowInspector.ts
-#: src/flows/access_denied/FlowAccessDenied.ts
+#: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
@@ -3180,6 +3180,7 @@ msgstr "Not synced yet."
 msgid "Not used by any other object."
 msgstr "Not used by any other object."
 
+#: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -3879,7 +3880,7 @@ msgstr "Reputation policy - Users"
 msgid "Request"
 msgstr "Request"
 
-#: src/flows/access_denied/FlowAccessDenied.ts
+#: src/flows/stages/access_denied/AccessDeniedStage.ts
 msgid "Request has been denied."
 msgstr "Request has been denied."
 

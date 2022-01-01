@@ -2,8 +2,9 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "../../../authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -13,11 +14,13 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
 
-import "../../elements/EmptyState";
-import { BaseStage } from "../stages/base";
+import "../../../elements/EmptyState";
+import { PFSize } from "../../../elements/Spinner";
+import "../../FormStatic";
+import { BaseStage } from "../base";
 
 @customElement("ak-stage-access-denied")
-export class FlowAccessDenied extends BaseStage<
+export class AccessDeniedStage extends BaseStage<
     AccessDeniedChallenge,
     FlowChallengeResponseRequest
 > {
@@ -33,7 +36,23 @@ export class FlowAccessDenied extends BaseStage<
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form method="POST" class="pf-c-form">
+                <form class="pf-c-form">
+                    <ak-form-static
+                        class="pf-c-form__group"
+                        userAvatar="${this.challenge.pendingUserAvatar}"
+                        user=${this.challenge.pendingUser}
+                    >
+                        <div slot="link">
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                                >${t`Not you?`}</a
+                            >
+                        </div>
+                    </ak-form-static>
+                    <div class="ak-loading">
+                        <ak-spinner size=${PFSize.XLarge}></ak-spinner>
+                    </div>
+                </form>
+                <div class="pf-c-form">
                     <div class="pf-c-form__group">
                         <p>
                             <i class="pf-icon pf-icon-error-circle-o"></i>
@@ -43,7 +62,7 @@ export class FlowAccessDenied extends BaseStage<
                         html`<hr />
                             <p>${this.challenge.errorMessage}</p>`}
                     </div>
-                </form>
+                </div>
             </div>
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links"></ul>
