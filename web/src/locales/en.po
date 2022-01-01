@@ -516,6 +516,10 @@ msgstr "Authorize URL"
 msgid "Authorized application:"
 msgstr "Authorized application:"
 
+#: src/user/user-settings/details/UserDetailsForm.ts
+msgid "Auto-detect (based on your browser)"
+msgstr "Auto-detect (based on your browser)"
+
 #: src/interfaces/UserInterface.ts
 msgid "Avatar image"
 msgstr "Avatar image"
@@ -1317,6 +1321,10 @@ msgstr "Date Time"
 msgid "Deactivate"
 msgstr "Deactivate"
 
+#: src/interfaces/locale.ts
+msgid "Debug"
+msgstr "Debug"
+
 #: src/pages/flows/FlowForm.ts
 msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
@@ -1714,6 +1722,10 @@ msgstr "Enabled"
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Enabling this toggle will create a group named after the user, with the user as member."
 msgstr "Enabling this toggle will create a group named after the user, with the user as member."
+
+#: src/interfaces/locale.ts
+msgid "English"
+msgstr "English"
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Enroll"
@@ -2121,6 +2133,10 @@ msgstr "Forward auth (domain-level)"
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Forward auth (single application)"
 msgstr "Forward auth (single application)"
+
+#: src/interfaces/locale.ts
+msgid "French"
+msgstr "French"
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Friendly Name"
@@ -2741,6 +2757,10 @@ msgstr "Loading..."
 #: src/pages/outposts/ServiceConnectionListPage.ts
 msgid "Local"
 msgstr "Local"
+
+#: src/user/user-settings/details/UserDetailsForm.ts
+msgid "Locale"
+msgstr "Locale"
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
@@ -5232,6 +5252,10 @@ msgstr "Transient"
 #: src/pages/events/RuleForm.ts
 msgid "Transports"
 msgstr "Transports"
+
+#: src/interfaces/locale.ts
+msgid "Turkish"
+msgstr "Turkish"
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Twilio"

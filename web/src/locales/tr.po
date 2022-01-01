@@ -514,6 +514,10 @@ msgstr "URL'yi yetkilendirme"
 msgid "Authorized application:"
 msgstr "Yetkili başvuru:"
 
+#: src/user/user-settings/details/UserDetailsForm.ts
+msgid "Auto-detect (based on your browser)"
+msgstr ""
+
 #: src/interfaces/UserInterface.ts
 msgid "Avatar image"
 msgstr "Avatar resmi"
@@ -1304,6 +1308,10 @@ msgstr "Tarih Saati"
 msgid "Deactivate"
 msgstr "Devre dışı bırak"
 
+#: src/interfaces/locale.ts
+msgid "Debug"
+msgstr ""
+
 #: src/pages/flows/FlowForm.ts
 msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr "Bu Akış'ın ne için kullanıldığına karar verir. Örneğin, kimliği doğrulanmamış bir kullanıcı authentik ziyaret ettiğinde kimlik doğrulama akışı yönlendirir."
@@ -1681,6 +1689,10 @@ msgstr "Etkin"
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Enabling this toggle will create a group named after the user, with the user as member."
 msgstr "Bu geçiş özelliğini etkinleştirmek, kullanıcının adını taşıyan ve kullanıcının üye olduğu bir grup oluşturur."
+
+#: src/interfaces/locale.ts
+msgid "English"
+msgstr ""
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Enroll"
@@ -2084,6 +2096,10 @@ msgstr "İleri kimlik doğrulama (alan düzeyi)"
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Forward auth (single application)"
 msgstr "İleri kimlik doğrulaması (tek uygulama)"
+
+#: src/interfaces/locale.ts
+msgid "French"
+msgstr ""
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Friendly Name"
@@ -2695,6 +2711,10 @@ msgstr "Yükleniyor..."
 #: src/pages/outposts/ServiceConnectionListPage.ts
 msgid "Local"
 msgstr "Yerel"
+
+#: src/user/user-settings/details/UserDetailsForm.ts
+msgid "Locale"
+msgstr ""
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
@@ -5131,6 +5151,10 @@ msgstr "Geçici"
 #: src/pages/events/RuleForm.ts
 msgid "Transports"
 msgstr "Taşımacılık"
+
+#: src/interfaces/locale.ts
+msgid "Turkish"
+msgstr ""
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Twilio"

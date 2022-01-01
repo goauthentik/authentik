@@ -512,6 +512,10 @@ msgstr ""
 msgid "Authorized application:"
 msgstr ""
 
+#: src/user/user-settings/details/UserDetailsForm.ts
+msgid "Auto-detect (based on your browser)"
+msgstr ""
+
 #: src/interfaces/UserInterface.ts
 msgid "Avatar image"
 msgstr ""
@@ -1311,6 +1315,10 @@ msgstr ""
 msgid "Deactivate"
 msgstr ""
 
+#: src/interfaces/locale.ts
+msgid "Debug"
+msgstr ""
+
 #: src/pages/flows/FlowForm.ts
 msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr ""
@@ -1705,6 +1713,10 @@ msgstr ""
 
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Enabling this toggle will create a group named after the user, with the user as member."
+msgstr ""
+
+#: src/interfaces/locale.ts
+msgid "English"
 msgstr ""
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
@@ -2112,6 +2124,10 @@ msgstr ""
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Forward auth (single application)"
+msgstr ""
+
+#: src/interfaces/locale.ts
+msgid "French"
 msgstr ""
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
@@ -2730,6 +2746,10 @@ msgstr ""
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 msgid "Local"
+msgstr ""
+
+#: src/user/user-settings/details/UserDetailsForm.ts
+msgid "Locale"
 msgstr ""
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
@@ -5211,6 +5231,10 @@ msgstr ""
 
 #: src/pages/events/RuleForm.ts
 msgid "Transports"
+msgstr ""
+
+#: src/interfaces/locale.ts
+msgid "Turkish"
 msgstr ""
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts

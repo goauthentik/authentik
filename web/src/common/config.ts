@@ -1,3 +1,5 @@
+import { UserSelf } from "@goauthentik/api";
+
 import { me } from "../api/Users";
 
 export enum UserDisplay {
@@ -29,6 +31,7 @@ export interface UIConfig {
     pagination: {
         perPage: number;
     };
+    locale: string;
 }
 
 export class DefaultUIConfig implements UIConfig {
@@ -49,22 +52,25 @@ export class DefaultUIConfig implements UIConfig {
     pagination = {
         perPage: 20,
     };
+    locale = "";
 }
 
 let globalUiConfig: Promise<UIConfig>;
 
+export function getConfigForUser(user: UserSelf): UIConfig {
+    const settings = user.settings;
+    let config = new DefaultUIConfig();
+    if (!settings) {
+        return config;
+    }
+    config = Object.assign(new DefaultUIConfig(), settings);
+    return config;
+}
+
 export function uiConfig(): Promise<UIConfig> {
     if (!globalUiConfig) {
         globalUiConfig = me().then((user) => {
-            const settings = user.user.settings;
-            let config = new DefaultUIConfig();
-            if (!settings) {
-                return config;
-            }
-            if ("userInterface" in settings) {
-                config = Object.assign(new DefaultUIConfig(), settings.userInterface);
-            }
-            return config;
+            return getConfigForUser(user.user);
         });
     }
     return globalUiConfig;

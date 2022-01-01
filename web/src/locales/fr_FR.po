@@ -520,6 +520,10 @@ msgstr "URL d'authorisation"
 msgid "Authorized application:"
 msgstr "Application autorisée :"
 
+#: src/user/user-settings/details/UserDetailsForm.ts
+msgid "Auto-detect (based on your browser)"
+msgstr ""
+
 #: src/interfaces/UserInterface.ts
 msgid "Avatar image"
 msgstr "Image d'avatar"
@@ -1316,6 +1320,10 @@ msgstr "Date et heure"
 msgid "Deactivate"
 msgstr "Désactiver"
 
+#: src/interfaces/locale.ts
+msgid "Debug"
+msgstr ""
+
 #: src/pages/flows/FlowForm.ts
 msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr "Détermine l'usage de ce flux. Par exemple, un flux d'authentification est la destination d'un visiteur d'authentik non authentifié."
@@ -1701,6 +1709,10 @@ msgstr "Activé"
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Enabling this toggle will create a group named after the user, with the user as member."
 msgstr "Activer cette option va créer un groupe du même nom que l'utilisateur dont il sera membre."
+
+#: src/interfaces/locale.ts
+msgid "English"
+msgstr ""
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Enroll"
@@ -2107,6 +2119,10 @@ msgstr ""
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Forward auth (single application)"
 msgstr "Transférer l'authentification (application unique)"
+
+#: src/interfaces/locale.ts
+msgid "French"
+msgstr ""
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Friendly Name"
@@ -2721,6 +2737,10 @@ msgstr "Chargement en cours..."
 #: src/pages/outposts/ServiceConnectionListPage.ts
 msgid "Local"
 msgstr "Local"
+
+#: src/user/user-settings/details/UserDetailsForm.ts
+msgid "Locale"
+msgstr ""
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
@@ -5174,6 +5194,10 @@ msgstr "Transitoire"
 #: src/pages/events/RuleForm.ts
 msgid "Transports"
 msgstr "Transports"
+
+#: src/interfaces/locale.ts
+msgid "Turkish"
+msgstr ""
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Twilio"
