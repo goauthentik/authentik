@@ -1,4 +1,6 @@
 """authentik stage Base view"""
+from typing import TYPE_CHECKING, Optional
+
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
 from django.http.request import QueryDict
@@ -11,15 +13,19 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import DEFAULT_AVATAR, User
 from authentik.flows.challenge import (
+    AccessDeniedChallenge,
     Challenge,
     ChallengeResponse,
+    ChallengeTypes,
     ContextualFlowInfo,
     HttpChallengeResponse,
     WithUserInfoChallenge,
 )
 from authentik.flows.models import InvalidResponseAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
-from authentik.flows.views.executor import FlowExecutorView
+
+if TYPE_CHECKING:
+    from authentik.flows.views.executor import FlowExecutorView
 
 PLAN_CONTEXT_PENDING_USER_IDENTIFIER = "pending_user_identifier"
 LOGGER = get_logger()
@@ -28,11 +34,11 @@ LOGGER = get_logger()
 class StageView(View):
     """Abstract Stage, inherits TemplateView but can be combined with FormView"""
 
-    executor: FlowExecutorView
+    executor: "FlowExecutorView"
 
     request: HttpRequest = None
 
-    def __init__(self, executor: FlowExecutorView, **kwargs):
+    def __init__(self, executor: "FlowExecutorView", **kwargs):
         self.executor = executor
         super().__init__(**kwargs)
 
@@ -43,6 +49,8 @@ class StageView(View):
         other things besides the form display.
 
         If no user is pending, returns request.user"""
+        if not self.executor.plan:
+            return self.request.user
         if PLAN_CONTEXT_PENDING_USER_IDENTIFIER in self.executor.plan.context and for_display:
             return User(
                 username=self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER_IDENTIFIER),
@@ -108,6 +116,8 @@ class ChallengeStageView(StageView):
 
     def format_title(self) -> str:
         """Allow usage of placeholder in flow title."""
+        if not self.executor.plan:
+            return self.executor.flow.title
         return self.executor.flow.title % {
             "app": self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, "")
         }
@@ -169,3 +179,27 @@ class ChallengeStageView(StageView):
                 stage_view=self,
             )
         return HttpChallengeResponse(challenge_response)
+
+
+class AccessDeniedChallengeView(ChallengeStageView):
+    """Used internally by FlowExecutor's stage_invalid()"""
+
+    error_message: Optional[str]
+
+    def __init__(self, executor: "FlowExecutorView", error_message: Optional[str] = None, **kwargs):
+        super().__init__(executor, **kwargs)
+        self.error_message = error_message
+
+    def get_challenge(self, *args, **kwargs) -> Challenge:
+        return AccessDeniedChallenge(
+            data={
+                "error_message": self.error_message or "Unknown error",
+                "type": ChallengeTypes.NATIVE.value,
+                "component": "ak-stage-access-denied",
+            }
+        )
+
+    # This can never be reached since this challenge is created on demand and only the
+    # .get() method is called
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:  # pragma: no cover
+        return self.executor.cancel()

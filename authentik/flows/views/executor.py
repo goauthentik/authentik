@@ -10,7 +10,6 @@ from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.http.request import QueryDict
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
-from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import View
@@ -26,7 +25,6 @@ from structlog.stdlib import BoundLogger, get_logger
 from authentik.core.models import USER_ATTRIBUTE_DEBUG
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.challenge import (
-    AccessDeniedChallenge,
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
@@ -51,6 +49,7 @@ from authentik.flows.planner import (
     FlowPlan,
     FlowPlanner,
 )
+from authentik.flows.stage import AccessDeniedChallengeView
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
@@ -406,21 +405,9 @@ class FlowExecutorView(APIView):
         is a superuser."""
         self._logger.debug("f(exec): Stage invalid")
         self.cancel()
-        response = HttpChallengeResponse(
-            AccessDeniedChallenge(
-                {
-                    "error_message": error_message,
-                    "type": ChallengeTypes.NATIVE.value,
-                    "component": "ak-stage-access-denied",
-                    "flow_info": {
-                        "title": self.flow.title,
-                        "background": self.flow.background_url,
-                        "cancel_url": reverse("authentik_flows:cancel"),
-                    },
-                }
-            )
-        )
-        return to_stage_response(self.request, response)
+        challenge_view = AccessDeniedChallengeView(self, error_message)
+        challenge_view.request = self.request
+        return to_stage_response(self.request, challenge_view.get(self.request))
 
     def cancel(self):
         """Cancel current execution and return a redirect"""
