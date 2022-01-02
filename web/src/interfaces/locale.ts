@@ -49,13 +49,16 @@ LOCALES.forEach((locale) => {
 
 const DEFAULT_FALLBACK = () => "en";
 
-const detected =
-    detect(fromUrl("lang"), fromStorage("lang"), fromNavigator(), DEFAULT_FALLBACK) ||
-    DEFAULT_FALLBACK();
-if (detected in i18n._messages) {
-    console.debug(`authentik/locale: Activating detected locale '${detected}'`);
-    i18n.activate(detected);
-} else {
-    console.debug(`authentik/locale: No locale for '${detected}', falling back to en`);
-    i18n.activate(DEFAULT_FALLBACK());
+export function autoDetectLanguage() {
+    const detected =
+        detect(fromUrl("lang"), fromStorage("lang"), fromNavigator(), DEFAULT_FALLBACK) ||
+        DEFAULT_FALLBACK();
+    if (detected in i18n._messages) {
+        console.debug(`authentik/locale: Activating detected locale '${detected}'`);
+        i18n.activate(detected);
+    } else {
+        console.debug(`authentik/locale: No locale for '${detected}', falling back to en`);
+        i18n.activate(DEFAULT_FALLBACK());
+    }
 }
+autoDetectLanguage();

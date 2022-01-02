@@ -16,7 +16,7 @@ import "../../../elements/forms/Form";
 import "../../../elements/forms/FormElement";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
-import { LOCALES } from "../../../interfaces/locale";
+import { LOCALES, autoDetectLanguage } from "../../../interfaces/locale";
 
 @customElement("ak-user-details-form")
 export class UserDetailsForm extends ModelForm<UserSelf, number> {
@@ -42,6 +42,8 @@ export class UserDetailsForm extends ModelForm<UserSelf, number> {
         const newLocale = LOCALES.find((locale) => locale.code === newConfig.locale);
         if (newLocale) {
             i18n.activate(newLocale.code);
+        } else if (newConfig.locale === "") {
+            autoDetectLanguage();
         } else {
             console.debug(`authentik/user: invalid locale: '${newConfig.locale}'`);
         }
