@@ -131,7 +131,7 @@ export class FlowExecutor extends LitElement implements StageHost {
             });
     }
 
-    submit(payload?: FlowChallengeResponseRequest): Promise<void> {
+    submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
         // @ts-ignore
@@ -153,12 +153,18 @@ export class FlowExecutor extends LitElement implements StageHost {
                     );
                 }
                 this.challenge = data;
+                if (this.challenge.responseErrors) {
+                    return false;
+                }
+                return true;
             })
             .catch((e: Error | Response) => {
                 this.errorMessage(e);
+                return false;
             })
             .finally(() => {
                 this.loading = false;
+                return false;
             });
     }
 

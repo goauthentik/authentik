@@ -7,7 +7,7 @@ export interface StageHost {
     challenge?: unknown;
     flowSlug: string;
     loading: boolean;
-    submit(payload: unknown): Promise<void>;
+    submit(payload: unknown): Promise<boolean>;
 }
 
 export class BaseStage<Tin, Tout> extends LitElement {
@@ -16,14 +16,19 @@ export class BaseStage<Tin, Tout> extends LitElement {
     @property({ attribute: false })
     challenge!: Tin;
 
-    submitForm(e: Event): void {
+    async submitForm(e: Event): Promise<boolean> {
         e.preventDefault();
         const object: {
             [key: string]: unknown;
         } = {};
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
         form.forEach((value, key) => (object[key] = value));
-        this.host?.submit(object as unknown as Tout);
+        return this.host?.submit(object as unknown as Tout).then((successful) => {
+            if (successful) {
+                this.cleanup();
+            }
+            return successful;
+        });
     }
 
     renderNonFieldErrors(errors: ErrorDetail[]): TemplateResult {
@@ -40,5 +45,10 @@ export class BaseStage<Tin, Tout> extends LitElement {
                 </div>`;
             })}
         </div>`;
+    }
+
+    cleanup(): void {
+        // Method that can be overridden by stages
+        return;
     }
 }

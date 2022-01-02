@@ -41,6 +41,8 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallenge,
     IdentificationChallengeResponseRequest
 > {
+    form?: HTMLFormElement;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -72,8 +74,8 @@ export class IdentificationStage extends BaseStage<
     }
 
     firstUpdated(): void {
-        const wrapperForm = document.createElement("form");
-        document.documentElement.appendChild(wrapperForm);
+        this.form = document.createElement("form");
+        document.documentElement.appendChild(this.form);
         // This is a workaround for the fact that we're in a shadow dom
         // adapted from https://github.com/home-assistant/frontend/issues/3133
         const username = document.createElement("input");
@@ -91,7 +93,7 @@ export class IdentificationStage extends BaseStage<
                     input.focus();
                 });
         };
-        wrapperForm.appendChild(username);
+        this.form.appendChild(username);
         const password = document.createElement("input");
         password.setAttribute("type", "password");
         password.setAttribute("name", "password");
@@ -115,7 +117,7 @@ export class IdentificationStage extends BaseStage<
                     input.focus();
                 });
         };
-        wrapperForm.appendChild(password);
+        this.form.appendChild(password);
         const totp = document.createElement("input");
         totp.setAttribute("type", "text");
         totp.setAttribute("name", "code");
@@ -139,7 +141,13 @@ export class IdentificationStage extends BaseStage<
                     input.focus();
                 });
         };
-        wrapperForm.appendChild(totp);
+        this.form.appendChild(totp);
+    }
+
+    cleanup(): void {
+        if (this.form) {
+            document.documentElement.removeChild(this.form);
+        }
     }
 
     renderSource(source: LoginSource): TemplateResult {
