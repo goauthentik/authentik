@@ -3441,6 +3441,7 @@ msgstr "Passing"
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
 #: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/UserPasswordForm.ts
 msgid "Password"
 msgstr "Password"
 
@@ -4259,6 +4260,10 @@ msgstr "Set a custom HTTP-Basic Authentication header based on values from authe
 msgid "Set custom attributes using YAML or JSON."
 msgstr "Set custom attributes using YAML or JSON."
 
+#: src/pages/users/UserListPage.ts
+msgid "Set password"
+msgstr "Set password"
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
 msgstr "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
@@ -4765,6 +4770,10 @@ msgstr "Successfully updated mapping."
 msgid "Successfully updated outpost."
 msgstr "Successfully updated outpost."
 
+#: src/pages/users/UserPasswordForm.ts
+msgid "Successfully updated password."
+msgstr "Successfully updated password."
+
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/pages/policies/expiry/ExpiryPolicyForm.ts
@@ -5155,8 +5164,12 @@ msgid "To create a recovery link, the current tenant needs to have a recovery fl
 msgstr "To create a recovery link, the current tenant needs to have a recovery flow configured."
 
 #: src/pages/users/UserListPage.ts
-msgid "To directly reset a user's password, configure a recovery flow on the currently active tenant."
-msgstr "To directly reset a user's password, configure a recovery flow on the currently active tenant."
+#~ msgid "To directly reset a user's password, configure a recovery flow on the currently active tenant."
+#~ msgstr "To directly reset a user's password, configure a recovery flow on the currently active tenant."
+
+#: src/pages/users/UserListPage.ts
+msgid "To let a user directly reset a their password, configure a recovery flow on the currently active tenant."
+msgstr "To let a user directly reset a their password, configure a recovery flow on the currently active tenant."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "To use SSL instead, use 'ldaps://' and disable this option."
@@ -5519,6 +5532,11 @@ msgstr "Update available"
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "Update details"
 msgstr "Update details"
+
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
+msgid "Update password"
+msgstr "Update password"
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts

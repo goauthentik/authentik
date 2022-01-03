@@ -3,6 +3,7 @@ from datetime import timedelta
 from json import loads
 from typing import Optional
 
+from django.contrib.auth import update_session_auth_hash
 from django.db.models.query import QuerySet
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
@@ -358,6 +359,35 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 instance=request._request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
             ).data
         return Response(serializer.initial_data)
+
+    @permission_required("authentik_core.reset_user_password")
+    @extend_schema(
+        request=inline_serializer(
+            "UserPasswordSetSerializer",
+            {
+                "password": CharField(required=True),
+            },
+        ),
+        responses={
+            204: "",
+            400: "",
+        },
+    )
+    @action(detail=True, methods=["POST"])
+    # pylint: disable=invalid-name, unused-argument
+    def set_password(self, request: Request, pk: int) -> Response:
+        """Set password for user"""
+        user: User = self.get_object()
+        try:
+            user.set_password(request.data.get("password"))
+            user.save()
+        except (ValidationError, IntegrityError) as exc:
+            LOGGER.debug("Failed to set password", exc=exc)
+            return Response(status=400)
+        if user.pk == request.user.pk and SESSION_IMPERSONATE_USER not in self.request.session:
+            LOGGER.debug("Updating session hash after password change")
+            update_session_auth_hash(self.request, user)
+        return Response(status=204)
 
     @extend_schema(request=UserSelfSerializer, responses={200: SessionUserSerializer(many=False)})
     @action(

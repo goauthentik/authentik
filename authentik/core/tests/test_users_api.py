@@ -5,6 +5,7 @@ from rest_framework.test import APITestCase
 from authentik.core.models import USER_ATTRIBUTE_CHANGE_EMAIL, USER_ATTRIBUTE_CHANGE_USERNAME, User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
+from authentik.lib.generators import generate_key
 from authentik.stages.email.models import EmailStage
 from authentik.tenants.models import Tenant
 
@@ -67,6 +68,18 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
         )
         self.assertEqual(response.status_code, 404)
+
+    def test_set_password(self):
+        """Test Direct password set"""
+        self.client.force_login(self.admin)
+        new_pw = generate_key()
+        response = self.client.post(
+            reverse("authentik_api:user-set-password", kwargs={"pk": self.admin.pk}),
+            data={"password": new_pw},
+        )
+        self.assertEqual(response.status_code, 204)
+        self.admin.refresh_from_db()
+        self.assertTrue(self.admin.check_password(new_pw))
 
     def test_recovery(self):
         """Test user recovery link (no recovery flow set)"""

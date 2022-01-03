@@ -3383,6 +3383,7 @@ msgstr "Geçiyor"
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
 #: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/UserPasswordForm.ts
 msgid "Password"
 msgstr "Parola"
 
@@ -4182,6 +4183,10 @@ msgstr "authentik değerlerine göre özel bir HTTP-Basic Kimlik Doğrulama baş
 msgid "Set custom attributes using YAML or JSON."
 msgstr "YAML veya JSON kullanarak özel nitelikleri ayarlayın."
 
+#: src/pages/users/UserListPage.ts
+msgid "Set password"
+msgstr ""
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
 msgstr "Bunu kimlik doğrulamasının geçerli olmasını istediğiniz etki alanına ayarlayın. Yukarıdaki URL'nin bir üst etki alanı olmalıdır. Uygulamaları app1.domain.tld, app2.domain.tld olarak çalıştırıyorsanız, bunu 'domain.tld' olarak ayarlayın."
@@ -4671,6 +4676,10 @@ msgstr "Eşleme başarıyla güncellendi."
 msgid "Successfully updated outpost."
 msgstr "İleri üssü başarıyla güncelledi."
 
+#: src/pages/users/UserPasswordForm.ts
+msgid "Successfully updated password."
+msgstr ""
+
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/pages/policies/expiry/ExpiryPolicyForm.ts
@@ -5050,8 +5059,12 @@ msgid "To create a recovery link, the current tenant needs to have a recovery fl
 msgstr "Kurtarma bağlantısı oluşturmak için geçerli sakinin yapılandırılmış bir kurtarma akışı olması gerekir."
 
 #: src/pages/users/UserListPage.ts
-msgid "To directly reset a user's password, configure a recovery flow on the currently active tenant."
-msgstr "Bir kullanıcının parolasını doğrudan sıfırlamak için, etkin olan sakin üzerinde bir kurtarma akışı yapılandırın."
+#~ msgid "To directly reset a user's password, configure a recovery flow on the currently active tenant."
+#~ msgstr "Bir kullanıcının parolasını doğrudan sıfırlamak için, etkin olan sakin üzerinde bir kurtarma akışı yapılandırın."
+
+#: src/pages/users/UserListPage.ts
+msgid "To let a user directly reset a their password, configure a recovery flow on the currently active tenant."
+msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "To use SSL instead, use 'ldaps://' and disable this option."
@@ -5411,6 +5424,11 @@ msgstr "Güncelleme mevcut"
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "Update details"
 msgstr "Ayrıntıları güncelle"
+
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
+msgid "Update password"
+msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts

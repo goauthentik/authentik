@@ -26,6 +26,7 @@ import { first } from "../../utils";
 import "./ServiceAccountForm";
 import "./UserActiveForm";
 import "./UserForm";
+import "./UserPasswordForm";
 import "./UserResetEmailForm";
 
 @customElement("ak-user-list")
@@ -136,11 +137,11 @@ export class UserListPage extends TablePage<User> {
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </a>`,
-            html` <ak-label color=${item.isActive ? PFColor.Green : PFColor.Red}>
+            html`<ak-label color=${item.isActive ? PFColor.Green : PFColor.Red}>
                 ${item.isActive ? t`Yes` : t`No`}
             </ak-label>`,
             html`${first(item.lastLogin?.toLocaleString(), t`-`)}`,
-            html` <ak-forms-modal>
+            html`<ak-forms-modal>
                     <span slot="submit"> ${t`Update`} </span>
                     <span slot="header"> ${t`Update User`} </span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
@@ -204,12 +205,23 @@ export class UserListPage extends TablePage<User> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
+                                    <ak-forms-modal>
+                                        <span slot="submit">${t`Update password`}</span>
+                                        <span slot="header">${t`Update password`}</span>
+                                        <ak-user-password-form
+                                            slot="form"
+                                            .instancePk=${item.pk}
+                                        ></ak-user-password-form>
+                                        <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                            ${t`Set password`}
+                                        </button>
+                                    </ak-forms-modal>
                                     ${until(
                                         tenant().then((tenant) => {
                                             if (!tenant.flowRecovery) {
                                                 return html`
                                                     <p>
-                                                        ${t`To directly reset a user's password, configure a recovery flow on the currently active tenant.`}
+                                                        ${t`To let a user directly reset a their password, configure a recovery flow on the currently active tenant.`}
                                                     </p>
                                                 `;
                                             }

@@ -404,7 +404,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                     <ak-form-element-horizontal
                         label="${this.mode === ProxyMode.ForwardDomain
                             ? t`Unauthenticated URLs`
-                            : t`Unauthenticated Paths`}${t``}"
+                            : t`Unauthenticated Paths`}"
                         name="skipPathRegex"
                     >
                         <textarea class="pf-c-form-control">

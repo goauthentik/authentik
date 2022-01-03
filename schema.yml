@@ -3269,6 +3269,34 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /core/users/{id}/set_password/:
+    post:
+      operationId: core_users_set_password_create
+      description: Set password for user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPasswordSetRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /core/users/{id}/used_by/:
     get:
       operationId: core_users_used_by_list
@@ -31091,6 +31119,14 @@ components:
       - identifier
       - source
       - user
+    UserPasswordSetRequest:
+      type: object
+      properties:
+        password:
+          type: string
+          minLength: 1
+      required:
+      - password
     UserReputation:
       type: object
       description: UserReputation Serializer
