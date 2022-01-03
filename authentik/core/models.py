@@ -7,6 +7,7 @@ from uuid import uuid4
 
 from deepmerge import always_merger
 from django.conf import settings
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.db import models
@@ -159,6 +160,22 @@ class User(GuardianUserMixin, AbstractUser):
             password_changed.send(sender=self, user=self, password=password)
         self.password_change_date = now()
         return super().set_password(password)
+
+    def check_password(self, raw_password: str) -> bool:
+        """
+        Return a boolean of whether the raw_password was correct. Handles
+        hashing formats behind the scenes.
+
+        Slightly changed version which doesn't send a signal for such internal hash upgrades
+        """
+
+        def setter(raw_password):
+            self.set_password(raw_password, signal=False)
+            # Password hash upgrades shouldn't be considered password changes.
+            self._password = None
+            self.save(update_fields=["password"])
+
+        return check_password(raw_password, self.password, setter)
 
     @property
     def uid(self) -> str:
