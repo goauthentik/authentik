@@ -73,17 +73,14 @@ func main() {
 		}
 	}
 	go web.RunMetricsServer()
-	for {
-		go attemptStartBackend(g)
-		ws.Start()
-
-		<-ex
-		running = false
-		l.Info("shutting down gunicorn")
-		go g.Kill()
-		l.Info("shutting down webserver")
-		go ws.Shutdown()
-	}
+	go attemptStartBackend(g)
+	ws.Start()
+	<-ex
+	running = false
+	l.Info("shutting down gunicorn")
+	go g.Kill()
+	l.Info("shutting down webserver")
+	go ws.Shutdown()
 }
 
 func attemptStartBackend(g *gounicorn.GoUnicorn) {
