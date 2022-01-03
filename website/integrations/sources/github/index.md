@@ -39,16 +39,6 @@ Example screenshot
 12. **Consumer Secret:** Client Secret from step 7
 13. **Provider Type:** Github
 
-Expand URL settings:
-
-:::note
-As of June 20 2021 these URLS are correct. Here is the Github reference URL https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps
-:::
-
-14. **Authorization URL:** `https://github.com/login/oauth/authorize`
-15. **Access token URL:** `https://github.com/login/oauth/access_token`
-16. **Profile URL:** `https://api.github.com/user`
-
 Here is an example of a complete authentik Github OAuth Source
 
 ![Example Screen](githubexample2.png)
