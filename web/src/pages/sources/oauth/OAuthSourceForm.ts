@@ -257,16 +257,11 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 </div>
             </ak-form-group>
             ${this.renderUrlOptions()}
-            <ak-form-element-horizontal
-                label=${t`Additional Scope`}
-                ?required=${true}
-                name="additionalScopes"
-            >
+            <ak-form-element-horizontal label=${t`Additional Scope`} name="additionalScopes">
                 <input
                     type="text"
                     value="${first(this.instance?.additionalScopes, "")}"
                     class="pf-c-form-control"
-                    required
                 />
                 <p class="pf-c-form__helper-text">
                     ${t`Additional scopes to be passed to the OAuth Provider, separated by space.`}
