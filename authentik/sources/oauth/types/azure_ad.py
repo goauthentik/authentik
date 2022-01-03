@@ -17,7 +17,7 @@ class AzureADOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source):  # pragma: no cover
         return {
-            "scope": "openid https://graph.microsoft.com/User.Read",
+            "scope": ["openid", "https://graph.microsoft.com/User.Read"],
         }
 
 

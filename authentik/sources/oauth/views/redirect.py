@@ -34,7 +34,7 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
         "Build redirect url for a given source."
         slug = kwargs.get("source_slug", "")
         try:
-            source = OAuthSource.objects.get(slug=slug)
+            source: OAuthSource = OAuthSource.objects.get(slug=slug)
         except OAuthSource.DoesNotExist:
             raise Http404(f"Unknown OAuth source '{slug}'.")
         else:
@@ -42,4 +42,7 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
                 raise Http404(f"source {slug} is not enabled.")
             client = self.get_client(source, callback=self.get_callback_url(source))
             params = self.get_additional_parameters(source)
+            params.setdefault("scope", [])
+            if source.additional_scopes != "":
+                params["scope"] += source.additional_scopes.split(" ")
             return client.get_redirect_url(params)

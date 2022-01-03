@@ -14,7 +14,7 @@ class RedditOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source):  # pragma: no cover
         return {
-            "scope": "identity",
+            "scope": ["identity"],
             "duration": "permanent",
         }
 

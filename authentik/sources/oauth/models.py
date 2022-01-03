@@ -44,6 +44,7 @@ class OAuthSource(Source):
         verbose_name=_("Profile URL"),
         help_text=_("URL used by authentik to get user information."),
     )
+    additional_scopes = models.TextField(default="", verbose_name=_("Additional Scopes"))
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 

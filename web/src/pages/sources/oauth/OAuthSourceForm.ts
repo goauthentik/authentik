@@ -52,7 +52,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
     }
 
     @property({ attribute: false })
-    providerType?: SourceType;
+    providerType: SourceType | null = null;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -257,6 +257,21 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 </div>
             </ak-form-group>
             ${this.renderUrlOptions()}
+            <ak-form-element-horizontal
+                label=${t`Additional Scope`}
+                ?required=${true}
+                name="additionalScopes"
+            >
+                <input
+                    type="text"
+                    value="${first(this.instance?.additionalScopes, "")}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Additional scopes to be passed to the OAuth Provider, separated by space.`}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-group>
                 <span slot="header"> ${t`Flow settings`} </span>
                 <div slot="body" class="pf-c-form">

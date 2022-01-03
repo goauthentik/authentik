@@ -208,6 +208,10 @@ msgstr "Addition Group DN"
 msgid "Addition User DN"
 msgstr "Addition User DN"
 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+msgid "Additional Scope"
+msgstr "Additional Scope"
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional group DN, prepended to the Base DN."
 msgstr "Additional group DN, prepended to the Base DN."
@@ -215,6 +219,10 @@ msgstr "Additional group DN, prepended to the Base DN."
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Additional scope mappings, which are passed to the proxy."
 msgstr "Additional scope mappings, which are passed to the proxy."
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
+msgstr "Additional scopes to be passed to the OAuth Provider, separated by space."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional settings"

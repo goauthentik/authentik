@@ -58,6 +58,9 @@ class BaseOAuthClient:
         args = self.get_redirect_args()
         additional = parameters or {}
         args.update(additional)
+        # Special handling for scope, since it's set as array
+        # to make additional scopes easier
+        args["scope"] = " ".join(sorted(set(args["scope"])))
         params = urlencode(args, quote_via=quote)
         LOGGER.info("redirect args", **args)
         authorization_url = self.source.type.authorization_url or ""

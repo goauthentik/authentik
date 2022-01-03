@@ -210,6 +210,10 @@ msgstr "Toplama Grubu DN"
 msgid "Addition User DN"
 msgstr "Ekleme Kullanıcı DN"
 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+msgid "Additional Scope"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional group DN, prepended to the Base DN."
 msgstr "Ek grup DN, Base DN için eklenmiş."
@@ -217,6 +221,10 @@ msgstr "Ek grup DN, Base DN için eklenmiş."
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Additional scope mappings, which are passed to the proxy."
 msgstr "Proxy'ye iletilen ek kapsam eşlemeleri."
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
+msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional settings"

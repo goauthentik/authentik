@@ -11,7 +11,7 @@ class GoogleOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source):  # pragma: no cover
         return {
-            "scope": "email profile",
+            "scope": ["email", "profile"],
         }
 
 

@@ -12438,6 +12438,10 @@ paths:
         schema:
           type: string
       - in: query
+        name: additional_scopes
+        schema:
+          type: string
+      - in: query
         name: authentication_flow
         schema:
           type: string
@@ -23342,6 +23346,8 @@ components:
         callback_url:
           type: string
           readOnly: true
+        additional_scopes:
+          type: string
         type:
           allOf:
           - $ref: '#/components/schemas/SourceType'
@@ -23424,6 +23430,9 @@ components:
         consumer_secret:
           type: string
           writeOnly: true
+          minLength: 1
+        additional_scopes:
+          type: string
           minLength: 1
       required:
       - consumer_key
@@ -27644,6 +27653,9 @@ components:
         consumer_secret:
           type: string
           writeOnly: true
+          minLength: 1
+        additional_scopes:
+          type: string
           minLength: 1
     PatchedOutpostRequest:
       type: object

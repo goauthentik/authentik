@@ -74,6 +74,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "consumer_key",
             "consumer_secret",
             "callback_url",
+            "additional_scopes",
             "type",
         ]
         extra_kwargs = {"consumer_secret": {"write_only": True}}
@@ -99,6 +100,7 @@ class OAuthSourceViewSet(UsedByMixin, ModelViewSet):
         "access_token_url",
         "profile_url",
         "consumer_key",
+        "additional_scopes",
     ]
     ordering = ["name"]
 

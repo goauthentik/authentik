@@ -13,7 +13,7 @@ class OktaOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source: OAuthSource):  # pragma: no cover
         return {
-            "scope": "openid email profile",
+            "scope": ["openid", "email", "profile"],
         }
 
 
