@@ -41,6 +41,8 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "Google";
         case ProviderTypeEnum.Openidconnect:
             return t`Generic OpenID Connect`;
+        case ProviderTypeEnum.Okta:
+            return "Okta";
         case ProviderTypeEnum.Reddit:
             return "Reddit";
         case ProviderTypeEnum.Twitter:
