@@ -76,24 +76,28 @@ export class IdentificationStage extends BaseStage<
     firstUpdated(): void {
         this.form = document.createElement("form");
         document.documentElement.appendChild(this.form);
-        // This is a workaround for the fact that we're in a shadow dom
-        // adapted from https://github.com/home-assistant/frontend/issues/3133
-        const username = document.createElement("input");
-        username.setAttribute("type", "text");
-        username.setAttribute("name", "username"); // username as name for high compatibility
-        username.setAttribute("autocomplete", "username");
-        username.onkeyup = (ev: Event) => {
-            const el = ev.target as HTMLInputElement;
-            (this.shadowRoot || this)
-                .querySelectorAll<HTMLInputElement>("input[name=uidField]")
-                .forEach((input) => {
-                    input.value = el.value;
-                    // Because we assume only one input field exists that matches this
-                    // call focus so the user can press enter
-                    input.focus();
-                });
-        };
-        this.form.appendChild(username);
+        // Only add the additional username input if we're in a shadow dom
+        // otherwise it just confuses browsers
+        if (!("ShadyDOM" in window)) {
+            // This is a workaround for the fact that we're in a shadow dom
+            // adapted from https://github.com/home-assistant/frontend/issues/3133
+            const username = document.createElement("input");
+            username.setAttribute("type", "text");
+            username.setAttribute("name", "username"); // username as name for high compatibility
+            username.setAttribute("autocomplete", "username");
+            username.onkeyup = (ev: Event) => {
+                const el = ev.target as HTMLInputElement;
+                (this.shadowRoot || this)
+                    .querySelectorAll<HTMLInputElement>("input[name=uidField]")
+                    .forEach((input) => {
+                        input.value = el.value;
+                        // Because we assume only one input field exists that matches this
+                        // call focus so the user can press enter
+                        input.focus();
+                    });
+            };
+            this.form.appendChild(username);
+        }
         const password = document.createElement("input");
         password.setAttribute("type", "password");
         password.setAttribute("name", "password");
