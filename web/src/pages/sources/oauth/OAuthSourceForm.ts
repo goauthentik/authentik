@@ -254,7 +254,10 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                     >
                         <textarea class="pf-c-form-control"></textarea>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Additional Scope`} name="additionalScopes">
+                    <ak-form-element-horizontal
+                        label=${t`Additional Scope`}
+                        name="additionalScopes"
+                    >
                         <input
                             type="text"
                             value="${first(this.instance?.additionalScopes, "")}"

@@ -48,3 +48,48 @@ Save, and you now have Github as a source.
 :::note
 For more details on how-to have the new source display on the Login Page see [here](../).
 :::
+
+### Checking for membership of a GitHub Organisation
+
+:::info
+Requires authentik 2021.12.5.
+:::
+
+To check if the user is member of an organisation, you can use the following policy on your flows:
+
+```python
+accepted_org = "foo"
+
+# Get the user-source connection object from the context, and get the access token
+connection = context['goauthentik.io/sources/connection']
+access_token = connection.access_token
+
+# We also access the user info authentik already retrieved, to get the correct username
+github_username = context["oauth_userinfo"]
+
+# Github does not include Organisations in the userinfo endpoint, so we have to call another URL
+
+orgs = requests.get(
+    "https://api.github.com/user/orgs",
+    auth=(github_username["login"], access_token),
+    headers={
+        "accept": "application/vnd.github.v3+json"
+    }
+).json()
+
+# `orgs` will be formatted like this
+# [
+#     {
+#         "login": "beryjuorg",
+#         [...]
+#     }
+# ]
+user_matched = any(org['login'] == accepted_org for org in orgs)
+if not user_matched:
+    ak_message(f"User is not member of {accepted_org}.")
+return user_matched
+```
+
+If a user is not member of the chosen organisation, they will see this message
+
+![](./github_org_membership.png)
