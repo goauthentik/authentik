@@ -26,6 +26,42 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
         return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, AKGlobal];
     }
 
+    input?: HTMLInputElement;
+
+    timer?: number;
+
+    renderInput(): HTMLInputElement {
+        this.input = document.createElement("input");
+        this.input.type = "password";
+        this.input.name = "password";
+        this.input.placeholder = t`Please enter your password`;
+        this.input.autofocus = true;
+        this.input.autocomplete = "current-password";
+        this.input.classList.add("pf-c-form-control");
+        this.input.required = true;
+        this.input.value = PasswordManagerPrefill.password || "";
+        // This is somewhat of a crude way to get autofocus, but in most cases the `autofocus` attribute
+        // isn't enough, due to timing within shadow doms and such.
+        this.timer = window.setInterval(() => {
+            if (!this.input) {
+                return;
+            }
+            if (document.activeElement === this.input) {
+                this.cleanup();
+            }
+            this.input.focus();
+        }, 10);
+        console.debug("authentik/stages/password: started focus timer");
+        return this.input;
+    }
+
+    cleanup(): void {
+        if (this.timer) {
+            console.debug("authentik/stages/password: cleared focus timer");
+            window.clearInterval(this.timer);
+        }
+    }
+
     render(): TemplateResult {
         if (!this.challenge) {
             return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
@@ -63,16 +99,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["password"]}
                     >
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="${t`Please enter your password`}"
-                            autofocus=""
-                            autocomplete="current-password"
-                            class="pf-c-form-control"
-                            required
-                            value=${PasswordManagerPrefill.password || ""}
-                        />
+                        ${this.renderInput()}
                     </ak-form-element>
 
                     ${this.challenge.recoveryUrl
