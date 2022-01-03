@@ -82,7 +82,7 @@
         "chartjs-adapter-moment": "^1.0.0",
         "codemirror": "^5.65.0",
         "construct-style-sheets-polyfill": "^3.0.5",
-        "eslint": "^8.5.0",
+        "eslint": "^8.6.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.4",
         "eslint-plugin-lit": "^1.6.1",
