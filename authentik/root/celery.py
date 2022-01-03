@@ -69,7 +69,7 @@ def task_error_hook(task_id, exception: Exception, traceback, *args, **kwargs):
     """Create system event for failed task"""
     from authentik.events.models import Event, EventAction
 
-    LOGGER.warning("Task failure", exception=exception)
+    LOGGER.warning("Task failure", exc=exception)
     if before_send({}, {"exc_info": (None, exception, None)}) is not None:
         Event.new(EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception)).save()
 
