@@ -107,7 +107,7 @@ export class CodeMirrorTextarea extends LitElement {
         this.editor = CodeMirror.fromTextArea(textarea, {
             mode: this.mode,
             theme: "monokai",
-            lineNumbers: false, // Line Numbers seem to be broken on firefox?
+            lineNumbers: true,
             readOnly: this.readOnly,
             autoRefresh: true,
             lineWrapping: true,
