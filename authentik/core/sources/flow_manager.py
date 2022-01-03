@@ -14,6 +14,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Source, SourceUserMatchingModes, User, UserSourceConnection
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION, PostUserEnrollmentStage
 from authentik.events.models import Event, EventAction
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, Stage, in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
@@ -24,6 +25,8 @@ from authentik.flows.planner import (
 )
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
+from authentik.policies.denied import AccessDeniedResponse
+from authentik.policies.types import PolicyResult
 from authentik.policies.utils import delete_none_keys
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
@@ -149,19 +152,22 @@ class SourceFlowManager:
             self._logger.warning("failed to get action", exc=exc)
             return redirect("/")
         self._logger.debug("get_action", action=action, connection=connection)
-        if connection:
-            if action == Action.LINK:
-                self._logger.debug("Linking existing user")
-                return self.handle_existing_user_link(connection)
-            if action == Action.AUTH:
-                self._logger.debug("Handling auth user")
-                return self.handle_auth_user(connection)
-            if action == Action.ENROLL:
-                self._logger.debug("Handling enrollment of new user")
-                return self.handle_enroll(connection)
+        try:
+            if connection:
+                if action == Action.LINK:
+                    self._logger.debug("Linking existing user")
+                    return self.handle_existing_user_link(connection)
+                if action == Action.AUTH:
+                    self._logger.debug("Handling auth user")
+                    return self.handle_auth_user(connection)
+                if action == Action.ENROLL:
+                    self._logger.debug("Handling enrollment of new user")
+                    return self.handle_enroll(connection)
+        except FlowNonApplicableException as exc:
+            self._logger.warning("Flow non applicable", exc=exc)
+            return self.error_handler(exc, exc.policy_result)
         # Default case, assume deny
-        messages.error(
-            self.request,
+        error = (
             _(
                 (
                     "Request to authenticate with %(source)s has been denied. Please authenticate "
@@ -170,7 +176,17 @@ class SourceFlowManager:
                 % {"source": self.source.name}
             ),
         )
-        return redirect(reverse("authentik_core:root-redirect"))
+        return self.error_handler(error)
+
+    def error_handler(
+        self, error: Exception, policy_result: Optional[PolicyResult] = None
+    ) -> HttpResponse:
+        """Handle any errors by returning an access denied stage"""
+        response = AccessDeniedResponse(self.request)
+        response.error_message = str(error)
+        if policy_result:
+            response.policy_result = policy_result
+        return response
 
     # pylint: disable=unused-argument
     def get_stages_to_append(self, flow: Flow) -> list[Stage]:

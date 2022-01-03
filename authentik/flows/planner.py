@@ -152,7 +152,9 @@ class FlowPlanner:
             engine.build()
             result = engine.result
             if not result.passing:
-                raise FlowNonApplicableException(",".join(result.messages))
+                exc = FlowNonApplicableException(",".join(result.messages))
+                exc.policy_result = result
+                raise exc
             # User is passing so far, check if we have a cached plan
             cached_plan_key = cache_key(self.flow, user)
             cached_plan = cache.get(cached_plan_key, None)
