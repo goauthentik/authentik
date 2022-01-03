@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="oauthsource",
             name="additional_scopes",
-            field=models.TextField(default="", verbose_name="Additional Scopes"),
+            field=models.TextField(default="", blank=True, verbose_name="Additional Scopes"),
         ),
     ]
