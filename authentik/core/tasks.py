@@ -63,8 +63,6 @@ def should_backup() -> bool:
         return False
     if not CONFIG.y_bool("postgresql.backup.enabled"):
         return False
-    if settings.DEBUG:
-        return False
     return True
 
 

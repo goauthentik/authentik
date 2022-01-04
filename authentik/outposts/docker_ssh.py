@@ -62,16 +62,21 @@ class DockerInlineSSH:
 
     def cleanup(self):
         """Cleanup when we're done"""
-        os.unlink(self.key_path)
-        with open(self.config_path, "r+", encoding="utf-8") as ssh_config:
-            start = 0
-            end = 0
-            lines = ssh_config.readlines()
-            for idx, line in enumerate(lines):
-                if line == self.header:
-                    start = idx
-                if start != 0 and line == f"{FOOTER}\n":
-                    end = idx
-        with open(self.config_path, "w+", encoding="utf-8") as ssh_config:
-            lines = lines[:start] + lines[end + 2 :]
-            ssh_config.writelines(lines)
+        try:
+            os.unlink(self.key_path)
+            with open(self.config_path, "r+", encoding="utf-8") as ssh_config:
+                start = 0
+                end = 0
+                lines = ssh_config.readlines()
+                for idx, line in enumerate(lines):
+                    if line == self.header:
+                        start = idx
+                    if start != 0 and line == f"{FOOTER}\n":
+                        end = idx
+            with open(self.config_path, "w+", encoding="utf-8") as ssh_config:
+                lines = lines[:start] + lines[end + 2 :]
+                ssh_config.writelines(lines)
+        except OSError:
+            # If we fail deleting a file it doesn't matter that much
+            # since we're just in a container
+            pass
