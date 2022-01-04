@@ -602,17 +602,11 @@ description = "Management commands to help backup and restore a project database
 category = "main"
 optional = false
 python-versions = "*"
-develop = false
 
 [package.dependencies]
 Django = ">=1.5"
 pytz = "*"
-
-[package.source]
-type = "git"
-url = 'https://github.com/django-dbbackup/django-dbbackup.git'
-reference = '9d1909c30a3271c8c9c8450add30d6e0b996e145'
-resolved_reference = "9d1909c30a3271c8c9c8450add30d6e0b996e145"
+six = "*"
 
 [[package]]
 name = "django-filter"
@@ -2077,7 +2071,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "979c03e0b7174b99535fa0766480eeb396650c3ed38b1ac0868aa548c99f2c28"
+content-hash = "a545408fa3127f492bb7589af5f4f8889238d0aada1323c1f022aa8c8148e06f"
 
 [metadata.files]
 aiohttp = [
@@ -2452,7 +2446,9 @@ django = [
     {file = "Django-4.0.1-py3-none-any.whl", hash = "sha256:7cd8e8a3ed2bc0dfda05ce1e53a9c81b30eefd7aa350e538a18884475e4d4ce2"},
     {file = "Django-4.0.1.tar.gz", hash = "sha256:2485eea3cc4c3bae13080dee866ebf90ba9f98d1afe8fda89bfb0eb2e218ef86"},
 ]
-django-dbbackup = []
+django-dbbackup = [
+    {file = "django-dbbackup-3.3.0.tar.gz", hash = "sha256:bb109735cae98b64ad084e5b461b7aca2d7b39992f10c9ed9435e3ebb6fb76c8"},
+]
 django-filter = [
     {file = "django-filter-21.1.tar.gz", hash = "sha256:632a251fa8f1aadb4b8cceff932bb52fe2f826dd7dfe7f3eac40e5c463d6836e"},
     {file = "django_filter-21.1-py3-none-any.whl", hash = "sha256:f4a6737a30104c98d2e2a5fb93043f36dd7978e0c7ddc92f5998e85433ea5063"},

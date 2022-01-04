@@ -107,7 +107,7 @@ dacite = "*"
 deepmerge = "*"
 defusedxml = "*"
 django = "*"
-django-dbbackup = { git = 'https://github.com/django-dbbackup/django-dbbackup.git', rev = '9d1909c30a3271c8c9c8450add30d6e0b996e145' }
+django-dbbackup = "*"
 django-filter = "*"
 django-guardian = "*"
 django-model-utils = "*"
