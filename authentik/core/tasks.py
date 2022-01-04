@@ -6,7 +6,6 @@ from os import environ
 from boto3.exceptions import Boto3Error
 from botocore.exceptions import BotoCoreError, ClientError
 from dbbackup.db.exceptions import CommandConnectorError
-from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core import management
