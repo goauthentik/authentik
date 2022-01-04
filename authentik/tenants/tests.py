@@ -1,16 +1,16 @@
 """Test tenants"""
-from django.test import TestCase
 from django.test.client import RequestFactory
 from django.urls import reverse
+from rest_framework.test import APITestCase
 
-from authentik.core.tests.utils import create_test_tenant
+from authentik.core.tests.utils import create_test_admin_user, create_test_tenant
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.tenants.models import Tenant
 
 
-class TestTenants(TestCase):
+class TestTenants(APITestCase):
     """Test tenants"""
 
     def test_current_tenant(self):
@@ -78,3 +78,18 @@ class TestTenants(TestCase):
         self.assertEqual(
             event.expires.year, (event.created + timedelta_from_string("weeks=3")).year
         )
+
+    def test_create_default_multiple(self):
+        """Test attempted creation of multiple default tenants"""
+        Tenant.objects.create(
+            domain="foo",
+            default=True,
+            branding_title="custom",
+            event_retention="weeks=3",
+        )
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        response = self.client.post(
+            reverse("authentik_api:tenant-list"), data={"domain": "bar", "default": True}
+        )
+        self.assertEqual(response.status_code, 400)

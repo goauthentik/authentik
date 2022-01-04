@@ -1,6 +1,9 @@
 """Serializer for tenant models"""
+from typing import Any
+
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -23,6 +26,15 @@ class FooterLinkSerializer(PassiveSerializer):
 
 class TenantSerializer(ModelSerializer):
     """Tenant Serializer"""
+
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        if attrs.get("default", False):
+            tenants = Tenant.objects.filter(default=True)
+            if self.instance:
+                tenants = tenants.exclude(pk=self.instance.pk)
+            if tenants.exists():
+                raise ValidationError("Only a single Tenant can be set as default.")
+        return super().validate(attrs)
 
     class Meta:
 
