@@ -2,7 +2,12 @@
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import USER_ATTRIBUTE_CHANGE_EMAIL, USER_ATTRIBUTE_CHANGE_USERNAME, User
+from authentik.core.models import (
+    USER_ATTRIBUTE_CHANGE_EMAIL,
+    USER_ATTRIBUTE_CHANGE_NAME,
+    USER_ATTRIBUTE_CHANGE_USERNAME,
+    User,
+)
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_key
@@ -24,6 +29,16 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-update-self"), data={"username": "foo", "name": "foo"}
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_update_self_name_denied(self):
+        """Test update_self"""
+        self.admin.attributes[USER_ATTRIBUTE_CHANGE_NAME] = False
+        self.admin.save()
+        self.client.force_login(self.admin)
+        response = self.client.put(
+            reverse("authentik_api:user-update-self"), data={"username": "foo", "name": "foo"}
+        )
+        self.assertEqual(response.status_code, 400)
 
     def test_update_self_username_denied(self):
         """Test update_self"""

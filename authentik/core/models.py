@@ -39,6 +39,7 @@ USER_ATTRIBUTE_SA = "goauthentik.io/user/service-account"
 USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
 USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
 USER_ATTRIBUTE_CHANGE_USERNAME = "goauthentik.io/user/can-change-username"
+USER_ATTRIBUTE_CHANGE_NAME = "goauthentik.io/user/can-change-name"
 USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
 USER_ATTRIBUTE_CAN_OVERRIDE_IP = "goauthentik.io/user/override-ips"
 

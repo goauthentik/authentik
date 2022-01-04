@@ -8,6 +8,10 @@ title: User
 
 Optional flag, when set to false prevents the user from changing their own username.
 
+### `goauthentik.io/user/can-change-name`
+
+Optional flag, when set to false prevents the user from changing their own name.
+
 ### `goauthentik.io/user/can-change-email`
 
 Optional flag, when set to false prevents the user from changing their own email.

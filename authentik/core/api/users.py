@@ -47,6 +47,7 @@ from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
 from authentik.core.models import (
     USER_ATTRIBUTE_CHANGE_EMAIL,
+    USER_ATTRIBUTE_CHANGE_NAME,
     USER_ATTRIBUTE_CHANGE_USERNAME,
     USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
@@ -134,6 +135,16 @@ class UserSelfSerializer(ModelSerializer):
         if email != self.instance.email:
             raise ValidationError("Not allowed to change email.")
         return email
+
+    def validate_name(self, name: str):
+        """Check if the user is allowed to change their name"""
+        if self.instance.group_attributes().get(
+            USER_ATTRIBUTE_CHANGE_NAME, CONFIG.y_bool("default_user_change_name", True)
+        ):
+            return name
+        if name != self.instance.name:
+            raise ValidationError("Not allowed to change name.")
+        return name
 
     def validate_username(self, username: str):
         """Check if the user is allowed to change their username"""

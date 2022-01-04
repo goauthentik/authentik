@@ -78,6 +78,7 @@ footer_links:
   - name: authentik Website
     href: https://goauthentik.io/?utm_source=authentik
 
+default_user_change_name: true
 default_user_change_email: true
 default_user_change_username: true
 
