@@ -58,6 +58,9 @@ export class TenantListPage extends TablePage<Tenant> {
         return html`<ak-forms-delete-bulk
             objectLabel=${t`Tenant(s)`}
             .objects=${this.selectedElements}
+            .metadata=${(item: Tenant) => {
+                return [{ key: t`Domain`, value: item.domain }];
+            }}
             .usedBy=${(item: Tenant) => {
                 return new CoreApi(DEFAULT_CONFIG).coreTenantsUsedByList({
                     tenantUuid: item.tenantUuid,
@@ -78,7 +81,7 @@ export class TenantListPage extends TablePage<Tenant> {
     row(item: Tenant): TemplateResult[] {
         return [
             html`${item.domain}`,
-            html` <ak-label color=${item._default ? PFColor.Green : PFColor.Red}>
+            html`<ak-label color=${item._default ? PFColor.Green : PFColor.Red}>
                 ${item._default ? t`Yes` : t`No`}
             </ak-label>`,
             html`<ak-forms-modal>

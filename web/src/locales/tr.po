@@ -1521,6 +1521,7 @@ msgstr "Docker URL'si"
 
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantListPage.ts
+#: src/pages/tenants/TenantListPage.ts
 msgid "Domain"
 msgstr "Alan Adı"
 

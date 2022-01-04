@@ -1549,6 +1549,7 @@ msgstr "Docker URL"
 
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantListPage.ts
+#: src/pages/tenants/TenantListPage.ts
 msgid "Domain"
 msgstr "Domain"
 
