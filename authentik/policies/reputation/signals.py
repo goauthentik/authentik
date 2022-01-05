@@ -8,6 +8,7 @@ from structlog.stdlib import get_logger
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.reputation.models import CACHE_KEY_PREFIX
+from authentik.policies.reputation.tasks import save_reputation
 from authentik.stages.identification.signals import identification_failed
 
 LOGGER = get_logger()
@@ -31,6 +32,7 @@ def update_score(request: HttpRequest, identifier: str, amount: int):
         LOGGER.warning("failed to set reputation", exc=exc)
 
     LOGGER.debug("Updated score", amount=amount, for_user=identifier, for_ip=remote_ip)
+    save_reputation.delay()
 
 
 @receiver(user_login_failed)
