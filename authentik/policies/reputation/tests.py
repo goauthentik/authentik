@@ -4,7 +4,6 @@ from django.core.cache import cache
 from django.test import RequestFactory, TestCase
 
 from authentik.core.models import User
-from authentik.lib.utils.http import DEFAULT_IP
 from authentik.policies.reputation.models import CACHE_KEY_PREFIX, Reputation, ReputationPolicy
 from authentik.policies.reputation.tasks import save_reputation
 from authentik.policies.types import PolicyRequest

@@ -48,10 +48,7 @@ class AuthenticatorSMSStageTests(APITestCase):
                     "title": "",
                 },
                 "pending_user": "foo",
-                "pending_user_avatar": (
-                    "https://secure.gravatar.com/avatar/d41d8cd98f00"
-                    "b204e9800998ecf8427e?s=158&amp;r=g"
-                ),
+                "pending_user_avatar": "/static/dist/assets/images/user_default.png",
                 "phone_number_required": True,
                 "type": ChallengeTypes.NATIVE.value,
             },

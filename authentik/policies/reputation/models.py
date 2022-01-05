@@ -36,14 +36,15 @@ class ReputationPolicy(Policy):
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         remote_ip = get_client_ip(request.http_request)
-        passing = False
         query = Q()
         if self.check_ip:
             query |= Q(ip=remote_ip)
         if self.check_username:
             query |= Q(identifier=request.user.username)
-        score = Reputation.objects.filter(query).annotate(total_score=Sum("score")).total_score
-        passing += passing or score <= self.threshold
+        score = (
+            Reputation.objects.filter(query).aggregate(total_score=Sum("score"))["total_score"] or 0
+        )
+        passing = score <= self.threshold
         LOGGER.debug(
             "Score for user",
             username=request.user.username,
