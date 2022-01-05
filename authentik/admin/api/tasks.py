@@ -95,7 +95,7 @@ class TaskViewSet(ViewSet):
                 _("Successfully re-scheduled Task %(name)s!" % {"name": task.task_name}),
             )
             return Response(status=204)
-        except ImportError:  # pragma: no cover
+        except (ImportError, AttributeError):  # pragma: no cover
             # if we get an import error, the module path has probably changed
             task.delete()
             return Response(status=500)

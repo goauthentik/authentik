@@ -1,17 +1,20 @@
 """authentik reputation request policy"""
-from django.core.cache import cache
+from uuid import uuid4
+
 from django.db import models
+from django.db.models import Sum
+from django.db.models.query_utils import Q
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
+from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
-CACHE_KEY_IP_PREFIX = "authentik_reputation_ip_"
-CACHE_KEY_USER_PREFIX = "authentik_reputation_user_"
+CACHE_KEY_PREFIX = "goauthentik.io/policies/reputation/scores/"
 
 
 class ReputationPolicy(Policy):
@@ -34,19 +37,20 @@ class ReputationPolicy(Policy):
     def passes(self, request: PolicyRequest) -> PolicyResult:
         remote_ip = get_client_ip(request.http_request)
         passing = False
+        query = Q()
         if self.check_ip:
-            score = cache.get_or_set(CACHE_KEY_IP_PREFIX + remote_ip, 0)
-            passing += passing or score <= self.threshold
-            LOGGER.debug("Score for IP", ip=remote_ip, score=score, passing=passing)
+            query |= Q(ip=remote_ip)
         if self.check_username:
-            score = cache.get_or_set(CACHE_KEY_USER_PREFIX + request.user.username, 0)
-            passing += passing or score <= self.threshold
-            LOGGER.debug(
-                "Score for Username",
-                username=request.user.username,
-                score=score,
-                passing=passing,
-            )
+            query |= Q(identifier=request.user.username)
+        score = Reputation.objects.filter(query).annotate(total_score=Sum("score")).total_score
+        passing += passing or score <= self.threshold
+        LOGGER.debug(
+            "Score for user",
+            username=request.user.username,
+            remote_ip=remote_ip,
+            score=score,
+            passing=passing,
+        )
         return PolicyResult(bool(passing))
 
     class Meta:
@@ -55,23 +59,27 @@ class ReputationPolicy(Policy):
         verbose_name_plural = _("Reputation Policies")
 
 
-class IPReputation(models.Model):
-    """Store score coming from the same IP"""
+class Reputation(SerializerModel):
+    """Reputation for user and or IP."""
 
-    ip = models.GenericIPAddressField(unique=True)
-    score = models.IntegerField(default=0)
-    updated = models.DateTimeField(auto_now=True)
+    reputation_uuid = models.UUIDField(primary_key=True, unique=True, default=uuid4)
 
-    def __str__(self):
-        return f"IPReputation for {self.ip} @ {self.score}"
+    identifier = models.TextField()
+    ip = models.GenericIPAddressField()
+    ip_geo_data = models.JSONField(default=dict)
+    score = models.BigIntegerField(default=0)
 
+    updated = models.DateTimeField(auto_now_add=True)
 
-class UserReputation(models.Model):
-    """Store score attempting to log in as the same username"""
+    @property
+    def serializer(self) -> BaseSerializer:
+        from authentik.policies.reputation.api import ReputationSerializer
 
-    username = models.TextField()
-    score = models.IntegerField(default=0)
-    updated = models.DateTimeField(auto_now=True)
+        return ReputationSerializer
 
-    def __str__(self):
-        return f"UserReputation for {self.username} @ {self.score}"
+    def __str__(self) -> str:
+        return f"Reputation {self.identifier}/{self.ip} @ {self.score}"
+
+    class Meta:
+
+        unique_together = ("identifier", "ip")

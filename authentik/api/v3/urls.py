@@ -46,11 +46,7 @@ from authentik.policies.expiry.api import PasswordExpiryPolicyViewSet
 from authentik.policies.expression.api import ExpressionPolicyViewSet
 from authentik.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from authentik.policies.password.api import PasswordPolicyViewSet
-from authentik.policies.reputation.api import (
-    IPReputationViewSet,
-    ReputationPolicyViewSet,
-    UserReputationViewSet,
-)
+from authentik.policies.reputation.api import ReputationPolicyViewSet, ReputationViewSet
 from authentik.providers.ldap.api import LDAPOutpostConfigViewSet, LDAPProviderViewSet
 from authentik.providers.oauth2.api.provider import OAuth2ProviderViewSet
 from authentik.providers.oauth2.api.scope import ScopeMappingViewSet
@@ -151,8 +147,7 @@ router.register("policies/event_matcher", EventMatcherPolicyViewSet)
 router.register("policies/haveibeenpwned", HaveIBeenPwendPolicyViewSet)
 router.register("policies/password_expiry", PasswordExpiryPolicyViewSet)
 router.register("policies/password", PasswordPolicyViewSet)
-router.register("policies/reputation/users", UserReputationViewSet)
-router.register("policies/reputation/ips", IPReputationViewSet)
+router.register("policies/reputation/scores", ReputationViewSet)
 router.register("policies/reputation", ReputationPolicyViewSet)
 
 router.register("providers/all", ProviderViewSet)

@@ -9099,11 +9099,15 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /policies/reputation/ips/:
+  /policies/reputation/scores/:
     get:
-      operationId: policies_reputation_ips_list
-      description: IPReputation Viewset
+      operationId: policies_reputation_scores_list
+      description: Reputation Viewset
       parameters:
+      - in: query
+        name: identifier
+        schema:
+          type: string
       - in: query
         name: ip
         schema:
@@ -9145,22 +9149,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedIPReputationList'
+                $ref: '#/components/schemas/PaginatedReputationList'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /policies/reputation/ips/{id}/:
+  /policies/reputation/scores/{reputation_uuid}/:
     get:
-      operationId: policies_reputation_ips_retrieve
-      description: IPReputation Viewset
+      operationId: policies_reputation_scores_retrieve
+      description: Reputation Viewset
       parameters:
       - in: path
-        name: id
+        name: reputation_uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this ip reputation.
+          type: string
+          format: uuid
+        description: A UUID string identifying this reputation.
         required: true
       tags:
       - policies
@@ -9171,21 +9176,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IPReputation'
+                $ref: '#/components/schemas/Reputation'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
     delete:
-      operationId: policies_reputation_ips_destroy
-      description: IPReputation Viewset
+      operationId: policies_reputation_scores_destroy
+      description: Reputation Viewset
       parameters:
       - in: path
-        name: id
+        name: reputation_uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this ip reputation.
+          type: string
+          format: uuid
+        description: A UUID string identifying this reputation.
         required: true
       tags:
       - policies
@@ -9198,143 +9204,17 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /policies/reputation/ips/{id}/used_by/:
+  /policies/reputation/scores/{reputation_uuid}/used_by/:
     get:
-      operationId: policies_reputation_ips_used_by_list
+      operationId: policies_reputation_scores_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this ip reputation.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /policies/reputation/users/:
-    get:
-      operationId: policies_reputation_users_list
-      description: UserReputation Viewset
-      parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
+        name: reputation_uuid
         schema:
           type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: score
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: username
-        schema:
-          type: string
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedUserReputationList'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /policies/reputation/users/{id}/:
-    get:
-      operationId: policies_reputation_users_retrieve
-      description: UserReputation Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user reputation.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserReputation'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    delete:
-      operationId: policies_reputation_users_destroy
-      description: UserReputation Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user reputation.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /policies/reputation/users/{id}/used_by/:
-    get:
-      operationId: policies_reputation_users_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user reputation.
+          format: uuid
+        description: A UUID string identifying this reputation.
         required: true
       tags:
       - policies
@@ -21938,28 +21818,6 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-    IPReputation:
-      type: object
-      description: IPReputation Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        ip:
-          type: string
-        score:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - ip
-      - pk
-      - updated
     IdentificationChallenge:
       type: object
       description: Identification challenges with all UI elements
@@ -23433,7 +23291,6 @@ components:
           minLength: 1
         additional_scopes:
           type: string
-          minLength: 1
       required:
       - consumer_key
       - consumer_secret
@@ -24497,41 +24354,6 @@ components:
       required:
       - pagination
       - results
-    PaginatedIPReputationList:
-      type: object
-      properties:
-        pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/IPReputation'
-      required:
-      - pagination
-      - results
     PaginatedIdentificationStageList:
       type: object
       properties:
@@ -25547,6 +25369,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedReputationList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reputation'
+      required:
+      - pagination
+      - results
     PaginatedReputationPolicyList:
       type: object
       properties:
@@ -26209,41 +26066,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserOAuthSourceConnection'
-      required:
-      - pagination
-      - results
-    PaginatedUserReputationList:
-      type: object
-      properties:
-        pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserReputation'
       required:
       - pagination
       - results
@@ -27656,7 +27478,6 @@ components:
           minLength: 1
         additional_scopes:
           type: string
-          minLength: 1
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
@@ -29462,6 +29283,34 @@ components:
       - provider
       - scope
       - user
+    Reputation:
+      type: object
+      description: Reputation Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Reputation uuid
+        identifier:
+          type: string
+        ip:
+          type: string
+        ip_geo_data:
+          type: object
+          additionalProperties: {}
+        score:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - identifier
+      - ip
+      - updated
     ReputationPolicy:
       type: object
       description: Reputation Policy Serializer
@@ -31139,28 +30988,6 @@ components:
           minLength: 1
       required:
       - password
-    UserReputation:
-      type: object
-      description: UserReputation Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-        score:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - pk
-      - updated
-      - username
     UserRequest:
       type: object
       description: User Serializer

@@ -35,12 +35,11 @@ class GeoIPReader:
 
     def __open(self):
         """Get GeoIP Reader, if configured, otherwise none"""
-        path = CONFIG.y("authentik.geoip")
+        path = CONFIG.y("geoip")
         if path == "" or not path:
             return
         try:
-            reader = Reader(path)
-            self.__reader = reader
+            self.__reader = Reader(path)
             self.__last_mtime = stat(path).st_mtime
             LOGGER.info("Loaded GeoIP database", last_write=self.__last_mtime)
         except OSError as exc:

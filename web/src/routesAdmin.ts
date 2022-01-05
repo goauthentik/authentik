@@ -16,8 +16,7 @@ import "./pages/groups/GroupListPage";
 import "./pages/outposts/OutpostListPage";
 import "./pages/outposts/ServiceConnectionListPage";
 import "./pages/policies/PolicyListPage";
-import "./pages/policies/reputation/IPReputationListPage";
-import "./pages/policies/reputation/UserReputationListPage";
+import "./pages/policies/reputation/ReputationListPage";
 import "./pages/property-mappings/PropertyMappingListPage";
 import "./pages/providers/ProviderListPage";
 import "./pages/providers/ProviderViewPage";
@@ -72,12 +71,8 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/core/tenants$"), html`<ak-tenant-list></ak-tenant-list>`),
     new Route(new RegExp("^/policy/policies$"), html`<ak-policy-list></ak-policy-list>`),
     new Route(
-        new RegExp("^/policy/reputation/ip$"),
-        html`<ak-policy-reputation-ip-list></ak-policy-reputation-ip-list>`,
-    ),
-    new Route(
-        new RegExp("^/policy/reputation/user$"),
-        html`<ak-policy-reputation-user-list></ak-policy-reputation-user-list>`,
+        new RegExp("^/policy/reputation$"),
+        html`<ak-policy-reputation-list></ak-policy-reputation-list>`,
     ),
     new Route(new RegExp("^/identity/groups$"), html`<ak-group-list></ak-group-list>`),
     new Route(new RegExp("^/identity/users$"), html`<ak-user-list></ak-user-list>`),

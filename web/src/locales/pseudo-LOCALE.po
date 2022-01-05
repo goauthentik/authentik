@@ -1364,8 +1364,7 @@ msgstr ""
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
-#: src/pages/policies/reputation/IPReputationListPage.ts
-#: src/pages/policies/reputation/UserReputationListPage.ts
+#: src/pages/policies/reputation/ReputationListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 #: src/pages/sources/SourcesListPage.ts
@@ -2323,14 +2322,14 @@ msgstr ""
 msgid "ID Token"
 msgstr ""
 
-#: src/pages/policies/reputation/IPReputationListPage.ts
+#: src/pages/policies/reputation/ReputationListPage.ts
 msgid "IP"
 msgstr ""
 
 #: src/pages/policies/reputation/IPReputationListPage.ts
 #: src/pages/policies/reputation/IPReputationListPage.ts
-msgid "IP Reputation"
-msgstr ""
+#~ msgid "IP Reputation"
+#~ msgstr ""
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationForm.ts
@@ -2346,6 +2345,7 @@ msgid "Icon shown in the browser tab."
 msgstr ""
 
 #: src/pages/flows/FlowListPage.ts
+#: src/pages/policies/reputation/ReputationListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
@@ -3859,20 +3859,33 @@ msgstr ""
 msgid "Remove the user from the current session."
 msgstr ""
 
-#: src/pages/policies/reputation/IPReputationListPage.ts
-msgid "Reputation for IPs. Scores are decreased for each failed login and increased for each successful login."
+#: src/pages/policies/reputation/ReputationListPage.ts
+msgid "Reputation"
 msgstr ""
+
+#: src/pages/policies/reputation/ReputationListPage.ts
+msgid "Reputation for IP and user identifiers. Scores are decreased for each failed login and increased for each successful login."
+msgstr ""
+
+#: src/pages/policies/reputation/IPReputationListPage.ts
+#~ msgid "Reputation for IPs. Scores are decreased for each failed login and increased for each successful login."
+#~ msgstr ""
 
 #: src/pages/policies/reputation/UserReputationListPage.ts
-msgid "Reputation for usernames. Scores are decreased for each failed login and increased for each successful login."
-msgstr ""
+#~ msgid "Reputation for usernames. Scores are decreased for each failed login and increased for each successful login."
+#~ msgstr ""
 
 #: src/interfaces/AdminInterface.ts
-msgid "Reputation policy - IPs"
-msgstr ""
+#~ msgid "Reputation policy - IPs"
+#~ msgstr ""
 
 #: src/interfaces/AdminInterface.ts
-msgid "Reputation policy - Users"
+#~ msgid "Reputation policy - Users"
+#~ msgstr ""
+
+#: src/interfaces/AdminInterface.ts
+#: src/pages/policies/reputation/ReputationListPage.ts
+msgid "Reputation scores"
 msgstr ""
 
 #: src/pages/events/EventInfo.ts
@@ -4038,8 +4051,7 @@ msgstr ""
 msgid "Scopes"
 msgstr ""
 
-#: src/pages/policies/reputation/IPReputationListPage.ts
-#: src/pages/policies/reputation/UserReputationListPage.ts
+#: src/pages/policies/reputation/ReputationListPage.ts
 msgid "Score"
 msgstr ""
 
@@ -5539,6 +5551,10 @@ msgstr ""
 msgid "Update {0}"
 msgstr ""
 
+#: src/pages/policies/reputation/ReputationListPage.ts
+msgid "Updated"
+msgstr ""
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Upstream host that the requests are forwarded to."
 msgstr ""
@@ -5620,8 +5636,8 @@ msgstr ""
 
 #: src/pages/policies/reputation/UserReputationListPage.ts
 #: src/pages/policies/reputation/UserReputationListPage.ts
-msgid "User Reputation"
-msgstr ""
+#~ msgid "User Reputation"
+#~ msgstr ""
 
 #: 
 #: 
@@ -5732,7 +5748,6 @@ msgid "Userinfo URL"
 msgstr ""
 
 #: src/flows/stages/identification/IdentificationStage.ts
-#: src/pages/policies/reputation/UserReputationListPage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/ServiceAccountForm.ts

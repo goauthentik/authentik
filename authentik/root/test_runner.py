@@ -26,8 +26,8 @@ class PytestTestRunner:  # pragma: no cover
 
         settings.TEST = True
         settings.CELERY_TASK_ALWAYS_EAGER = True
-        CONFIG.y_set("authentik.avatars", "none")
-        CONFIG.y_set("authentik.geoip", "tests/GeoLite2-City-Test.mmdb")
+        CONFIG.y_set("avatars", "none")
+        CONFIG.y_set("geoip", "tests/GeoLite2-City-Test.mmdb")
         CONFIG.y_set(
             "outposts.container_image_base",
             f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",

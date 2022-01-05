@@ -82,6 +82,7 @@
         "chartjs-adapter-moment": "^1.0.0",
         "codemirror": "^5.65.0",
         "construct-style-sheets-polyfill": "^3.0.5",
+        "country-flag-icons": "^1.4.19",
         "eslint": "^8.6.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.4",
