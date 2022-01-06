@@ -95,11 +95,7 @@ jobs:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: |
           scripts/ci_prepare.sh
-          # Sync anyways since stable will have different dependencies
-          # TODO: Remove after next stable release
-          if [[ -f "Pipfile.lock" ]]; then
-            pipenv install --dev
-          fi
+          # install anyways since stable will have different dependencies
           poetry install
       - name: run migrations to stable
         run: poetry run python -m lifecycle.migrate
@@ -108,13 +104,7 @@ jobs:
           set -x
           git fetch
           git reset --hard HEAD
-          # TODO: Remove after next stable release
-          rm -f poetry.lock
           git checkout $GITHUB_SHA
-          # TODO: Remove after next stable release
-          if [[ -f "Pipfile.lock" ]]; then
-            pipenv install --dev
-          fi
           poetry install
       - name: prepare
         env:
