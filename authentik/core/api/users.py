@@ -156,6 +156,13 @@ class UserSelfSerializer(ModelSerializer):
             raise ValidationError("Not allowed to change username.")
         return username
 
+    def save(self, **kwargs):
+        if self.instance:
+            attributes: dict = self.instance.attributes
+            attributes.update(self.validated_data.get("attributes", {}))
+            self.validated_data["attributes"] = attributes
+        return super().save(**kwargs)
+
     class Meta:
 
         model = User

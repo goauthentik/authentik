@@ -24,11 +24,18 @@ class TestUsersAPI(APITestCase):
 
     def test_update_self(self):
         """Test update_self"""
+        self.admin.attributes["foo"] = "bar"
+        self.admin.save()
+        self.admin.refresh_from_db()
         self.client.force_login(self.admin)
         response = self.client.put(
             reverse("authentik_api:user-update-self"), data={"username": "foo", "name": "foo"}
         )
+        self.admin.refresh_from_db()
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.admin.attributes["foo"], "bar")
+        self.assertEqual(self.admin.username, "foo")
+        self.assertEqual(self.admin.name, "foo")
 
     def test_update_self_name_denied(self):
         """Test update_self"""
