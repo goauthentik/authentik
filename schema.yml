@@ -31331,4 +31331,3 @@ components:
       name: Authorization
 servers:
 - url: /api/v3/
-- url: /api/v2beta/

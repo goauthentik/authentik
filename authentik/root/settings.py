@@ -164,9 +164,6 @@ SPECTACULAR_SETTINGS = {
         {
             "url": "/api/v3/",
         },
-        {
-            "url": "/api/v2beta/",
-        },
     ],
     "CONTACT": {
         "email": "hello@beryju.org",
