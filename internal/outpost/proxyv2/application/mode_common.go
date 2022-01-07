@@ -14,14 +14,6 @@ import (
 func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	// https://goauthentik.io/docs/providers/proxy/proxy
 
-	// Legacy headers, remove after 2022.1
-	headers.Set("X-Auth-Username", c.PreferredUsername)
-	headers.Set("X-Auth-Groups", strings.Join(c.Groups, "|"))
-	headers.Set("X-Forwarded-Email", c.Email)
-	headers.Set("X-Forwarded-Preferred-Username", c.PreferredUsername)
-	headers.Set("X-Forwarded-User", c.Sub)
-
-	// New headers, unique prefix
 	headers.Set("X-authentik-username", c.PreferredUsername)
 	headers.Set("X-authentik-groups", strings.Join(c.Groups, "|"))
 	headers.Set("X-authentik-email", c.Email)

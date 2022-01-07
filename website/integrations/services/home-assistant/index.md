@@ -31,7 +31,12 @@ This guide requires https://github.com/BeryJu/hass-auth-header, which can be ins
 
 Afterwards, make sure the `trusted_proxies` setting contains the IP(s) of the Host(s) authentik is running on.
 
-With the default Header of `X-Forwarded-Preferred-Username` matching is done on a username basis, so your Name in Home-Assistant and your username in authentik have to match.
+Use this configuration to match on the user's authentik username.
+
+```yaml
+auth_header:
+    username_header: X-authentik-username
+```
 
 If this is not the case, you can simply add an additional header for your user, which contains the Home-Assistant Name and authenticate based on that.
 
