@@ -215,8 +215,6 @@ class TestProviderLDAP(SeleniumTestCase):
                         "uidNumber": [str(2000 + o_user.pk)],
                         "gidNumber": [str(2000 + o_user.pk)],
                         "memberOf": [],
-                        "accountStatus": ["true"],
-                        "superuser": ["false"],
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["false"],
                         "goauthentik.io/user/override-ips": ["true"],
@@ -242,8 +240,6 @@ class TestProviderLDAP(SeleniumTestCase):
                         "uidNumber": [str(2000 + embedded_account.pk)],
                         "gidNumber": [str(2000 + embedded_account.pk)],
                         "memberOf": [],
-                        "accountStatus": ["true"],
-                        "superuser": ["false"],
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["false"],
                         "goauthentik.io/user/override-ips": ["true"],
@@ -272,8 +268,6 @@ class TestProviderLDAP(SeleniumTestCase):
                             f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
                             for group in self.user.ak_groups.all()
                         ],
-                        "accountStatus": ["true"],
-                        "superuser": ["true"],
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["true"],
                         "extraAttribute": ["bar"],
