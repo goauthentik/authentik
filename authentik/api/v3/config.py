@@ -80,7 +80,7 @@ class ConfigView(APIView):
         config = ConfigSerializer(
             {
                 "error_reporting": {
-                    "enabled": CONFIG.y("error_reporting.enabled"),
+                    "enabled": CONFIG.y("error_reporting.enabled") and not settings.DEBUG,
                     "environment": CONFIG.y("error_reporting.environment"),
                     "send_pii": CONFIG.y("error_reporting.send_pii"),
                     "traces_sample_rate": float(CONFIG.y("error_reporting.sample_rate", 0.4)),
