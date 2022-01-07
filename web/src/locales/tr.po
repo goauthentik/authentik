@@ -1,7 +1,7 @@
-#
+# 
 # Translators:
 # Oktay Altunergil, 2022
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -31,14 +31,11 @@ msgstr "(Biçim: saat=-1; dakika=-2; ikincil=-3)."
 msgid "(Format: hours=1;minutes=2;seconds=3)."
 msgstr "(Biçim: saat=1; dakika=2; saniye= 3)."
 
-#: src/elements/events/ObjectChangelog.ts
-#: src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
 #: src/elements/user/SessionList.ts
 #: src/pages/applications/ApplicationListPage.ts
-#: src/pages/events/EventListPage.ts
-#: src/pages/events/EventListPage.ts
-#: src/pages/groups/GroupListPage.ts
-#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/events/EventListPage.ts src/pages/events/EventListPage.ts
+#: src/pages/groups/GroupListPage.ts src/pages/groups/MemberSelectModal.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
@@ -47,15 +44,18 @@ msgstr "(Biçim: saat=1; dakika=2; saniye= 3)."
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
-#: src/pages/tokens/TokenListPage.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/tokens/TokenListPage.ts src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "-"
 msgstr "-"
 
 #: src/pages/flows/FlowImportForm.ts
-msgid ".akflow files, which can be found on goauthentik.io and can be exported by authentik."
-msgstr ".akflow dosyaları, goauthentik.io'da bulunabilir ve authentik tarafından ihraç edilebilir."
+msgid ""
+".akflow files, which can be found on goauthentik.io and can be exported by "
+"authentik."
+msgstr ""
+".akflow dosyaları, goauthentik.io'da bulunabilir ve authentik tarafından "
+"ihraç edilebilir."
 
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "6 digits, widely compatible"
@@ -74,25 +74,28 @@ msgid "A newer version of the frontend is available."
 msgstr "Ön yüzün daha yeni bir sürümü mevcuttur."
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
-msgid "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
-msgstr "Test için kullanılan bir ilke. Her zaman rastgele bir süre bekledikten sonra aşağıda belirtilen sonucu döndürür."
+msgid ""
+"A policy used for testing. Always returns the same result as specified below"
+" after waiting a random duration."
+msgstr ""
+"Test için kullanılan bir ilke. Her zaman rastgele bir süre bekledikten sonra"
+" aşağıda belirtilen sonucu döndürür."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "ACS URL"
 msgstr "ACS URL"
 
-#: src/pages/applications/ApplicationForm.ts
-#: src/pages/flows/FlowForm.ts
+#: src/pages/applications/ApplicationForm.ts src/pages/flows/FlowForm.ts
 msgid "ALL, all policies must match to grant access."
 msgstr "TÜM, erişim vermek için tüm ilkelerin eşleşmesi gerekir."
 
 #: src/pages/flows/StageBindingForm.ts
 msgid "ALL, all policies must match to include this stage access."
-msgstr "TÜM, bu alanı erişimini içerecek şekilde tüm ilkelerin eşleşmesi gerekir."
+msgstr ""
+"TÜM, bu alanı erişimini içerecek şekilde tüm ilkelerin eşleşmesi gerekir."
 
-#: src/pages/applications/ApplicationForm.ts
-#: src/pages/flows/FlowForm.ts
+#: src/pages/applications/ApplicationForm.ts src/pages/flows/FlowForm.ts
 msgid "ANY, any policy must match to grant access."
 msgstr "HERHANGİ, erişim izni vermek için herhangi bir ilke eşleşmelidir."
 
@@ -147,8 +150,7 @@ msgstr "Erişim belirteci URL'si"
 msgid "Access token validity"
 msgstr "Erişim belirteci geçerliliği"
 
-#: src/elements/events/ObjectChangelog.ts
-#: src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
 #: src/pages/events/EventListPage.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Action"
@@ -156,23 +158,18 @@ msgstr "Eylem"
 
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/events/EventListPage.ts
-#: src/pages/events/RuleListPage.ts
-#: src/pages/events/TransportListPage.ts
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/groups/GroupListPage.ts
+#: src/pages/events/EventListPage.ts src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportListPage.ts src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowListPage.ts src/pages/groups/GroupListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/providers/ProviderListPage.ts
-#: src/pages/stages/StageListPage.ts
+#: src/pages/providers/ProviderListPage.ts src/pages/stages/StageListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
-#: src/pages/tenants/TenantListPage.ts
-#: src/pages/tokens/TokenListPage.ts
+#: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Actions"
 msgstr "Eylemler"
@@ -181,8 +178,7 @@ msgstr "Eylemler"
 msgid "Actions over the last 24 hours"
 msgstr "Son 24 saat içinde yapılan eylemler"
 
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserViewPage.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
 msgid "Activate"
 msgstr "Etkinleştir"
 
@@ -190,15 +186,12 @@ msgstr "Etkinleştir"
 msgid "Activate pending user on success"
 msgstr "Bekleyen kullanıcıyı başarı durumunda etkinleştir"
 
-#: src/pages/groups/MemberSelectModal.ts
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserViewPage.ts
+#: src/pages/groups/MemberSelectModal.ts src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
 msgid "Active"
 msgstr "Etkin"
 
-#: src/pages/groups/MemberSelectModal.ts
-#: src/pages/users/GroupSelectModal.ts
+#: src/pages/groups/MemberSelectModal.ts src/pages/users/GroupSelectModal.ts
 msgid "Add"
 msgstr "Ekle"
 
@@ -223,7 +216,8 @@ msgid "Additional scope mappings, which are passed to the proxy."
 msgstr "Proxy'ye iletilen ek kapsam eşlemeleri."
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
-msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
+msgid ""
+"Additional scopes to be passed to the OAuth Provider, separated by space."
 msgstr "OAuth Sağlayıcıya iletilecek ek kapsamlar, boşlukla ayrılmış."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -269,16 +263,24 @@ msgid "Allow IDP-initiated logins"
 msgstr "IDP tarafından başlatılan oturumlara izin ver"
 
 #: src/pages/sources/plex/PlexSourceForm.ts
-msgid "Allow friends to authenticate via Plex, even if you don't share any servers"
-msgstr "Herhangi bir sunucu paylaşmasan bile arkadaşlarının Plex aracılığıyla kimlik doğrulamasına izin ver"
+msgid ""
+"Allow friends to authenticate via Plex, even if you don't share any servers"
+msgstr ""
+"Herhangi bir sunucu paylaşmasan bile arkadaşlarının Plex aracılığıyla kimlik"
+" doğrulamasına izin ver"
 
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 msgid "Allow up to N occurrences in the HIBP database."
 msgstr "HIBP veritabanında N oluşumuna kadar izin ver."
 
 #: src/pages/policies/PolicyListPage.ts
-msgid "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages."
-msgstr "Kullanıcıların özelliklere göre Uygulamaları kullanmasına, Parola Ölçütlerini uygulamasına ve Aşama Alanları'nı seçerek uygulamasına izin verin."
+msgid ""
+"Allow users to use Applications based on properties, enforce Password "
+"Criteria and selectively apply Stages."
+msgstr ""
+"Kullanıcıların özelliklere göre Uygulamaları kullanmasına, Parola "
+"Ölçütlerini uygulamasına ve Aşama Alanları'nı seçerek uygulamasına izin "
+"verin."
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Allowed Redirect URIs"
@@ -293,20 +295,28 @@ msgid "Allowed servers"
 msgstr "İzin verilen sunucular"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
-msgid "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."
-msgstr "IdP tarafından başlatılan kimlik doğrulama akışlarına izin verir. İstek kimliğinin doğrulanması yapılmadığından, bu bir güvenlik riski olabilir."
+msgid ""
+"Allows authentication flows initiated by the IdP. This can be a security "
+"risk, as no validation of the request ID is done."
+msgstr ""
+"IdP tarafından başlatılan kimlik doğrulama akışlarına izin verir. İstek "
+"kimliğinin doğrulanması yapılmadığından, bu bir güvenlik riski olabilir."
 
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Allows/denys requests based on the users and/or the IPs reputation."
-msgstr "Kullanıcıların ve/veya IP'lerin itibarına göre isteklere izin ver/reddeder."
+msgstr ""
+"Kullanıcıların ve/veya IP'lerin itibarına göre isteklere izin ver/reddeder."
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Also known as Entity ID. Defaults the Metadata URL."
-msgstr "Entity ID olarak da bilinir. Metadata URL'sine varsayılan olarak ayarlanır."
+msgstr ""
+"Entity ID olarak da bilinir. Metadata URL'sine varsayılan olarak ayarlanır."
 
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
-msgid "Alternatively, if your current device has Duo installed, click on this link:"
-msgstr "Alternatif olarak, mevcut cihazınızda Duo yüklüyse, şu bağlantıya tıklayın:"
+msgid ""
+"Alternatively, if your current device has Duo installed, click on this link:"
+msgstr ""
+"Alternatif olarak, mevcut cihazınızda Duo yüklüyse, şu bağlantıya tıklayın:"
 
 #: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Always require consent"
@@ -331,7 +341,8 @@ msgstr "Uygulama parolası"
 
 #: src/pages/tokens/TokenForm.ts
 msgid "App password (can be used to login using a flow executor)"
-msgstr "Uygulama parolası (bir akış yürütücüyle giriş yapmak için kullanılabilir)"
+msgstr ""
+"Uygulama parolası (bir akış yürütücüyle giriş yapmak için kullanılabilir)"
 
 #: src/elements/user/UserConsentList.ts
 #: src/pages/admin-overview/TopApplicationsTable.ts
@@ -364,8 +375,7 @@ msgstr "Uygulamanın görünen Adı."
 msgid "Application(s)"
 msgstr "Uygulama (lar)"
 
-#: src/interfaces/AdminInterface.ts
-#: src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts src/interfaces/AdminInterface.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/outposts/OutpostForm.ts
 msgid "Applications"
@@ -404,8 +414,12 @@ msgid "Are you sure you want to update {0} \"{1}\"?"
 msgstr "{0} “{1}” güncellemesini istediğinizden emin misiniz?"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-msgstr "Onay işlemi geçerli saat+bu değerden sonra geçerli değil (Biçim: hours=1; Dakika=2; ikinci=3)."
+msgid ""
+"Assertion not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Onay işlemi geçerli saat+bu değerden sonra geçerli değil (Biçim: hours=1; "
+"Dakika=2; ikinci=3)."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Assertion valid not before"
@@ -439,11 +453,16 @@ msgid "Attempted to log in as {0}"
 msgstr "{0} olarak oturum açmaya çalışıldı"
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
-msgid "Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded."
-msgstr "SAML Onaylamaları için kullanılan öznitelik adı. URN OID, şema referansı veya başka bir dize olabilir. Bu özellik eşlemesi NameID özelliği için kullanılıyorsa, bu alan atılır."
+msgid ""
+"Attribute name used for SAML Assertions. Can be a URN OID, a schema "
+"reference, or a any other string. If this property mapping is used for "
+"NameID Property, this field is discarded."
+msgstr ""
+"SAML Onaylamaları için kullanılan öznitelik adı. URN OID, şema referansı "
+"veya başka bir dize olabilir. Bu özellik eşlemesi NameID özelliği için "
+"kullanılıyorsa, bu alan atılır."
 
-#: src/pages/groups/GroupForm.ts
-#: src/pages/stages/invitation/InvitationForm.ts
+#: src/pages/groups/GroupForm.ts src/pages/stages/invitation/InvitationForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Attributes"
 msgstr "Öznitellikler"
@@ -478,8 +497,7 @@ msgstr "Kimlik Doğrulama URL'si"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
-#: src/pages/sources/saml/SAMLSourceForm.ts
-#: src/pages/tenants/TenantForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts src/pages/tenants/TenantForm.ts
 msgid "Authentication flow"
 msgstr "Kimlik doğrulama akışı"
 
@@ -534,8 +552,7 @@ msgstr "Avatar resmi"
 msgid "Backends"
 msgstr "Arka uçlar"
 
-#: src/pages/flows/FlowForm.ts
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowForm.ts src/pages/flows/FlowForm.ts
 msgid "Background"
 msgstr "Arkaplan"
 
@@ -543,8 +560,7 @@ msgstr "Arkaplan"
 msgid "Background image"
 msgstr "Arkaplan resmi"
 
-#: src/pages/flows/FlowForm.ts
-#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowForm.ts src/pages/flows/FlowForm.ts
 msgid "Background shown during execution."
 msgstr "Yürütme sırasında arka plan gösterilir."
 
@@ -576,8 +592,13 @@ msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr "Kullanıcının E-postasına dayanır. Bu UPN yöntemi üzerinde önerilir."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
-msgstr "Kullanıcının UPN'sine göre, yalnızca kullanıcı 'upn' özniteliği kümesi varsa çalışır. Bu yöntemi yalnızca farklı UPN ve Mail etki alanlarınız varsa kullanın."
+msgid ""
+"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
+"this method only if you have different UPN and Mail domains."
+msgstr ""
+"Kullanıcının UPN'sine göre, yalnızca kullanıcı 'upn' özniteliği kümesi varsa"
+" çalışır. Bu yöntemi yalnızca farklı UPN ve Mail etki alanlarınız varsa "
+"kullanın."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Based on the username"
@@ -612,13 +633,11 @@ msgstr "Parola Bağla"
 msgid "Bind flow"
 msgstr "Bağlama akışı"
 
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
 msgid "Bind stage"
 msgstr "Bağlama aşaması"
 
-#: src/pages/events/EventInfo.ts
-#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts src/pages/events/EventInfo.ts
 msgid "Binding"
 msgstr "Ciltleme"
 
@@ -645,18 +664,25 @@ msgstr "Derleme karması:"
 #~ msgid "Build hash: {0}"
 #~ msgstr "Yapı karması: {0}"
 
-#: src/pages/sources/SourcesListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourcesListPage.ts src/pages/sources/SourcesListPage.ts
 msgid "Built-in"
 msgstr "Dahili"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
-msgid "By default, only icons are shown for sources. Enable this to show their full names."
-msgstr "Varsayılan olarak, kaynaklar için yalnızca simgeler gösterilir. Tam adlarını göstermek için bunu etkinleştirin."
+msgid ""
+"By default, only icons are shown for sources. Enable this to show their full"
+" names."
+msgstr ""
+"Varsayılan olarak, kaynaklar için yalnızca simgeler gösterilir. Tam adlarını"
+" göstermek için bunu etkinleştirin."
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
-msgstr "Uç noktanın Sertifikası karşı doğrulanan CA. Doğrulama yapılmadan boş bırakılabilir."
+msgid ""
+"CA which the endpoint's Certificate is verified against. Can be left empty "
+"for no validation."
+msgstr ""
+"Uç noktanın Sertifikası karşı doğrulanan CA. Doğrulama yapılmadan boş "
+"bırakılabilir."
 
 #: src/pages/admin-overview/charts/FlowStatusChart.ts
 msgid "Cached flows"
@@ -667,26 +693,37 @@ msgid "Cached policies"
 msgstr "Önbelleğe alınan ilkeler"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
-msgstr "Önbelleğe alınmış sorgulama, üs tüm kullanıcıları ve grupları bellek içinde tutar ve her 5 Dakikada yenileyecektir."
+msgid ""
+"Cached querying, the outpost holds all users and groups in-memory and will "
+"refresh every 5 Minutes."
+msgstr ""
+"Önbelleğe alınmış sorgulama, üs tüm kullanıcıları ve grupları bellek içinde "
+"tutar ve her 5 Dakikada yenileyecektir."
 
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr "Geri arama URL'si"
 
-#~ msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
-#~ msgstr "Yerel bir docker serine bağlanırken 'unix: //' biçiminde veya uzak bir sisteme bağlanırken 'https://:2376' biçiminde olabilir."
+#~ msgid ""
+#~ "Can be in the format of 'unix://' when connecting to a local docker daemon, "
+#~ "or 'https://:2376' when connecting to a remote system."
+#~ msgstr ""
+#~ "Yerel bir docker serine bağlanırken 'unix: //' biçiminde veya uzak bir "
+#~ "sisteme bağlanırken 'https://:2376' biçiminde olabilir."
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system."
-msgstr "SSH üzerinden bağlanmak için 'ssh: //' veya uzak bir sisteme bağlanırken 'https://:2376' kullanarak yerel bir docker daemonuna bağlanırken 'unix: //' biçiminde olabilir."
+msgid ""
+"Can be in the format of 'unix://' when connecting to a local docker daemon, "
+"using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a "
+"remote system."
+msgstr ""
+"SSH üzerinden bağlanmak için 'ssh: //' veya uzak bir sisteme bağlanırken "
+"'https://:2376' kullanarak yerel bir docker daemonuna bağlanırken 'unix: //'"
+" biçiminde olabilir."
 
-#: src/elements/forms/ConfirmationForm.ts
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
-#: src/elements/forms/ModalForm.ts
-#: src/pages/groups/MemberSelectModal.ts
-#: src/pages/users/GroupSelectModal.ts
+#: src/elements/forms/ConfirmationForm.ts src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts src/elements/forms/ModalForm.ts
+#: src/pages/groups/MemberSelectModal.ts src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserActiveForm.ts
 msgid "Cancel"
 msgstr "İptal et"
@@ -714,8 +751,11 @@ msgid "Certificate Subject"
 msgstr "Sertifika Konusu"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid "Certificate used to sign outgoing Responses going to the Service Provider."
-msgstr "Sertifika Hizmet Sağlayıcıya giden giden Yanıtları imzalamak için kullanılır."
+msgid ""
+"Certificate used to sign outgoing Responses going to the Service Provider."
+msgstr ""
+"Sertifika Hizmet Sağlayıcıya giden giden Yanıtları imzalamak için "
+"kullanılır."
 
 #~ msgid "Certificate-Key Pair"
 #~ msgstr "Sertifika Anahtarı Çifti"
@@ -729,8 +769,12 @@ msgid "Certificate-Key Pairs"
 msgstr "Sertifika Anahtarı Çiftleri"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-msgid "Certificate/Key used for authentication. Can be left empty for no authentication."
-msgstr "Kimlik doğrulama için kullanılan sertifika/anahtar. Kimlik doğrulama olmadan boş bırakılabilir."
+msgid ""
+"Certificate/Key used for authentication. Can be left empty for no "
+"authentication."
+msgstr ""
+"Kimlik doğrulama için kullanılan sertifika/anahtar. Kimlik doğrulama olmadan"
+" boş bırakılabilir."
 
 #: src/interfaces/AdminInterface.ts
 msgid "Certificates"
@@ -749,8 +793,7 @@ msgid "Change your password"
 msgstr "Parolanızı değiştirin"
 
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/flows/FlowViewPage.ts
-#: src/pages/providers/ProviderViewPage.ts
+#: src/pages/flows/FlowViewPage.ts src/pages/providers/ProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
@@ -800,7 +843,8 @@ msgid "Check the logs"
 msgstr "Günlükleri kontrol et"
 
 #~ msgid "Check your Emails for a password reset link."
-#~ msgstr "E-postalarınızda parola sıfırlama bağlantısı olup olmadığını kontrol edin."
+#~ msgstr ""
+#~ "E-postalarınızda parola sıfırlama bağlantısı olup olmadığını kontrol edin."
 
 #: src/flows/stages/email/EmailStage.ts
 msgid "Check your Inbox for a verification email."
@@ -819,12 +863,20 @@ msgstr ""
 "Parolanın karma yalnızca bir kısmının gönderildiğini unutmayın, tam karşılaştırma istemci tarafında yapılır."
 
 #: src/pages/policies/expiry/ExpiryPolicyForm.ts
-msgid "Checks if the request's user's password has been changed in the last x days, and denys based on settings."
-msgstr "İsteğin kullanıcı parolasının son x gün içinde değiştirilip değiştirilmediğini kontrol eder ve ayarlara göre reddedilir."
+msgid ""
+"Checks if the request's user's password has been changed in the last x days,"
+" and denys based on settings."
+msgstr ""
+"İsteğin kullanıcı parolasının son x gün içinde değiştirilip "
+"değiştirilmediğini kontrol eder ve ayarlara göre reddedilir."
 
 #: src/pages/policies/password/PasswordPolicyForm.ts
-msgid "Checks the value from the policy request against several rules, mostly used to ensure password strength."
-msgstr "İlke isteğindeki değeri, çoğunlukla parola gücünü sağlamak için kullanılan çeşitli kurallara göre denetler."
+msgid ""
+"Checks the value from the policy request against several rules, mostly used "
+"to ensure password strength."
+msgstr ""
+"İlke isteğindeki değeri, çoğunlukla parola gücünü sağlamak için kullanılan "
+"çeşitli kurallara göre denetler."
 
 #: src/pages/flows/FlowListPage.ts
 msgid "Clear Flow cache"
@@ -843,10 +895,8 @@ msgstr "Hepsini temizle"
 msgid "Clear background image"
 msgstr "Arka plan resmi temizle"
 
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/policies/PolicyListPage.ts
-#: src/pages/policies/PolicyListPage.ts
+#: src/pages/flows/FlowListPage.ts src/pages/flows/FlowListPage.ts
+#: src/pages/policies/PolicyListPage.ts src/pages/policies/PolicyListPage.ts
 msgid "Clear cache"
 msgstr "Önbelleği temizle"
 
@@ -868,8 +918,7 @@ msgstr "Belirteci kopyalamak için tıklayın"
 msgid "Client ID"
 msgstr "Müşteri Kimliği"
 
-#: src/elements/events/ObjectChangelog.ts
-#: src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
 #: src/pages/events/EventListPage.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Client IP"
@@ -909,8 +958,12 @@ msgid "Confidential"
 msgstr "Gizli"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
-msgstr "Gizli müşteriler kimlik bilgilerinin gizliliğini koruyabilir. Kamu müşterileri aciz."
+msgid ""
+"Confidential clients are capable of maintaining the confidentiality of their"
+" credentials. Public clients are incapable."
+msgstr ""
+"Gizli müşteriler kimlik bilgilerinin gizliliğini koruyabilir. Kamu "
+"müşterileri aciz."
 
 #: src/pages/outposts/OutpostForm.ts
 msgid "Configuration"
@@ -940,46 +993,66 @@ msgstr "Yapılandırma aşamasında"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how long access tokens are valid for."
-msgstr "Erişim belirteçlerinin ne kadar süreyle geçerli olduğunu yapılandırın."
+msgstr ""
+"Erişim belirteçlerinin ne kadar süreyle geçerli olduğunu yapılandırın."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how long refresh tokens and their id_tokens are valid for."
-msgstr "Yenileme belirteçlerinin ve id_tokenlerinin ne kadar süreyle geçerli olduğunu yapılandırın."
+msgstr ""
+"Yenileme belirteçlerinin ve id_tokenlerinin ne kadar süreyle geçerli "
+"olduğunu yapılandırın."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Configure how long tokens are valid for."
 msgstr "Belirteçlerin ne kadar geçerli olduğunu yapılandırın."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
-msgstr "NameID değerinin nasıl oluşturulacağını yapılandırın. Boş bırakıldığında, gelen isteğin NameIDPolicy değerine saygı gösterilir."
+msgid ""
+"Configure how the NameID value will be created. When left empty, the "
+"NameIDPolicy of the incoming request will be respected."
+msgstr ""
+"NameID değerinin nasıl oluşturulacağını yapılandırın. Boş bırakıldığında, "
+"gelen isteğin NameIDPolicy değerine saygı gösterilir."
 
 #: src/pages/flows/StageBindingForm.ts
-msgid "Configure how the flow executor should handle an invalid response to a challenge."
-msgstr "Akış yürütücüsünün bir meydan okuma için geçersiz bir yanıt nasıl işlemesi gerektiğini yapılandırın."
+msgid ""
+"Configure how the flow executor should handle an invalid response to a "
+"challenge."
+msgstr ""
+"Akış yürütücüsünün bir meydan okuma için geçersiz bir yanıt nasıl işlemesi "
+"gerektiğini yapılandırın."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
-msgstr "Kimlik Belirtecinin yayımcı alanının nasıl doldurulacağını yapılandırın."
+msgstr ""
+"Kimlik Belirtecinin yayımcı alanının nasıl doldurulacağını yapılandırın."
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Configure how the outpost queries the core authentik server's users."
-msgstr "Üssün çekirdek authentik sunucusunun kullanıcılarını nasıl sorgulayacağını yapılandırın."
+msgstr ""
+"Üssün çekirdek authentik sunucusunun kullanıcılarını nasıl sorgulayacağını "
+"yapılandırın."
 
 #~ msgid "Configure settings relevant to your user profile."
 #~ msgstr "Kullanıcı profilinizle ilgili ayarları yapılandırın."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Configure the maximum allowed time drift for an assertion."
-msgstr "Bir onaylama işlemi için izin verilen maksimum zaman kaymasını yapılandırın."
+msgstr ""
+"Bir onaylama işlemi için izin verilen maksimum zaman kaymasını yapılandırın."
 
 #: src/pages/tenants/TenantListPage.ts
 msgid "Configure visual settings and defaults for different domains."
-msgstr "Farklı etki alanları için görsel ayarları ve varsayılanları yapılandırın."
+msgstr ""
+"Farklı etki alanları için görsel ayarları ve varsayılanları yapılandırın."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
-msgstr "Hangi verilerin benzersiz Kullanıcı Tanımlayıcısı olarak kullanılması gerektiğini yapılandırın. Çoğu durumda, varsayılan seçim yeterlidir."
+msgid ""
+"Configure what data should be used as unique User Identifier. For most "
+"cases, the default should be fine."
+msgstr ""
+"Hangi verilerin benzersiz Kullanıcı Tanımlayıcısı olarak kullanılması "
+"gerektiğini yapılandırın. Çoğu durumda, varsayılan seçim yeterlidir."
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
@@ -991,8 +1064,12 @@ msgid "Connect to the LDAP Server on port 389:"
 msgstr "Bağlantı noktası 389 LDAP sunucusuna bağlanın:"
 
 #: src/user/user-settings/sources/SourceSettings.ts
-msgid "Connect your user account to the services listed below, to allow you to login using the service instead of traditional credentials."
-msgstr "Geleneksel kimlik bilgileri yerine hizmeti kullanarak oturum açmanıza izin vermek için kullanıcı hesabınızı aşağıda listelenen hizmetlere bağlayın."
+msgid ""
+"Connect your user account to the services listed below, to allow you to "
+"login using the service instead of traditional credentials."
+msgstr ""
+"Geleneksel kimlik bilgileri yerine hizmeti kullanarak oturum açmanıza izin "
+"vermek için kullanıcı hesabınızı aşağıda listelenen hizmetlere bağlayın."
 
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "Connected services"
@@ -1046,10 +1123,8 @@ msgstr "Tüketici anahtarı"
 msgid "Consumer secret"
 msgstr "Tüketici sırrı"
 
-#: src/pages/events/EventInfo.ts
-#: src/pages/events/EventInfo.ts
-#: src/pages/events/EventInfo.ts
-#: src/pages/policies/PolicyTestForm.ts
+#: src/pages/events/EventInfo.ts src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts src/pages/policies/PolicyTestForm.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
 msgid "Context"
 msgstr "Bağlam"
@@ -1075,7 +1150,8 @@ msgstr "Davetsiz akışa devam edin"
 
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 msgid "Control how authentik exposes and interprets information."
-msgstr "Auentik'in bilgiyi nasıl açığa çıkardığını ve yorumlayacağını kontrol edin."
+msgstr ""
+"Auentik'in bilgiyi nasıl açığa çıkardığını ve yorumlayacağını kontrol edin."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Cookie domain"
@@ -1101,48 +1177,36 @@ msgstr "Kurtarma bağlantısı kopyalama"
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/events/RuleListPage.ts
-#: src/pages/events/RuleListPage.ts
-#: src/pages/events/TransportListPage.ts
-#: src/pages/events/TransportListPage.ts
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/groups/GroupListPage.ts
-#: src/pages/groups/GroupListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/events/RuleListPage.ts src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportListPage.ts src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowListPage.ts src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupListPage.ts src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/policies/PolicyListPage.ts
-#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/PolicyListPage.ts src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/providers/RelatedApplicationButton.ts
-#: src/pages/sources/SourcesListPage.ts
-#: src/pages/sources/SourcesListPage.ts
-#: src/pages/stages/StageListPage.ts
-#: src/pages/stages/StageListPage.ts
+#: src/pages/sources/SourcesListPage.ts src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/StageListPage.ts src/pages/stages/StageListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
-#: src/pages/tenants/TenantListPage.ts
-#: src/pages/tenants/TenantListPage.ts
-#: src/pages/tokens/TokenListPage.ts
-#: src/pages/tokens/TokenListPage.ts
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/tenants/TenantListPage.ts src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts src/pages/tokens/TokenListPage.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
@@ -1183,8 +1247,12 @@ msgid "Create Invitation"
 msgstr "Davet Oluştur"
 
 #: src/pages/stages/invitation/InvitationListPage.ts
-msgid "Create Invitation Links to enroll Users, and optionally force specific attributes of their account."
-msgstr "Kullanıcıları kaydetmek için Davet Bağlantıları oluşturun ve isteğe bağlı olarak hesaplarının belirli özniteliklerini zorlayın."
+msgid ""
+"Create Invitation Links to enroll Users, and optionally force specific "
+"attributes of their account."
+msgstr ""
+"Kullanıcıları kaydetmek için Davet Bağlantıları oluşturun ve isteğe bağlı "
+"olarak hesaplarının belirli özniteliklerini zorlayın."
 
 #: src/pages/events/RuleListPage.ts
 msgid "Create Notification Rule"
@@ -1207,8 +1275,7 @@ msgstr "İlke Oluştur"
 msgid "Create Prompt"
 msgstr "İstemi Oluştur"
 
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserListPage.ts
 msgid "Create Service account"
 msgstr "Hizmet hesabı oluştur"
 
@@ -1216,8 +1283,7 @@ msgstr "Hizmet hesabı oluştur"
 msgid "Create Stage"
 msgstr "Aşama Oluştur"
 
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
 msgid "Create Stage binding"
 msgstr "Aşama bağlama oluştur"
 
@@ -1258,8 +1324,7 @@ msgstr "Kullanıcıları etkin olmayan olarak oluşturma"
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts
-#: src/pages/stages/StageListPage.ts
+#: src/pages/sources/SourcesListPage.ts src/pages/stages/StageListPage.ts
 msgid "Create {0}"
 msgstr "Oluştur {0}"
 
@@ -1270,8 +1335,7 @@ msgstr "Tarafından yaratıldı"
 #~ msgid "Created {0}"
 #~ msgstr "Oluşturuldu {0}"
 
-#: src/elements/events/ObjectChangelog.ts
-#: src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
 #: src/pages/events/EventListPage.ts
 msgid "Creation Date"
 msgstr "Oluşturma Tarihi"
@@ -1283,8 +1347,7 @@ msgstr "Oluşturma Tarihi"
 msgid "Current plan context"
 msgstr "Mevcut plan bağlamı"
 
-#: src/pages/applications/ApplicationForm.ts
-#: src/pages/flows/FlowForm.ts
+#: src/pages/applications/ApplicationForm.ts src/pages/flows/FlowForm.ts
 msgid "Currently set to:"
 msgstr "Şu anda şu şekilde ayarlanmış:"
 
@@ -1309,8 +1372,7 @@ msgstr "Tarih"
 msgid "Date Time"
 msgstr "Tarih Saat"
 
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserViewPage.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
 msgid "Deactivate"
 msgstr "Devre dışı bırak"
 
@@ -1319,8 +1381,13 @@ msgid "Debug"
 msgstr "Hata Ayıklama"
 
 #: src/pages/flows/FlowForm.ts
-msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-msgstr "Bu Akış'ın ne için kullanıldığına karar verir. Örneğin, kimliği doğrulanmamış bir kullanıcı authentik ziyaret ettiğinde kimlik doğrulama akışı yönlendirir."
+msgid ""
+"Decides what this Flow is used for. For example, the Authentication flow is "
+"redirect to when an un-authenticated user visits authentik."
+msgstr ""
+"Bu Akış'ın ne için kullanıldığına karar verir. Örneğin, kimliği "
+"doğrulanmamış bir kullanıcı authentik ziyaret ettiğinde kimlik doğrulama "
+"akışı yönlendirir."
 
 #: src/pages/tenants/TenantForm.ts
 msgid "Default"
@@ -1336,34 +1403,28 @@ msgstr "Varsayılan?"
 
 #: src/pages/events/TransportListPage.ts
 msgid "Define how notifications are sent to users, like Email or Webhook."
-msgstr "E-posta veya Webhook gibi kullanıcılara bildirimlerin nasıl gönderileceğini tanımlayın."
+msgstr ""
+"E-posta veya Webhook gibi kullanıcılara bildirimlerin nasıl gönderileceğini "
+"tanımlayın."
 
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
-#: src/elements/oauth/UserCodeList.ts
-#: src/elements/oauth/UserRefreshList.ts
-#: src/elements/user/SessionList.ts
-#: src/elements/user/UserConsentList.ts
+#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
+#: src/elements/oauth/UserCodeList.ts src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/SessionList.ts src/elements/user/UserConsentList.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/events/RuleListPage.ts
-#: src/pages/events/TransportListPage.ts
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/groups/GroupListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/events/RuleListPage.ts src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupListPage.ts src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/policies/reputation/ReputationListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts
-#: src/pages/stages/StageListPage.ts
+#: src/pages/sources/SourcesListPage.ts src/pages/stages/StageListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
-#: src/pages/tenants/TenantListPage.ts
-#: src/pages/tokens/TokenListPage.ts
+#: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
@@ -1409,8 +1470,7 @@ msgstr ""
 "Şu anda bekleyen kullanıcıyı silin. DİKKAT, bu aşama için onay\n"
 "sormaz. Kullanıcının eylemlerinin farkında olduğundan emin olmak için bir onay aşaması kullanın."
 
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
 msgid "Delete {0}"
 msgstr "{0} Sil"
 
@@ -1420,35 +1480,52 @@ msgstr "Kullanıcı erişimini engelle"
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
-#: src/pages/system-tasks/SystemTaskListPage.ts
-#: src/pages/tokens/TokenForm.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts src/pages/tokens/TokenForm.ts
 #: src/user/user-settings/tokens/UserTokenForm.ts
 msgid "Description"
 msgstr "Açıklama"
 
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
-msgid "Description shown to the user when consenting. If left empty, the user won't be informed."
-msgstr "Açıklama, izin verirken kullanıcıya gösterilir. Boş bırakılırsa kullanıcı bilgilendirilmez."
+msgid ""
+"Description shown to the user when consenting. If left empty, the user won't"
+" be informed."
+msgstr ""
+"Açıklama, izin verirken kullanıcıya gösterilir. Boş bırakılırsa kullanıcı "
+"bilgilendirilmez."
 
 #: src/pages/users/UserForm.ts
-msgid "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
-msgstr "Bu kullanıcının etkin olarak değerlendirilmesi gerekip gerekmediğini belirtir. Hesapları silmek yerine bunun seçimini kaldırın."
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+"Bu kullanıcının etkin olarak değerlendirilmesi gerekip gerekmediğini "
+"belirtir. Hesapları silmek yerine bunun seçimini kaldırın."
 
 #: src/pages/flows/FlowForm.ts
 msgid "Designation"
 msgstr "Tanımlama"
 
 #: src/pages/outposts/OutpostListPage.ts
-msgid "Detailed health (one instance per column, data is cached so may be out of data)"
-msgstr "Ayrıntılı sistem durumu (sütun başına bir örnek, veriler önbelleğe alınır, bu nedenle veri kalmamış olabilir)"
+msgid ""
+"Detailed health (one instance per column, data is cached so may be out of "
+"data)"
+msgstr ""
+"Ayrıntılı sistem durumu (sütun başına bir örnek, veriler önbelleğe alınır, "
+"bu nedenle veri kalmamış olabilir)"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid "Determines how authentik sends the response back to the Service Provider."
-msgstr "authentik'in yanıtı Servis Sağlayıcıya nasıl geri göndereceğini belirler."
+msgid ""
+"Determines how authentik sends the response back to the Service Provider."
+msgstr ""
+"authentik'in yanıtı Servis Sağlayıcıya nasıl geri göndereceğini belirler."
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
-msgid "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed."
-msgstr "Oturumun ne kadar süreceğini belirler. Varsayılan 0 saniye, oturumların tarayıcı kapanana kadar sürdüğü anlamına gelir."
+msgid ""
+"Determines how long a session lasts. Default of 0 seconds means that the "
+"sessions lasts until the browser is closed."
+msgstr ""
+"Oturumun ne kadar süreceğini belirler. Varsayılan 0 saniye, oturumların "
+"tarayıcı kapanana kadar sürdüğü anlamına gelir."
 
 #: src/elements/user/SessionList.ts
 msgid "Device"
@@ -1483,8 +1560,12 @@ msgid "Digits"
 msgstr "Rakamlar"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "Direct querying, always returns the latest data, but slower than cached querying."
-msgstr "Doğrudan sorgulama, her zaman en son verileri döndürür, ancak önbelleğe alınmış sorgulardan daha yavaş olur."
+msgid ""
+"Direct querying, always returns the latest data, but slower than cached "
+"querying."
+msgstr ""
+"Doğrudan sorgulama, her zaman en son verileri döndürür, ancak önbelleğe "
+"alınmış sorgulardan daha yavaş olur."
 
 #: src/interfaces/AdminInterface.ts
 msgid "Directory"
@@ -1518,8 +1599,7 @@ msgstr "Bağlantıyı kes"
 msgid "Docker URL"
 msgstr "Docker URL'si"
 
-#: src/pages/tenants/TenantForm.ts
-#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tenants/TenantForm.ts src/pages/tenants/TenantListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 msgid "Domain"
 msgstr "Alan Adı"
@@ -1544,12 +1624,20 @@ msgid "Download signing certificate"
 msgstr "İmzalama sertifikasını indirme"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
-msgstr "Protokol sınırlamaları nedeniyle, bu sertifika yalnızca üssün tek bir sağlayıcısı olduğunda kullanılır."
+msgid ""
+"Due to protocol limitations, this certificate is only used when the outpost "
+"has a single provider."
+msgstr ""
+"Protokol sınırlamaları nedeniyle, bu sertifika yalnızca üssün tek bir "
+"sağlayıcısı olduğunda kullanılır."
 
 #: src/pages/stages/dummy/DummyStageForm.ts
-msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
-msgstr "Test için kullanılan kukla aşama. Basit bir devam düğmesi gösterir ve her zaman geçer."
+msgid ""
+"Dummy stage used for testing. Shows a simple continue button and always "
+"passes."
+msgstr ""
+"Test için kullanılan kukla aşama. Basit bir devam düğmesi gösterir ve her "
+"zaman geçer."
 
 #~ msgid "Duo"
 #~ msgstr "İkili"
@@ -1576,12 +1664,12 @@ msgstr "Olayların veritabanından silineceği süre."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Each provider has a different issuer, based on the application slug."
-msgstr "Her sağlayıcı, uygulama kısa ismine bağlı farklı bir yayımcıya sahiptir."
+msgstr ""
+"Her sağlayıcı, uygulama kısa ismine bağlı farklı bir yayımcıya sahiptir."
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/flows/FlowViewPage.ts
-#: src/pages/flows/FlowViewPage.ts
+#: src/pages/flows/FlowViewPage.ts src/pages/flows/FlowViewPage.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
@@ -1594,8 +1682,7 @@ msgstr "Her sağlayıcı, uygulama kısa ismine bağlı farklı bir yayımcıya 
 msgid "Edit"
 msgstr "Düzenle"
 
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/flows/BoundStagesList.ts src/pages/policies/BoundPoliciesList.ts
 msgid "Edit Binding"
 msgstr "Bağlamayı Düzenle"
 
@@ -1616,18 +1703,22 @@ msgid "Edit User"
 msgstr "Kullanıcı Düzenle"
 
 #: src/pages/applications/ApplicationForm.ts
-msgid "Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon \"fa-test\"."
-msgstr "Ya tam bir URL, göreli bir yol girin ya da 'fa://fa-test' Yazı Tipi Awesome simgesini “fa-test” kullanmak için kullanın."
+msgid ""
+"Either input a full URL, a relative path, or use 'fa://fa-test' to use the "
+"Font Awesome icon \"fa-test\"."
+msgstr ""
+"Ya tam bir URL, göreli bir yol girin ya da 'fa://fa-test' Yazı Tipi Awesome "
+"simgesini “fa-test” kullanmak için kullanın."
 
 #: src/user/LibraryPage.ts
 msgid "Either no applications are defined, or you don't have access to any."
-msgstr "Herhangi bir uygulama tanımlanmamıştır ya da herhangi birine erişiminiz yok."
+msgstr ""
+"Herhangi bir uygulama tanımlanmamıştır ya da herhangi birine erişiminiz yok."
 
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/events/TransportForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
-#: src/pages/users/UserForm.ts
-#: src/pages/users/UserViewPage.ts
+#: src/pages/users/UserForm.ts src/pages/users/UserViewPage.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Email"
 msgstr "E-posta"
@@ -1680,8 +1771,12 @@ msgstr "StartTLS'yi Etkinleştir"
 #~ msgstr "TOTP etkinleştir"
 
 #: src/pages/flows/FlowForm.ts
-msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-msgstr "Uyumluluk modunu etkinleştirin, mobil cihazlarda parola yöneticileri ile uyumluluğu artırır."
+msgid ""
+"Enable compatibility mode, increases compatibility with password managers on"
+" mobile devices."
+msgstr ""
+"Uyumluluk modunu etkinleştirin, mobil cihazlarda parola yöneticileri ile "
+"uyumluluğu artırır."
 
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
@@ -1693,8 +1788,12 @@ msgid "Enabled"
 msgstr "Etkin"
 
 #: src/pages/users/ServiceAccountForm.ts
-msgid "Enabling this toggle will create a group named after the user, with the user as member."
-msgstr "Bu geçiş özelliğini etkinleştirmek, kullanıcının adını taşıyan ve kullanıcının üye olduğu bir grup oluşturur."
+msgid ""
+"Enabling this toggle will create a group named after the user, with the user"
+" as member."
+msgstr ""
+"Bu geçiş özelliğini etkinleştirmek, kullanıcının adını taşıyan ve "
+"kullanıcının üye olduğu bir grup oluşturur."
 
 #: src/interfaces/locale.ts
 msgid "English"
@@ -1751,8 +1850,15 @@ msgid "Evaluate policies before the Stage is present to the user."
 msgstr "Aşama kullanıcıya sunulmadan önce ilkeleri değerlendirin."
 
 #: src/pages/flows/StageBindingForm.ts
-msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated."
-msgstr "Akış planlama sürecinde ilkeleri değerlendir. Bunu giriş tabanlı ilkeler için devre dışı bırakın. Her iki seçenek de devre dışı bırakılırken olduğu gibi 'İlkeleri yeniden değerlendirme' ile birlikte kullanılmalıdır, ilkeler **değil** değerlendirilir."
+msgid ""
+"Evaluate policies during the Flow planning process. Disable this for input-"
+"based policies. Should be used in conjunction with 'Re-evaluate policies', "
+"as with both options disabled, policies are **not** evaluated."
+msgstr ""
+"Akış planlama sürecinde ilkeleri değerlendir. Bunu giriş tabanlı ilkeler "
+"için devre dışı bırakın. Her iki seçenek de devre dışı bırakılırken olduğu "
+"gibi 'İlkeleri yeniden değerlendirme' ile birlikte kullanılmalıdır, ilkeler "
+"**değil** değerlendirilir."
 
 #: src/pages/events/EventListPage.ts
 msgid "Event Log"
@@ -1778,8 +1884,7 @@ msgstr "Olaylar"
 msgid "Everything is ok."
 msgstr "Her şey yolunda."
 
-#: src/pages/events/EventInfo.ts
-#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 msgid "Exception"
 msgstr "Hata"
@@ -1795,8 +1900,11 @@ msgstr "Akışı yürüt"
 #~ msgstr "Müfettiş ile yürütme"
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
-msgid "Executes the python snippet to determine whether to allow or deny a request."
-msgstr "Bir isteğe izin verip reddedilmeyeceğini belirlemek için python parçacığını çalıştırır."
+msgid ""
+"Executes the python snippet to determine whether to allow or deny a request."
+msgstr ""
+"Bir isteğe izin verip reddedilmeyeceğini belirlemek için python parçacığını "
+"çalıştırır."
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
@@ -1808,10 +1916,8 @@ msgstr "Bir isteğe izin verip reddedilmeyeceğini belirlemek için python parç
 msgid "Execution logging"
 msgstr "Yürütme günlüğü"
 
-#: src/elements/oauth/UserCodeList.ts
-#: src/elements/oauth/UserRefreshList.ts
-#: src/elements/user/SessionList.ts
-#: src/elements/user/UserConsentList.ts
+#: src/elements/oauth/UserCodeList.ts src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/SessionList.ts src/elements/user/UserConsentList.ts
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Expires"
 msgstr "Süresi Doluyor"
@@ -1882,8 +1988,14 @@ msgid "External API URL"
 msgstr "Harici API URL'si"
 
 #: src/pages/applications/ApplicationListPage.ts
-msgid "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access."
-msgstr "OAuth2 ve SAML gibi protokolleri kullanan Kimlik Sağlayıcı olarak authentik'i kullanan Harici Uygulamalar. Tüm uygulamalar burada gösterilir, erişemediğiniz uygulamalar bile."
+msgid ""
+"External Applications which use authentik as Identity-Provider, utilizing "
+"protocols like OAuth2 and SAML. All applications are shown here, even ones "
+"you cannot access."
+msgstr ""
+"OAuth2 ve SAML gibi protokolleri kullanan Kimlik Sağlayıcı olarak "
+"authentik'i kullanan Harici Uygulamalar. Tüm uygulamalar burada gösterilir, "
+"erişemediğiniz uygulamalar bile."
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "External Host"
@@ -1894,8 +2006,7 @@ msgstr "Harici Ana Bilgisayar"
 msgid "External host"
 msgstr "Harici ana bilgisayar"
 
-#: src/elements/charts/AdminLoginsChart.ts
-#: src/elements/charts/UserChart.ts
+#: src/elements/charts/AdminLoginsChart.ts src/elements/charts/UserChart.ts
 msgid "Failed Logins"
 msgstr "Başarısız Oturum Açma"
 
@@ -1923,8 +2034,7 @@ msgstr "Akış önbelleği silinemedi"
 msgid "Failed to delete policy cache"
 msgstr "İlke önbelleği silinemedi"
 
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
 msgid "Failed to delete {0}: {1}"
 msgstr "{0} silinemedi: {1}"
 
@@ -1936,8 +2046,7 @@ msgstr "{0} güncellenemedi: {1}"
 msgid "Favicon"
 msgstr "Favicon"
 
-#: src/interfaces/AdminInterface.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/interfaces/AdminInterface.ts src/pages/sources/SourcesListPage.ts
 msgid "Federation & Social login"
 msgstr "Federasyon ve Sosyal Giriş"
 
@@ -1952,7 +2061,9 @@ msgstr "Alan Anahtarı"
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Field key to check, field keys defined in Prompt stages are available."
-msgstr "Alan tuşu kontrol etmek için, İstem aşamalarında tanımlanan alan tuşları mevcuttur."
+msgstr ""
+"Alan tuşu kontrol etmek için, İstem aşamalarında tanımlanan alan tuşları "
+"mevcuttur."
 
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
 msgid "Field of the user object this value is written to."
@@ -1966,16 +2077,27 @@ msgstr "Benzersiz bir Tanımlayıcı içeren alan."
 #~ msgstr "Bir grubun üyelerini içeren alan."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
-msgid "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'"
-msgstr "Bir grubun üyelerini içeren alan. “memberUid” alanını kullanıyorsanız, değerin göreli bir ayırt edici ad içerdiği varsayılır. örn. 'memberUid=cn=some-user yerine 'memberUid=some-user, ou=groups,...'"
+msgid ""
+"Field which contains members of a group. Note that if using the "
+"\"memberUid\" field, the value is assumed to contain a relative "
+"distinguished name. e.g. 'memberUid=some-user' instead of "
+"'memberUid=cn=some-user,ou=groups,...'"
+msgstr ""
+"Bir grubun üyelerini içeren alan. “memberUid” alanını kullanıyorsanız, "
+"değerin göreli bir ayırt edici ad içerdiği varsayılır. örn. "
+"'memberUid=cn=some-user yerine 'memberUid=some-user, ou=groups,...'"
 
 #: src/pages/stages/prompt/PromptStageForm.ts
 msgid "Fields"
 msgstr "Alanlar"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
-msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
-msgstr "Kullanıcının kendilerini tanımlayabileceği alanlar. Herhangi bir alan seçilmezse, kullanıcı yalnızca kaynakları kullanabilir."
+msgid ""
+"Fields a user can identify themselves with. If no fields are selected, the "
+"user will only be able to use sources."
+msgstr ""
+"Kullanıcının kendilerini tanımlayabileceği alanlar. Herhangi bir alan "
+"seçilmezse, kullanıcı yalnızca kaynakları kullanabilir."
 
 #: src/pages/flows/FlowImportForm.ts
 msgid "Flow"
@@ -1989,8 +2111,7 @@ msgstr "Akışa Genel Bakış"
 msgid "Flow execution"
 msgstr "Akış yürütme"
 
-#: src/flows/FlowInspector.ts
-#: src/flows/FlowInspector.ts
+#: src/flows/FlowInspector.ts src/flows/FlowInspector.ts
 msgid "Flow inspector"
 msgstr "Akış denetçisi"
 
@@ -2018,27 +2139,47 @@ msgid "Flow used before authentication."
 msgstr "Kimlik doğrulamadan önce kullanılan akış."
 
 #: src/pages/stages/password/PasswordStageForm.ts
-msgid "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password."
-msgstr "Kimliği doğrulanmış bir kullanıcı tarafından parolasını yapılandırmak için kullanılan akış. Boşsa, kullanıcı parolasını değiştirmeyi yapılandıramaz."
+msgid ""
+"Flow used by an authenticated user to configure their password. If empty, "
+"user will not be able to configure change their password."
+msgstr ""
+"Kimliği doğrulanmış bir kullanıcı tarafından parolasını yapılandırmak için "
+"kullanılan akış. Boşsa, kullanıcı parolasını değiştirmeyi yapılandıramaz."
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
-msgid "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
-msgstr "Bu Aşama'yı yapılandırmak için kimliği doğrulanmış bir kullanıcı tarafından kullanılan akış. Boşsa, kullanıcı bu aşamayı yapılandıramaz."
+msgid ""
+"Flow used by an authenticated user to configure this Stage. If empty, user "
+"will not be able to configure this stage."
+msgstr ""
+"Bu Aşama'yı yapılandırmak için kimliği doğrulanmış bir kullanıcı tarafından "
+"kullanılan akış. Boşsa, kullanıcı bu aşamayı yapılandıramaz."
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "Flow used for users to authenticate. Currently only identification and password stages are supported."
-msgstr "Kullanıcıların kimlik doğrulaması için kullanılan akış. Şu anda yalnızca kimlik ve parola aşamaları desteklenmektedir."
+msgid ""
+"Flow used for users to authenticate. Currently only identification and "
+"password stages are supported."
+msgstr ""
+"Kullanıcıların kimlik doğrulaması için kullanılan akış. Şu anda yalnızca "
+"kimlik ve parola aşamaları desteklenmektedir."
 
 #: src/pages/tenants/TenantForm.ts
-msgid "Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used."
-msgstr "Kullanıcıların kimliğini doğrulamak için kullanılan akış. Boş bırakılırsa, kısa isme göre sıralanan ilk uygulanabilir akış kullanılır."
+msgid ""
+"Flow used to authenticate users. If left empty, the first applicable flow "
+"sorted by the slug is used."
+msgstr ""
+"Kullanıcıların kimliğini doğrulamak için kullanılan akış. Boş bırakılırsa, "
+"kısa isme göre sıralanan ilk uygulanabilir akış kullanılır."
 
 #: src/pages/tenants/TenantForm.ts
-msgid "Flow used to logout. If left empty, the first applicable flow sorted by the slug is used."
-msgstr "Çıkış yapmak için kullanılan akış. Boş bırakılırsa, kısa isme göre sıralanan ilk uygulanabilir akış kullanılır."
+msgid ""
+"Flow used to logout. If left empty, the first applicable flow sorted by the "
+"slug is used."
+msgstr ""
+"Çıkış yapmak için kullanılan akış. Boş bırakılırsa, kısa isme göre sıralanan"
+" ilk uygulanabilir akış kullanılır."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -2053,8 +2194,7 @@ msgstr "Akış (ler)"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/stages/StageListPage.ts
+#: src/pages/flows/FlowListPage.ts src/pages/stages/StageListPage.ts
 msgid "Flows"
 msgstr "Akışlar"
 
@@ -2063,8 +2203,13 @@ msgid "Flows & Stages"
 msgstr "Akışlar ve Aşamalar"
 
 #: src/pages/flows/FlowListPage.ts
-msgid "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them."
-msgstr "Akışlar, bir kullanıcının kimliğini doğrulamak, kaydetmek veya kurtarmak için Aşama zincirini tanımlar. Aşamalar, bunlara uygulanan ilkelere göre seçilir."
+msgid ""
+"Flows describe a chain of Stages to authenticate, enroll or recover a user. "
+"Stages are chosen based on policies applied to them."
+msgstr ""
+"Akışlar, bir kullanıcının kimliğini doğrulamak, kaydetmek veya kurtarmak "
+"için Aşama zincirini tanımlar. Aşamalar, bunlara uygulanan ilkelere göre "
+"seçilir."
 
 #: src/flows/stages/RedirectStage.ts
 msgid "Follow redirect"
@@ -2171,8 +2316,7 @@ msgstr "Önceki sayfaya git"
 #~ msgid "Go to user interface"
 #~ msgstr "Kullanıcı arayüzüne git"
 
-#: src/pages/events/RuleForm.ts
-#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/events/RuleForm.ts src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
@@ -2192,8 +2336,10 @@ msgid "Group object filter"
 msgstr "Grup nesnesi filtresi"
 
 #: src/pages/groups/GroupListPage.ts
-msgid "Group users together and give them permissions based on the membership."
-msgstr "Kullanıcıları birlikte gruplandırın ve üyeliğe bağlı olarak izinler verin."
+msgid ""
+"Group users together and give them permissions based on the membership."
+msgstr ""
+"Kullanıcıları birlikte gruplandırın ve üyeliğe bağlı olarak izinler verin."
 
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Group {0}"
@@ -2205,8 +2351,7 @@ msgstr "Grup (ler)"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
-#: src/pages/groups/GroupListPage.ts
-#: src/pages/users/UserForm.ts
+#: src/pages/groups/GroupListPage.ts src/pages/users/UserForm.ts
 msgid "Groups"
 msgstr "Gruplar"
 
@@ -2253,8 +2398,7 @@ msgstr "Yönetilen eşlemeleri gizle"
 msgid "Hide service-accounts"
 msgstr "Hizmet hesaplarını gizle"
 
-#: src/pages/events/RuleForm.ts
-#: src/pages/outposts/OutpostForm.ts
+#: src/pages/events/RuleForm.ts src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -2271,8 +2415,12 @@ msgid "Hold control/command to select multiple items."
 msgstr "Birden fazla öğe seçmek için control/command tuşunu basılı tut."
 
 #: src/pages/stages/password/PasswordStageForm.ts
-msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
-msgstr "Akış iptal edilmeden önce bir kullanıcının kaç denemesi vardır. Kullanıcıyı kilitlemek için itibar ilkesi ve user_write aşamasını kullanın."
+msgid ""
+"How many attempts a user has before the flow is canceled. To lock the user "
+"out, use a reputation policy and a user_write stage."
+msgstr ""
+"Akış iptal edilmeden önce bir kullanıcının kaç denemesi vardır. Kullanıcıyı "
+"kilitlemek için itibar ilkesi ve user_write aşamasını kullanın."
 
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 msgid "How to connect"
@@ -2292,8 +2440,6 @@ msgstr "Kimlik Belirteci"
 msgid "IP"
 msgstr "İP"
 
-#: src/pages/policies/reputation/IPReputationListPage.ts
-#: src/pages/policies/reputation/IPReputationListPage.ts
 #~ msgid "IP Reputation"
 #~ msgstr "IP İtibar"
 
@@ -2312,8 +2458,7 @@ msgstr "Tarayıcı sekmesinde gösterilen simge."
 
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/policies/reputation/ReputationListPage.ts
-#: src/pages/system-tasks/SystemTaskListPage.ts
-#: src/pages/tokens/TokenForm.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/user/user-settings/tokens/UserTokenForm.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
@@ -2325,47 +2470,85 @@ msgstr "Tanımlayıcı"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
-msgid "If enabled, use the local connection. Required Docker socket/Kubernetes Integration."
-msgstr "Etkinleştirilirse, yerel bağlantıyı kullanın. Gerekli Docker soketi/Kubernetes Entegrasyonu."
+msgid ""
+"If enabled, use the local connection. Required Docker socket/Kubernetes "
+"Integration."
+msgstr ""
+"Etkinleştirilirse, yerel bağlantıyı kullanın. Gerekli Docker "
+"soketi/Kubernetes Entegrasyonu."
 
 #: src/pages/applications/ApplicationForm.ts
-msgid "If left empty, authentik will try to extract the launch URL based on the selected provider."
-msgstr "Boş bırakılırsa, authentik seçili sağlayıcıya göre başlatma URL'sini ayıklamaya çalışacaktır."
+msgid ""
+"If left empty, authentik will try to extract the launch URL based on the "
+"selected provider."
+msgstr ""
+"Boş bırakılırsa, authentik seçili sağlayıcıya göre başlatma URL'sini "
+"ayıklamaya çalışacaktır."
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "If multiple providers share an outpost, a self-signed certificate is used."
-msgstr "Birden çok sağlayıcı bir üssü paylaşıyorsa, otomatik olarak imzalanan bir sertifika kullanılır."
+msgid ""
+"If multiple providers share an outpost, a self-signed certificate is used."
+msgstr ""
+"Birden çok sağlayıcı bir üssü paylaşıyorsa, otomatik olarak imzalanan bir "
+"sertifika kullanılır."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
-msgstr "Açık bir yeniden yönlendirme URI'leri belirtilmezse, herhangi bir yeniden yönlendirme URI'sine izin verilir."
+msgid ""
+"If no explicit redirect URIs are specified, any redirect URI is allowed."
+msgstr ""
+"Açık bir yeniden yönlendirme URI'leri belirtilmezse, herhangi bir yeniden "
+"yönlendirme URI'sine izin verilir."
 
 #: src/pages/tenants/TenantForm.ts
-msgid "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown."
-msgstr "Ayarlanırsa, kullanıcılar bu akışı kullanarak kendi kayıtlarını kaldırabilir. Akış ayarlanmamışsa seçenek gösterilmez."
+msgid ""
+"If set, users are able to unenroll themselves using this flow. If no flow is"
+" set, option is not shown."
+msgstr ""
+"Ayarlanırsa, kullanıcılar bu akışı kullanarak kendi kayıtlarını "
+"kaldırabilir. Akış ayarlanmamışsa seçenek gösterilmez."
 
 #: src/pages/stages/invitation/InvitationStageForm.ts
-msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
-msgstr "Bu bayrak ayarlanırsa, Davet verilmediğinde bu Aşama bir sonraki Aşama'ya atlanır. Varsayılan olarak bu Aşama , davet verilmediğinde Akışı iptal eder."
+msgid ""
+"If this flag is set, this Stage will jump to the next Stage when no "
+"Invitation is given. By default this Stage will cancel the Flow when no "
+"invitation is given."
+msgstr ""
+"Bu bayrak ayarlanırsa, Davet verilmediğinde bu Aşama bir sonraki Aşama'ya "
+"atlanır. Varsayılan olarak bu Aşama , davet verilmediğinde Akışı iptal eder."
 
 #: src/pages/tokens/TokenForm.ts
-msgid "If this is selected, the token will expire. Upon expiration, the token will be rotated."
-msgstr "Bu seçilirse, belirteç süresi dolacaktır. Süresi dolduktan sonra, belirteç döndürülür."
+msgid ""
+"If this is selected, the token will expire. Upon expiration, the token will "
+"be rotated."
+msgstr ""
+"Bu seçilirse, belirteç süresi dolacaktır. Süresi dolduktan sonra, belirteç "
+"döndürülür."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "If you are using an Implicit, client-side flow (where the token-endpoint isn't used), you probably want to increase this time."
-msgstr "Kapalı, istemci tarafı akışı (belirteç bitiş noktasının kullanılmadığı) kullanıyorsanız, muhtemelen bu süreyi artırmak istersiniz."
+msgid ""
+"If you are using an Implicit, client-side flow (where the token-endpoint "
+"isn't used), you probably want to increase this time."
+msgstr ""
+"Kapalı, istemci tarafı akışı (belirteç bitiş noktasının kullanılmadığı) "
+"kullanıyorsanız, muhtemelen bu süreyi artırmak istersiniz."
 
 #: src/pages/outposts/OutpostDeploymentModal.ts
-msgid "If your authentik Instance is using a self-signed certificate, set this value."
-msgstr "Auentik Örneğiniz kendinden imzalı bir sertifika kullanıyorsa, bu değeri ayarlayın."
+msgid ""
+"If your authentik Instance is using a self-signed certificate, set this "
+"value."
+msgstr ""
+"Auentik Örneğiniz kendinden imzalı bir sertifika kullanıyorsa, bu değeri "
+"ayarlayın."
 
 #: src/pages/outposts/OutpostDeploymentModal.ts
-msgid "If your authentik_host setting does not match the URL you want to login with, add this setting."
-msgstr "Auentik_host ayarınız oturum açmak istediğiniz URL'yle eşleşmiyorsa, bu ayarı ekleyin."
+msgid ""
+"If your authentik_host setting does not match the URL you want to login "
+"with, add this setting."
+msgstr ""
+"Auentik_host ayarınız oturum açmak istediğiniz URL'yle eşleşmiyorsa, bu "
+"ayarı ekleyin."
 
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserViewPage.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
 msgid "Impersonate"
 msgstr "Taklit et"
 
@@ -2377,8 +2560,7 @@ msgstr "Taklit sona erdi"
 msgid "Impersonation started"
 msgstr "Kimliğe bürünme başladı"
 
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowListPage.ts src/pages/flows/FlowListPage.ts
 msgid "Import"
 msgstr "İçe Aktar"
 
@@ -2387,31 +2569,42 @@ msgid "Import Flow"
 msgstr "Akışı İçe Aktar"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-msgid "Import certificates of external providers or create certificates to sign requests with."
-msgstr "Harici sağlayıcıların sertifikalarını içe aktarın veya istekleri imzalamak için sertifikalar oluşturun."
+msgid ""
+"Import certificates of external providers or create certificates to sign "
+"requests with."
+msgstr ""
+"Harici sağlayıcıların sertifikalarını içe aktarın veya istekleri imzalamak "
+"için sertifikalar oluşturun."
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "In case you can't access any other method."
 msgstr "Başka bir yönteme erişemiyorsanız."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com."
-msgstr "Bu durumda, Kimlik Doğrulama URL'sini auth.example.com ve Çerez etki alanı olarak example.com olarak ayarlamalısınız."
+msgid ""
+"In this case, you'd set the Authentication URL to auth.example.com and "
+"Cookie domain to example.com."
+msgstr ""
+"Bu durumda, Kimlik Doğrulama URL'sini auth.example.com ve Çerez etki alanı "
+"olarak example.com olarak ayarlamalısınız."
 
 #: src/pages/users/UserListPage.ts
 msgid "Inactive"
 msgstr "Etkin değil"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
-msgstr "Userinfo uç noktasına erişmeyen uygulamalar için, id_token'daki kapsamlardan Kullanıcı taleplerini dahil edin."
+msgid ""
+"Include User claims from scopes in the id_token, for applications that don't"
+" access the userinfo endpoint."
+msgstr ""
+"Userinfo uç noktasına erişmeyen uygulamalar için, id_token'daki kapsamlardan"
+" Kullanıcı taleplerini dahil edin."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Include claims in id_token"
 msgstr "İd_token'a hak taleplerini dahil et"
 
-#: src/pages/outposts/OutpostForm.ts
-#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/OutpostForm.ts src/pages/outposts/OutpostListPage.ts
 msgid "Integration"
 msgstr "Entegrasyon"
 
@@ -2422,8 +2615,7 @@ msgstr "Entegrasyon anahtarı"
 #~ msgid "Integrations"
 #~ msgstr "Entegrasyonlar"
 
-#: src/pages/tokens/TokenForm.ts
-#: src/pages/tokens/TokenListPage.ts
+#: src/pages/tokens/TokenForm.ts src/pages/tokens/TokenListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Intent"
 msgstr "Niyet"
@@ -2506,12 +2698,20 @@ msgstr "Yayımcı kipi"
 msgid "Key used to sign the tokens."
 msgstr "Anahtar belirteçleri imzalamak için kullanılır."
 
-#~ msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
-#~ msgstr "Anahtar belirteçleri imzalamak için kullanılır. Sadece JWT Algoritması RS256 olarak ayarlandığında gereklidir."
+#~ msgid ""
+#~ "Key used to sign the tokens. Only required when JWT Algorithm is set to "
+#~ "RS256."
+#~ msgstr ""
+#~ "Anahtar belirteçleri imzalamak için kullanılır. Sadece JWT Algoritması RS256"
+#~ " olarak ayarlandığında gereklidir."
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
-msgid "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
-msgstr "Giden istekleri imzalamak için kullanılan anahtar çifti. İmzalamayı devre dışı bırakmak için boş bırakın."
+msgid ""
+"Keypair which is used to sign outgoing requests. Leave empty to disable "
+"signing."
+msgstr ""
+"Giden istekleri imzalamak için kullanılan anahtar çifti. İmzalamayı devre "
+"dışı bırakmak için boş bırakın."
 
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
 msgid "Kubeconfig"
@@ -2546,13 +2746,11 @@ msgstr "Etiket"
 msgid "Label shown next to/above the prompt."
 msgstr "Etiket, istemin yanında veya üstünde gösterilir."
 
-#: src/elements/user/SessionList.ts
-#: src/elements/user/SessionList.ts
+#: src/elements/user/SessionList.ts src/elements/user/SessionList.ts
 msgid "Last IP"
 msgstr "Son IP"
 
-#: src/pages/groups/MemberSelectModal.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/groups/MemberSelectModal.ts src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Last login"
 msgstr "Son giriş"
@@ -2573,7 +2771,7 @@ msgstr "Son senkronizasyon: {0}"
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "Launch"
-msgstr "Lansman"
+msgstr "Eriş"
 
 #: src/pages/applications/ApplicationForm.ts
 msgid "Launch URL"
@@ -2581,20 +2779,30 @@ msgstr "URL Başlat"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Let the user identify themselves with their username or Email address."
-msgstr "Kullanıcının kullanıcı adı veya E-posta adresi ile kendilerini tanımlamasına izin verin."
+msgstr ""
+"Kullanıcının kullanıcı adı veya E-posta adresi ile kendilerini tanımlamasına"
+" izin verin."
 
 #~ msgid "Library"
 #~ msgstr "Kitaplık"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
-msgid "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses"
-msgstr "Aynı e-posta adresine sahip bir kullanıcıya bağlantı verin. Bir kaynak e-posta adreslerini doğrulamadığında güvenlik etkileri olabilir"
+msgid ""
+"Link to a user with identical email address. Can have security implications "
+"when a source doesn't validate email addresses"
+msgstr ""
+"Aynı e-posta adresine sahip bir kullanıcıya bağlantı verin. Bir kaynak "
+"e-posta adreslerini doğrulamadığında güvenlik etkileri olabilir"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
-msgid "Link to a user with identical username. Can have security implications when a username is used with another source."
-msgstr "Aynı kullanıcı adı olan bir kullanıcıya bağlantı verin. Bir kullanıcı adı başka bir kaynakla kullanıldığında güvenlik etkileri olabilir."
+msgid ""
+"Link to a user with identical username. Can have security implications when "
+"a username is used with another source."
+msgstr ""
+"Aynı kullanıcı adı olan bir kullanıcıya bağlantı verin. Bir kullanıcı adı "
+"başka bir kaynakla kullanıldığında güvenlik etkileri olabilir."
 
 #: src/pages/stages/invitation/InvitationListLink.ts
 msgid "Link to use the invitation."
@@ -2609,10 +2817,8 @@ msgstr "Kullanıcıları benzersiz tanımlayıcıya bağlama"
 msgid "Load servers"
 msgstr "Sunucuları yükle"
 
-#: src/elements/table/Table.ts
-#: src/flows/FlowExecutor.ts
-#: src/flows/FlowExecutor.ts
-#: src/flows/FlowInspector.ts
+#: src/elements/table/Table.ts src/flows/FlowExecutor.ts
+#: src/flows/FlowExecutor.ts src/flows/FlowInspector.ts
 #: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -2624,8 +2830,7 @@ msgstr "Sunucuları yükle"
 #: src/flows/stages/autosubmit/AutosubmitStage.ts
 #: src/flows/stages/captcha/CaptchaStage.ts
 #: src/flows/stages/consent/ConsentStage.ts
-#: src/flows/stages/dummy/DummyStage.ts
-#: src/flows/stages/email/EmailStage.ts
+#: src/flows/stages/dummy/DummyStage.ts src/flows/stages/email/EmailStage.ts
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
 #: src/flows/stages/prompt/PromptStage.ts
@@ -2633,23 +2838,17 @@ msgstr "Sunucuları yükle"
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceSettings.ts
-#: src/utils.ts
+#: src/user/user-settings/sources/SourceSettings.ts src/utils.ts
 msgid "Loading"
 msgstr "Yükleniyor"
 
 #: src/elements/Spinner.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
-#: src/pages/applications/ApplicationForm.ts
-#: src/pages/events/RuleForm.ts
-#: src/pages/events/RuleForm.ts
-#: src/pages/events/TransportForm.ts
-#: src/pages/flows/StageBindingForm.ts
-#: src/pages/flows/StageBindingForm.ts
-#: src/pages/groups/GroupForm.ts
-#: src/pages/groups/GroupForm.ts
-#: src/pages/outposts/OutpostForm.ts
-#: src/pages/outposts/OutpostForm.ts
+#: src/pages/applications/ApplicationForm.ts src/pages/events/RuleForm.ts
+#: src/pages/events/RuleForm.ts src/pages/events/TransportForm.ts
+#: src/pages/flows/StageBindingForm.ts src/pages/flows/StageBindingForm.ts
+#: src/pages/groups/GroupForm.ts src/pages/groups/GroupForm.ts
+#: src/pages/outposts/OutpostForm.ts src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
@@ -2702,14 +2901,10 @@ msgstr "Yükleniyor"
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
-#: src/pages/tenants/TenantForm.ts
-#: src/pages/tenants/TenantForm.ts
-#: src/pages/tenants/TenantForm.ts
-#: src/pages/tenants/TenantForm.ts
-#: src/pages/tenants/TenantForm.ts
-#: src/pages/tokens/TokenForm.ts
-#: src/pages/users/UserForm.ts
-#: src/pages/users/UserResetEmailForm.ts
+#: src/pages/tenants/TenantForm.ts src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantForm.ts src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantForm.ts src/pages/tokens/TokenForm.ts
+#: src/pages/users/UserForm.ts src/pages/users/UserResetEmailForm.ts
 msgid "Loading..."
 msgstr "Yükleniyor..."
 
@@ -2721,7 +2916,7 @@ msgstr "Yerel"
 
 #: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Locale"
-msgstr "Yerel"
+msgstr "Yerelleştirme"
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
@@ -2736,8 +2931,13 @@ msgid "Login"
 msgstr "Giriş"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
-msgid "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
-msgstr "Giriş parolası LDAP'den authentik'e otomatik olarak senkronize edilir. Bu seçeneği yalnızca oentik'te parola değişikliklerini LDAP'ye geri yazmak için etkinleştirin."
+msgid ""
+"Login password is synced from LDAP into authentik automatically. Enable this"
+" option only to write password changes in authentik back to LDAP."
+msgstr ""
+"Giriş parolası LDAP'den authentik'e otomatik olarak senkronize edilir. Bu "
+"seçeneği yalnızca oentik'te parola değişikliklerini LDAP'ye geri yazmak için"
+" etkinleştirin."
 
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Login to continue to {0}."
@@ -2797,31 +2997,50 @@ msgid "Mark newly created users as inactive."
 msgstr "Yeni oluşturulan kullanıcıları etkin değil olarak işaretleyin."
 
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
-msgid "Match created events with this action type. When left empty, all action types will be matched."
-msgstr "Oluşturulan olayları bu eylem türüyle eşleştirin. Boş bırakıldığında tüm eylem türleri eşleştirilir."
+msgid ""
+"Match created events with this action type. When left empty, all action "
+"types will be matched."
+msgstr ""
+"Oluşturulan olayları bu eylem türüyle eşleştirin. Boş bırakıldığında tüm "
+"eylem türleri eşleştirilir."
 
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
-msgid "Match events created by selected application. When left empty, all applications are matched."
-msgstr "Seçilen uygulama tarafından oluşturulan olayları eşleştir. Boş bırakıldığında, tüm uygulamalar eşleştirilir."
+msgid ""
+"Match events created by selected application. When left empty, all "
+"applications are matched."
+msgstr ""
+"Seçilen uygulama tarafından oluşturulan olayları eşleştir. Boş "
+"bırakıldığında, tüm uygulamalar eşleştirilir."
 
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
-msgid "Matches Event's Client IP (strict matching, for network matching use an Expression Policy."
-msgstr "Olayın İstemci IP'siyle eşleşir (katı eşleştirme, ağ eşleştirme için bir İfade İlkesi kullanın."
+msgid ""
+"Matches Event's Client IP (strict matching, for network matching use an "
+"Expression Policy."
+msgstr ""
+"Olayın İstemci IP'siyle eşleşir (katı eşleştirme, ağ eşleştirme için bir "
+"İfade İlkesi kullanın."
 
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
-msgid "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
-msgstr "Bir olayı ölçütler kümesine göre eşleştirir. Yapılandırılan değerlerden herhangi biri eşleşirse, ilke geçer."
+msgid ""
+"Matches an event against a set of criteria. If any of the configured values "
+"match, the policy passes."
+msgstr ""
+"Bir olayı ölçütler kümesine göre eşleştirir. Yapılandırılan değerlerden "
+"herhangi biri eşleşirse, ilke geçer."
 
 #: src/pages/tenants/TenantForm.ts
-msgid "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match."
-msgstr "Eşleştirme, etki alanı sonekine göre yapılır, bu nedenle domain.tld girerseniz foo.domain.tld yine de eşleşir."
+msgid ""
+"Matching is done based on domain suffix, so if you enter domain.tld, "
+"foo.domain.tld will still match."
+msgstr ""
+"Eşleştirme, etki alanı sonekine göre yapılır, bu nedenle domain.tld "
+"girerseniz foo.domain.tld yine de eşleşir."
 
 #: src/pages/policies/expiry/ExpiryPolicyForm.ts
 msgid "Maximum age (in days)"
 msgstr "Maksimum yaş (gün olarak)"
 
-#: src/pages/groups/GroupForm.ts
-#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupForm.ts src/pages/groups/GroupListPage.ts
 #: src/pages/users/GroupSelectModal.ts
 msgid "Members"
 msgstr "Üyeler"
@@ -2831,8 +3050,7 @@ msgid "Message"
 msgstr "Mesaj"
 
 #: src/pages/applications/ApplicationCheckAccessForm.ts
-#: src/pages/events/EventInfo.ts
-#: src/pages/policies/PolicyTestForm.ts
+#: src/pages/events/EventInfo.ts src/pages/policies/PolicyTestForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Messages"
 msgstr "İletiler"
@@ -2862,8 +3080,7 @@ msgstr "Minimum Büyük Harf Karakter Miktarı"
 msgid "Minimum length"
 msgstr "Minimum uzunluk"
 
-#: src/pages/events/TransportForm.ts
-#: src/pages/events/TransportListPage.ts
+#: src/pages/events/TransportForm.ts src/pages/events/TransportListPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Mode"
@@ -2902,18 +3119,12 @@ msgstr "Uygulamalarım"
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/events/EventInfo.ts
-#: src/pages/events/RuleForm.ts
-#: src/pages/events/RuleListPage.ts
-#: src/pages/events/TransportForm.ts
-#: src/pages/events/TransportListPage.ts
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/FlowForm.ts
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/groups/GroupForm.ts
-#: src/pages/groups/GroupListPage.ts
-#: src/pages/groups/MemberSelectModal.ts
-#: src/pages/outposts/OutpostForm.ts
+#: src/pages/events/EventInfo.ts src/pages/events/RuleForm.ts
+#: src/pages/events/RuleListPage.ts src/pages/events/TransportForm.ts
+#: src/pages/events/TransportListPage.ts src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowForm.ts src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupForm.ts src/pages/groups/GroupListPage.ts
+#: src/pages/groups/MemberSelectModal.ts src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -2970,10 +3181,8 @@ msgstr "Uygulamalarım"
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
-#: src/pages/users/GroupSelectModal.ts
-#: src/pages/users/UserForm.ts
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserViewPage.ts
+#: src/pages/users/GroupSelectModal.ts src/pages/users/UserForm.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
 #: src/user/user-settings/mfa/MFADeviceForm.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
@@ -3031,16 +3240,13 @@ msgstr "Nginx (bağımsız)"
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/groups/GroupListPage.ts
-#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/GroupListPage.ts src/pages/groups/MemberSelectModal.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
-#: src/pages/tenants/TenantListPage.ts
-#: src/pages/tokens/TokenListPage.ts
-#: src/pages/users/GroupSelectModal.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
+#: src/pages/users/GroupSelectModal.ts src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "No"
 msgstr "Hayır"
@@ -3049,8 +3255,7 @@ msgstr "Hayır"
 msgid "No Applications available."
 msgstr "Kullanılabilir Uygulama yok."
 
-#: src/elements/events/ObjectChangelog.ts
-#: src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
 msgid "No Events found."
 msgstr "Olaylar bulunamadı."
 
@@ -3078,8 +3283,7 @@ msgstr "Form bulunamadı"
 msgid "No integration active"
 msgstr "Entegrasyon etkin"
 
-#: src/elements/events/ObjectChangelog.ts
-#: src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
 msgid "No matching events could be found."
 msgstr "Eşleşen olay bulunamadı."
 
@@ -3157,13 +3361,11 @@ msgstr "Sen değil mi?"
 msgid "Notice"
 msgstr "Uyarı"
 
-#: src/interfaces/AdminInterface.ts
-#: src/pages/events/RuleListPage.ts
+#: src/interfaces/AdminInterface.ts src/pages/events/RuleListPage.ts
 msgid "Notification Rules"
 msgstr "Bildirim Kuralları"
 
-#: src/interfaces/AdminInterface.ts
-#: src/pages/events/TransportListPage.ts
+#: src/interfaces/AdminInterface.ts src/pages/events/TransportListPage.ts
 msgid "Notification Transports"
 msgstr "Bildirim Aktarıcıları"
 
@@ -3205,8 +3407,7 @@ msgstr "OAuth Yenile Kodları"
 msgid "OK"
 msgstr "OK"
 
-#: src/pages/events/EventInfo.ts
-#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts src/pages/events/EventInfo.ts
 msgid "Object"
 msgstr "Nesne"
 
@@ -3223,22 +3424,28 @@ msgid "Objects created"
 msgstr "Oluşturulan nesneler"
 
 #: src/pages/stages/consent/ConsentStageForm.ts
-msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
-msgstr "Onay sona erdikten sonra ofset. (Biçim: saat=1; dakika=2; saniye/= 3)."
+msgid ""
+"Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Onay sona erdikten sonra ofset. (Biçim: saat=1; dakika=2; saniye/= 3)."
 
-#: src/elements/events/ObjectChangelog.ts
-#: src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
 #: src/pages/events/EventListPage.ts
 msgid "On behalf of {0}"
 msgstr "{0} adına"
 
 #: src/pages/policies/expiry/ExpiryPolicyForm.ts
 msgid "Only fail the policy, don't invalidate user's password."
-msgstr "Yalnızca ilkeyi başarısız say, kullanıcının parolasını geçersiz kılma."
+msgstr ""
+"Yalnızca ilkeyi başarısız say, kullanıcının parolasını geçersiz kılma."
 
 #: src/pages/events/TransportForm.ts
-msgid "Only send notification once, for example when sending a webhook into a chat channel."
-msgstr "Yalnızca bir kez bildirim gönderin, örneğin bir sohbet kanalına web kancası gönderirken."
+msgid ""
+"Only send notification once, for example when sending a webhook into a chat "
+"channel."
+msgstr ""
+"Yalnızca bir kez bildirim gönderin, örneğin bir sohbet kanalına web kancası "
+"gönderirken."
 
 #: src/elements/notifications/APIDrawer.ts
 msgid "Open API Browser"
@@ -3260,24 +3467,38 @@ msgid "OpenID Configuration URL"
 msgstr "OpenID Yapılandırma URL"
 
 #: src/pages/crypto/CertificateKeyPairForm.ts
-msgid "Optional Private Key. If this is set, you can use this keypair for encryption."
-msgstr "İsteğe Bağlı Özel Anahtar. Bu ayarlanırsa, şifreleme için bu anahtar çiftini kullanabilirsiniz."
+msgid ""
+"Optional Private Key. If this is set, you can use this keypair for "
+"encryption."
+msgstr ""
+"İsteğe Bağlı Özel Anahtar. Bu ayarlanırsa, şifreleme için bu anahtar çiftini"
+" kullanabilirsiniz."
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Optional URL if the IDP supports Single-Logout."
 msgstr "IDP Tek Oturumu Kapat'ı destekliyorsa isteğe bağlı URL."
 
 #: src/pages/stages/invitation/InvitationForm.ts
-msgid "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON."
-msgstr "Akışın 'prompt_data' bağlam değişkenine yüklenen isteğe bağlı veriler. YAML veya JSON."
+msgid ""
+"Optional data which is loaded into the flow's 'prompt_data' context "
+"variable. YAML or JSON."
+msgstr ""
+"Akışın 'prompt_data' bağlam değişkenine yüklenen isteğe bağlı veriler. YAML "
+"veya JSON."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr "Sayfanın alt kısmında bağlanan isteğe bağlı kayıt akışı."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
-msgid "Optional passwordless flow, which is linked at the bottom of the page. When configured, users can use this flow to authenticate with a WebAuthn authenticator, without entering any details."
-msgstr "Sayfanın alt kısmında bağlanan isteğe bağlı parolasız akış. Yapılandırıldığında, kullanıcılar herhangi bir ayrıntı girmeden WebAuthn kimlik doğrulayıcısı ile kimlik doğrulaması için bu akışı kullanabilir."
+msgid ""
+"Optional passwordless flow, which is linked at the bottom of the page. When "
+"configured, users can use this flow to authenticate with a WebAuthn "
+"authenticator, without entering any details."
+msgstr ""
+"Sayfanın alt kısmında bağlanan isteğe bağlı parolasız akış. "
+"Yapılandırıldığında, kullanıcılar herhangi bir ayrıntı girmeden WebAuthn "
+"kimlik doğrulayıcısı ile kimlik doğrulaması için bu akışı kullanabilir."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Optional recovery flow, which is linked at the bottom of the page."
@@ -3293,13 +3514,21 @@ msgstr "İsteğe bağlı olarak giriş değerini önceden doldurun"
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
-msgstr "İsteğe bağlı olarak onaylama özniteliğinin 'FriendlyName' değerini ayarlayın."
+msgstr ""
+"İsteğe bağlı olarak onaylama özniteliğinin 'FriendlyName' değerini "
+"ayarlayın."
 
-#~ msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
-#~ msgstr "Kimlik doğrulama ve yetkilendirmenin etki alanı düzeyinde gerçekleşmesini istiyorsanız, isteğe bağlı olarak bunu üst etki alanınıza ayarlayın. Uygulamaları app1.domain.tld, app2.domain.tld olarak çalıştırıyorsanız, bunu 'domain.tld' olarak ayarlayın."
+#~ msgid ""
+#~ "Optionally set this to your parent domain, if you want authentication and "
+#~ "authorization to happen on a domain level. If you're running applications as"
+#~ " app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+#~ msgstr ""
+#~ "Kimlik doğrulama ve yetkilendirmenin etki alanı düzeyinde gerçekleşmesini "
+#~ "istiyorsanız, isteğe bağlı olarak bunu üst etki alanınıza ayarlayın. "
+#~ "Uygulamaları app1.domain.tld, app2.domain.tld olarak çalıştırıyorsanız, bunu"
+#~ " 'domain.tld' olarak ayarlayın."
 
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/StageBindingForm.ts
+#: src/pages/flows/BoundStagesList.ts src/pages/flows/StageBindingForm.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
@@ -3345,14 +3574,17 @@ msgstr "Üs durumu"
 msgid "Outpost(s)"
 msgstr "Üs (ler)"
 
-#: src/interfaces/AdminInterface.ts
-#: src/pages/outposts/OutpostListPage.ts
+#: src/interfaces/AdminInterface.ts src/pages/outposts/OutpostListPage.ts
 msgid "Outposts"
 msgstr "Üsler"
 
 #: src/pages/outposts/OutpostListPage.ts
-msgid "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies."
-msgstr "Outposts, ters proxy'ler gibi farklı ortamları ve protokolleri desteklemek için authentik bileşenlerinin dağıtımlarıdır."
+msgid ""
+"Outposts are deployments of authentik components to support different "
+"environments and protocols, like reverse proxies."
+msgstr ""
+"Outposts, ters proxy'ler gibi farklı ortamları ve protokolleri desteklemek "
+"için authentik bileşenlerinin dağıtımlarıdır."
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/applications/ApplicationViewPage.ts
@@ -3369,8 +3601,7 @@ msgstr "Genel Bakış"
 msgid "PEM-encoded Certificate data."
 msgstr "PEM kodlu Sertifika verileri."
 
-#: src/pages/groups/GroupForm.ts
-#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupForm.ts src/pages/groups/GroupListPage.ts
 msgid "Parent"
 msgstr "Ebeveyn"
 
@@ -3383,16 +3614,14 @@ msgid "Pass policy?"
 msgstr "Geçiş ilkesi?"
 
 #: src/pages/applications/ApplicationCheckAccessForm.ts
-#: src/pages/events/EventInfo.ts
-#: src/pages/policies/PolicyTestForm.ts
+#: src/pages/events/EventInfo.ts src/pages/policies/PolicyTestForm.ts
 msgid "Passing"
 msgstr "Geçiyor"
 
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
-#: src/pages/users/ServiceAccountForm.ts
-#: src/pages/users/UserPasswordForm.ts
+#: src/pages/users/ServiceAccountForm.ts src/pages/users/UserPasswordForm.ts
 msgid "Password"
 msgstr "Parola"
 
@@ -3413,8 +3642,14 @@ msgstr "Parola aşaması"
 #~ msgstr "Parola, 2FA, vb"
 
 #: src/pages/stages/prompt/PromptForm.ts
-msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
-msgstr "Parola: Maskeli giriş, parola kaynaklara karşı doğrulanır. İlkeler yine de bu Aşama'ya uygulanmalıdır. Bunlardan ikisi aynı aşamada kullanılıyorsa, aynı olmaları sağlanır."
+msgid ""
+"Password: Masked input, password is validated against sources. Policies "
+"still have to be applied to this Stage. If two of these are used in the same"
+" stage, they are ensured to be identical."
+msgstr ""
+"Parola: Maskeli giriş, parola kaynaklara karşı doğrulanır. İlkeler yine de "
+"bu Aşama'ya uygulanmalıdır. Bunlardan ikisi aynı aşamada kullanılıyorsa, "
+"aynı olmaları sağlanır."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Passwordless flow"
@@ -3453,8 +3688,7 @@ msgstr "Lütfen TOTP Kodunuzu girin"
 msgid "Please enter your password"
 msgstr "Lütfen parolanızı girin"
 
-#: src/interfaces/AdminInterface.ts
-#: src/pages/flows/FlowListPage.ts
+#: src/interfaces/AdminInterface.ts src/pages/flows/FlowListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 msgid "Policies"
 msgstr "İlkeler"
@@ -3493,8 +3727,7 @@ msgid "Policy binding(s)"
 msgstr "İlke bağlama (ler)"
 
 #: src/pages/applications/ApplicationForm.ts
-#: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/flows/FlowForm.ts
+#: src/pages/applications/ApplicationViewPage.ts src/pages/flows/FlowForm.ts
 #: src/pages/flows/StageBindingForm.ts
 msgid "Policy engine mode"
 msgstr "İlke altyapısı modu"
@@ -3551,8 +3784,11 @@ msgid "Private key available?"
 msgstr "Özel anahtar mevcut mu?"
 
 #: src/pages/stages/captcha/CaptchaStageForm.ts
-msgid "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html."
-msgstr "https://www.google.com/recaptcha/intro/v3.html adresinden edinilen özel anahtar."
+msgid ""
+"Private key, acquired from https://www.google.com/recaptcha/intro/v3.html."
+msgstr ""
+"https://www.google.com/recaptcha/intro/v3.html adresinden edinilen özel "
+"anahtar."
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "Profile URL"
@@ -3562,15 +3798,18 @@ msgstr "Profil URL'si"
 #~ msgstr "İstemi"
 
 #: src/pages/stages/consent/ConsentStageForm.ts
-msgid "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time."
-msgstr "Kullanıcının rızasını isteme. Onay kalıcı olabilir veya belirli bir süre içinde geçerlilik süresi dolabilir."
+msgid ""
+"Prompt for the user's consent. The consent can either be permanent or expire"
+" in a defined amount of time."
+msgstr ""
+"Kullanıcının rızasını isteme. Onay kalıcı olabilir veya belirli bir süre "
+"içinde geçerlilik süresi dolabilir."
 
 #: src/pages/stages/prompt/PromptListPage.ts
 msgid "Prompt(s)"
 msgstr "İstemi (ler)"
 
-#: src/interfaces/AdminInterface.ts
-#: src/pages/stages/prompt/PromptListPage.ts
+#: src/interfaces/AdminInterface.ts src/pages/stages/prompt/PromptListPage.ts
 msgid "Prompts"
 msgstr "İstemler"
 
@@ -3616,11 +3855,12 @@ msgid "Protocol settings"
 msgstr "Protokol ayarları"
 
 #: src/pages/providers/ProviderListPage.ts
-msgid "Provide support for protocols like SAML and OAuth to assigned applications."
-msgstr "Atanan uygulamalara SAML ve OAuth gibi protokoller için destek sağlayın."
+msgid ""
+"Provide support for protocols like SAML and OAuth to assigned applications."
+msgstr ""
+"Atanan uygulamalara SAML ve OAuth gibi protokoller için destek sağlayın."
 
-#: src/elements/oauth/UserCodeList.ts
-#: src/elements/oauth/UserRefreshList.ts
+#: src/elements/oauth/UserCodeList.ts src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
@@ -3640,14 +3880,12 @@ msgstr "Sağlayıcı Türü"
 msgid "Provider(s)"
 msgstr "Sağlayıcı (lar)"
 
-#: src/interfaces/AdminInterface.ts
-#: src/pages/outposts/OutpostListPage.ts
+#: src/interfaces/AdminInterface.ts src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 msgid "Providers"
 msgstr "Sağlayıcılar"
 
-#: src/pages/outposts/OutpostForm.ts
-#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/OutpostForm.ts src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Proxy"
@@ -3662,8 +3900,11 @@ msgid "Public Key"
 msgstr "Genel Anahtar"
 
 #: src/pages/stages/captcha/CaptchaStageForm.ts
-msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html."
-msgstr "https://www.google.com/recaptcha/intro/v3.html adresinden edinilen genel anahtar."
+msgid ""
+"Public key, acquired from https://www.google.com/recaptcha/intro/v3.html."
+msgstr ""
+"https://www.google.com/recaptcha/intro/v3.html adresinden edinilen genel "
+"anahtar."
 
 #: src/pages/applications/ApplicationForm.ts
 msgid "Publisher"
@@ -3674,7 +3915,9 @@ msgid "Quick actions"
 msgstr "Hızlı eylemler"
 
 #: src/pages/flows/StageBindingForm.ts
-msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
+msgid ""
+"RESTART restarts the flow from the beginning, while keeping the flow "
+"context."
 msgstr "RESTART, akış bağlamını korurken akışı baştan yeniden başlatır."
 
 #: src/pages/flows/StageBindingForm.ts
@@ -3682,7 +3925,8 @@ msgid "RESTART restarts the flow from the beginning."
 msgstr "RESTART, akışı baştan yeniden başlatır."
 
 #: src/pages/flows/StageBindingForm.ts
-msgid "RETRY returns the error message and a similar challenge to the executor."
+msgid ""
+"RETRY returns the error message and a similar challenge to the executor."
 msgstr "RETRY hata iletisi ve yürütücünün benzer bir meydan okuma döndürür."
 
 #~ msgid "RS256 (Asymmetric Encryption)"
@@ -3723,8 +3967,7 @@ msgstr "İlkeleri yeniden değerlendirin"
 msgid "Receive a push notification on your device."
 msgstr "Cihazınızda anında iletme bildirimi alın."
 
-#: src/pages/flows/utils.ts
-#: src/pages/tokens/TokenListPage.ts
+#: src/pages/flows/utils.ts src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery"
 msgstr "Kurtarma"
@@ -3735,8 +3978,12 @@ msgid "Recovery flow"
 msgstr "Kurtarma akışı"
 
 #: src/pages/tenants/TenantForm.ts
-msgid "Recovery flow. If left empty, the first applicable flow sorted by the slug is used."
-msgstr "Kurtarma akışı. Boş bırakılırsa, kısa isme göre sıralanan ilk uygulanabilir akış kullanılır."
+msgid ""
+"Recovery flow. If left empty, the first applicable flow sorted by the slug "
+"is used."
+msgstr ""
+"Kurtarma akışı. Boş bırakılırsa, kısa isme göre sıralanan ilk uygulanabilir "
+"akış kullanılır."
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Recovery keys"
@@ -3744,7 +3991,9 @@ msgstr "Kurtarma tuşları"
 
 #: src/pages/users/UserListPage.ts
 msgid "Recovery link cannot be emailed, user has no email address saved."
-msgstr "Kurtarma bağlantısı e-posta ile gönderilemez, kullanıcının e-posta adresi kaydedilmez."
+msgstr ""
+"Kurtarma bağlantısı e-posta ile gönderilemez, kullanıcının e-posta adresi "
+"kaydedilmez."
 
 #: src/flows/stages/RedirectStage.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -3778,12 +4027,20 @@ msgstr "Kodları Yenile"
 msgid "Register device"
 msgstr "Aygıtı kaydet"
 
-#~ msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
-#~ msgstr "Kimlik doğrulamasının gerekli olmadığı düzenli ifadeler. Her yeni satır yeni bir Düzenli İfade olarak yorumlanır."
+#~ msgid ""
+#~ "Regular expressions for which authentication is not required. Each new line "
+#~ "is interpreted as a new Regular Expression."
+#~ msgstr ""
+#~ "Kimlik doğrulamasının gerekli olmadığı düzenli ifadeler. Her yeni satır yeni"
+#~ " bir Düzenli İfade olarak yorumlanır."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression."
-msgstr "Kimlik doğrulamasının gerekli olmadığı düzenli ifadeler. Her yeni satır yeni bir ifade olarak yorumlanır."
+msgid ""
+"Regular expressions for which authentication is not required. Each new line "
+"is interpreted as a new expression."
+msgstr ""
+"Kimlik doğrulamasının gerekli olmadığı düzenli ifadeler. Her yeni satır yeni"
+" bir ifade olarak yorumlanır."
 
 #: src/pages/users/UserListPage.ts
 msgid "Regular user"
@@ -3804,35 +4061,42 @@ msgstr "Kullanıcıyı geçerli oturumdan kaldırın."
 
 #: src/pages/policies/reputation/ReputationListPage.ts
 msgid "Reputation"
-msgstr ""
+msgstr "İtibar"
 
 #: src/pages/policies/reputation/ReputationListPage.ts
-msgid "Reputation for IP and user identifiers. Scores are decreased for each failed login and increased for each successful login."
+msgid ""
+"Reputation for IP and user identifiers. Scores are decreased for each failed"
+" login and increased for each successful login."
 msgstr ""
+"IP ve kullanıcı tanımlayıcıları için itibar. Başarısız olan her giriş için "
+"puan azaltılır ve her başarılı oturum açma için artırılır."
 
-#: src/pages/policies/reputation/IPReputationListPage.ts
-#~ msgid "Reputation for IPs. Scores are decreased for each failed login and increased for each successful login."
-#~ msgstr "IP'lerin itibarı. Başarısız olan her giriş için puanlar azaltılır ve her başarılı oturum açma için artırılır."
+#~ msgid ""
+#~ "Reputation for IPs. Scores are decreased for each failed login and increased"
+#~ " for each successful login."
+#~ msgstr ""
+#~ "IP'lerin itibarı. Başarısız olan her giriş için puanlar azaltılır ve her "
+#~ "başarılı oturum açma için artırılır."
 
-#: src/pages/policies/reputation/UserReputationListPage.ts
-#~ msgid "Reputation for usernames. Scores are decreased for each failed login and increased for each successful login."
-#~ msgstr "Kullanıcı adları için itibar. Başarısız olan her giriş için puanlar azaltılır ve her başarılı oturum açma için artırılır."
+#~ msgid ""
+#~ "Reputation for usernames. Scores are decreased for each failed login and "
+#~ "increased for each successful login."
+#~ msgstr ""
+#~ "Kullanıcı adları için itibar. Başarısız olan her giriş için puanlar "
+#~ "azaltılır ve her başarılı oturum açma için artırılır."
 
-#: src/interfaces/AdminInterface.ts
 #~ msgid "Reputation policy - IPs"
 #~ msgstr "İtibar ilkesi - IP'ler"
 
-#: src/interfaces/AdminInterface.ts
 #~ msgid "Reputation policy - Users"
 #~ msgstr "İtibar ilkesi- Kullanıcılar"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/policies/reputation/ReputationListPage.ts
 msgid "Reputation scores"
-msgstr ""
+msgstr "İtibar puanları"
 
-#: src/pages/events/EventInfo.ts
-#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts src/pages/events/EventInfo.ts
 msgid "Request"
 msgstr "Talep"
 
@@ -3852,11 +4116,11 @@ msgstr "Zorunlu"
 msgid "Required."
 msgstr "Zorunlu."
 
-#: src/pages/users/ServiceAccountForm.ts
-#: src/pages/users/UserForm.ts
+#: src/pages/users/ServiceAccountForm.ts src/pages/users/UserForm.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-msgstr "Gerekli. 150 karakter veya daha az. Harfler, rakamlar ve yalnızca @/./+/-/_."
+msgstr ""
+"Gerekli. 150 karakter veya daha az. Harfler, rakamlar ve yalnızca @/./+/-/_."
 
 #: src/pages/users/UserViewPage.ts
 msgid "Reset Password"
@@ -3985,8 +4249,7 @@ msgstr "Kapsam adı"
 msgid "Scope which the client can specify to access these properties."
 msgstr "İstemcinin bu özelliklere erişmek için belirtebileceği kapsam."
 
-#: src/elements/oauth/UserCodeList.ts
-#: src/elements/oauth/UserRefreshList.ts
+#: src/elements/oauth/UserCodeList.ts src/elements/oauth/UserRefreshList.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Scopes"
@@ -4008,8 +4271,7 @@ msgstr "Arama grubu"
 msgid "Search mode"
 msgstr "Arama modu"
 
-#: src/elements/table/TableSearch.ts
-#: src/user/LibraryPage.ts
+#: src/elements/table/TableSearch.ts src/user/LibraryPage.ts
 msgid "Search..."
 msgstr "Ara..."
 
@@ -4045,8 +4307,12 @@ msgid "See documentation for a list of all variables."
 msgstr "Tüm değişkenlerin listesi için belgelere bakın."
 
 #: src/pages/applications/ApplicationForm.ts
-msgid "Select a provider that this application should use. Alternatively, create a new provider."
-msgstr "Bu uygulamanın kullanması gereken bir sağlayıcı seçin. Alternatif olarak, yeni bir sağlayıcı oluşturun."
+msgid ""
+"Select a provider that this application should use. Alternatively, create a "
+"new provider."
+msgstr ""
+"Bu uygulamanın kullanması gereken bir sağlayıcı seçin. Alternatif olarak, "
+"yeni bir sağlayıcı oluşturun."
 
 #: src/elements/table/Table.ts
 msgid "Select all rows"
@@ -4072,34 +4338,59 @@ msgid "Select one of the sources below to login."
 msgstr "Giriş yapmak için aşağıdaki kaynaklardan birini seçin."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
-msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
-msgstr "Kullanıcıların kimlik doğrulaması için belirli kaynaklar gösterilmelidir. Bu, LDAP'yi değil, yalnızca web tabanlı kaynakları etkiler."
+msgid ""
+"Select sources should be shown for users to authenticate with. This only "
+"affects web-based sources, not LDAP."
+msgstr ""
+"Kullanıcıların kimlik doğrulaması için belirli kaynaklar gösterilmelidir. "
+"Bu, LDAP'yi değil, yalnızca web tabanlı kaynakları etkiler."
 
 #: src/pages/groups/MemberSelectModal.ts
 msgid "Select users to add"
 msgstr "Eklenecek kullanıcıları seçin"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Select which scopes can be used by the client. The client still has to specify the scope to access the data."
-msgstr "İstemci tarafından hangi kapsamların kullanılabileceğini seçin. İstemci yine de verilere erişmek için kapsamı belirtmelidir."
+msgid ""
+"Select which scopes can be used by the client. The client still has to "
+"specify the scope to access the data."
+msgstr ""
+"İstemci tarafından hangi kapsamların kullanılabileceğini seçin. İstemci yine"
+" de verilere erişmek için kapsamı belirtmelidir."
 
 #: src/pages/sources/plex/PlexSourceForm.ts
-msgid "Select which server a user has to be a member of to be allowed to authenticate."
-msgstr "Bir kullanıcının kimlik doğrulamasına izin verilmesi için üye olması gereken sunucuyu seçin."
+msgid ""
+"Select which server a user has to be a member of to be allowed to "
+"authenticate."
+msgstr ""
+"Bir kullanıcının kimlik doğrulamasına izin verilmesi için üye olması gereken"
+" sunucuyu seçin."
 
 #: src/pages/events/RuleForm.ts
-msgid "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
-msgstr "Kullanıcıyı bilgilendirmek için hangi aktarıcıların kullanılması gerektiğini seçin. Hiçbiri seçilmemişse, bildirim yalnızca authentik kullanıcı arabiriminde gösterilir."
+msgid ""
+"Select which transports should be used to notify the user. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+"Kullanıcıyı bilgilendirmek için hangi aktarıcıların kullanılması gerektiğini"
+" seçin. Hiçbiri seçilmemişse, bildirim yalnızca authentik kullanıcı "
+"arabiriminde gösterilir."
 
 #: src/pages/stages/prompt/PromptStageForm.ts
-msgid "Selected policies are executed when the stage is submitted to validate the data."
-msgstr "Seçilen ilkeler, verileri doğrulamak için aşama gönderildiğinde yürütülür."
+msgid ""
+"Selected policies are executed when the stage is submitted to validate the "
+"data."
+msgstr ""
+"Seçilen ilkeler, verileri doğrulamak için aşama gönderildiğinde yürütülür."
 
-#~ msgid "Selecting a service-connection enables the management of the outpost by authentik."
-#~ msgstr "Bir servis bağlantısının seçilmesi, üssün authentik tarafından yönetilmesini sağlar."
+#~ msgid ""
+#~ "Selecting a service-connection enables the management of the outpost by "
+#~ "authentik."
+#~ msgstr ""
+#~ "Bir servis bağlantısının seçilmesi, üssün authentik tarafından yönetilmesini"
+#~ " sağlar."
 
 #: src/pages/outposts/OutpostForm.ts
-msgid "Selecting an integration enables the management of the outpost by authentik."
+msgid ""
+"Selecting an integration enables the management of the outpost by authentik."
 msgstr "Bir entegrasyon seçilmesi, oentik tarafından üssün yönetimini sağlar."
 
 #: src/pages/stages/password/PasswordStageForm.ts
@@ -4115,8 +4406,12 @@ msgid "Send link"
 msgstr "Bağlantıyı gönder"
 
 #: src/pages/events/RuleListPage.ts
-msgid "Send notifications whenever a specific Event is created and matched by policies."
-msgstr "Belirli bir Olay oluşturulduğunda ve ilkelerle eşleştirildiğinde bildirim gönderin."
+msgid ""
+"Send notifications whenever a specific Event is created and matched by "
+"policies."
+msgstr ""
+"Belirli bir Olay oluşturulduğunda ve ilkelerle eşleştirildiğinde bildirim "
+"gönderin."
 
 #: src/pages/events/TransportForm.ts
 msgid "Send once"
@@ -4172,8 +4467,12 @@ msgid "Session duration"
 msgstr "Oturum süresi"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-msgstr "Oturum geçerli saat+bu değerden sonra geçerli değil (Biçim: hours=1; Dakika=2; ikinci=3)."
+msgid ""
+"Session not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Oturum geçerli saat+bu değerden sonra geçerli değil (Biçim: hours=1; "
+"Dakika=2; ikinci=3)."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Session valid not on or after"
@@ -4183,8 +4482,7 @@ msgstr "Oturum geçerli değil veya sonrasında"
 msgid "Session(s)"
 msgstr "Oturum (lar)"
 
-#: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/UserSettingsPage.ts
+#: src/pages/users/UserViewPage.ts src/user/user-settings/UserSettingsPage.ts
 msgid "Sessions"
 msgstr "Oturumlar"
 
@@ -4193,14 +4491,16 @@ msgid "Set HTTP-Basic Authentication"
 msgstr "HTTP-Temel Kimlik Doğrulamasını Ayarla"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
-msgstr "authentik değerlerine göre özel bir HTTP-Basic Kimlik Doğrulama başlığı ayarlayın."
+msgid ""
+"Set a custom HTTP-Basic Authentication header based on values from "
+"authentik."
+msgstr ""
+"authentik değerlerine göre özel bir HTTP-Basic Kimlik Doğrulama başlığı "
+"ayarlayın."
 
-#: src/pages/groups/GroupForm.ts
-#: src/pages/outposts/OutpostForm.ts
+#: src/pages/groups/GroupForm.ts src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
-#: src/pages/policies/PolicyTestForm.ts
-#: src/pages/users/UserForm.ts
+#: src/pages/policies/PolicyTestForm.ts src/pages/users/UserForm.ts
 msgid "Set custom attributes using YAML or JSON."
 msgstr "YAML veya JSON kullanarak özel nitelikleri ayarlayın."
 
@@ -4209,21 +4509,31 @@ msgid "Set password"
 msgstr "Parola ayarla"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
-msgstr "Bunu kimlik doğrulamasının geçerli olmasını istediğiniz etki alanına ayarlayın. Yukarıdaki URL'nin bir üst etki alanı olmalıdır. Uygulamaları app1.domain.tld, app2.domain.tld olarak çalıştırıyorsanız, bunu 'domain.tld' olarak ayarlayın."
+msgid ""
+"Set this to the domain you wish the authentication to be valid for. Must be "
+"a parent domain of the URL above. If you're running applications as "
+"app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+msgstr ""
+"Bunu kimlik doğrulamasının geçerli olmasını istediğiniz etki alanına "
+"ayarlayın. Yukarıdaki URL'nin bir üst etki alanı olmalıdır. Uygulamaları "
+"app1.domain.tld, app2.domain.tld olarak çalıştırıyorsanız, bunu 'domain.tld'"
+" olarak ayarlayın."
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Setup"
 msgstr "Kurulum"
 
-#: src/pages/events/RuleForm.ts
-#: src/pages/events/RuleListPage.ts
+#: src/pages/events/RuleForm.ts src/pages/events/RuleListPage.ts
 msgid "Severity"
 msgstr "Önem derecesi"
 
 #: src/pages/stages/prompt/PromptStageForm.ts
-msgid "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
-msgstr "Kullanıcıya rastgele giriş alanlarını göster, örneğin kayıt sırasında. Veriler akış bağlamında 'prompt_data' değişkeni altında kaydedilir."
+msgid ""
+"Show arbitrary input fields to the user, for example during enrollment. Data"
+" is saved in the flow context under the 'prompt_data' variable."
+msgstr ""
+"Kullanıcıya rastgele giriş alanlarını göster, örneğin kayıt sırasında. "
+"Veriler akış bağlamında 'prompt_data' değişkeni altında kaydedilir."
 
 #: src/elements/Expand.ts
 msgid "Show less"
@@ -4278,8 +4588,7 @@ msgstr "Tek kullanımlık"
 #~ msgstr "Yol regex atla"
 
 #: src/pages/applications/ApplicationForm.ts
-#: src/pages/applications/ApplicationListPage.ts
-#: src/pages/flows/FlowForm.ts
+#: src/pages/applications/ApplicationListPage.ts src/pages/flows/FlowForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -4312,19 +4621,29 @@ msgstr "Kaynak (lar)"
 msgid "Sources"
 msgstr "Kaynaklar"
 
-#~ msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
-#~ msgstr "LDAP gibi authentik'in veritabanıyla senkronize edilebilen ya da kullanıcılar tarafından OAuth ve sosyal girişler gibi kimlik doğrulaması ve kayıt yaptırmak için kullanılabilen kimlik kaynakları"
+#~ msgid ""
+#~ "Sources of identities, which can either be synced into authentik's database,"
+#~ " like LDAP, or can be used by users to authenticate and enroll themselves, "
+#~ "like OAuth and social logins"
+#~ msgstr ""
+#~ "LDAP gibi authentik'in veritabanıyla senkronize edilebilen ya da "
+#~ "kullanıcılar tarafından OAuth ve sosyal girişler gibi kimlik doğrulaması ve "
+#~ "kayıt yaptırmak için kullanılabilen kimlik kaynakları"
 
 #: src/pages/sources/SourcesListPage.ts
-msgid "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
-msgstr "Auentik'in veritabanına senkronize edilebilen ya da kullanıcılar tarafından kimlik doğrulaması ve kayıt yaptırmak için kullanılabilen kimliklerin kaynakları."
+msgid ""
+"Sources of identities, which can either be synced into authentik's database,"
+" or can be used by users to authenticate and enroll themselves."
+msgstr ""
+"Auentik'in veritabanına senkronize edilebilen ya da kullanıcılar tarafından "
+"kimlik doğrulaması ve kayıt yaptırmak için kullanılabilen kimliklerin "
+"kaynakları."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Specify multiple server URIs by separating them with a comma."
 msgstr "Birden çok sunucu URI'lerini virgülle ayırarak belirtin."
 
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/StageBindingForm.ts
+#: src/pages/flows/BoundStagesList.ts src/pages/flows/StageBindingForm.ts
 msgid "Stage"
 msgstr "Aşama"
 
@@ -4360,32 +4679,61 @@ msgid "Stage type"
 msgstr "Aşama türü"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
-msgstr "Kullanıcının uyumlu bir aygıtı olmadığında Kimlik Doğrulayıcısı'nı yapılandırmak için kullanılan Aşama. Bu yapılandırma Stage geçtikten sonra kullanıcıya yeniden istenmez."
+msgid ""
+"Stage used to configure Authenticator when user doesn't have any compatible "
+"devices. After this configuration Stage passes, the user is not prompted "
+"again."
+msgstr ""
+"Kullanıcının uyumlu bir aygıtı olmadığında Kimlik Doğrulayıcısı'nı "
+"yapılandırmak için kullanılan Aşama. Bu yapılandırma Stage geçtikten sonra "
+"kullanıcıya yeniden istenmez."
 
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
-msgid "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator)."
-msgstr "Bir TOTP kimlik doğrulayıcısını (Authy/Google Authenticator) yapılandırmak için kullanılan aşama."
+msgid ""
+"Stage used to configure a TOTP authenticator (i.e. Authy/Google "
+"Authenticator)."
+msgstr ""
+"Bir TOTP kimlik doğrulayıcısını (Authy/Google Authenticator) yapılandırmak "
+"için kullanılan aşama."
 
 #: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
-msgid "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello)."
-msgstr "Aşama bir WebAutnn kimlik doğrulayıcısını (örn. Yubikey, FaceID/Windows Hello) yapılandırmak için kullanılır."
+msgid ""
+"Stage used to configure a WebAutnn authenticator (i.e. Yubikey, "
+"FaceID/Windows Hello)."
+msgstr ""
+"Aşama bir WebAutnn kimlik doğrulayıcısını (örn. Yubikey, FaceID/Windows "
+"Hello) yapılandırmak için kullanılır."
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
-msgid "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows."
-msgstr "Aşama ikili tabanlı kimlik doğrulayıcısını yapılandırmak için kullanılır. Bu aşama yapılandırma akışları için kullanılmalıdır."
+msgid ""
+"Stage used to configure a duo-based authenticator. This stage should be used"
+" for configuration flows."
+msgstr ""
+"Aşama ikili tabanlı kimlik doğrulayıcısını yapılandırmak için kullanılır. Bu"
+" aşama yapılandırma akışları için kullanılmalıdır."
 
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
-msgid "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows."
-msgstr "Statik kimlik doğrulayıcısını (yani statik belirteçleri) yapılandırmak için kullanılan aşama. Bu aşama yapılandırma akışları için kullanılmalıdır."
+msgid ""
+"Stage used to configure a static authenticator (i.e. static tokens). This "
+"stage should be used for configuration flows."
+msgstr ""
+"Statik kimlik doğrulayıcısını (yani statik belirteçleri) yapılandırmak için "
+"kullanılan aşama. Bu aşama yapılandırma akışları için kullanılmalıdır."
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Stage used to configure an SMS-based TOTP authenticator."
-msgstr "Aşama, SMS tabanlı bir TOTP kimlik doğrulayıcısını yapılandırmak için kullanılır."
+msgstr ""
+"Aşama, SMS tabanlı bir TOTP kimlik doğrulayıcısını yapılandırmak için "
+"kullanılır."
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
-msgstr "Aşama, herhangi bir kimlik doğrulayıcıyı doğrulamak için kullanılır. Bu aşama kimlik doğrulama veya yetkilendirme akışları sırasında kullanılmalıdır."
+msgid ""
+"Stage used to validate any authenticator. This stage should be used during "
+"authentication or authorization flows."
+msgstr ""
+"Aşama, herhangi bir kimlik doğrulayıcıyı doğrulamak için kullanılır. Bu "
+"aşama kimlik doğrulama veya yetkilendirme akışları sırasında "
+"kullanılmalıdır."
 
 #: src/pages/stages/StageListPage.ts
 msgid "Stage(s)"
@@ -4409,16 +4757,18 @@ msgstr "Aşama (lar)"
 msgid "Stage-specific settings"
 msgstr "Aşama alanına özgü ayarlar"
 
-#: src/interfaces/AdminInterface.ts
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/stages/StageListPage.ts
-#: src/pages/stages/prompt/PromptListPage.ts
+#: src/interfaces/AdminInterface.ts src/pages/flows/FlowListPage.ts
+#: src/pages/stages/StageListPage.ts src/pages/stages/prompt/PromptListPage.ts
 msgid "Stages"
 msgstr "Aşamalar"
 
 #: src/pages/stages/StageListPage.ts
-msgid "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow."
-msgstr "Aşamalar, bir Akış'ın kullanıcının yönlendirildiği tek adımlardır. Bir aşama yalnızca bir akış içinden yürütülebilir."
+msgid ""
+"Stages are single steps of a Flow that a user is guided through. A stage can"
+" only be executed from within a flow."
+msgstr ""
+"Aşamalar, bir Akış'ın kullanıcının yönlendirildiği tek adımlardır. Bir aşama"
+" yalnızca bir akış içinden yürütülebilir."
 
 #: src/pages/outposts/ServiceConnectionListPage.ts
 msgid "State"
@@ -4445,8 +4795,12 @@ msgid "Static: Static value, displayed as-is."
 msgstr "Statik: Statik değer, olduğu gibi görüntülenir."
 
 #: src/pages/stages/deny/DenyStageForm.ts
-msgid "Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding."
-msgstr "Akışı statik olarak reddet. Bu aşamayı etkili bir şekilde kullanmak için ilgili bağlama üzerinde *Planda değerlendirme* devre dışı bırakın."
+msgid ""
+"Statically deny the flow. To use this stage effectively, disable *Evaluate "
+"on plan* on the respective binding."
+msgstr ""
+"Akışı statik olarak reddet. Bu aşamayı etkili bir şekilde kullanmak için "
+"ilgili bağlama üzerinde *Planda değerlendirme* devre dışı bırakın."
 
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Status"
@@ -4462,8 +4816,7 @@ msgstr "Durum"
 msgid "Stop impersonation"
 msgstr "Taklitçiliği durdurun"
 
-#: src/pages/events/EventInfo.ts
-#: src/pages/stages/email/EmailStageForm.ts
+#: src/pages/events/EventInfo.ts src/pages/stages/email/EmailStageForm.ts
 msgid "Subject"
 msgstr "Konu"
 
@@ -4479,8 +4832,7 @@ msgstr "Konu-alt adı"
 msgid "Successful"
 msgstr "Başarılı"
 
-#: src/elements/charts/AdminLoginsChart.ts
-#: src/elements/charts/UserChart.ts
+#: src/elements/charts/AdminLoginsChart.ts src/elements/charts/UserChart.ts
 msgid "Successful Logins"
 msgstr "Başarılı Oturum Açma"
 
@@ -4504,8 +4856,7 @@ msgstr "TOTP Yapılandırması başarıyla kopyalandı."
 msgid "Successfully created application."
 msgstr "Uygulama başarıyla oluşturuldu."
 
-#: src/pages/flows/StageBindingForm.ts
-#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/flows/StageBindingForm.ts src/pages/policies/PolicyBindingForm.ts
 msgid "Successfully created binding."
 msgstr "Bağlama başarılı bir şekilde oluşturuldu."
 
@@ -4611,13 +4962,11 @@ msgstr "Belirteç başarıyla oluşturuldu."
 msgid "Successfully created transport."
 msgstr "Aktarıcı başarıyla oluşturuldu."
 
-#: src/pages/users/ServiceAccountForm.ts
-#: src/pages/users/UserForm.ts
+#: src/pages/users/ServiceAccountForm.ts src/pages/users/UserForm.ts
 msgid "Successfully created user."
 msgstr "Kullanıcı başarıyla oluşturuldu."
 
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr "{0} {1} başarıyla silindi"
 
@@ -4625,8 +4974,7 @@ msgstr "{0} {1} başarıyla silindi"
 msgid "Successfully generated certificate-key pair."
 msgstr "Sertifika-anahtar çifti başarıyla oluşturuldu."
 
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserViewPage.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
 msgid "Successfully generated recovery link"
 msgstr "Kurtarma bağlantısı başarıyla oluşturuldu"
 
@@ -4652,8 +5000,7 @@ msgstr "Test isteği başarıyla gönderildi."
 msgid "Successfully updated application."
 msgstr "Uygulama başarıyla güncellendi."
 
-#: src/pages/flows/StageBindingForm.ts
-#: src/pages/policies/PolicyBindingForm.ts
+#: src/pages/flows/StageBindingForm.ts src/pages/policies/PolicyBindingForm.ts
 msgid "Successfully updated binding."
 msgstr "Ciltleme başarıyla güncellendi."
 
@@ -4779,8 +5126,7 @@ msgstr "Kullanıcı başarıyla güncellendi."
 msgid "Successfully updated {0} {1}"
 msgstr "{0} {1} başarıyla güncellendi"
 
-#: src/pages/users/GroupSelectModal.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/GroupSelectModal.ts src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Superuser"
 msgstr "Süper kullanıcı"
@@ -4898,8 +5244,7 @@ msgstr "Sakin"
 msgid "Tenant(s)"
 msgstr "Sakin(ler)"
 
-#: src/interfaces/AdminInterface.ts
-#: src/pages/tenants/TenantListPage.ts
+#: src/interfaces/AdminInterface.ts src/pages/tenants/TenantListPage.ts
 msgid "Tenants"
 msgstr "Sakinler"
 
@@ -4935,15 +5280,26 @@ msgstr "“{0}” URL'si bulunamadı."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "The external URL you'll access the application at. Include any non-standard port."
-msgstr "Uygulamaya erişeceğiniz harici URL. Standart olmayan herhangi bir bağlantı noktasını dahil edin."
+msgid ""
+"The external URL you'll access the application at. Include any non-standard "
+"port."
+msgstr ""
+"Uygulamaya erişeceğiniz harici URL. Standart olmayan herhangi bir bağlantı "
+"noktasını dahil edin."
 
-#~ msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
-#~ msgstr "Kimlik doğrulayacağınız harici URL. Auentik ile aynı etki alanı olabilir."
+#~ msgid ""
+#~ "The external URL you'll authenticate at. Can be the same domain as "
+#~ "authentik."
+#~ msgstr ""
+#~ "Kimlik doğrulayacağınız harici URL. Auentik ile aynı etki alanı olabilir."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "The external URL you'll authenticate at. The authentik core server should be reachable under this URL."
-msgstr "Kimlik doğrulayacağınız harici URL. Auentik çekirdek sunucusuna bu URL altında erişilebilir olmalıdır."
+msgid ""
+"The external URL you'll authenticate at. The authentik core server should be"
+" reachable under this URL."
+msgstr ""
+"Kimlik doğrulayacağınız harici URL. Auentik çekirdek sunucusuna bu URL "
+"altında erişilebilir olmalıdır."
 
 #~ msgid "The following objects use {0}:"
 #~ msgstr "Aşağıdaki nesneler {0} kullanır:"
@@ -4972,16 +5328,33 @@ msgstr ""
 "geçmez."
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
-msgid "The policy takes a random time to execute. This controls the minimum time it will take."
-msgstr "İlke yürütmesi rastgele bir zaman alır. Bu, alacağı minimum süreyi belirler."
+msgid ""
+"The policy takes a random time to execute. This controls the minimum time it"
+" will take."
+msgstr ""
+"İlke yürütmesi rastgele bir zaman alır. Bu, alacağı minimum süreyi belirler."
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber"
-msgstr "gidNumbers'ın başlangıcı, bu sayı group.Pk öğesinden oluşturulan bir sayıya eklenir ve sayıların POSIX grupları için çok düşük olmamasını sağlar. Yerel gruplar veya kullanıcıların birincil grupların gidNumber'ıyla çakışmaması için varsayılan 4000'dir"
+msgid ""
+"The start for gidNumbers, this number is added to a number generated from "
+"the group.Pk to make sure that the numbers aren't too low for POSIX groups. "
+"Default is 4000 to ensure that we don't collide with local groups or users "
+"primary groups gidNumber"
+msgstr ""
+"gidNumbers'ın başlangıcı, bu sayı group.Pk öğesinden oluşturulan bir sayıya "
+"eklenir ve sayıların POSIX grupları için çok düşük olmamasını sağlar. Yerel "
+"gruplar veya kullanıcıların birincil grupların gidNumber'ıyla çakışmaması "
+"için varsayılan 4000'dir"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber"
-msgstr "UidNumbers'ın başlangıcında, bu sayı, POSIX kullanıcıları için sayıların çok düşük olmadığından emin olmak için user.Pk öğesine eklenir. Varsayılan 2000 yerel kullanıcılarla çarpışmadığımızdan emin olmak için uidNumber"
+msgid ""
+"The start for uidNumbers, this number is added to the user.Pk to make sure "
+"that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
+"that we don't collide with local users uidNumber"
+msgstr ""
+"UidNumbers'ın başlangıcında, bu sayı, POSIX kullanıcıları için sayıların çok"
+" düşük olmadığından emin olmak için user.Pk öğesine eklenir. Varsayılan 2000"
+" yerel kullanıcılarla çarpışmadığımızdan emin olmak için uidNumber"
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "These bindings control if this stage will be applied to the flow."
@@ -5011,7 +5384,8 @@ msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "These policies control which users can access this application."
-msgstr "Bu ilkeler hangi kullanıcıların bu uygulamaya erişebileceğini denetler."
+msgstr ""
+"Bu ilkeler hangi kullanıcıların bu uygulamaya erişebileceğini denetler."
 
 #: src/flows/FlowInspector.ts
 msgid "This flow is completed."
@@ -5026,24 +5400,42 @@ msgid "This is the password to be used with basic auth"
 msgstr "Bu, temel kimlik doğrulama ile kullanılacak paroladır"
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-msgid "This is the username to be used with basic auth or the token when used with bearer token"
-msgstr "Bu, temel kimlik doğrulama veya taşıyıcı belirteci ile kullanıldığında kullanılacak kullanıcı adıdır"
+msgid ""
+"This is the username to be used with basic auth or the token when used with "
+"bearer token"
+msgstr ""
+"Bu, temel kimlik doğrulama veya taşıyıcı belirteci ile kullanıldığında "
+"kullanılacak kullanıcı adıdır"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well."
-msgstr "Bu sağlayıcı saydam bir ters vekil sunucu gibi davranır, ancak isteklerin kimliğinin doğrulanması gerekir. Yön uygulamanızda HTTPS kullanıyorsa üsse de HTTPS kullanarak bağlandığınızdan emin olun."
+msgid ""
+"This provider will behave like a transparent reverse-proxy, except requests "
+"must be authenticated. If your upstream application uses HTTPS, make sure to"
+" connect to the outpost using HTTPS as well."
+msgstr ""
+"Bu sağlayıcı saydam bir ters vekil sunucu gibi davranır, ancak isteklerin "
+"kimliğinin doğrulanması gerekir. Yön uygulamanızda HTTPS kullanıyorsa üsse "
+"de HTTPS kullanarak bağlandığınızdan emin olun."
 
 #: src/pages/tenants/TenantForm.ts
-msgid "This setting only affects new Events, as the expiration is saved per-event."
-msgstr "Bu ayar, süre sonu olay başına kaydedildiğinden, yalnızca yeni Olayları etkiler."
+msgid ""
+"This setting only affects new Events, as the expiration is saved per-event."
+msgstr ""
+"Bu ayar, süre sonu olay başına kaydedildiğinden, yalnızca yeni Olayları "
+"etkiler."
 
 #: src/pages/stages/invitation/InvitationStageForm.ts
 msgid "This stage can be included in enrollment flows to accept invitations."
-msgstr "Bu aşama, davetleri kabul etmek için kayıt akışlarına dahil edilebilir."
+msgstr ""
+"Bu aşama, davetleri kabul etmek için kayıt akışlarına dahil edilebilir."
 
 #: src/pages/stages/captcha/CaptchaStageForm.ts
-msgid "This stage checks the user's current session against the Google reCaptcha service."
-msgstr "Bu aşama, kullanıcının geçerli oturumunu Google reCaptcha hizmetine karşı kontrol eder."
+msgid ""
+"This stage checks the user's current session against the Google reCaptcha "
+"service."
+msgstr ""
+"Bu aşama, kullanıcının geçerli oturumunu Google reCaptcha hizmetine karşı "
+"kontrol eder."
 
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Threshold"
@@ -5054,8 +5446,14 @@ msgid "Time in minutes the token sent is valid."
 msgstr "Gönderilen belirtecin dakika cinsinden geçerlilik süresi."
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
-msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
-msgstr "Geçici kullanıcıların silinmesi gerektiğinde zaman uzaklığı. Bu yalnızca IDP'niz NameID Biçimi 'geçici' kullanıyorsa ve kullanıcı el ile oturumu kapatmazsa geçerlidir. (Biçim: saat=1; dakika=2; saniye/= 3)."
+msgid ""
+"Time offset when temporary users should be deleted. This only applies if "
+"your IDP uses the NameID Format 'transient', and the user doesn't log out "
+"manually. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Geçici kullanıcıların silinmesi gerektiğinde zaman uzaklığı. Bu yalnızca "
+"IDP'niz NameID Biçimi 'geçici' kullanıyorsa ve kullanıcı el ile oturumu "
+"kapatmazsa geçerlidir. (Biçim: saat=1; dakika=2; saniye/= 3)."
 
 #~ msgid "Time-based One-Time Passwords"
 #~ msgstr "Zaman Tabanlı Tek seferlik Parolalar"
@@ -5066,8 +5464,7 @@ msgstr "Geçici kullanıcıların silinmesi gerektiğinde zaman uzaklığı. Bu 
 msgid "Timeout"
 msgstr "Zaman aşımı"
 
-#: src/pages/flows/FlowForm.ts
-#: src/pages/tenants/TenantForm.ts
+#: src/pages/flows/FlowForm.ts src/pages/tenants/TenantForm.ts
 msgid "Title"
 msgstr "Başlık"
 
@@ -5076,19 +5473,33 @@ msgid "To"
 msgstr "Kime"
 
 #: src/pages/users/UserViewPage.ts
-msgid "To create a recovery link, the current tenant needs to have a recovery flow configured."
-msgstr "Kurtarma bağlantısı oluşturmak için geçerli sakinin yapılandırılmış bir kurtarma akışı olması gerekir."
+msgid ""
+"To create a recovery link, the current tenant needs to have a recovery flow "
+"configured."
+msgstr ""
+"Kurtarma bağlantısı oluşturmak için geçerli sakinin yapılandırılmış bir "
+"kurtarma akışı olması gerekir."
 
-#~ msgid "To directly reset a user's password, configure a recovery flow on the currently active tenant."
-#~ msgstr "Bir kullanıcının parolasını doğrudan sıfırlamak için, etkin olan sakin üzerinde bir kurtarma akışı yapılandırın."
+#~ msgid ""
+#~ "To directly reset a user's password, configure a recovery flow on the "
+#~ "currently active tenant."
+#~ msgstr ""
+#~ "Bir kullanıcının parolasını doğrudan sıfırlamak için, etkin olan sakin "
+#~ "üzerinde bir kurtarma akışı yapılandırın."
 
 #: src/pages/users/UserListPage.ts
-msgid "To let a user directly reset a their password, configure a recovery flow on the currently active tenant."
-msgstr "Kullanıcının parolasını doğrudan sıfırlamasına izin vermek için, etkin olan sakin üzerinde bir kurtarma akışı yapılandırın."
+msgid ""
+"To let a user directly reset a their password, configure a recovery flow on "
+"the currently active tenant."
+msgstr ""
+"Kullanıcının parolasını doğrudan sıfırlamasına izin vermek için, etkin olan "
+"sakin üzerinde bir kurtarma akışı yapılandırın."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "To use SSL instead, use 'ldaps://' and disable this option."
-msgstr "Bunun yerine SSL kullanmak için 'ldaps: //' kullanın ve bu seçeneği devre dışı bırakın."
+msgstr ""
+"Bunun yerine SSL kullanmak için 'ldaps: //' kullanın ve bu seçeneği devre "
+"dışı bırakın."
 
 #~ msgid "Token"
 #~ msgstr "Belirteç"
@@ -5133,8 +5544,12 @@ msgid "Tokens and App passwords"
 msgstr "Belirteçler ve Uygulama parolaları"
 
 #: src/pages/tokens/TokenListPage.ts
-msgid "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access."
-msgstr "Belirteçler, E-posta doğrulama aşamaları, Kurtarma anahtarları ve API erişimi için authentik boyunca kullanılır."
+msgid ""
+"Tokens are used throughout authentik for Email validation stages, Recovery "
+"keys and API access."
+msgstr ""
+"Belirteçler, E-posta doğrulama aşamaları, Kurtarma anahtarları ve API "
+"erişimi için authentik boyunca kullanılır."
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Tokens sent via SMS."
@@ -5196,15 +5611,13 @@ msgstr "Twilio Hesabı SID"
 msgid "Twilio Auth Token"
 msgstr "Twilio Auth Belirteci"
 
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/outposts/OutpostForm.ts
+#: src/pages/flows/BoundStagesList.ts src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts
-#: src/pages/stages/prompt/PromptForm.ts
+#: src/pages/sources/SourcesListPage.ts src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Type"
@@ -5214,8 +5627,7 @@ msgstr "Tipi"
 msgid "UI settings"
 msgstr "UI ayarları"
 
-#: src/pages/events/EventInfo.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/events/EventInfo.ts src/pages/users/UserListPage.ts
 msgid "UID"
 msgstr "UID"
 
@@ -5249,8 +5661,12 @@ msgid "URL used by authentik to retrieve tokens."
 msgstr "Auentik tarafından belirteçleri almak için kullanılan URL."
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
-msgid "URL used to request the initial token. This URL is only required for OAuth 1."
-msgstr "İlk belirteci istemek için kullanılan URL. Bu URL yalnızca OAuth 1 için gereklidir."
+msgid ""
+"URL used to request the initial token. This URL is only required for OAuth "
+"1."
+msgstr ""
+"İlk belirteci istemek için kullanılan URL. Bu URL yalnızca OAuth 1 için "
+"gereklidir."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Unauthenticated Paths"
@@ -5306,14 +5722,10 @@ msgstr "Güncel!"
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/events/RuleListPage.ts
-#: src/pages/events/TransportListPage.ts
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/flows/FlowViewPage.ts
-#: src/pages/groups/GroupListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/events/RuleListPage.ts src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowListPage.ts src/pages/flows/FlowViewPage.ts
+#: src/pages/groups/GroupListPage.ts src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -5331,12 +5743,9 @@ msgstr "Güncel!"
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
-#: src/pages/stages/StageListPage.ts
-#: src/pages/stages/prompt/PromptListPage.ts
-#: src/pages/tenants/TenantListPage.ts
-#: src/pages/tokens/TokenListPage.ts
-#: src/pages/users/UserActiveForm.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/stages/StageListPage.ts src/pages/stages/prompt/PromptListPage.ts
+#: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
+#: src/pages/users/UserActiveForm.ts src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
@@ -5360,13 +5769,11 @@ msgstr "Sertifika Anahtarı Çiftini Güncelleştir"
 msgid "Update Device"
 msgstr "Cihazı Güncelle"
 
-#: src/pages/flows/FlowListPage.ts
-#: src/pages/flows/FlowViewPage.ts
+#: src/pages/flows/FlowListPage.ts src/pages/flows/FlowViewPage.ts
 msgid "Update Flow"
 msgstr "Akışı Güncelle"
 
-#: src/pages/groups/GroupListPage.ts
-#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/groups/GroupListPage.ts src/pages/policies/BoundPoliciesList.ts
 msgid "Update Group"
 msgstr "Güncelleme Grubu"
 
@@ -5431,8 +5838,7 @@ msgstr "Sakini Güncelle"
 msgid "Update Token"
 msgstr "Belirteç Güncelle"
 
-#: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Update User"
 msgstr "Kullanıcı Güncelle"
@@ -5445,8 +5851,7 @@ msgstr "Güncelleme mevcut"
 msgid "Update details"
 msgstr "Ayrıntıları güncelle"
 
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserListPage.ts
 msgid "Update password"
 msgstr "Parolayı güncelle"
 
@@ -5456,15 +5861,14 @@ msgstr "Parolayı güncelle"
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts
-#: src/pages/stages/StageListPage.ts
+#: src/pages/sources/SourcesListPage.ts src/pages/stages/StageListPage.ts
 #: src/pages/users/UserActiveForm.ts
 msgid "Update {0}"
 msgstr "Güncelleme {0}"
 
 #: src/pages/policies/reputation/ReputationListPage.ts
 msgid "Updated"
-msgstr ""
+msgstr "Güncellendi"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Upstream host that the requests are forwarded to."
@@ -5496,43 +5900,67 @@ msgstr "Genel ayarları kullan"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
-msgid "Use the user's email address, but deny enrollment when the email address already exists."
-msgstr "Kullanıcının e-posta adresini kullanın, ancak e-posta adresi zaten varken kaydı reddedin."
+msgid ""
+"Use the user's email address, but deny enrollment when the email address "
+"already exists."
+msgstr ""
+"Kullanıcının e-posta adresini kullanın, ancak e-posta adresi zaten varken "
+"kaydı reddedin."
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
-msgid "Use the user's username, but deny enrollment when the username already exists."
-msgstr "Kullanıcının kullanıcı adını kullanın, ancak kullanıcı adı zaten varken kaydı reddedin."
+msgid ""
+"Use the user's username, but deny enrollment when the username already "
+"exists."
+msgstr ""
+"Kullanıcının kullanıcı adını kullanın, ancak kullanıcı adı zaten varken "
+"kaydı reddedin."
 
 #: src/pages/users/ServiceAccountForm.ts
-msgid "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page."
-msgstr "Kimlik doğrulaması için aşağıdaki kullanıcı adı ve parolayı kullanın. Parola daha sonra Belirteçler sayfasından alınabilir."
+msgid ""
+"Use the username and password below to authenticate. The password can be "
+"retrieved later on the Tokens page."
+msgstr ""
+"Kimlik doğrulaması için aşağıdaki kullanıcı adı ve parolayı kullanın. Parola"
+" daha sonra Belirteçler sayfasından alınabilir."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
-msgstr "Bu sağlayıcıyı nginx'in auth_request veya traefik's forwardAuth ile kullanın. Her uygulama/etki alanının kendi sağlayıcısına ihtiyacı vardır. Ayrıca, her etki alanında /akprox üsse yönlendirilmelidir (manged bir üs kullanırken, bu sizin için yapılır)."
+msgid ""
+"Use this provider with nginx's auth_request or traefik's forwardAuth. Each "
+"application/domain needs its own provider. Additionally, on each domain, "
+"/akprox must be routed to the outpost (when using a manged outpost, this is "
+"done for you)."
+msgstr ""
+"Bu sağlayıcıyı nginx'in auth_request veya traefik's forwardAuth ile "
+"kullanın. Her uygulama/etki alanının kendi sağlayıcısına ihtiyacı vardır. "
+"Ayrıca, her etki alanında /akprox üsse yönlendirilmelidir (manged bir üs "
+"kullanırken, bu sizin için yapılır)."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."
-msgstr "Bu sağlayıcıyı nginx'in auth_request veya traefik'in forwardAuth ile kullanın. Kök etki alanı başına yalnızca tek bir sağlayıcı gereklidir. Uygulama başına yetkilendirme yapamazsınız, ancak her uygulama için bir sağlayıcı oluşturmanız gerekmez."
+msgid ""
+"Use this provider with nginx's auth_request or traefik's forwardAuth. Only a"
+" single provider is required per root domain. You can't do per-application "
+"authorization, but you don't have to create a provider for each application."
+msgstr ""
+"Bu sağlayıcıyı nginx'in auth_request veya traefik'in forwardAuth ile "
+"kullanın. Kök etki alanı başına yalnızca tek bir sağlayıcı gereklidir. "
+"Uygulama başına yetkilendirme yapamazsınız, ancak her uygulama için bir "
+"sağlayıcı oluşturmanız gerekmez."
 
 #: src/pages/tenants/TenantForm.ts
 msgid "Use this tenant for each domain that doesn't have a dedicated tenant."
-msgstr "Bu sakini, ayrılmış bir sakine sahip olmayan her etki alanı için kullanın."
+msgstr ""
+"Bu sakini, ayrılmış bir sakine sahip olmayan her etki alanı için kullanın."
 
-#: src/elements/events/ObjectChangelog.ts
-#: src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
-#: src/pages/events/EventInfo.ts
-#: src/pages/events/EventListPage.ts
+#: src/pages/events/EventInfo.ts src/pages/events/EventListPage.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
-#: src/pages/tokens/TokenForm.ts
-#: src/pages/tokens/TokenListPage.ts
-#: src/pages/users/UserListPage.ts
-#: src/pages/users/UserViewPage.ts
+#: src/pages/tokens/TokenForm.ts src/pages/tokens/TokenListPage.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "User"
 msgstr "Kullanıcı"
@@ -5545,8 +5973,6 @@ msgstr "Kullanıcı Bilgileri"
 msgid "User Property Mappings"
 msgstr "Kullanıcı Özellik Eşlemeleri"
 
-#: src/pages/policies/reputation/UserReputationListPage.ts
-#: src/pages/policies/reputation/UserReputationListPage.ts
 #~ msgid "User Reputation"
 #~ msgstr "Kullanıcı İtibar"
 
@@ -5625,8 +6051,7 @@ msgstr "Kullanıcı doğrulaması gerçekleşmemelidir."
 msgid "User was written to"
 msgstr "Kullanıcı yazıldı"
 
-#: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/users/UserViewPage.ts
+#: src/pages/policies/BoundPoliciesList.ts src/pages/users/UserViewPage.ts
 msgid "User {0}"
 msgstr "Kullanıcı {0}"
 
@@ -5644,12 +6069,19 @@ msgid "User(s)"
 msgstr "Kullanıcı (lar)"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "User/Group Attribute used for the password part of the HTTP-Basic Header."
-msgstr "HTTP-Basic Üstbilgisinin parola kısmı için kullanılan Kullanıcı/Grup Özniteliği."
+msgid ""
+"User/Group Attribute used for the password part of the HTTP-Basic Header."
+msgstr ""
+"HTTP-Basic Üstbilgisinin parola kısmı için kullanılan Kullanıcı/Grup "
+"Özniteliği."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used."
-msgstr "HTTP-Basic Üstbilgisinin kullanıcı bölümü için kullanılan Kullanıcı/Grup Özniteliği. Ayarlanmazsa, kullanıcının E-posta adresi kullanılır."
+msgid ""
+"User/Group Attribute used for the user part of the HTTP-Basic Header. If not"
+" set, the user's Email address is used."
+msgstr ""
+"HTTP-Basic Üstbilgisinin kullanıcı bölümü için kullanılan Kullanıcı/Grup "
+"Özniteliği. Ayarlanmazsa, kullanıcının E-posta adresi kullanılır."
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Userinfo URL"
@@ -5657,21 +6089,22 @@ msgstr "Userinfo URL'si"
 
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
-#: src/pages/users/ServiceAccountForm.ts
-#: src/pages/users/ServiceAccountForm.ts
-#: src/pages/users/UserForm.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/ServiceAccountForm.ts src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/UserForm.ts src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Username"
 msgstr "Kullanıcı Adı"
 
 #: src/pages/stages/prompt/PromptForm.ts
-msgid "Username: Same as Text input, but checks for and prevents duplicate usernames."
-msgstr "Kullanıcı adı: Metin girişi ile aynı, ancak yinelenen kullanıcı adlarını denetler ve engeller."
+msgid ""
+"Username: Same as Text input, but checks for and prevents duplicate "
+"usernames."
+msgstr ""
+"Kullanıcı adı: Metin girişi ile aynı, ancak yinelenen kullanıcı adlarını "
+"denetler ve engeller."
 
-#: src/interfaces/AdminInterface.ts
-#: src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Users"
@@ -5686,8 +6119,12 @@ msgid "Users created per day in the last month"
 msgstr "Son ay içinde günlük oluşturulan kullanıcılar"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed."
-msgstr "Seçilen gruptaki kullanıcılar arama sorguları yapabilir. Hiçbir grup seçilmezse, LDAP Aramalarına izin verilmez."
+msgid ""
+"Users in the selected group can do search queries. If no group is selected, "
+"no LDAP Searches are allowed."
+msgstr ""
+"Seçilen gruptaki kullanıcılar arama sorguları yapabilir. Hiçbir grup "
+"seçilmezse, LDAP Aramalarına izin verilmez."
 
 #: src/pages/events/EventInfo.ts
 msgid "Using flow"
@@ -5698,12 +6135,20 @@ msgid "Using source"
 msgstr "Kaynak kullanma"
 
 #: src/pages/users/ServiceAccountForm.ts
-msgid "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List."
-msgstr "360 gün boyunca geçerlidir, bundan sonra parola otomatik olarak dönecektir. Parolayı Token Listesi'nden kopyalayabilirsiniz."
+msgid ""
+"Valid for 360 days, after which the password will automatically rotate. You "
+"can copy the password from the Token List."
+msgstr ""
+"360 gün boyunca geçerlidir, bundan sonra parola otomatik olarak dönecektir. "
+"Parolayı Token Listesi'nden kopyalayabilirsiniz."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows."
-msgstr "Başarılı bir yetkilendirme akışından sonra geçerli yeniden yönlendirme URL'leri. Ayrıca Kapalı akışlar için burada tüm kökenleri belirtin."
+msgid ""
+"Valid redirect URLs after a successful authorization flow. Also specify any "
+"origins here for Implicit flows."
+msgstr ""
+"Başarılı bir yetkilendirme akışından sonra geçerli yeniden yönlendirme "
+"URL'leri. Ayrıca Kapalı akışlar için burada tüm kökenleri belirtin."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Validate SSL Certificates of upstream servers."
@@ -5730,8 +6175,12 @@ msgid "Verification Certificate"
 msgstr "Doğrulama Sertifikası"
 
 #: src/pages/stages/email/EmailStageForm.ts
-msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
-msgstr "Kullanıcının e-posta adresini bir kerelik bağlantı göndererek doğrulayın. Kullanıcının orijinalliğini doğrulamak için kurtarma için de kullanılabilir."
+msgid ""
+"Verify the user's email address by sending them a one-time-link. Can also be"
+" used for recovery to verify the user's authenticity."
+msgstr ""
+"Kullanıcının e-posta adresini bir kerelik bağlantı göndererek doğrulayın. "
+"Kullanıcının orijinalliğini doğrulamak için kurtarma için de kullanılabilir."
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Version"
@@ -5767,8 +6216,7 @@ msgstr "Bekle (dk)"
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
-#: src/pages/events/RuleForm.ts
-#: src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/events/RuleForm.ts src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
 msgstr "Uyarı"
 
@@ -5777,8 +6225,12 @@ msgid "Warning: Application is not used by any Outpost."
 msgstr "Uyarı: Uygulama herhangi bir Üs tarafından kullanılmıyor."
 
 #: src/pages/stages/invitation/InvitationListPage.ts
-msgid "Warning: No invitation stage is bound to any flow. Invitations will not work as expected."
-msgstr "Uyarı: Hiçbir davetiye aşaması herhangi bir akışa bağlı değildir. Davetiyeler beklendiği gibi çalışmaz."
+msgid ""
+"Warning: No invitation stage is bound to any flow. Invitations will not work"
+" as expected."
+msgstr ""
+"Uyarı: Hiçbir davetiye aşaması herhangi bir akışa bağlı değildir. "
+"Davetiyeler beklendiği gibi çalışmaz."
 
 #: src/pages/policies/PolicyListPage.ts
 msgid "Warning: Policy is not assigned."
@@ -5801,11 +6253,16 @@ msgid "Warning: Provider not assigned to any application."
 msgstr "Uyarı: Sağlayıcı herhangi bir uygulamaya atanmamış."
 
 #: src/pages/users/UserListPage.ts
-msgid "Warning: You're about to delete the user you're logged in as ({0}). Proceed at your own risk."
-msgstr "Uyarı: Oturum açtığınız kullanıcıyı ({0}) silmek üzeresiniz. Kendi sorumluluğunuzdadır."
+msgid ""
+"Warning: You're about to delete the user you're logged in as ({0}). Proceed "
+"at your own risk."
+msgstr ""
+"Uyarı: Oturum açtığınız kullanıcıyı ({0}) silmek üzeresiniz. Kendi "
+"sorumluluğunuzdadır."
 
 #: src/pages/outposts/OutpostListPage.ts
-msgid "Warning: authentik Domain is not configured, authentication will not work."
+msgid ""
+"Warning: authentik Domain is not configured, authentication will not work."
 msgstr "Uyarı: authentik Domain yapılandırılmamış, kimlik doğrulama çalışmaz."
 
 #: src/pages/tenants/TenantForm.ts
@@ -5840,24 +6297,43 @@ msgid "Welcome, {name}."
 msgstr "Hoş geldiniz, {name}."
 
 #: src/pages/stages/email/EmailStageForm.ts
-msgid "When a user returns from the email successfully, their account will be activated."
-msgstr "Bir kullanıcı e-postadan başarıyla döndüğünde, hesabı etkinleştirilir."
+msgid ""
+"When a user returns from the email successfully, their account will be "
+"activated."
+msgstr ""
+"Bir kullanıcı e-postadan başarıyla döndüğünde, hesabı etkinleştirilir."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
-msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
-msgstr "Geçerli bir kullanıcı adı/e-posta girildiğinde ve bu seçenek etkinleştirildiğinde, kullanıcının kullanıcı adı ve avatarı gösterilir. Aksi takdirde, kullanıcının girdiği metin gösterilir."
+msgid ""
+"When a valid username/email has been entered, and this option is enabled, "
+"the user's username and avatar will be shown. Otherwise, the text that the "
+"user entered will be shown."
+msgstr ""
+"Geçerli bir kullanıcı adı/e-posta girildiğinde ve bu seçenek "
+"etkinleştirildiğinde, kullanıcının kullanıcı adı ve avatarı gösterilir. Aksi"
+" takdirde, kullanıcının girdiği metin gösterilir."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
-msgid "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
-msgstr "TLS ile bir LDAP Sunucusuna bağlanırken, sertifikalar varsayılan olarak denetlenmez. Uzak sertifikayı doğrulamak için bir anahtar çifti belirtin."
+msgid ""
+"When connecting to an LDAP Server with TLS, certificates are not checked by "
+"default. Specify a keypair to validate the remote certificate."
+msgstr ""
+"TLS ile bir LDAP Sunucusuna bağlanırken, sertifikalar varsayılan olarak "
+"denetlenmez. Uzak sertifikayı doğrulamak için bir anahtar çifti belirtin."
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "When connecting via SSH, this keypair is used for authentication."
-msgstr "SSH üzerinden bağlanırken, bu anahtar çifti kimlik doğrulama için kullanılır."
+msgstr ""
+"SSH üzerinden bağlanırken, bu anahtar çifti kimlik doğrulama için "
+"kullanılır."
 
 #: src/pages/stages/email/EmailStageForm.ts
-msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
-msgstr "Etkinleştirildiğinde, genel E-posta bağlantısı ayarları kullanılır ve aşağıdaki bağlantı ayarları yoksayılır."
+msgid ""
+"When enabled, global Email connection settings will be used and connection "
+"settings below will be ignored."
+msgstr ""
+"Etkinleştirildiğinde, genel E-posta bağlantısı ayarları kullanılır ve "
+"aşağıdaki bağlantı ayarları yoksayılır."
 
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "When enabled, the invitation will be deleted after usage."
@@ -5865,15 +6341,25 @@ msgstr "Etkinleştirildiğinde, davetiye kullanımdan sonra silinir."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
-msgstr "Etkinleştirildiğinde, kullanıcı alanları muhafazası ne olursa olsun eşleştirilir."
+msgstr ""
+"Etkinleştirildiğinde, kullanıcı alanları muhafazası ne olursa olsun "
+"eşleştirilir."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
-msgid "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."
-msgstr "Seçildiğinde, ayrı bir sayfa yerine aynı sayfada bir parola alanı gösterilir. Bu, kullanıcı adı numaralandırma saldırılarını engeller."
+msgid ""
+"When selected, a password field is shown on the same page instead of a "
+"separate page. This prevents username enumeration attacks."
+msgstr ""
+"Seçildiğinde, ayrı bir sayfa yerine aynı sayfada bir parola alanı "
+"gösterilir. Bu, kullanıcı adı numaralandırma saldırılarını engeller."
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
-msgstr "Seçildiğinde, gelen onaylama öğesinin İmzaları bu sertifikaya göre doğrulanır. İmzasız İsteklere izin vermek için varsayılan olarak bırakın."
+msgid ""
+"When selected, incoming assertion's Signatures will be validated against "
+"this certificate. To allow unsigned Requests, leave on default."
+msgstr ""
+"Seçildiğinde, gelen onaylama öğesinin İmzaları bu sertifikaya göre "
+"doğrulanır. İmzasız İsteklere izin vermek için varsayılan olarak bırakın."
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
@@ -5882,20 +6368,40 @@ msgstr "Seçildiğinde, gelen onaylama öğesinin İmzaları bu sertifikaya gör
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/pages/policies/password/PasswordPolicyForm.ts
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
-msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
-msgstr "Bu seçenek etkinleştirildiğinde, bu ilkenin tüm yürütmeleri günlüğe kaydedilir. Varsayılan olarak, yalnızca yürütme hataları günlüğe kaydedilir."
+msgid ""
+"When this option is enabled, all executions of this policy will be logged. "
+"By default, only execution errors are logged."
+msgstr ""
+"Bu seçenek etkinleştirildiğinde, bu ilkenin tüm yürütmeleri günlüğe "
+"kaydedilir. Varsayılan olarak, yalnızca yürütme hataları günlüğe kaydedilir."
 
 #: src/pages/stages/prompt/PromptForm.ts
-msgid "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
-msgstr "Kullanıcı Yazma aşaması ile birlikte kullanıldığında, öznitelikleri yazmak için attributes.foo kullanın."
+msgid ""
+"When used in conjunction with a User Write stage, use attributes.foo to "
+"write attributes."
+msgstr ""
+"Kullanıcı Yazma aşaması ile birlikte kullanıldığında, öznitelikleri yazmak "
+"için attributes.foo kullanın."
 
 #: src/pages/tenants/TenantForm.ts
-msgid "When using an external logging solution for archiving, this can be set to \"minutes=5\"."
-msgstr "Arşivleme için harici bir günlük çözümü kullanırken, bu “Dakika = 5\" olarak ayarlanabilir."
+msgid ""
+"When using an external logging solution for archiving, this can be set to "
+"\"minutes=5\"."
+msgstr ""
+"Arşivleme için harici bir günlük çözümü kullanırken, bu “Dakika = 5\" olarak"
+" ayarlanabilir."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions."
-msgstr "Proxy veya ileri auth (tek uygulama) modunu kullanırken, istenen URL Yolu düzenli ifadelere karşı denetlenir. İleriye yönlendirme (etki alanı modu) kullanıldığında, şema ve ana bilgisayar da dahil olmak üzere istenen tam URL normal ifadelerle eşleştirilir."
+msgid ""
+"When using proxy or forward auth (single application) mode, the requested "
+"URL Path is checked against the regular expressions. When using forward auth"
+" (domain mode), the full requested URL including scheme and host is matched "
+"against the regular expressions."
+msgstr ""
+"Proxy veya ileri auth (tek uygulama) modunu kullanırken, istenen URL Yolu "
+"düzenli ifadelere karşı denetlenir. İleriye yönlendirme (etki alanı modu) "
+"kullanıldığında, şema ve ana bilgisayar da dahil olmak üzere istenen tam URL"
+" normal ifadelerle eşleştirilir."
 
 #: src/flows/FlowExecutor.ts
 msgid "Whoops!"
@@ -5923,16 +6429,13 @@ msgstr "X509 Konusu"
 
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
-#: src/pages/groups/GroupListPage.ts
-#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/GroupListPage.ts src/pages/groups/MemberSelectModal.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
-#: src/pages/tenants/TenantListPage.ts
-#: src/pages/tokens/TokenListPage.ts
-#: src/pages/users/GroupSelectModal.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
+#: src/pages/users/GroupSelectModal.ts src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Yes"
 msgstr "Evet"
@@ -5979,18 +6482,15 @@ msgstr "bağlantı silinecek"
 msgid "no tabs defined"
 msgstr "tanımlanmış sekme yok"
 
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
 msgid "object will be DELETED"
 msgstr "nesne SILİNECEK"
 
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
 msgid "reference will be reset to default value"
 msgstr "referans varsayılan değere sıfırlanır"
 
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
 msgid "reference will be set to an empty value"
 msgstr "referans boş bir değere ayarlanacaktır"
 
@@ -5998,8 +6498,7 @@ msgstr "referans boş bir değere ayarlanacaktır"
 msgid "with inspector"
 msgstr "müfettiş ile"
 
-#: src/elements/Expand.ts
-#: src/elements/Expand.ts
+#: src/elements/Expand.ts src/elements/Expand.ts
 msgid "{0}"
 msgstr "{0}"
 
@@ -6011,8 +6510,7 @@ msgstr "{0} (“{1}”, {2} türünde)"
 msgid "{0} ({1})"
 msgstr "{0} ({1})"
 
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
 msgid "{0} ({consequence})"
 msgstr "{0} ({consequence})"
 
