@@ -172,7 +172,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		for _, regex := range strings.Split(*p.SkipPathRegex, "\n") {
 			re, err := regexp.Compile(regex)
 			if err != nil {
-				// TODO: maybe create event for this?
+				//TODO: maybe create event for this?
 				a.log.WithError(err).Warning("failed to compile SkipPathRegex")
 				continue
 			} else {
@@ -192,7 +192,7 @@ func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
-	// TODO: Token revocation
+	//TODO: Token revocation
 	s, err := a.sessions.Get(r, constants.SeesionName)
 	if err != nil {
 		http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)

@@ -61,7 +61,7 @@ func parseFilterForGroupSingle(req api.ApiCoreGroupsListRequest, f *ber.Packet) 
 			}
 			return req.MembersByUsername([]string{username}), false
 		}
-	// TODO: Support int
+	//TODO: Support int
 	default:
 		return req, false
 	}
