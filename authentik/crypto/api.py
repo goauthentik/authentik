@@ -17,6 +17,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
+from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
@@ -25,6 +26,8 @@ from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.managed import MANAGED_KEY
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
+
+LOGGER = get_logger()
 
 
 class CertificateKeyPairSerializer(ModelSerializer):
@@ -76,8 +79,11 @@ class CertificateKeyPairSerializer(ModelSerializer):
     def validate_certificate_data(self, value: str) -> str:
         """Verify that input is a valid PEM x509 Certificate"""
         try:
-            load_pem_x509_certificate(value.encode("utf-8"), default_backend())
-        except ValueError:
+            # Cast to string to fully load and parse certificate
+            # Prevents issues like https://github.com/goauthentik/authentik/issues/2082
+            str(load_pem_x509_certificate(value.encode("utf-8"), default_backend()))
+        except ValueError as exc:
+            LOGGER.warning("Failed to load certificate", exc=exc)
             raise ValidationError("Unable to load certificate.")
         return value
 
@@ -86,12 +92,17 @@ class CertificateKeyPairSerializer(ModelSerializer):
         # Since this field is optional, data can be empty.
         if value != "":
             try:
-                load_pem_private_key(
-                    str.encode("\n".join([x.strip() for x in value.split("\n")])),
-                    password=None,
-                    backend=default_backend(),
+                # Cast to string to fully load and parse certificate
+                # Prevents issues like https://github.com/goauthentik/authentik/issues/2082
+                str(
+                    load_pem_private_key(
+                        str.encode("\n".join([x.strip() for x in value.split("\n")])),
+                        password=None,
+                        backend=default_backend(),
+                    )
                 )
-            except (ValueError, TypeError):
+            except (ValueError, TypeError) as exc:
+                LOGGER.warning("Failed to load private key", exc=exc)
                 raise ValidationError("Unable to load private key (possibly encrypted?).")
         return value
 
