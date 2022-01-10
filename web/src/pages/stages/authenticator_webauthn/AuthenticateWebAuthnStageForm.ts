@@ -5,8 +5,14 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until";
 
-import { AuthenticateWebAuthnStage, StagesApi } from "@goauthentik/api";
+import {
+    AuthenticateWebAuthnStage,
+    FlowsApi,
+    FlowsInstancesListDesignationEnum,
+    StagesApi,
+} from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/HorizontalFormElement";
@@ -85,6 +91,46 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                                 ${t`User verification should not occur.`}
                             </option>
                         </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
+                        <select class="pf-c-form-control">
+                            <option
+                                value=""
+                                ?selected=${this.instance?.configureFlow === undefined}
+                            >
+                                ---------
+                            </option>
+                            ${until(
+                                new FlowsApi(DEFAULT_CONFIG)
+                                    .flowsInstancesList({
+                                        ordering: "slug",
+                                        designation:
+                                            FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    })
+                                    .then((flows) => {
+                                        return flows.results.map((flow) => {
+                                            let selected = this.instance?.configureFlow === flow.pk;
+                                            if (
+                                                !this.instance?.pk &&
+                                                !this.instance?.configureFlow &&
+                                                flow.slug === "default-otp-time-configure"
+                                            ) {
+                                                selected = true;
+                                            }
+                                            return html`<option
+                                                value=${ifDefined(flow.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${flow.name} (${flow.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
