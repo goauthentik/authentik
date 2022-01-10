@@ -118,9 +118,12 @@ class ChallengeStageView(StageView):
         """Allow usage of placeholder in flow title."""
         if not self.executor.plan:
             return self.executor.flow.title
-        return self.executor.flow.title % {
-            "app": self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, "")
-        }
+        try:
+            return self.executor.flow.title % {
+                "app": self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, "")
+            }
+        except ValueError:
+            return self.executor.flow.title
 
     def _get_challenge(self, *args, **kwargs) -> Challenge:
         with Hub.current.start_span(
