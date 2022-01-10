@@ -31,6 +31,10 @@ Note the Client ID and Client Secret values. Create an application, using the pr
 
 Add the following block to your Matrix config
 
+:::info
+For more info, see https://matrix-org.github.io/synapse/latest/openid.html?highlight=authentik#authentik
+:::
+
 ```yaml
 oidc_providers:
   - idp_id: authentik
@@ -45,6 +49,6 @@ oidc_providers:
       - "email"
     user_mapping_provider:
       config:
-        localpart_template: "{{ '{{ user.name }}' }}"
-        display_name_template: "{{ '{{ user.name|capitalize }}' }}"
+        localpart_template: "{{ user.preferred_username }}}"
+        display_name_template: "{{ user.name|capitalize }}"
 ```
