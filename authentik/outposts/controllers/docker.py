@@ -9,6 +9,7 @@ from docker import DockerClient as UpstreamDockerClient
 from docker.errors import DockerException, NotFound
 from docker.models.containers import Container
 from docker.utils.utils import kwargs_from_env
+from paramiko.ssh_exception import SSHException
 from structlog.stdlib import get_logger
 from yaml import safe_dump
 
@@ -49,10 +50,13 @@ class DockerClient(UpstreamDockerClient, BaseClient):
                     authentication_kp=connection.tls_authentication,
                 )
                 tls_config = self.tls.write()
-            super().__init__(
-                base_url=connection.url,
-                tls=tls_config,
-            )
+            try:
+                super().__init__(
+                    base_url=connection.url,
+                    tls=tls_config,
+                )
+            except SSHException as exc:
+                raise ServiceConnectionInvalid from exc
         self.logger = get_logger()
         # Ensure the client actually works
         self.containers.list()

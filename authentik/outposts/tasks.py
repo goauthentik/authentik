@@ -77,8 +77,12 @@ def outpost_service_connection_state(connection_pk: Any):
         cls = DockerClient
     if isinstance(connection, KubernetesServiceConnection):
         cls = KubernetesClient
-    with cls(connection) as client:
-        state = client.fetch_state()
+    try:
+        with cls(connection) as client:
+            state = client.fetch_state()
+    except ServiceConnectionInvalid as exc:
+        LOGGER.warning("Failed to get client status", exc=exc)
+        return
     cache.set(connection.state_key, state, timeout=None)
 
 
