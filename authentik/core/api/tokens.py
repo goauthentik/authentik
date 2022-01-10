@@ -1,7 +1,6 @@
 """Tokens API Viewset"""
 from typing import Any
 
-from django.http.response import Http404
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import get_anonymous_user
@@ -114,7 +113,5 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     def view_key(self, request: Request, identifier: str) -> Response:
         """Return token key and log access"""
         token: Token = self.get_object()
-        if token.is_expired:
-            raise Http404
         Event.new(EventAction.SECRET_VIEW, secret=token).from_http(request)  # noqa # nosec
         return Response(TokenViewSerializer({"key": token.key}).data)
