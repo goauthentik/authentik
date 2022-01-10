@@ -29,7 +29,7 @@ Create an application in authentik. Create an _OAuth2/OpenID Provider_ with the 
 
 - Client Type: `Public`
 - Scopes: OpenID, Email, Profile and the scope you created above
-- RSA Key: Select any available key
+- Signing Key: Select any available key
 - Redirect URIs: `https://minio.company/oauth_callback`
 
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above. Note the slug of the application you've created.

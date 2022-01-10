@@ -32,7 +32,7 @@ Only settings that have been modified from default have been listed.
 **Protocol Settings**
 
 - Name: Gitea
-- RSA Key: Select any available key
+- Signing Key: Select any available key
 
 :::note
 Take note of the `Client ID` and `Client Secret`, you'll need to give them to Gitea in _Step 3_.
