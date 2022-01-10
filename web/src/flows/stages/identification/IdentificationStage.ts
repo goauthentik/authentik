@@ -150,7 +150,7 @@ export class IdentificationStage extends BaseStage<
 
     cleanup(): void {
         if (this.form) {
-            document.documentElement.removeChild(this.form);
+            this.form.remove();
         }
     }
 
