@@ -3205,8 +3205,12 @@ msgid "Notification rule(s)"
 msgstr "Règle(s) de notification"
 
 #: src/pages/events/TransportListPage.ts
-msgid "Notification transports(s)"
-msgstr "Transport(s) de notification"
+msgid "Notification transport(s)"
+msgstr ""
+
+#: src/pages/events/TransportListPage.ts
+#~ msgid "Notification transports(s)"
+#~ msgstr "Transport(s) de notification"
 
 #: src/elements/notifications/NotificationDrawer.ts
 msgid "Notifications"
