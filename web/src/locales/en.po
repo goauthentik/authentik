@@ -62,6 +62,10 @@ msgstr "6 digits, widely compatible"
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr "8 digits, not compatible with apps like Google Authenticator"
 
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "A \"roaming\" authenticator, like a YubiKey"
+msgstr "A \"roaming\" authenticator, like a YubiKey"
+
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "A code has been sent to you via SMS."
 msgstr "A code has been sent to you via SMS."
@@ -69,6 +73,10 @@ msgstr "A code has been sent to you via SMS."
 #: src/interfaces/AdminInterface.ts
 msgid "A newer version of the frontend is available."
 msgstr "A newer version of the frontend is available."
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "A non-removable authenticator, like TouchID or Windows Hello"
+msgstr "A non-removable authenticator, like TouchID or Windows Hello"
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
@@ -487,6 +495,10 @@ msgstr "Authentication flow"
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Authenticator"
 msgstr "Authenticator"
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "Authenticator Attachment"
+msgstr "Authenticator Attachment"
 
 #: src/pages/flows/utils.ts
 msgid "Authorization"
@@ -3147,6 +3159,10 @@ msgstr "No objects found."
 msgid "No policies are currently bound to this object."
 msgstr "No policies are currently bound to this object."
 
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "No preference is sent"
+msgstr "No preference is sent"
+
 #: src/pages/users/UserListPage.ts
 msgid "No recovery flow is configured."
 msgstr "No recovery flow is configured."
@@ -3939,6 +3955,10 @@ msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 #: src/pages/users/UserViewPage.ts
 msgid "Reset Password"
 msgstr "Reset Password"
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "Resident key requirement"
+msgstr "Resident key requirement"
 
 #: src/interfaces/AdminInterface.ts
 #~ msgid "Resources"
@@ -5044,6 +5064,18 @@ msgstr "The Host IP of the docker host"
 #: src/elements/router/Router404.ts
 msgid "The URL \"{0}\" was not found."
 msgstr "The URL \"{0}\" was not found."
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur"
+msgstr "The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur"
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "The authenticator can create and store a dedicated credential, but if it doesn't that's alright too"
+msgstr "The authenticator can create and store a dedicated credential, but if it doesn't that's alright too"
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "The authenticator should not create a dedicated credential"
+msgstr "The authenticator should not create a dedicated credential"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts

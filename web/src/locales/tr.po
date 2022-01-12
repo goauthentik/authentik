@@ -65,6 +65,10 @@ msgstr "6 basamaklı, yaygın olarak uyumlu"
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr "Google Authenticator gibi uygulamalarla uyumlu olmayan 8 haneli"
 
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "A \"roaming\" authenticator, like a YubiKey"
+msgstr ""
+
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "A code has been sent to you via SMS."
 msgstr "SMS ile size bir kod gönderildi."
@@ -72,6 +76,10 @@ msgstr "SMS ile size bir kod gönderildi."
 #: src/interfaces/AdminInterface.ts
 msgid "A newer version of the frontend is available."
 msgstr "Ön yüzün daha yeni bir sürümü mevcuttur."
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "A non-removable authenticator, like TouchID or Windows Hello"
+msgstr ""
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
 msgid "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
@@ -486,6 +494,10 @@ msgstr "Kimlik doğrulama akışı"
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Authenticator"
 msgstr "Kimlik Doğrulayıcı"
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "Authenticator Attachment"
+msgstr ""
 
 #: src/pages/flows/utils.ts
 msgid "Authorization"
@@ -3096,6 +3108,10 @@ msgstr "Nesne bulunamadı."
 msgid "No policies are currently bound to this object."
 msgstr "Hiçbir ilke şu anda bu nesneye bağlı değildir."
 
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "No preference is sent"
+msgstr ""
+
 #: src/pages/users/UserListPage.ts
 msgid "No recovery flow is configured."
 msgstr "Kurtarma akışı yapılandırılmamış."
@@ -3866,6 +3882,10 @@ msgstr "Gerekli. 150 karakter veya daha az. Harfler, rakamlar ve yalnızca @/./+
 #: src/pages/users/UserViewPage.ts
 msgid "Reset Password"
 msgstr "Parolayı Sıfırla"
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "Resident key requirement"
+msgstr ""
 
 #~ msgid "Resources"
 #~ msgstr "Kaynaklar"
@@ -4937,6 +4957,18 @@ msgstr "Docker ana bilgisayarının Ana Bilgisayar IP'si"
 #: src/elements/router/Router404.ts
 msgid "The URL \"{0}\" was not found."
 msgstr "“{0}” URL'si bulunamadı."
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur"
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "The authenticator can create and store a dedicated credential, but if it doesn't that's alright too"
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "The authenticator should not create a dedicated credential"
+msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts

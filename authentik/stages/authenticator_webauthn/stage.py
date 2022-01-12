@@ -10,6 +10,7 @@ from webauthn import generate_registration_options, options_to_json, verify_regi
 from webauthn.helpers import bytes_to_base64url
 from webauthn.helpers.exceptions import InvalidRegistrationResponse
 from webauthn.helpers.structs import (
+    AuthenticatorAttachment,
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
     RegistrationCredential,
@@ -85,6 +86,12 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         stage: AuthenticateWebAuthnStage = self.executor.current_stage
         user = self.get_pending_user()
 
+        # library accepts none so we store null in the database, but if there is a value
+        # set, cast it to string to ensure it's not a django class
+        authenticator_attachment = stage.authenticator_attachment
+        if authenticator_attachment:
+            authenticator_attachment = str(authenticator_attachment)
+
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
             rp_id=get_rp_id(self.request),
             rp_name=self.request.tenant.branding_title,
@@ -92,8 +99,9 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             user_name=user.username,
             user_display_name=user.name,
             authenticator_selection=AuthenticatorSelectionCriteria(
-                resident_key=ResidentKeyRequirement.PREFERRED,
+                resident_key=str(stage.resident_key_requirement),
                 user_verification=str(stage.user_verification),
+                authenticator_attachment=authenticator_attachment,
             ),
         )
 

@@ -31,12 +31,53 @@ class UserVerification(models.TextChoices):
     DISCOURAGED = "discouraged"
 
 
+class ResidentKeyRequirement(models.TextChoices):
+    """The Relying Party's preference for the authenticator to create a dedicated "client-side"
+    credential for it. Requiring an authenticator to store a dedicated credential should not be
+    done lightly due to the limited storage capacity of some types of authenticators.
+
+    Members:
+        `DISCOURAGED`: The authenticator should not create a dedicated credential
+        `PREFERRED`: The authenticator can create and store a dedicated credential, but if it
+            doesn't that's alright too
+        `REQUIRED`: The authenticator MUST create a dedicated credential. If it cannot, the RP
+            is prepared for an error to occur.
+
+    https://www.w3.org/TR/webauthn-2/#enum-residentKeyRequirement
+    """
+
+    DISCOURAGED = "discouraged"
+    PREFERRED = "preferred"
+    REQUIRED = "required"
+
+
+class AuthenticatorAttachment(models.TextChoices):
+    """How an authenticator is connected to the client/browser.
+
+    Members:
+        `PLATFORM`: A non-removable authenticator, like TouchID or Windows Hello
+        `CROSS_PLATFORM`: A "roaming" authenticator, like a YubiKey
+
+    https://www.w3.org/TR/webauthn-2/#enumdef-authenticatorattachment
+    """
+
+    PLATFORM = "platform"
+    CROSS_PLATFORM = "cross-platform"
+
+
 class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
     """WebAuthn stage"""
 
     user_verification = models.TextField(
         choices=UserVerification.choices,
         default=UserVerification.PREFERRED,
+    )
+    resident_key_requirement = models.TextField(
+        choices=ResidentKeyRequirement.choices,
+        default=ResidentKeyRequirement.PREFERRED,
+    )
+    authenticator_attachment = models.TextField(
+        choices=AuthenticatorAttachment.choices, default=None, null=True
     )
 
     @property

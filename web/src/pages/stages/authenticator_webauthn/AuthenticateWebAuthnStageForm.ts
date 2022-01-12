@@ -9,8 +9,10 @@ import { until } from "lit/directives/until.js";
 
 import {
     AuthenticateWebAuthnStage,
+    AuthenticatorAttachmentEnum,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    ResidentKeyRequirementEnum,
     StagesApi,
 } from "@goauthentik/api";
 
@@ -35,6 +37,9 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
     }
 
     send = (data: AuthenticateWebAuthnStage): Promise<AuthenticateWebAuthnStage> => {
+        if (data.authenticatorAttachment?.toString() === "") {
+            data.authenticatorAttachment = null;
+        }
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnUpdate({
                 stageUuid: this.instance.pk || "",
@@ -68,7 +73,7 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                         ?required=${true}
                         name="userVerification"
                     >
-                        <select name="users" class="pf-c-form-control">
+                        <select class="pf-c-form-control">
                             <option
                                 value="${UserVerificationEnum.Required}"
                                 ?selected=${this.instance?.userVerification ===
@@ -89,6 +94,63 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                                 UserVerificationEnum.Discouraged}
                             >
                                 ${t`User verification should not occur.`}
+                            </option>
+                        </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Resident key requirement`}
+                        ?required=${true}
+                        name="residentKeyRequirement"
+                    >
+                        <select class="pf-c-form-control">
+                            <option
+                                value="${ResidentKeyRequirementEnum.Discouraged}"
+                                ?selected=${this.instance?.residentKeyRequirement ===
+                                ResidentKeyRequirementEnum.Discouraged}
+                            >
+                                ${t`The authenticator should not create a dedicated credential`}
+                            </option>
+                            <option
+                                value="${ResidentKeyRequirementEnum.Preferred}"
+                                ?selected=${this.instance?.residentKeyRequirement ===
+                                ResidentKeyRequirementEnum.Preferred}
+                            >
+                                ${t`The authenticator can create and store a dedicated credential, but if it doesn't that's alright too`}
+                            </option>
+                            <option
+                                value="${ResidentKeyRequirementEnum.Required}"
+                                ?selected=${this.instance?.residentKeyRequirement ===
+                                ResidentKeyRequirementEnum.Required}
+                            >
+                                ${t`The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur`}
+                            </option>
+                        </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Authenticator Attachment`}
+                        ?required=${true}
+                        name="authenticatorAttachment"
+                    >
+                        <select class="pf-c-form-control">
+                            <option
+                                value=""
+                                ?selected=${this.instance?.authenticatorAttachment === null}
+                            >
+                                ${t`No preference is sent`}
+                            </option>
+                            <option
+                                value="${AuthenticatorAttachmentEnum.Platform}"
+                                ?selected=${this.instance?.authenticatorAttachment ===
+                                AuthenticatorAttachmentEnum.Platform}
+                            >
+                                ${t`A non-removable authenticator, like TouchID or Windows Hello`}
+                            </option>
+                            <option
+                                value="${AuthenticatorAttachmentEnum.CrossPlatform}"
+                                ?selected=${this.instance?.authenticatorAttachment ===
+                                AuthenticatorAttachmentEnum.CrossPlatform}
+                            >
+                                ${t`A "roaming" authenticator, like a YubiKey`}
                             </option>
                         </select>
                     </ak-form-element-horizontal>

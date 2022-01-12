@@ -15271,6 +15271,14 @@ paths:
       description: AuthenticateWebAuthnStage Viewset
       parameters:
       - in: query
+        name: authenticator_attachment
+        schema:
+          type: string
+          nullable: true
+          enum:
+          - cross-platform
+          - platform
+      - in: query
         name: configure_flow
         schema:
           type: string
@@ -15297,6 +15305,14 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: resident_key_requirement
+        schema:
+          type: string
+          enum:
+          - discouraged
+          - preferred
+          - required
       - name: search
         required: false
         in: query
@@ -19174,6 +19190,12 @@ components:
             If empty, user will not be able to configure this stage.
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+          nullable: true
+        resident_key_requirement:
+          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
       required:
       - component
       - meta_model_name
@@ -19200,6 +19222,12 @@ components:
             If empty, user will not be able to configure this stage.
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+          nullable: true
+        resident_key_requirement:
+          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
       required:
       - name
     AuthenticatedSession:
@@ -19288,6 +19316,11 @@ components:
       - last_used
       - user
       - user_agent
+    AuthenticatorAttachmentEnum:
+      enum:
+      - platform
+      - cross-platform
+      type: string
     AuthenticatorDuoChallenge:
       type: object
       description: Duo Challenge
@@ -26519,6 +26552,12 @@ components:
             If empty, user will not be able to configure this stage.
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+          nullable: true
+        resident_key_requirement:
+          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
     PatchedAuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer
@@ -29376,6 +29415,12 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+    ResidentKeyRequirementEnum:
+      enum:
+      - discouraged
+      - preferred
+      - required
+      type: string
     SAMLMetadata:
       type: object
       description: SAML Provider Metadata serializer

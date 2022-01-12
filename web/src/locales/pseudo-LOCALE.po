@@ -62,12 +62,20 @@ msgstr ""
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr ""
 
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "A \"roaming\" authenticator, like a YubiKey"
+msgstr ""
+
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "A code has been sent to you via SMS."
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts
 msgid "A newer version of the frontend is available."
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "A non-removable authenticator, like TouchID or Windows Hello"
 msgstr ""
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
@@ -482,6 +490,10 @@ msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Authenticator"
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "Authenticator Attachment"
 msgstr ""
 
 #: src/pages/flows/utils.ts
@@ -3137,6 +3149,10 @@ msgstr ""
 msgid "No policies are currently bound to this object."
 msgstr ""
 
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "No preference is sent"
+msgstr ""
+
 #: src/pages/users/UserListPage.ts
 msgid "No recovery flow is configured."
 msgstr ""
@@ -3928,6 +3944,10 @@ msgstr ""
 
 #: src/pages/users/UserViewPage.ts
 msgid "Reset Password"
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "Resident key requirement"
 msgstr ""
 
 #: src/interfaces/AdminInterface.ts
@@ -5033,6 +5053,18 @@ msgstr ""
 
 #: src/elements/router/Router404.ts
 msgid "The URL \"{0}\" was not found."
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur"
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "The authenticator can create and store a dedicated credential, but if it doesn't that's alright too"
+msgstr ""
+
+#: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "The authenticator should not create a dedicated credential"
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
