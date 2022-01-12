@@ -10,11 +10,9 @@ from webauthn import generate_registration_options, options_to_json, verify_regi
 from webauthn.helpers import bytes_to_base64url
 from webauthn.helpers.exceptions import InvalidRegistrationResponse
 from webauthn.helpers.structs import (
-    AuthenticatorAttachment,
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
     RegistrationCredential,
-    ResidentKeyRequirement,
 )
 from webauthn.registration.verify_registration_response import VerifiedRegistration
 
