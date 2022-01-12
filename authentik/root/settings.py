@@ -354,7 +354,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     "db_backup": {
         "task": "authentik.core.tasks.backup_database",
-        "schedule": crontab(hour="*/24"),
+        "schedule": crontab(hour="*/24", minute=0),
         "options": {"queue": "authentik_scheduled"},
     },
 }
