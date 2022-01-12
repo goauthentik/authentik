@@ -50,13 +50,27 @@ export function tenant(): Promise<CurrentTenant> {
     return globalTenantPromise;
 }
 
+let csrfToken = getCookie("authentik_csrf");
+
+export class CSRFUpdaterMiddleware implements Middleware {
+    post?(context: ResponseContext): Promise<Response | void> {
+        const newCsrf = getCookie("authentik_csrf");
+        if (newCsrf !== csrfToken) {
+            console.log("authentik/api: rotated CSRF token");
+            csrfToken = newCsrf;
+        }
+        return Promise.resolve(context.response);
+    }
+}
+
 export const DEFAULT_CONFIG = new Configuration({
     basePath: process.env.AK_API_BASE_PATH + "/api/v3",
     headers: {
-        "X-CSRFToken": getCookie("authentik_csrf"),
+        "X-CSRFToken": csrfToken,
         "sentry-trace": getMetaContent("sentry-trace") || "",
     },
     middleware: [
+        new CSRFUpdaterMiddleware(),
         new APIMiddleware(),
         new MessageMiddleware(),
         new LoggingMiddleware(),
