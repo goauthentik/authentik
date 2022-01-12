@@ -99,7 +99,7 @@ class OAuthAuthorizationParams:
         # and POST request.
         query_dict = request.POST if request.method == "POST" else request.GET
         state = query_dict.get("state")
-        redirect_uri = query_dict.get("redirect_uri", "")
+        redirect_uri = query_dict.get("redirect_uri", "").lower()
 
         response_type = query_dict.get("response_type", "")
         grant_type = None
@@ -156,13 +156,20 @@ class OAuthAuthorizationParams:
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError("", allowed_redirect_urls)
-        if len(allowed_redirect_urls) < 1:
+
+        if self.provider.redirect_uris == "":
+            LOGGER.info("Setting redirect for blank redirect_uris", redirect=self.redirect_uri)
+            self.provider.redirect_uris = self.redirect_uri
+            self.provider.save()
+            allowed_redirect_urls = self.provider.redirect_uris.split()
+
+        if self.provider.redirect_uris == "*":
             LOGGER.warning(
-                "Provider has no allowed redirect_uri set, allowing all.",
-                allow=self.redirect_uri.lower(),
+                "Provider has wildcard allowed redirect_uri set, allowing all.",
+                allow=self.redirect_uri,
             )
             return
-        if self.redirect_uri.lower() not in [x.lower() for x in allowed_redirect_urls]:
+        if self.redirect_uri not in [x.lower() for x in allowed_redirect_urls]:
             LOGGER.warning(
                 "Invalid redirect uri",
                 redirect_uri=self.redirect_uri,

@@ -171,7 +171,10 @@ ${this.instance?.redirectUris}</textarea
                             ${t`Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.`}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`If no explicit redirect URIs are specified, any redirect URI is allowed.`}
+                            ${t`If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`To allow any redirect URI, set this value to "*". Be aware of the possible security implications this can have.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Signing Key`} name="signingKey">

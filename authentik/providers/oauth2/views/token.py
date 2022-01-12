@@ -66,7 +66,7 @@ class TokenParams:
             provider=provider,
             client_id=client_id,
             client_secret=client_secret,
-            redirect_uri=request.POST.get("redirect_uri", ""),
+            redirect_uri=request.POST.get("redirect_uri", "").lower(),
             grant_type=request.POST.get("grant_type", ""),
             state=request.POST.get("state", ""),
             scope=request.POST.get("scope", "").split(),
@@ -123,21 +123,23 @@ class TokenParams:
             LOGGER.warning("Invalid grant type", grant_type=self.grant_type)
             raise TokenError("unsupported_grant_type")
 
-    def __post_init_code(self, raw_code):
+    def __post_init_code(self, raw_code: str):
         if not raw_code:
             LOGGER.warning("Missing authorization code")
             raise TokenError("invalid_grant")
 
         allowed_redirect_urls = self.provider.redirect_uris.split()
-        if len(allowed_redirect_urls) < 1:
+        if self.provider.redirect_uris == "*":
             LOGGER.warning(
-                "Provider has no allowed redirect_uri set, allowing all.",
-                allow=self.redirect_uri.lower(),
+                "Provider has wildcard allowed redirect_uri set, allowing all.",
+                redirect=self.redirect_uri,
             )
-        elif self.redirect_uri.lower() not in [x.lower() for x in allowed_redirect_urls]:
+        # At this point, no provider should have a blank redirect_uri, in case they do
+        # this will check an empty array and raise an error
+        elif self.redirect_uri not in [x.lower() for x in allowed_redirect_urls]:
             LOGGER.warning(
                 "Invalid redirect uri",
-                uri=self.redirect_uri,
+                redirect=self.redirect_uri,
                 expected=self.provider.redirect_uris.split(),
             )
             raise TokenError("invalid_client")

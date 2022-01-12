@@ -2382,8 +2382,12 @@ msgid "If multiple providers share an outpost, a self-signed certificate is used
 msgstr "If multiple providers share an outpost, a self-signed certificate is used."
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
-msgstr "If no explicit redirect URIs are specified, any redirect URI is allowed."
+#~ msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
+#~ msgstr "If no explicit redirect URIs are specified, any redirect URI is allowed."
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved."
+msgstr "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved."
 
 #: src/pages/tenants/TenantForm.ts
 msgid "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown."
@@ -5186,6 +5190,10 @@ msgstr "Title"
 #: src/pages/events/EventInfo.ts
 msgid "To"
 msgstr "To"
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "To allow any redirect URI, set this value to \"*\". Be aware of the possible security implications this can have."
+msgstr "To allow any redirect URI, set this value to \"*\". Be aware of the possible security implications this can have."
 
 #: src/pages/users/UserViewPage.ts
 msgid "To create a recovery link, the current tenant needs to have a recovery flow configured."

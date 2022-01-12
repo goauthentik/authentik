@@ -2374,7 +2374,11 @@ msgid "If multiple providers share an outpost, a self-signed certificate is used
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
+#~ msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
+#~ msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved."
 msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
@@ -5165,6 +5169,10 @@ msgstr ""
 
 #: src/pages/events/EventInfo.ts
 msgid "To"
+msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "To allow any redirect URI, set this value to \"*\". Be aware of the possible security implications this can have."
 msgstr ""
 
 #: src/pages/users/UserViewPage.ts
