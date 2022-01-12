@@ -437,7 +437,10 @@ if not CONFIG.y_bool("disable_startup_analytics", False):
                     "domain": "authentik",
                     "name": "pageview",
                     "referrer": f"{__version__} ({build_hash})",
-                    "url": f"http://localhost/{env}?utm_source={__version__}&utm_medium={env}",
+                    "url": (
+                        f"http://localhost/{env}?utm_source={__version__}-"
+                        f"{build_hash}&utm_medium={env}"
+                    ),
                 },
                 headers={
                     "User-Agent": sha512(SECRET_KEY.encode("ascii")).hexdigest()[:16],
