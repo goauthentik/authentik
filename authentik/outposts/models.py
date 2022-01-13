@@ -1,7 +1,6 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from os import environ
 from typing import Iterable, Optional
 from uuid import uuid4
 
@@ -17,7 +16,7 @@ from model_utils.managers import InheritanceManager
 from packaging.version import LegacyVersion, Version, parse
 from structlog.stdlib import get_logger
 
-from authentik import ENV_GIT_HASH_KEY, __version__
+from authentik import __version__, get_build_hash
 from authentik.core.models import (
     USER_ATTRIBUTE_CAN_OVERRIDE_IP,
     USER_ATTRIBUTE_SA,
@@ -414,7 +413,7 @@ class OutpostState:
         """Check if outpost version matches our version"""
         if not self.version:
             return False
-        if self.build_hash != environ.get(ENV_GIT_HASH_KEY, ""):
+        if self.build_hash != get_build_hash():
             return False
         return parse(self.version) < OUR_VERSION
 

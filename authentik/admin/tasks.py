@@ -1,6 +1,5 @@
 """authentik admin tasks"""
 import re
-from os import environ
 
 from django.core.cache import cache
 from django.core.validators import URLValidator
@@ -9,7 +8,7 @@ from prometheus_client import Info
 from requests import RequestException
 from structlog.stdlib import get_logger
 
-from authentik import ENV_GIT_HASH_KEY, __version__
+from authentik import __version__, get_build_hash
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.monitored_tasks import (
     MonitoredTask,
@@ -36,7 +35,7 @@ def _set_prom_info():
         {
             "version": __version__,
             "latest": cache.get(VERSION_CACHE_KEY, ""),
-            "build_hash": environ.get(ENV_GIT_HASH_KEY, ""),
+            "build_hash": get_build_hash(),
         }
     )
 

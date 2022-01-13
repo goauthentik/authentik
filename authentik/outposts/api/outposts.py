@@ -1,6 +1,4 @@
 """Outpost API Views"""
-from os import environ
-
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from django_filters.filters import ModelMultipleChoiceFilter
@@ -14,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import JSONField, ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
-from authentik import ENV_GIT_HASH_KEY
+from authentik import get_build_hash
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, is_dict
@@ -154,7 +152,7 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
                     "version_should": state.version_should,
                     "version_outdated": state.version_outdated,
                     "build_hash": state.build_hash,
-                    "build_hash_should": environ.get(ENV_GIT_HASH_KEY, ""),
+                    "build_hash_should": get_build_hash(),
                 }
             )
         return Response(OutpostHealthSerializer(states, many=True).data)

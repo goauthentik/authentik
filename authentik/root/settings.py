@@ -30,7 +30,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.threading import ThreadingIntegration
 
-from authentik import ENV_GIT_HASH_KEY, __version__
+from authentik import ENV_GIT_HASH_KEY, __version__, get_build_hash, get_full_version
 from authentik.core.middleware import structlog_add_request_id
 from authentik.lib.config import CONFIG
 from authentik.lib.logging import add_process_id
@@ -396,10 +396,6 @@ if CONFIG.y("postgresql.s3_backup.bucket", "") != "":
 
 # Sentry integration
 SENTRY_DSN = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
-# Default to empty string as that is what docker has
-build_hash = os.environ.get(ENV_GIT_HASH_KEY, "")
-if build_hash == "":
-    build_hash = "tagged"
 
 env = get_env()
 _ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
@@ -420,7 +416,7 @@ if _ERROR_REPORTING:
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )
-    set_tag("authentik.build_hash", build_hash)
+    set_tag("authentik.build_hash", get_build_hash("tagged"))
     set_tag("authentik.env", env)
     set_tag("authentik.component", "backend")
     set_tag("authentik.uuid", sha512(SECRET_KEY.encode("ascii")).hexdigest()[:16])
@@ -437,10 +433,9 @@ if not CONFIG.y_bool("disable_startup_analytics", False):
                 json={
                     "domain": "authentik",
                     "name": "pageview",
-                    "referrer": f"{__version__} ({build_hash})",
+                    "referrer": get_full_version(),
                     "url": (
-                        f"http://localhost/{env}?utm_source={__version__}-"
-                        f"{build_hash}&utm_medium={env}"
+                        f"http://localhost/{env}?utm_source={get_full_version()}&utm_medium={env}"
                     ),
                 },
                 headers={
