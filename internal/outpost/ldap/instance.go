@@ -124,7 +124,7 @@ func (pi *ProviderInstance) GetBaseEntry() *ldap.Entry {
 			},
 			{
 				Name:   "vendorVersion",
-				Values: []string{fmt.Sprintf("authentik LDAP Outpost Version %s (build %s)", constants.VERSION, constants.BUILD())},
+				Values: []string{fmt.Sprintf("authentik LDAP Outpost Version %s", constants.FullVersion())},
 			},
 		},
 	}

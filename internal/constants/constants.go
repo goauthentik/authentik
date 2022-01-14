@@ -5,16 +5,24 @@ import (
 	"os"
 )
 
-func BUILD() string {
+func BUILD(def string) string {
 	build := os.Getenv("GIT_BUILD_HASH")
 	if build == "" {
-		return "tagged"
+		return def
 	}
 	return build
 }
 
+func FullVersion() string {
+	ver := VERSION
+	if b := BUILD(""); b != "" {
+		ver = fmt.Sprintf("%s.%s", ver, b)
+	}
+	return ver
+}
+
 func OutpostUserAgent() string {
-	return fmt.Sprintf("authentik-outpost@%s (build=%s)", VERSION, BUILD())
+	return fmt.Sprintf("authentik-outpost@%s", FullVersion())
 }
 
 const VERSION = "2021.12.5"

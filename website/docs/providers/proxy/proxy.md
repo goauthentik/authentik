@@ -42,7 +42,7 @@ Besides these user-specific headers, some application specific headers are also 
 
     The authentik application's slug.
 
-- X-authentik-meta-version: `authentik-outpost@1.2.3 (build=tagged)`
+- X-authentik-meta-version: `authentik-outpost@1.2.3`
 
     The authentik outpost's version.
 

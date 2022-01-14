@@ -51,7 +51,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 		Instruction: WebsocketInstructionHello,
 		Args: map[string]interface{}{
 			"version":   constants.VERSION,
-			"buildHash": constants.BUILD(),
+			"buildHash": constants.BUILD("tagged"),
 			"uuid":      ac.instanceUUID.String(),
 		},
 	}
@@ -151,7 +151,7 @@ func (ac *APIController) startWSHandler() {
 					"outpost_type": ac.Server.Type(),
 					"uuid":         ac.instanceUUID.String(),
 					"version":      constants.VERSION,
-					"build":        constants.BUILD(),
+					"build":        constants.BUILD("tagged"),
 				}).SetToCurrentTime()
 			}
 		}
@@ -165,7 +165,7 @@ func (ac *APIController) startWSHealth() {
 			Instruction: WebsocketInstructionHello,
 			Args: map[string]interface{}{
 				"version":   constants.VERSION,
-				"buildHash": constants.BUILD(),
+				"buildHash": constants.BUILD("tagged"),
 				"uuid":      ac.instanceUUID.String(),
 			},
 		}
@@ -205,7 +205,7 @@ func (ac *APIController) startIntervalUpdater() {
 				"outpost_type": ac.Server.Type(),
 				"uuid":         ac.instanceUUID.String(),
 				"version":      constants.VERSION,
-				"build":        constants.BUILD(),
+				"build":        constants.BUILD("tagged"),
 			}).SetToCurrentTime()
 		}
 	}

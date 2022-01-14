@@ -171,7 +171,7 @@ func (a *APIController) StartBackgorundTasks() error {
 		"outpost_type": a.Server.Type(),
 		"uuid":         a.instanceUUID.String(),
 		"version":      constants.VERSION,
-		"build":        constants.BUILD(),
+		"build":        constants.BUILD("tagged"),
 	}).Set(1)
 	go func() {
 		a.logger.Debug("Starting WS Handler...")

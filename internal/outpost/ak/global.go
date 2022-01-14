@@ -34,7 +34,7 @@ func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
 	} else {
 		l.Debug("Managed outpost, not setting global log level")
 	}
-	l.WithField("hash", constants.BUILD()).WithField("version", constants.VERSION).Info("Starting authentik outpost")
+	l.WithField("hash", constants.BUILD("tagged")).WithField("version", constants.VERSION).Info("Starting authentik outpost")
 
 	if globalConfig.ErrorReporting.Enabled {
 		dsn := "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
