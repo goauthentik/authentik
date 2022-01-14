@@ -6,6 +6,7 @@ from kubernetes.client import CoreV1Api, V1Service, V1ServicePort, V1ServiceSpec
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
+from authentik.outposts.controllers.k8s.triggers import NeedsUpdate
 from authentik.outposts.controllers.k8s.utils import compare_ports
 
 if TYPE_CHECKING:
@@ -25,6 +26,8 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         # after an authentik update. However the ports might have also changed during
         # the update, so this causes the service to be re-created with higher
         # priority than being updated.
+        if current.spec.selector != reference.spec.selector:
+            raise NeedsUpdate()
         super().reconcile(current, reference)
 
     def get_reference_object(self) -> V1Service:
