@@ -57,7 +57,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         """Get common object metadata"""
         kwargs.update(
             {
-                "app.kubernetes.io/name": "authentik-outpost",
+                "app.kubernetes.io/name": f"authentik-outpost-{self.outpost.type}",
                 "app.kubernetes.io/managed-by": "goauthentik.io",
                 "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
                 "goauthentik.io/outpost-name": slugify(self.controller.outpost.name),
