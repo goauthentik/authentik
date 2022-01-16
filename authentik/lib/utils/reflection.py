@@ -58,4 +58,6 @@ def get_env() -> str:
         return "compose"
     if CONFIG.y_bool("debug"):
         return "dev"
+    if "AK_APPLIANCE" in os.environ:
+        return os.environ["AK_APPLIANCE"]
     return "custom"
