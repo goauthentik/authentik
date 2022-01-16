@@ -1,37 +1,17 @@
 """Metrics view"""
 from base64 import b64encode
-from typing import Callable
 
 from django.conf import settings
 from django.db import connections
 from django.db.utils import OperationalError
+from django.dispatch import Signal
 from django.http import HttpRequest, HttpResponse
 from django.views import View
 from django_prometheus.exports import ExportToDjangoView
 from django_redis import get_redis_connection
-from prometheus_client import Gauge
 from redis.exceptions import RedisError
 
-from authentik.admin.api.workers import GAUGE_WORKERS
-from authentik.events.monitored_tasks import TaskInfo
-from authentik.root.celery import CELERY_APP
-
-
-class UpdatingGauge(Gauge):
-    """Gauge which fetches its own value from an update function.
-
-    Update function is called on instantiate"""
-
-    def __init__(self, *args, update_func: Callable, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._update_func = update_func
-        self.update()
-
-    def update(self):
-        """Set value from update function"""
-        val = self._update_func()
-        if val:
-            self.set(val)
+monitoring_set = Signal()
 
 
 class MetricsView(View):
@@ -49,11 +29,7 @@ class MetricsView(View):
             response["WWW-Authenticate"] = 'Basic realm="authentik-monitoring"'
             return response
 
-        count = len(CELERY_APP.control.ping(timeout=0.5))
-        GAUGE_WORKERS.set(count)
-
-        for task in TaskInfo.all().values():
-            task.set_prom_metrics()
+        monitoring_set.send_robust(self)
 
         return ExportToDjangoView(request)
 

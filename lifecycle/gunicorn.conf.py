@@ -60,3 +60,10 @@ else:
 
 workers = int(os.environ.get("WORKERS", default_workers))
 threads = int(os.environ.get("THREADS", 4))
+
+# pylint: disable=unused-argument
+def worker_exit(server, worker):
+    """Remove pid dbs when worker is shutdown"""
+    from prometheus_client import multiprocess
+
+    multiprocess.mark_process_dead(worker.pid)

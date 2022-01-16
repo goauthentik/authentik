@@ -1,4 +1,6 @@
 """authentik admin app config"""
+from importlib import import_module
+
 from django.apps import AppConfig
 
 
@@ -13,3 +15,4 @@ class AuthentikAdminConfig(AppConfig):
         from authentik.admin.tasks import clear_update_notifications
 
         clear_update_notifications.delay()
+        import_module("authentik.admin.signals")
