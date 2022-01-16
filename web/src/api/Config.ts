@@ -1,4 +1,4 @@
-import { Config, Configuration, CoreApi, CurrentTenant, Middleware, ResponseContext, RootApi } from "@goauthentik/api";
+import { Config, Configuration, CoreApi, CurrentTenant, FetchParams, Middleware, RequestContext, ResponseContext, RootApi } from "@goauthentik/api";
 import { getCookie } from "../utils";
 import { APIMiddleware } from "../elements/notifications/APIDrawer";
 import { MessageMiddleware } from "../elements/messages/Middleware";
@@ -50,27 +50,21 @@ export function tenant(): Promise<CurrentTenant> {
     return globalTenantPromise;
 }
 
-let csrfToken = getCookie("authentik_csrf");
-
-export class CSRFUpdaterMiddleware implements Middleware {
-    post?(context: ResponseContext): Promise<Response | void> {
-        const newCsrf = getCookie("authentik_csrf");
-        if (newCsrf !== csrfToken) {
-            console.log("authentik/api: rotated CSRF token");
-            csrfToken = newCsrf;
-        }
-        return Promise.resolve(context.response);
+export class CSRFMiddleware implements Middleware {
+    pre?(context: RequestContext): Promise<FetchParams | void> {
+        // @ts-ignore
+        context.init.headers["X-CSRFToken"] = getCookie("authentik_csrf");
+        return Promise.resolve(context);
     }
 }
 
 export const DEFAULT_CONFIG = new Configuration({
     basePath: process.env.AK_API_BASE_PATH + "/api/v3",
     headers: {
-        "X-CSRFToken": csrfToken,
         "sentry-trace": getMetaContent("sentry-trace") || "",
     },
     middleware: [
-        new CSRFUpdaterMiddleware(),
+        new CSRFMiddleware(),
         new APIMiddleware(),
         new MessageMiddleware(),
         new LoggingMiddleware(),
