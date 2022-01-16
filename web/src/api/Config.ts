@@ -53,7 +53,7 @@ export function tenant(): Promise<CurrentTenant> {
 export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
         // @ts-ignore
-        context.init.headers["X-CSRFToken"] = getCookie("authentik_csrf");
+        context.init.headers["X-authentik-CSRF"] = getCookie("authentik_csrf");
         return Promise.resolve(context);
     }
 }

@@ -24,7 +24,7 @@ export const DEFAULT_CONFIG = new Configuration({
     // Required for POST/PUT/DELETE requests
     // getCookie function must return the cookie's contents
     headers: {
-        "X-CSRFToken": getCookie("authentik_csrf"),
+        "X-authentik-CSRF": getCookie("authentik_csrf"),
     },
 });
 ```

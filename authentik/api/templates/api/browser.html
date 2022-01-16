@@ -30,7 +30,7 @@ function getCookie(name) {
 window.addEventListener('DOMContentLoaded', (event) => {
     const rapidocEl = document.querySelector('rapi-doc');
     rapidocEl.addEventListener('before-try', (e) => {
-        e.detail.request.headers.append('X-CSRFToken', getCookie("authentik_csrf"));
+        e.detail.request.headers.append('X-authentik-CSRF', getCookie("authentik_csrf"));
     });
 });
 </script>
