@@ -20,6 +20,8 @@ export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
                     // Error on edge on ios,
                     // https://stackoverflow.com/questions/69261499/what-is-instantsearchsdkjsbridgeclearhighlight
                     /instantSearchSDKJSBridgeClearHighlight/ig,
+                    // Seems to be an issue in Safari and Firefox
+                    /MutationObserver.observe/ig,
                 ],
                 release: `authentik@${VERSION}`,
                 tunnel: "/api/v3/sentry/",
