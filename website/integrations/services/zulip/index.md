@@ -26,7 +26,7 @@ Create the application and saml provider on Authentik.
 
 ## Zulip Configuration
 
-:::Note
+:::note
 Zulip is a Django application and is configured using `/etc/zulip/settings.py`. Only settings that differ
 from the defaults are displayed below. Please make sure you have the latest `settings.py` file as more settings 
 might have been added to defaults since you installed Zulip.
