@@ -38,7 +38,7 @@ spec:
       protocol: TCP
       targetPort: http
     - name: https
-      port: 9443s
+      port: 9443
       protocol: TCP
       targetPort: https
   type: ClusterIP
