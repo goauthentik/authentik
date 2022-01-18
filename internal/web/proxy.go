@@ -47,10 +47,9 @@ func (ws *WebServer) configureProxy() {
 			ws.proxyErrorHandler(rw, r, fmt.Errorf("authentik core not running yet"))
 			return
 		}
-		host := web.GetHost(r)
 		before := time.Now()
 		if ws.ProxyServer != nil {
-			if ws.ProxyServer.HandleHost(host, rw, r) {
+			if ws.ProxyServer.HandleHost(rw, r) {
 				Requests.With(prometheus.Labels{
 					"dest": "embedded_outpost",
 				}).Observe(float64(time.Since(before)))
@@ -60,7 +59,7 @@ func (ws *WebServer) configureProxy() {
 		Requests.With(prometheus.Labels{
 			"dest": "py",
 		}).Observe(float64(time.Since(before)))
-		ws.log.WithField("host", host).Trace("routing to application server")
+		ws.log.WithField("host", web.GetHost(r)).Trace("routing to application server")
 		rp.ServeHTTP(rw, r)
 	})
 }

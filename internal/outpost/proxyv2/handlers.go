@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"goauthentik.io/internal/outpost/proxyv2/application"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	"goauthentik.io/internal/utils/web"
 	staticWeb "goauthentik.io/web"
@@ -43,6 +44,42 @@ func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
 	}).Observe(float64(after))
 }
 
+func (ps *ProxyServer) lookupApp(r *http.Request) (*application.Application, string) {
+	host := web.GetHost(r)
+	// Try to find application by directly looking up host first (proxy, forward_auth_single)
+	a, ok := ps.apps[host]
+	if ok {
+		ps.log.WithField("host", host).WithField("app", a).Debug("Found app based direct host match")
+		return a, host
+	}
+	// For forward_auth_domain, we don't have a direct app to domain relationship
+	// Check through all apps, and check how much of their cookie domain matches the host
+	// Return the application that has the longest match
+	var longestMatch *application.Application
+	longestMatchLength := 0
+	for _, app := range ps.apps {
+		// Check if the cookie domain has a leading period for a wildcard
+		// This will decrease the weight of a wildcard domain, but a request to example.com
+		// with the cookie domain set to example.com will still be routed correctly.
+		cd := strings.TrimPrefix(*app.ProxyConfig().CookieDomain, ".")
+		if !strings.HasSuffix(host, cd) {
+			continue
+		}
+		if len(cd) < longestMatchLength {
+			continue
+		}
+		longestMatch = app
+		longestMatchLength = len(cd)
+	}
+	// Check if our longes match is 0, in which case we didn't match, so we
+	// manually return no app
+	if longestMatchLength == 0 {
+		return nil, host
+	}
+	ps.log.WithField("host", host).WithField("app", longestMatch).Debug("Found app based on cookie domain")
+	return longestMatch, host
+}
+
 func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, "/akprox/static") {
 		ps.HandleStatic(rw, r)
@@ -52,9 +89,8 @@ func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
 		ps.HandlePing(rw, r)
 		return
 	}
-	host := web.GetHost(r)
-	a, ok := ps.apps[host]
-	if !ok {
+	a, host := ps.lookupApp(r)
+	if a == nil {
 		// If we only have one handler, host name switching doesn't matter
 		if len(ps.apps) == 1 {
 			ps.log.WithField("host", host).Trace("passing to single app mux")

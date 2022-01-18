@@ -187,6 +187,10 @@ func (a *Application) Mode() api.ProxyMode {
 	return *a.proxyConfig.Mode
 }
 
+func (a *Application) ProxyConfig() api.ProxyOutpostConfig {
+	return a.proxyConfig
+}
+
 func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	a.mux.ServeHTTP(rw, r)
 }

@@ -70,11 +70,12 @@ func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
 	return s
 }
 
-func (ps *ProxyServer) HandleHost(host string, rw http.ResponseWriter, r *http.Request) bool {
-	if app, ok := ps.apps[host]; ok {
-		if app.Mode() == api.PROXYMODE_PROXY {
+func (ps *ProxyServer) HandleHost(rw http.ResponseWriter, r *http.Request) bool {
+	a, host := ps.lookupApp(r)
+	if a != nil {
+		if a.Mode() == api.PROXYMODE_PROXY {
 			ps.log.WithField("host", host).Trace("routing to proxy outpost")
-			app.ServeHTTP(rw, r)
+			a.ServeHTTP(rw, r)
 			return true
 		}
 	}
