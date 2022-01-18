@@ -90,4 +90,4 @@ Please refer to the following for further configuration information:
 
 - https://roundcube.net
 - https://github.com/roundcube/roundcubemail/wiki/Configuration%3A-OAuth2
-- https://https://doc.dovecot.org/configuration_manual/authentication/oauth2/
+- https://doc.dovecot.org/configuration_manual/authentication/oauth2/
