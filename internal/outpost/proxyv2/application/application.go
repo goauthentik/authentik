@@ -84,7 +84,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	mux := mux.NewRouter()
 	a := &Application{
 		Host:           externalHost.Host,
-		log:            log.WithField("logger", "authentik.outpost.proxy.bundle").WithField("provider", p.Name),
+		log:            muxLogger,
 		outpostName:    ak.Outpost.Name,
 		endpint:        endpoint,
 		oauthConfig:    oauth2Config,

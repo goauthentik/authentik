@@ -49,7 +49,7 @@ func (ps *ProxyServer) lookupApp(r *http.Request) (*application.Application, str
 	// Try to find application by directly looking up host first (proxy, forward_auth_single)
 	a, ok := ps.apps[host]
 	if ok {
-		ps.log.WithField("host", host).WithField("app", a).Debug("Found app based direct host match")
+		ps.log.WithField("host", host).WithField("app", a.ProxyConfig().Name).Debug("Found app based direct host match")
 		return a, host
 	}
 	// For forward_auth_domain, we don't have a direct app to domain relationship
@@ -76,7 +76,7 @@ func (ps *ProxyServer) lookupApp(r *http.Request) (*application.Application, str
 	if longestMatchLength == 0 {
 		return nil, host
 	}
-	ps.log.WithField("host", host).WithField("app", longestMatch).Debug("Found app based on cookie domain")
+	ps.log.WithField("host", host).WithField("app", longestMatch.ProxyConfig().Name).Debug("Found app based on cookie domain")
 	return longestMatch, host
 }
 
