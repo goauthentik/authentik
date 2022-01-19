@@ -22,7 +22,8 @@ The following placeholders will be used:
 - `authentik.company` is the FQDN of the authentik install.
 - `<application slug>` is the slug you have set for this application (i.e 'zulip')
 
-Create the application and saml provider on Authentik.
+Create the application and saml provider on Authentik, making sure the Service Provider Binding
+is set to `Post`.
 
 ## Zulip Configuration
 
