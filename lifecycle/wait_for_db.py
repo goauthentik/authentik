@@ -2,6 +2,7 @@
 """This file needs to be run from the root of the project to correctly
 import authentik. This is done by the dockerfile."""
 from json import dumps
+from sys import exit as sysexit
 from sys import stderr
 from time import sleep, time
 
@@ -28,7 +29,7 @@ def j_print(event: str, log_level: str = "info", **kwargs):
 # Sanity check, ensure SECRET_KEY is set before we even check for database connectivity
 if CONFIG.y("secret_key") is None or len(CONFIG.y("secret_key")) == 0:
     j_print("Secret key missing, check https://goauthentik.io/docs/installation/.")
-    exit(1)
+    sysexit(1)
 
 
 while True:
