@@ -62,7 +62,10 @@ if [[ "$1" == "server" ]]; then
     wait_for_db
     echo "server" > $MODE_FILE
     # We only set prometheus_multiproc_dir for serer, as with the worker it just fills up the disk
-    export prometheus_multiproc_dir=/dev/shm/
+    # as one file is created per process
+    #
+    # Set to TMPDIR instead hardcoded path so this can be used outside docker too
+    export prometheus_multiproc_dir=$TMPDIR
     python -m lifecycle.migrate
     /authentik-proxy
 elif [[ "$1" == "worker" ]]; then
