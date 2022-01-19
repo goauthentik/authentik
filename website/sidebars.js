@@ -75,7 +75,7 @@ module.exports = {
         {
             type: "category",
             label: "Flows",
-            items: ["flow/index", "flow/examples"],
+            items: ["flow/index", "flow/inspector", "flow/examples"],
         },
         {
             type: "category",
