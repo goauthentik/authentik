@@ -133,14 +133,15 @@ module.exports = {
             type: "category",
             label: "Release Notes",
             items: [
+                "releases/v2022.1",
                 "releases/v2021.12",
                 "releases/v2021.10",
                 "releases/v2021.9",
-                "releases/v2021.8",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/v2021.8",
                         "releases/v2021.7",
                         "releases/v2021.6",
                         "releases/v2021.5",
