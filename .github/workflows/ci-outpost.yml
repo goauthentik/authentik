@@ -28,7 +28,7 @@ jobs:
             --rm \
             -v $(pwd):/app \
             -w /app \
-            golangci/golangci-lint:v1.39.0 \
+            golangci/golangci-lint:v1.43 \
             golangci-lint run -v --timeout 200s
   ci-outpost-mark:
     needs:
