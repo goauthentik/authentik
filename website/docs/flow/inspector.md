@@ -30,4 +30,4 @@ This data is not cleaned, so if your flow involves inputting a password, it will
 
 ## Session ID
 
-The unique ID for the currently used session. This can be used to debug issues with flows restarting/loosing state.
+The unique ID for the currently used session. This can be used to debug issues with flows restarting/losing state.
