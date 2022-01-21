@@ -81,7 +81,7 @@
         "base64-js": "^1.5.1",
         "chart.js": "^3.7.0",
         "chartjs-adapter-moment": "^1.0.0",
-        "codemirror": "^5.65.0",
+        "codemirror": "^5.65.1",
         "construct-style-sheets-polyfill": "^3.0.5",
         "country-flag-icons": "^1.4.19",
         "eslint": "^8.7.0",
