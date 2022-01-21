@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"goauthentik.io/api"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
@@ -34,6 +35,10 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
+	if strings.HasPrefix(r.Header.Get("X-Forwarded-Uri"), "/akprox") {
+		a.log.WithField("url", r.URL.String()).Trace("path begins with /akprox, allowing access")
+		return
+	}
 	host := ""
 	s, _ := a.sessions.Get(r, constants.SeesionName)
 	// Optional suffix, which is appended to the URL
@@ -49,14 +54,6 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	// see https://doc.traefik.io/traefik/middlewares/forwardauth/
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
 	s.Values[constants.SessionRedirect] = a.getTraefikForwardUrl(r).String()
-	if r.Header.Get("X-Forwarded-Uri") == "/akprox/start" {
-		a.log.Info("Detected potential redirect loop")
-		if val, ok := s.Values[constants.SessionLoopDetection]; !ok {
-			s.Values[constants.SessionLoopDetection] = 1
-		} else {
-			s.Values[constants.SessionLoopDetection] = val.(int) + 1
-		}
-	}
 	err = s.Save(r, rw)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session before redirect")
@@ -81,6 +78,10 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 		return
 	} else if claims == nil && a.IsAllowlisted(r) {
 		a.log.Trace("path can be accessed without authentication")
+		return
+	}
+	if strings.HasPrefix(a.getTraefikForwardUrl(r).Path, "/akprox") {
+		a.log.WithField("url", r.URL.String()).Trace("path begins with /akprox, allowing access")
 		return
 	}
 	http.Error(rw, "unauthorized request", http.StatusUnauthorized)
