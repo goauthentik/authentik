@@ -22,7 +22,7 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	headers.Set("X-authentik-jwt", c.RawToken)
 
 	// System headers
-	headers.Set("X-authentik-meta-jwks", a.proxyConfig.OidcConfiguration.JwksUri)
+	headers.Set("X-authentik-meta-jwks", a.endpint.JwksUri)
 	headers.Set("X-authentik-meta-outpost", a.outpostName)
 	headers.Set("X-authentik-meta-provider", a.proxyConfig.Name)
 	headers.Set("X-authentik-meta-app", a.proxyConfig.AssignedApplicationSlug)
