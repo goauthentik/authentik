@@ -17,8 +17,10 @@ export class SystemStatusCard extends AdminStatusCard<System> {
     async getPrimaryValue(): Promise<System> {
         this.now = new Date();
         let status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
-        if (status.embeddedOutpostHost === "") {
+        if (status.embeddedOutpostHost === "" || !status.embeddedOutpostHost.includes("http")) {
             // First install, ensure the embedded outpost host is set
+            // also run when outpost host does not contain http
+            // (yes it's called host and requires a URL, i know)
             await this.setOutpostHost();
             status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
         }
