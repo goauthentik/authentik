@@ -2,6 +2,10 @@
 title: Backup and restore
 ---
 
+:::error
+Integrated backups are deprecated and will be removed in a future authentik release.
+:::
+
 :::warning
 Local backups are only supported for docker-compose installs. If you want to backup a Kubernetes instance locally, use an S3-compatible server such as [minio](https://min.io/)
 :::
