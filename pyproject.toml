@@ -135,7 +135,7 @@ pyjwt = "*"
 python = "^3.10"
 pyyaml = "*"
 requests-oauthlib = "*"
-sentry-sdk = { git = 'https://github.com/beryju/sentry-python.git', rev = '379aee28b15d3b87b381317746c4efd24b3d7bc3' }
+sentry-sdk = "*"
 service_identity = "*"
 structlog = "*"
 swagger-spec-validator = "*"
