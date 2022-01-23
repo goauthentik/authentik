@@ -45,7 +45,7 @@ class HaveIBeenPwendPolicy(Policy):
                 fields=request.context.keys(),
             )
             return PolicyResult(False, _("Password not set in context"))
-        password = request.context[self.password_field]
+        password = str(request.context[self.password_field])
 
         pw_hash = sha1(password.encode("utf-8")).hexdigest()  # nosec
         url = f"https://api.pwnedpasswords.com/range/{pw_hash[:5]}"
