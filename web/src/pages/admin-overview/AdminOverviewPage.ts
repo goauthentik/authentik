@@ -17,7 +17,6 @@ import "../../elements/charts/AdminLoginsChart";
 import { paramURL } from "../../elements/router/RouterOutlet";
 import "./TopApplicationsTable";
 import "./cards/AdminStatusCard";
-import "./cards/BackupStatusCard";
 import "./cards/SystemStatusCard";
 import "./cards/VersionStatusCard";
 import "./cards/WorkerStatusCard";
@@ -166,7 +165,7 @@ export class AdminOverviewPage extends LitElement {
                     </div>
                     <!-- row 2 -->
                     <div
-                        class="pf-l-grid__item pf-m-6-col pf-m-3-col-on-md pf-m-3-col-on-xl card-container"
+                        class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
                     >
                         <ak-admin-status-system
                             icon="pf-icon pf-icon-server"
@@ -175,7 +174,7 @@ export class AdminOverviewPage extends LitElement {
                         </ak-admin-status-system>
                     </div>
                     <div
-                        class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-3-col-on-xl card-container"
+                        class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
                     >
                         <ak-admin-status-version
                             icon="pf-icon pf-icon-bundle"
@@ -185,17 +184,7 @@ export class AdminOverviewPage extends LitElement {
                         </ak-admin-status-version>
                     </div>
                     <div
-                        class="pf-l-grid__item pf-m-6-col pf-m-2-col-on-md pf-m-3-col-on-xl card-container"
-                    >
-                        <ak-admin-status-card-backup
-                            icon="fa fa-database"
-                            header=${t`Backup status`}
-                            headerLink="#/administration/system-tasks"
-                        >
-                        </ak-admin-status-card-backup>
-                    </div>
-                    <div
-                        class="pf-l-grid__item pf-m-6-col pf-m-3-col-on-md pf-m-3-col-on-xl card-container"
+                        class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
                     >
                         <ak-admin-status-card-workers
                             icon="pf-icon pf-icon-server"

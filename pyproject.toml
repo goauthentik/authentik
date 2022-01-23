@@ -97,7 +97,6 @@ description = ""
 authors = ["Jens Langhammer <jens.langhammer@beryju.org>"]
 
 [tool.poetry.dependencies]
-boto3 = "*"
 celery = "*"
 channels = "*"
 channels-redis = "*"
@@ -107,7 +106,6 @@ dacite = "*"
 deepmerge = "*"
 defusedxml = "*"
 django = "*"
-django-dbbackup = "=4.0.0b0"
 django-filter = "*"
 django-guardian = "*"
 django-model-utils = "*"

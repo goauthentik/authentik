@@ -1,5 +1,5 @@
 ---
-title: Errors when uploading icons / during backups
+title: Errors when uploading icons
 ---
 
 :::info
@@ -13,7 +13,6 @@ This will cause issues with icon uploads (for Applications), background uploads 
 To fix these issues, run these commands in the folder of your docker-compose file:
 
 ```shell
-sudo chown 1000:1000 backups/
 sudo chown 1000:1000 media/
 sudo chown 1000:1000 custom-templates/
 ```

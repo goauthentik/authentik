@@ -24,7 +24,6 @@ import structlog
 from celery.schedules import crontab
 from sentry_sdk import init as sentry_init
 from sentry_sdk.api import set_tag
-from sentry_sdk.integrations.boto3 import Boto3Integration
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
@@ -149,7 +148,6 @@ INSTALLED_APPS = [
     "guardian",
     "django_prometheus",
     "channels",
-    "dbbackup",
 ]
 
 GUARDIAN_MONKEY_PATCH = False
@@ -368,32 +366,6 @@ CELERY_RESULT_BACKEND = (
     f"{_redis_url}/{CONFIG.y('redis.message_queue_db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
 )
 
-# Database backup
-DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
-DBBACKUP_STORAGE_OPTIONS = {"location": "./backups" if DEBUG else "/backups"}
-DBBACKUP_FILENAME_TEMPLATE = f"authentik-backup-{__version__}-{{datetime}}.sql"
-DBBACKUP_CONNECTOR_MAPPING = {
-    "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector",
-}
-DBBACKUP_TMP_DIR = gettempdir() if DEBUG else "/tmp"  # nosec
-DBBACKUP_CLEANUP_KEEP = 10
-if CONFIG.y("postgresql.s3_backup.bucket", "") != "":
-    DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-    DBBACKUP_STORAGE_OPTIONS = {
-        "access_key": CONFIG.y("postgresql.s3_backup.access_key"),
-        "secret_key": CONFIG.y("postgresql.s3_backup.secret_key"),
-        "bucket_name": CONFIG.y("postgresql.s3_backup.bucket"),
-        "region_name": CONFIG.y("postgresql.s3_backup.region", "eu-central-1"),
-        "default_acl": "private",
-        "endpoint_url": CONFIG.y("postgresql.s3_backup.host"),
-        "location": CONFIG.y("postgresql.s3_backup.location", ""),
-        "verify": not CONFIG.y_bool("postgresql.s3_backup.insecure_skip_verify", False),
-    }
-    j_print(
-        "Database backup to S3 is configured",
-        host=CONFIG.y("postgresql.s3_backup.host"),
-    )
-
 # Sentry integration
 SENTRY_DSN = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
 
@@ -407,7 +379,6 @@ if _ERROR_REPORTING:
             DjangoIntegration(transaction_style="function_name"),
             CeleryIntegration(),
             RedisIntegration(),
-            Boto3Integration(),
             ThreadingIntegration(propagate_hub=True),
         ],
         before_send=before_send,
@@ -528,12 +499,9 @@ _LOGGING_HANDLER_MAP = {
     "urllib3": "WARNING",
     "websockets": "WARNING",
     "daphne": "WARNING",
-    "dbbackup": "ERROR",
     "kubernetes": "INFO",
     "asyncio": "WARNING",
     "aioredis": "WARNING",
-    "s3transfer": "WARNING",
-    "botocore": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
