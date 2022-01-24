@@ -16,7 +16,6 @@ import os
 import sys
 from hashlib import sha512
 from json import dumps
-from tempfile import gettempdir
 from time import time
 from urllib.parse import quote
 

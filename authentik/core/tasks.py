@@ -42,4 +42,3 @@ def clean_expired_models(self: MonitoredTask):
     LOGGER.debug("Expired sessions", model=AuthenticatedSession, amount=amount)
     messages.append(f"Expired {amount} {AuthenticatedSession._meta.verbose_name_plural}")
     self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, messages))
-

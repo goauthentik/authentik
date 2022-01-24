@@ -79,9 +79,6 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         WorkerLostError,
         CeleryError,
         SoftTimeLimitExceeded,
-        # S3 errors
-        BotoCoreError,
-        ClientError,
         # custom baseclass
         SentryIgnoredException,
         # ldap errors
