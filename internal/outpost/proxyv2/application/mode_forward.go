@@ -80,9 +80,12 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
-	if strings.HasPrefix(a.getTraefikForwardUrl(r).Path, "/akprox") {
-		a.log.WithField("url", r.URL.String()).Trace("path begins with /akprox, allowing access")
-		return
+	fwu := a.getTraefikForwardUrl(r)
+	if fwu.String() != r.URL.String() {
+		if strings.HasPrefix(fwu.Path, "/akprox") {
+			a.log.WithField("url", r.URL.String()).Trace("path begins with /akprox, allowing access")
+			return
+		}
 	}
 	http.Error(rw, "unauthorized request", http.StatusUnauthorized)
 }
