@@ -140,26 +140,26 @@ func (pi *ProviderInstance) GetNeededObjects(scope int, baseDN string, filterOC 
 	// If our requested base DN doesn't match any of the container DNs, then
 	// we're probably loading a user or group. If it does, then make sure our
 	// scope will eventually take us to users or groups.
-	if (baseDN == pi.BaseDN || strings.HasSuffix(baseDN, pi.UserDN)) && utils.IncludeObjectClass(filterOC, ldapConstants.GetUserOCs()) {
+	if (strings.EqualFold(baseDN, pi.BaseDN) || utils.HasSuffixNoCase(baseDN, pi.UserDN)) && utils.IncludeObjectClass(filterOC, ldapConstants.GetUserOCs()) {
 		if baseDN != pi.UserDN && baseDN != pi.BaseDN ||
-			baseDN == pi.BaseDN && scope > 1 ||
-			baseDN == pi.UserDN && scope > 0 {
+			strings.EqualFold(baseDN, pi.BaseDN) && scope > 1 ||
+			strings.EqualFold(baseDN, pi.UserDN) && scope > 0 {
 			needUsers = true
 		}
 	}
 
-	if (baseDN == pi.BaseDN || strings.HasSuffix(baseDN, pi.GroupDN)) && utils.IncludeObjectClass(filterOC, ldapConstants.GetGroupOCs()) {
+	if (strings.EqualFold(baseDN, pi.BaseDN) || utils.HasSuffixNoCase(baseDN, pi.GroupDN)) && utils.IncludeObjectClass(filterOC, ldapConstants.GetGroupOCs()) {
 		if baseDN != pi.GroupDN && baseDN != pi.BaseDN ||
-			baseDN == pi.BaseDN && scope > 1 ||
-			baseDN == pi.GroupDN && scope > 0 {
+			strings.EqualFold(baseDN, pi.BaseDN) && scope > 1 ||
+			strings.EqualFold(baseDN, pi.GroupDN) && scope > 0 {
 			needGroups = true
 		}
 	}
 
-	if (baseDN == pi.BaseDN || strings.HasSuffix(baseDN, pi.VirtualGroupDN)) && utils.IncludeObjectClass(filterOC, ldapConstants.GetVirtualGroupOCs()) {
+	if (strings.EqualFold(baseDN, pi.BaseDN) || utils.HasSuffixNoCase(baseDN, pi.VirtualGroupDN)) && utils.IncludeObjectClass(filterOC, ldapConstants.GetVirtualGroupOCs()) {
 		if baseDN != pi.VirtualGroupDN && baseDN != pi.BaseDN ||
-			baseDN == pi.BaseDN && scope > 1 ||
-			baseDN == pi.VirtualGroupDN && scope > 0 {
+			strings.EqualFold(baseDN, pi.BaseDN) && scope > 1 ||
+			strings.EqualFold(baseDN, pi.VirtualGroupDN) && scope > 0 {
 			needUsers = true
 		}
 	}

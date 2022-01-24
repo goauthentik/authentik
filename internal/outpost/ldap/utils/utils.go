@@ -2,6 +2,7 @@ package utils
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
@@ -116,4 +117,8 @@ func GetContainerEntry(filterOC string, dn string, ou string) *ldap.Entry {
 	}
 
 	return nil
+}
+
+func HasSuffixNoCase(s1 string, s2 string) bool {
+	return strings.HasSuffix(strings.ToLower(s1), strings.ToLower(s2))
 }
