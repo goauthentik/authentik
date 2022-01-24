@@ -46,8 +46,12 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	if *a.proxyConfig.Mode == api.PROXYMODE_FORWARD_SINGLE {
 		host = web.GetHost(r)
 	} else if *a.proxyConfig.Mode == api.PROXYMODE_FORWARD_DOMAIN {
-		eh, _ := url.Parse(a.proxyConfig.ExternalHost)
-		host = eh.Host
+		eh, err := url.Parse(a.proxyConfig.ExternalHost)
+		if err != nil {
+			a.log.WithField("host", a.proxyConfig.ExternalHost).WithError(err).Warning("invalid external_host")
+		} else {
+			host = eh.Host
+		}
 	}
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back

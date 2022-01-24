@@ -16,7 +16,7 @@ test-e2e-rest:
 	coverage run manage.py test tests/e2e/test_flows* tests/e2e/test_source*
 
 test-go:
-	go test -timeout 0 -v -race ./...
+	go test -timeout 0 -v -race -cover ./...
 
 test:
 	coverage run manage.py test authentik
