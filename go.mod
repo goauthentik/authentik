@@ -9,7 +9,7 @@ require (
 	github.com/garyburd/redigo v1.6.2 // indirect
 	github.com/getsentry/sentry-go v0.12.0
 	github.com/go-ldap/ldap/v3 v3.4.1
-	github.com/go-openapi/runtime v0.21.0
+	github.com/go-openapi/runtime v0.21.1
 	github.com/go-openapi/strfmt v0.21.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
@@ -26,7 +26,9 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/pquerna/cachecontrol v0.0.0-20201205024021-ac21108117ac // indirect
 	github.com/prometheus/client_golang v1.12.0
+	github.com/quasoft/memstore v0.0.0-20191010062613-2bce066d2b0b // indirect
 	github.com/sirupsen/logrus v1.8.1
+	github.com/stretchr/testify v1.7.0 // indirect
 	goauthentik.io/api v0.2021125.1
 	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c

@@ -26,7 +26,9 @@ class ProxyDockerController(DockerController):
         traefik_name = f"ak-outpost-{self.outpost.pk.hex}"
         labels = super()._get_labels()
         labels["traefik.enable"] = "true"
-        labels[f"traefik.http.routers.{traefik_name}-router.rule"] = f"Host({','.join(hosts)})"
+        labels[
+            f"traefik.http.routers.{traefik_name}-router.rule"
+        ] = f"Host({','.join(hosts)}) && PathPrefix(`/akprox`)"
         labels[f"traefik.http.routers.{traefik_name}-router.tls"] = "true"
         labels[f"traefik.http.routers.{traefik_name}-router.service"] = f"{traefik_name}-service"
         labels[

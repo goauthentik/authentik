@@ -12,6 +12,7 @@ The following outpost settings are used:
 - `container_image`: Optionally overwrites the standard container image (see [Configuration](../../installation/configuration.md) to configure the global default)
 - `docker_network`: The docker network the container should be added to. This needs to be modified if you plan to connect to authentik using the internal hostname.
 - `docker_map_ports`: Enable/disable the mapping of ports. When using a proxy outpost with traefik for example, you might not want to bind ports as they are routed through traefik.
+- `docker_labels`: Optional additional labels that can be applied to the container.
 
 The container is created with the following hardcoded properties:
 

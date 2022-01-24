@@ -50,6 +50,9 @@ docker_network: null
 # Optionally disable mapping of ports to outpost container, may be useful when using docker networks
 # (Available with 2021.9.4+)
 docker_map_ports: true
+# Optionally additional labels for docker containers
+# (Available with 2022.1.2)
+docker_labels: null
 ########################################
 # Kubernetes outpost specific settings
 ########################################

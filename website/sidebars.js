@@ -126,11 +126,6 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Maintenance",
-            items: ["maintenance/backups/index"],
-        },
-        {
-            type: "category",
             label: "Release Notes",
             items: [
                 "releases/v2022.1",

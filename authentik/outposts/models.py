@@ -60,6 +60,7 @@ class OutpostConfig:
 
     docker_network: Optional[str] = field(default=None)
     docker_map_ports: bool = field(default=True)
+    docker_labels: Optional[dict[str, str]] = field(default=None)
 
     container_image: Optional[str] = field(default=None)
 

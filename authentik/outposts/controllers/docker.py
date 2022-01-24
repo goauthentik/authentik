@@ -106,9 +106,12 @@ class DockerController(BaseController):
         ).lower()
 
     def _get_labels(self) -> dict[str, str]:
-        return {
+        labels = {
             "io.goauthentik.outpost-uuid": self.outpost.pk.hex,
         }
+        if self.outpost.config.docker_labels:
+            labels.update(self.outpost.config.docker_labels)
+        return labels
 
     def _get_env(self) -> dict[str, str]:
         return {
