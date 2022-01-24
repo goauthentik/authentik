@@ -25,6 +25,7 @@ func (a *Application) configureForward() error {
 }
 
 func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Request) {
+	a.log.WithField("header", r.Header).Trace("tracing headers for debug")
 	fwd := a.getTraefikForwardUrl(r)
 	claims, err := a.getClaims(r)
 	if claims != nil && err == nil {
@@ -73,6 +74,7 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 }
 
 func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request) {
+	a.log.WithField("header", r.Header).Trace("tracing headers for debug")
 	fwd := a.getNginxForwardUrl(r)
 	claims, err := a.getClaims(r)
 	if claims != nil && err == nil {
