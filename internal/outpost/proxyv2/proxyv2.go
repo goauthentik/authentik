@@ -46,7 +46,7 @@ func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
 	rootMux.Use(func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(rw, r)
-			rw.Header().Set("Server", "authentik_proxy2")
+			rw.Header().Set("X-Powered-By", "authentik_proxy2")
 		})
 	})
 
