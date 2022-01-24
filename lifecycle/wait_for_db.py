@@ -28,7 +28,9 @@ def j_print(event: str, log_level: str = "info", **kwargs):
 
 # Sanity check, ensure SECRET_KEY is set before we even check for database connectivity
 if CONFIG.y("secret_key") is None or len(CONFIG.y("secret_key")) == 0:
+    j_print("----------------------------------------------------------------------")
     j_print("Secret key missing, check https://goauthentik.io/docs/installation/.")
+    j_print("----------------------------------------------------------------------")
     sysexit(1)
 
 
