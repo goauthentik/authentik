@@ -2,6 +2,7 @@ package application
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -57,6 +58,7 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	}
 }
 
+// getTraefikForwardUrl See https://doc.traefik.io/traefik/middlewares/forwardauth/
 func (a *Application) getTraefikForwardUrl(r *http.Request) *url.URL {
 	u, err := url.Parse(fmt.Sprintf(
 		"%s://%s%s",
@@ -72,26 +74,32 @@ func (a *Application) getTraefikForwardUrl(r *http.Request) *url.URL {
 	return u
 }
 
-func (a *Application) IsAllowlisted(r *http.Request) bool {
-	url := r.URL
-	// In Forward auth mode, we can't directly match against the requested URL
-	// Since that would be /akprox/auth/...
-	if a.Mode() == api.PROXYMODE_FORWARD_SINGLE || a.Mode() == api.PROXYMODE_FORWARD_DOMAIN {
-		// For traefik, we can get the Upstream URL from headers
-		// For nginx we can attempt to as well, but it's not guaranteed to work.
-		if strings.HasPrefix(r.URL.Path, "/akprox/auth") {
-			url = a.getTraefikForwardUrl(r)
-		}
+// getNginxForwardUrl See https://github.com/kubernetes/ingress-nginx/blob/main/rootfs/etc/nginx/template/nginx.tmpl#L1044
+func (a *Application) getNginxForwardUrl(r *http.Request) *url.URL {
+	h := r.Header.Get("X-Original-URI")
+	if len(h) < 1 {
+		a.log.WithError(errors.New("blank URL")).Warning("blank URL")
+		return r.URL
 	}
-	for _, u := range a.UnauthenticatedRegex {
+	u, err := url.Parse(h)
+	if err != nil {
+		a.log.WithError(err).Warning("failed to parse URL from nginx")
+		return r.URL
+	}
+	a.log.WithField("url", u.String()).Trace("nginx forwarded url")
+	return u
+}
+
+func (a *Application) IsAllowlisted(u *url.URL) bool {
+	for _, ur := range a.UnauthenticatedRegex {
 		var testString string
 		if a.Mode() == api.PROXYMODE_PROXY || a.Mode() == api.PROXYMODE_FORWARD_SINGLE {
-			testString = url.Path
+			testString = u.Path
 		} else {
-			testString = url.String()
+			testString = u.String()
 		}
 		a.log.WithField("regex", u.String()).WithField("url", testString).Trace("Matching URL against allow list")
-		if u.MatchString(testString) {
+		if ur.MatchString(testString) {
 			return true
 		}
 	}

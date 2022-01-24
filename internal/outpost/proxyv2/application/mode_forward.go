@@ -25,13 +25,14 @@ func (a *Application) configureForward() error {
 }
 
 func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Request) {
+	fwd := a.getTraefikForwardUrl(r)
 	claims, err := a.getClaims(r)
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
 		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
 		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
 		return
-	} else if claims == nil && a.IsAllowlisted(r) {
+	} else if claims == nil && a.IsAllowlisted(fwd) {
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
@@ -51,9 +52,8 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
-	// see https://doc.traefik.io/traefik/middlewares/forwardauth/
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
-	s.Values[constants.SessionRedirect] = a.getTraefikForwardUrl(r).String()
+	s.Values[constants.SessionRedirect] = fwd.String()
 	err = s.Save(r, rw)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session before redirect")
@@ -69,6 +69,7 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 }
 
 func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request) {
+	fwd := a.getNginxForwardUrl(r)
 	claims, err := a.getClaims(r)
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
@@ -76,13 +77,20 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 		rw.WriteHeader(200)
 		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
 		return
-	} else if claims == nil && a.IsAllowlisted(r) {
+	} else if claims == nil && a.IsAllowlisted(fwd) {
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
-	fwu := a.getTraefikForwardUrl(r)
-	if fwu.String() != r.URL.String() {
-		if strings.HasPrefix(fwu.Path, "/akprox") {
+
+	s, _ := a.sessions.Get(r, constants.SeesionName)
+	s.Values[constants.SessionRedirect] = fwd.String()
+	err = s.Save(r, rw)
+	if err != nil {
+		a.log.WithError(err).Warning("failed to save session before redirect")
+	}
+
+	if fwd.String() != r.URL.String() {
+		if strings.HasPrefix(fwd.Path, "/akprox") {
 			a.log.WithField("url", r.URL.String()).Trace("path begins with /akprox, allowing access")
 			return
 		}

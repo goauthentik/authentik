@@ -35,7 +35,7 @@ func (a *Application) configureProxy() error {
 	rp.ModifyResponse = a.proxyModifyResponse
 	a.mux.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		claims, err := a.getClaims(r)
-		if claims == nil && a.IsAllowlisted(r) {
+		if claims == nil && a.IsAllowlisted(r.URL) {
 			a.log.Trace("path can be accessed without authentication")
 		} else if claims == nil && err != nil {
 			a.redirectToStart(rw, r)
