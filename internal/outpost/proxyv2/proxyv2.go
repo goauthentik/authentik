@@ -151,17 +151,14 @@ func (ps *ProxyServer) Start() error {
 	wg.Add(3)
 	go func() {
 		defer wg.Done()
-		ps.log.Debug("Starting HTTP Server...")
 		ps.ServeHTTP()
 	}()
 	go func() {
 		defer wg.Done()
-		ps.log.Debug("Starting HTTPs Server...")
 		ps.ServeHTTPS()
 	}()
 	go func() {
 		defer wg.Done()
-		ps.log.Debug("Starting Metrics Server...")
 		metrics.RunServer()
 	}()
 	return nil
