@@ -26,21 +26,14 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		a.log.WithError(err).Warning("failed to decode session")
 	}
-	redirectUrl := r.URL.String()
-	// simple way to copy the URL
-	u, _ := url.Parse(redirectUrl)
-	// In proxy and forward_single mode we only have one URL that we route on
-	// if we somehow got here without that URL, make sure we're at least redirected back to it
-	if a.Mode() == api.PROXYMODE_PROXY || a.Mode() == api.PROXYMODE_FORWARD_SINGLE {
-		u.Host = a.proxyConfig.ExternalHost
-	}
+	redirectUrl := urlJoin(a.proxyConfig.ExternalHost, r.URL.Path)
 	if a.Mode() == api.PROXYMODE_FORWARD_DOMAIN {
 		dom := strings.TrimPrefix(*a.proxyConfig.CookieDomain, ".")
 		// In forward_domain we only check that the current URL's host
 		// ends with the cookie domain (remove the leading period if set)
 		if !strings.HasSuffix(r.URL.Hostname(), dom) {
 			a.log.WithField("url", r.URL.String()).WithField("cd", dom).Warning("Invalid redirect found")
-			redirectUrl = ""
+			redirectUrl = a.proxyConfig.ExternalHost
 		}
 	}
 	s.Values[constants.SessionRedirect] = redirectUrl

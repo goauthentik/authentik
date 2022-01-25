@@ -71,7 +71,7 @@ func TestForwardHandleNginx_Single_Claims(t *testing.T) {
 	}
 
 	rr = httptest.NewRecorder()
-	a.forwardHandleTraefik(rr, req)
+	a.forwardHandleNginx(rr, req)
 
 	h := rr.Result().Header
 

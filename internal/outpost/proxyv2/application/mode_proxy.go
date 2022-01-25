@@ -79,5 +79,6 @@ func (a *Application) proxyModifyRequest(u *url.URL) func(req *http.Request) {
 }
 
 func (a *Application) proxyModifyResponse(res *http.Response) error {
+	res.Header.Set("X-Powered-By", "authentik_proxy2")
 	return nil
 }
