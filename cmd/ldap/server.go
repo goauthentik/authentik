@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"goauthentik.io/internal/common"
+	"goauthentik.io/internal/debug"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap"
 )
@@ -27,6 +28,7 @@ func main() {
 			log.FieldKeyTime: "timestamp",
 		},
 	})
+	go debug.EnableDebugServer()
 	akURL, found := os.LookupEnv("AUTHENTIK_HOST")
 	if !found {
 		fmt.Println("env AUTHENTIK_HOST not set!")
