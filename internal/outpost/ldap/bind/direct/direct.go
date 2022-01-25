@@ -16,6 +16,7 @@ import (
 	"goauthentik.io/internal/outpost/ldap/flags"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/server"
+	"goauthentik.io/internal/outpost/ldap/utils"
 )
 
 const ContextUserKey = "ak_user"
@@ -35,7 +36,7 @@ func NewDirectBinder(si server.LDAPServerInstance) *DirectBinder {
 }
 
 func (db *DirectBinder) GetUsername(dn string) (string, error) {
-	if !strings.HasSuffix(strings.ToLower(dn), strings.ToLower(db.si.GetBaseDN())) {
+	if !utils.HasSuffixNoCase(dn, db.si.GetBaseDN()) {
 		return "", errors.New("invalid base DN")
 	}
 	dns, err := goldap.ParseDN(dn)
