@@ -91,7 +91,7 @@ func (ps *ProxyServer) TimerFlowCacheExpiry() {}
 func (ps *ProxyServer) GetCertificate(serverName string) *tls.Certificate {
 	app, ok := ps.apps[serverName]
 	if !ok {
-		ps.log.WithField("server-name", serverName).Debug("app does not exist")
+		ps.log.WithField("server-name", serverName).Debug("failed to get certificate for ServerName")
 		return nil
 	}
 	if app.Cert == nil {
