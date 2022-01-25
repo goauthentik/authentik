@@ -74,9 +74,9 @@ func (a *Application) getTraefikForwardUrl(r *http.Request) *url.URL {
 	return u
 }
 
-// getNginxForwardUrl See https://github.com/kubernetes/ingress-nginx/blob/main/rootfs/etc/nginx/template/nginx.tmpl#L1044
+// getNginxForwardUrl See https://github.com/kubernetes/ingress-nginx/blob/main/rootfs/etc/nginx/template/nginx.tmpl
 func (a *Application) getNginxForwardUrl(r *http.Request) *url.URL {
-	h := r.Header.Get("X-Original-URI")
+	h := r.Header.Get("X-Original-URL")
 	if len(h) < 1 {
 		a.log.WithError(errors.New("blank URL")).Warning("blank URL")
 		return r.URL

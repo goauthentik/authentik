@@ -13,8 +13,6 @@ server {
     # header from upstream' error when trying to access an application protected by goauthentik
     proxy_buffers 8 16k;
     proxy_buffer_size 32k;
-    fastcgi_buffers 16 16k;
-    fastcgi_buffer_size 32k;
 
     location / {
         # Put your proxy_pass to your application here
@@ -25,6 +23,8 @@ server {
         error_page          401 = @akprox_signin;
         # For domain level, use the below error_page to redirect to your authentik server with the full redirect path
         # error_page          401 =302 https://authentik.company/akprox/start?rd=$scheme://$http_host$request_uri;
+        auth_request_set $auth_cookie $upstream_http_set_cookie;
+        add_header Set-Cookie $auth_cookie;
 
         # translate headers from the outposts back to the actual upstream
         auth_request_set $authentik_username $upstream_http_x_authentik_username;
@@ -46,6 +46,7 @@ server {
         # ensure the host of this vserver matches your external URL you've configured
         # in authentik
         proxy_set_header    Host $host;
+        proxy_set_header    X-Original-URL $scheme://$http_host$request_uri;
         add_header          Set-Cookie $auth_cookie;
         auth_request_set    $auth_cookie $upstream_http_set_cookie;
     }
