@@ -227,6 +227,7 @@ export class UserListPage extends TablePage<User> {
                                             }
                                             return html`
                                                 <ak-action-button
+                                                    class="pf-m-secondary"
                                                     .apiRequest=${() => {
                                                         return new CoreApi(DEFAULT_CONFIG)
                                                             .coreUsersRecoveryRetrieve({
