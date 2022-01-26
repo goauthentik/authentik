@@ -18,7 +18,7 @@ from hashlib import sha512
 from json import dumps
 from tempfile import gettempdir
 from time import time
-from urllib.parse import quote
+from urllib.parse import quote_plus
 
 import structlog
 from celery.schedules import crontab
@@ -220,7 +220,7 @@ if CONFIG.y_bool("redis.tls", False):
     REDIS_CELERY_TLS_REQUIREMENTS = f"?ssl_cert_reqs={CONFIG.y('redis.tls_reqs')}"
 _redis_url = (
     f"{REDIS_PROTOCOL_PREFIX}:"
-    f"{quote(CONFIG.y('redis.password'))}@{quote(CONFIG.y('redis.host'))}:"
+    f"{quote_plus(CONFIG.y('redis.password'))}@{quote_plus(CONFIG.y('redis.host'))}:"
     f"{int(CONFIG.y('redis.port'))}"
 )
 
