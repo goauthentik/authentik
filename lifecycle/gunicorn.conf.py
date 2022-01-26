@@ -23,6 +23,9 @@ if os.path.exists("/dev/shm"):  # nosec
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 
+max_requests = 1000
+max_requests_jitter = 50
+
 logconfig_dict = {
     "version": 1,
     "disable_existing_loggers": False,

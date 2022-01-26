@@ -347,6 +347,7 @@ LOCALE_PATHS = ["./locale"]
 # Celery settings
 # Add a 10 minute timeout to all Celery tasks.
 CELERY_TASK_SOFT_TIME_LIMIT = 600
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 50
 CELERY_BEAT_SCHEDULE = {
     "clean_expired_models": {
         "task": "authentik.core.tasks.clean_expired_models",
