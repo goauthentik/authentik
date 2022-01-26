@@ -25,4 +25,4 @@ func OutpostUserAgent() string {
 	return fmt.Sprintf("authentik-outpost@%s", FullVersion())
 }
 
-const VERSION = "2022.1.2"
+const VERSION = "2022.1.3"
