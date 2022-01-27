@@ -78,8 +78,12 @@ func (a *Application) getTraefikForwardUrl(r *http.Request) (*url.URL, error) {
 func (a *Application) getNginxForwardUrl(r *http.Request) (*url.URL, error) {
 	ou := r.Header.Get("X-Original-URI")
 	if ou != "" {
-		u, _ := url.Parse(r.URL.String())
-		u.Path = ou
+		// Turn this full URL into a relative URL
+		u := &url.URL{
+			Host:   "",
+			Scheme: "",
+			Path:   ou,
+		}
 		a.log.WithField("url", u.String()).Info("building forward URL from X-Original-URI")
 		return u, nil
 	}

@@ -56,7 +56,7 @@ func TestForwardHandleNginx_Single_URI(t *testing.T) {
 	assert.Equal(t, rr.Code, http.StatusUnauthorized)
 
 	s, _ := a.sessions.Get(req, constants.SeesionName)
-	assert.Equal(t, "https://foo.bar/app", s.Values[constants.SessionRedirect])
+	assert.Equal(t, "/app", s.Values[constants.SessionRedirect])
 }
 
 func TestForwardHandleNginx_Single_Claims(t *testing.T) {
