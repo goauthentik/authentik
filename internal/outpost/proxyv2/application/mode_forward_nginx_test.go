@@ -17,7 +17,7 @@ func TestForwardHandleNginx_Single_Blank(t *testing.T) {
 	rr := httptest.NewRecorder()
 	a.forwardHandleNginx(rr, req)
 
-	assert.Equal(t, http.StatusUnauthorized, rr.Code)
+	assert.Equal(t, http.StatusInternalServerError, rr.Code)
 }
 
 func TestForwardHandleNginx_Single_Skip(t *testing.T) {
@@ -45,9 +45,24 @@ func TestForwardHandleNginx_Single_Headers(t *testing.T) {
 	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
 }
 
+func TestForwardHandleNginx_Single_URI(t *testing.T) {
+	a := newTestApplication()
+	req, _ := http.NewRequest("GET", "https://foo.bar/akprox/auth/nginx", nil)
+	req.Header.Set("X-Original-URI", "/app")
+
+	rr := httptest.NewRecorder()
+	a.forwardHandleNginx(rr, req)
+
+	assert.Equal(t, rr.Code, http.StatusUnauthorized)
+
+	s, _ := a.sessions.Get(req, constants.SeesionName)
+	assert.Equal(t, "https://foo.bar/app", s.Values[constants.SessionRedirect])
+}
+
 func TestForwardHandleNginx_Single_Claims(t *testing.T) {
 	a := newTestApplication()
 	req, _ := http.NewRequest("GET", "/akprox/auth/nginx", nil)
+	req.Header.Set("X-Original-URI", "/")
 
 	rr := httptest.NewRecorder()
 	a.forwardHandleNginx(rr, req)
@@ -98,10 +113,7 @@ func TestForwardHandleNginx_Domain_Blank(t *testing.T) {
 	rr := httptest.NewRecorder()
 	a.forwardHandleNginx(rr, req)
 
-	assert.Equal(t, http.StatusUnauthorized, rr.Code)
-
-	s, _ := a.sessions.Get(req, constants.SeesionName)
-	assert.Equal(t, "/akprox/auth/nginx", s.Values[constants.SessionRedirect])
+	assert.Equal(t, http.StatusInternalServerError, rr.Code)
 }
 
 func TestForwardHandleNginx_Domain_Header(t *testing.T) {

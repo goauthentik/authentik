@@ -17,13 +17,7 @@ func TestForwardHandleTraefik_Single_Blank(t *testing.T) {
 	rr := httptest.NewRecorder()
 	a.forwardHandleTraefik(rr, req)
 
-	assert.Equal(t, http.StatusTemporaryRedirect, rr.Code)
-	loc, _ := rr.Result().Location()
-	assert.Equal(t, "/akprox/start", loc.String())
-
-	s, _ := a.sessions.Get(req, constants.SeesionName)
-	// Since we're not setting the traefik specific headers, expect it to redirect to the auth URL
-	assert.Equal(t, "/akprox/auth/traefik", s.Values[constants.SessionRedirect])
+	assert.Equal(t, http.StatusInternalServerError, rr.Code)
 }
 
 func TestForwardHandleTraefik_Single_Skip(t *testing.T) {
@@ -60,6 +54,9 @@ func TestForwardHandleTraefik_Single_Headers(t *testing.T) {
 func TestForwardHandleTraefik_Single_Claims(t *testing.T) {
 	a := newTestApplication()
 	req, _ := http.NewRequest("GET", "/akprox/auth/traefik", nil)
+	req.Header.Set("X-Forwarded-Proto", "http")
+	req.Header.Set("X-Forwarded-Host", "test.goauthentik.io")
+	req.Header.Set("X-Forwarded-Uri", "/app")
 
 	rr := httptest.NewRecorder()
 	a.forwardHandleTraefik(rr, req)
@@ -110,13 +107,7 @@ func TestForwardHandleTraefik_Domain_Blank(t *testing.T) {
 	rr := httptest.NewRecorder()
 	a.forwardHandleTraefik(rr, req)
 
-	assert.Equal(t, http.StatusTemporaryRedirect, rr.Code)
-	loc, _ := rr.Result().Location()
-	assert.Equal(t, "/akprox/start", loc.String())
-
-	s, _ := a.sessions.Get(req, constants.SeesionName)
-	// Since we're not setting the traefik specific headers, expect it to redirect to the auth URL
-	assert.Equal(t, "/akprox/auth/traefik", s.Values[constants.SessionRedirect])
+	assert.Equal(t, http.StatusInternalServerError, rr.Code)
 }
 
 func TestForwardHandleTraefik_Domain_Header(t *testing.T) {

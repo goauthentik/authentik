@@ -87,3 +87,13 @@ func contains(s []string, e string) bool {
 	}
 	return false
 }
+
+func cleanseHeaders(headers http.Header) map[string]string {
+	h := make(map[string]string)
+	for hk, hv := range headers {
+		if len(hv) > 0 {
+			h[hk] = hv[0]
+		}
+	}
+	return h
+}
