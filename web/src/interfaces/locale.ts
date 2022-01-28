@@ -29,7 +29,7 @@ export const LOCALES: {
         locale: localeDEBUG,
     },
     {
-        code: "fr_FR",
+        code: "fr",
         plurals: fr,
         label: t`French`,
         locale: localeFR_FR,
@@ -50,9 +50,13 @@ LOCALES.forEach((locale) => {
 const DEFAULT_FALLBACK = () => "en";
 
 export function autoDetectLanguage() {
-    const detected =
+    let detected =
         detect(fromUrl("lang"), fromStorage("lang"), fromNavigator(), DEFAULT_FALLBACK) ||
         DEFAULT_FALLBACK();
+    // For now we only care about the first locale part
+    if (detected.includes("_")) {
+        detected = detected.split("_")[0];
+    }
     if (detected in i18n._messages) {
         console.debug(`authentik/locale: Activating detected locale '${detected}'`);
         i18n.activate(detected);
