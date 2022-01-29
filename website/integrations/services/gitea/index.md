@@ -11,7 +11,7 @@ Gitea is a community managed lightweight code hosting solution written in Go. It
 :::
 
 :::note
-This is based on authentik 2021.10.3 and Gitea 1.15.6 installed using https://docs.gitea.io/en-us/install-from-binary/. Instructions may differ between versions.
+This is based on authentik 2021.10.3 and Gitea 1.16.0+rc1 installed using https://docs.gitea.io/en-us/install-from-binary/. Instructions may differ between versions.
 :::
 
 ## Preparation
@@ -62,16 +62,8 @@ Change the following fields
 - Client Secret: Step 2
 - Icon URL: https://raw.githubusercontent.com/goauthentik/authentik/master/web/icons/icon.png
 - OpenID Connect Auto Discovery URL: https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration
+- Additional Scopes: `email profile`
 
 ![](./gitea1.png)
 
-`Add Authentication Source`
-
-Next you should edit your Gitea's 'app.ini' to make Gitea request the proper OIDC Scope from authentik. (It'll by default only ask for the 'openid' scope which doesn't provide us with the relevant information.)
-
-In your Gitea instance, navigate to your app.ini and make the following changes
-
-- If it doesn't exist yet, create a `[oauth2_client]` section
-- Set `OPENID_CONNECT_SCOPES` to `email profile`
-
-Restart Gitea and you should be done!
+`Add Authentication Source` and you should be done. Your Gitea login page should now have a `Sign in With` followed by the authentik logo which you can click on to sign-in to Gitea with Authentik creds.
