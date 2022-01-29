@@ -1,10 +1,14 @@
 ---
-title: Translation
+title: Translations
 ---
 
 Translation in authentik is done in two places. Most of the text is defined in the frontend in `web/`, and a subset of messages is defined in the backend.
 
 The frontend uses [lingui](https://lingui.js.org/), and the backend uses the built-in django translation tools.
+
+:::info
+Please review the [Writing documentation](./docs/writing-documentation) guidelines as they apply to documentation too.
+:::
 
 ## Online translation
 
