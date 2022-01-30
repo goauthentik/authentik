@@ -82,5 +82,5 @@ Outlook etc with no way to configure custom email servers.
 Please refer to the following for further configuration information:
 
 - https://roundcube.net
-- https://github.com/roundcube/roundcubemail/wiki/Configuration%3A-OAuth2
+- https://github.com/roundcube/roundcubemail/wiki/Configuration:-OAuth2
 - https://doc.dovecot.org/configuration_manual/authentication/oauth2/
