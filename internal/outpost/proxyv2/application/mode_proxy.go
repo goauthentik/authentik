@@ -60,7 +60,7 @@ func (a *Application) configureProxy() error {
 		}
 		metrics.UpstreamTiming.With(prometheus.Labels{
 			"outpost_name":  a.outpostName,
-			"upstream_host": u.String(),
+			"upstream_host": r.URL.Host,
 			"scheme":        r.URL.Scheme,
 			"method":        r.Method,
 			"path":          r.URL.Path,
@@ -72,9 +72,17 @@ func (a *Application) configureProxy() error {
 }
 
 func (a *Application) proxyModifyRequest(u *url.URL) func(req *http.Request) {
-	return func(req *http.Request) {
-		req.URL.Scheme = u.Scheme
-		req.URL.Host = u.Host
+	return func(r *http.Request) {
+		claims, _ := a.getClaims(r)
+		if claims.Proxy.BackendOverride != "" {
+			var err error
+			u, err = url.Parse(claims.Proxy.BackendOverride)
+			if err != nil {
+				a.log.WithField("backend_override", claims.Proxy.BackendOverride).WithError(err).Warning("failed parse user backend override")
+			}
+		}
+		r.URL.Scheme = u.Scheme
+		r.URL.Host = u.Host
 	}
 }
 
