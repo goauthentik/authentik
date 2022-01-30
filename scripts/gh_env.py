@@ -13,7 +13,10 @@ if os.environ.get(env_pr_branch, "") != "":
 should_build = str(os.environ.get("DOCKER_USERNAME", "") != "").lower()
 
 print("##[set-output name=branchName]%s" % branch_name)
-print("##[set-output name=branchNameContainer]%s" % branch_name.replace("refs/heads/", "").replace("/", "-"))
+print(
+    "##[set-output name=branchNameContainer]%s"
+    % branch_name.replace("refs/heads/", "").replace("/", "-")
+)
 print("##[set-output name=timestamp]%s" % int(time()))
 print("##[set-output name=sha]%s" % os.environ[sha])
 print("##[set-output name=shouldBuild]%s" % should_build)

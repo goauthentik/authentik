@@ -14,7 +14,7 @@ pythonPlatform = "Linux"
 
 [tool.black]
 line-length = 100
-target-version = ['py39']
+target-version = ['py310']
 exclude = 'node_modules'
 
 [tool.isort]
