@@ -20,7 +20,8 @@
             "en",
             "pseudo-LOCALE",
             "fr_FR",
-            "tr"
+            "tr",
+            "es"
         ],
         "formatOptions": {
             "lineNumbers": false
