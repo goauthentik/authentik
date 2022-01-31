@@ -3544,6 +3544,10 @@ msgstr "Política {0}"
 msgid "Policy-specific settings"
 msgstr "Configuración específica de políticas"
 
+#: src/interfaces/locale.ts
+msgid "Polish"
+msgstr ""
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Post"
 msgstr "Publicar"

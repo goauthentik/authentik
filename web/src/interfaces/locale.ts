@@ -1,4 +1,4 @@
-import { en, es, fr, tr } from "make-plural/plurals";
+import { en, es, fr, pl, tr } from "make-plural/plurals";
 
 import { Messages, i18n } from "@lingui/core";
 import { detect, fromNavigator, fromStorage, fromUrl } from "@lingui/detect-locale";
@@ -7,6 +7,7 @@ import { t } from "@lingui/macro";
 import { messages as localeEN } from "../locales/en";
 import { messages as localeES } from "../locales/es";
 import { messages as localeFR_FR } from "../locales/fr_FR";
+import { messages as localePL } from "../locales/pl";
 import { messages as localeDEBUG } from "../locales/pseudo-LOCALE";
 import { messages as localeTR } from "../locales/tr";
 
@@ -46,6 +47,12 @@ export const LOCALES: {
         plurals: es,
         label: t`Spanish`,
         locale: localeES,
+    },
+    {
+        code: "pl",
+        plurals: pl,
+        label: t`Polish`,
+        locale: localePL,
     },
 ];
 

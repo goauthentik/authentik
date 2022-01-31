@@ -21,7 +21,8 @@
             "pseudo-LOCALE",
             "fr_FR",
             "tr",
-            "es"
+            "es",
+            "pl"
         ],
         "formatOptions": {
             "lineNumbers": false

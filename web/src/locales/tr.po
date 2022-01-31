@@ -3546,6 +3546,10 @@ msgstr "İlke {0}"
 msgid "Policy-specific settings"
 msgstr "İlke özel ayarlar"
 
+#: src/interfaces/locale.ts
+msgid "Polish"
+msgstr ""
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Post"
 msgstr "Post"

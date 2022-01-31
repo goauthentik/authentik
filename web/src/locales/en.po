@@ -3608,6 +3608,10 @@ msgstr "Policy {0}"
 msgid "Policy-specific settings"
 msgstr "Policy-specific settings"
 
+#: src/interfaces/locale.ts
+msgid "Polish"
+msgstr "Polish"
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Post"
 msgstr "Post"
