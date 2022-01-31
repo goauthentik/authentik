@@ -57,4 +57,4 @@ DigitalOcean provides development and testing resources for authentik.
     </a>
 </p>
 
-Netlify hosts the [goauthentik.io](goauthentik.io) site.
+Netlify hosts the [goauthentik.io](https://goauthentik.io) site.

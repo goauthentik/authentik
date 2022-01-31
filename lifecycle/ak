@@ -45,6 +45,7 @@ if [[ "$1" == "server" ]]; then
     python -m lifecycle.migrate
     /authentik-proxy
 elif [[ "$1" == "worker" ]]; then
+    wait_for_db
     echo "worker" > $MODE_FILE
     check_if_root "celery -A authentik.root.celery worker -Ofair --max-tasks-per-child=1 --autoscale 3,1 -E -B -s /tmp/celerybeat-schedule -Q authentik,authentik_scheduled,authentik_events"
 elif [[ "$1" == "flower" ]]; then

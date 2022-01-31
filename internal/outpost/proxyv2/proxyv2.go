@@ -46,7 +46,7 @@ func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
 	rootMux.Use(func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(rw, r)
-			rw.Header().Set("Server", "authentik_proxy2")
+			rw.Header().Set("X-Powered-By", "authentik_proxy2")
 		})
 	})
 
@@ -91,7 +91,7 @@ func (ps *ProxyServer) TimerFlowCacheExpiry() {}
 func (ps *ProxyServer) GetCertificate(serverName string) *tls.Certificate {
 	app, ok := ps.apps[serverName]
 	if !ok {
-		ps.log.WithField("server-name", serverName).Debug("app does not exist")
+		ps.log.WithField("server-name", serverName).Debug("failed to get certificate for ServerName")
 		return nil
 	}
 	if app.Cert == nil {
@@ -151,17 +151,14 @@ func (ps *ProxyServer) Start() error {
 	wg.Add(3)
 	go func() {
 		defer wg.Done()
-		ps.log.Debug("Starting HTTP Server...")
 		ps.ServeHTTP()
 	}()
 	go func() {
 		defer wg.Done()
-		ps.log.Debug("Starting HTTPs Server...")
 		ps.ServeHTTPS()
 	}()
 	go func() {
 		defer wg.Done()
-		ps.log.Debug("Starting Metrics Server...")
 		metrics.RunServer()
 	}()
 	return nil

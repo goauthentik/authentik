@@ -3598,6 +3598,10 @@ msgstr ""
 msgid "Policy-specific settings"
 msgstr ""
 
+#: src/interfaces/locale.ts
+msgid "Polish"
+msgstr ""
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Post"
 msgstr ""
@@ -4421,6 +4425,10 @@ msgstr ""
 
 #: src/pages/sources/SourcesListPage.ts
 msgid "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
+msgstr ""
+
+#: src/interfaces/locale.ts
+msgid "Spanish"
 msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts

@@ -14,7 +14,7 @@ pythonPlatform = "Linux"
 
 [tool.black]
 line-length = 100
-target-version = ['py39']
+target-version = ['py310']
 exclude = 'node_modules'
 
 [tool.isort]
@@ -92,7 +92,7 @@ addopts = "-p no:celery --junitxml=unittest.xml"
 
 [tool.poetry]
 name = "authentik"
-version = "2022.1.2"
+version = "2022.1.3"
 description = ""
 authors = ["Jens Langhammer <jens.langhammer@beryju.org>"]
 

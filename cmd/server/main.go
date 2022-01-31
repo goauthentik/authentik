@@ -11,6 +11,7 @@ import (
 	"goauthentik.io/internal/common"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
+	"goauthentik.io/internal/debug"
 	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
@@ -28,6 +29,7 @@ func main() {
 			log.FieldKeyTime: "timestamp",
 		},
 	})
+	go debug.EnableDebugServer()
 	l := log.WithField("logger", "authentik.root")
 	config.DefaultConfig()
 	err := config.LoadConfig("./authentik/lib/default.yml")

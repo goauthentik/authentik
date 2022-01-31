@@ -42,6 +42,7 @@ module.exports = {
                 "services/wiki-js/index",
                 "services/wordpress/index",
                 "services/zabbix/index",
+                "services/zulip/index",
             ],
         },
         {

@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -59,7 +60,7 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 }
 
 // getTraefikForwardUrl See https://doc.traefik.io/traefik/middlewares/forwardauth/
-func (a *Application) getTraefikForwardUrl(r *http.Request) *url.URL {
+func (a *Application) getTraefikForwardUrl(r *http.Request) (*url.URL, error) {
 	u, err := url.Parse(fmt.Sprintf(
 		"%s://%s%s",
 		r.Header.Get("X-Forwarded-Proto"),
@@ -67,27 +68,51 @@ func (a *Application) getTraefikForwardUrl(r *http.Request) *url.URL {
 		r.Header.Get("X-Forwarded-Uri"),
 	))
 	if err != nil {
-		a.log.WithError(err).Warning("Failed to parse URL from traefik")
-		return r.URL
+		return nil, err
 	}
 	a.log.WithField("url", u.String()).Trace("traefik forwarded url")
-	return u
+	return u, nil
 }
 
-// getNginxForwardUrl See https://github.com/kubernetes/ingress-nginx/blob/main/rootfs/etc/nginx/template/nginx.tmpl#L1044
-func (a *Application) getNginxForwardUrl(r *http.Request) *url.URL {
-	h := r.Header.Get("X-Original-URI")
+// getNginxForwardUrl See https://github.com/kubernetes/ingress-nginx/blob/main/rootfs/etc/nginx/template/nginx.tmpl
+func (a *Application) getNginxForwardUrl(r *http.Request) (*url.URL, error) {
+	ou := r.Header.Get("X-Original-URI")
+	if ou != "" {
+		// Turn this full URL into a relative URL
+		u := &url.URL{
+			Host:   "",
+			Scheme: "",
+			Path:   ou,
+		}
+		a.log.WithField("url", u.String()).Info("building forward URL from X-Original-URI")
+		return u, nil
+	}
+	h := r.Header.Get("X-Original-URL")
 	if len(h) < 1 {
-		a.log.WithError(errors.New("blank URL")).Warning("blank URL")
-		return r.URL
+		return nil, errors.New("no forward URL found")
 	}
 	u, err := url.Parse(h)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to parse URL from nginx")
-		return r.URL
+		return nil, err
 	}
 	a.log.WithField("url", u.String()).Trace("nginx forwarded url")
-	return u
+	return u, nil
+}
+
+func (a *Application) ReportMisconfiguration(r *http.Request, msg string, fields map[string]interface{}) {
+	fields["message"] = msg
+	a.log.WithFields(fields).Error("Reporting configuration error")
+	req := api.EventRequest{
+		Action:   api.EVENTACTIONS_CONFIGURATION_ERROR,
+		App:      "authentik.providers.proxy", // must match python apps.py name
+		ClientIp: *api.NewNullableString(api.PtrString(r.RemoteAddr)),
+		Context:  &fields,
+	}
+	_, _, err := a.ak.Client.EventsApi.EventsEventsCreate(context.Background()).EventRequest(req).Execute()
+	if err != nil {
+		a.log.WithError(err).Warning("failed to report configuration error")
+	}
 }
 
 func (a *Application) IsAllowlisted(u *url.URL) bool {

@@ -46,6 +46,7 @@ type Application struct {
 
 	log *log.Entry
 	mux *mux.Router
+	ak  *ak.APIController
 
 	errorTemplates *template.Template
 }
@@ -93,6 +94,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		httpClient:     c,
 		mux:            mux,
 		errorTemplates: templates.GetTemplates(),
+		ak:             ak,
 	}
 	a.sessions = a.getStore(p)
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {

@@ -7,7 +7,6 @@ import structlog
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 
 bind = "127.0.0.1:8000"
-reload = True
 
 try:
     pwd.getpwnam("authentik")
@@ -22,6 +21,9 @@ if os.path.exists("/dev/shm"):  # nosec
     worker_tmp_dir = "/dev/shm"  # nosec
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
+
+max_requests = 1000
+max_requests_jitter = 50
 
 logconfig_dict = {
     "version": 1,

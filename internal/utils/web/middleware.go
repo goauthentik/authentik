@@ -99,14 +99,14 @@ func (h loggingHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	h.handler.ServeHTTP(responseLogger, req)
 	duration := float64(time.Since(t)) / float64(time.Millisecond)
 	h.afterHandler(h.logger.WithFields(log.Fields{
-		"remote":            req.RemoteAddr,
-		"host":              GetHost(req),
-		"request_protocol":  req.Proto,
-		"runtime":           fmt.Sprintf("%0.3f", duration),
-		"method":            req.Method,
-		"size":              responseLogger.Size(),
-		"status":            responseLogger.Status(),
-		"upstream":          responseLogger.upstream,
-		"request_useragent": req.UserAgent(),
+		"remote":     req.RemoteAddr,
+		"host":       GetHost(req),
+		"runtime":    fmt.Sprintf("%0.3f", duration),
+		"method":     req.Method,
+		"scheme":     req.URL.Scheme,
+		"size":       responseLogger.Size(),
+		"status":     responseLogger.Status(),
+		"upstream":   responseLogger.upstream,
+		"user_agent": req.UserAgent(),
 	}), req).Info(url.RequestURI())
 }

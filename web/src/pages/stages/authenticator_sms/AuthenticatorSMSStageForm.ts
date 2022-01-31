@@ -34,7 +34,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
     }
 
     @property({ attribute: false })
-    provider?: ProviderEnum;
+    provider: ProviderEnum = ProviderEnum.Twilio;
 
     @property({ attribute: false })
     authType?: AuthTypeEnum;
@@ -59,6 +59,101 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
             });
         }
     };
+
+    renderProviderTwillio(): TemplateResult {
+        return html` <ak-form-element-horizontal
+                label=${t`Twilio Account SID`}
+                ?required=${true}
+                name="accountSid"
+            >
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.accountSid || "")}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Get this value from https://console.twilio.com`}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Twilio Auth Token`} ?required=${true} name="auth">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.auth || "")}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Get this value from https://console.twilio.com`}
+                </p>
+            </ak-form-element-horizontal>`;
+    }
+
+    renderProviderGeneric(): TemplateResult {
+        return html` <ak-form-element-horizontal
+                label=${t`Authentication Type`}
+                @change=${(ev: Event) => {
+                    const current = (ev.target as HTMLInputElement).value;
+                    this.authType = current as AuthTypeEnum;
+                }}
+                ?required=${true}
+                name="authType"
+            >
+                <select class="pf-c-form-control">
+                    <option
+                        value="${AuthTypeEnum.Basic}"
+                        ?selected=${this.instance?.authType === AuthTypeEnum.Basic}
+                    >
+                        ${t`Basic Auth`}
+                    </option>
+                    <option
+                        value="${AuthTypeEnum.Bearer}"
+                        ?selected=${this.instance?.authType === AuthTypeEnum.Bearer}
+                    >
+                        ${t`Bearer Token`}
+                    </option>
+                </select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`External API URL`}
+                ?required=${true}
+                name="accountSid"
+            >
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.accountSid || "")}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`This is the full endpoint to send POST requests to.`}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`API Auth Username`} ?required=${true} name="auth">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.auth || "")}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`This is the username to be used with basic auth or the token when used with bearer token`}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`API Auth password`}
+                ?required=${false}
+                name="authPassword"
+            >
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.authPassword)}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`This is the password to be used with basic auth`}
+                </p>
+            </ak-form-element-horizontal>`;
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
@@ -117,113 +212,9 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                             ${t`Number the SMS will be sent from.`}
                         </p>
                     </ak-form-element-horizontal>
-
-                    <ak-form-element-horizontal
-                        label=${t`Twilio Account SID`}
-                        ?hidden=${this.provider !== ProviderEnum.Twilio}
-                        ?required=${true}
-                        name="accountSid"
-                    >
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.accountSid || "")}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${t`Get this value from https://console.twilio.com`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Twilio Auth Token`}
-                        ?hidden=${this.provider !== ProviderEnum.Twilio}
-                        ?required=${true}
-                        name="auth"
-                    >
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.auth || "")}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${t`Get this value from https://console.twilio.com`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Authentication Type`}
-                        ?hidden=${this.provider !== ProviderEnum.Generic}
-                        @change=${(ev: Event) => {
-                            const current = (ev.target as HTMLInputElement).value;
-                            this.authType = current as AuthTypeEnum;
-                        }}
-                        ?required=${true}
-                        name="authType"
-                    >
-                        <select class="pf-c-form-control">
-                            <option
-                                value="${AuthTypeEnum.Basic}"
-                                ?selected=${this.instance?.authType === AuthTypeEnum.Basic}
-                            >
-                                ${t`Basic Auth`}
-                            </option>
-                            <option
-                                value="${AuthTypeEnum.Bearer}"
-                                ?selected=${this.instance?.authType === AuthTypeEnum.Bearer}
-                            >
-                                ${t`Bearer Token`}
-                            </option>
-                        </select>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`External API URL`}
-                        ?hidden=${this.provider !== ProviderEnum.Generic}
-                        ?required=${true}
-                        name="accountSid"
-                    >
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.accountSid || "")}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${t`This is the full endpoint to send POST requests to.`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`API Auth Username`}
-                        ?hidden=${this.provider !== ProviderEnum.Generic}
-                        ?required=${true}
-                        name="auth"
-                    >
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.auth || "")}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${t`This is the username to be used with basic auth or the token when used with bearer token`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`API Auth password`}
-                        ?hidden=${!(
-                            this.provider === ProviderEnum.Generic &&
-                            this.authType === AuthTypeEnum.Basic
-                        )}
-                        ?required=${false}
-                        name="authPassword"
-                    >
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.authPassword)}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${t`This is the password to be used with basic auth`}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${this.provider === ProviderEnum.Generic
+                        ? this.renderProviderGeneric()
+                        : this.renderProviderTwillio()}
                     <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
                         <select class="pf-c-form-control">
                             <option

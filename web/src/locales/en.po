@@ -3608,6 +3608,10 @@ msgstr "Policy {0}"
 msgid "Policy-specific settings"
 msgstr "Policy-specific settings"
 
+#: src/interfaces/locale.ts
+msgid "Polish"
+msgstr "Polish"
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Post"
 msgstr "Post"
@@ -4432,6 +4436,10 @@ msgstr "Sources"
 #: src/pages/sources/SourcesListPage.ts
 msgid "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
 msgstr "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
+
+#: src/interfaces/locale.ts
+msgid "Spanish"
+msgstr "Spanish"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Specify multiple server URIs by separating them with a comma."

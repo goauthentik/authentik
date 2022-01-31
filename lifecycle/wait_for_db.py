@@ -26,9 +26,13 @@ def j_print(event: str, log_level: str = "info", **kwargs):
     print(dumps(data), file=stderr)
 
 
+j_print("Starting authentik bootstrap")
+
 # Sanity check, ensure SECRET_KEY is set before we even check for database connectivity
 if CONFIG.y("secret_key") is None or len(CONFIG.y("secret_key")) == 0:
+    j_print("----------------------------------------------------------------------")
     j_print("Secret key missing, check https://goauthentik.io/docs/installation/.")
+    j_print("----------------------------------------------------------------------")
     sysexit(1)
 
 
@@ -45,7 +49,9 @@ while True:
         break
     except OperationalError as exc:
         sleep(1)
-        j_print(f"PostgreSQL Connection failed, retrying... ({exc})")
+        j_print(f"PostgreSQL connection failed, retrying... ({exc})")
+    finally:
+        j_print("PostgreSQL connection successful")
 
 REDIS_PROTOCOL_PREFIX = "redis://"
 if CONFIG.y_bool("redis.tls", False):
@@ -63,3 +69,7 @@ while True:
     except RedisError as exc:
         sleep(1)
         j_print(f"Redis Connection failed, retrying... ({exc})", redis_url=REDIS_URL)
+    finally:
+        j_print("Redis Connection successful")
+
+j_print("Finished authentik bootstrap")

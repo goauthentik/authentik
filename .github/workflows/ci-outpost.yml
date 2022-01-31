@@ -45,15 +45,6 @@ jobs:
       - name: Go unittests
         run: |
           go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./... | go-junit-report > junit.xml
-      - uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{github.repository_owner}}
-      - name: run testspace
-        if: ${{ always() }}
-        run: |
-          gocov convert coverage.out | gocov-xml > coverage.xml
-          testspace [outpost]junit.xml --link=codecov
-          testspace [outpost]coverage.xml --link=codecov
   ci-outpost-mark:
     needs:
       - lint-golint

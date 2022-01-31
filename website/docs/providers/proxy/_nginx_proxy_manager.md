@@ -6,8 +6,6 @@ For Nginx Proxy Manager you can use this snippet
 # header from upstream' error when trying to access an application protected by goauthentik
 proxy_buffers 8 16k;
 proxy_buffer_size 32k;
-fastcgi_buffers 16 16k;
-fastcgi_buffer_size 32k;
 
 location / {
     # Put your proxy_pass to your application here
@@ -16,6 +14,8 @@ location / {
     # authentik-specific config
     auth_request        /akprox/auth/nginx;
     error_page          401 = @akprox_signin;
+    auth_request_set $auth_cookie $upstream_http_set_cookie;
+    add_header Set-Cookie $auth_cookie;
 
     # translate headers from the outposts back to the actual upstream
     auth_request_set $authentik_username $upstream_http_x_authentik_username;
@@ -37,6 +37,7 @@ location /akprox {
     # ensure the host of this vserver matches your external URL you've configured
     # in authentik
     proxy_set_header    Host $host;
+    proxy_set_header    X-Original-URL $scheme://$http_host$request_uri;
     add_header          Set-Cookie $auth_cookie;
     auth_request_set    $auth_cookie $upstream_http_set_cookie;
 }
