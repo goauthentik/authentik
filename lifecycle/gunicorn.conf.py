@@ -7,7 +7,6 @@ import structlog
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 
 bind = "127.0.0.1:8000"
-reload = True
 
 try:
     pwd.getpwnam("authentik")
