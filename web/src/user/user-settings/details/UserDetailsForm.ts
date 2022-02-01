@@ -103,7 +103,7 @@ export class UserDetailsForm extends ModelForm<UserSelf, number> {
                                     value=${locale.code}
                                     ?selected=${config.locale === locale.code}
                                 >
-                                    ${locale.label}
+                                    ${locale.code.toUpperCase()} - ${locale.label}
                                 </option>`;
                             })}
                         </select>
