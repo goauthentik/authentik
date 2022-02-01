@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"goauthentik.io/api"
 	"goauthentik.io/internal/outpost/proxyv2/application"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	"goauthentik.io/internal/utils/web"
@@ -58,6 +59,9 @@ func (ps *ProxyServer) lookupApp(r *http.Request) (*application.Application, str
 	var longestMatch *application.Application
 	longestMatchLength := 0
 	for _, app := range ps.apps {
+		if app.Mode() != api.PROXYMODE_FORWARD_DOMAIN {
+			continue
+		}
 		// Check if the cookie domain has a leading period for a wildcard
 		// This will decrease the weight of a wildcard domain, but a request to example.com
 		// with the cookie domain set to example.com will still be routed correctly.
@@ -70,6 +74,11 @@ func (ps *ProxyServer) lookupApp(r *http.Request) (*application.Application, str
 		}
 		longestMatch = app
 		longestMatchLength = len(cd)
+		// Also for forward_auth_domain, we need to respond on the external domain
+		if app.ProxyConfig().ExternalHost == host {
+			ps.log.WithField("host", host).WithField("app", app.ProxyConfig().Name).Debug("Found app based on external_host")
+			return app, host
+		}
 	}
 	// Check if our longes match is 0, in which case we didn't match, so we
 	// manually return no app
