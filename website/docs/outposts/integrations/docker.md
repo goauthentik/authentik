@@ -23,12 +23,12 @@ The container is created with the following hardcoded properties:
     Additionally, the proxy outposts have the following extra labels to add themselves into traefik automatically.
 
     - `traefik.enable`: "true"
-    - `traefik.http.routers.ak-outpost-<outpost-id>-router.rule`: `Host(...)`
-    - `traefik.http.routers.ak-outpost-<outpost-id>-router.service`: `ak-outpost-<outpost-id>-service`
-    - `traefik.http.routers.ak-outpost-<outpost-id>-router.tls`: "true"
-    - `traefik.http.services.ak-outpost-<outpost-id>-service.loadbalancer.healthcheck.path`: "/akprox/ping"
-    - `traefik.http.services.ak-outpost-<outpost-id>-service.loadbalancer.healthcheck.port`: "9300"
-    - `traefik.http.services.ak-outpost-<outpost-id>-service.loadbalancer.server.port`: "9000"
+    - `traefik.http.routers.ak-outpost-<outpost-name>-router.rule`: `Host(...)`
+    - `traefik.http.routers.ak-outpost-<outpost-name>-router.service`: `ak-outpost-<outpost-name>-service`
+    - `traefik.http.routers.ak-outpost-<outpost-name>-router.tls`: "true"
+    - `traefik.http.services.ak-outpost-<outpost-name>-service.loadbalancer.healthcheck.path`: "/akprox/ping"
+    - `traefik.http.services.ak-outpost-<outpost-name>-service.loadbalancer.healthcheck.port`: "9300"
+    - `traefik.http.services.ak-outpost-<outpost-name>-service.loadbalancer.server.port`: "9000"
 
 ## Permissions
 

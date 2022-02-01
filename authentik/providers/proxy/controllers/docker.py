@@ -23,7 +23,7 @@ class ProxyDockerController(DockerController):
             proxy_provider: ProxyProvider
             external_host_name = urlparse(proxy_provider.external_host)
             hosts.append(f"`{external_host_name.netloc}`")
-        traefik_name = f"ak-outpost-{self.outpost.pk.hex}"
+        traefik_name = self.name
         labels = super()._get_labels()
         labels["traefik.enable"] = "true"
         labels[
