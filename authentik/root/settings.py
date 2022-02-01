@@ -19,12 +19,11 @@ from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.threading import ThreadingIntegration
 
-from authentik import ENV_GIT_HASH_KEY, __version__, get_build_hash, get_full_version
+from authentik import ENV_GIT_HASH_KEY, __version__, get_build_hash
 from authentik.core.middleware import structlog_add_request_id
 from authentik.lib.config import CONFIG
 from authentik.lib.logging import add_process_id
 from authentik.lib.sentry import before_send
-from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
@@ -413,29 +412,6 @@ if _ERROR_REPORTING:
         "Error reporting is enabled",
         env=CONFIG.y("error_reporting.environment", "customer"),
     )
-if not CONFIG.y_bool("disable_startup_analytics", False):
-    should_send = env not in ["dev", "ci"]
-    if should_send:
-        try:
-            get_http_session().post(
-                "https://goauthentik.io/api/event",
-                json={
-                    "domain": "authentik",
-                    "name": "pageview",
-                    "referrer": get_full_version(),
-                    "url": (
-                        f"http://localhost/{env}?utm_source={get_full_version()}&utm_medium={env}"
-                    ),
-                },
-                headers={
-                    "User-Agent": sha512(str(SECRET_KEY).encode("ascii")).hexdigest()[:16],
-                    "Content-Type": "application/json",
-                },
-                timeout=5,
-            )
-        # pylint: disable=bare-except
-        except:  # nosec
-            pass
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
