@@ -25,13 +25,13 @@ The following placeholders will be used:
 - `nextcloud.company` is the FQDN of the NextCloud install.
 - `authentik.company` is the FQDN of the authentik install.
 
-Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
+Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to Applications->Providers. Create a SAML provider with the following parameters:
 
 - ACS URL: `https://nextcloud.company/apps/user_saml/saml/acs`
 - Issuer: `https://authentik.company`
 - Service Provider Binding: `Post`
 - Audience: `https://nextcloud.company/apps/user_saml/saml/metadata`
-- Signing Keypair: Select any certificate you have.
+- Signing certificate: Select any certificate you have.
 - Property mappings: Select all Managed mappings.
 
 You can of course use a custom signing certificate, and adjust durations.
@@ -54,6 +54,8 @@ Under Attribute mapping, set these values:
 - Attribute to map the displayname to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
 - Attribute to map the email address to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
 - Attribute to map the users groups to.: `http://schemas.xmlsoap.org/claims/Group`
+
+You should now be able to log in with authentik.
 
 :::note
 If Nextcloud is behind a reverse proxy you may need to force Nextcloud to use HTTPS.
