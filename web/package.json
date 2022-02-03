@@ -90,7 +90,7 @@
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.4",
         "eslint-plugin-lit": "^1.6.1",
-        "flowchart.js": "^1.17.0",
+        "flowchart.js": "^1.17.1",
         "fuse.js": "^6.5.3",
         "lit": "^2.1.2",
         "moment": "^2.29.1",
