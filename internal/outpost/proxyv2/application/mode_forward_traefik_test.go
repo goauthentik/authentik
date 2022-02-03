@@ -64,7 +64,7 @@ func TestForwardHandleTraefik_Single_Claims(t *testing.T) {
 	s, _ := a.sessions.Get(req, constants.SeesionName)
 	s.Values[constants.SessionClaims] = Claims{
 		Sub: "foo",
-		Proxy: ProxyClaims{
+		Proxy: &ProxyClaims{
 			UserAttributes: map[string]interface{}{
 				"username": "foo",
 				"password": "bar",
