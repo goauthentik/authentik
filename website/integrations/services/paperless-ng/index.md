@@ -21,7 +21,6 @@ The author of Paperless-ng recommends you do not expose Paperless outside your n
 The following placeholders will be used:
 
 - `paperless.company` is the FQDN of the Paperless-ng install.
-- `authentik.company` is the FQDN of the authentik install.
   
 Also set up your proxy server to use forward auth with paperless.company: https://goauthentik.io/docs/providers/proxy/forward_auth
 
