@@ -567,16 +567,16 @@ msgid "Background shown during execution."
 msgstr "Arrière-plan utilisé durant l'exécution."
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with errors."
-msgstr "Sauvegarde terminée avec des erreurs."
+#~ msgid "Backup finished with errors."
+#~ msgstr "Sauvegarde terminée avec des erreurs."
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with warnings/backup not supported."
-msgstr "Sauvegarde terminée avec avertissements/sauvegarde non supportée."
+#~ msgid "Backup finished with warnings/backup not supported."
+#~ msgstr "Sauvegarde terminée avec avertissements/sauvegarde non supportée."
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
-msgid "Backup status"
-msgstr "État de la sauvegarde"
+#~ msgid "Backup status"
+#~ msgstr "État de la sauvegarde"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts

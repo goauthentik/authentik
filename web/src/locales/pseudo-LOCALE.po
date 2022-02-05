@@ -559,16 +559,16 @@ msgid "Background shown during execution."
 msgstr ""
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with errors."
-msgstr ""
+#~ msgid "Backup finished with errors."
+#~ msgstr ""
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with warnings/backup not supported."
-msgstr ""
+#~ msgid "Backup finished with warnings/backup not supported."
+#~ msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
-msgid "Backup status"
-msgstr ""
+#~ msgid "Backup status"
+#~ msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
