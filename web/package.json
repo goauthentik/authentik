@@ -55,7 +55,7 @@
         "@babel/preset-typescript": "^7.16.7",
         "@formatjs/intl-listformat": "^6.5.1",
         "@fortawesome/fontawesome-free": "^5.15.4",
-        "@goauthentik/api": "^2022.1.4-1643745736",
+        "@goauthentik/api": "^2022.1.4-1644083671",
         "@jackfranklin/rollup-plugin-markdown": "^0.3.0",
         "@lingui/cli": "^3.13.2",
         "@lingui/core": "^3.13.2",
