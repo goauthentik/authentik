@@ -1,10 +1,16 @@
 """Gunicorn config"""
 import os
 import pwd
+from hashlib import sha512
 from multiprocessing import cpu_count
 
 import structlog
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
+
+from authentik import get_full_version
+from authentik.lib.config import CONFIG
+from authentik.lib.utils.http import get_http_session
+from authentik.lib.utils.reflection import get_env
 
 bind = "127.0.0.1:8000"
 
@@ -69,3 +75,31 @@ def worker_exit(server, worker):
     from prometheus_client import multiprocess
 
     multiprocess.mark_process_dead(worker.pid)
+
+
+if not CONFIG.y_bool("disable_startup_analytics", False):
+    env = get_env()
+    should_send = env not in ["dev", "ci"]
+    if should_send:
+        try:
+            get_http_session().post(
+                "https://goauthentik.io/api/event",
+                json={
+                    "domain": "authentik",
+                    "name": "pageview",
+                    "referrer": get_full_version(),
+                    "url": (
+                        f"http://localhost/{env}?utm_source={get_full_version()}&utm_medium={env}"
+                    ),
+                },
+                headers={
+                    "User-Agent": sha512(str(CONFIG.y("secret_key")).encode("ascii")).hexdigest()[
+                        :16
+                    ],
+                    "Content-Type": "application/json",
+                },
+                timeout=5,
+            )
+        # pylint: disable=bare-except
+        except:  # nosec
+            pass

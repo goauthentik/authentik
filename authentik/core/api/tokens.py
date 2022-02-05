@@ -3,7 +3,7 @@ from typing import Any
 
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema
-from guardian.shortcuts import get_anonymous_user
+from guardian.shortcuts import assign_perm, get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
@@ -95,10 +95,12 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
 
     def perform_create(self, serializer: TokenSerializer):
         if not self.request.user.is_superuser:
-            return serializer.save(
+            instance = serializer.save(
                 user=self.request.user,
                 expiring=self.request.user.attributes.get(USER_ATTRIBUTE_TOKEN_EXPIRING, True),
             )
+            assign_perm("authentik_core.view_token_key", self.request.user, instance)
+            return instance
         return super().perform_create(serializer)
 
     @permission_required("authentik_core.view_token_key")

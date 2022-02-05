@@ -30,6 +30,7 @@ class TestTokenAPI(APITestCase):
         self.assertEqual(token.user, self.user)
         self.assertEqual(token.intent, TokenIntents.INTENT_API)
         self.assertEqual(token.expiring, True)
+        self.assertTrue(self.user.has_perm("authentik_core.view_token_key", token))
 
     def test_token_create_invalid(self):
         """Test token creation endpoint (invalid data)"""

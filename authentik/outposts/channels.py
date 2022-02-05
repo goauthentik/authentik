@@ -55,6 +55,10 @@ class OutpostConsumer(AuthJsonConsumer):
 
     first_msg = False
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.logger = get_logger()
+
     def connect(self):
         super().connect()
         uuid = self.scope["url_route"]["kwargs"]["pk"]
@@ -65,7 +69,7 @@ class OutpostConsumer(AuthJsonConsumer):
         )
         if not outpost:
             raise DenyConnection()
-        self.logger = get_logger().bind(outpost=outpost)
+        self.logger = self.logger.bind(outpost=outpost)
         try:
             self.accept()
         except RuntimeError as exc:
