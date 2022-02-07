@@ -196,7 +196,10 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         return super().get(request, *args, **kwargs)
 
     def get_challenge(self) -> AuthenticatorValidationChallenge:
-        challenges = self.request.session["device_challenges"]
+        challenges = self.request.session.get("device_challenges")
+        if not challenges:
+            LOGGER.debug("Authenticator Validation stage ran without challenges")
+            return self.executor.stage_invalid()
         return AuthenticatorValidationChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
