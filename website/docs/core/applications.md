@@ -9,7 +9,7 @@ Applications are used to configure and separate the authorization / access contr
 
 ## Authorization
 
-Application access can be configured using (Policy) Bindings. You can use this to grant access to one or multiple users/groups, or dynamically give access using policies.
+Application access can be configured using (Policy) Bindings. Click on an application in the applications list, and select the *Policy / Group / User Bindings* tab. There you can bind users/groups/policies to grant them access. When nothing is bound, everyone has access. You can use this to grant access to one or multiple users/groups, or dynamically give access using policies.
 
 By default, all users can access applications when no policies are bound.
 
