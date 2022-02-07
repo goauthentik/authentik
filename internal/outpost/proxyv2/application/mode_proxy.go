@@ -74,16 +74,16 @@ func (a *Application) configureProxy() error {
 func (a *Application) proxyModifyRequest(ou *url.URL) func(req *http.Request) {
 	return func(r *http.Request) {
 		claims, _ := a.getClaims(r)
+		r.URL.Scheme = ou.Scheme
+		r.URL.Host = ou.Host
 		if claims.Proxy != nil && claims.Proxy.BackendOverride != "" {
 			u, err := url.Parse(claims.Proxy.BackendOverride)
 			if err != nil {
 				a.log.WithField("backend_override", claims.Proxy.BackendOverride).WithError(err).Warning("failed parse user backend override")
+				return
 			}
 			r.URL.Scheme = u.Scheme
 			r.URL.Host = u.Host
-		} else {
-			r.URL.Scheme = ou.Scheme
-			r.URL.Host = ou.Host
 		}
 	}
 }
