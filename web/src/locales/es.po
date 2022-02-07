@@ -561,16 +561,16 @@ msgid "Background shown during execution."
 msgstr "Se muestra el fondo durante la ejecución."
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with errors."
-msgstr "La copia de seguridad terminó con errores."
+#~ msgid "Backup finished with errors."
+#~ msgstr "La copia de seguridad terminó con errores."
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with warnings/backup not supported."
-msgstr "La copia de seguridad finalizó con advertencias o copias de seguridad no compatibles"
+#~ msgid "Backup finished with warnings/backup not supported."
+#~ msgstr "La copia de seguridad finalizó con advertencias o copias de seguridad no compatibles"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
-msgid "Backup status"
-msgstr "Estado de respaldo"
+#~ msgid "Backup status"
+#~ msgstr "Estado de respaldo"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts

@@ -561,16 +561,16 @@ msgid "Background shown during execution."
 msgstr "Tło pokazywane podczas wykonywania."
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with errors."
-msgstr "Kopia zapasowa zakończona z błędami."
+#~ msgid "Backup finished with errors."
+#~ msgstr "Kopia zapasowa zakończona z błędami."
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with warnings/backup not supported."
-msgstr "Tworzenie kopii zapasowej zakończone z ostrzeżeniami/kopia zapasowa nie jest obsługiwana."
+#~ msgid "Backup finished with warnings/backup not supported."
+#~ msgstr "Tworzenie kopii zapasowej zakończone z ostrzeżeniami/kopia zapasowa nie jest obsługiwana."
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
-msgid "Backup status"
-msgstr "Stan kopii zapasowej"
+#~ msgid "Backup status"
+#~ msgstr "Stan kopii zapasowej"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
