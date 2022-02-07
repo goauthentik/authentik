@@ -53,7 +53,7 @@
         "@babel/plugin-transform-runtime": "^7.17.0",
         "@babel/preset-env": "^7.16.11",
         "@babel/preset-typescript": "^7.16.7",
-        "@formatjs/intl-listformat": "^6.5.1",
+        "@formatjs/intl-listformat": "^6.5.2",
         "@fortawesome/fontawesome-free": "^5.15.4",
         "@goauthentik/api": "^2022.1.4-1644083671",
         "@jackfranklin/rollup-plugin-markdown": "^0.3.0",
