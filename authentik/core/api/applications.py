@@ -1,13 +1,16 @@
 """Application API Views"""
+from typing import Optional
+
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
+from django.utils.functional import SimpleLazyObject
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import ReadOnlyField
+from rest_framework.fields import ReadOnlyField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -39,10 +42,21 @@ def user_app_cache_key(user_pk: str) -> str:
 class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
-    launch_url = ReadOnlyField(source="get_launch_url")
+    launch_url = SerializerMethodField()
     provider_obj = ProviderSerializer(source="get_provider", required=False)
 
     meta_icon = ReadOnlyField(source="get_meta_icon")
+
+    def get_launch_url(self, app: Application) -> Optional[str]:
+        """Allow formatting of launch URL"""
+        url = app.get_launch_url()
+        if not url:
+            return url
+        user = self.context["request"].user
+        if isinstance(user, SimpleLazyObject):
+            user._setup()
+            user = user._wrapped
+        return url % user.__dict__
 
     class Meta:
 

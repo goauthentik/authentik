@@ -24,6 +24,9 @@ The following aspects can be configured:
 
 - *Name*: This is the name shown for the application card
 - *Launch URL*: The URL that is opened when a user clicks on the application. When left empty, authentik tries to guess it based on the provider
+
+    Starting with authentik 2022.2, you can use placeholders in the launch url to build them dynamically based on logged in user. For example, you can set the Launch URL to `https://goauthentik.io/%(username)s`, which will be replaced with the currently logged in user's username.
+
 - *Icon (URL)*: Optionally configure an Icon for the application
 - *Publisher*: Text shown below the application
 - *Description*: Subtext shown on the application card below the publisher
