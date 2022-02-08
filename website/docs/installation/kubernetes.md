@@ -4,7 +4,7 @@ title: Kubernetes installation
 
 authentik is installed using a helm-chart.
 
-To install authentik using the helm chart, generate a password for the database and the cache, using `pwgen` or `openssl rand -base64 36`.
+To install authentik using the helm chart, generate a password for the database and the cache, using `pwgen -s 50 1` or `openssl rand -base64 36`.
 
 Create a values.yaml file with a minimum of these settings:
 
