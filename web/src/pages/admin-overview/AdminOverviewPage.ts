@@ -110,7 +110,7 @@ export class AdminOverviewPage extends LitElement {
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container"
                     >
                         <ak-aggregate-card
-                            icon="pf-icon pf-icon-server"
+                            icon="pf-icon pf-icon-process-automation"
                             header=${t`Flows`}
                             headerLink="#/flow/flows"
                         >
@@ -121,7 +121,7 @@ export class AdminOverviewPage extends LitElement {
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container"
                     >
                         <ak-aggregate-card
-                            icon="fa fa-sync-alt"
+                            icon="pf-icon pf-icon-zone"
                             header=${t`Outpost status`}
                             headerLink="#/outpost/outposts"
                         >
@@ -132,7 +132,7 @@ export class AdminOverviewPage extends LitElement {
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container"
                     >
                         <ak-aggregate-card
-                            icon="fa fa-sync-alt"
+                            icon="pf-icon pf-icon-user"
                             header=${t`Users`}
                             headerLink="#/identity/users"
                         >
@@ -143,7 +143,7 @@ export class AdminOverviewPage extends LitElement {
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container"
                     >
                         <ak-aggregate-card
-                            icon="fa fa-sync-alt"
+                            icon="pf-icon pf-icon-users"
                             header=${t`Groups`}
                             headerLink="#/identity/groups"
                         >
