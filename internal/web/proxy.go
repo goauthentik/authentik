@@ -28,7 +28,7 @@ func (ws *WebServer) configureProxy() {
 	rp := &httputil.ReverseProxy{Director: director}
 	rp.ErrorHandler = ws.proxyErrorHandler
 	rp.ModifyResponse = ws.proxyModifyResponse
-	ws.m.PathPrefix("/akprox").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	ws.m.PathPrefix("/outpost.goauthentik.io").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		if ws.ProxyServer != nil {
 			before := time.Now()
 			ws.ProxyServer.Handle(rw, r)

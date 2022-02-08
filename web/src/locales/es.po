@@ -5556,8 +5556,8 @@ msgid "Use the username and password below to authenticate. The password can be 
 msgstr "Use el nombre de usuario y la contraseña a continuación para autenticarse. La contraseña se puede recuperar más adelante en la página Tokens."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
-msgstr "Use este proveedor con auth_request de nginx o ForwardAuth de traefik. Cada aplicación/dominio necesita su propio proveedor. Además, en cada dominio, /akprox debe enrutarse al puesto avanzado (cuando se usa un puesto avanzado administrado, esto se hace por usted)."
+msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you)."
+msgstr "Use este proveedor con auth_request de nginx o ForwardAuth de traefik. Cada aplicación/dominio necesita su propio proveedor. Además, en cada dominio, /outpost.goauthentik.io debe enrutarse al puesto avanzado (cuando se usa un puesto avanzado administrado, esto se hace por usted)."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."

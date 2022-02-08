@@ -105,7 +105,7 @@ class TestProviderProxy(SeleniumTestCase):
         self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
         self.assertIn("X-Foo: bar", full_body_text)
 
-        self.driver.get("http://localhost:9000/akprox/sign_out")
+        self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of proxy.", full_body_text)

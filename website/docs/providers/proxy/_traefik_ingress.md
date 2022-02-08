@@ -7,7 +7,7 @@ metadata:
   name: authentik
 spec:
   forwardAuth:
-    address: http://outpost.company:9000/akprox/auth/traefik
+    address: http://outpost.company:9000/outpost.goauthentik.io/auth/traefik
     trustForwardHeader: true
     authResponseHeaders:
       - X-authentik-username
@@ -41,7 +41,7 @@ spec:
       services: # Unchanged
     # This part is only required for single-app setups
     - kind: Rule
-      match: "Host(`app.company`) && PathPrefix(`/akprox/`)"
+      match: "Host(`app.company`) && PathPrefix(`/outpost.goauthentik.io/`)"
       priority: 15
       services:
         - kind: Service
