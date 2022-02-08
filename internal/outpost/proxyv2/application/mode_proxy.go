@@ -76,15 +76,18 @@ func (a *Application) proxyModifyRequest(ou *url.URL) func(req *http.Request) {
 		claims, _ := a.getClaims(r)
 		r.URL.Scheme = ou.Scheme
 		r.URL.Host = ou.Host
-		if claims.Proxy != nil && claims.Proxy.BackendOverride != "" {
+		r.Host = ou.Host
+		if claims != nil && claims.Proxy != nil && claims.Proxy.BackendOverride != "" {
 			u, err := url.Parse(claims.Proxy.BackendOverride)
 			if err != nil {
 				a.log.WithField("backend_override", claims.Proxy.BackendOverride).WithError(err).Warning("failed parse user backend override")
-				return
+			} else {
+				r.URL.Scheme = u.Scheme
+				r.URL.Host = u.Host
+				r.Host = u.Host
 			}
-			r.URL.Scheme = u.Scheme
-			r.URL.Host = u.Host
 		}
+		a.log.WithField("upstream_url", r.URL.String()).Trace("final upstream url")
 	}
 }
 
