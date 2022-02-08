@@ -78,7 +78,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	oauth2Config := oauth2.Config{
 		ClientID:     *p.ClientId,
 		ClientSecret: *p.ClientSecret,
-		RedirectURL:  urlJoin(p.ExternalHost, "/akprox/callback"),
+		RedirectURL:  urlJoin(p.ExternalHost, "/outpost.goauthentik.io/callback"),
 		Endpoint:     endpoint.Endpoint,
 		Scopes:       p.ScopesToRequest,
 	}
@@ -145,10 +145,10 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 
 	// Support /start and /sign_in for backwards compatibility
-	mux.HandleFunc("/akprox/start", a.handleRedirect)
-	mux.HandleFunc("/akprox/sign_in", a.handleRedirect)
-	mux.HandleFunc("/akprox/callback", a.handleCallback)
-	mux.HandleFunc("/akprox/sign_out", a.handleSignOut)
+	mux.HandleFunc("/outpost.goauthentik.io/start", a.handleRedirect)
+	mux.HandleFunc("/outpost.goauthentik.io/sign_in", a.handleRedirect)
+	mux.HandleFunc("/outpost.goauthentik.io/callback", a.handleCallback)
+	mux.HandleFunc("/outpost.goauthentik.io/sign_out", a.handleSignOut)
 	switch *p.Mode {
 	case api.PROXYMODE_PROXY:
 		err = a.configureProxy()

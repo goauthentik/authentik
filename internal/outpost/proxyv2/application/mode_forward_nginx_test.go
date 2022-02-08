@@ -12,7 +12,7 @@ import (
 
 func TestForwardHandleNginx_Single_Blank(t *testing.T) {
 	a := newTestApplication()
-	req, _ := http.NewRequest("GET", "/akprox/auth/nginx", nil)
+	req, _ := http.NewRequest("GET", "/outpost.goauthentik.io/auth/nginx", nil)
 
 	rr := httptest.NewRecorder()
 	a.forwardHandleNginx(rr, req)
@@ -22,7 +22,7 @@ func TestForwardHandleNginx_Single_Blank(t *testing.T) {
 
 func TestForwardHandleNginx_Single_Skip(t *testing.T) {
 	a := newTestApplication()
-	req, _ := http.NewRequest("GET", "/akprox/auth/nginx", nil)
+	req, _ := http.NewRequest("GET", "/outpost.goauthentik.io/auth/nginx", nil)
 	req.Header.Set("X-Original-URL", "http://test.goauthentik.io/skip")
 
 	rr := httptest.NewRecorder()
@@ -33,7 +33,7 @@ func TestForwardHandleNginx_Single_Skip(t *testing.T) {
 
 func TestForwardHandleNginx_Single_Headers(t *testing.T) {
 	a := newTestApplication()
-	req, _ := http.NewRequest("GET", "/akprox/auth/nginx", nil)
+	req, _ := http.NewRequest("GET", "/outpost.goauthentik.io/auth/nginx", nil)
 	req.Header.Set("X-Original-URL", "http://test.goauthentik.io/app")
 
 	rr := httptest.NewRecorder()
@@ -47,7 +47,7 @@ func TestForwardHandleNginx_Single_Headers(t *testing.T) {
 
 func TestForwardHandleNginx_Single_URI(t *testing.T) {
 	a := newTestApplication()
-	req, _ := http.NewRequest("GET", "https://foo.bar/akprox/auth/nginx", nil)
+	req, _ := http.NewRequest("GET", "https://foo.bar/outpost.goauthentik.io/auth/nginx", nil)
 	req.Header.Set("X-Original-URI", "/app")
 
 	rr := httptest.NewRecorder()
@@ -61,7 +61,7 @@ func TestForwardHandleNginx_Single_URI(t *testing.T) {
 
 func TestForwardHandleNginx_Single_Claims(t *testing.T) {
 	a := newTestApplication()
-	req, _ := http.NewRequest("GET", "/akprox/auth/nginx", nil)
+	req, _ := http.NewRequest("GET", "/outpost.goauthentik.io/auth/nginx", nil)
 	req.Header.Set("X-Original-URI", "/")
 
 	rr := httptest.NewRecorder()
@@ -108,7 +108,7 @@ func TestForwardHandleNginx_Domain_Blank(t *testing.T) {
 	a := newTestApplication()
 	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
 	a.proxyConfig.CookieDomain = api.PtrString("foo")
-	req, _ := http.NewRequest("GET", "/akprox/auth/nginx", nil)
+	req, _ := http.NewRequest("GET", "/outpost.goauthentik.io/auth/nginx", nil)
 
 	rr := httptest.NewRecorder()
 	a.forwardHandleNginx(rr, req)
@@ -121,7 +121,7 @@ func TestForwardHandleNginx_Domain_Header(t *testing.T) {
 	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
 	a.proxyConfig.CookieDomain = api.PtrString("foo")
 	a.proxyConfig.ExternalHost = "http://auth.test.goauthentik.io"
-	req, _ := http.NewRequest("GET", "/akprox/auth/nginx", nil)
+	req, _ := http.NewRequest("GET", "/outpost.goauthentik.io/auth/nginx", nil)
 	req.Header.Set("X-Original-URL", "http://test.goauthentik.io/app")
 
 	rr := httptest.NewRecorder()

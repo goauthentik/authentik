@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: 
+#:
 #~ msgid "#/identity/users/{0}"
 #~ msgstr ""
 
@@ -141,7 +141,7 @@ msgstr ""
 msgid "Access Key"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Access code validity"
 #~ msgstr ""
 
@@ -457,7 +457,7 @@ msgstr ""
 msgid "Audience"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Auth Type"
 #~ msgstr ""
 
@@ -500,7 +500,7 @@ msgstr ""
 msgid "Authorization"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Authorization Code"
 #~ msgstr ""
 
@@ -652,7 +652,7 @@ msgstr ""
 msgid "Build hash:"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Build hash: {0}"
 #~ msgstr ""
 
@@ -729,7 +729,7 @@ msgstr ""
 msgid "Certificate used to sign outgoing Responses going to the Service Provider."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Certificate-Key Pair"
 #~ msgstr ""
 
@@ -812,7 +812,7 @@ msgstr ""
 msgid "Check the logs"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Check your Emails for a password reset link."
 #~ msgstr ""
 
@@ -945,11 +945,11 @@ msgstr ""
 msgid "Configuration stage"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Configure WebAuthn"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Configure how long access codes are valid for."
 #~ msgstr ""
 
@@ -981,8 +981,8 @@ msgstr ""
 msgid "Configure how the outpost queries the core authentik server's users."
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Configure settings relevant to your user profile."
 #~ msgstr ""
 
@@ -1104,7 +1104,7 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Copy Key"
 #~ msgstr ""
 
@@ -1287,7 +1287,7 @@ msgstr ""
 msgid "Created by"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Created {0}"
 #~ msgstr ""
 
@@ -1297,7 +1297,7 @@ msgstr ""
 msgid "Creation Date"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Current plan cntext"
 #~ msgstr ""
 
@@ -1392,24 +1392,24 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Delete Authorization Code"
 #~ msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Delete Binding"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Delete Consent"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Delete Refresh Code"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Delete Session"
 #~ msgstr ""
 
@@ -1488,7 +1488,7 @@ msgstr ""
 msgid "Device classes which can be used to authenticate."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Device name"
 #~ msgstr ""
 
@@ -1517,24 +1517,24 @@ msgstr ""
 msgid "Directory"
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Disable"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Disable Duo authenticator"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Disable SMS authenticator"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Disable Static Tokens"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Disable Time-based OTP"
 #~ msgstr ""
 
@@ -1584,7 +1584,7 @@ msgstr ""
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Duo"
 #~ msgstr ""
 
@@ -1694,16 +1694,16 @@ msgstr ""
 msgid "Embedded outpost is not configured correctly."
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Enable"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Enable Duo authenticator"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Enable SMS authenticator"
 #~ msgstr ""
 
@@ -1711,11 +1711,11 @@ msgstr ""
 msgid "Enable StartTLS"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Enable Static Tokens"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Enable TOTP"
 #~ msgstr ""
 
@@ -1779,7 +1779,7 @@ msgstr ""
 msgid "Error: unsupported source settings: {0}"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Error: unsupported stage settings: {0}"
 #~ msgstr ""
 
@@ -1825,7 +1825,7 @@ msgstr ""
 msgid "Exception"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Execute"
 #~ msgstr ""
 
@@ -1833,7 +1833,7 @@ msgstr ""
 msgid "Execute flow"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Execute with inspector"
 #~ msgstr ""
 
@@ -2005,7 +2005,7 @@ msgstr ""
 msgid "Field which contains a unique Identifier."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Field which contains members of a group."
 #~ msgstr ""
 
@@ -2202,7 +2202,7 @@ msgstr ""
 msgid "Get this value from https://console.twilio.com"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Go to admin interface"
 #~ msgstr ""
 
@@ -2214,7 +2214,7 @@ msgstr ""
 msgid "Go to previous page"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Go to user interface"
 #~ msgstr ""
 
@@ -2516,7 +2516,7 @@ msgstr ""
 msgid "Invalidation flow"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Invitation"
 #~ msgstr ""
 
@@ -2638,7 +2638,7 @@ msgstr ""
 msgid "Let the user identify themselves with their username or Email address."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Library"
 #~ msgstr ""
 
@@ -2942,7 +2942,7 @@ msgstr ""
 msgid "Model updated"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Monitor"
 #~ msgstr ""
 
@@ -3231,7 +3231,7 @@ msgstr ""
 msgid "Notification Transports"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Notification rule"
 #~ msgstr ""
 
@@ -3251,7 +3251,7 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Notifications Transport"
 #~ msgstr ""
 
@@ -3314,7 +3314,7 @@ msgstr ""
 msgid "Open API Browser"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Open application"
 #~ msgstr ""
 
@@ -3388,7 +3388,7 @@ msgstr ""
 msgid "Outdated outposts"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Outpost"
 #~ msgstr ""
 
@@ -3400,11 +3400,11 @@ msgstr ""
 msgid "Outpost Integrations"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Outpost Service-connection"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Outpost integration"
 #~ msgstr ""
 
@@ -3484,7 +3484,7 @@ msgstr ""
 msgid "Password stage"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Password, 2FA, etc"
 #~ msgstr ""
 
@@ -3561,7 +3561,7 @@ msgstr ""
 msgid "Policy Bindings"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Policy binding"
 #~ msgstr ""
 
@@ -3639,7 +3639,7 @@ msgstr ""
 msgid "Profile URL"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Prompt"
 #~ msgstr ""
 
@@ -3656,7 +3656,7 @@ msgstr ""
 msgid "Prompts"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Property Mapping"
 #~ msgstr ""
 
@@ -3716,7 +3716,7 @@ msgstr ""
 msgid "Provider Type"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Provider type"
 #~ msgstr ""
 
@@ -3853,7 +3853,7 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Refresh Code"
 #~ msgstr ""
 
@@ -3967,7 +3967,7 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Retry Task"
 #~ msgstr ""
 
@@ -4115,7 +4115,7 @@ msgstr ""
 msgid "Secret was rotated"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Secret was rotation"
 #~ msgstr ""
 
@@ -4155,7 +4155,7 @@ msgstr ""
 msgid "Select an enrollment flow"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Select an identification method."
 #~ msgstr ""
 
@@ -4191,7 +4191,7 @@ msgstr ""
 msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Selecting a service-connection enables the management of the outpost by authentik."
 #~ msgstr ""
 
@@ -4240,7 +4240,7 @@ msgstr ""
 msgid "Server and client are further than 5 seconds apart."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Server name for which this provider's certificate is valid for."
 #~ msgstr ""
 
@@ -4248,7 +4248,7 @@ msgstr ""
 msgid "Server validation of credential failed: {err}"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Service Connections"
 #~ msgstr ""
 
@@ -4256,12 +4256,12 @@ msgstr ""
 msgid "Service Provider Binding"
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Service connection"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Session"
 #~ msgstr ""
 
@@ -4394,7 +4394,7 @@ msgstr ""
 msgid "Something went wrong! Please try again later."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Source"
 #~ msgstr ""
 
@@ -4402,7 +4402,7 @@ msgstr ""
 msgid "Source linked"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Source name"
 #~ msgstr ""
 
@@ -4419,7 +4419,7 @@ msgstr ""
 msgid "Sources"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 #~ msgstr ""
 
@@ -4448,7 +4448,7 @@ msgstr ""
 msgid "Stage Configuration"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Stage binding"
 #~ msgstr ""
 
@@ -4565,17 +4565,17 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#:
+#:
+#:
+#:
 #~ msgid "Status: Disabled"
 #~ msgstr ""
 
-#: 
-#: 
-#: 
-#: 
+#:
+#:
+#:
+#:
 #~ msgid "Status: Enabled"
 #~ msgstr ""
 
@@ -4687,8 +4687,8 @@ msgstr ""
 msgid "Successfully created rule."
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Successfully created service-connection."
 #~ msgstr ""
 
@@ -4849,8 +4849,8 @@ msgstr ""
 msgid "Successfully updated rule."
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Successfully updated service-connection."
 #~ msgstr ""
 
@@ -4930,7 +4930,7 @@ msgstr ""
 msgid "Symbol charset"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Sync"
 #~ msgstr ""
 
@@ -4938,7 +4938,7 @@ msgstr ""
 msgid "Sync groups"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Sync parent group"
 #~ msgstr ""
 
@@ -4983,7 +4983,7 @@ msgstr ""
 msgid "TLS Authentication Certificate/SSH Keypair"
 msgstr ""
 
-#: 
+#:
 #~ msgid "TLS Server name"
 #~ msgstr ""
 
@@ -5088,7 +5088,7 @@ msgstr ""
 msgid "The external URL you'll authenticate at. The authentik core server should be reachable under this URL."
 msgstr ""
 
-#: 
+#:
 #~ msgid "The following objects use {0}:"
 #~ msgstr ""
 
@@ -5192,7 +5192,7 @@ msgstr ""
 msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
-#: 
+#:
 #~ msgid "Time-based One-Time Passwords"
 #~ msgstr ""
 
@@ -5231,8 +5231,8 @@ msgstr ""
 msgid "To use SSL instead, use 'ldaps://' and disable this option."
 msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "Token"
 #~ msgstr ""
 
@@ -5431,7 +5431,7 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Unmanaged"
 #~ msgstr ""
 
@@ -5653,7 +5653,7 @@ msgid "Use the username and password below to authenticate. The password can be 
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
+msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you)."
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -5694,8 +5694,8 @@ msgstr ""
 #~ msgid "User Reputation"
 #~ msgstr ""
 
-#: 
-#: 
+#:
+#:
 #~ msgid "User Settings"
 #~ msgstr ""
 
@@ -5964,7 +5964,7 @@ msgstr ""
 msgid "WebAuthn Authenticators"
 msgstr ""
 
-#: 
+#:
 #~ msgid "WebAuthn Devices"
 #~ msgstr ""
 
@@ -6104,11 +6104,11 @@ msgstr ""
 msgid "app1 running on app1.example.com"
 msgstr ""
 
-#: 
+#:
 #~ msgid "authentik Builtin Database"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "authentik LDAP Backend"
 #~ msgstr ""
 

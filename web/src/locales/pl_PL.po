@@ -1,7 +1,7 @@
-# 
+#
 # Translators:
 # Darek NeroPcStation <dareknowacki2001@gmail.com>, 2022
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -6020,12 +6020,12 @@ msgstr ""
 msgid ""
 "Use this provider with nginx's auth_request or traefik's forwardAuth. Each "
 "application/domain needs its own provider. Additionally, on each domain, "
-"/akprox must be routed to the outpost (when using a manged outpost, this is "
+"/outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is "
 "done for you)."
 msgstr ""
 "Użyj tego dostawcy z auth_request nginx lub forwardAuth traefik. Każda "
 "aplikacja/domena potrzebuje własnego dostawcy. Dodatkowo w każdej domenie "
-"/akprox musi być przekierowany do placówki (w przypadku korzystania z "
+"/outpost.goauthentik.io musi być przekierowany do placówki (w przypadku korzystania z "
 "zarządzanej placówki jest to zrobione za Ciebie)."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts

@@ -19,7 +19,7 @@ ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 COPY --from=builder /go/ldap /
 
-HEALTHCHECK CMD [ "wget", "--spider", "http://localhost:9300/akprox/ping" ]
+HEALTHCHECK CMD [ "wget", "--spider", "http://localhost:9300/outpost.goauthentik.io/ping" ]
 
 EXPOSE 3389 6636 9300
 
