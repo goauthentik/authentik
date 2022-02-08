@@ -13,7 +13,9 @@ class TestApplicationsAPI(APITestCase):
 
     def setUp(self) -> None:
         self.user = create_test_admin_user()
-        self.allowed = Application.objects.create(name="allowed", slug="allowed")
+        self.allowed = Application.objects.create(
+            name="allowed", slug="allowed", meta_launch_url="https://goauthentik.io/%(username)s"
+        )
         self.denied = Application.objects.create(name="denied", slug="denied")
         PolicyBinding.objects.create(
             target=self.denied,
@@ -64,8 +66,8 @@ class TestApplicationsAPI(APITestCase):
                         "slug": "allowed",
                         "provider": None,
                         "provider_obj": None,
-                        "launch_url": None,
-                        "meta_launch_url": "",
+                        "launch_url": f"https://goauthentik.io/{self.user.username}",
+                        "meta_launch_url": "https://goauthentik.io/%(username)s",
                         "meta_icon": None,
                         "meta_description": "",
                         "meta_publisher": "",
@@ -100,8 +102,8 @@ class TestApplicationsAPI(APITestCase):
                         "slug": "allowed",
                         "provider": None,
                         "provider_obj": None,
-                        "launch_url": None,
-                        "meta_launch_url": "",
+                        "launch_url": f"https://goauthentik.io/{self.user.username}",
+                        "meta_launch_url": "https://goauthentik.io/%(username)s",
                         "meta_icon": None,
                         "meta_description": "",
                         "meta_publisher": "",
