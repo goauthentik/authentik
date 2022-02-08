@@ -16,13 +16,22 @@ def get_namespace() -> str:
     return "default"
 
 
+def compare_port(current: V1ServicePort, reference: V1ServicePort) -> bool:
+    """Compare a single port"""
+    if current.name != reference.name:
+        return False
+    # We only care about the target port
+    if current.target_port != reference.target_port:
+        return False
+    if current.protocol != reference.protocol:
+        return False
+    return True
+
+
 def compare_ports(current: list[V1ServicePort], reference: list[V1ServicePort]):
     """Compare ports of a list"""
     if len(current) != len(reference):
         raise NeedsRecreate()
     for port in reference:
-        # We don't need to compare node_ports
-        # https://github.com/goauthentik/authentik/issues/2095#issuecomment-1020674326
-        port.node_port = None
-        if port not in current:
+        if not any(compare_port(port, current_port) for current_port in current):
             raise NeedsRecreate()
