@@ -102,7 +102,11 @@ func (ps *ProxyServer) GetCertificate(serverName string) *tls.Certificate {
 }
 
 func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
-	appCert := ps.GetCertificate(info.ServerName)
+	sn := info.ServerName
+	if sn == "" {
+		return &ps.defaultCert, nil
+	}
+	appCert := ps.GetCertificate(sn)
 	if appCert == nil {
 		return &ps.defaultCert, nil
 	}
