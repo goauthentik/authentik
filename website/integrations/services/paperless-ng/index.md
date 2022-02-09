@@ -39,8 +39,8 @@ Now restart your container:
 
 ## authentik
 
-### Provider
-In authentik, go to the Admin Interface and click Applications->Providers.
+**Provider**
+In authentik, go to the Admin Interface and click _Applications/Providers_.
 
 Create a Proxy Provider. Give it a name (e.g. `Paperless Proxy`), then choose explicit or implicit consent (whether you want authentic to show a button to proceed to Paperless after login, or to just go there).
 
@@ -48,9 +48,9 @@ Choose Forward Auth (single application), then add the External host: `https://p
 
 Click Create to finish creating the provider.
   
-### Application
+**Application**
   
-Now go to Applications->Applications and create a new application.
+Now go to _Applications/Applications_ and create a new application.
 
 Give it a name, this one is displayed to users. E.g. `Paperless`.
 
@@ -60,11 +60,11 @@ Now select the provider we created earlier, e.g. `Paperless Proxy`.
   
 Click Create to create the application.
  
-### Outpost
+**Outpost**
  
-Now go to Applications->Outposts and click the edit button for "authentik Embedded Outpost".
+Now go to _Applications/Outposts_ and click the edit button for _"authentik Embedded Outpost"_.
 
-Under Applications, click Paperless to select it (and select any other services in the list you want to keep working - use ctrl+click to select multiple), then click Update at the bottom. 
+Under Applications, click Paperless to select it (use ctrl+click to select multiple), then click Update at the bottom. 
 
 ## Finished
   
