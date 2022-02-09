@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httputil"
@@ -67,7 +68,18 @@ func (ws *WebServer) configureProxy() {
 func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request, err error) {
 	ws.log.Warning(err.Error())
 	rw.WriteHeader(http.StatusBadGateway)
-	_, err = rw.Write([]byte("authentik starting..."))
+	em := fmt.Sprintf("failed to connect to authentik backend: %v", err)
+	if !ws.p.IsRunning() {
+		em = "authentik starting..."
+	}
+	// return json if the client asks for json
+	if req.Header.Get("Accept") == "application/json" {
+		eem, _ := json.Marshal(map[string]string{
+			"error": em,
+		})
+		em = string(eem)
+	}
+	_, err = rw.Write([]byte(em))
 	if err != nil {
 		ws.log.WithError(err).Warning("failed to write error message")
 	}
