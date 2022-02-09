@@ -18,6 +18,7 @@ func (ws *WebServer) configureProxy() {
 	director := func(req *http.Request) {
 		req.URL.Scheme = u.Scheme
 		req.URL.Host = u.Host
+		req.Host = u.Host
 		if _, ok := req.Header["User-Agent"]; !ok {
 			// explicitly disable User-Agent so it's not set to default value
 			req.Header.Set("User-Agent", "")
@@ -25,6 +26,7 @@ func (ws *WebServer) configureProxy() {
 		if req.TLS != nil {
 			req.Header.Set("X-Forwarded-Proto", "https")
 		}
+		ws.log.WithField("url", req.URL.String()).WithField("headers", req.Header).Trace("tracing request to backend")
 	}
 	rp := &httputil.ReverseProxy{Director: director}
 	rp.ErrorHandler = ws.proxyErrorHandler
@@ -66,7 +68,7 @@ func (ws *WebServer) configureProxy() {
 }
 
 func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request, err error) {
-	ws.log.Warning(err.Error())
+	ws.log.WithError(err).Warning("failed to proxy to backend")
 	rw.WriteHeader(http.StatusBadGateway)
 	em := fmt.Sprintf("failed to connect to authentik backend: %v", err)
 	if !ws.p.IsRunning() {
