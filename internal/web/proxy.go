@@ -18,7 +18,6 @@ func (ws *WebServer) configureProxy() {
 	director := func(req *http.Request) {
 		req.URL.Scheme = u.Scheme
 		req.URL.Host = u.Host
-		req.Host = u.Host
 		if _, ok := req.Header["User-Agent"]; !ok {
 			// explicitly disable User-Agent so it's not set to default value
 			req.Header.Set("User-Agent", "")
