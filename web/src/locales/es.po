@@ -838,6 +838,14 @@ msgstr "Comprueba si la contraseña del usuario de la solicitud se ha cambiado e
 msgid "Checks the value from the policy request against several rules, mostly used to ensure password strength."
 msgstr "Comprueba el valor de la solicitud de política en relación con varias reglas, que se utilizan principalmente para garantizar la seguridad de la contraseña."
 
+#: src/interfaces/locale.ts
+msgid "Chinese (simplified)"
+msgstr ""
+
+#: src/interfaces/locale.ts
+msgid "Chinese (traditional)"
+msgstr ""
+
 #: src/pages/flows/FlowListPage.ts
 msgid "Clear Flow cache"
 msgstr "Borrar caché de flujo"
@@ -4904,6 +4912,10 @@ msgstr "Dispositivo TOTP"
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "TOTP authenticator"
 msgstr "Autenticador TOTP"
+
+#: src/interfaces/locale.ts
+msgid "Taiwanese Mandarin"
+msgstr ""
 
 #: src/pages/flows/StageBindingForm.ts
 msgid "Target"

@@ -838,6 +838,14 @@ msgstr "İsteğin kullanıcı parolasının son x gün içinde değiştirilip de
 msgid "Checks the value from the policy request against several rules, mostly used to ensure password strength."
 msgstr "İlke isteğindeki değeri, çoğunlukla parola gücünü sağlamak için kullanılan çeşitli kurallara göre denetler."
 
+#: src/interfaces/locale.ts
+msgid "Chinese (simplified)"
+msgstr ""
+
+#: src/interfaces/locale.ts
+msgid "Chinese (traditional)"
+msgstr ""
+
 #: src/pages/flows/FlowListPage.ts
 msgid "Clear Flow cache"
 msgstr "Akış önbelleğini temizleme"
@@ -4906,6 +4914,10 @@ msgstr "TOTP Cihazı"
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "TOTP authenticator"
 msgstr "TOTP kimlik doğrulayıcı"
+
+#: src/interfaces/locale.ts
+msgid "Taiwanese Mandarin"
+msgstr ""
 
 #: src/pages/flows/StageBindingForm.ts
 msgid "Target"

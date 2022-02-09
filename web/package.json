@@ -22,7 +22,10 @@
             "fr_FR",
             "tr",
             "es",
-            "pl"
+            "pl",
+            "zh_TW",
+            "zh-Hans",
+            "zh-Hant"
         ],
         "formatOptions": {
             "lineNumbers": false
