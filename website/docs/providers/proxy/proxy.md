@@ -79,3 +79,17 @@ In this mode, the regular expressions are matched against the Request's Path.
 ### Forward auth (domain level)
 
 In this mode, the regular expressions are matched against the Request's full URL.
+
+## Dynamic backend selection
+
+You can configure the backend the proxy should access dynamically via *Scope mappings*. To do so, create a new *Scope mapping*, with a name and scope of your choice. As expression, use this:
+
+```python
+return {
+    "ak_proxy": {
+        "backend_override": f"http://foo.bar.baz/{request.user.username}"
+    }
+}
+```
+
+Afterwards, edit the *Proxy provider* and add this new mapping. The expression is only evaluated when the user logs into the application.
