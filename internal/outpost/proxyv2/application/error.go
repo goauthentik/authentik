@@ -18,7 +18,7 @@ func (a *Application) ErrorPage(rw http.ResponseWriter, r *http.Request, err str
 	data := ErrorPageData{
 		Title:       "Bad Gateway",
 		Message:     "Error proxying to upstream server",
-		ProxyPrefix: "/akprox",
+		ProxyPrefix: "/outpost.goauthentik.io",
 	}
 	if claims != nil && len(err) > 0 {
 		data.Message = err

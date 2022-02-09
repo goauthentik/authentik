@@ -3,8 +3,6 @@ from typing import Optional
 
 from aioredis.errors import ConnectionClosedError, ReplyError
 from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
-from botocore.client import ClientError
-from botocore.exceptions import BotoCoreError
 from celery.exceptions import CeleryError
 from channels.middleware import BaseMiddleware
 from channels_redis.core import ChannelFull
@@ -81,9 +79,6 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         WorkerLostError,
         CeleryError,
         SoftTimeLimitExceeded,
-        # S3 errors
-        BotoCoreError,
-        ClientError,
         # custom baseclass
         SentryIgnoredException,
         # ldap errors
@@ -101,8 +96,6 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
             return None
     if "logger" in event:
         if event["logger"] in [
-            "dbbackup",
-            "botocore",
             "kombu",
             "asyncio",
             "multiprocessing",

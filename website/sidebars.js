@@ -126,11 +126,6 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Maintenance",
-            items: ["maintenance/backups/index"],
-        },
-        {
-            type: "category",
             label: "Release Notes",
             items: [
                 "releases/v2022.1",
@@ -166,7 +161,7 @@ module.exports = {
                 "troubleshooting/access",
                 "troubleshooting/emails",
                 "troubleshooting/login",
-                "troubleshooting/image_upload_backup",
+                "troubleshooting/image_upload",
                 "troubleshooting/missing_permission",
                 "troubleshooting/missing_admin_group",
             ],

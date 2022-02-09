@@ -19,10 +19,10 @@ server {
         # proxy_pass          http://localhost:5000;
 
         # authentik-specific config
-        auth_request        /akprox/auth/nginx;
-        error_page          401 = @akprox_signin;
+        auth_request        /outpost.goauthentik.io/auth/nginx;
+        error_page          401 = @goauthentik_proxy_signin;
         # For domain level, use the below error_page to redirect to your authentik server with the full redirect path
-        # error_page          401 =302 https://authentik.company/akprox/start?rd=$scheme://$http_host$request_uri;
+        # error_page          401 =302 https://authentik.company/outpost.goauthentik.io/start?rd=$scheme://$http_host$request_uri;
         auth_request_set $auth_cookie $upstream_http_set_cookie;
         add_header Set-Cookie $auth_cookie;
 
@@ -40,9 +40,9 @@ server {
         proxy_set_header X-authentik-uid $authentik_uid;
     }
 
-    # all requests to /akprox must be accessible without authentication
-    location /akprox {
-        proxy_pass          http://outpost.company:9000/akprox;
+    # all requests to /outpost.goauthentik.io must be accessible without authentication
+    location /outpost.goauthentik.io {
+        proxy_pass          http://outpost.company:9000/outpost.goauthentik.io;
         # ensure the host of this vserver matches your external URL you've configured
         # in authentik
         proxy_set_header    Host $host;
@@ -53,10 +53,10 @@ server {
 
     # Special location for when the /auth endpoint returns a 401,
     # redirect to the /start URL which initiates SSO
-    location @akprox_signin {
+    location @goauthentik_proxy_signin {
         internal;
         add_header Set-Cookie $auth_cookie;
-        return 302 /akprox/start?rd=$request_uri;
+        return 302 /outpost.goauthentik.io/start?rd=$request_uri;
     }
 }
 ```

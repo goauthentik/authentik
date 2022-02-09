@@ -20017,7 +20017,6 @@ components:
       enum:
       - can_save_media
       - can_geo_ip
-      - can_backup
       type: string
     CaptchaChallenge:
       type: object

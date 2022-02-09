@@ -32,7 +32,7 @@ func (ps *ProxyServer) HandlePing(rw http.ResponseWriter, r *http.Request) {
 
 func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
 	before := time.Now()
-	web.DisableIndex(http.StripPrefix("/akprox/static/dist", staticWeb.StaticHandler)).ServeHTTP(rw, r)
+	web.DisableIndex(http.StripPrefix("/outpost.goauthentik.io/static/dist", staticWeb.StaticHandler)).ServeHTTP(rw, r)
 	after := time.Since(before)
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
@@ -90,11 +90,11 @@ func (ps *ProxyServer) lookupApp(r *http.Request) (*application.Application, str
 }
 
 func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
-	if strings.HasPrefix(r.URL.Path, "/akprox/static") {
+	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/static") {
 		ps.HandleStatic(rw, r)
 		return
 	}
-	if strings.HasPrefix(r.URL.Path, "/akprox/ping") {
+	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/ping") {
 		ps.HandlePing(rw, r)
 		return
 	}

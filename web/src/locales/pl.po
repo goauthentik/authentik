@@ -561,16 +561,16 @@ msgid "Background shown during execution."
 msgstr "Tło pokazywane podczas wykonywania."
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with errors."
-msgstr "Kopia zapasowa zakończona z błędami."
+#~ msgid "Backup finished with errors."
+#~ msgstr "Kopia zapasowa zakończona z błędami."
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with warnings/backup not supported."
-msgstr "Tworzenie kopii zapasowej zakończone z ostrzeżeniami/kopia zapasowa nie jest obsługiwana."
+#~ msgid "Backup finished with warnings/backup not supported."
+#~ msgstr "Tworzenie kopii zapasowej zakończone z ostrzeżeniami/kopia zapasowa nie jest obsługiwana."
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
-msgid "Backup status"
-msgstr "Stan kopii zapasowej"
+#~ msgid "Backup status"
+#~ msgstr "Stan kopii zapasowej"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
@@ -5556,8 +5556,8 @@ msgid "Use the username and password below to authenticate. The password can be 
 msgstr "Użyj poniższej nazwy użytkownika i hasła do uwierzytelnienia. Hasło można później odzyskać na stronie Tokeny."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
-msgstr "Użyj tego dostawcy z auth_request nginx lub forwardAuth traefik. Każda aplikacja/domena potrzebuje własnego dostawcy. Dodatkowo w każdej domenie /akprox musi być przekierowany do placówki (w przypadku korzystania z zarządzanej placówki jest to zrobione za Ciebie)."
+msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you)."
+msgstr "Użyj tego dostawcy z auth_request nginx lub forwardAuth traefik. Każda aplikacja/domena potrzebuje własnego dostawcy. Dodatkowo w każdej domenie /outpost.goauthentik.io musi być przekierowany do placówki (w przypadku korzystania z zarządzanej placówki jest to zrobione za Ciebie)."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."

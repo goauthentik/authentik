@@ -214,7 +214,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                     </ak-form-element-horizontal>`;
             case ProxyMode.ForwardSingle:
                 return html`<p class="pf-u-mb-xl">
-                        ${t`Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you).`}
+                        ${t`Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you).`}
                     </p>
                     <ak-form-element-horizontal
                         label=${t`External host`}

@@ -561,16 +561,16 @@ msgid "Background shown during execution."
 msgstr "Yürütme sırasında arka plan gösterilir."
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with errors."
-msgstr "Yedekleme hatalarla tamamlandı."
+#~ msgid "Backup finished with errors."
+#~ msgstr "Yedekleme hatalarla tamamlandı."
 
 #: src/pages/admin-overview/cards/BackupStatusCard.ts
-msgid "Backup finished with warnings/backup not supported."
-msgstr "Yedekleme desteklenmeyen uyarılar/yedekleme ile tamamlandı."
+#~ msgid "Backup finished with warnings/backup not supported."
+#~ msgstr "Yedekleme desteklenmeyen uyarılar/yedekleme ile tamamlandı."
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
-msgid "Backup status"
-msgstr "Yedekleme durumu"
+#~ msgid "Backup status"
+#~ msgstr "Yedekleme durumu"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
@@ -5558,8 +5558,8 @@ msgid "Use the username and password below to authenticate. The password can be 
 msgstr "Kimlik doğrulaması için aşağıdaki kullanıcı adı ve parolayı kullanın. Parola daha sonra Belirteçler sayfasından alınabilir."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you)."
-msgstr "Bu sağlayıcıyı nginx'in auth_request veya traefik's forwardAuth ile kullanın. Her uygulama/etki alanının kendi sağlayıcısına ihtiyacı vardır. Ayrıca, her etki alanında /akprox üsse yönlendirilmelidir (manged bir üs kullanırken, bu sizin için yapılır)."
+msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you)."
+msgstr "Bu sağlayıcıyı nginx'in auth_request veya traefik's forwardAuth ile kullanın. Her uygulama/etki alanının kendi sağlayıcısına ihtiyacı vardır. Ayrıca, her etki alanında /outpost.goauthentik.io üsse yönlendirilmelidir (manged bir üs kullanırken, bu sizin için yapılır)."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."

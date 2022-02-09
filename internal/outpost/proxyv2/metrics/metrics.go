@@ -25,7 +25,7 @@ var (
 func RunServer() {
 	m := mux.NewRouter()
 	l := log.WithField("logger", "authentik.outpost.metrics")
-	m.HandleFunc("/akprox/ping", func(rw http.ResponseWriter, r *http.Request) {
+	m.HandleFunc("/outpost.goauthentik.io/ping", func(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(204)
 	})
 	m.Path("/metrics").Handler(promhttp.Handler())

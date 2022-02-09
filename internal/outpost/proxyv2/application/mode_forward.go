@@ -12,15 +12,15 @@ import (
 )
 
 func (a *Application) configureForward() error {
-	a.mux.HandleFunc("/akprox/auth", func(rw http.ResponseWriter, r *http.Request) {
+	a.mux.HandleFunc("/outpost.goauthentik.io/auth", func(rw http.ResponseWriter, r *http.Request) {
 		if _, ok := r.URL.Query()["traefik"]; ok {
 			a.forwardHandleTraefik(rw, r)
 			return
 		}
 		a.forwardHandleNginx(rw, r)
 	})
-	a.mux.HandleFunc("/akprox/auth/traefik", a.forwardHandleTraefik)
-	a.mux.HandleFunc("/akprox/auth/nginx", a.forwardHandleNginx)
+	a.mux.HandleFunc("/outpost.goauthentik.io/auth/traefik", a.forwardHandleTraefik)
+	a.mux.HandleFunc("/outpost.goauthentik.io/auth/nginx", a.forwardHandleNginx)
 	return nil
 }
 
@@ -49,8 +49,8 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
-	if strings.HasPrefix(r.Header.Get("X-Forwarded-Uri"), "/akprox") {
-		a.log.WithField("url", r.URL.String()).Trace("path begins with /akprox, allowing access")
+	if strings.HasPrefix(r.Header.Get("X-Forwarded-Uri"), "/outpost.goauthentik.io") {
+		a.log.WithField("url", r.URL.String()).Trace("path begins with /outpost.goauthentik.io, allowing access")
 		return
 	}
 	host := ""
@@ -80,7 +80,7 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	if proto != "" {
 		proto = proto + ":"
 	}
-	rdFinal := fmt.Sprintf("%s//%s%s", proto, host, "/akprox/start")
+	rdFinal := fmt.Sprintf("%s//%s%s", proto, host, "/outpost.goauthentik.io/start")
 	a.log.WithField("url", rdFinal).Debug("Redirecting to login")
 	http.Redirect(rw, r, rdFinal, http.StatusTemporaryRedirect)
 }
@@ -119,8 +119,8 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 	}
 
 	if fwd.String() != r.URL.String() {
-		if strings.HasPrefix(fwd.Path, "/akprox") {
-			a.log.WithField("url", r.URL.String()).Trace("path begins with /akprox, allowing access")
+		if strings.HasPrefix(fwd.Path, "/outpost.goauthentik.io") {
+			a.log.WithField("url", r.URL.String()).Trace("path begins with /outpost.goauthentik.io, allowing access")
 			return
 		}
 	}

@@ -12,7 +12,8 @@
         "totp",
         "webauthn",
         "traefik",
-        "passwordless"
+        "passwordless",
+        "kubernetes"
     ],
     "python.linting.pylintEnabled": true,
     "todo-tree.tree.showCountsInTree": true,
