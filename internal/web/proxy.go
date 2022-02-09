@@ -87,5 +87,6 @@ func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request
 
 func (ws *WebServer) proxyModifyResponse(r *http.Response) error {
 	r.Header.Set("X-Powered-By", "authentik")
+	r.Header.Del("Server")
 	return nil
 }
