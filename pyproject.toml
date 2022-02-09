@@ -92,7 +92,7 @@ addopts = "-p no:celery --junitxml=unittest.xml"
 
 [tool.poetry]
 name = "authentik"
-version = "2022.1.4"
+version = "2022.1.5"
 description = ""
 authors = ["Jens Langhammer <jens.langhammer@beryju.org>"]
 
