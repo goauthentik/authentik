@@ -16,6 +16,9 @@ func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Certif
 		ws.log.WithError(err).Error("failed to generate default cert")
 	}
 	return func(ch *tls.ClientHelloInfo) (*tls.Certificate, error) {
+		if ch.ServerName == "" {
+			return &cert, nil
+		}
 		if ws.ProxyServer != nil {
 			appCert := ws.ProxyServer.GetCertificate(ch.ServerName)
 			if appCert != nil {
