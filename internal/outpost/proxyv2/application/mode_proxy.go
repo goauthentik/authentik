@@ -73,6 +73,7 @@ func (a *Application) configureProxy() error {
 
 func (a *Application) proxyModifyRequest(ou *url.URL) func(req *http.Request) {
 	return func(r *http.Request) {
+		r.Header.Set("X-Forwarded-Host", r.Host)
 		claims, _ := a.getClaims(r)
 		r.URL.Scheme = ou.Scheme
 		r.URL.Host = ou.Host

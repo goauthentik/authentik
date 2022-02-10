@@ -19,6 +19,7 @@ func TestProxy_ModifyRequest(t *testing.T) {
 	}
 	a.proxyModifyRequest(u)(req)
 
+	assert.Equal(t, "frontend", req.Header.Get("X-Forwarded-Host"))
 	assert.Equal(t, "/foo", req.URL.Path)
 	assert.Equal(t, "backend:8012", req.URL.Host)
 	assert.Equal(t, "backend:8012", req.Host)

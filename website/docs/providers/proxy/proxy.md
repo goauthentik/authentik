@@ -46,6 +46,12 @@ Besides these user-specific headers, some application specific headers are also 
 
     The authentik outpost's version.
 
+### Only in proxy mode
+
+- X-Forwarded-Host:
+
+    The original Host header sent by the client. This is set as the `Host` header is set to the host of the configured backend.
+
 ## HTTPS
 
 The outpost listens on both 9000 for HTTP and 9443 for HTTPS.
