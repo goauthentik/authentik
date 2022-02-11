@@ -1,8 +1,8 @@
-# 
+#
 # Translators:
 # Chen Zhikai, 2022
 # 刘松, 2022
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -32,11 +32,14 @@ msgstr "(格式： hours=-1;minutes=-2;seconds=-3)."
 msgid "(Format: hours=1;minutes=2;seconds=3)."
 msgstr "(格式： hours=1;minutes=2;seconds=3)."
 
-#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
 #: src/elements/user/SessionList.ts
 #: src/pages/applications/ApplicationListPage.ts
-#: src/pages/events/EventListPage.ts src/pages/events/EventListPage.ts
-#: src/pages/groups/GroupListPage.ts src/pages/groups/MemberSelectModal.ts
+#: src/pages/events/EventListPage.ts
+#: src/pages/events/EventListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/MemberSelectModal.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
@@ -45,15 +48,14 @@ msgstr "(格式： hours=1;minutes=2;seconds=3)."
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
-#: src/pages/tokens/TokenListPage.ts src/pages/users/UserListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "-"
 msgstr "-"
 
 #: src/pages/flows/FlowImportForm.ts
-msgid ""
-".akflow files, which can be found on goauthentik.io and can be exported by "
-"authentik."
+msgid ".akflow files, which can be found on goauthentik.io and can be exported by authentik."
 msgstr ".akflow 文件，这些文件可以在 goauthentik.io 上找到，也可以通过 authentik 导出。"
 
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
@@ -81,9 +83,7 @@ msgid "A non-removable authenticator, like TouchID or Windows Hello"
 msgstr "不可移除的身份验证器，例如 TouchID 或 Windows Hello"
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
-msgid ""
-"A policy used for testing. Always returns the same result as specified below"
-" after waiting a random duration."
+msgid "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
 msgstr "用于测试的策略。等待随机持续时间后，始终返回与下面指定的结果相同的结果。"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -91,7 +91,8 @@ msgstr "用于测试的策略。等待随机持续时间后，始终返回与下
 msgid "ACS URL"
 msgstr "ACS URL"
 
-#: src/pages/applications/ApplicationForm.ts src/pages/flows/FlowForm.ts
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/flows/FlowForm.ts
 msgid "ALL, all policies must match to grant access."
 msgstr "ALL，所有策略必须匹配才能授予访问权限。"
 
@@ -99,7 +100,8 @@ msgstr "ALL，所有策略必须匹配才能授予访问权限。"
 msgid "ALL, all policies must match to include this stage access."
 msgstr "ALL，所有策略必须匹配才能包含此阶段访问权限。"
 
-#: src/pages/applications/ApplicationForm.ts src/pages/flows/FlowForm.ts
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/flows/FlowForm.ts
 msgid "ANY, any policy must match to grant access."
 msgstr "ANY，任何策略都必须匹配才能授予访问权限。"
 
@@ -154,7 +156,8 @@ msgstr "访问令牌 URL"
 msgid "Access token validity"
 msgstr "访问令牌有效性"
 
-#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
 #: src/pages/events/EventListPage.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Action"
@@ -162,18 +165,23 @@ msgstr "操作"
 
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/events/EventListPage.ts src/pages/events/RuleListPage.ts
-#: src/pages/events/TransportListPage.ts src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/FlowListPage.ts src/pages/groups/GroupListPage.ts
+#: src/pages/events/EventListPage.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/providers/ProviderListPage.ts src/pages/stages/StageListPage.ts
+#: src/pages/providers/ProviderListPage.ts
+#: src/pages/stages/StageListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
-#: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Actions"
 msgstr "操作"
@@ -182,7 +190,8 @@ msgstr "操作"
 msgid "Actions over the last 24 hours"
 msgstr "过去 24 小时内的操作"
 
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Activate"
 msgstr "启用"
 
@@ -190,12 +199,15 @@ msgstr "启用"
 msgid "Activate pending user on success"
 msgstr "成功时启用待处理用户"
 
-#: src/pages/groups/MemberSelectModal.ts src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
+#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Active"
 msgstr "激活"
 
-#: src/pages/groups/MemberSelectModal.ts src/pages/users/GroupSelectModal.ts
+#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/GroupSelectModal.ts
 msgid "Add"
 msgstr "添加"
 
@@ -220,8 +232,7 @@ msgid "Additional scope mappings, which are passed to the proxy."
 msgstr "传递给代理的其他作用域映射。"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
-msgid ""
-"Additional scopes to be passed to the OAuth Provider, separated by space."
+msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
 msgstr "要传递给 OAuth 提供程序的其他作用域，用空格分隔。"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -267,8 +278,7 @@ msgid "Allow IDP-initiated logins"
 msgstr "允许 IDP 发起的登入"
 
 #: src/pages/sources/plex/PlexSourceForm.ts
-msgid ""
-"Allow friends to authenticate via Plex, even if you don't share any servers"
+msgid "Allow friends to authenticate via Plex, even if you don't share any servers"
 msgstr "允许好友通过Plex进行身份验证，即使您不共享任何服务器"
 
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
@@ -276,9 +286,7 @@ msgid "Allow up to N occurrences in the HIBP database."
 msgstr "HIBP 数据库中最多允许 N 次出现。"
 
 #: src/pages/policies/PolicyListPage.ts
-msgid ""
-"Allow users to use Applications based on properties, enforce Password "
-"Criteria and selectively apply Stages."
+msgid "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages."
 msgstr "允许用户根据属性使用应用程序、强制使用密码标准以及有选择地应用阶段。"
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
@@ -294,9 +302,7 @@ msgid "Allowed servers"
 msgstr "允许的服务器"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
-msgid ""
-"Allows authentication flows initiated by the IdP. This can be a security "
-"risk, as no validation of the request ID is done."
+msgid "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."
 msgstr "允许由 IdP 启动的身份验证流。这可能存在安全风险，因为未对请求 ID 进行验证。"
 
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
@@ -308,8 +314,7 @@ msgid "Also known as Entity ID. Defaults the Metadata URL."
 msgstr "也称为实体 ID。 默认为 Metadata URL。"
 
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
-msgid ""
-"Alternatively, if your current device has Duo installed, click on this link:"
+msgid "Alternatively, if your current device has Duo installed, click on this link:"
 msgstr "或者，如果您当前的设备已安装 Duo，请单击此链接："
 
 #: src/pages/stages/consent/ConsentStageForm.ts
@@ -368,7 +373,8 @@ msgstr "应用的显示名称。"
 msgid "Application(s)"
 msgstr "应用程序"
 
-#: src/interfaces/AdminInterface.ts src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/outposts/OutpostForm.ts
 msgid "Applications"
@@ -407,9 +413,7 @@ msgid "Are you sure you want to update {0} \"{1}\"?"
 msgstr "你确定要更新 {0} \"{1}\" 吗？"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid ""
-"Assertion not valid on or after current time + this value (Format: "
-"hours=1;minutes=2;seconds=3)."
+msgid "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 msgstr "断言在当前时间+此值时或之后无效（格式：hours=1；minutes=2；seconds=3）。"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -444,14 +448,11 @@ msgid "Attempted to log in as {0}"
 msgstr "已尝试以 {0} 身份登入"
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
-msgid ""
-"Attribute name used for SAML Assertions. Can be a URN OID, a schema "
-"reference, or a any other string. If this property mapping is used for "
-"NameID Property, this field is discarded."
-msgstr ""
-"用于 SAML 断言的属性名称。可以是 URN OID， 模式引用或任何其他字符串。如果此属性映射用于 NameID 属性，则会丢弃此字段。"
+msgid "Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded."
+msgstr "用于 SAML 断言的属性名称。可以是 URN OID， 模式引用或任何其他字符串。如果此属性映射用于 NameID 属性，则会丢弃此字段。"
 
-#: src/pages/groups/GroupForm.ts src/pages/stages/invitation/InvitationForm.ts
+#: src/pages/groups/GroupForm.ts
+#: src/pages/stages/invitation/InvitationForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Attributes"
 msgstr "属性"
@@ -486,7 +487,8 @@ msgstr "身份验证 URL"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
-#: src/pages/sources/saml/SAMLSourceForm.ts src/pages/tenants/TenantForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#: src/pages/tenants/TenantForm.ts
 msgid "Authentication flow"
 msgstr "身份验证流程"
 
@@ -545,7 +547,8 @@ msgstr "Avatar image"
 msgid "Backends"
 msgstr "后端"
 
-#: src/pages/flows/FlowForm.ts src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowForm.ts
 msgid "Background"
 msgstr "背景"
 
@@ -553,7 +556,8 @@ msgstr "背景"
 msgid "Background image"
 msgstr "背景图片"
 
-#: src/pages/flows/FlowForm.ts src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowForm.ts
 msgid "Background shown during execution."
 msgstr "执行过程中显示背景。"
 
@@ -582,9 +586,7 @@ msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr "基于用户的电子邮件。 建议在 UPN 方法上使用此方法。"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid ""
-"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
-"this method only if you have different UPN and Mail domains."
+msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
 msgstr "根据用户的UPN，仅当用户设置了 “upn” 属性时才有效。仅当您有不同的 UPN 和 Mail 域时才使用此方法。"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
@@ -620,11 +622,13 @@ msgstr "Bind 密码"
 msgid "Bind flow"
 msgstr "Bind 流程"
 
-#: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts
 msgid "Bind stage"
 msgstr "Bind 阶段"
 
-#: src/pages/events/EventInfo.ts src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
 msgid "Binding"
 msgstr "绑定"
 
@@ -651,20 +655,17 @@ msgstr "Build hash:"
 #~ msgid "Build hash: {0}"
 #~ msgstr "Build hash: {0}"
 
-#: src/pages/sources/SourcesListPage.ts src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourcesListPage.ts
 msgid "Built-in"
 msgstr "内置"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
-msgid ""
-"By default, only icons are shown for sources. Enable this to show their full"
-" names."
+msgid "By default, only icons are shown for sources. Enable this to show their full names."
 msgstr "默认情况下，只为源显示图标。启用此选项可显示他们的全名。"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-msgid ""
-"CA which the endpoint's Certificate is verified against. Can be left empty "
-"for no validation."
+msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "验证终端节点证书所依据的 CA。可以留空以表示不进行验证。"
 
 #: src/pages/admin-overview/charts/FlowStatusChart.ts
@@ -676,33 +677,26 @@ msgid "Cached policies"
 msgstr "缓存策略"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid ""
-"Cached querying, the outpost holds all users and groups in-memory and will "
-"refresh every 5 Minutes."
+msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
 msgstr "缓存查询，前哨将所有用户和组保存在内存中，并将每5分钟刷新一次。"
 
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr "回调 URL"
 
-#~ msgid ""
-#~ "Can be in the format of 'unix://' when connecting to a local docker daemon, "
-#~ "or 'https://:2376' when connecting to a remote system."
-#~ msgstr ""
-#~ "连接到本地 docker 守护进程时可以采用 'unix://' 的格式，或者在连接到远程系统时采用 'https://:2376' 的格式。"
+#~ msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
+#~ msgstr "连接到本地 docker 守护进程时可以采用 'unix://' 的格式，或者在连接到远程系统时采用 'https://:2376' 的格式。"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-msgid ""
-"Can be in the format of 'unix://' when connecting to a local docker daemon, "
-"using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a "
-"remote system."
-msgstr ""
-"连接到本地 docker 守护进程时可以采用 'unix: //' 的格式，通过 SSH 连接时使用 'ssh: //'，或者在连接到远程系统时使用 "
-"'https://:2376' 的格式。"
+msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system."
+msgstr "连接到本地 docker 守护进程时可以采用 'unix: //' 的格式，通过 SSH 连接时使用 'ssh: //'，或者在连接到远程系统时使用 'https://:2376' 的格式。"
 
-#: src/elements/forms/ConfirmationForm.ts src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts src/elements/forms/ModalForm.ts
-#: src/pages/groups/MemberSelectModal.ts src/pages/users/GroupSelectModal.ts
+#: src/elements/forms/ConfirmationForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
+#: src/elements/forms/ModalForm.ts
+#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserActiveForm.ts
 msgid "Cancel"
 msgstr "取消"
@@ -730,8 +724,7 @@ msgid "Certificate Subject"
 msgstr "证书主题"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid ""
-"Certificate used to sign outgoing Responses going to the Service Provider."
+msgid "Certificate used to sign outgoing Responses going to the Service Provider."
 msgstr "用于签署发送给服务提供商的外发响应的证书。"
 
 #~ msgid "Certificate-Key Pair"
@@ -746,9 +739,7 @@ msgid "Certificate-Key Pairs"
 msgstr "证书密钥对"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-msgid ""
-"Certificate/Key used for authentication. Can be left empty for no "
-"authentication."
+msgid "Certificate/Key used for authentication. Can be left empty for no authentication."
 msgstr "用于身份验证的证书/密钥。可以留空，留空表示不进行身份验证。"
 
 #: src/interfaces/AdminInterface.ts
@@ -768,7 +759,8 @@ msgid "Change your password"
 msgstr "更改你的密码"
 
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/flows/FlowViewPage.ts src/pages/providers/ProviderViewPage.ts
+#: src/pages/flows/FlowViewPage.ts
+#: src/pages/providers/ProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
@@ -837,15 +829,11 @@ msgstr ""
 "请注意，只有一部分密码哈希值被发送，完整的比较是在客户端完成的。"
 
 #: src/pages/policies/expiry/ExpiryPolicyForm.ts
-msgid ""
-"Checks if the request's user's password has been changed in the last x days,"
-" and denys based on settings."
+msgid "Checks if the request's user's password has been changed in the last x days, and denys based on settings."
 msgstr "检查过去 x 天内请求的用户密码是否已更改，并根据设置拒绝。"
 
 #: src/pages/policies/password/PasswordPolicyForm.ts
-msgid ""
-"Checks the value from the policy request against several rules, mostly used "
-"to ensure password strength."
+msgid "Checks the value from the policy request against several rules, mostly used to ensure password strength."
 msgstr "根据多条规则检查策略请求中的值，这些规则主要用于确保密码强度。"
 
 #: src/interfaces/locale.ts
@@ -873,8 +861,10 @@ msgstr "全部清除"
 msgid "Clear background image"
 msgstr "删除背景图片"
 
-#: src/pages/flows/FlowListPage.ts src/pages/flows/FlowListPage.ts
-#: src/pages/policies/PolicyListPage.ts src/pages/policies/PolicyListPage.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/PolicyListPage.ts
 msgid "Clear cache"
 msgstr "清除缓存"
 
@@ -896,7 +886,8 @@ msgstr "点击复制令牌"
 msgid "Client ID"
 msgstr "客户端 ID"
 
-#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
 #: src/pages/events/EventListPage.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Client IP"
@@ -936,9 +927,7 @@ msgid "Confidential"
 msgstr "机密"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid ""
-"Confidential clients are capable of maintaining the confidentiality of their"
-" credentials. Public clients are incapable."
+msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
 msgstr "机密客户能够对其凭据进行保密。公共客户端无能为力。"
 
 #: src/pages/outposts/OutpostForm.ts
@@ -981,15 +970,11 @@ msgid "Configure how long tokens are valid for."
 msgstr "配置令牌的有效期限。"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid ""
-"Configure how the NameID value will be created. When left empty, the "
-"NameIDPolicy of the incoming request will be respected."
+msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
 msgstr "配置如何创建 NameID 值。如果留空，将遵守传入请求的 NameIdPolicy。"
 
 #: src/pages/flows/StageBindingForm.ts
-msgid ""
-"Configure how the flow executor should handle an invalid response to a "
-"challenge."
+msgid "Configure how the flow executor should handle an invalid response to a challenge."
 msgstr "配置流程执行器应如何处理对质询的无效响应。"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
@@ -1012,9 +997,7 @@ msgid "Configure visual settings and defaults for different domains."
 msgstr "配置不同域的可视化设置和默认值。"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid ""
-"Configure what data should be used as unique User Identifier. For most "
-"cases, the default should be fine."
+msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr "配置应将哪些数据用作唯一用户标识符。在大多数情况下，默认值应该没问题。"
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
@@ -1027,9 +1010,7 @@ msgid "Connect to the LDAP Server on port 389:"
 msgstr "通过端口 389 连接到 LDAP 服务器："
 
 #: src/user/user-settings/sources/SourceSettings.ts
-msgid ""
-"Connect your user account to the services listed below, to allow you to "
-"login using the service instead of traditional credentials."
+msgid "Connect your user account to the services listed below, to allow you to login using the service instead of traditional credentials."
 msgstr "将您的用户帐户连接到下面列出的服务，以允许您使用该服务而不是传统凭据登录。"
 
 #: src/user/user-settings/UserSettingsPage.ts
@@ -1084,8 +1065,10 @@ msgstr "消费者密钥"
 msgid "Consumer secret"
 msgstr "消费者机密"
 
-#: src/pages/events/EventInfo.ts src/pages/events/EventInfo.ts
-#: src/pages/events/EventInfo.ts src/pages/policies/PolicyTestForm.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/policies/PolicyTestForm.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
 msgid "Context"
 msgstr "上下文"
@@ -1137,36 +1120,48 @@ msgstr "复制恢复链接"
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/events/RuleListPage.ts src/pages/events/RuleListPage.ts
-#: src/pages/events/TransportListPage.ts src/pages/events/TransportListPage.ts
-#: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/BoundStagesList.ts src/pages/flows/FlowListPage.ts
-#: src/pages/flows/FlowListPage.ts src/pages/groups/GroupListPage.ts
-#: src/pages/groups/GroupListPage.ts src/pages/outposts/OutpostListPage.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/policies/PolicyListPage.ts src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/providers/RelatedApplicationButton.ts
-#: src/pages/sources/SourcesListPage.ts src/pages/sources/SourcesListPage.ts
-#: src/pages/stages/StageListPage.ts src/pages/stages/StageListPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/StageListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
-#: src/pages/tenants/TenantListPage.ts src/pages/tenants/TenantListPage.ts
-#: src/pages/tokens/TokenListPage.ts src/pages/tokens/TokenListPage.ts
-#: src/pages/users/UserListPage.ts src/pages/users/UserListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
@@ -1207,9 +1202,7 @@ msgid "Create Invitation"
 msgstr "创建邀请"
 
 #: src/pages/stages/invitation/InvitationListPage.ts
-msgid ""
-"Create Invitation Links to enroll Users, and optionally force specific "
-"attributes of their account."
+msgid "Create Invitation Links to enroll Users, and optionally force specific attributes of their account."
 msgstr "创建邀请链接以注册用户，并可选择强制使用其帐户的特定属性。"
 
 #: src/pages/events/RuleListPage.ts
@@ -1233,7 +1226,8 @@ msgstr "创建策略"
 msgid "Create Prompt"
 msgstr "创建提示"
 
-#: src/pages/users/UserListPage.ts src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
 msgid "Create Service account"
 msgstr "创建服务账户"
 
@@ -1241,7 +1235,8 @@ msgstr "创建服务账户"
 msgid "Create Stage"
 msgstr "创建 Stage"
 
-#: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts
 msgid "Create Stage binding"
 msgstr "创建 Stage 绑定"
 
@@ -1282,7 +1277,8 @@ msgstr "将用户创建为非活动用户"
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts src/pages/stages/StageListPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/StageListPage.ts
 msgid "Create {0}"
 msgstr "创建 {0}"
 
@@ -1293,7 +1289,8 @@ msgstr "由... 创建"
 #~ msgid "Created {0}"
 #~ msgstr "已创建 {0}"
 
-#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
 #: src/pages/events/EventListPage.ts
 msgid "Creation Date"
 msgstr "创建日期"
@@ -1305,7 +1302,8 @@ msgstr "创建日期"
 msgid "Current plan context"
 msgstr "当前计划上下文"
 
-#: src/pages/applications/ApplicationForm.ts src/pages/flows/FlowForm.ts
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/flows/FlowForm.ts
 msgid "Currently set to:"
 msgstr "当前设置为："
 
@@ -1330,7 +1328,8 @@ msgstr "日期"
 msgid "Date Time"
 msgstr "日期时间"
 
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Deactivate"
 msgstr "停用"
 
@@ -1339,9 +1338,7 @@ msgid "Debug"
 msgstr "调试"
 
 #: src/pages/flows/FlowForm.ts
-msgid ""
-"Decides what this Flow is used for. For example, the Authentication flow is "
-"redirect to when an un-authenticated user visits authentik."
+msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr "决定此 Flow 的用途。例如，当未经身份验证的用户访问 authentik 时，身份验证流程将重定向到。"
 
 #: src/pages/tenants/TenantForm.ts
@@ -1360,24 +1357,32 @@ msgstr "默认？"
 msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr "定义如何向用户发送通知，例如电子邮件或 Webhook。"
 
-#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
-#: src/elements/oauth/UserCodeList.ts src/elements/oauth/UserRefreshList.ts
-#: src/elements/user/SessionList.ts src/elements/user/UserConsentList.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
+#: src/elements/oauth/UserCodeList.ts
+#: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/SessionList.ts
+#: src/elements/user/UserConsentList.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/events/RuleListPage.ts src/pages/events/TransportListPage.ts
-#: src/pages/flows/BoundStagesList.ts src/pages/flows/FlowListPage.ts
-#: src/pages/groups/GroupListPage.ts src/pages/outposts/OutpostListPage.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/policies/reputation/ReputationListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts src/pages/stages/StageListPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/StageListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
-#: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
@@ -1423,7 +1428,8 @@ msgstr ""
 "删除当前待处理的用户。注意，这个阶段不要求\n"
 "确认。使用同意阶段来确保用户知道自己的行为。"
 
-#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
 msgid "Delete {0}"
 msgstr "删除 {0}"
 
@@ -1433,21 +1439,18 @@ msgstr "拒绝用户访问"
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
-#: src/pages/system-tasks/SystemTaskListPage.ts src/pages/tokens/TokenForm.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/tokens/TokenForm.ts
 #: src/user/user-settings/tokens/UserTokenForm.ts
 msgid "Description"
 msgstr "描述"
 
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
-msgid ""
-"Description shown to the user when consenting. If left empty, the user won't"
-" be informed."
+msgid "Description shown to the user when consenting. If left empty, the user won't be informed."
 msgstr "同意时向用户显示的描述。如果留空，则不会通知用户。"
 
 #: src/pages/users/UserForm.ts
-msgid ""
-"Designates whether this user should be treated as active. Unselect this "
-"instead of deleting accounts."
+msgid "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
 msgstr "指定是否应将此用户视为活动用户。取消选择此选项，而不是删除帐户。"
 
 #: src/pages/flows/FlowForm.ts
@@ -1455,20 +1458,15 @@ msgid "Designation"
 msgstr "指定"
 
 #: src/pages/outposts/OutpostListPage.ts
-msgid ""
-"Detailed health (one instance per column, data is cached so may be out of "
-"data)"
+msgid "Detailed health (one instance per column, data is cached so may be out of data)"
 msgstr "详细运行状况（每列一个实例，数据已缓存，因此可能没有数据）"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid ""
-"Determines how authentik sends the response back to the Service Provider."
+msgid "Determines how authentik sends the response back to the Service Provider."
 msgstr "确定 authentik 如何将响应发送回服务提供商。"
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
-msgid ""
-"Determines how long a session lasts. Default of 0 seconds means that the "
-"sessions lasts until the browser is closed."
+msgid "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed."
 msgstr "确定会话持续多长时间。默认为 0 秒意味着会话持续到浏览器关闭为止。"
 
 #: src/elements/user/SessionList.ts
@@ -1504,9 +1502,7 @@ msgid "Digits"
 msgstr "数字"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid ""
-"Direct querying, always returns the latest data, but slower than cached "
-"querying."
+msgid "Direct querying, always returns the latest data, but slower than cached querying."
 msgstr "直接查询，总是返回最新数据，但比缓存查询慢。"
 
 #: src/interfaces/AdminInterface.ts
@@ -1541,7 +1537,8 @@ msgstr "断开连接"
 msgid "Docker URL"
 msgstr "Docker URL"
 
-#: src/pages/tenants/TenantForm.ts src/pages/tenants/TenantListPage.ts
+#: src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 msgid "Domain"
 msgstr "域"
@@ -1566,15 +1563,11 @@ msgid "Download signing certificate"
 msgstr "下载签名证书"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid ""
-"Due to protocol limitations, this certificate is only used when the outpost "
-"has a single provider."
+msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
 msgstr "由于协议限制，只有在 Outpost 有单个提供者时才使用此证书。"
 
 #: src/pages/stages/dummy/DummyStageForm.ts
-msgid ""
-"Dummy stage used for testing. Shows a simple continue button and always "
-"passes."
+msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr "用于测试的虚拟阶段。显示一个简单的 “继续” 按钮，并且始终通过。"
 
 #~ msgid "Duo"
@@ -1606,7 +1599,8 @@ msgstr "根据应用程序 slug，每个提供商都有不同的颁发者。"
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/flows/FlowViewPage.ts src/pages/flows/FlowViewPage.ts
+#: src/pages/flows/FlowViewPage.ts
+#: src/pages/flows/FlowViewPage.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
@@ -1619,7 +1613,8 @@ msgstr "根据应用程序 slug，每个提供商都有不同的颁发者。"
 msgid "Edit"
 msgstr "编辑"
 
-#: src/pages/flows/BoundStagesList.ts src/pages/policies/BoundPoliciesList.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Edit Binding"
 msgstr "编辑绑定"
 
@@ -1640,9 +1635,7 @@ msgid "Edit User"
 msgstr "编辑用户"
 
 #: src/pages/applications/ApplicationForm.ts
-msgid ""
-"Either input a full URL, a relative path, or use 'fa://fa-test' to use the "
-"Font Awesome icon \"fa-test\"."
+msgid "Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon \"fa-test\"."
 msgstr "输入完整的网址、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 “fa-test”。"
 
 #: src/user/LibraryPage.ts
@@ -1652,7 +1645,8 @@ msgstr "要么没有定义应用程序，要么你无权访问任何应用程序
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/events/TransportForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
-#: src/pages/users/UserForm.ts src/pages/users/UserViewPage.ts
+#: src/pages/users/UserForm.ts
+#: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Email"
 msgstr "电子邮箱"
@@ -1705,9 +1699,7 @@ msgstr "启用 StartTLS"
 #~ msgstr "启用 TOTP"
 
 #: src/pages/flows/FlowForm.ts
-msgid ""
-"Enable compatibility mode, increases compatibility with password managers on"
-" mobile devices."
+msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 msgstr "启用兼容模式，增加与移动设备上密码管理器的兼容性。"
 
 #: src/pages/policies/BoundPoliciesList.ts
@@ -1720,9 +1712,7 @@ msgid "Enabled"
 msgstr "已启用"
 
 #: src/pages/users/ServiceAccountForm.ts
-msgid ""
-"Enabling this toggle will create a group named after the user, with the user"
-" as member."
+msgid "Enabling this toggle will create a group named after the user, with the user as member."
 msgstr "启用此开关将创建一个以用户命名的组，用户为成员。"
 
 #: src/interfaces/locale.ts
@@ -1780,10 +1770,7 @@ msgid "Evaluate policies before the Stage is present to the user."
 msgstr "在阶段呈现给用户之前评估策略。"
 
 #: src/pages/flows/StageBindingForm.ts
-msgid ""
-"Evaluate policies during the Flow planning process. Disable this for input-"
-"based policies. Should be used in conjunction with 'Re-evaluate policies', "
-"as with both options disabled, policies are **not** evaluated."
+msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated."
 msgstr "在流程规划过程中评估策略。对于基于输入的策略，请禁用此选项。应与 “重新评估策略” 结合使用，因为禁用了这两个选项，则**不**评估策略。"
 
 #: src/pages/events/EventListPage.ts
@@ -1810,7 +1797,8 @@ msgstr "事件"
 msgid "Everything is ok."
 msgstr "一切正常。"
 
-#: src/pages/events/EventInfo.ts src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 msgid "Exception"
 msgstr "例外"
@@ -1826,8 +1814,7 @@ msgstr "执行流程"
 #~ msgstr "与检查员一起执行"
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
-msgid ""
-"Executes the python snippet to determine whether to allow or deny a request."
+msgid "Executes the python snippet to determine whether to allow or deny a request."
 msgstr "执行 python 代码段以确定是允许还是拒绝请求。"
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
@@ -1840,8 +1827,10 @@ msgstr "执行 python 代码段以确定是允许还是拒绝请求。"
 msgid "Execution logging"
 msgstr "执行日志记录"
 
-#: src/elements/oauth/UserCodeList.ts src/elements/oauth/UserRefreshList.ts
-#: src/elements/user/SessionList.ts src/elements/user/UserConsentList.ts
+#: src/elements/oauth/UserCodeList.ts
+#: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/SessionList.ts
+#: src/elements/user/UserConsentList.ts
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Expires"
 msgstr "过期"
@@ -1912,12 +1901,8 @@ msgid "External API URL"
 msgstr "外部 API 网址"
 
 #: src/pages/applications/ApplicationListPage.ts
-msgid ""
-"External Applications which use authentik as Identity-Provider, utilizing "
-"protocols like OAuth2 and SAML. All applications are shown here, even ones "
-"you cannot access."
-msgstr ""
-"使用 authentik 作为身份提供程序的外部应用程序，利用 OAuth2 和 SAML 等协议。此处显示了所有应用程序，甚至是您无法访问的应用程序。"
+msgid "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access."
+msgstr "使用 authentik 作为身份提供程序的外部应用程序，利用 OAuth2 和 SAML 等协议。此处显示了所有应用程序，甚至是您无法访问的应用程序。"
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "External Host"
@@ -1928,7 +1913,8 @@ msgstr "外部主机"
 msgid "External host"
 msgstr "外部主机"
 
-#: src/elements/charts/AdminLoginsChart.ts src/elements/charts/UserChart.ts
+#: src/elements/charts/AdminLoginsChart.ts
+#: src/elements/charts/UserChart.ts
 msgid "Failed Logins"
 msgstr "登入失败"
 
@@ -1956,7 +1942,8 @@ msgstr "无法删除流程缓存"
 msgid "Failed to delete policy cache"
 msgstr "未能删除策略缓存"
 
-#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
 msgid "Failed to delete {0}: {1}"
 msgstr "无法删除 {0}: {1}"
 
@@ -1968,7 +1955,8 @@ msgstr "更新失败 {0}：{1}"
 msgid "Favicon"
 msgstr "网站图标"
 
-#: src/interfaces/AdminInterface.ts src/pages/sources/SourcesListPage.ts
+#: src/interfaces/AdminInterface.ts
+#: src/pages/sources/SourcesListPage.ts
 msgid "Federation & Social login"
 msgstr "联盟和社交登录"
 
@@ -1997,23 +1985,15 @@ msgstr "包含唯一标识符的字段。"
 #~ msgstr "包含组成员的字段。"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
-msgid ""
-"Field which contains members of a group. Note that if using the "
-"\"memberUid\" field, the value is assumed to contain a relative "
-"distinguished name. e.g. 'memberUid=some-user' instead of "
-"'memberUid=cn=some-user,ou=groups,...'"
-msgstr ""
-"包含组成员的字段。请注意，如果使用 “memberUID” 字段，则假定该值包含相对可分辨名称。例如，'memberUID=some-user' 而不是"
-" 'memberuid=cn=some-user、ou=groups、... '"
+msgid "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'"
+msgstr "包含组成员的字段。请注意，如果使用 “memberUID” 字段，则假定该值包含相对可分辨名称。例如，'memberUID=some-user' 而不是 'memberuid=cn=some-user、ou=groups、... '"
 
 #: src/pages/stages/prompt/PromptStageForm.ts
 msgid "Fields"
 msgstr "字段"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
-msgid ""
-"Fields a user can identify themselves with. If no fields are selected, the "
-"user will only be able to use sources."
+msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr "用户可以用来标识自己的字段。如果未选择任何字段，则用户将只能使用源。"
 
 #: src/pages/flows/FlowImportForm.ts
@@ -2028,7 +2008,8 @@ msgstr "流程概述"
 msgid "Flow execution"
 msgstr "流程执行"
 
-#: src/flows/FlowInspector.ts src/flows/FlowInspector.ts
+#: src/flows/FlowInspector.ts
+#: src/flows/FlowInspector.ts
 msgid "Flow inspector"
 msgstr "流程检查器"
 
@@ -2056,9 +2037,7 @@ msgid "Flow used before authentication."
 msgstr "身份验证之前使用的流程。"
 
 #: src/pages/stages/password/PasswordStageForm.ts
-msgid ""
-"Flow used by an authenticated user to configure their password. If empty, "
-"user will not be able to configure change their password."
+msgid "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password."
 msgstr "经过身份验证的用户用来配置其密码的流程。如果为空，用户将无法配置更改其密码。"
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
@@ -2066,27 +2045,19 @@ msgstr "经过身份验证的用户用来配置其密码的流程。如果为空
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
-msgid ""
-"Flow used by an authenticated user to configure this Stage. If empty, user "
-"will not be able to configure this stage."
+msgid "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
 msgstr "经过身份验证的用户用来配置此阶段的流程。如果为空，用户将无法配置此阶段。"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid ""
-"Flow used for users to authenticate. Currently only identification and "
-"password stages are supported."
+msgid "Flow used for users to authenticate. Currently only identification and password stages are supported."
 msgstr "用于用户进行身份验证的流程。目前仅支持标识和密码阶段。"
 
 #: src/pages/tenants/TenantForm.ts
-msgid ""
-"Flow used to authenticate users. If left empty, the first applicable flow "
-"sorted by the slug is used."
+msgid "Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used."
 msgstr "用于对用户进行身份验证的流程。如果留空，则使用按辅助信息块排序的第一个适用流程。"
 
 #: src/pages/tenants/TenantForm.ts
-msgid ""
-"Flow used to logout. If left empty, the first applicable flow sorted by the "
-"slug is used."
+msgid "Flow used to logout. If left empty, the first applicable flow sorted by the slug is used."
 msgstr "用于注销的流程。如果留空，则使用按辅助信息块排序的第一个适用流程。"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
@@ -2102,7 +2073,8 @@ msgstr "流程"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
-#: src/pages/flows/FlowListPage.ts src/pages/stages/StageListPage.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/stages/StageListPage.ts
 msgid "Flows"
 msgstr "流程"
 
@@ -2111,9 +2083,7 @@ msgid "Flows & Stages"
 msgstr "流程和阶段"
 
 #: src/pages/flows/FlowListPage.ts
-msgid ""
-"Flows describe a chain of Stages to authenticate, enroll or recover a user. "
-"Stages are chosen based on policies applied to them."
+msgid "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them."
 msgstr "流程描述了一系列用于对用户进行身份验证、注册或恢复的阶段。阶段是根据应用于它们的策略来选择的。"
 
 #: src/flows/stages/RedirectStage.ts
@@ -2202,6 +2172,10 @@ msgstr "通用的"
 msgid "Generic OpenID Connect"
 msgstr "通用 OpenID 连接"
 
+#: src/interfaces/locale.ts
+msgid "German"
+msgstr ""
+
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Get this value from https://console.twilio.com"
@@ -2221,7 +2195,8 @@ msgstr "转到上一页"
 #~ msgid "Go to user interface"
 #~ msgstr "转到用户界面"
 
-#: src/pages/events/RuleForm.ts src/pages/policies/PolicyBindingForm.ts
+#: src/pages/events/RuleForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
@@ -2241,8 +2216,7 @@ msgid "Group object filter"
 msgstr "分组对象过滤器"
 
 #: src/pages/groups/GroupListPage.ts
-msgid ""
-"Group users together and give them permissions based on the membership."
+msgid "Group users together and give them permissions based on the membership."
 msgstr "将用户分组在一起，并根据成员资格为他们授予权限。"
 
 #: src/pages/policies/BoundPoliciesList.ts
@@ -2255,7 +2229,8 @@ msgstr "组"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
-#: src/pages/groups/GroupListPage.ts src/pages/users/UserForm.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/users/UserForm.ts
 msgid "Groups"
 msgstr "组"
 
@@ -2302,7 +2277,8 @@ msgstr "隐藏托管映射"
 msgid "Hide service-accounts"
 msgstr "隐藏服务账户"
 
-#: src/pages/events/RuleForm.ts src/pages/outposts/OutpostForm.ts
+#: src/pages/events/RuleForm.ts
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -2319,9 +2295,7 @@ msgid "Hold control/command to select multiple items."
 msgstr "按住 ctrl/command 键可选择多个项目。"
 
 #: src/pages/stages/password/PasswordStageForm.ts
-msgid ""
-"How many attempts a user has before the flow is canceled. To lock the user "
-"out, use a reputation policy and a user_write stage."
+msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr "在取消流程之前，用户有多少次尝试。要锁定用户，请使用信誉策略和 user_write 阶段。"
 
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
@@ -2360,7 +2334,8 @@ msgstr "浏览器选项卡中显示的图标。"
 
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/policies/reputation/ReputationListPage.ts
-#: src/pages/system-tasks/SystemTaskListPage.ts src/pages/tokens/TokenForm.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/user/user-settings/tokens/UserTokenForm.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
@@ -2372,70 +2347,50 @@ msgstr "标识符"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
-msgid ""
-"If enabled, use the local connection. Required Docker socket/Kubernetes "
-"Integration."
+msgid "If enabled, use the local connection. Required Docker socket/Kubernetes Integration."
 msgstr "如果启用，请使用本地连接。需要的 Docker Socket/Kubernetes 集成。"
 
 #: src/pages/applications/ApplicationForm.ts
-msgid ""
-"If left empty, authentik will try to extract the launch URL based on the "
-"selected provider."
+msgid "If left empty, authentik will try to extract the launch URL based on the selected provider."
 msgstr "如果留空，authentik 将尝试根据选定的提供商提取启动网址。"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid ""
-"If multiple providers share an outpost, a self-signed certificate is used."
+msgid "If multiple providers share an outpost, a self-signed certificate is used."
 msgstr "如果多个提供商共享一个 Outpost，则使用自签名证书。"
 
-#~ msgid ""
-#~ "If no explicit redirect URIs are specified, any redirect URI is allowed."
+#~ msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
 #~ msgstr "如果未指定显式重定向 URI，则允许使用任何重定向 URI。"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid ""
-"If no explicit redirect URIs are specified, the first successfully used "
-"redirect URI will be saved."
+msgid "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved."
 msgstr "如果未指定显式重定向 URI，则将保存第一个成功使用的重定向 URI。"
 
 #: src/pages/tenants/TenantForm.ts
-msgid ""
-"If set, users are able to unenroll themselves using this flow. If no flow is"
-" set, option is not shown."
+msgid "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown."
 msgstr "如果已设置，则用户可以使用此流程自行取消注册。如果未设置流量，则不显示选项。"
 
 #: src/pages/stages/invitation/InvitationStageForm.ts
-msgid ""
-"If this flag is set, this Stage will jump to the next Stage when no "
-"Invitation is given. By default this Stage will cancel the Flow when no "
-"invitation is given."
+msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
 msgstr "如果设置了此标志，则当没有发出邀请时，此舞台将跳转到下一个阶段。默认情况下，当没有发出邀请时，此阶段将取消流程。"
 
 #: src/pages/tokens/TokenForm.ts
-msgid ""
-"If this is selected, the token will expire. Upon expiration, the token will "
-"be rotated."
+msgid "If this is selected, the token will expire. Upon expiration, the token will be rotated."
 msgstr "如果选择此选项，令牌将过期。到期后，令牌将被轮换。"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid ""
-"If you are using an Implicit, client-side flow (where the token-endpoint "
-"isn't used), you probably want to increase this time."
+msgid "If you are using an Implicit, client-side flow (where the token-endpoint isn't used), you probably want to increase this time."
 msgstr "如果你使用的是隐式的客户端流（其中不使用令牌端点），那么这次你可能想增加。"
 
 #: src/pages/outposts/OutpostDeploymentModal.ts
-msgid ""
-"If your authentik Instance is using a self-signed certificate, set this "
-"value."
+msgid "If your authentik Instance is using a self-signed certificate, set this value."
 msgstr "如果您的 authentik 实例正在使用自签名证书，请设置此值。"
 
 #: src/pages/outposts/OutpostDeploymentModal.ts
-msgid ""
-"If your authentik_host setting does not match the URL you want to login "
-"with, add this setting."
+msgid "If your authentik_host setting does not match the URL you want to login with, add this setting."
 msgstr "如果您的 authentik_host 设置与您要登录时使用的网址不匹配，请添加此设置。"
 
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Impersonate"
 msgstr "模仿"
 
@@ -2447,7 +2402,8 @@ msgstr "模拟已结束"
 msgid "Impersonation started"
 msgstr "模拟已开始"
 
-#: src/pages/flows/FlowListPage.ts src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowListPage.ts
 msgid "Import"
 msgstr "导入"
 
@@ -2456,9 +2412,7 @@ msgid "Import Flow"
 msgstr "导入流程"
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-msgid ""
-"Import certificates of external providers or create certificates to sign "
-"requests with."
+msgid "Import certificates of external providers or create certificates to sign requests with."
 msgstr "导入外部提供商的证书或创建用于签署请求的证书。"
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
@@ -2466,9 +2420,7 @@ msgid "In case you can't access any other method."
 msgstr "万一你无法访问任何其他方法。"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid ""
-"In this case, you'd set the Authentication URL to auth.example.com and "
-"Cookie domain to example.com."
+msgid "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com."
 msgstr "在这种情况下，您需要将身份验证网址设置为 auth.example.com，将 Cookie 域设置为 example.com。"
 
 #: src/pages/users/UserListPage.ts
@@ -2476,16 +2428,15 @@ msgid "Inactive"
 msgstr "不活跃"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid ""
-"Include User claims from scopes in the id_token, for applications that don't"
-" access the userinfo endpoint."
+msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
 msgstr "对于不访问userinfo端点的应用程序，将来自作用域的用户声明包含在id_token中。"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Include claims in id_token"
 msgstr "在 id_token 中包含声明"
 
-#: src/pages/outposts/OutpostForm.ts src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
 msgid "Integration"
 msgstr "整合"
 
@@ -2496,7 +2447,8 @@ msgstr "集成密钥"
 #~ msgid "Integrations"
 #~ msgstr "集成"
 
-#: src/pages/tokens/TokenForm.ts src/pages/tokens/TokenListPage.ts
+#: src/pages/tokens/TokenForm.ts
+#: src/pages/tokens/TokenListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Intent"
 msgstr "意图"
@@ -2579,15 +2531,11 @@ msgstr "Issuer mode"
 msgid "Key used to sign the tokens."
 msgstr "用于对令牌进行签名的密钥。"
 
-#~ msgid ""
-#~ "Key used to sign the tokens. Only required when JWT Algorithm is set to "
-#~ "RS256."
+#~ msgid "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
 #~ msgstr "用于对令牌进行签名的密钥。仅当JWT算法设置为 RS256 时才需要。"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
-msgid ""
-"Keypair which is used to sign outgoing requests. Leave empty to disable "
-"signing."
+msgid "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
 msgstr "用于签署传出请求的密钥对。留空则禁用签名。"
 
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -2623,11 +2571,13 @@ msgstr "标签"
 msgid "Label shown next to/above the prompt."
 msgstr "标签显示在提示符旁边/上方。"
 
-#: src/elements/user/SessionList.ts src/elements/user/SessionList.ts
+#: src/elements/user/SessionList.ts
+#: src/elements/user/SessionList.ts
 msgid "Last IP"
 msgstr "最后的 IP"
 
-#: src/pages/groups/MemberSelectModal.ts src/pages/users/UserListPage.ts
+#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Last login"
 msgstr "上次登录"
@@ -2663,16 +2613,12 @@ msgstr "让用户使用其用户名或电子邮件地址来标识自己。"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
-msgid ""
-"Link to a user with identical email address. Can have security implications "
-"when a source doesn't validate email addresses"
+msgid "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses"
 msgstr "链接到具有相同电子邮件地址的用户。当源不验证电子邮件地址时，可能会产生安全隐患"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
-msgid ""
-"Link to a user with identical username. Can have security implications when "
-"a username is used with another source."
+msgid "Link to a user with identical username. Can have security implications when a username is used with another source."
 msgstr "链接到具有相同用户名的用户。当用户名与其他源一起使用时，可能会产生安全隐患。"
 
 #: src/pages/stages/invitation/InvitationListLink.ts
@@ -2688,8 +2634,10 @@ msgstr "使用唯一标识符链接用户"
 msgid "Load servers"
 msgstr "加载服务器"
 
-#: src/elements/table/Table.ts src/flows/FlowExecutor.ts
-#: src/flows/FlowExecutor.ts src/flows/FlowInspector.ts
+#: src/elements/table/Table.ts
+#: src/flows/FlowExecutor.ts
+#: src/flows/FlowExecutor.ts
+#: src/flows/FlowInspector.ts
 #: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -2701,7 +2649,8 @@ msgstr "加载服务器"
 #: src/flows/stages/autosubmit/AutosubmitStage.ts
 #: src/flows/stages/captcha/CaptchaStage.ts
 #: src/flows/stages/consent/ConsentStage.ts
-#: src/flows/stages/dummy/DummyStage.ts src/flows/stages/email/EmailStage.ts
+#: src/flows/stages/dummy/DummyStage.ts
+#: src/flows/stages/email/EmailStage.ts
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
 #: src/flows/stages/prompt/PromptStage.ts
@@ -2709,17 +2658,23 @@ msgstr "加载服务器"
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-#: src/user/user-settings/sources/SourceSettings.ts src/utils.ts
+#: src/user/user-settings/sources/SourceSettings.ts
+#: src/utils.ts
 msgid "Loading"
 msgstr "正在加载"
 
 #: src/elements/Spinner.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
-#: src/pages/applications/ApplicationForm.ts src/pages/events/RuleForm.ts
-#: src/pages/events/RuleForm.ts src/pages/events/TransportForm.ts
-#: src/pages/flows/StageBindingForm.ts src/pages/flows/StageBindingForm.ts
-#: src/pages/groups/GroupForm.ts src/pages/groups/GroupForm.ts
-#: src/pages/outposts/OutpostForm.ts src/pages/outposts/OutpostForm.ts
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/events/RuleForm.ts
+#: src/pages/events/RuleForm.ts
+#: src/pages/events/TransportForm.ts
+#: src/pages/flows/StageBindingForm.ts
+#: src/pages/flows/StageBindingForm.ts
+#: src/pages/groups/GroupForm.ts
+#: src/pages/groups/GroupForm.ts
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
@@ -2773,10 +2728,14 @@ msgstr "正在加载"
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
-#: src/pages/tenants/TenantForm.ts src/pages/tenants/TenantForm.ts
-#: src/pages/tenants/TenantForm.ts src/pages/tenants/TenantForm.ts
-#: src/pages/tenants/TenantForm.ts src/pages/tokens/TokenForm.ts
-#: src/pages/users/UserForm.ts src/pages/users/UserResetEmailForm.ts
+#: src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantForm.ts
+#: src/pages/tokens/TokenForm.ts
+#: src/pages/users/UserForm.ts
+#: src/pages/users/UserResetEmailForm.ts
 msgid "Loading..."
 msgstr "载入中……"
 
@@ -2803,9 +2762,7 @@ msgid "Login"
 msgstr "登入"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
-msgid ""
-"Login password is synced from LDAP into authentik automatically. Enable this"
-" option only to write password changes in authentik back to LDAP."
+msgid "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
 msgstr "登入密码会自动从 LDAP 同步到 authentik。启用此选项可将 authentik 中的密码更改回写至 LDAP。"
 
 #: src/flows/stages/identification/IdentificationStage.ts
@@ -2866,40 +2823,31 @@ msgid "Mark newly created users as inactive."
 msgstr "将新创建的用户标记为非活动用户。"
 
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
-msgid ""
-"Match created events with this action type. When left empty, all action "
-"types will be matched."
+msgid "Match created events with this action type. When left empty, all action types will be matched."
 msgstr "将创建的事件与此操作类型匹配。留空时，所有操作类型都将匹配。"
 
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
-msgid ""
-"Match events created by selected application. When left empty, all "
-"applications are matched."
+msgid "Match events created by selected application. When left empty, all applications are matched."
 msgstr "匹配选定应用程序创建的事件。如果留空，则匹配所有应用程序。"
 
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
-msgid ""
-"Matches Event's Client IP (strict matching, for network matching use an "
-"Expression Policy."
+msgid "Matches Event's Client IP (strict matching, for network matching use an Expression Policy."
 msgstr "匹配事件的客户端 IP（严格匹配），对于网络匹配，请使用表达式策略。"
 
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
-msgid ""
-"Matches an event against a set of criteria. If any of the configured values "
-"match, the policy passes."
+msgid "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
 msgstr "根据一组条件匹配事件。如果任何配置的值匹配，则策略将通过。"
 
 #: src/pages/tenants/TenantForm.ts
-msgid ""
-"Matching is done based on domain suffix, so if you enter domain.tld, "
-"foo.domain.tld will still match."
+msgid "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match."
 msgstr "匹配是根据域名后缀完成的，因此，如果您输入 domain.tld，foo.domain.tld 仍将匹配。"
 
 #: src/pages/policies/expiry/ExpiryPolicyForm.ts
 msgid "Maximum age (in days)"
 msgstr "最长使用期限（以天为单位）"
 
-#: src/pages/groups/GroupForm.ts src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupForm.ts
+#: src/pages/groups/GroupListPage.ts
 #: src/pages/users/GroupSelectModal.ts
 msgid "Members"
 msgstr "成员"
@@ -2909,7 +2857,8 @@ msgid "Message"
 msgstr "信息"
 
 #: src/pages/applications/ApplicationCheckAccessForm.ts
-#: src/pages/events/EventInfo.ts src/pages/policies/PolicyTestForm.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/policies/PolicyTestForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Messages"
 msgstr "信息"
@@ -2939,7 +2888,8 @@ msgstr "大写字符的最小数量"
 msgid "Minimum length"
 msgstr "最小长度"
 
-#: src/pages/events/TransportForm.ts src/pages/events/TransportListPage.ts
+#: src/pages/events/TransportForm.ts
+#: src/pages/events/TransportListPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/stages/consent/ConsentStageForm.ts
 msgid "Mode"
@@ -2978,12 +2928,18 @@ msgstr "我的应用"
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/events/EventInfo.ts src/pages/events/RuleForm.ts
-#: src/pages/events/RuleListPage.ts src/pages/events/TransportForm.ts
-#: src/pages/events/TransportListPage.ts src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/FlowForm.ts src/pages/flows/FlowListPage.ts
-#: src/pages/groups/GroupForm.ts src/pages/groups/GroupListPage.ts
-#: src/pages/groups/MemberSelectModal.ts src/pages/outposts/OutpostForm.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/RuleForm.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportForm.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowForm.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupForm.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/MemberSelectModal.ts
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -3040,8 +2996,10 @@ msgstr "我的应用"
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
-#: src/pages/users/GroupSelectModal.ts src/pages/users/UserForm.ts
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
+#: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/UserForm.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
 #: src/user/user-settings/mfa/MFADeviceForm.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
@@ -3099,13 +3057,16 @@ msgstr "Nginx (standalone)"
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/groups/GroupListPage.ts src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/MemberSelectModal.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
-#: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
-#: src/pages/users/GroupSelectModal.ts src/pages/users/UserListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "No"
 msgstr "No"
@@ -3114,7 +3075,8 @@ msgstr "No"
 msgid "No Applications available."
 msgstr "没有可用的应用程序。"
 
-#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
 msgid "No Events found."
 msgstr "未找到任何事件。"
 
@@ -3142,7 +3104,8 @@ msgstr "找不到表格"
 msgid "No integration active"
 msgstr "没有激活的集成"
 
-#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
 msgid "No matching events could be found."
 msgstr "找不到匹配的事件。"
 
@@ -3224,11 +3187,13 @@ msgstr "不是你？"
 msgid "Notice"
 msgstr "注意"
 
-#: src/interfaces/AdminInterface.ts src/pages/events/RuleListPage.ts
+#: src/interfaces/AdminInterface.ts
+#: src/pages/events/RuleListPage.ts
 msgid "Notification Rules"
 msgstr "通知规则"
 
-#: src/interfaces/AdminInterface.ts src/pages/events/TransportListPage.ts
+#: src/interfaces/AdminInterface.ts
+#: src/pages/events/TransportListPage.ts
 msgid "Notification Transports"
 msgstr "通知传输"
 
@@ -3273,7 +3238,8 @@ msgstr "OAuth 刷新代码"
 msgid "OK"
 msgstr "OK"
 
-#: src/pages/events/EventInfo.ts src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
 msgid "Object"
 msgstr "对象"
 
@@ -3290,11 +3256,11 @@ msgid "Objects created"
 msgstr "已创建对象"
 
 #: src/pages/stages/consent/ConsentStageForm.ts
-msgid ""
-"Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
+msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
 msgstr "偏移量，在此之后同意过期。（格式：hours=1;minutes=2;seconds=3）。"
 
-#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
 #: src/pages/events/EventListPage.ts
 msgid "On behalf of {0}"
 msgstr "代表 {0}"
@@ -3304,9 +3270,7 @@ msgid "Only fail the policy, don't invalidate user's password."
 msgstr "只能使策略失效，不要使用户的密码失效。"
 
 #: src/pages/events/TransportForm.ts
-msgid ""
-"Only send notification once, for example when sending a webhook into a chat "
-"channel."
+msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr "仅发送一次通知，例如在向聊天频道发送 Webhook 时。"
 
 #: src/elements/notifications/APIDrawer.ts
@@ -3329,9 +3293,7 @@ msgid "OpenID Configuration URL"
 msgstr "OpenID 配置网址"
 
 #: src/pages/crypto/CertificateKeyPairForm.ts
-msgid ""
-"Optional Private Key. If this is set, you can use this keypair for "
-"encryption."
+msgid "Optional Private Key. If this is set, you can use this keypair for encryption."
 msgstr "可选私钥。如果设置了此设置，则可以使用此密钥对进行加密。"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -3339,9 +3301,7 @@ msgid "Optional URL if the IDP supports Single-Logout."
 msgstr "如果 IDP 支持单点注销，则为可选 URL。"
 
 #: src/pages/stages/invitation/InvitationForm.ts
-msgid ""
-"Optional data which is loaded into the flow's 'prompt_data' context "
-"variable. YAML or JSON."
+msgid "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON."
 msgstr "加载到流程的 “prompt_data” 上下文变量中的可选数据。YAML 或 JSON。"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
@@ -3349,10 +3309,7 @@ msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr "可选注册流程，链接在页面底部。"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
-msgid ""
-"Optional passwordless flow, which is linked at the bottom of the page. When "
-"configured, users can use this flow to authenticate with a WebAuthn "
-"authenticator, without entering any details."
+msgid "Optional passwordless flow, which is linked at the bottom of the page. When configured, users can use this flow to authenticate with a WebAuthn authenticator, without entering any details."
 msgstr "可选的无密码流程，链接在页面底部。配置后，用户可以使用此流程向 WebAuthn 身份验证器进行身份验证，而无需输入任何详细信息。"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
@@ -3371,15 +3328,11 @@ msgstr "（可选）预先填充输入值"
 msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
 msgstr "（可选）设置 “断言” 属性的'友好名称'值。"
 
-#~ msgid ""
-#~ "Optionally set this to your parent domain, if you want authentication and "
-#~ "authorization to happen on a domain level. If you're running applications as"
-#~ " app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
-#~ msgstr ""
-#~ "如果您希望在域级别进行身份验证和授权，可以选择将其设置为您的父域。如果你以 app1.domain.tld、app2.domain.tld "
-#~ "的身份运行应用程序，请将其设置为 “domain.tld”。"
+#~ msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+#~ msgstr "如果您希望在域级别进行身份验证和授权，可以选择将其设置为您的父域。如果你以 app1.domain.tld、app2.domain.tld 的身份运行应用程序，请将其设置为 “domain.tld”。"
 
-#: src/pages/flows/BoundStagesList.ts src/pages/flows/StageBindingForm.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/StageBindingForm.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
@@ -3425,14 +3378,13 @@ msgstr "Outpost  状态"
 msgid "Outpost(s)"
 msgstr "Outpost(s)"
 
-#: src/interfaces/AdminInterface.ts src/pages/outposts/OutpostListPage.ts
+#: src/interfaces/AdminInterface.ts
+#: src/pages/outposts/OutpostListPage.ts
 msgid "Outposts"
 msgstr "Outposts"
 
 #: src/pages/outposts/OutpostListPage.ts
-msgid ""
-"Outposts are deployments of authentik components to support different "
-"environments and protocols, like reverse proxies."
+msgid "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies."
 msgstr "Outpost  是对 authentik 组件的部署，以支持不同的环境和协议，例如反向代理。"
 
 #: src/interfaces/AdminInterface.ts
@@ -3450,7 +3402,8 @@ msgstr "概述"
 msgid "PEM-encoded Certificate data."
 msgstr "PEM 编码的证书数据。"
 
-#: src/pages/groups/GroupForm.ts src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupForm.ts
+#: src/pages/groups/GroupListPage.ts
 msgid "Parent"
 msgstr "家长"
 
@@ -3463,14 +3416,16 @@ msgid "Pass policy?"
 msgstr "通行证政策？"
 
 #: src/pages/applications/ApplicationCheckAccessForm.ts
-#: src/pages/events/EventInfo.ts src/pages/policies/PolicyTestForm.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/policies/PolicyTestForm.ts
 msgid "Passing"
 msgstr "通过"
 
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
-#: src/pages/users/ServiceAccountForm.ts src/pages/users/UserPasswordForm.ts
+#: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/UserPasswordForm.ts
 msgid "Password"
 msgstr "密码"
 
@@ -3491,10 +3446,7 @@ msgstr "密码阶段"
 #~ msgstr "密码、2FA 等"
 
 #: src/pages/stages/prompt/PromptForm.ts
-msgid ""
-"Password: Masked input, password is validated against sources. Policies "
-"still have to be applied to this Stage. If two of these are used in the same"
-" stage, they are ensured to be identical."
+msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
 msgstr "密码：屏蔽输入，密码根据来源进行验证。策略仍需应用于此阶段。如果在同一阶段使用其中的两个，则确保它们是相同的。"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
@@ -3534,7 +3486,8 @@ msgstr "请输入您的 TOTP 代码"
 msgid "Please enter your password"
 msgstr "请输入你的密码"
 
-#: src/interfaces/AdminInterface.ts src/pages/flows/FlowListPage.ts
+#: src/interfaces/AdminInterface.ts
+#: src/pages/flows/FlowListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 msgid "Policies"
 msgstr "策略"
@@ -3573,7 +3526,8 @@ msgid "Policy binding(s)"
 msgstr "策略绑定"
 
 #: src/pages/applications/ApplicationForm.ts
-#: src/pages/applications/ApplicationViewPage.ts src/pages/flows/FlowForm.ts
+#: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/flows/FlowForm.ts
 #: src/pages/flows/StageBindingForm.ts
 msgid "Policy engine mode"
 msgstr "策略引擎模式"
@@ -3634,8 +3588,7 @@ msgid "Private key available?"
 msgstr "私钥可用吗？"
 
 #: src/pages/stages/captcha/CaptchaStageForm.ts
-msgid ""
-"Private key, acquired from https://www.google.com/recaptcha/intro/v3.html."
+msgid "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr "私钥，从 https://www.google.com/recaptcha/intro/v3.html 获取。"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
@@ -3646,16 +3599,15 @@ msgstr "个人资料网址"
 #~ msgstr "提示"
 
 #: src/pages/stages/consent/ConsentStageForm.ts
-msgid ""
-"Prompt for the user's consent. The consent can either be permanent or expire"
-" in a defined amount of time."
+msgid "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time."
 msgstr "提示用户同意。同意可以是永久性的，也可以在规定的时间内过期。"
 
 #: src/pages/stages/prompt/PromptListPage.ts
 msgid "Prompt(s)"
 msgstr "提示"
 
-#: src/interfaces/AdminInterface.ts src/pages/stages/prompt/PromptListPage.ts
+#: src/interfaces/AdminInterface.ts
+#: src/pages/stages/prompt/PromptListPage.ts
 msgid "Prompts"
 msgstr "提示"
 
@@ -3701,11 +3653,11 @@ msgid "Protocol settings"
 msgstr "协议设置"
 
 #: src/pages/providers/ProviderListPage.ts
-msgid ""
-"Provide support for protocols like SAML and OAuth to assigned applications."
+msgid "Provide support for protocols like SAML and OAuth to assigned applications."
 msgstr "为分配的应用程序提供对 SAML 和 OAuth 等协议的支持。"
 
-#: src/elements/oauth/UserCodeList.ts src/elements/oauth/UserRefreshList.ts
+#: src/elements/oauth/UserCodeList.ts
+#: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
@@ -3725,12 +3677,14 @@ msgstr "提供商类型"
 msgid "Provider(s)"
 msgstr "提供商"
 
-#: src/interfaces/AdminInterface.ts src/pages/outposts/OutpostListPage.ts
+#: src/interfaces/AdminInterface.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 msgid "Providers"
 msgstr "提供商"
 
-#: src/pages/outposts/OutpostForm.ts src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/OutpostForm.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Proxy"
@@ -3745,8 +3699,7 @@ msgid "Public Key"
 msgstr "公钥"
 
 #: src/pages/stages/captcha/CaptchaStageForm.ts
-msgid ""
-"Public key, acquired from https://www.google.com/recaptcha/intro/v3.html."
+msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html."
 msgstr "公钥，从 https://www.google.com/recaptcha/intro/v3.html 获取。"
 
 #: src/pages/applications/ApplicationForm.ts
@@ -3758,9 +3711,7 @@ msgid "Quick actions"
 msgstr "快速行动"
 
 #: src/pages/flows/StageBindingForm.ts
-msgid ""
-"RESTART restarts the flow from the beginning, while keeping the flow "
-"context."
+msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
 msgstr "RESTART 从头开始重新启动流程，同时保留流程上下文。"
 
 #: src/pages/flows/StageBindingForm.ts
@@ -3768,8 +3719,7 @@ msgid "RESTART restarts the flow from the beginning."
 msgstr "RESTART 从头开始重新启动流程。"
 
 #: src/pages/flows/StageBindingForm.ts
-msgid ""
-"RETRY returns the error message and a similar challenge to the executor."
+msgid "RETRY returns the error message and a similar challenge to the executor."
 msgstr "RETRY 向执行器返回错误消息和类似的质询。"
 
 #~ msgid "RS256 (Asymmetric Encryption)"
@@ -3810,7 +3760,8 @@ msgstr "重新评估策略"
 msgid "Receive a push notification on your device."
 msgstr "在您的设备上接收推送通知。"
 
-#: src/pages/flows/utils.ts src/pages/tokens/TokenListPage.ts
+#: src/pages/flows/utils.ts
+#: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery"
 msgstr "恢复"
@@ -3821,9 +3772,7 @@ msgid "Recovery flow"
 msgstr "恢复流程"
 
 #: src/pages/tenants/TenantForm.ts
-msgid ""
-"Recovery flow. If left empty, the first applicable flow sorted by the slug "
-"is used."
+msgid "Recovery flow. If left empty, the first applicable flow sorted by the slug is used."
 msgstr "恢复流程。如果留空，则使用按辅助信息块排序的第一个适用流程。"
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
@@ -3866,15 +3815,11 @@ msgstr "刷新代码"
 msgid "Register device"
 msgstr "注册设备"
 
-#~ msgid ""
-#~ "Regular expressions for which authentication is not required. Each new line "
-#~ "is interpreted as a new Regular Expression."
+#~ msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
 #~ msgstr "不需要身份验证的正则表达式。每个新行都被解释为一个新的正则表达式。"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid ""
-"Regular expressions for which authentication is not required. Each new line "
-"is interpreted as a new expression."
+msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression."
 msgstr "不需要身份验证的正则表达式。每个新行都被解释为一个新表达式。"
 
 #: src/pages/users/UserListPage.ts
@@ -3899,19 +3844,13 @@ msgid "Reputation"
 msgstr "声誉"
 
 #: src/pages/policies/reputation/ReputationListPage.ts
-msgid ""
-"Reputation for IP and user identifiers. Scores are decreased for each failed"
-" login and increased for each successful login."
+msgid "Reputation for IP and user identifiers. Scores are decreased for each failed login and increased for each successful login."
 msgstr "IP 和用户标识符的声誉。每次登入失败的分数都会降低，每次成功登入的分数都会增加。"
 
-#~ msgid ""
-#~ "Reputation for IPs. Scores are decreased for each failed login and increased"
-#~ " for each successful login."
+#~ msgid "Reputation for IPs. Scores are decreased for each failed login and increased for each successful login."
 #~ msgstr "IP 的声誉。每次登入失败的分数都会降低，每次成功登入的分数都会增加。"
 
-#~ msgid ""
-#~ "Reputation for usernames. Scores are decreased for each failed login and "
-#~ "increased for each successful login."
+#~ msgid "Reputation for usernames. Scores are decreased for each failed login and increased for each successful login."
 #~ msgstr "用户名的声誉。每次登入失败的分数都会降低，每次成功登入的分数都会增加。"
 
 #~ msgid "Reputation policy - IPs"
@@ -3925,7 +3864,8 @@ msgstr "IP 和用户标识符的声誉。每次登入失败的分数都会降低
 msgid "Reputation scores"
 msgstr "声誉得分"
 
-#: src/pages/events/EventInfo.ts src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventInfo.ts
 msgid "Request"
 msgstr "请求"
 
@@ -3945,7 +3885,8 @@ msgstr "必需"
 msgid "Required."
 msgstr "必需。"
 
-#: src/pages/users/ServiceAccountForm.ts src/pages/users/UserForm.ts
+#: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/UserForm.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "必填。不超过 150 个字符。仅限字母、数字和 @/./+/-/_ 。"
@@ -4081,7 +4022,8 @@ msgstr "作用域名称"
 msgid "Scope which the client can specify to access these properties."
 msgstr "客户端可以指定的访问这些属性的范围。"
 
-#: src/elements/oauth/UserCodeList.ts src/elements/oauth/UserRefreshList.ts
+#: src/elements/oauth/UserCodeList.ts
+#: src/elements/oauth/UserRefreshList.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Scopes"
@@ -4103,7 +4045,8 @@ msgstr "搜索组"
 msgid "Search mode"
 msgstr "搜索模式"
 
-#: src/elements/table/TableSearch.ts src/user/LibraryPage.ts
+#: src/elements/table/TableSearch.ts
+#: src/user/LibraryPage.ts
 msgid "Search..."
 msgstr "搜索..."
 
@@ -4139,9 +4082,7 @@ msgid "See documentation for a list of all variables."
 msgstr "有关所有变量的列表，请参阅文档。"
 
 #: src/pages/applications/ApplicationForm.ts
-msgid ""
-"Select a provider that this application should use. Alternatively, create a "
-"new provider."
+msgid "Select a provider that this application should use. Alternatively, create a new provider."
 msgstr "选择此应用程序应使用的提供程序。或者，创建一个新的提供商。"
 
 #: src/elements/table/Table.ts
@@ -4168,9 +4109,7 @@ msgid "Select one of the sources below to login."
 msgstr "选择以下源之一进行登入。"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
-msgid ""
-"Select sources should be shown for users to authenticate with. This only "
-"affects web-based sources, not LDAP."
+msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
 msgstr "应显示选择的源以供用户进行身份验证。这只会影响基于 Web 的源，而不影响 LDAP。"
 
 #: src/pages/groups/MemberSelectModal.ts
@@ -4178,37 +4117,26 @@ msgid "Select users to add"
 msgstr "选择要添加的用户"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid ""
-"Select which scopes can be used by the client. The client still has to "
-"specify the scope to access the data."
+msgid "Select which scopes can be used by the client. The client still has to specify the scope to access the data."
 msgstr "选择客户端可以使用哪些作用域。客户端仍然需要指定访问数据的范围。"
 
 #: src/pages/sources/plex/PlexSourceForm.ts
-msgid ""
-"Select which server a user has to be a member of to be allowed to "
-"authenticate."
+msgid "Select which server a user has to be a member of to be allowed to authenticate."
 msgstr "选择用户必须是哪个服务器的成员才能进行身份验证。"
 
 #: src/pages/events/RuleForm.ts
-msgid ""
-"Select which transports should be used to notify the user. If none are "
-"selected, the notification will only be shown in the authentik UI."
+msgid "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
 msgstr "选择应使用哪些传输来通知用户。如果未选择任何内容，则通知将仅显示在 authentik UI 中。"
 
 #: src/pages/stages/prompt/PromptStageForm.ts
-msgid ""
-"Selected policies are executed when the stage is submitted to validate the "
-"data."
+msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr "在提交阶段以验证数据时，将执行选定的策略。"
 
-#~ msgid ""
-#~ "Selecting a service-connection enables the management of the outpost by "
-#~ "authentik."
+#~ msgid "Selecting a service-connection enables the management of the outpost by authentik."
 #~ msgstr "选择服务连接可通过 authentik 管理 Outpost。"
 
 #: src/pages/outposts/OutpostForm.ts
-msgid ""
-"Selecting an integration enables the management of the outpost by authentik."
+msgid "Selecting an integration enables the management of the outpost by authentik."
 msgstr "选择集成可以使authentik对 Outpost 进行管理。"
 
 #: src/pages/stages/password/PasswordStageForm.ts
@@ -4224,9 +4152,7 @@ msgid "Send link"
 msgstr "发送链接"
 
 #: src/pages/events/RuleListPage.ts
-msgid ""
-"Send notifications whenever a specific Event is created and matched by "
-"policies."
+msgid "Send notifications whenever a specific Event is created and matched by policies."
 msgstr "每当策略创建并匹配特定事件时，都会发送通知。"
 
 #: src/pages/events/TransportForm.ts
@@ -4283,9 +4209,7 @@ msgid "Session duration"
 msgstr "会话持续时间"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid ""
-"Session not valid on or after current time + this value (Format: "
-"hours=1;minutes=2;seconds=3)."
+msgid "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 msgstr "在当前时间+此值时或之后，会话无效（格式：hours=1;minutes=2;seconds=3）。"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -4296,7 +4220,8 @@ msgstr "会话不在当天或之后有效"
 msgid "Session(s)"
 msgstr "会话"
 
-#: src/pages/users/UserViewPage.ts src/user/user-settings/UserSettingsPage.ts
+#: src/pages/users/UserViewPage.ts
+#: src/user/user-settings/UserSettingsPage.ts
 msgid "Sessions"
 msgstr "会话"
 
@@ -4305,14 +4230,14 @@ msgid "Set HTTP-Basic Authentication"
 msgstr "设置 HTTP 基本身份验证"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid ""
-"Set a custom HTTP-Basic Authentication header based on values from "
-"authentik."
+msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
 msgstr "根据来自 authentik 的值设置自定义 HTTP-Basic 身份验证标头。"
 
-#: src/pages/groups/GroupForm.ts src/pages/outposts/OutpostForm.ts
+#: src/pages/groups/GroupForm.ts
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
-#: src/pages/policies/PolicyTestForm.ts src/pages/users/UserForm.ts
+#: src/pages/policies/PolicyTestForm.ts
+#: src/pages/users/UserForm.ts
 msgid "Set custom attributes using YAML or JSON."
 msgstr "使用 YAML 或 JSON 设置自定义属性。"
 
@@ -4321,26 +4246,20 @@ msgid "Set password"
 msgstr "设置密码"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid ""
-"Set this to the domain you wish the authentication to be valid for. Must be "
-"a parent domain of the URL above. If you're running applications as "
-"app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
-msgstr ""
-"将此设置为您希望身份验证有效的域。必须是上述 URL 的父域名。如果你以 app1.domain.tld、app2.domain.tld "
-"的身份运行应用程序，请将其设置为 “domain.tld”。"
+msgid "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+msgstr "将此设置为您希望身份验证有效的域。必须是上述 URL 的父域名。如果你以 app1.domain.tld、app2.domain.tld 的身份运行应用程序，请将其设置为 “domain.tld”。"
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Setup"
 msgstr "设置"
 
-#: src/pages/events/RuleForm.ts src/pages/events/RuleListPage.ts
+#: src/pages/events/RuleForm.ts
+#: src/pages/events/RuleListPage.ts
 msgid "Severity"
 msgstr "严重程度"
 
 #: src/pages/stages/prompt/PromptStageForm.ts
-msgid ""
-"Show arbitrary input fields to the user, for example during enrollment. Data"
-" is saved in the flow context under the 'prompt_data' variable."
+msgid "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
 msgstr "向用户显示任意输入字段，例如在注册期间。数据保存在流程上下文中的 “prompt_data” 变量下。"
 
 #: src/elements/Expand.ts
@@ -4396,7 +4315,8 @@ msgstr "一次性使用"
 #~ msgstr "跳过路径正则表达式"
 
 #: src/pages/applications/ApplicationForm.ts
-#: src/pages/applications/ApplicationListPage.ts src/pages/flows/FlowForm.ts
+#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/flows/FlowForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -4429,16 +4349,11 @@ msgstr "源"
 msgid "Sources"
 msgstr "源"
 
-#~ msgid ""
-#~ "Sources of identities, which can either be synced into authentik's database,"
-#~ " like LDAP, or can be used by users to authenticate and enroll themselves, "
-#~ "like OAuth and social logins"
+#~ msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 #~ msgstr "身份来源，既可以同步到 authentik 的数据库（如 LDAP）中，也可以被用户用来进行身份验证和注册，例如 OAuth 和社交登录"
 
 #: src/pages/sources/SourcesListPage.ts
-msgid ""
-"Sources of identities, which can either be synced into authentik's database,"
-" or can be used by users to authenticate and enroll themselves."
+msgid "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
 msgstr "身份来源，既可以同步到authentik的数据库中，也可以被用户用来进行身份验证和注册。"
 
 #: src/interfaces/locale.ts
@@ -4449,7 +4364,8 @@ msgstr "西班牙的"
 msgid "Specify multiple server URIs by separating them with a comma."
 msgstr "通过用逗号分隔多个服务器 URI 来指定它们。"
 
-#: src/pages/flows/BoundStagesList.ts src/pages/flows/StageBindingForm.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/StageBindingForm.ts
 msgid "Stage"
 msgstr "阶段"
 
@@ -4485,34 +4401,23 @@ msgid "Stage type"
 msgstr "阶段类型"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid ""
-"Stage used to configure Authenticator when user doesn't have any compatible "
-"devices. After this configuration Stage passes, the user is not prompted "
-"again."
+msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
 msgstr "Stage 用于在用户没有任何兼容设备时配置身份验证器。此配置 Stage 通过后，不会再次提示用户。"
 
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
-msgid ""
-"Stage used to configure a TOTP authenticator (i.e. Authy/Google "
-"Authenticator)."
+msgid "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator)."
 msgstr "用于配置 TOTP 身份验证器（即 Auth/Google 身份验证器）的阶段。"
 
 #: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
-msgid ""
-"Stage used to configure a WebAutnn authenticator (i.e. Yubikey, "
-"FaceID/Windows Hello)."
+msgid "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello)."
 msgstr "用于配置 Webautnn 身份验证器（即 Yubikey、FaceID/Windows Hello）的阶段。"
 
 #: src/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
-msgid ""
-"Stage used to configure a duo-based authenticator. This stage should be used"
-" for configuration flows."
+msgid "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows."
 msgstr "Stage 用于配置基于二重奏的身份验证器。此阶段应该用于配置流程。"
 
 #: src/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts
-msgid ""
-"Stage used to configure a static authenticator (i.e. static tokens). This "
-"stage should be used for configuration flows."
+msgid "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows."
 msgstr "Stage 用于配置静态身份验证器（即静态令牌）。此阶段应该用于配置流程。"
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
@@ -4520,9 +4425,7 @@ msgid "Stage used to configure an SMS-based TOTP authenticator."
 msgstr "用于配置基于短信的 TOTP 身份验证器的阶段。"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid ""
-"Stage used to validate any authenticator. This stage should be used during "
-"authentication or authorization flows."
+msgid "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
 msgstr "Stage 用于验证任何身份验证器。此阶段应在身份验证或授权流程中使用。"
 
 #: src/pages/stages/StageListPage.ts
@@ -4547,15 +4450,15 @@ msgstr "阶段"
 msgid "Stage-specific settings"
 msgstr "阶段特定的设置"
 
-#: src/interfaces/AdminInterface.ts src/pages/flows/FlowListPage.ts
-#: src/pages/stages/StageListPage.ts src/pages/stages/prompt/PromptListPage.ts
+#: src/interfaces/AdminInterface.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/prompt/PromptListPage.ts
 msgid "Stages"
 msgstr "阶段"
 
 #: src/pages/stages/StageListPage.ts
-msgid ""
-"Stages are single steps of a Flow that a user is guided through. A stage can"
-" only be executed from within a flow."
+msgid "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow."
 msgstr "阶段是引导用户完成的流程的单个步骤。阶段只能在流程内部执行。"
 
 #: src/pages/outposts/ServiceConnectionListPage.ts
@@ -4583,9 +4486,7 @@ msgid "Static: Static value, displayed as-is."
 msgstr "静态：静态值，按原样显示。"
 
 #: src/pages/stages/deny/DenyStageForm.ts
-msgid ""
-"Statically deny the flow. To use this stage effectively, disable *Evaluate "
-"on plan* on the respective binding."
+msgid "Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding."
 msgstr "静态拒绝流。要有效地使用此阶段，请在相应的绑定上禁用*按计划评估*。"
 
 #: src/pages/system-tasks/SystemTaskListPage.ts
@@ -4602,7 +4503,8 @@ msgstr "状态"
 msgid "Stop impersonation"
 msgstr "停止模拟"
 
-#: src/pages/events/EventInfo.ts src/pages/stages/email/EmailStageForm.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/stages/email/EmailStageForm.ts
 msgid "Subject"
 msgstr "Subject"
 
@@ -4618,7 +4520,8 @@ msgstr "替代名称"
 msgid "Successful"
 msgstr "成功"
 
-#: src/elements/charts/AdminLoginsChart.ts src/elements/charts/UserChart.ts
+#: src/elements/charts/AdminLoginsChart.ts
+#: src/elements/charts/UserChart.ts
 msgid "Successful Logins"
 msgstr "成功登入"
 
@@ -4642,7 +4545,8 @@ msgstr "成功复制 TOTP 配置。"
 msgid "Successfully created application."
 msgstr "已成功创建应用程序。"
 
-#: src/pages/flows/StageBindingForm.ts src/pages/policies/PolicyBindingForm.ts
+#: src/pages/flows/StageBindingForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
 msgid "Successfully created binding."
 msgstr "成功创建绑定。"
 
@@ -4748,11 +4652,13 @@ msgstr "已成功创建令牌。"
 msgid "Successfully created transport."
 msgstr "已成功创建传输。"
 
-#: src/pages/users/ServiceAccountForm.ts src/pages/users/UserForm.ts
+#: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/UserForm.ts
 msgid "Successfully created user."
 msgstr "已成功创建用户。"
 
-#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr "成功删除 {0} {1}"
 
@@ -4760,7 +4666,8 @@ msgstr "成功删除 {0} {1}"
 msgid "Successfully generated certificate-key pair."
 msgstr "成功生成证书密钥对。"
 
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Successfully generated recovery link"
 msgstr "成功生成恢复链接"
 
@@ -4786,7 +4693,8 @@ msgstr "已成功发送测试请求。"
 msgid "Successfully updated application."
 msgstr "已成功更新应用程序。"
 
-#: src/pages/flows/StageBindingForm.ts src/pages/policies/PolicyBindingForm.ts
+#: src/pages/flows/StageBindingForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
 msgid "Successfully updated binding."
 msgstr "已成功更新绑定。"
 
@@ -4912,7 +4820,8 @@ msgstr "已成功更新用户。"
 msgid "Successfully updated {0} {1}"
 msgstr "成功更新 {0} {1}"
 
-#: src/pages/users/GroupSelectModal.ts src/pages/users/UserListPage.ts
+#: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Superuser"
 msgstr "超级用户"
@@ -5034,7 +4943,8 @@ msgstr "租户"
 msgid "Tenant(s)"
 msgstr "租户"
 
-#: src/interfaces/AdminInterface.ts src/pages/tenants/TenantListPage.ts
+#: src/interfaces/AdminInterface.ts
+#: src/pages/tenants/TenantListPage.ts
 msgid "Tenants"
 msgstr "租户"
 
@@ -5069,15 +4979,11 @@ msgid "The URL \"{0}\" was not found."
 msgstr "找不到网址 “{0}”。"
 
 #: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
-msgid ""
-"The authenticator MUST create a dedicated credential. If it cannot, the RP "
-"is prepared for an error to occur"
+msgid "The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur"
 msgstr "身份验证者必须创建专用凭据。如果不能，RP 已做好准备以防发生错误"
 
 #: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
-msgid ""
-"The authenticator can create and store a dedicated credential, but if it "
-"doesn't that's alright too"
+msgid "The authenticator can create and store a dedicated credential, but if it doesn't that's alright too"
 msgstr "身份验证器可以创建和存储专用凭据，但如果没有，那也没关系"
 
 #: src/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
@@ -5086,20 +4992,14 @@ msgstr "身份验证者不应创建专用凭据"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid ""
-"The external URL you'll access the application at. Include any non-standard "
-"port."
+msgid "The external URL you'll access the application at. Include any non-standard port."
 msgstr "您将通过其访问应用程序的外部 URL。包括任何非标准端口。"
 
-#~ msgid ""
-#~ "The external URL you'll authenticate at. Can be the same domain as "
-#~ "authentik."
+#~ msgid "The external URL you'll authenticate at. Can be the same domain as authentik."
 #~ msgstr "您将在其中进行身份验证的外部 URL。可以与 authentik 属于同一个域。"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid ""
-"The external URL you'll authenticate at. The authentik core server should be"
-" reachable under this URL."
+msgid "The external URL you'll authenticate at. The authentik core server should be reachable under this URL."
 msgstr "您将在其中进行身份验证的外部 URL。在此 URL 下应该可以访问身份验证核心服务器。"
 
 #~ msgid "The following objects use {0}:"
@@ -5129,29 +5029,16 @@ msgstr ""
 "阈值。"
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
-msgid ""
-"The policy takes a random time to execute. This controls the minimum time it"
-" will take."
+msgid "The policy takes a random time to execute. This controls the minimum time it will take."
 msgstr "策略需要一段随机时间才能执行。这将控制所需的最短时间。"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid ""
-"The start for gidNumbers, this number is added to a number generated from "
-"the group.Pk to make sure that the numbers aren't too low for POSIX groups. "
-"Default is 4000 to ensure that we don't collide with local groups or users "
-"primary groups gidNumber"
-msgstr ""
-"对于 GIDNumbers 来说，这个数字被添加到从 group.pk 生成的数字中，以确保对于 POSIX 组来说，这个数字不会太低。默认值为 "
-"4000，以确保我们不会与本地组或用户主组 GIDNumber 发生冲突"
+msgid "The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber"
+msgstr "对于 GIDNumbers 来说，这个数字被添加到从 group.pk 生成的数字中，以确保对于 POSIX 组来说，这个数字不会太低。默认值为 4000，以确保我们不会与本地组或用户主组 GIDNumber 发生冲突"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid ""
-"The start for uidNumbers, this number is added to the user.Pk to make sure "
-"that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
-"that we don't collide with local users uidNumber"
-msgstr ""
-"对于UIDNumbers来说，这个数字被添加到User.pk中，以确保对于POSIX用户来说，这个数字不会太低。默认值为 "
-"2000，以确保我们不会与本地用户 uidNumber 发生冲突"
+msgid "The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber"
+msgstr "对于UIDNumbers来说，这个数字被添加到User.pk中，以确保对于POSIX用户来说，这个数字不会太低。默认值为 2000，以确保我们不会与本地用户 uidNumber 发生冲突"
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "These bindings control if this stage will be applied to the flow."
@@ -5196,23 +5083,15 @@ msgid "This is the password to be used with basic auth"
 msgstr "这是用于基本身份验证的密码"
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-msgid ""
-"This is the username to be used with basic auth or the token when used with "
-"bearer token"
+msgid "This is the username to be used with basic auth or the token when used with bearer token"
 msgstr "这是用于基本身份验证的用户名，或者与不记名令牌一起使用时的令牌"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid ""
-"This provider will behave like a transparent reverse-proxy, except requests "
-"must be authenticated. If your upstream application uses HTTPS, make sure to"
-" connect to the outpost using HTTPS as well."
-msgstr ""
-"除了请求必须经过身份验证外，此提供程序的行为类似于透明的反向代理。如果您的上游应用程序使用 HTTPS，请确保也使用 HTTPS 连接到 "
-"Outpost。"
+msgid "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well."
+msgstr "除了请求必须经过身份验证外，此提供程序的行为类似于透明的反向代理。如果您的上游应用程序使用 HTTPS，请确保也使用 HTTPS 连接到 Outpost。"
 
 #: src/pages/tenants/TenantForm.ts
-msgid ""
-"This setting only affects new Events, as the expiration is saved per-event."
+msgid "This setting only affects new Events, as the expiration is saved per-event."
 msgstr "此设置仅影响新事件，因为过期时间是按事件保存的。"
 
 #: src/pages/stages/invitation/InvitationStageForm.ts
@@ -5220,9 +5099,7 @@ msgid "This stage can be included in enrollment flows to accept invitations."
 msgstr "此阶段可以包含在注册流程中以接受邀请。"
 
 #: src/pages/stages/captcha/CaptchaStageForm.ts
-msgid ""
-"This stage checks the user's current session against the Google reCaptcha "
-"service."
+msgid "This stage checks the user's current session against the Google reCaptcha service."
 msgstr "此阶段会根据 Google reCAPTCHA 服务检查用户的当前会话。"
 
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
@@ -5234,13 +5111,8 @@ msgid "Time in minutes the token sent is valid."
 msgstr "发送的令牌的有效时间（以分钟为单位）。"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
-msgid ""
-"Time offset when temporary users should be deleted. This only applies if "
-"your IDP uses the NameID Format 'transient', and the user doesn't log out "
-"manually. (Format: hours=1;minutes=2;seconds=3)."
-msgstr ""
-"删除临时用户的时间偏移。这仅适用于您的 IDP 使用 NameID 格式为 “瞬态” "
-"且用户未手动注销的情况。（格式：hours=1;minutes=2;seconds=3）。"
+msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
+msgstr "删除临时用户的时间偏移。这仅适用于您的 IDP 使用 NameID 格式为 “瞬态” 且用户未手动注销的情况。（格式：hours=1;minutes=2;seconds=3）。"
 
 #~ msgid "Time-based One-Time Passwords"
 #~ msgstr "基于时间的一次性密码"
@@ -5251,7 +5123,8 @@ msgstr ""
 msgid "Timeout"
 msgstr "超时"
 
-#: src/pages/flows/FlowForm.ts src/pages/tenants/TenantForm.ts
+#: src/pages/flows/FlowForm.ts
+#: src/pages/tenants/TenantForm.ts
 msgid "Title"
 msgstr "标题"
 
@@ -5260,26 +5133,18 @@ msgid "To"
 msgstr "To"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid ""
-"To allow any redirect URI, set this value to \"*\". Be aware of the possible"
-" security implications this can have."
+msgid "To allow any redirect URI, set this value to \"*\". Be aware of the possible security implications this can have."
 msgstr "要允许任何重定向 URI，请将此值设置为 “*”。请注意这可能带来的安全影响。"
 
 #: src/pages/users/UserViewPage.ts
-msgid ""
-"To create a recovery link, the current tenant needs to have a recovery flow "
-"configured."
+msgid "To create a recovery link, the current tenant needs to have a recovery flow configured."
 msgstr "要创建恢复链接，当前租户需要配置恢复流程。"
 
-#~ msgid ""
-#~ "To directly reset a user's password, configure a recovery flow on the "
-#~ "currently active tenant."
+#~ msgid "To directly reset a user's password, configure a recovery flow on the currently active tenant."
 #~ msgstr "要直接重置用户的密码，请在当前活动的租户上配置恢复流程。"
 
 #: src/pages/users/UserListPage.ts
-msgid ""
-"To let a user directly reset a their password, configure a recovery flow on "
-"the currently active tenant."
+msgid "To let a user directly reset a their password, configure a recovery flow on the currently active tenant."
 msgstr "要让用户直接重置密码，请在当前活动的租户上配置恢复流程。"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -5329,9 +5194,7 @@ msgid "Tokens and App passwords"
 msgstr "令牌和应用程序密码"
 
 #: src/pages/tokens/TokenListPage.ts
-msgid ""
-"Tokens are used throughout authentik for Email validation stages, Recovery "
-"keys and API access."
+msgid "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access."
 msgstr "令牌在整个authentik中用于电子邮件验证阶段、恢复密钥和API访问。"
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
@@ -5394,13 +5257,15 @@ msgstr "Twilio 账户 SID"
 msgid "Twilio Auth Token"
 msgstr "Twilio 身份验证令牌"
 
-#: src/pages/flows/BoundStagesList.ts src/pages/outposts/OutpostForm.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts src/pages/stages/prompt/PromptForm.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Type"
@@ -5410,7 +5275,8 @@ msgstr "类型"
 msgid "UI settings"
 msgstr "用户界面设置"
 
-#: src/pages/events/EventInfo.ts src/pages/users/UserListPage.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/users/UserListPage.ts
 msgid "UID"
 msgstr "UID"
 
@@ -5444,9 +5310,7 @@ msgid "URL used by authentik to retrieve tokens."
 msgstr "authentik 用来检索令牌的 URL。"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
-msgid ""
-"URL used to request the initial token. This URL is only required for OAuth "
-"1."
+msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr "用于请求初始令牌的 URL。只有 OAuth 1 才需要此网址。"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -5503,10 +5367,14 @@ msgstr "最新！"
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
-#: src/pages/events/RuleListPage.ts src/pages/events/TransportListPage.ts
-#: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/FlowListPage.ts src/pages/flows/FlowViewPage.ts
-#: src/pages/groups/GroupListPage.ts src/pages/outposts/OutpostListPage.ts
+#: src/pages/events/RuleListPage.ts
+#: src/pages/events/TransportListPage.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/BoundStagesList.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowViewPage.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -5524,9 +5392,12 @@ msgstr "最新！"
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
-#: src/pages/stages/StageListPage.ts src/pages/stages/prompt/PromptListPage.ts
-#: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
-#: src/pages/users/UserActiveForm.ts src/pages/users/UserListPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/prompt/PromptListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/UserActiveForm.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
@@ -5550,11 +5421,13 @@ msgstr "更新证书密钥对"
 msgid "Update Device"
 msgstr "更新设备"
 
-#: src/pages/flows/FlowListPage.ts src/pages/flows/FlowViewPage.ts
+#: src/pages/flows/FlowListPage.ts
+#: src/pages/flows/FlowViewPage.ts
 msgid "Update Flow"
 msgstr "更新流程"
 
-#: src/pages/groups/GroupListPage.ts src/pages/policies/BoundPoliciesList.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Group"
 msgstr "更新组"
 
@@ -5619,7 +5492,8 @@ msgstr "更新租户"
 msgid "Update Token"
 msgstr "更新令牌"
 
-#: src/pages/policies/BoundPoliciesList.ts src/pages/users/UserListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Update User"
 msgstr "更新用户"
@@ -5632,7 +5506,8 @@ msgstr "更新可用"
 msgid "Update details"
 msgstr "更新详情"
 
-#: src/pages/users/UserListPage.ts src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserListPage.ts
 msgid "Update password"
 msgstr "更新密码"
 
@@ -5642,7 +5517,8 @@ msgstr "更新密码"
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts src/pages/stages/StageListPage.ts
+#: src/pages/sources/SourcesListPage.ts
+#: src/pages/stages/StageListPage.ts
 #: src/pages/users/UserActiveForm.ts
 msgid "Update {0}"
 msgstr "更新 {0}"
@@ -5681,57 +5557,43 @@ msgstr "使用全局设置"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
-msgid ""
-"Use the user's email address, but deny enrollment when the email address "
-"already exists."
+msgid "Use the user's email address, but deny enrollment when the email address already exists."
 msgstr "使用用户的电子邮件地址，但在电子邮件地址已存在时拒绝注册。"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
-msgid ""
-"Use the user's username, but deny enrollment when the username already "
-"exists."
+msgid "Use the user's username, but deny enrollment when the username already exists."
 msgstr "使用用户的用户名，但在用户名已存在时拒绝注册。"
 
 #: src/pages/users/ServiceAccountForm.ts
-msgid ""
-"Use the username and password below to authenticate. The password can be "
-"retrieved later on the Tokens page."
+msgid "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page."
 msgstr "使用下面的用户名和密码进行身份验证。稍后可以在令牌页面上检索密码。"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid ""
-"Use this provider with nginx's auth_request or traefik's forwardAuth. Each "
-"application/domain needs its own provider. Additionally, on each domain, "
-"/outpost.goauthentik.io must be routed to the outpost (when using a manged "
-"outpost, this is done for you)."
-msgstr ""
-"将此提供程序与 nginx 的 auth_request 或 traefik 的 ForwardAuth "
-"一起使用。每个应用程序/域都需要自己的提供商。此外，在每个域上，/outpost.goauthentik.io必须路由到 Outpost（使用托管的 "
-"Outpost 时，这是为您完成的）。"
+msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you)."
+msgstr "将此提供程序与 nginx 的 auth_request 或 traefik 的 ForwardAuth 一起使用。每个应用程序/域都需要自己的提供商。此外，在每个域上，/outpost.goauthentik.io必须路由到 Outpost（使用托管的 Outpost 时，这是为您完成的）。"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid ""
-"Use this provider with nginx's auth_request or traefik's forwardAuth. Only a"
-" single provider is required per root domain. You can't do per-application "
-"authorization, but you don't have to create a provider for each application."
-msgstr ""
-"将此提供程序与 nginx 的 auth_request 或 traefik 的 ForwardAuth "
-"一起使用。每个根域只需要一个提供程序。您无法执行每个应用程序的授权，但不必为每个应用程序创建提供程序。"
+msgid "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."
+msgstr "将此提供程序与 nginx 的 auth_request 或 traefik 的 ForwardAuth 一起使用。每个根域只需要一个提供程序。您无法执行每个应用程序的授权，但不必为每个应用程序创建提供程序。"
 
 #: src/pages/tenants/TenantForm.ts
 msgid "Use this tenant for each domain that doesn't have a dedicated tenant."
 msgstr "对于没有专用租户的每个域，请使用此租户。"
 
-#: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
-#: src/pages/events/EventInfo.ts src/pages/events/EventListPage.ts
+#: src/pages/events/EventInfo.ts
+#: src/pages/events/EventListPage.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
-#: src/pages/tokens/TokenForm.ts src/pages/tokens/TokenListPage.ts
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
+#: src/pages/tokens/TokenForm.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "User"
 msgstr "用户"
@@ -5822,7 +5684,8 @@ msgstr "不应进行用户验证。"
 msgid "User was written to"
 msgstr "用户被写入"
 
-#: src/pages/policies/BoundPoliciesList.ts src/pages/users/UserViewPage.ts
+#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/users/UserViewPage.ts
 msgid "User {0}"
 msgstr "用户 {0}"
 
@@ -5840,14 +5703,11 @@ msgid "User(s)"
 msgstr "用户"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid ""
-"User/Group Attribute used for the password part of the HTTP-Basic Header."
+msgid "User/Group Attribute used for the password part of the HTTP-Basic Header."
 msgstr "用于 HTTP-Basic 标头的密码部分的用户/组属性。"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid ""
-"User/Group Attribute used for the user part of the HTTP-Basic Header. If not"
-" set, the user's Email address is used."
+msgid "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used."
 msgstr "用于 HTTP-Basic 标头用户部分的用户/组属性。如果未设置，则使用用户的电子邮件地址。"
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
@@ -5856,20 +5716,21 @@ msgstr "用户信息网址"
 
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
-#: src/pages/users/ServiceAccountForm.ts src/pages/users/ServiceAccountForm.ts
-#: src/pages/users/UserForm.ts src/pages/users/UserListPage.ts
+#: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/UserForm.ts
+#: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Username"
 msgstr "用户名"
 
 #: src/pages/stages/prompt/PromptForm.ts
-msgid ""
-"Username: Same as Text input, but checks for and prevents duplicate "
-"usernames."
+msgid "Username: Same as Text input, but checks for and prevents duplicate usernames."
 msgstr "用户名：与文本输入相同，但检查并防止用户名重复。"
 
-#: src/interfaces/AdminInterface.ts src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts
+#: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Users"
@@ -5884,9 +5745,7 @@ msgid "Users created per day in the last month"
 msgstr "上个月每天创建的用户"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid ""
-"Users in the selected group can do search queries. If no group is selected, "
-"no LDAP Searches are allowed."
+msgid "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed."
 msgstr "所选组中的用户可以执行搜索查询。如果未选择任何组，则不允许 LDAP 搜索。"
 
 #: src/pages/events/EventInfo.ts
@@ -5898,15 +5757,11 @@ msgid "Using source"
 msgstr "使用源"
 
 #: src/pages/users/ServiceAccountForm.ts
-msgid ""
-"Valid for 360 days, after which the password will automatically rotate. You "
-"can copy the password from the Token List."
+msgid "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List."
 msgstr "有效期为360天，之后密码将自动轮换。您可以从令牌列表中复制密码。"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid ""
-"Valid redirect URLs after a successful authorization flow. Also specify any "
-"origins here for Implicit flows."
+msgid "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows."
 msgstr "授权流成功后有效的重定向 URL。还可以在此处为隐式流指定任何来源。"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -5934,9 +5789,7 @@ msgid "Verification Certificate"
 msgstr "验证证书"
 
 #: src/pages/stages/email/EmailStageForm.ts
-msgid ""
-"Verify the user's email address by sending them a one-time-link. Can also be"
-" used for recovery to verify the user's authenticity."
+msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
 msgstr "通过向用户发送一次性链接来验证用户的电子邮件地址。也可用于恢复，以验证用户的真实性。"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
@@ -5973,7 +5826,8 @@ msgstr "等待 (最短)"
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
-#: src/pages/events/RuleForm.ts src/pages/system-tasks/SystemTaskListPage.ts
+#: src/pages/events/RuleForm.ts
+#: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
 msgstr "警告"
 
@@ -5982,9 +5836,7 @@ msgid "Warning: Application is not used by any Outpost."
 msgstr "警告：应用程序未被任何 Outpost 使用。"
 
 #: src/pages/stages/invitation/InvitationListPage.ts
-msgid ""
-"Warning: No invitation stage is bound to any flow. Invitations will not work"
-" as expected."
+msgid "Warning: No invitation stage is bound to any flow. Invitations will not work as expected."
 msgstr "警告：没有邀请阶段绑定到任何流程。邀请将无法按预期工作。"
 
 #: src/pages/policies/PolicyListPage.ts
@@ -6008,14 +5860,11 @@ msgid "Warning: Provider not assigned to any application."
 msgstr "警告：提供程序未分配给任何应用程序。"
 
 #: src/pages/users/UserListPage.ts
-msgid ""
-"Warning: You're about to delete the user you're logged in as ({0}). Proceed "
-"at your own risk."
+msgid "Warning: You're about to delete the user you're logged in as ({0}). Proceed at your own risk."
 msgstr "警告：你即将删除登录的用户 ({0})。继续，风险自负。"
 
 #: src/pages/outposts/OutpostListPage.ts
-msgid ""
-"Warning: authentik Domain is not configured, authentication will not work."
+msgid "Warning: authentik Domain is not configured, authentication will not work."
 msgstr "警告：未配置 authentik 域，身份验证将不起作用。"
 
 #: src/pages/tenants/TenantForm.ts
@@ -6050,22 +5899,15 @@ msgid "Welcome, {name}."
 msgstr "欢迎，{name}。"
 
 #: src/pages/stages/email/EmailStageForm.ts
-msgid ""
-"When a user returns from the email successfully, their account will be "
-"activated."
+msgid "When a user returns from the email successfully, their account will be activated."
 msgstr "当用户成功从电子邮件中返回时，其帐户将被激活。"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
-msgid ""
-"When a valid username/email has been entered, and this option is enabled, "
-"the user's username and avatar will be shown. Otherwise, the text that the "
-"user entered will be shown."
+msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr "如果输入了有效的用户名/电子邮件，并且启用了此选项，则会显示用户的用户名和头像。否则，将显示用户输入的文本。"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
-msgid ""
-"When connecting to an LDAP Server with TLS, certificates are not checked by "
-"default. Specify a keypair to validate the remote certificate."
+msgid "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
 msgstr "使用 TLS 连接到 LDAP 服务器时，默认情况下不检查证书。指定密钥对以验证远程证书。"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
@@ -6073,9 +5915,7 @@ msgid "When connecting via SSH, this keypair is used for authentication."
 msgstr "通过 SSH 连接时，此密钥对用于身份验证。"
 
 #: src/pages/stages/email/EmailStageForm.ts
-msgid ""
-"When enabled, global Email connection settings will be used and connection "
-"settings below will be ignored."
+msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
 msgstr "启用后，将使用全局电子邮件连接设置，而下面的连接设置将被忽略。"
 
 #: src/pages/stages/invitation/InvitationForm.ts
@@ -6087,15 +5927,11 @@ msgid "When enabled, user fields are matched regardless of their casing."
 msgstr "启用后，无论用户字段大小写如何，都将匹配用户字段。"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
-msgid ""
-"When selected, a password field is shown on the same page instead of a "
-"separate page. This prevents username enumeration attacks."
+msgid "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."
 msgstr "选中后，密码字段将显示在同一页面上，而不是单独的页面上。这样可以防止用户名枚举攻击。"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid ""
-"When selected, incoming assertion's Signatures will be validated against "
-"this certificate. To allow unsigned Requests, leave on default."
+msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr "选中后，传入声明的签名将根据此证书进行验证。要允许未签名的请求，请保留默认值。"
 
 #: src/pages/policies/dummy/DummyPolicyForm.ts
@@ -6105,32 +5941,20 @@ msgstr "选中后，传入声明的签名将根据此证书进行验证。要允
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/pages/policies/password/PasswordPolicyForm.ts
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
-msgid ""
-"When this option is enabled, all executions of this policy will be logged. "
-"By default, only execution errors are logged."
+msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
 msgstr "启用此选项后，将记录此策略的所有执行。默认情况下，只记录执行错误。"
 
 #: src/pages/stages/prompt/PromptForm.ts
-msgid ""
-"When used in conjunction with a User Write stage, use attributes.foo to "
-"write attributes."
+msgid "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
 msgstr "当与用户写入阶段结合使用时，请使用 attributes.foo 来编写属性。"
 
 #: src/pages/tenants/TenantForm.ts
-msgid ""
-"When using an external logging solution for archiving, this can be set to "
-"\"minutes=5\"."
+msgid "When using an external logging solution for archiving, this can be set to \"minutes=5\"."
 msgstr "使用外部日志记录解决方案进行存档时，可以将其设置为 “minutes=5”。"
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
-msgid ""
-"When using proxy or forward auth (single application) mode, the requested "
-"URL Path is checked against the regular expressions. When using forward auth"
-" (domain mode), the full requested URL including scheme and host is matched "
-"against the regular expressions."
-msgstr ""
-"使用代理或转发身份验证（单个应用程序）模式时，将根据正则表达式检查请求的 URL 路径。使用前向身份验证（域模式）时，请求的完整 URL（包括 "
-"scheme 和 host）将与正则表达式进行匹配。"
+msgid "When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions."
+msgstr "使用代理或转发身份验证（单个应用程序）模式时，将根据正则表达式检查请求的 URL 路径。使用前向身份验证（域模式）时，请求的完整 URL（包括 scheme 和 host）将与正则表达式进行匹配。"
 
 #: src/flows/FlowExecutor.ts
 msgid "Whoops!"
@@ -6158,13 +5982,16 @@ msgstr "X509 Subject"
 
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
-#: src/pages/groups/GroupListPage.ts src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/MemberSelectModal.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
-#: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
-#: src/pages/users/GroupSelectModal.ts src/pages/users/UserListPage.ts
+#: src/pages/tenants/TenantListPage.ts
+#: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Yes"
 msgstr "Yes"
@@ -6211,15 +6038,18 @@ msgstr "连接将被删除"
 msgid "no tabs defined"
 msgstr "未定义选项卡"
 
-#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
 msgid "object will be DELETED"
 msgstr "对象将被删除"
 
-#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
 msgid "reference will be reset to default value"
 msgstr "引用将被重置为默认值"
 
-#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
 msgid "reference will be set to an empty value"
 msgstr "引用将被设置为空值"
 
@@ -6227,7 +6057,8 @@ msgstr "引用将被设置为空值"
 msgid "with inspector"
 msgstr "和检查员一起"
 
-#: src/elements/Expand.ts src/elements/Expand.ts
+#: src/elements/Expand.ts
+#: src/elements/Expand.ts
 msgid "{0}"
 msgstr "{0}"
 
@@ -6239,7 +6070,8 @@ msgstr "{0} (“{1}”, 类型为 {2})"
 msgid "{0} ({1})"
 msgstr "{0} ({1})"
 
-#: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
 msgid "{0} ({consequence})"
 msgstr "{0} ({consequence})"
 

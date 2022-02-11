@@ -25,7 +25,8 @@
             "pl",
             "zh_TW",
             "zh-Hans",
-            "zh-Hant"
+            "zh-Hant",
+            "de"
         ],
         "formatOptions": {
             "lineNumbers": false

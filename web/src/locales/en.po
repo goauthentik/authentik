@@ -2213,6 +2213,10 @@ msgstr "Generic"
 msgid "Generic OpenID Connect"
 msgstr "Generic OpenID Connect"
 
+#: src/interfaces/locale.ts
+msgid "German"
+msgstr "German"
+
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Get this value from https://console.twilio.com"

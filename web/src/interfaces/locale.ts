@@ -1,9 +1,10 @@
-import { en, es, fr, pl, tr, zh } from "make-plural/plurals";
+import { de, en, es, fr, pl, tr, zh } from "make-plural/plurals";
 
 import { Messages, i18n } from "@lingui/core";
 import { detect, fromNavigator, fromStorage, fromUrl } from "@lingui/detect-locale";
 import { t } from "@lingui/macro";
 
+import { messages as localeDE } from "../locales/de";
 import { messages as localeEN } from "../locales/en";
 import { messages as localeES } from "../locales/es";
 import { messages as localeFR_FR } from "../locales/fr_FR";
@@ -74,6 +75,12 @@ export const LOCALES: {
         plurals: zh,
         label: t`Chinese (traditional)`,
         locale: localeZH_Hant,
+    },
+    {
+        code: "de",
+        plurals: de,
+        label: t`German`,
+        locale: localeDE,
     },
 ];
 
