@@ -30,9 +30,9 @@ services:
     labels:
       traefik.enable: true
       traefik.port: 9000
-      traefik.http.routers.authentik.rule: Host(`app.company`) && PathPrefix(`/outpost.goauthentik.io/`)
+      traefik.http.routers.authentik.rule: Host(`app.company`) && PathPrefix(`/akprox/`)
       # `authentik-proxy` refers to the service name in the compose file.
-      traefik.http.middlewares.authentik.forwardauth.address: http://authentik-proxy:9000/outpost.goauthentik.io/auth/traefik
+      traefik.http.middlewares.authentik.forwardauth.address: http://authentik-proxy:9000/akprox/auth/traefik
       traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
       traefik.http.middlewares.authentik.forwardauth.authResponseHeaders: X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version
     restart: unless-stopped

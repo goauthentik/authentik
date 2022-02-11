@@ -3,7 +3,7 @@ http:
   middlewares:
     authentik:
       forwardAuth:
-        address: http://outpost.company:9000/outpost.goauthentik.io/auth/traefik
+        address: http://outpost.company:9000/akprox/auth/traefik
         trustForwardHeader: true
         authResponseHeaders:
           - X-authentik-username
@@ -25,7 +25,7 @@ http:
       priority: 10
       services: # Unchanged
     default-router-auth:
-      match: "Host(`app.company`) && PathPrefix(`/outpost.goauthentik.io/`)"
+      match: "Host(`app.company`) && PathPrefix(`/akprox/`)"
       priority: 15
-      services: http://outpost.company:9000/outpost.goauthentik.io
+      services: http://outpost.company:9000/akprox
 ```

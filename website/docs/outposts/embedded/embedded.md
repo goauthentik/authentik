@@ -26,7 +26,7 @@ Make sure to set it to full URL, only configuring a hostname or FQDN will not wo
 Routing is handled like this:
 
 1. Paths starting with `/static`, `/media` and `/help` return packaged CSS/JS files, and user-uploaded media files.
-2. Paths starting with `/outpost.goauthentik.io` are sent to the embedded outpost.
+2. Paths starting with `/akprox` are sent to the embedded outpost.
 3. Any hosts configured in the providers assigned to the embedded outpost are sent to the outpost.
 4. Everything remaining is sent to the authentik backend server.
 

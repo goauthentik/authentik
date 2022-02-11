@@ -26,7 +26,7 @@ The container is created with the following hardcoded properties:
     - `traefik.http.routers.ak-outpost-<outpost-name>-router.rule`: `Host(...)`
     - `traefik.http.routers.ak-outpost-<outpost-name>-router.service`: `ak-outpost-<outpost-name>-service`
     - `traefik.http.routers.ak-outpost-<outpost-name>-router.tls`: "true"
-    - `traefik.http.services.ak-outpost-<outpost-name>-service.loadbalancer.healthcheck.path`: "/outpost.goauthentik.io/ping"
+    - `traefik.http.services.ak-outpost-<outpost-name>-service.loadbalancer.healthcheck.path`: "/akprox/ping"
     - `traefik.http.services.ak-outpost-<outpost-name>-service.loadbalancer.healthcheck.port`: "9300"
     - `traefik.http.services.ak-outpost-<outpost-name>-service.loadbalancer.server.port`: "9000"
 
