@@ -62,7 +62,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     component = CharField(default="ak-stage-authenticator-validate")
 
     def _challenge_allowed(self, classes: list):
-        device_challenges: list[dict] = self.stage.request.session.get("device_challenges")
+        device_challenges: list[dict] = self.stage.request.session.get(SESSION_DEVICE_CHALLENGES)
         if not any(x["device_class"] in classes for x in device_challenges):
             raise ValidationError("No compatible device class allowed")
 
@@ -87,7 +87,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     def validate_selected_challenge(self, challenge: dict) -> dict:
         """Check which challenge the user has selected. Actual logic only used for SMS stage."""
         # First check if the challenge is valid
-        for device_challenge in self.stage.request.session.get("device_challenges"):
+        for device_challenge in self.stage.request.session.get(SESSION_DEVICE_CHALLENGES):
             if device_challenge.get("device_class", "") != challenge.get("device_class", ""):
                 raise ValidationError("invalid challenge selected")
             if device_challenge.get("device_uid", "") != challenge.get("device_uid", ""):
@@ -220,16 +220,19 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             ).from_http(self.request).set_user(user).save()
             return self.executor.stage_invalid()
         if stage.configuration_stages.count() == 1:
-            self.request.session[SESSION_SELECTED_STAGE] = stage.configuration_stages.first()
-            LOGGER.debug(
-                "Single stage configured, auto-selecting",
-                stage=self.request.session[SESSION_SELECTED_STAGE],
-            )
+            next_stage = Stage.objects.get_subclass(pk=stage.configuration_stages.first().pk)
+            LOGGER.debug("Single stage configured, auto-selecting", stage=next_stage)
+            self.request.session[SESSION_SELECTED_STAGE] = next_stage
+            # Because that normal insetion only happens on post, we directly inject it here and
+            # return it
+            self.executor.plan.insert_stage(next_stage)
+            return self.executor.stage_ok()
         stages = Stage.objects.filter(pk__in=stage.configuration_stages.all()).select_subclasses()
         self.request.session[SESSION_STAGES] = stages
         return super().get(self.request, *args, **kwargs)
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        res = super().post(request, *args, **kwargs)
         if (
             SESSION_SELECTED_STAGE in self.request.session
             and self.executor.current_stage.not_configured_action == NotConfiguredAction.CONFIGURE
@@ -243,7 +246,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             # the configuration stage is next
             self.executor.plan.insert_stage(stage)
             return self.executor.stage_ok()
-        return super().post(request, *args, **kwargs)
+        return res
 
     def get_challenge(self) -> AuthenticatorValidationChallenge:
         challenges = self.request.session.get(SESSION_DEVICE_CHALLENGES, [])
