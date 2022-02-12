@@ -1,10 +1,12 @@
 """Authenticator Validation"""
 from django.http import HttpRequest, HttpResponse
 from django_otp import devices_for_user
-from rest_framework.fields import CharField, IntegerField, JSONField, ListField
+from rest_framework.fields import CharField, IntegerField, JSONField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
+from authentik.core.api.utils import PassiveSerializer
+from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import cleanse_dict, sanitize_dict
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
@@ -26,6 +28,18 @@ from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
+SESSION_STAGES = "goauthentik.io/stages/authenticator_validate/stages"
+SESSION_SELECTED_STAGE = "goauthentik.io/stages/authenticator_validate/selected_stage"
+SESSION_DEVICE_CHALLENGES = "goauthentik.io/stages/authenticator_validate/device_challenges"
+
+
+class SelectableStageSerializer(PassiveSerializer):
+    """Serializer for stages which can be selected by users"""
+
+    pk = UUIDField()
+    name = CharField()
+    verbose_name = CharField()
+    meta_model_name = CharField()
 
 
 class AuthenticatorValidationChallenge(WithUserInfoChallenge):
@@ -33,12 +47,14 @@ class AuthenticatorValidationChallenge(WithUserInfoChallenge):
 
     device_challenges = ListField(child=DeviceChallenge())
     component = CharField(default="ak-stage-authenticator-validate")
+    configuration_stages = ListField(child=SelectableStageSerializer())
 
 
 class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     """Challenge used for Code-based and WebAuthn authenticators"""
 
     selected_challenge = DeviceChallenge(required=False)
+    selected_stage = CharField(required=False)
 
     code = CharField(required=False)
     webauthn = JSONField(required=False)
@@ -83,6 +99,15 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
             raise ValidationError("device does not exist")
         select_challenge(self.stage.request, devices.first())
         return challenge
+
+    def validate_selected_stage(self, stage_pk: str) -> str:
+        """Check that the selected stage is valid"""
+        stages = self.stage.request.session.get(SESSION_STAGES, [])
+        if not any(str(stage.pk) == stage_pk for stage in stages):
+            raise ValidationError("Selected stage is invalid")
+        LOGGER.debug("Setting selected stage to ", stage=stage_pk)
+        self.stage.request.session[SESSION_SELECTED_STAGE] = stage_pk
+        return stage_pk
 
     def validate(self, attrs: dict):
         # Checking if the given data is from a valid device class is done above
@@ -164,7 +189,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             else:
                 LOGGER.debug("No pending user, continuing")
                 return self.executor.stage_ok()
-        self.request.session["device_challenges"] = challenges
+        self.request.session[SESSION_DEVICE_CHALLENGES] = challenges
 
         # No allowed devices
         if len(challenges) < 1:
@@ -175,35 +200,71 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 LOGGER.debug("Authenticator not configured, denying")
                 return self.executor.stage_invalid()
             if stage.not_configured_action == NotConfiguredAction.CONFIGURE:
-                if not stage.configuration_stage:
-                    Event.new(
-                        EventAction.CONFIGURATION_ERROR,
-                        message=(
-                            "Authenticator validation stage is set to configure user "
-                            "but no configuration flow is set."
-                        ),
-                        stage=self,
-                    ).from_http(self.request).set_user(user).save()
-                    return self.executor.stage_invalid()
-                LOGGER.debug("Authenticator not configured, sending user to configure")
-                # Because the foreign key to stage.configuration_stage points to
-                # a base stage class, we need to do another lookup
-                stage = Stage.objects.get_subclass(pk=stage.configuration_stage.pk)
-                # plan.insert inserts at 1 index, so when stage_ok pops 0,
-                # the configuration stage is next
-                self.executor.plan.insert_stage(stage)
-                return self.executor.stage_ok()
+                LOGGER.debug("Authenticator not configured, forcing configure")
+                return self.prepare_stages(user)
         return super().get(request, *args, **kwargs)
 
-    def get_challenge(self) -> AuthenticatorValidationChallenge:
-        challenges = self.request.session.get("device_challenges")
-        if not challenges:
-            LOGGER.debug("Authenticator Validation stage ran without challenges")
+    def prepare_stages(self, user: User, *args, **kwargs) -> HttpResponse:
+        """Check how the user can configure themselves. If no stages are set, return an error.
+        If a single stage is set, insert that stage directly. If multiple are selected, include
+        them in the challenge."""
+        stage: AuthenticatorValidateStage = self.executor.current_stage
+        if not stage.configuration_stages.exists():
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=(
+                    "Authenticator validation stage is set to configure user "
+                    "but no configuration flow is set."
+                ),
+                stage=self,
+            ).from_http(self.request).set_user(user).save()
             return self.executor.stage_invalid()
+        if stage.configuration_stages.count() == 1:
+            self.request.session[SESSION_SELECTED_STAGE] = stage.configuration_stages.first()
+            LOGGER.debug(
+                "Single stage configured, auto-selecting",
+                stage=self.request.session[SESSION_SELECTED_STAGE],
+            )
+        stages = Stage.objects.filter(pk__in=stage.configuration_stages.all()).select_subclasses()
+        self.request.session[SESSION_STAGES] = stages
+        return super().get(self.request, *args, **kwargs)
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        if (
+            SESSION_SELECTED_STAGE in self.request.session
+            and self.executor.current_stage.not_configured_action == NotConfiguredAction.CONFIGURE
+        ):
+            LOGGER.debug("Got selected stage in session, running that")
+            stage_pk = self.request.session.get(SESSION_SELECTED_STAGE)
+            # Because the foreign key to stage.configuration_stage points to
+            # a base stage class, we need to do another lookup
+            stage = Stage.objects.get_subclass(pk=stage_pk)
+            # plan.insert inserts at 1 index, so when stage_ok pops 0,
+            # the configuration stage is next
+            self.executor.plan.insert_stage(stage)
+            return self.executor.stage_ok()
+        return super().post(request, *args, **kwargs)
+
+    def get_challenge(self) -> AuthenticatorValidationChallenge:
+        challenges = self.request.session.get(SESSION_DEVICE_CHALLENGES, [])
+        stages = self.request.session.get(SESSION_STAGES, [])
+        stage_challenges = []
+        for stage in stages:
+            serializer = SelectableStageSerializer(
+                data={
+                    "pk": stage.pk,
+                    "name": stage.name,
+                    "verbose_name": str(stage._meta.verbose_name),
+                    "meta_model_name": f"{stage._meta.app_label}.{stage._meta.model_name}",
+                }
+            )
+            serializer.is_valid()
+            stage_challenges.append(serializer.data)
         return AuthenticatorValidationChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
                 "device_challenges": challenges,
+                "configuration_stages": stage_challenges,
             }
         )
 

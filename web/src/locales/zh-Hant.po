@@ -948,8 +948,12 @@ msgid "Configuration flow"
 msgstr "配置流程"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid "Configuration stage"
-msgstr "配置阶段"
+#~ msgid "Configuration stage"
+#~ msgstr "配置阶段"
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Configuration stages"
+msgstr ""
 
 #~ msgid "Configure WebAuthn"
 #~ msgstr "配置 WebAuthn"
@@ -4401,8 +4405,8 @@ msgid "Stage type"
 msgstr "阶段类型"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
-msgstr "Stage 用于在用户没有任何兼容设备时配置身份验证器。此配置 Stage 通过后，不会再次提示用户。"
+#~ msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
+#~ msgstr "Stage 用于在用户没有任何兼容设备时配置身份验证器。此配置 Stage 通过后，不会再次提示用户。"
 
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator)."
@@ -4460,6 +4464,10 @@ msgstr "阶段"
 #: src/pages/stages/StageListPage.ts
 msgid "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow."
 msgstr "阶段是引导用户完成的流程的单个步骤。阶段只能在流程内部执行。"
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionListPage.ts
 msgid "State"
@@ -5925,6 +5933,10 @@ msgstr "启用后，邀请将在使用后被删除。"
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr "启用后，无论用户字段大小写如何，都将匹配用户字段。"
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "When multiple stages are selected, the user can choose which one they want to enroll."
+msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."

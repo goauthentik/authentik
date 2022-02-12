@@ -38,16 +38,14 @@ class AuthenticatorValidateStage(Stage):
         choices=NotConfiguredAction.choices, default=NotConfiguredAction.SKIP
     )
 
-    configuration_stage = models.ForeignKey(
+    configuration_stages = models.ManyToManyField(
         Stage,
-        null=True,
         blank=True,
         default=None,
-        on_delete=models.SET_DEFAULT,
         related_name="+",
         help_text=_(
             (
-                "Stage used to configure Authenticator when user doesn't have any compatible "
+                "Stages used to configure Authenticator when user doesn't have any compatible "
                 "devices. After this configuration Stage passes, the user is not prompted again."
             )
         ),

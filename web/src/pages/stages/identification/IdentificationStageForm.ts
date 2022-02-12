@@ -153,7 +153,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         ?required=${true}
                         name="sources"
                     >
-                        <select name="users" class="pf-c-form-control" multiple>
+                        <select class="pf-c-form-control" multiple>
                             ${until(
                                 new SourcesApi(DEFAULT_CONFIG)
                                     .sourcesAllList({})

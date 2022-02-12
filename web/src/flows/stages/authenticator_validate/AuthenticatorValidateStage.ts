@@ -67,7 +67,7 @@ export class AuthenticatorValidateStage
         return this._selectedDeviceChallenge;
     }
 
-    submit(payload: AuthenticatorValidationChallengeResponseRequest): Promise<void> {
+    submit(payload: AuthenticatorValidationChallengeResponseRequest): Promise<boolean> {
         return this.host?.submit(payload) || Promise.resolve();
     }
 
@@ -140,7 +140,7 @@ export class AuthenticatorValidateStage
     }
 
     renderDevicePicker(): TemplateResult {
-        return html` <ul>
+        return html`<ul>
             ${this.challenge?.deviceChallenges.map((challenges) => {
                 return html`<li>
                     <button
@@ -151,6 +151,30 @@ export class AuthenticatorValidateStage
                         }}
                     >
                         ${this.renderDevicePickerSingle(challenges)}
+                    </button>
+                </li>`;
+            })}
+        </ul>`;
+    }
+
+    renderStagePicker(): TemplateResult {
+        return html`<ul>
+            ${this.challenge?.configurationStages.map((stage) => {
+                return html`<li>
+                    <button
+                        class="pf-c-button authenticator-button"
+                        type="button"
+                        @click=${() => {
+                            this.submit({
+                                component: this.challenge.component || "",
+                                selectedStage: stage.pk,
+                            });
+                        }}
+                    >
+                        <div class="right">
+                            <p>${stage.name}</p>
+                            <small>${stage.verboseName}</small>
+                        </div>
                     </button>
                 </li>`;
             })}
@@ -242,6 +266,9 @@ export class AuthenticatorValidateStage
                               ${this.selectedDeviceChallenge
                                   ? ""
                                   : html`<p>${t`Select an authentication method.`}</p>`}
+                              ${this.challenge.configurationStages.length > 0
+                                  ? this.renderStagePicker()
+                                  : html``}
                           </form>
                           ${this.renderDevicePicker()}
                       </div>

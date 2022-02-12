@@ -25,14 +25,14 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                 stageUuid: pk,
             })
             .then((stage) => {
-                this.showConfigurationStage =
+                this.showConfigurationStages =
                     stage.notConfiguredAction === NotConfiguredActionEnum.Configure;
                 return stage;
             });
     }
 
     @property({ type: Boolean })
-    showConfigurationStage = true;
+    showConfigurationStages = true;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -136,9 +136,9 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                                     target.selectedOptions[0].value ===
                                     NotConfiguredActionEnum.Configure
                                 ) {
-                                    this.showConfigurationStage = true;
+                                    this.showConfigurationStages = true;
                                 } else {
-                                    this.showConfigurationStage = false;
+                                    this.showConfigurationStages = false;
                                 }
                             }}
                         >
@@ -165,21 +165,13 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    ${this.showConfigurationStage
+                    ${this.showConfigurationStages
                         ? html`
                               <ak-form-element-horizontal
-                                  label=${t`Configuration stage`}
-                                  ?required=${true}
-                                  name="configurationStage"
+                                  label=${t`Configuration stages`}
+                                  name="configurationStages"
                               >
-                                  <select class="pf-c-form-control">
-                                      <option
-                                          value=""
-                                          ?selected=${this.instance?.configurationStage ===
-                                          undefined}
-                                      >
-                                          ---------
-                                      </option>
+                                  <select class="pf-c-form-control" multiple>
                                       ${until(
                                           new StagesApi(DEFAULT_CONFIG)
                                               .stagesAllList({
@@ -187,9 +179,11 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                                               })
                                               .then((stages) => {
                                                   return stages.results.map((stage) => {
-                                                      const selected =
-                                                          this.instance?.configurationStage ===
-                                                          stage.pk;
+                                                      const selected = Array.from(
+                                                          this.instance?.configurationStages || [],
+                                                      ).some((su) => {
+                                                          return su == stage.pk;
+                                                      });
                                                       return html`<option
                                                           value=${ifDefined(stage.pk)}
                                                           ?selected=${selected}
@@ -202,7 +196,10 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                                       )}
                                   </select>
                                   <p class="pf-c-form__helper-text">
-                                      ${t`Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.`}
+                                      ${t`Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.`}
+                                  </p>
+                                  <p class="pf-c-form__helper-text">
+                                      ${t`When multiple stages are selected, the user can choose which one they want to enroll.`}
                                   </p>
                               </ak-form-element-horizontal>
                           `

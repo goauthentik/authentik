@@ -43,8 +43,8 @@ class AuthenticatorValidateStageTests(FlowTestCase):
         stage = AuthenticatorValidateStage.objects.create(
             name="foo",
             not_configured_action=NotConfiguredAction.CONFIGURE,
-            configuration_stage=conf_stage,
         )
+        stage.configuration_stages.set([conf_stage])
         flow = Flow.objects.create(name="test", slug="test", title="test")
         FlowStageBinding.objects.create(target=flow, stage=conf_stage, order=0)
         FlowStageBinding.objects.create(target=flow, stage=stage, order=1)

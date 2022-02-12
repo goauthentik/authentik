@@ -13,8 +13,8 @@ class AuthenticatorValidateStageSerializer(StageSerializer):
 
     def validate_not_configured_action(self, value):
         """Ensure that a configuration stage is set when not_configured_action is configure"""
-        configuration_stage = self.initial_data.get("configuration_stage")
-        if value == NotConfiguredAction.CONFIGURE and configuration_stage is None:
+        configuration_stages = self.initial_data.get("configuration_stages")
+        if value == NotConfiguredAction.CONFIGURE and configuration_stages is None:
             raise ValidationError(
                 (
                     'When "Not configured action" is set to "Configure", '
@@ -29,7 +29,7 @@ class AuthenticatorValidateStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + [
             "not_configured_action",
             "device_classes",
-            "configuration_stage",
+            "configuration_stages",
         ]
 
 
@@ -38,5 +38,5 @@ class AuthenticatorValidateStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = AuthenticatorValidateStage.objects.all()
     serializer_class = AuthenticatorValidateStageSerializer
-    filterset_fields = ["name", "not_configured_action", "configuration_stage"]
+    filterset_fields = ["name", "not_configured_action", "configuration_stages"]
     ordering = ["name"]

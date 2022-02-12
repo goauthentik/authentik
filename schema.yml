@@ -15045,10 +15045,14 @@ paths:
       description: AuthenticatorValidateStage Viewset
       parameters:
       - in: query
-        name: configuration_stage
+        name: configuration_stages
         schema:
-          type: string
-          format: uuid
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - in: query
         name: name
         schema:
@@ -19826,11 +19830,12 @@ components:
           items:
             $ref: '#/components/schemas/DeviceClassesEnum'
           description: Device classes which can be used to authenticate
-        configuration_stage:
-          type: string
-          format: uuid
-          nullable: true
-          description: Stage used to configure Authenticator when user doesn't have
+        configuration_stages:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Stages used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
       required:
@@ -19858,11 +19863,12 @@ components:
           items:
             $ref: '#/components/schemas/DeviceClassesEnum'
           description: Device classes which can be used to authenticate
-        configuration_stage:
-          type: string
-          format: uuid
-          nullable: true
-          description: Stage used to configure Authenticator when user doesn't have
+        configuration_stages:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Stages used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
       required:
@@ -19892,7 +19898,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeviceChallenge'
+        configuration_stages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SelectableStage'
       required:
+      - configuration_stages
       - device_challenges
       - pending_user
       - pending_user_avatar
@@ -19907,6 +19918,9 @@ components:
           default: ak-stage-authenticator-validate
         selected_challenge:
           $ref: '#/components/schemas/DeviceChallengeRequest'
+        selected_stage:
+          type: string
+          minLength: 1
         code:
           type: string
           minLength: 1
@@ -26677,11 +26691,12 @@ components:
           items:
             $ref: '#/components/schemas/DeviceClassesEnum'
           description: Device classes which can be used to authenticate
-        configuration_stage:
-          type: string
-          format: uuid
-          nullable: true
-          description: Stage used to configure Authenticator when user doesn't have
+        configuration_stages:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Stages used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
     PatchedCaptchaStageRequest:
@@ -30017,6 +30032,24 @@ components:
       - direct
       - cached
       type: string
+    SelectableStage:
+      type: object
+      description: Serializer for stages which can be selected by users
+      properties:
+        pk:
+          type: string
+          format: uuid
+        name:
+          type: string
+        verbose_name:
+          type: string
+        meta_model_name:
+          type: string
+      required:
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
     ServiceConnection:
       type: object
       description: ServiceConnection Serializer
