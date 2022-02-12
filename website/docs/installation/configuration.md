@@ -121,6 +121,16 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
   Placeholder for outpost docker images. Default: `ghcr.io/goauthentik/%(type)s:%(version)s`.
 
+- `AUTHENTIK_OUTPOSTS__DISCOVER`
+
+  Configure the automatic discovery of integrations. Defaults to `true`.
+
+  By default, the following is discovered:
+
+    - Kubernetes in-cluster config
+    - Kubeconfig
+    - Existence of a docker socket
+
 ### AUTHENTIK_AVATARS
 
 Configure how authentik should show avatars for users. Following values can be set:

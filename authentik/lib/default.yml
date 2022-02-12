@@ -55,6 +55,7 @@ outposts:
   # %(version)s: Current version; 2021.4.1
   # %(build_hash)s: Build hash if you're running a beta version
   container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
+  discover: true
 
 cookie_domain: null
 disable_update_check: false
