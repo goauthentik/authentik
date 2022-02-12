@@ -12,9 +12,12 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.monitored_tasks import TaskInfo, TaskResultStatus
+
+LOGGER = get_logger()
 
 
 class TaskSerializer(PassiveSerializer):
@@ -89,6 +92,7 @@ class TaskViewSet(ViewSet):
         try:
             task_module = import_module(task.task_call_module)
             task_func = getattr(task_module, task.task_call_func)
+            LOGGER.debug("Running task", task=task_func)
             task_func.delay(*task.task_call_args, **task.task_call_kwargs)
             messages.success(
                 self.request,
@@ -96,6 +100,7 @@ class TaskViewSet(ViewSet):
             )
             return Response(status=204)
         except (ImportError, AttributeError):  # pragma: no cover
+            LOGGER.warning("Failed to run task, remove state", task=task)
             # if we get an import error, the module path has probably changed
             task.delete()
             return Response(status=500)
