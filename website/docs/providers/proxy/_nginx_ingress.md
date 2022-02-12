@@ -27,6 +27,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/auth-url: |-
       http://outpost.company:9000/akprox/auth/nginx
+    # If you're using domain-level auth, use the authentication URL instead of the application URL
     nginx.ingress.kubernetes.io/auth-signin: |-
       https://app.company/akprox/start
     nginx.ingress.kubernetes.io/auth-response-headers: |-
