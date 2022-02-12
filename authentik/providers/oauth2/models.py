@@ -45,6 +45,13 @@ class GrantTypes(models.TextChoices):
     HYBRID = "hybrid"
 
 
+class ResponseMode(models.TextChoices):
+    """https://openid.net/specs/oauth-v2-multiple-response-types-1_0.html#OAuth.Post"""
+
+    QUERY = "query"
+    FRAGMENT = "fragment"
+
+
 class SubModes(models.TextChoices):
     """Mode after which 'sub' attribute is generateed, for compatibility reasons"""
 

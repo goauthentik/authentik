@@ -44,6 +44,7 @@ from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantTypes,
     OAuth2Provider,
+    ResponseMode,
     ResponseTypes,
 )
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
@@ -299,13 +300,23 @@ class OAuthFulfillmentStage(StageView):
                 code = self.params.create_code(self.request)
                 code.save(force_insert=True)
 
-            if self.params.grant_type == GrantTypes.AUTHORIZATION_CODE:
+            query_dict = self.request.POST if self.request.method == "POST" else self.request.GET
+            response_mode = ResponseMode.QUERY
+            # Get response mode from url param, otherwise decide based on grant type
+            if "response_mode" in query_dict:
+                response_mode = query_dict["response_mode"]
+            elif self.params.grant_type == GrantTypes.AUTHORIZATION_CODE:
+                response_mode = ResponseMode.QUERY
+            elif self.params.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
+                response_mode = ResponseMode.FRAGMENT
+
+            if response_mode == ResponseMode.QUERY:
                 query_params["code"] = code.code
                 query_params["state"] = [str(self.params.state) if self.params.state else ""]
 
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
                 return urlunsplit(uri)
-            if self.params.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
+            if response_mode == ResponseMode.FRAGMENT:
                 query_fragment = self.create_implicit_response(code)
 
                 uri = uri._replace(
