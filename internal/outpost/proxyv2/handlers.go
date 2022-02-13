@@ -109,6 +109,7 @@ func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
 			}
 		}
 
+		ps.log.WithField("headers", r.Header).Trace("tracing headers for no hostname match")
 		ps.log.WithField("host", host).Warning("no app for hostname")
 
 		rw.Header().Set("Content-Type", "application/json")
