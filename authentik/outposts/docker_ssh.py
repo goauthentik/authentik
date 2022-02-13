@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 from tempfile import gettempdir
 
+from docker.errors import DockerException
+
 from authentik.crypto.models import CertificateKeyPair
 
 HEADER = "### Managed by authentik"
@@ -27,6 +29,8 @@ class DockerInlineSSH:
     def __init__(self, host: str, keypair: CertificateKeyPair) -> None:
         self.host = host
         self.keypair = keypair
+        if not self.keypair:
+            raise DockerException("keypair must be set for SSH connections")
         self.config_path = Path("~/.ssh/config").expanduser()
         self.header = f"{HEADER} - {self.host}\n"
 
