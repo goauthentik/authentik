@@ -56,7 +56,11 @@ class ApplicationSerializer(ModelSerializer):
         if isinstance(user, SimpleLazyObject):
             user._setup()
             user = user._wrapped
-        return url % user.__dict__
+        try:
+            return url % user.__dict__
+        except ValueError as exc:
+            LOGGER.warning("Failed to format launch url", exc=exc)
+            return url
 
     class Meta:
 
