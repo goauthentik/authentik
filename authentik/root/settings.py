@@ -340,11 +340,6 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute="*/5"),
         "options": {"queue": "authentik_scheduled"},
     },
-    "db_backup": {
-        "task": "authentik.core.tasks.backup_database",
-        "schedule": crontab(hour="*/24", minute=0),
-        "options": {"queue": "authentik_scheduled"},
-    },
 }
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
@@ -375,6 +370,7 @@ if _ERROR_REPORTING:
         traces_sample_rate=float(CONFIG.y("error_reporting.sample_rate", 0.5)),
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
+        auto_session_tracking=False,
     )
     set_tag("authentik.build_hash", get_build_hash("tagged"))
     set_tag("authentik.env", env)
