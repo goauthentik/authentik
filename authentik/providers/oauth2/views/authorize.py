@@ -155,7 +155,7 @@ class OAuthAuthorizationParams:
         """Redirect URI validation."""
         allowed_redirect_urls = self.provider.redirect_uris.split()
         # We don't want to actually lowercase the final URL we redirect to,
-        # we only lowercase it for comparsion
+        # we only lowercase it for comparison
         redirect_uri = self.redirect_uri.lower()
         if not redirect_uri:
             LOGGER.warning("Missing redirect uri.")

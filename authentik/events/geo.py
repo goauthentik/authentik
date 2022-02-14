@@ -1,7 +1,5 @@
 """events GeoIP Reader"""
-from datetime import datetime
 from os import stat
-from time import time
 from typing import Optional, TypedDict
 
 from geoip2.database import Reader
