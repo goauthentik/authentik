@@ -100,7 +100,7 @@ class OAuthAuthorizationParams:
         # and POST request.
         query_dict = request.POST if request.method == "POST" else request.GET
         state = query_dict.get("state")
-        redirect_uri = query_dict.get("redirect_uri", "").lower()
+        redirect_uri = query_dict.get("redirect_uri", "")
 
         response_type = query_dict.get("response_type", "")
         grant_type = None
@@ -154,7 +154,10 @@ class OAuthAuthorizationParams:
     def check_redirect_uri(self):
         """Redirect URI validation."""
         allowed_redirect_urls = self.provider.redirect_uris.split()
-        if not self.redirect_uri:
+        # We don't want to actually lowercase the final URL we redirect to,
+        # we only lowercase it for comparsion
+        redirect_uri = self.redirect_uri.lower()
+        if not redirect_uri:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError("", allowed_redirect_urls)
 
@@ -170,7 +173,7 @@ class OAuthAuthorizationParams:
                 allow=self.redirect_uri,
             )
             return
-        if self.redirect_uri not in [x.lower() for x in allowed_redirect_urls]:
+        if redirect_uri not in [x.lower() for x in allowed_redirect_urls]:
             LOGGER.warning(
                 "Invalid redirect uri",
                 redirect_uri=self.redirect_uri,

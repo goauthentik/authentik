@@ -43,7 +43,7 @@ class TestAuthorize(OAuthTestCase):
             name="test",
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris="http://local.invalid/Foo",
         )
         with self.assertRaises(AuthorizeError):
             request = self.factory.get(
@@ -51,7 +51,7 @@ class TestAuthorize(OAuthTestCase):
                 data={
                     "response_type": "code",
                     "client_id": "test",
-                    "redirect_uri": "http://local.invalid",
+                    "redirect_uri": "http://local.invalid/Foo",
                     "request": "foo",
                 },
             )
@@ -105,26 +105,30 @@ class TestAuthorize(OAuthTestCase):
             name="test",
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris="http://local.invalid/Foo",
         )
         request = self.factory.get(
             "/",
             data={
                 "response_type": "code",
                 "client_id": "test",
-                "redirect_uri": "http://local.invalid",
+                "redirect_uri": "http://local.invalid/Foo",
             },
         )
         self.assertEqual(
             OAuthAuthorizationParams.from_request(request).grant_type,
             GrantTypes.AUTHORIZATION_CODE,
         )
+        self.assertEqual(
+            OAuthAuthorizationParams.from_request(request).redirect_uri,
+            "http://local.invalid/Foo",
+        )
         request = self.factory.get(
             "/",
             data={
                 "response_type": "id_token",
                 "client_id": "test",
-                "redirect_uri": "http://local.invalid",
+                "redirect_uri": "http://local.invalid/Foo",
                 "scope": "openid",
                 "state": "foo",
             },
@@ -140,7 +144,7 @@ class TestAuthorize(OAuthTestCase):
                 data={
                     "response_type": "id_token",
                     "client_id": "test",
-                    "redirect_uri": "http://local.invalid",
+                    "redirect_uri": "http://local.invalid/Foo",
                     "state": "foo",
                 },
             )
@@ -153,7 +157,7 @@ class TestAuthorize(OAuthTestCase):
             data={
                 "response_type": "code token",
                 "client_id": "test",
-                "redirect_uri": "http://local.invalid",
+                "redirect_uri": "http://local.invalid/Foo",
                 "scope": "openid",
                 "state": "foo",
             },
@@ -167,7 +171,7 @@ class TestAuthorize(OAuthTestCase):
                 data={
                     "response_type": "invalid",
                     "client_id": "test",
-                    "redirect_uri": "http://local.invalid",
+                    "redirect_uri": "http://local.invalid/Foo",
                 },
             )
             OAuthAuthorizationParams.from_request(request)
