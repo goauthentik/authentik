@@ -22,7 +22,7 @@ func TestProxy_ModifyRequest(t *testing.T) {
 	assert.Equal(t, "frontend", req.Header.Get("X-Forwarded-Host"))
 	assert.Equal(t, "/foo", req.URL.Path)
 	assert.Equal(t, "backend:8012", req.URL.Host)
-	assert.Equal(t, "backend:8012", req.Host)
+	assert.Equal(t, "frontend", req.Host)
 }
 
 func TestProxy_ModifyRequest_Claims(t *testing.T) {
@@ -50,7 +50,7 @@ func TestProxy_ModifyRequest_Claims(t *testing.T) {
 
 	assert.Equal(t, "/foo", req.URL.Path)
 	assert.Equal(t, "other-backend:8123", req.URL.Host)
-	assert.Equal(t, "other-backend:8123", req.Host)
+	assert.Equal(t, "frontend", req.Host)
 }
 
 func TestProxy_ModifyRequest_Claims_Invalid(t *testing.T) {
@@ -78,5 +78,5 @@ func TestProxy_ModifyRequest_Claims_Invalid(t *testing.T) {
 
 	assert.Equal(t, "/foo", req.URL.Path)
 	assert.Equal(t, "backend:8012", req.URL.Host)
-	assert.Equal(t, "backend:8012", req.Host)
+	assert.Equal(t, "frontend", req.Host)
 }
