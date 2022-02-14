@@ -34,6 +34,7 @@ export const resources = [
         dest: "dist/",
     },
     { src: "src/authentik.css", dest: "dist/" },
+    { src: "src/custom.css", dest: "dist/" },
 
     {
         src: "node_modules/@patternfly/patternfly/assets/*",
