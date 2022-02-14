@@ -46,14 +46,18 @@ class GeoIPReader:
             LOGGER.warning("Failed to load GeoIP database", exc=exc)
 
     def __check_expired(self):
-        """Check if the geoip database has been opened longer than 8 hours,
-        and re-open it, as it will probably will have been re-downloaded"""
-        now = time()
-        diff = datetime.fromtimestamp(now) - datetime.fromtimestamp(self.__last_mtime)
-        diff_hours = diff.total_seconds() // 3600
-        if diff_hours >= 8:
-            LOGGER.info("GeoIP databased loaded too long, re-opening", diff=diff)
-            self.__open()
+        """Check if the modification date of the GeoIP database has
+        changed, and reload it if so"""
+        path = CONFIG.y("geoip")
+        try:
+            mtime = stat(path).st_mtime
+            diff = self.__last_mtime < mtime
+            if diff > 0:
+                LOGGER.info("Found new GeoIP Database, reopening", diff=diff)
+                self.__open()
+        except OSError as exc:
+            LOGGER.warning("Failed to check GeoIP age", exc=exc)
+            return
 
     @property
     def enabled(self) -> bool:
