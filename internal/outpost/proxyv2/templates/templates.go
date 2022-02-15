@@ -3,7 +3,8 @@ package templates
 import (
 	_ "embed"
 	"html/template"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //go:embed error.html

@@ -92,16 +92,19 @@ export class ProxyProviderViewPage extends LitElement {
     }
 
     renderConfigTemplate(markdown: MarkdownDocument): MarkdownDocument {
+        const extHost = new URL(this.provider?.externalHost || "http://a");
         // See website/docs/providers/proxy/forward_auth.mdx
         if (this.provider?.mode === ProxyMode.ForwardSingle) {
             markdown.html = markdown.html
                 .replaceAll("authentik.company", window.location.hostname)
-                .replaceAll("outpost.company", window.location.hostname)
-                .replaceAll("app.company", this.provider?.externalHost || "");
+                .replaceAll("http://outpost.company:9000", window.location.hostname)
+                .replaceAll("https://app.company", extHost.toString())
+                .replaceAll("app.company", extHost.hostname);
         } else if (this.provider?.mode == ProxyMode.ForwardDomain) {
             markdown.html = markdown.html
                 .replaceAll("authentik.company", window.location.hostname)
-                .replaceAll("outpost.company", this.provider?.externalHost || "");
+                .replaceAll("https://app.company", extHost.hostname)
+                .replaceAll("http://outpost.company:9000", extHost.toString());
         }
         return markdown;
     }

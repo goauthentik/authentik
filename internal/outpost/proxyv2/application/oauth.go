@@ -66,7 +66,10 @@ func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
-	s, _ := a.sessions.Get(r, constants.SeesionName)
+	s, err := a.sessions.Get(r, constants.SeesionName)
+	if err != nil {
+		a.log.WithError(err).Trace("failed to get session")
+	}
 	state, ok := s.Values[constants.SessionOAuthState]
 	if !ok {
 		a.log.Warning("No state saved in session")
