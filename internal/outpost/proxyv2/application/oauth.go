@@ -17,7 +17,7 @@ const (
 )
 
 func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
-	rd := r.Header.Get(redirectParam)
+	rd := r.URL.Query().Get(redirectParam)
 	if rd == "" {
 		return "", false
 	}
@@ -28,16 +28,16 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 	}
 	// Check to make sure we only redirect to allowed places
 	if a.Mode() == api.PROXYMODE_PROXY || a.Mode() == api.PROXYMODE_FORWARD_SINGLE {
-		if !strings.Contains(u.String(), a.ProxyConfig().ExternalHost) {
+		if !strings.Contains(u.String(), a.proxyConfig.ExternalHost) {
 			a.log.Warning("redirect URI did not contain external host")
 			return "", false
 		}
 	} else {
-		if !strings.HasSuffix(rd, *a.ProxyConfig().CookieDomain) {
+		if !strings.HasSuffix(rd, *a.proxyConfig.CookieDomain) {
 			return "", false
 		}
 	}
-	return u.String(), false
+	return u.String(), true
 }
 
 func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {

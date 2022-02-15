@@ -15,6 +15,7 @@ func newTestApplication() *Application {
 			ClientId:                   api.PtrString(ak.TestSecret()),
 			ClientSecret:               api.PtrString(ak.TestSecret()),
 			CookieSecret:               api.PtrString(ak.TestSecret()),
+			ExternalHost:               "https://ext.t.goauthentik.io",
 			CookieDomain:               api.PtrString(""),
 			Mode:                       api.PROXYMODE_FORWARD_SINGLE.Ptr(),
 			SkipPathRegex:              api.PtrString("/skip.*"),
