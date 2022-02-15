@@ -29,11 +29,12 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 	// Check to make sure we only redirect to allowed places
 	if a.Mode() == api.PROXYMODE_PROXY || a.Mode() == api.PROXYMODE_FORWARD_SINGLE {
 		if !strings.Contains(u.String(), a.proxyConfig.ExternalHost) {
-			a.log.Warning("redirect URI did not contain external host")
+			a.log.WithField("url", u.String()).WithField("ext", a.proxyConfig.ExternalHost).Warning("redirect URI did not contain external host")
 			return "", false
 		}
 	} else {
-		if !strings.HasSuffix(rd, *a.proxyConfig.CookieDomain) {
+		if !strings.HasSuffix(u.Host, *a.proxyConfig.CookieDomain) {
+			a.log.WithField("host", u.Host).WithField("dom", *a.proxyConfig.CookieDomain).Warning("redirect URI Host was not included in cookie domain")
 			return "", false
 		}
 	}
