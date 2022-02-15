@@ -3,14 +3,45 @@ package application
 import (
 	"encoding/base64"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
 
 	"github.com/gorilla/securecookie"
+	"goauthentik.io/api"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 
+const (
+	redirectParam = "rd"
+)
+
+func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
+	rd := r.Header.Get(redirectParam)
+	if rd == "" {
+		return "", false
+	}
+	u, err := url.Parse(rd)
+	if err != nil {
+		a.log.WithError(err).Warning("Failed to parse redirect URL")
+		return "", false
+	}
+	// Check to make sure we only redirect to allowed places
+	if a.Mode() == api.PROXYMODE_PROXY || a.Mode() == api.PROXYMODE_FORWARD_SINGLE {
+		if !strings.Contains(u.String(), a.ProxyConfig().ExternalHost) {
+			a.log.Warning("redirect URI did not contain external host")
+			return "", false
+		}
+	} else {
+		if !strings.HasSuffix(rd, *a.ProxyConfig().CookieDomain) {
+			return "", false
+		}
+	}
+	return u.String(), false
+}
+
 func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
-	newState := base64.RawStdEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
+	newState := base64.RawURLEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
 	s, err := a.sessions.Get(r, constants.SeesionName)
 	if err != nil {
 		s.Values[constants.SessionOAuthState] = []string{}
@@ -19,6 +50,11 @@ func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
 	if !ok {
 		s.Values[constants.SessionOAuthState] = []string{}
 		state = []string{}
+	}
+	rd, ok := a.checkRedirectParam(r)
+	if ok {
+		s.Values[constants.SessionRedirect] = rd
+		a.log.WithField("rd", rd).Trace("Setting redirect")
 	}
 	s.Values[constants.SessionOAuthState] = append(state, newState)
 	err = s.Save(r, rw)
