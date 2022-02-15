@@ -950,7 +950,11 @@ msgid "Configuration flow"
 msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid "Configuration stage"
+#~ msgid "Configuration stage"
+#~ msgstr ""
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Configuration stages"
 msgstr ""
 
 #: 
@@ -4485,8 +4489,8 @@ msgid "Stage type"
 msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
-msgstr ""
+#~ msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
+#~ msgstr ""
 
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator)."
@@ -4543,6 +4547,10 @@ msgstr ""
 
 #: src/pages/stages/StageListPage.ts
 msgid "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow."
+msgstr ""
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
 msgstr ""
 
 #: src/pages/outposts/ServiceConnectionListPage.ts
@@ -6030,6 +6038,10 @@ msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
+msgstr ""
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "When multiple stages are selected, the user can choose which one they want to enroll."
 msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts

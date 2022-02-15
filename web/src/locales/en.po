@@ -956,8 +956,12 @@ msgid "Configuration flow"
 msgstr "Configuration flow"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid "Configuration stage"
-msgstr "Configuration stage"
+#~ msgid "Configuration stage"
+#~ msgstr "Configuration stage"
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Configuration stages"
+msgstr "Configuration stages"
 
 #: 
 #~ msgid "Configure WebAuthn"
@@ -4495,8 +4499,8 @@ msgid "Stage type"
 msgstr "Stage type"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
-msgstr "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
+#~ msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
+#~ msgstr "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
 
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator)."
@@ -4554,6 +4558,10 @@ msgstr "Stages"
 #: src/pages/stages/StageListPage.ts
 msgid "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow."
 msgstr "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow."
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
+msgstr "Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
 
 #: src/pages/outposts/ServiceConnectionListPage.ts
 msgid "State"
@@ -6051,6 +6059,10 @@ msgstr "When enabled, the invitation will be deleted after usage."
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr "When enabled, user fields are matched regardless of their casing."
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "When multiple stages are selected, the user can choose which one they want to enroll."
+msgstr "When multiple stages are selected, the user can choose which one they want to enroll."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."

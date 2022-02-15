@@ -62,8 +62,8 @@ func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
 	redirect := a.proxyConfig.ExternalHost
 	redirectR, ok := s.Values[constants.SessionRedirect]
 	if ok {
-		a.log.WithField("redirect", redirectR).Trace("got final redirect from session")
 		redirect = redirectR.(string)
 	}
+	a.log.WithField("redirect", redirect).Trace("final redirect")
 	http.Redirect(rw, r, redirect, http.StatusFound)
 }

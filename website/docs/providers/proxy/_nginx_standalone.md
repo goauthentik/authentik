@@ -21,8 +21,6 @@ server {
         # authentik-specific config
         auth_request        /akprox/auth/nginx;
         error_page          401 = @goauthentik_proxy_signin;
-        # For domain level, use the below error_page to redirect to your authentik server with the full redirect path
-        # error_page          401 =302 https://authentik.company/akprox/start?rd=$scheme://$http_host$request_uri;
         auth_request_set $auth_cookie $upstream_http_set_cookie;
         add_header Set-Cookie $auth_cookie;
 
@@ -57,6 +55,8 @@ server {
         internal;
         add_header Set-Cookie $auth_cookie;
         return 302 /akprox/start?rd=$request_uri;
+        # For domain level, use the below error_page to redirect to your authentik server with the full redirect path
+        # return 302 https://authentik.company/akprox/start?rd=$scheme://$http_host$request_uri;
     }
 }
 ```
