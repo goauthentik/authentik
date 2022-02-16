@@ -64,11 +64,11 @@ If your upstream host is HTTPS, and you're not using forward auth, you need to a
 
 Login is done automatically when you visit the domain without a valid cookie.
 
-When using single-application mode, navigate to `app.domain.tld/akprox/sign_out`.
+When using single-application mode, navigate to `app.domain.tld/outpost.goauthentik.io/sign_out`.
 
-When using domain-level mode, navigate to `auth.domain.tld/akprox/sign_out`, where auth.domain.tld is the external host configured for the provider.
+When using domain-level mode, navigate to `auth.domain.tld/outpost.goauthentik.io/sign_out`, where auth.domain.tld is the external host configured for the provider.
 
-To log out, navigate to `/akprox/sign_out`.
+To log out, navigate to `/outpost.goauthentik.io/sign_out`.
 
 ## Allowing unauthenticated requests
 
