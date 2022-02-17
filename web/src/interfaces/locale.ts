@@ -65,13 +65,13 @@ export const LOCALES: {
         locale: localeZH_TW,
     },
     {
-        code: "zh-Hans",
+        code: "zh-CN",
         plurals: zh,
         label: t`Chinese (simplified)`,
         locale: localeZH_Hans,
     },
     {
-        code: "zh-Hant",
+        code: "zh-HK",
         plurals: zh,
         label: t`Chinese (traditional)`,
         locale: localeZH_Hant,
