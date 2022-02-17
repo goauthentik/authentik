@@ -23,7 +23,7 @@ func urlJoin(originalUrl string, newPath string) string {
 
 func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 	s, err := a.sessions.Get(r, constants.SeesionName)
-	if err == nil {
+	if err != nil {
 		a.log.WithError(err).Warning("failed to decode session")
 	}
 	redirectUrl := urlJoin(a.proxyConfig.ExternalHost, r.URL.Path)
