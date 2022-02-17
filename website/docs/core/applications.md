@@ -28,6 +28,11 @@ The following aspects can be configured:
     Starting with authentik 2022.2, you can use placeholders in the launch url to build them dynamically based on logged in user. For example, you can set the Launch URL to `https://goauthentik.io/%(username)s`, which will be replaced with the currently logged in user's username.
 
 - *Icon (URL)*: Optionally configure an Icon for the application
+
+    If the authentik server does not have a volume mounted under `/media`, you'll get a text input. This accepts absolute URLs. If you've mounted single files into the container, you can reference them using `https://authentik.company/media/my-file.png`.
+
+    If there is a mount under `/media`, you'll instead see a field to upload a file.
+
 - *Publisher*: Text shown below the application
 - *Description*: Subtext shown on the application card below the publisher
 
