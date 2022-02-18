@@ -42,8 +42,11 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 		a.log.WithError(err).Warning("failed to save session before redirect")
 	}
 
+	urlArgs := url.Values{
+		"rd": []string{redirectUrl},
+	}
 	authUrl := urlJoin(a.proxyConfig.ExternalHost, "/outpost.goauthentik.io/start")
-	http.Redirect(rw, r, authUrl, http.StatusFound)
+	http.Redirect(rw, r, authUrl+"?"+urlArgs.Encode(), http.StatusFound)
 }
 
 // getClaims Get claims which are currently in session
