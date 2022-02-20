@@ -24,7 +24,6 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
 
-LOGGER = get_logger()
 ERROR_CANNOT_DECODE_REQUEST = "Cannot decode SAML request."
 ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
     "Verification Certificate configured, but request is not signed."
@@ -51,6 +50,7 @@ class AuthNRequestParser:
 
     def __init__(self, provider: SAMLProvider):
         self.provider = provider
+        self.logger = get_logger().bind(provider=self.provider)
 
     def _parse_xml(self, decoded_xml: str | bytes, relay_state: Optional[str]) -> AuthNRequest:
         root = ElementTree.fromstring(decoded_xml)
@@ -68,7 +68,7 @@ class AuthNRequestParser:
                 f"ACS URL of {request_acs_url} doesn't match Provider "
                 f"ACS URL of {self.provider.acs_url}."
             )
-            LOGGER.warning(msg)
+            self.logger.warning(msg)
             raise CannotHandleAssertion(msg)
 
         auth_n_request = AuthNRequest(id=root.attrib["ID"], relay_state=relay_state)

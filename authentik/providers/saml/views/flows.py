@@ -22,7 +22,7 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
-from authentik.providers.saml.processors.request_parser import AuthNRequest
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
 from authentik.sources.saml.exceptions import SAMLException
 
@@ -35,6 +35,8 @@ REQUEST_KEY_SAML_RESPONSE = "SAMLResponse"
 REQUEST_KEY_RELAY_STATE = "RelayState"
 
 SESSION_KEY_AUTH_N_REQUEST = "authentik/providers/saml/authn_request"
+SESSION_KEY_LOGOUT_REQUEST = "authentik/providers/saml/logout_request"
+
 
 # This View doesn't have a URL on purpose, as its called by the FlowExecutor
 class SAMLFlowFinalView(ChallengeStageView):

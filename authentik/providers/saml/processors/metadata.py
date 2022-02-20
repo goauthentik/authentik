@@ -87,6 +87,25 @@ class MetadataProcessor:
             element.attrib["Binding"] = binding
             element.attrib["Location"] = url
             yield element
+        binding_url_map = {
+            SAML_BINDING_REDIRECT: self.http_request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:slo-redirect",
+                    kwargs={"application_slug": self.provider.application.slug},
+                )
+            ),
+            SAML_BINDING_POST: self.http_request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:slo-post",
+                    kwargs={"application_slug": self.provider.application.slug},
+                )
+            ),
+        }
+        for binding, url in binding_url_map.items():
+            element = Element(f"{{{NS_SAML_METADATA}}}SingleLogoutService")
+            element.attrib["Binding"] = binding
+            element.attrib["Location"] = url
+            yield element
 
     def _prepare_signature(self, entity_descriptor: Element):
         sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(

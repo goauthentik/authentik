@@ -13,7 +13,7 @@ from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
-from authentik.providers.saml.processors.request_parser import AuthNRequest
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.time import get_time_string
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME

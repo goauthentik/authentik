@@ -11,7 +11,7 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.tests.utils import get_request
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
-from authentik.providers.saml.processors.request_parser import AuthNRequestParser
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.constants import (
