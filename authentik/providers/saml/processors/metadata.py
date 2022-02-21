@@ -67,42 +67,36 @@ class MetadataProcessor:
     def get_bindings(self) -> Iterator[Element]:
         """Get all Bindings supported"""
         binding_url_map = {
-            SAML_BINDING_REDIRECT: self.http_request.build_absolute_uri(
+            (SAML_BINDING_REDIRECT, "SingleSignOnService"): self.http_request.build_absolute_uri(
                 reverse(
                     "authentik_providers_saml:sso-redirect",
                     kwargs={"application_slug": self.provider.application.slug},
                 )
             ),
-            SAML_BINDING_POST: self.http_request.build_absolute_uri(
+            (SAML_BINDING_POST, "SingleSignOnService"): self.http_request.build_absolute_uri(
                 reverse(
                     "authentik_providers_saml:sso-post",
                     kwargs={"application_slug": self.provider.application.slug},
                 )
             ),
-        }
-        for binding, url in binding_url_map.items():
-            if self.force_binding and self.force_binding != binding:
-                continue
-            element = Element(f"{{{NS_SAML_METADATA}}}SingleSignOnService")
-            element.attrib["Binding"] = binding
-            element.attrib["Location"] = url
-            yield element
-        binding_url_map = {
-            SAML_BINDING_REDIRECT: self.http_request.build_absolute_uri(
+            (SAML_BINDING_REDIRECT, "SingleLogoutService"): self.http_request.build_absolute_uri(
                 reverse(
                     "authentik_providers_saml:slo-redirect",
                     kwargs={"application_slug": self.provider.application.slug},
                 )
             ),
-            SAML_BINDING_POST: self.http_request.build_absolute_uri(
+            (SAML_BINDING_POST, "SingleLogoutService"): self.http_request.build_absolute_uri(
                 reverse(
                     "authentik_providers_saml:slo-post",
                     kwargs={"application_slug": self.provider.application.slug},
                 )
             ),
         }
-        for binding, url in binding_url_map.items():
-            element = Element(f"{{{NS_SAML_METADATA}}}SingleLogoutService")
+        for binding_svc, url in binding_url_map.items():
+            binding, svc = binding_svc
+            if self.force_binding and self.force_binding != binding:
+                continue
+            element = Element(f"{{{NS_SAML_METADATA}}}{svc}")
             element.attrib["Binding"] = binding
             element.attrib["Location"] = url
             yield element

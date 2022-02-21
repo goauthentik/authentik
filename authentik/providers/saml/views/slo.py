@@ -17,6 +17,7 @@ from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
 from authentik.providers.saml.views.flows import (
+    REQUEST_KEY_RELAY_STATE,
     REQUEST_KEY_SAML_REQUEST,
     SESSION_KEY_LOGOUT_REQUEST,
 )
@@ -68,6 +69,7 @@ class SAMLSLOBindingRedirectView(SAMLSLOView):
         try:
             logout_request = LogoutRequestParser(self.provider).parse_detached(
                 self.request.GET[REQUEST_KEY_SAML_REQUEST],
+                relay_state=self.request.GET.get(REQUEST_KEY_RELAY_STATE, None),
             )
             self.request.session[SESSION_KEY_LOGOUT_REQUEST] = logout_request
         except CannotHandleAssertion as exc:
@@ -95,6 +97,7 @@ class SAMLSLOBindingPOSTView(SAMLSLOView):
         try:
             logout_request = LogoutRequestParser(self.provider).parse(
                 payload[REQUEST_KEY_SAML_REQUEST],
+                relay_state=payload.get(REQUEST_KEY_RELAY_STATE, None),
             )
             self.request.session[SESSION_KEY_LOGOUT_REQUEST] = logout_request
         except CannotHandleAssertion as exc:

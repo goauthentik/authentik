@@ -21,6 +21,8 @@ class LogoutRequest:
 
     issuer: Optional[str] = None
 
+    relay_state: Optional[str] = None
+
 
 class LogoutRequestParser:
     """LogoutRequest Parser"""
@@ -30,7 +32,9 @@ class LogoutRequestParser:
     def __init__(self, provider: SAMLProvider):
         self.provider = provider
 
-    def _parse_xml(self, decoded_xml: str | bytes) -> LogoutRequest:
+    def _parse_xml(
+        self, decoded_xml: str | bytes, relay_state: Optional[str] = None
+    ) -> LogoutRequest:
         root = ElementTree.fromstring(decoded_xml)
         request = LogoutRequest(
             id=root.attrib["ID"],
@@ -40,17 +44,18 @@ class LogoutRequestParser:
             request.issuer = issuers[0].text
         return request
 
-    def parse(self, saml_request: str) -> LogoutRequest:
+    def parse(self, saml_request: str, relay_state: Optional[str] = None) -> LogoutRequest:
         """Validate and parse raw request with enveloped signautre."""
         try:
             decoded_xml = b64decode(saml_request.encode())
         except UnicodeDecodeError:
             raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
-        return self._parse_xml(decoded_xml)
+        return self._parse_xml(decoded_xml, relay_state)
 
     def parse_detached(
         self,
         saml_request: str,
+        relay_state: Optional[str] = None,
     ) -> LogoutRequest:
         """Validate and parse raw request with detached signature"""
         try:
@@ -58,4 +63,4 @@ class LogoutRequestParser:
         except UnicodeDecodeError:
             raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
 
-        return self._parse_xml(decoded_xml)
+        return self._parse_xml(decoded_xml, relay_state)
