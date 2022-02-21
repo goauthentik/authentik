@@ -1,7 +1,6 @@
 """Test Source flow_manager"""
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
-from django.test.client import RequestFactory
 from guardian.utils import get_anonymous_user
 
 from authentik.core.models import SourceUserMatchingModes, User
@@ -22,7 +21,6 @@ class TestSourceFlowManager(TestCase):
     def setUp(self) -> None:
         super().setUp()
         self.source: OAuthSource = OAuthSource.objects.create(name="test")
-        self.factory = RequestFactory()
         self.identifier = generate_id()
 
     def test_unauthenticated_enroll(self):

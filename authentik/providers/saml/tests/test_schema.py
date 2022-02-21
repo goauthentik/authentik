@@ -1,7 +1,7 @@
 """Test Requests and Responses against schema"""
 from base64 import b64encode
 
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
@@ -35,7 +35,6 @@ class TestSchema(TestCase):
             signing_kp=cert,
             pre_authentication_flow=create_test_flow(),
         )
-        self.factory = RequestFactory()
 
     def test_request_schema(self):
         """Test generated AuthNRequest against Schema"""
