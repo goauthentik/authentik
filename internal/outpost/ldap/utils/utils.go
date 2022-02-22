@@ -51,7 +51,9 @@ func AKAttrsToLDAP(attrs interface{}) []*ldap.EntryAttribute {
 			entry.Values = make([]string, len(t))
 			for idx, v := range t {
 				v := ldapResolveTypeSingle(v)
-				entry.Values[idx] = *v
+				if v != nil {
+					entry.Values[idx] = *v
+				}
 			}
 		default:
 			v := ldapResolveTypeSingle(t)
