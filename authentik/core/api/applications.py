@@ -5,7 +5,6 @@ from django.core.cache import cache
 from django.db.models import QuerySet
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
-from django.utils.functional import SimpleLazyObject
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -49,18 +48,8 @@ class ApplicationSerializer(ModelSerializer):
 
     def get_launch_url(self, app: Application) -> Optional[str]:
         """Allow formatting of launch URL"""
-        url = app.get_launch_url()
-        if not url:
-            return url
         user = self.context["request"].user
-        if isinstance(user, SimpleLazyObject):
-            user._setup()
-            user = user._wrapped
-        try:
-            return url % user.__dict__
-        except (ValueError, TypeError) as exc:
-            LOGGER.warning("Failed to format launch url", exc=exc)
-            return url
+        return app.get_launch_url(user)
 
     class Meta:
 
