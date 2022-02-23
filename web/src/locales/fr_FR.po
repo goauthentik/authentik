@@ -2238,6 +2238,10 @@ msgstr "Group"
 msgid "Group Property Mappings"
 msgstr "Mapping des propriétés de groupes"
 
+#: src/pages/policies/PolicyBindingForm.ts
+msgid "Group mappings can only be checked if a user is already logged in when trying to access this source."
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Group membership field"
 msgstr "Champ d'appartenance au groupe"
@@ -3534,7 +3538,6 @@ msgstr "Veuillez saisir votre mot de passe"
 msgid "Policies"
 msgstr "Politiques"
 
-#: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 msgid "Policy"
@@ -5709,6 +5712,10 @@ msgstr "Champs de l'utilisateur"
 #: src/interfaces/AdminInterface.ts
 msgid "User interface"
 msgstr "Interface utilisateur"
+
+#: src/pages/policies/PolicyBindingForm.ts
+msgid "User mappings can only be checked if a user is already logged in when trying to access this source."
+msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts

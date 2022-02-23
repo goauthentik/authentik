@@ -119,14 +119,6 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     }
 
     renderModeSelector(): TemplateResult {
-        if (this.policyOnly) {
-            this.policyGroupUser = target.policy;
-            return html` <div class="pf-c-toggle-group__item">
-                <button class="pf-c-toggle-group__button pf-m-selected" type="button">
-                    <span class="pf-c-toggle-group__text">${t`Policy`}</span>
-                </button>
-            </div>`;
-        }
         return html` <div class="pf-c-toggle-group__item">
                 <button
                     class="pf-c-toggle-group__button ${this.policyGroupUser === target.policy
@@ -225,6 +217,11 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                                 html`<option>${t`Loading...`}</option>`,
                             )}
                         </select>
+                        ${this.policyOnly
+                            ? html`<p class="pf-c-form__helper-text">
+                                  ${t`Group mappings can only be checked if a user is already logged in when trying to access this source.`}
+                              </p>`
+                            : html``}
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`User`}
@@ -253,6 +250,11 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                                 html`<option>${t`Loading...`}</option>`,
                             )}
                         </select>
+                        ${this.policyOnly
+                            ? html`<p class="pf-c-form__helper-text">
+                                  ${t`User mappings can only be checked if a user is already logged in when trying to access this source.`}
+                              </p>`
+                            : html``}
                     </ak-form-element-horizontal>
                 </div>
             </div>

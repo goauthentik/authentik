@@ -185,7 +185,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     }
 
     renderToolbar(): TemplateResult {
-        return html` <ak-forms-modal size=${PFSize.Medium}>
+        return html`<ak-forms-modal size=${PFSize.Medium}>
                 <span slot="submit"> ${t`Create`} </span>
                 <span slot="header"> ${t`Create Binding`} </span>
                 <ak-policy-binding-form

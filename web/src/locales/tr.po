@@ -2213,6 +2213,10 @@ msgstr "Grup"
 msgid "Group Property Mappings"
 msgstr "Grup Özellik Eşlemeleri"
 
+#: src/pages/policies/PolicyBindingForm.ts
+msgid "Group mappings can only be checked if a user is already logged in when trying to access this source."
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Group membership field"
 msgstr "Grup üyelik alanı"
@@ -3500,7 +3504,6 @@ msgstr "Lütfen parolanızı girin"
 msgid "Policies"
 msgstr "İlkeler"
 
-#: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 msgid "Policy"
@@ -5651,6 +5654,10 @@ msgstr "Kullanıcı alanları"
 #: src/interfaces/AdminInterface.ts
 msgid "User interface"
 msgstr "Kullanıcı arayüzü"
+
+#: src/pages/policies/PolicyBindingForm.ts
+msgid "User mappings can only be checked if a user is already logged in when trying to access this source."
+msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts

@@ -2246,6 +2246,10 @@ msgstr ""
 msgid "Group Property Mappings"
 msgstr ""
 
+#: src/pages/policies/PolicyBindingForm.ts
+msgid "Group mappings can only be checked if a user is already logged in when trying to access this source."
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Group membership field"
 msgstr ""
@@ -3551,7 +3555,6 @@ msgstr ""
 msgid "Policies"
 msgstr ""
 
-#: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 msgid "Policy"
@@ -5749,6 +5752,10 @@ msgstr ""
 
 #: src/interfaces/AdminInterface.ts
 msgid "User interface"
+msgstr ""
+
+#: src/pages/policies/PolicyBindingForm.ts
+msgid "User mappings can only be checked if a user is already logged in when trying to access this source."
 msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
