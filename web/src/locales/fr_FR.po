@@ -796,7 +796,7 @@ msgstr "Vérifier l'adresse IP"
 
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid "Check Username"
-msgstr "Vérifier le nom d'utilisateu"
+msgstr "Vérifier le nom d'utilisateur"
 
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "Check access"
