@@ -14,7 +14,7 @@ from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.templatetags.static import static
-from django.utils.functional import cached_property
+from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.html import escape
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -284,13 +284,23 @@ class Application(PolicyBindingModel):
             return self.meta_icon.name
         return self.meta_icon.url
 
-    def get_launch_url(self) -> Optional[str]:
+    def get_launch_url(self, user: Optional["User"] = None) -> Optional[str]:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
+        url = None
         if self.meta_launch_url:
-            return self.meta_launch_url
+            url = self.meta_launch_url
         if provider := self.get_provider():
-            return provider.launch_url
-        return None
+            url = provider.launch_url
+        if user:
+            if isinstance(user, SimpleLazyObject):
+                user._setup()
+                user = user._wrapped
+            try:
+                return url % user.__dict__
+            except (ValueError, TypeError, LookupError) as exc:
+                LOGGER.warning("Failed to format launch url", exc=exc)
+                return url
+        return url
 
     def get_provider(self) -> Optional[Provider]:
         """Get casted provider instance"""

@@ -5,7 +5,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import RedirectView
 from django.views.generic.base import TemplateView
 
-from authentik.core.views import impersonate
+from authentik.core.views import apps, impersonate
 from authentik.core.views.interface import FlowInterfaceView
 from authentik.core.views.session import EndSessionView
 
@@ -14,6 +14,12 @@ urlpatterns = [
         "",
         login_required(RedirectView.as_view(pattern_name="authentik_core:if-user")),
         name="root-redirect",
+    ),
+    path(
+        # We have to use this format since everything else uses applications/o or applications/saml
+        "application/launch/<slug:application_slug>/",
+        apps.RedirectToAppLaunch.as_view(),
+        name="application-launch",
     ),
     # Impersonation
     path(

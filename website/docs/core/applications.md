@@ -47,3 +47,7 @@ Applications are shown to users when
 To hide applications without modifying policy settings and without removing it, you can simply set the *Launch URL* to `blank://blank`, which will hide the application from users.
 
 Keep in mind, the users still have access, so they can still authorize access when the login process is started from the application.
+
+### Launch URLs (2022.3+)
+
+To give users direct links to applications, you can now use an URL like `https://authentik.company/application/launch/<slug>/`. This will redirect the user directly if they're already logged in, and otherwise authenticate the user, and then forward them.

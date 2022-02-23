@@ -8,7 +8,7 @@ To create a local development setup for authentik, you need the following:
 
 ### Requirements
 
-- Python 3.9
+- Python 3.10
 - poetry, which is used to manage dependencies, and can be installed with `pip install poetry`
 - Go 1.16
 - PostgreSQL (any recent version will do)
