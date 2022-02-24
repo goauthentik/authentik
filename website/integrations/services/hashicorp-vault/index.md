@@ -38,6 +38,7 @@ Only settings that have been modified from default have been listed.
 ```
 https://vault.company/ui/vault/auth/oidc/oidc/callback
 https://vault.company/oidc/callback
+http://localhost:8250/oidc/callback
 ```
 :::note
 Take note of the `Client ID` and `Client Secret`, you'll need to give them to Vault in _Step 3_.
@@ -72,9 +73,10 @@ vault write auth/oidc/config \
 Create the reader role
 ```
 vault write auth/oidc/role/reader \
-      bound_audiences="$AUTH0_CLIENT_ID" \
-      allowed_redirect_uris="http://vault.company/ui/vault/auth/oidc/oidc/callback" \
-      allowed_redirect_uris="http://vault.company/oidc/callback" \
+      bound_audiences="Client ID" \
+      allowed_redirect_uris="https://vault.company/ui/vault/auth/oidc/oidc/callback" \
+      allowed_redirect_uris="https://vault.company/oidc/callback" \
+      allowed_redirect_uris="http://localhost:8250/oidc/callback" \
       user_claim="sub" \
       policies="reader"
 ```
