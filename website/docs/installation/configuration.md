@@ -110,6 +110,8 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
   Email address authentik will send from, should have a correct @domain
 
+  To change the sender's display name, use a format like `Name <account@domain>`.
+
 ### AUTHENTIK_OUTPOSTS
 
 - `AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE`
