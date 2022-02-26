@@ -123,8 +123,9 @@ func (a *Application) IsAllowlisted(u *url.URL) bool {
 		} else {
 			testString = u.String()
 		}
-		a.log.WithField("regex", u.String()).WithField("url", testString).Trace("Matching URL against allow list")
-		if ur.MatchString(testString) {
+		match := ur.MatchString(testString)
+		a.log.WithField("match", match).WithField("regex", ur.String()).WithField("url", testString).Trace("Matching URL against allow list")
+		if match {
 			return true
 		}
 	}
