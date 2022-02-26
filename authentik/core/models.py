@@ -297,7 +297,8 @@ class Application(PolicyBindingModel):
                 user = user._wrapped
             try:
                 return url % user.__dict__
-            except (ValueError, TypeError, LookupError) as exc:
+            # pylint: disable=broad-except
+            except Exception as exc:
                 LOGGER.warning("Failed to format launch url", exc=exc)
                 return url
         return url
