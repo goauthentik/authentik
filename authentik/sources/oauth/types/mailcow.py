@@ -11,6 +11,7 @@ from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 LOGGER = get_logger()
 
+
 class MailcowOAuthRedirect(OAuthRedirect):
     """Mailcow OAuth2 Redirect"""
 
@@ -19,8 +20,10 @@ class MailcowOAuthRedirect(OAuthRedirect):
             "scope": ["profile"],
         }
 
+
 class MailcowOAuth2Client(OAuth2Client):
     """MailcowOAuth2Client, for some reason, mailcow does not like the default headers"""
+
     def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
         "Fetch user profile information."
         profile_url = self.source.type.profile_url or ""
@@ -37,6 +40,7 @@ class MailcowOAuth2Client(OAuth2Client):
             return None
         else:
             return response.json()
+
 
 class MailcowOAuth2Callback(OAuthCallback):
     """Mailcow OAuth2 Callback"""
