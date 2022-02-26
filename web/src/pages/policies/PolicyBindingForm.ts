@@ -214,7 +214,9 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
+                                    args,
+                                );
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {
