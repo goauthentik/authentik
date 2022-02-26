@@ -77,6 +77,7 @@ export class HorizontalFormElement extends LitElement {
                 case "select":
                 case "ak-codemirror":
                 case "ak-chip-group":
+                case "ak-search-select":
                     (input as HTMLInputElement).name = this.name;
                     break;
                 default:

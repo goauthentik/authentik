@@ -20,6 +20,7 @@ import { ValidationError } from "@goauthentik/api";
 import { EVENT_REFRESH } from "../../constants";
 import { showMessage } from "../../elements/messages/MessageContainer";
 import { camelToSnake, convertToSlug } from "../../utils";
+import { SearchSelect } from "../SearchSelect";
 import { MessageLevel } from "../messages/Message";
 
 export class APIError extends Error {
@@ -150,6 +151,9 @@ export class Form<T> extends LitElement {
                 json[element.name] = new Date(element.value);
             } else if (element.tagName.toLowerCase() === "input" && element.type === "checkbox") {
                 json[element.name] = element.checked;
+            } else if (element.tagName.toLowerCase() === "ak-search-select") {
+                const select = element as unknown as SearchSelect<unknown>;
+                json[element.name] = select.value(select.selectedObject);
             } else {
                 for (let v = 0; v < values.length; v++) {
                     this.serializeFieldRecursive(element, values[v], json);
