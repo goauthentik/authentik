@@ -407,26 +407,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             update_session_auth_hash(self.request, user)
         return Response(status=204)
 
-    @extend_schema(request=UserSelfSerializer, responses={200: SessionUserSerializer(many=False)})
-    @action(
-        methods=["PUT"],
-        detail=False,
-        pagination_class=None,
-        filter_backends=[],
-        permission_classes=[IsAuthenticated],
-    )
-    def update_self(self, request: Request) -> Response:
-        """Allow users to change information on their own profile"""
-        data = UserSelfSerializer(instance=User.objects.get(pk=request.user.pk), data=request.data)
-        if not data.is_valid():
-            return Response(data.errors, status=400)
-        new_user = data.save()
-        # If we're impersonating, we need to update that user object
-        # since it caches the full object
-        if SESSION_IMPERSONATE_USER in request.session:
-            request.session[SESSION_IMPERSONATE_USER] = new_user
-        return Response({"user": data.data})
-
     @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
     @extend_schema(responses={200: UserMetricsSerializer(many=False)})
     @action(detail=True, pagination_class=None, filter_backends=[])

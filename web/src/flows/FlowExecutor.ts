@@ -53,7 +53,7 @@ import "./stages/prompt/PromptStage";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
-    flowSlug: string;
+    flowSlug?: string;
 
     private _challenge?: ChallengeTypes;
 
@@ -142,7 +142,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         this.loading = true;
         return new FlowsApi(DEFAULT_CONFIG)
             .flowsExecutorSolve({
-                flowSlug: this.flowSlug,
+                flowSlug: this.flowSlug || "",
                 query: window.location.search.substring(1),
                 flowChallengeResponseRequest: payload,
             })
@@ -177,7 +177,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         this.loading = true;
         new FlowsApi(DEFAULT_CONFIG)
             .flowsExecutorGet({
-                flowSlug: this.flowSlug,
+                flowSlug: this.flowSlug || "",
                 query: window.location.search.substring(1),
             })
             .then((challenge) => {

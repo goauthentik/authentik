@@ -50,6 +50,7 @@ class TenantSerializer(ModelSerializer):
             "flow_invalidation",
             "flow_recovery",
             "flow_unenrollment",
+            "flow_user_settings",
             "event_retention",
             "web_certificate",
         ]
@@ -72,6 +73,7 @@ class CurrentTenantSerializer(PassiveSerializer):
     flow_invalidation = CharField(source="flow_invalidation.slug", required=False)
     flow_recovery = CharField(source="flow_recovery.slug", required=False)
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
+    flow_user_settings = CharField(source="flow_user_settings.slug", required=False)
 
 
 class TenantViewSet(UsedByMixin, ModelViewSet):

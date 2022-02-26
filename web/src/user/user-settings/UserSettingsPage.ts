@@ -27,8 +27,8 @@ import { EVENT_REFRESH } from "../../constants";
 import "../../elements/Tabs";
 import "../../elements/user/SessionList";
 import "../../elements/user/UserConsentList";
-import "./details/UserDetailsForm";
 import "./details/UserPassword";
+import "./details/UserSettingsFlowExecutor";
 import "./mfa/MFADevicesPage";
 import "./sources/SourceSettings";
 import "./tokens/UserTokenList";
@@ -81,9 +81,7 @@ export class UserSettingsPage extends LitElement {
                                 <div class="pf-c-card">
                                     <div class="pf-c-card__title">${t`Update details`}</div>
                                     <div class="pf-c-card__body">
-                                        <ak-user-details-form
-                                            .instancePk=${1}
-                                        ></ak-user-details-form>
+                                        <ak-user-settings-flow-executor></ak-user-settings-flow-executor>
                                     </div>
                                 </div>
                             </div>
