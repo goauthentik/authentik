@@ -1,5 +1,5 @@
 import { CoreApi, SessionUser } from "@goauthentik/api";
-import { i18n } from "@lingui/core";
+import { activateLocale } from "../interfaces/locale";
 import { DEFAULT_CONFIG } from "./Config";
 
 let globalMePromise: Promise<SessionUser>;
@@ -12,7 +12,7 @@ export function me(): Promise<SessionUser> {
             const locale = user.user.settings.locale;
             if (locale && locale !== "") {
                 console.debug(`authentik/locale: Activating user's configured locale '${locale}'`);
-                i18n.activate(locale);
+                activateLocale(locale);
             }
             return user;
         }).catch((ex) => {

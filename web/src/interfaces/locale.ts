@@ -1,7 +1,7 @@
 import { de, en, es, fr, pl, tr, zh } from "make-plural/plurals";
 
 import { Messages, i18n } from "@lingui/core";
-import { detect, fromNavigator, fromStorage, fromUrl } from "@lingui/detect-locale";
+import { detect, fromNavigator, fromUrl } from "@lingui/detect-locale";
 import { t } from "@lingui/macro";
 
 import { messages as localeDE } from "../locales/de";
@@ -93,7 +93,7 @@ const DEFAULT_FALLBACK = () => "en";
 
 export function autoDetectLanguage() {
     let detected =
-        detect(fromUrl("lang"), fromStorage("lang"), fromNavigator(), DEFAULT_FALLBACK) ||
+        detect(fromUrl("locale"), fromNavigator(), DEFAULT_FALLBACK) ||
         DEFAULT_FALLBACK();
     // For now we only care about the first locale part
     if (detected.includes("_")) {
@@ -106,5 +106,13 @@ export function autoDetectLanguage() {
         console.debug(`authentik/locale: No locale for '${detected}', falling back to en`);
         i18n.activate(DEFAULT_FALLBACK());
     }
+}
+export function activateLocale(code: string) {
+    const urlLocale = fromUrl("locale");
+    if (urlLocale !== null && urlLocale !== "") {
+        i18n.activate(urlLocale);
+        return;
+    }
+    i18n.activate(code);
 }
 autoDetectLanguage();
