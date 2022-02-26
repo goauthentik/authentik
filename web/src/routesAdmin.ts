@@ -13,6 +13,7 @@ import "./pages/events/TransportListPage";
 import "./pages/flows/FlowListPage";
 import "./pages/flows/FlowViewPage";
 import "./pages/groups/GroupListPage";
+import "./pages/groups/GroupViewPage";
 import "./pages/outposts/OutpostListPage";
 import "./pages/outposts/ServiceConnectionListPage";
 import "./pages/policies/PolicyListPage";
@@ -75,6 +76,9 @@ export const ROUTES: Route[] = [
         html`<ak-policy-reputation-list></ak-policy-reputation-list>`,
     ),
     new Route(new RegExp("^/identity/groups$"), html`<ak-group-list></ak-group-list>`),
+    new Route(new RegExp(`^/identity/groups/(?<uuid>${UUID_REGEX})$`)).then((args) => {
+        return html`<ak-group-view .groupId=${args.uuid}></ak-group-view>`;
+    }),
     new Route(new RegExp("^/identity/users$"), html`<ak-user-list></ak-user-list>`),
     new Route(new RegExp(`^/identity/users/(?<id>${ID_REGEX})$`)).then((args) => {
         return html`<ak-user-view .userId=${parseInt(args.id, 10)}></ak-user-view>`;

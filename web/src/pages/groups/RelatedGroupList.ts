@@ -12,28 +12,21 @@ import { PFColor } from "../../elements/Label";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
+import { Table, TableColumn } from "../../elements/table/Table";
 import "./GroupForm";
 
-@customElement("ak-group-list")
-export class GroupListPage extends TablePage<Group> {
+@customElement("ak-group-related-list")
+export class RelatedGroupList extends Table<Group> {
     checkbox = true;
     searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
-        return t`Groups`;
-    }
-    pageDescription(): string {
-        return t`Group users together and give them permissions based on the membership.`;
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-users";
-    }
 
     @property()
     order = "name";
+
+    @property({ type: Number })
+    targetUser?: number;
 
     async apiEndpoint(page: number): Promise<AKResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
@@ -41,6 +34,7 @@ export class GroupListPage extends TablePage<Group> {
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
+            membersByPk: this.targetUser ? [this.targetUser] : [],
         });
     }
 
@@ -48,7 +42,6 @@ export class GroupListPage extends TablePage<Group> {
         return [
             new TableColumn(t`Name`, "name"),
             new TableColumn(t`Parent`, "parent"),
-            new TableColumn(t`Members`),
             new TableColumn(t`Superuser privileges?`),
             new TableColumn(t`Actions`),
         ];
@@ -80,8 +73,7 @@ export class GroupListPage extends TablePage<Group> {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`${item.parentName || t`-`}`,
-            html`${Array.from(item.users || []).length}`,
-            html` <ak-label color=${item.isSuperuser ? PFColor.Green : PFColor.Grey}>
+            html`<ak-label color=${item.isSuperuser ? PFColor.Green : PFColor.Grey}>
                 ${item.isSuperuser ? t`Yes` : t`No`}
             </ak-label>`,
             html` <ak-forms-modal>
@@ -96,14 +88,6 @@ export class GroupListPage extends TablePage<Group> {
     }
 
     renderToolbar(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Group`} </span>
-                <ak-group-form slot="form"> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
-            </ak-forms-modal>
-            ${super.renderToolbar()}
-        `;
+        return html` ${super.renderToolbar()} `;
     }
 }

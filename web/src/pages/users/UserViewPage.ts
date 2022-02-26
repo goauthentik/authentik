@@ -31,10 +31,10 @@ import "../../elements/events/UserEvents";
 import "../../elements/forms/ModalForm";
 import { MessageLevel } from "../../elements/messages/Message";
 import { showMessage } from "../../elements/messages/MessageContainer";
-import "../../elements/oauth/UserCodeList";
 import "../../elements/oauth/UserRefreshList";
 import "../../elements/user/SessionList";
 import "../../elements/user/UserConsentList";
+import "../groups/RelatedGroupList";
 import "./UserActiveForm";
 import "./UserForm";
 
@@ -284,6 +284,17 @@ export class UserViewPage extends LitElement {
                 </div>
             </section>
             <section
+                slot="page-groups"
+                data-tab-title="${t`Groups`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-group-related-list targetUser=${this.user.pk}> </ak-group-related-list>
+                    </div>
+                </div>
+            </section>
+            <section
                 slot="page-events"
                 data-tab-title="${t`User events`}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
@@ -302,17 +313,6 @@ export class UserViewPage extends LitElement {
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">
                         <ak-user-consent-list userId=${this.user.pk}> </ak-user-consent-list>
-                    </div>
-                </div>
-            </section>
-            <section
-                slot="page-oauth-code"
-                data-tab-title="${t`OAuth Authorization Codes`}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-user-oauth-code-list userId=${this.user.pk}> </ak-user-oauth-code-list>
                     </div>
                 </div>
             </section>
