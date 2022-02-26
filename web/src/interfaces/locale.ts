@@ -4,6 +4,8 @@ import { Messages, i18n } from "@lingui/core";
 import { detect, fromNavigator, fromUrl } from "@lingui/detect-locale";
 import { t } from "@lingui/macro";
 
+import { LitElement } from "lit";
+
 import { messages as localeDE } from "../locales/de";
 import { messages as localeEN } from "../locales/en";
 import { messages as localeES } from "../locales/es";
@@ -93,8 +95,7 @@ const DEFAULT_FALLBACK = () => "en";
 
 export function autoDetectLanguage() {
     let detected =
-        detect(fromUrl("locale"), fromNavigator(), DEFAULT_FALLBACK) ||
-        DEFAULT_FALLBACK();
+        detect(fromUrl("locale"), fromNavigator(), DEFAULT_FALLBACK) || DEFAULT_FALLBACK();
     // For now we only care about the first locale part
     if (detected.includes("_")) {
         detected = detected.split("_")[0];
@@ -111,8 +112,15 @@ export function activateLocale(code: string) {
     const urlLocale = fromUrl("locale");
     if (urlLocale !== null && urlLocale !== "") {
         i18n.activate(urlLocale);
-        return;
+    } else {
+        i18n.activate(code);
     }
-    i18n.activate(code);
+    document.querySelectorAll("[data-refresh-on-locale=true]").forEach((el) => {
+        try {
+            (el as LitElement).requestUpdate();
+        } catch {
+            console.debug(`authentik/locale: failed to update element ${el}`);
+        }
+    });
 }
 autoDetectLanguage();
