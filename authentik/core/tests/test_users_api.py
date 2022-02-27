@@ -3,9 +3,6 @@ from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import (
-    USER_ATTRIBUTE_CHANGE_EMAIL,
-    USER_ATTRIBUTE_CHANGE_NAME,
-    USER_ATTRIBUTE_CHANGE_USERNAME,
     User,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
@@ -21,51 +18,6 @@ class TestUsersAPI(APITestCase):
     def setUp(self) -> None:
         self.admin = create_test_admin_user()
         self.user = User.objects.create(username="test-user")
-
-    def test_update_self(self):
-        """Test update_self"""
-        self.admin.attributes["foo"] = "bar"
-        self.admin.save()
-        self.admin.refresh_from_db()
-        self.client.force_login(self.admin)
-        response = self.client.put(
-            reverse("authentik_api:user-update-self"), data={"username": "foo", "name": "foo"}
-        )
-        self.admin.refresh_from_db()
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.admin.attributes["foo"], "bar")
-        self.assertEqual(self.admin.username, "foo")
-        self.assertEqual(self.admin.name, "foo")
-
-    def test_update_self_name_denied(self):
-        """Test update_self"""
-        self.admin.attributes[USER_ATTRIBUTE_CHANGE_NAME] = False
-        self.admin.save()
-        self.client.force_login(self.admin)
-        response = self.client.put(
-            reverse("authentik_api:user-update-self"), data={"username": "foo", "name": "foo"}
-        )
-        self.assertEqual(response.status_code, 400)
-
-    def test_update_self_username_denied(self):
-        """Test update_self"""
-        self.admin.attributes[USER_ATTRIBUTE_CHANGE_USERNAME] = False
-        self.admin.save()
-        self.client.force_login(self.admin)
-        response = self.client.put(
-            reverse("authentik_api:user-update-self"), data={"username": "foo", "name": "foo"}
-        )
-        self.assertEqual(response.status_code, 400)
-
-    def test_update_self_email_denied(self):
-        """Test update_self"""
-        self.admin.attributes[USER_ATTRIBUTE_CHANGE_EMAIL] = False
-        self.admin.save()
-        self.client.force_login(self.admin)
-        response = self.client.put(
-            reverse("authentik_api:user-update-self"), data={"email": "foo", "name": "foo"}
-        )
-        self.assertEqual(response.status_code, 400)
 
     def test_metrics(self):
         """Test user's metrics"""

@@ -46,9 +46,6 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
 from authentik.core.models import (
-    USER_ATTRIBUTE_CHANGE_EMAIL,
-    USER_ATTRIBUTE_CHANGE_NAME,
-    USER_ATTRIBUTE_CHANGE_USERNAME,
     USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     Group,
@@ -125,43 +122,6 @@ class UserSelfSerializer(ModelSerializer):
                 "name": group.name,
                 "pk": group.pk,
             }
-
-    def validate_email(self, email: str):
-        """Check if the user is allowed to change their email"""
-        if self.instance.group_attributes().get(
-            USER_ATTRIBUTE_CHANGE_EMAIL, CONFIG.y_bool("default_user_change_email", True)
-        ):
-            return email
-        if email != self.instance.email:
-            raise ValidationError("Not allowed to change email.")
-        return email
-
-    def validate_name(self, name: str):
-        """Check if the user is allowed to change their name"""
-        if self.instance.group_attributes().get(
-            USER_ATTRIBUTE_CHANGE_NAME, CONFIG.y_bool("default_user_change_name", True)
-        ):
-            return name
-        if name != self.instance.name:
-            raise ValidationError("Not allowed to change name.")
-        return name
-
-    def validate_username(self, username: str):
-        """Check if the user is allowed to change their username"""
-        if self.instance.group_attributes().get(
-            USER_ATTRIBUTE_CHANGE_USERNAME, CONFIG.y_bool("default_user_change_username", True)
-        ):
-            return username
-        if username != self.instance.username:
-            raise ValidationError("Not allowed to change username.")
-        return username
-
-    def save(self, **kwargs):
-        if self.instance:
-            attributes: dict = self.instance.attributes
-            attributes.update(self.validated_data.get("attributes", {}))
-            self.validated_data["attributes"] = attributes
-        return super().save(**kwargs)
 
     class Meta:
 
