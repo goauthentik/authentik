@@ -31,7 +31,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
         return [PFBase, PFLogin, PFAlert, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
-    renderPromptInner(prompt: StagePrompt): string {
+    renderPromptInner(prompt: StagePrompt, placeholderAsValue: boolean): string {
         switch (prompt.type) {
             case PromptTypeEnum.Text:
                 return `<input
@@ -41,7 +41,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     autocomplete="off"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
-                    value="">`;
+                    value="${placeholderAsValue ? prompt.placeholder : ""}">`;
             case PromptTypeEnum.TextReadOnly:
                 return `<input
                     type="text"
@@ -57,7 +57,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     autocomplete="username"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
-                    value="">`;
+                    value="${placeholderAsValue ? prompt.placeholder : ""}">`;
             case PromptTypeEnum.Email:
                 return `<input
                     type="email"
@@ -65,7 +65,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
-                    value="">`;
+                    value="${placeholderAsValue ? prompt.placeholder : ""}">`;
             case PromptTypeEnum.Password:
                 return `<input
                     type="password"
@@ -143,7 +143,8 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
             prompt.type === PromptTypeEnum.Separator
         ) {
             return html`
-                ${unsafeHTML(this.renderPromptInner(prompt))} ${this.renderPromptHelpText(prompt)}
+                ${unsafeHTML(this.renderPromptInner(prompt, false))}
+                ${this.renderPromptHelpText(prompt)}
             `;
         }
         return html`<ak-form-element
@@ -152,7 +153,8 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
             class="pf-c-form__group"
             .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
         >
-            ${unsafeHTML(this.renderPromptInner(prompt))} ${this.renderPromptHelpText(prompt)}
+            ${unsafeHTML(this.renderPromptInner(prompt, false))}
+            ${this.renderPromptHelpText(prompt)}
         </ak-form-element>`;
     }
 

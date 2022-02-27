@@ -12,13 +12,18 @@ import { PromptStage } from "../../../../../flows/stages/prompt/PromptStage";
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
     renderField(prompt: StagePrompt): TemplateResult {
+        const errors = (this.challenge?.responseErrors || {})[prompt.fieldKey];
         return html`
             <ak-form-element-horizontal
                 label=${t`${prompt.label}`}
                 ?required=${prompt.required}
                 name=${prompt.fieldKey}
+                ?invalid=${errors !== undefined}
+                .errorMessages=${(errors || []).map((error) => {
+                    return error.string;
+                })}
             >
-                ${unsafeHTML(this.renderPromptInner(prompt))} ${prompt.subText}
+                ${unsafeHTML(this.renderPromptInner(prompt, true))} ${prompt.subText}
                 ${this.renderPromptHelpText(prompt)}
             </ak-form-element-horizontal>
         `;

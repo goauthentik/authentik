@@ -45,8 +45,8 @@ export class HorizontalFormElement extends LitElement {
     @property({ type: Boolean })
     writeOnlyActivated = false;
 
-    @property()
-    errorMessage = "";
+    @property({ attribute: false })
+    errorMessages: string[] = [];
 
     _invalid = false;
 
@@ -124,11 +124,11 @@ export class HorizontalFormElement extends LitElement {
                               ${t`Click to change value`}
                           </p>`
                         : html``}
-                    ${this.invalid
-                        ? html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
-                              ${this.errorMessage}
-                          </p>`
-                        : html``}
+                    ${this.errorMessages.map((message) => {
+                        return html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
+                            ${message}
+                        </p>`;
+                    })}
                 </div>
             </div>
         </div>`;
