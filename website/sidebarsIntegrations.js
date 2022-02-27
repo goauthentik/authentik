@@ -60,6 +60,7 @@ module.exports = {
                 "sources/github/index",
                 "sources/google/index",
                 "sources/ldap/index",
+                "sources/mailcow/index",
                 "sources/oauth/index",
                 "sources/plex/index",
                 "sources/saml/index",
