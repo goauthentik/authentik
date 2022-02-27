@@ -15,6 +15,8 @@ import {
 
 import { DEFAULT_CONFIG, tenant } from "../../../api/Config";
 import "../../../elements/LoadingOverlay";
+import { MessageLevel } from "../../../elements/messages/Message";
+import { showMessage } from "../../../elements/messages/MessageContainer";
 import { StageHost } from "../../../flows/stages/base";
 import "./stages/prompt/PromptStage";
 
@@ -59,6 +61,10 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
                 flowChallengeResponseRequest: payload,
             })
             .then((data) => {
+                showMessage({
+                    level: MessageLevel.success,
+                    message: t`Successfully updated details`,
+                });
                 this.challenge = data;
                 if (this.challenge.responseErrors) {
                     return false;

@@ -36,6 +36,7 @@ msgstr "(Format: hours=1;minutes=2;seconds=3)."
 #: src/pages/events/EventListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
@@ -45,6 +46,7 @@ msgstr "(Format: hours=1;minutes=2;seconds=3)."
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "-"
@@ -168,6 +170,7 @@ msgstr "Action"
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -179,6 +182,7 @@ msgstr "Action"
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Actions"
 msgstr "Actions"
@@ -187,6 +191,7 @@ msgstr "Actions"
 msgid "Actions over the last 24 hours"
 msgstr "Actions over the last 24 hours"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Activate"
@@ -197,6 +202,8 @@ msgid "Activate pending user on success"
 msgstr "Activate pending user on success"
 
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/RelatedUserList.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -509,8 +516,8 @@ msgstr "Authorization"
 #~ msgstr "Authorization Code"
 
 #: src/elements/oauth/UserCodeList.ts
-msgid "Authorization Code(s)"
-msgstr "Authorization Code(s)"
+#~ msgid "Authorization Code(s)"
+#~ msgstr "Authorization Code(s)"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
@@ -537,8 +544,8 @@ msgid "Authorized application:"
 msgstr "Authorized application:"
 
 #: src/user/user-settings/details/UserDetailsForm.ts
-msgid "Auto-detect (based on your browser)"
-msgstr "Auto-detect (based on your browser)"
+#~ msgid "Auto-detect (based on your browser)"
+#~ msgstr "Auto-detect (based on your browser)"
 
 #: src/interfaces/UserInterface.ts
 msgid "Avatar image"
@@ -757,6 +764,7 @@ msgstr "Certificates"
 msgid "Change password"
 msgstr "Change password"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Change status"
 msgstr "Change status"
@@ -767,6 +775,7 @@ msgstr "Change your password"
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/flows/FlowViewPage.ts
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/providers/ProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
@@ -912,6 +921,7 @@ msgstr "Client type"
 
 #: src/elements/notifications/NotificationDrawer.ts
 #: src/pages/outposts/OutpostDeploymentModal.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Close"
 msgstr "Close"
@@ -1130,6 +1140,7 @@ msgstr "Copy"
 msgid "Copy download URL"
 msgstr "Copy download URL"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Copy recovery link"
 msgstr "Copy recovery link"
@@ -1179,6 +1190,9 @@ msgstr "Copy recovery link"
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
+#: src/pages/users/RelatedUserList.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
@@ -1245,6 +1259,8 @@ msgstr "Create Policy"
 msgid "Create Prompt"
 msgstr "Create Prompt"
 
+#: src/pages/users/RelatedUserList.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Create Service account"
@@ -1269,6 +1285,7 @@ msgstr "Create Tenant"
 msgid "Create Token"
 msgstr "Create Token"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Create User"
 msgstr "Create User"
@@ -1349,6 +1366,7 @@ msgstr "Date"
 msgid "Date Time"
 msgstr "Date Time"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Deactivate"
@@ -1380,7 +1398,6 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
-#: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/elements/user/SessionList.ts
 #: src/elements/user/UserConsentList.ts
@@ -1391,6 +1408,7 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -1404,6 +1422,7 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
@@ -1431,7 +1450,7 @@ msgstr "Delete"
 #~ msgid "Delete Session"
 #~ msgstr "Delete Session"
 
-#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
 msgid "Delete account"
 msgstr "Delete account"
 
@@ -1636,6 +1655,7 @@ msgstr "Each provider has a different issuer, based on the application slug."
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/flows/FlowViewPage.ts
 #: src/pages/flows/FlowViewPage.ts
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
@@ -1682,7 +1702,6 @@ msgstr "Either no applications are defined, or you don't have access to any."
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Email"
 msgstr "Email"
 
@@ -1694,6 +1713,7 @@ msgstr "Email address"
 msgid "Email info:"
 msgstr "Email info:"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Email recovery link"
 msgstr "Email recovery link"
@@ -1871,7 +1891,6 @@ msgstr "Executes the python snippet to determine whether to allow or deny a requ
 msgid "Execution logging"
 msgstr "Execution logging"
 
-#: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/elements/user/SessionList.ts
 #: src/elements/user/UserConsentList.ts
@@ -2250,6 +2269,10 @@ msgstr "Go to previous page"
 msgid "Group"
 msgstr "Group"
 
+#: src/pages/groups/GroupViewPage.ts
+msgid "Group Info"
+msgstr "Group Info"
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Group Property Mappings"
 msgstr "Group Property Mappings"
@@ -2270,11 +2293,13 @@ msgstr "Group object filter"
 msgid "Group users together and give them permissions based on the membership."
 msgstr "Group users together and give them permissions based on the membership."
 
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Group {0}"
 msgstr "Group {0}"
 
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 msgid "Group(s)"
 msgstr "Group(s)"
 
@@ -2282,6 +2307,7 @@ msgstr "Group(s)"
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/users/UserForm.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Groups"
 msgstr "Groups"
 
@@ -2325,6 +2351,7 @@ msgstr "Hidden: Hidden field, can be used to insert data into form."
 msgid "Hide managed mappings"
 msgstr "Hide managed mappings"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Hide service-accounts"
 msgstr "Hide service-accounts"
@@ -2356,6 +2383,7 @@ msgstr "How to connect"
 
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "ID"
 msgstr "ID"
@@ -2422,6 +2450,10 @@ msgid "If no explicit redirect URIs are specified, the first successfully used r
 msgstr "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved."
 
 #: src/pages/tenants/TenantForm.ts
+msgid "If set, users are able to configure details of their profile."
+msgstr "If set, users are able to configure details of their profile."
+
+#: src/pages/tenants/TenantForm.ts
 msgid "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown."
 msgstr "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown."
 
@@ -2445,6 +2477,7 @@ msgstr "If your authentik Instance is using a self-signed certificate, set this 
 msgid "If your authentik_host setting does not match the URL you want to login with, add this setting."
 msgstr "If your authentik_host setting does not match the URL you want to login with, add this setting."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Impersonate"
@@ -2479,6 +2512,7 @@ msgstr "In case you can't access any other method."
 msgid "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com."
 msgstr "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Inactive"
 msgstr "Inactive"
@@ -2637,6 +2671,7 @@ msgid "Last IP"
 msgstr "Last IP"
 
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Last login"
@@ -2717,7 +2752,7 @@ msgstr "Load servers"
 #: src/flows/stages/prompt/PromptStage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/sources/SourceSettings.ts
 #: src/utils.ts
@@ -2738,8 +2773,6 @@ msgstr "Loading"
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-#: src/pages/policies/PolicyBindingForm.ts
-#: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
@@ -2794,6 +2827,7 @@ msgstr "Loading"
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantForm.ts
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserResetEmailForm.ts
@@ -2807,8 +2841,8 @@ msgid "Local"
 msgstr "Local"
 
 #: src/user/user-settings/details/UserDetailsForm.ts
-msgid "Locale"
-msgstr "Locale"
+#~ msgid "Locale"
+#~ msgstr "Locale"
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
@@ -3000,7 +3034,9 @@ msgstr "My applications"
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupForm.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
@@ -3059,10 +3095,10 @@ msgstr "My applications"
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 #: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 #: src/user/user-settings/mfa/MFADeviceForm.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Name"
@@ -3121,6 +3157,7 @@ msgstr "Nginx (standalone)"
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
@@ -3128,6 +3165,7 @@ msgstr "Nginx (standalone)"
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "No"
@@ -3183,6 +3221,7 @@ msgstr "No policies are currently bound to this object."
 msgid "No preference is sent"
 msgstr "No preference is sent"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "No recovery flow is configured."
 msgstr "No recovery flow is configured."
@@ -3190,6 +3229,10 @@ msgstr "No recovery flow is configured."
 #: src/user/user-settings/sources/SourceSettings.ts
 msgid "No services available."
 msgstr "No services available."
+
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+msgid "No settings flow configured."
+msgstr "No settings flow configured."
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "No stages are currently bound to this flow."
@@ -3294,8 +3337,8 @@ msgid "Number the SMS will be sent from."
 msgstr "Number the SMS will be sent from."
 
 #: src/pages/users/UserViewPage.ts
-msgid "OAuth Authorization Codes"
-msgstr "OAuth Authorization Codes"
+#~ msgid "OAuth Authorization Codes"
+#~ msgstr "OAuth Authorization Codes"
 
 #: src/pages/users/UserViewPage.ts
 msgid "OAuth Refresh Codes"
@@ -3351,6 +3394,10 @@ msgstr "Open API Browser"
 #: src/pages/events/EventInfo.ts
 msgid "Open issue on GitHub..."
 msgstr "Open issue on GitHub..."
+
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+msgid "Open settings"
+msgstr "Open settings"
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "OpenID Configuration Issuer"
@@ -3461,6 +3508,7 @@ msgstr "Outposts are deployments of authentik components to support different en
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/providers/ProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
@@ -3476,6 +3524,7 @@ msgstr "PEM-encoded Certificate data."
 
 #: src/pages/groups/GroupForm.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 msgid "Parent"
 msgstr "Parent"
 
@@ -3731,7 +3780,6 @@ msgstr "Protocol settings"
 msgid "Provide support for protocols like SAML and OAuth to assigned applications."
 msgstr "Provide support for protocols like SAML and OAuth to assigned applications."
 
-#: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
@@ -3840,6 +3888,7 @@ msgstr "Receive a push notification on your device."
 
 #: src/pages/flows/utils.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery"
 msgstr "Recovery"
@@ -3857,6 +3906,7 @@ msgstr "Recovery flow. If left empty, the first applicable flow sorted by the sl
 msgid "Recovery keys"
 msgstr "Recovery keys"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery link cannot be emailed, user has no email address saved."
 msgstr "Recovery link cannot be emailed, user has no email address saved."
@@ -3902,6 +3952,7 @@ msgstr "Register device"
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression."
 msgstr "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Regular user"
 msgstr "Regular user"
@@ -3971,7 +4022,6 @@ msgstr "Required."
 
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 
@@ -4005,6 +4055,7 @@ msgid "Retry authentication"
 msgstr "Retry authentication"
 
 #: src/flows/FlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Return"
 msgstr "Return"
 
@@ -4096,7 +4147,7 @@ msgstr "SSO URL"
 msgid "Same identifier is used for all providers"
 msgstr "Same identifier is used for all providers"
 
-#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
 msgid "Save"
 msgstr "Save"
 
@@ -4108,7 +4159,6 @@ msgstr "Scope name"
 msgid "Scope which the client can specify to access these properties."
 msgstr "Scope which the client can specify to access these properties."
 
-#: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -4188,6 +4238,10 @@ msgstr "Select an enrollment flow"
 #~ msgid "Select an identification method."
 #~ msgstr "Select an identification method."
 
+#: src/elements/SearchSelect.ts
+msgid "Select an object."
+msgstr "Select an object."
+
 #: src/pages/users/GroupSelectModal.ts
 msgid "Select groups to add user to"
 msgstr "Select groups to add user to"
@@ -4236,6 +4290,7 @@ msgstr "Selection of backends to test the password against."
 msgid "Send Email again."
 msgstr "Send Email again."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Send link"
 msgstr "Send link"
@@ -4248,6 +4303,7 @@ msgstr "Send notifications whenever a specific Event is created and matched by p
 msgid "Send once"
 msgstr "Send once"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Send recovery link to user"
 msgstr "Send recovery link to user"
@@ -4335,6 +4391,7 @@ msgstr "Set a custom HTTP-Basic Authentication header based on values from authe
 msgid "Set custom attributes using YAML or JSON."
 msgstr "Set custom attributes using YAML or JSON."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Set password"
 msgstr "Set password"
@@ -4420,6 +4477,7 @@ msgid "Slug"
 msgstr "Slug"
 
 #: src/flows/FlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Something went wrong! Please try again later."
 msgstr "Something went wrong! Please try again later."
 
@@ -4781,6 +4839,7 @@ msgstr "Successfully deleted {0} {1}"
 msgid "Successfully generated certificate-key pair."
 msgstr "Successfully generated certificate-key pair."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Successfully generated recovery link"
@@ -4817,9 +4876,13 @@ msgstr "Successfully updated binding."
 msgid "Successfully updated certificate-key pair."
 msgstr "Successfully updated certificate-key pair."
 
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+msgid "Successfully updated details"
+msgstr "Successfully updated details"
+
 #: src/user/user-settings/details/UserDetailsForm.ts
-msgid "Successfully updated details."
-msgstr "Successfully updated details."
+#~ msgid "Successfully updated details."
+#~ msgstr "Successfully updated details."
 
 #: src/user/user-settings/mfa/MFADeviceForm.ts
 msgid "Successfully updated device."
@@ -4937,13 +5000,16 @@ msgstr "Successfully updated user."
 msgid "Successfully updated {0} {1}"
 msgstr "Successfully updated {0} {1}"
 
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Superuser"
 msgstr "Superuser"
 
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 msgid "Superuser privileges?"
 msgstr "Superuser privileges?"
 
@@ -5270,6 +5336,7 @@ msgstr "To create a recovery link, the current tenant needs to have a recovery f
 #~ msgid "To directly reset a user's password, configure a recovery flow on the currently active tenant."
 #~ msgstr "To directly reset a user's password, configure a recovery flow on the currently active tenant."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "To let a user directly reset a their password, configure a recovery flow on the currently active tenant."
 msgstr "To let a user directly reset a their password, configure a recovery flow on the currently active tenant."
@@ -5405,6 +5472,7 @@ msgid "UI settings"
 msgstr "UI settings"
 
 #: src/pages/events/EventInfo.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "UID"
 msgstr "UID"
@@ -5504,6 +5572,8 @@ msgstr "Up-to-date!"
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowViewPage.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupViewPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -5526,6 +5596,7 @@ msgstr "Up-to-date!"
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserActiveForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -5557,6 +5628,8 @@ msgid "Update Flow"
 msgstr "Update Flow"
 
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupViewPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Group"
 msgstr "Update Group"
@@ -5623,6 +5696,7 @@ msgid "Update Token"
 msgstr "Update Token"
 
 #: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Update User"
@@ -5636,6 +5710,8 @@ msgstr "Update available"
 msgid "Update details"
 msgstr "Update details"
 
+#: src/pages/users/RelatedUserList.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Update password"
@@ -5722,6 +5798,7 @@ msgstr "Use this tenant for each domain that doesn't have a dedicated tenant."
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
@@ -5795,10 +5872,15 @@ msgstr "User object filter"
 msgid "User password writeback"
 msgstr "User password writeback"
 
+#: src/pages/tenants/TenantForm.ts
+msgid "User settings flow"
+msgstr "User settings flow"
+
 #: src/pages/admin-overview/DashboardUserPage.ts
 msgid "User statistics"
 msgstr "User statistics"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "User status"
 msgstr "User status"
@@ -5833,10 +5915,10 @@ msgid "User's avatar"
 msgstr "User's avatar"
 
 #: src/pages/users/UserForm.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "User's display name."
 msgstr "User's display name."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "User(s)"
 msgstr "User(s)"
@@ -5855,12 +5937,12 @@ msgstr "Userinfo URL"
 
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Username"
 msgstr "Username"
 
@@ -5871,6 +5953,7 @@ msgstr "Username: Same as Text input, but checks for and prevents duplicate user
 #: src/interfaces/AdminInterface.ts
 #: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Users"
 msgstr "Users"
@@ -5999,6 +6082,7 @@ msgstr "Warning: Provider is not used by any Outpost."
 msgid "Warning: Provider not assigned to any application."
 msgstr "Warning: Provider not assigned to any application."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Warning: You're about to delete the user you're logged in as ({0}). Proceed at your own risk."
 msgstr "Warning: You're about to delete the user you're logged in as ({0}). Proceed at your own risk."
@@ -6102,6 +6186,7 @@ msgid "When using proxy or forward auth (single application) mode, the requested
 msgstr "When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions."
 
 #: src/flows/FlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Whoops!"
 msgstr "Whoops!"
 
@@ -6129,6 +6214,7 @@ msgstr "X509 Subject"
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
@@ -6136,6 +6222,7 @@ msgstr "X509 Subject"
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Yes"
@@ -6206,6 +6293,7 @@ msgstr "with inspector"
 
 #: src/elements/Expand.ts
 #: src/elements/Expand.ts
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
 msgid "{0}"
 msgstr "{0}"
 

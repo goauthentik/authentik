@@ -39,6 +39,7 @@ msgstr "(Biçim: saat=1; dakika=2; saniye= 3)."
 #: src/pages/events/EventListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
@@ -48,6 +49,7 @@ msgstr "(Biçim: saat=1; dakika=2; saniye= 3)."
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "-"
@@ -170,6 +172,7 @@ msgstr "Eylem"
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -181,6 +184,7 @@ msgstr "Eylem"
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Actions"
 msgstr "Eylemler"
@@ -189,6 +193,7 @@ msgstr "Eylemler"
 msgid "Actions over the last 24 hours"
 msgstr "Son 24 saat içinde yapılan eylemler"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Activate"
@@ -199,6 +204,8 @@ msgid "Activate pending user on success"
 msgstr "Bekleyen kullanıcıyı başarı durumunda etkinleştir"
 
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/RelatedUserList.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -507,8 +514,8 @@ msgstr "Yetkilendirme"
 #~ msgstr "Yetkilendirme Kodu"
 
 #: src/elements/oauth/UserCodeList.ts
-msgid "Authorization Code(s)"
-msgstr "Yetkilendirme Kodları"
+#~ msgid "Authorization Code(s)"
+#~ msgstr "Yetkilendirme Kodları"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
@@ -535,8 +542,8 @@ msgid "Authorized application:"
 msgstr "Yetkili başvuru:"
 
 #: src/user/user-settings/details/UserDetailsForm.ts
-msgid "Auto-detect (based on your browser)"
-msgstr "Otomatik algıla (tarayıcınıza göre)"
+#~ msgid "Auto-detect (based on your browser)"
+#~ msgstr "Otomatik algıla (tarayıcınıza göre)"
 
 #: src/interfaces/UserInterface.ts
 msgid "Avatar image"
@@ -752,6 +759,7 @@ msgstr "Sertifikalar"
 msgid "Change password"
 msgstr "Parolayı değiştir"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Change status"
 msgstr "Durumu değiştir"
@@ -762,6 +770,7 @@ msgstr "Parolanızı değiştirin"
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/flows/FlowViewPage.ts
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/providers/ProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
@@ -906,6 +915,7 @@ msgstr "İstemci türü"
 
 #: src/elements/notifications/NotificationDrawer.ts
 #: src/pages/outposts/OutpostDeploymentModal.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Close"
 msgstr "Kapat"
@@ -1117,6 +1127,7 @@ msgstr "Kopya"
 msgid "Copy download URL"
 msgstr "İndirme URL'sini"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Copy recovery link"
 msgstr "Kurtarma bağlantısı kopyalama"
@@ -1166,6 +1177,9 @@ msgstr "Kurtarma bağlantısı kopyalama"
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
+#: src/pages/users/RelatedUserList.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
@@ -1232,6 +1246,8 @@ msgstr "İlke Oluştur"
 msgid "Create Prompt"
 msgstr "İstemi Oluştur"
 
+#: src/pages/users/RelatedUserList.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Create Service account"
@@ -1256,6 +1272,7 @@ msgstr "Sakin Oluştur"
 msgid "Create Token"
 msgstr "Belirteç Oluştur"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Create User"
 msgstr "Kullanıcı Oluştur"
@@ -1334,6 +1351,7 @@ msgstr "Tarih"
 msgid "Date Time"
 msgstr "Tarih Saat"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Deactivate"
@@ -1365,7 +1383,6 @@ msgstr "E-posta veya Webhook gibi kullanıcılara bildirimlerin nasıl gönderil
 
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
-#: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/elements/user/SessionList.ts
 #: src/elements/user/UserConsentList.ts
@@ -1376,6 +1393,7 @@ msgstr "E-posta veya Webhook gibi kullanıcılara bildirimlerin nasıl gönderil
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -1389,6 +1407,7 @@ msgstr "E-posta veya Webhook gibi kullanıcılara bildirimlerin nasıl gönderil
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
@@ -1410,7 +1429,7 @@ msgstr "Sil"
 #~ msgid "Delete Session"
 #~ msgstr "Oturumu Sil"
 
-#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
 msgid "Delete account"
 msgstr "Hesabı sil"
 
@@ -1607,6 +1626,7 @@ msgstr "Her sağlayıcı, uygulama kısa ismine bağlı farklı bir yayımcıya 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/flows/FlowViewPage.ts
 #: src/pages/flows/FlowViewPage.ts
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
@@ -1653,7 +1673,6 @@ msgstr "Herhangi bir uygulama tanımlanmamıştır ya da herhangi birine erişim
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Email"
 msgstr "E-posta"
 
@@ -1665,6 +1684,7 @@ msgstr "E-posta adresi"
 msgid "Email info:"
 msgstr "E-posta bilgileri:"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Email recovery link"
 msgstr "E-posta kurtarma bağlantısı"
@@ -1833,7 +1853,6 @@ msgstr "Bir isteğe izin verip reddedilmeyeceğini belirlemek için python parç
 msgid "Execution logging"
 msgstr "Yürütme günlüğü"
 
-#: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/elements/user/SessionList.ts
 #: src/elements/user/UserConsentList.ts
@@ -2209,6 +2228,10 @@ msgstr "Önceki sayfaya git"
 msgid "Group"
 msgstr "Grup"
 
+#: src/pages/groups/GroupViewPage.ts
+msgid "Group Info"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Group Property Mappings"
 msgstr "Grup Özellik Eşlemeleri"
@@ -2229,11 +2252,13 @@ msgstr "Grup nesnesi filtresi"
 msgid "Group users together and give them permissions based on the membership."
 msgstr "Kullanıcıları birlikte gruplandırın ve üyeliğe bağlı olarak izinler verin."
 
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Group {0}"
 msgstr "Grup {0}"
 
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 msgid "Group(s)"
 msgstr "Grup (ler)"
 
@@ -2241,6 +2266,7 @@ msgstr "Grup (ler)"
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/users/UserForm.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Groups"
 msgstr "Gruplar"
 
@@ -2283,6 +2309,7 @@ msgstr "Gizli: Gizli alan, form içine veri eklemek için kullanılabilir."
 msgid "Hide managed mappings"
 msgstr "Yönetilen eşlemeleri gizle"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Hide service-accounts"
 msgstr "Hizmet hesaplarını gizle"
@@ -2314,6 +2341,7 @@ msgstr "Nasıl bağlanır"
 
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "ID"
 msgstr "ID"
@@ -2377,6 +2405,10 @@ msgid "If no explicit redirect URIs are specified, the first successfully used r
 msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
+msgid "If set, users are able to configure details of their profile."
+msgstr ""
+
+#: src/pages/tenants/TenantForm.ts
 msgid "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown."
 msgstr "Ayarlanırsa, kullanıcılar bu akışı kullanarak kendi kayıtlarını kaldırabilir. Akış ayarlanmamışsa seçenek gösterilmez."
 
@@ -2400,6 +2432,7 @@ msgstr "Auentik Örneğiniz kendinden imzalı bir sertifika kullanıyorsa, bu de
 msgid "If your authentik_host setting does not match the URL you want to login with, add this setting."
 msgstr "Auentik_host ayarınız oturum açmak istediğiniz URL'yle eşleşmiyorsa, bu ayarı ekleyin."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Impersonate"
@@ -2434,6 +2467,7 @@ msgstr "Başka bir yönteme erişemiyorsanız."
 msgid "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com."
 msgstr "Bu durumda, Kimlik Doğrulama URL'sini auth.example.com ve Çerez etki alanı olarak example.com olarak ayarlamalısınız."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Inactive"
 msgstr "Etkin değil"
@@ -2588,6 +2622,7 @@ msgid "Last IP"
 msgstr "Son IP"
 
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Last login"
@@ -2667,7 +2702,7 @@ msgstr "Sunucuları yükle"
 #: src/flows/stages/prompt/PromptStage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/sources/SourceSettings.ts
 #: src/utils.ts
@@ -2688,8 +2723,6 @@ msgstr "Yükleniyor"
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-#: src/pages/policies/PolicyBindingForm.ts
-#: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
@@ -2744,6 +2777,7 @@ msgstr "Yükleniyor"
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
+#: src/pages/tenants/TenantForm.ts
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserResetEmailForm.ts
@@ -2757,8 +2791,8 @@ msgid "Local"
 msgstr "Yerel"
 
 #: src/user/user-settings/details/UserDetailsForm.ts
-msgid "Locale"
-msgstr "Yerelleştirme"
+#~ msgid "Locale"
+#~ msgstr "Yerelleştirme"
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
@@ -2949,7 +2983,9 @@ msgstr "Uygulamalarım"
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupForm.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
@@ -3008,10 +3044,10 @@ msgstr "Uygulamalarım"
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 #: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 #: src/user/user-settings/mfa/MFADeviceForm.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Name"
@@ -3070,6 +3106,7 @@ msgstr "Nginx (bağımsız)"
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
@@ -3077,6 +3114,7 @@ msgstr "Nginx (bağımsız)"
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "No"
@@ -3132,6 +3170,7 @@ msgstr "Hiçbir ilke şu anda bu nesneye bağlı değildir."
 msgid "No preference is sent"
 msgstr ""
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "No recovery flow is configured."
 msgstr "Kurtarma akışı yapılandırılmamış."
@@ -3139,6 +3178,10 @@ msgstr "Kurtarma akışı yapılandırılmamış."
 #: src/user/user-settings/sources/SourceSettings.ts
 msgid "No services available."
 msgstr "Hizmet yok."
+
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+msgid "No settings flow configured."
+msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "No stages are currently bound to this flow."
@@ -3239,8 +3282,8 @@ msgid "Number the SMS will be sent from."
 msgstr "Numara SMS gönderilecektir."
 
 #: src/pages/users/UserViewPage.ts
-msgid "OAuth Authorization Codes"
-msgstr "OAuth Yetkilendirme Kodları"
+#~ msgid "OAuth Authorization Codes"
+#~ msgstr "OAuth Yetkilendirme Kodları"
 
 #: src/pages/users/UserViewPage.ts
 msgid "OAuth Refresh Codes"
@@ -3295,6 +3338,10 @@ msgstr "API Tarayıcısını aç"
 #: src/pages/events/EventInfo.ts
 msgid "Open issue on GitHub..."
 msgstr "GitHub'da açık sorun..."
+
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+msgid "Open settings"
+msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "OpenID Configuration Issuer"
@@ -3401,6 +3448,7 @@ msgstr "Outposts, ters proxy'ler gibi farklı ortamları ve protokolleri destekl
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/providers/ProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
@@ -3416,6 +3464,7 @@ msgstr "PEM kodlu Sertifika verileri."
 
 #: src/pages/groups/GroupForm.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 msgid "Parent"
 msgstr "Ebeveyn"
 
@@ -3667,7 +3716,6 @@ msgstr "Protokol ayarları"
 msgid "Provide support for protocols like SAML and OAuth to assigned applications."
 msgstr "Atanan uygulamalara SAML ve OAuth gibi protokoller için destek sağlayın."
 
-#: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
@@ -3773,6 +3821,7 @@ msgstr "Cihazınızda anında iletme bildirimi alın."
 
 #: src/pages/flows/utils.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery"
 msgstr "Kurtarma"
@@ -3790,6 +3839,7 @@ msgstr "Kurtarma akışı. Boş bırakılırsa, kısa isme göre sıralanan ilk 
 msgid "Recovery keys"
 msgstr "Kurtarma tuşları"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Recovery link cannot be emailed, user has no email address saved."
 msgstr "Kurtarma bağlantısı e-posta ile gönderilemez, kullanıcının e-posta adresi kaydedilmez."
@@ -3833,6 +3883,7 @@ msgstr "Aygıtı kaydet"
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression."
 msgstr "Kimlik doğrulamasının gerekli olmadığı düzenli ifadeler. Her yeni satır yeni bir ifade olarak yorumlanır."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Regular user"
 msgstr "Düzenli kullanıcı"
@@ -3898,7 +3949,6 @@ msgstr "Zorunlu."
 
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Gerekli. 150 karakter veya daha az. Harfler, rakamlar ve yalnızca @/./+/-/_."
 
@@ -3930,6 +3980,7 @@ msgid "Retry authentication"
 msgstr "Kimlik doğrulamayı yeniden deneyin"
 
 #: src/flows/FlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Return"
 msgstr "İade"
 
@@ -4021,7 +4072,7 @@ msgstr "SSO URL"
 msgid "Same identifier is used for all providers"
 msgstr "Aynı tanımlayıcı tüm sağlayıcılar için kullanılır"
 
-#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
 msgid "Save"
 msgstr "Kaydet"
 
@@ -4033,7 +4084,6 @@ msgstr "Kapsam adı"
 msgid "Scope which the client can specify to access these properties."
 msgstr "İstemcinin bu özelliklere erişmek için belirtebileceği kapsam."
 
-#: src/elements/oauth/UserCodeList.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -4111,6 +4161,10 @@ msgstr "Bir kayıt akışı seçme"
 #~ msgid "Select an identification method."
 #~ msgstr "Bir tanımlama yöntemi seçin."
 
+#: src/elements/SearchSelect.ts
+msgid "Select an object."
+msgstr ""
+
 #: src/pages/users/GroupSelectModal.ts
 msgid "Select groups to add user to"
 msgstr "Kullanıcı eklemek için grupları seçin"
@@ -4158,6 +4212,7 @@ msgstr "Parolayı test etmek için arka uçların seçimi."
 msgid "Send Email again."
 msgstr "E-postayı tekrar gönder."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Send link"
 msgstr "Bağlantıyı gönder"
@@ -4170,6 +4225,7 @@ msgstr "Belirli bir Olay oluşturulduğunda ve ilkelerle eşleştirildiğinde bi
 msgid "Send once"
 msgstr "Bir kez gönder"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Send recovery link to user"
 msgstr "Kullanıcıya kurtarma bağlantısını gönder"
@@ -4252,6 +4308,7 @@ msgstr "authentik değerlerine göre özel bir HTTP-Basic Kimlik Doğrulama baş
 msgid "Set custom attributes using YAML or JSON."
 msgstr "YAML veya JSON kullanarak özel nitelikleri ayarlayın."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Set password"
 msgstr "Parola ayarla"
@@ -4336,6 +4393,7 @@ msgid "Slug"
 msgstr "Kısa İsim"
 
 #: src/flows/FlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Something went wrong! Please try again later."
 msgstr "Bir şeyler ters gitti! Lütfen daha sonra tekrar deneyin."
 
@@ -4681,6 +4739,7 @@ msgstr "{0} {1} başarıyla silindi"
 msgid "Successfully generated certificate-key pair."
 msgstr "Sertifika-anahtar çifti başarıyla oluşturuldu."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Successfully generated recovery link"
@@ -4717,9 +4776,13 @@ msgstr "Ciltleme başarıyla güncellendi."
 msgid "Successfully updated certificate-key pair."
 msgstr "Sertifika anahtarı çifti başarıyla güncelleştirildi."
 
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+msgid "Successfully updated details"
+msgstr ""
+
 #: src/user/user-settings/details/UserDetailsForm.ts
-msgid "Successfully updated details."
-msgstr "Ayrıntılar başarıyla güncellendi."
+#~ msgid "Successfully updated details."
+#~ msgstr "Ayrıntılar başarıyla güncellendi."
 
 #: src/user/user-settings/mfa/MFADeviceForm.ts
 msgid "Successfully updated device."
@@ -4835,13 +4898,16 @@ msgstr "Kullanıcı başarıyla güncellendi."
 msgid "Successfully updated {0} {1}"
 msgstr "{0} {1} başarıyla güncellendi"
 
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Superuser"
 msgstr "Süper kullanıcı"
 
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 msgid "Superuser privileges?"
 msgstr "Süper kullanıcı ayrıcalıkları mı?"
 
@@ -5158,6 +5224,7 @@ msgstr "Kurtarma bağlantısı oluşturmak için geçerli sakinin yapılandırı
 #~ msgid "To directly reset a user's password, configure a recovery flow on the currently active tenant."
 #~ msgstr "Bir kullanıcının parolasını doğrudan sıfırlamak için, etkin olan sakin üzerinde bir kurtarma akışı yapılandırın."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "To let a user directly reset a their password, configure a recovery flow on the currently active tenant."
 msgstr "Kullanıcının parolasını doğrudan sıfırlamasına izin vermek için, etkin olan sakin üzerinde bir kurtarma akışı yapılandırın."
@@ -5291,6 +5358,7 @@ msgid "UI settings"
 msgstr "UI ayarları"
 
 #: src/pages/events/EventInfo.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "UID"
 msgstr "UID"
@@ -5389,6 +5457,8 @@ msgstr "Güncel!"
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowViewPage.ts
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupViewPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -5411,6 +5481,7 @@ msgstr "Güncel!"
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserActiveForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
@@ -5442,6 +5513,8 @@ msgid "Update Flow"
 msgstr "Akışı Güncelle"
 
 #: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupViewPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Group"
 msgstr "Güncelleme Grubu"
@@ -5508,6 +5581,7 @@ msgid "Update Token"
 msgstr "Belirteç Güncelle"
 
 #: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Update User"
@@ -5521,6 +5595,8 @@ msgstr "Güncelleme mevcut"
 msgid "Update details"
 msgstr "Ayrıntıları güncelle"
 
+#: src/pages/users/RelatedUserList.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Update password"
@@ -5607,6 +5683,7 @@ msgstr "Bu sakini, ayrılmış bir sakine sahip olmayan her etki alanı için ku
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
 #: src/pages/tokens/TokenForm.ts
 #: src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
@@ -5675,10 +5752,15 @@ msgstr "Kullanıcı nesne filtresi"
 msgid "User password writeback"
 msgstr "Kullanıcı parolasını geri yazma"
 
+#: src/pages/tenants/TenantForm.ts
+msgid "User settings flow"
+msgstr ""
+
 #: src/pages/admin-overview/DashboardUserPage.ts
 msgid "User statistics"
 msgstr "Kullanıcı istatistikleri"
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "User status"
 msgstr "Kullanıcı durumu"
@@ -5713,10 +5795,10 @@ msgid "User's avatar"
 msgstr "Kullanıcının avatarı"
 
 #: src/pages/users/UserForm.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "User's display name."
 msgstr "Kullanıcının görünen adı."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "User(s)"
 msgstr "Kullanıcı (lar)"
@@ -5735,12 +5817,12 @@ msgstr "Userinfo URL'si"
 
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Username"
 msgstr "Kullanıcı Adı"
 
@@ -5751,6 +5833,7 @@ msgstr "Kullanıcı adı: Metin girişi ile aynı, ancak yinelenen kullanıcı a
 #: src/interfaces/AdminInterface.ts
 #: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/users/UserListPage.ts
 msgid "Users"
 msgstr "Kullanıcılar"
@@ -5878,6 +5961,7 @@ msgstr "Uyarı: Sağlayıcı herhangi bir Üs tarafından kullanılmaz."
 msgid "Warning: Provider not assigned to any application."
 msgstr "Uyarı: Sağlayıcı herhangi bir uygulamaya atanmamış."
 
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "Warning: You're about to delete the user you're logged in as ({0}). Proceed at your own risk."
 msgstr "Uyarı: Oturum açtığınız kullanıcıyı ({0}) silmek üzeresiniz. Kendi sorumluluğunuzdadır."
@@ -5980,6 +6064,7 @@ msgid "When using proxy or forward auth (single application) mode, the requested
 msgstr "Proxy veya ileri auth (tek uygulama) modunu kullanırken, istenen URL Yolu düzenli ifadelere karşı denetlenir. İleriye yönlendirme (etki alanı modu) kullanıldığında, şema ve ana bilgisayar da dahil olmak üzere istenen tam URL normal ifadelerle eşleştirilir."
 
 #: src/flows/FlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Whoops!"
 msgstr "Hay aksi!"
 
@@ -6007,6 +6092,7 @@ msgstr "X509 Konusu"
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
@@ -6014,6 +6100,7 @@ msgstr "X509 Konusu"
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/GroupSelectModal.ts
+#: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Yes"
@@ -6082,6 +6169,7 @@ msgstr "müfettiş ile"
 
 #: src/elements/Expand.ts
 #: src/elements/Expand.ts
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
 msgid "{0}"
 msgstr "{0}"
 
