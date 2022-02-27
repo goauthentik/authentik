@@ -32,7 +32,7 @@ class TestTypeMailcow(TestCase):
         )
 
     def test_enroll_context(self):
-        """Test discord Enrollment context"""
+        """Test mailcow Enrollment context"""
         ak_context = MailcowOAuth2Callback().get_user_enroll_context(MAILCOW_USER)
         self.assertEqual(ak_context["email"], MAILCOW_USER["email"])
         self.assertEqual(ak_context["name"], MAILCOW_USER["full_name"])
