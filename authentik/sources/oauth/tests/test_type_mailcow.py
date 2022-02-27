@@ -25,7 +25,7 @@ class TestTypeMailcow(TestCase):
         self.source = OAuthSource.objects.create(
             name="test",
             slug="test",
-            provider_type="openidconnect",
+            provider_type="mailcow",
             authorization_url="",
             profile_url="",
             consumer_key="",
