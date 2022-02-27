@@ -47,6 +47,11 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
     }
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
+        if (!payload) return Promise.reject();
+        if (!this.challenge) return Promise.reject();
+        // @ts-ignore
+        payload.component = this.challenge.component;
+        this.loading = true;
         return new FlowsApi(DEFAULT_CONFIG)
             .flowsExecutorSolve({
                 flowSlug: this.flowSlug || "",
