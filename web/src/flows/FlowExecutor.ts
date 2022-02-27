@@ -293,7 +293,6 @@ export class FlowExecutor extends LitElement implements StageHost {
                         ></ak-stage-autosubmit>`;
                     case "ak-stage-prompt":
                         return html`<ak-stage-prompt
-                            ?isVertical=${true}
                             .host=${this as StageHost}
                             .challenge=${this.challenge}
                         ></ak-stage-prompt>`;

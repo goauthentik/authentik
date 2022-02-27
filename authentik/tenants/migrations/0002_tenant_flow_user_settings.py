@@ -39,7 +39,7 @@ def create_default_user_settings_flow(apps: Apps, schema_editor: BaseDatabaseSch
     prompt_name, _ = Prompt.objects.using(db_alias).update_or_create(
         field_key="name",
         defaults={
-            "label": "Username",
+            "label": "Name",
             "type": FieldTypes.TEXT,
             "placeholder": "Name",
             "order": 101,

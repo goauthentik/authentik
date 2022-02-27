@@ -29003,6 +29003,7 @@ components:
       - okta
       - reddit
       - twitter
+      - mailcow
       type: string
     ProxyMode:
       enum:

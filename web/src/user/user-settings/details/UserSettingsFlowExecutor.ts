@@ -15,7 +15,7 @@ import {
 import { DEFAULT_CONFIG, tenant } from "../../../api/Config";
 import "../../../elements/LoadingOverlay";
 import { StageHost } from "../../../flows/stages/base";
-import "../../../flows/stages/prompt/PromptStage";
+import "./stages/prompt/PromptStage";
 
 @customElement("ak-user-settings-flow-executor")
 export class UserSettingsFlowExecutor extends LitElement implements StageHost {
@@ -126,10 +126,10 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
             case ChallengeChoices.Native:
                 switch (this.challenge.component) {
                     case "ak-stage-prompt":
-                        return html`<ak-stage-prompt
+                        return html`<ak-user-stage-prompt
                             .host=${this as StageHost}
                             .challenge=${this.challenge}
-                        ></ak-stage-prompt>`;
+                        ></ak-user-stage-prompt>`;
                     default:
                         console.log(
                             `authentik/user/flows: unsupported stage type ${this.challenge.component}`,

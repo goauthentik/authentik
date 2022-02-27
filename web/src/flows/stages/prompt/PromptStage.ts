@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import AKGlobal from "../../../authentik.css";
@@ -27,9 +27,6 @@ import { BaseStage } from "../base";
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {
-    @property({ type: Boolean })
-    isVertical = true;
-
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFAlert, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
@@ -121,11 +118,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
 
-    renderFieldHorizontal(prompt: StagePrompt): TemplateResult {
-        return html``;
-    }
-
-    renderFieldVertical(prompt: StagePrompt): TemplateResult {
+    renderField(prompt: StagePrompt): TemplateResult {
         // Checkbox is rendered differently
         if (prompt.type === PromptTypeEnum.Checkbox) {
             return html`<div class="pf-c-check">
@@ -178,11 +171,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     }}
                 >
                     ${this.challenge.fields.map((prompt) => {
-                        if (this.isVertical) {
-                            return this.renderFieldVertical(prompt);
-                        } else {
-                            return this.renderFieldHorizontal(prompt);
-                        }
+                        return this.renderField(prompt);
                     })}
                     ${"non_field_errors" in (this.challenge?.responseErrors || {})
                         ? this.renderNonFieldErrors(
