@@ -111,6 +111,16 @@ class GitHubOAuthSource(OAuthSource):
         verbose_name_plural = _("GitHub OAuth Sources")
 
 
+class MailcowOAuthSource(OAuthSource):
+    """Social Login using Mailcow."""
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _("Mailcow OAuth Source")
+        verbose_name_plural = _("Mailcow OAuth Sources")
+
+
 class TwitterOAuthSource(OAuthSource):
     """Social Login using Twitter.com"""
 
