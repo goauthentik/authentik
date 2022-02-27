@@ -90,7 +90,7 @@ export class FlowExecutor extends LitElement implements StageHost {
     loading = false;
 
     @property({ attribute: false })
-    tenant?: CurrentTenant;
+    tenant!: CurrentTenant;
 
     @property({ attribute: false })
     inspectorOpen: boolean;
@@ -124,6 +124,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         this.ws = new WebsocketClient();
         this.flowSlug = window.location.pathname.split("/")[3];
         this.inspectorOpen = window.location.search.includes("inspector");
+        tenant().then((tenant) => (this.tenant = tenant));
     }
 
     setBackground(url: string): void {
@@ -173,7 +174,6 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     firstUpdated(): void {
         configureSentry();
-        tenant().then((tenant) => (this.tenant = tenant));
         this.loading = true;
         new FlowsApi(DEFAULT_CONFIG)
             .flowsExecutorGet({

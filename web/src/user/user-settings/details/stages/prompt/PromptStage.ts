@@ -23,4 +23,22 @@ export class UserSettingsPromptStage extends PromptStage {
             </ak-form-element-horizontal>
         `;
     }
+
+    renderContinue(): TemplateResult {
+        return html` <div class="pf-c-form__group pf-m-action">
+            <div class="pf-c-form__horizontal-group">
+                <div class="pf-c-form__actions">
+                    <button type="submit" class="pf-c-button pf-m-primary">${t`Save`}</button>
+                    ${this.host.tenant.flowUnenrollment
+                        ? html` <a
+                              class="pf-c-button pf-m-danger"
+                              href="/if/flow/${this.host.tenant.flowUnenrollment}"
+                          >
+                              ${t`Delete account`}
+                          </a>`
+                        : html``}
+                </div>
+            </div>
+        </div>`;
+    }
 }

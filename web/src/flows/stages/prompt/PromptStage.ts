@@ -156,6 +156,14 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
         </ak-form-element>`;
     }
 
+    renderContinue(): TemplateResult {
+        return html` <div class="pf-c-form__group pf-m-action">
+            <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                ${t`Continue`}
+            </button>
+        </div>`;
+    }
+
     render(): TemplateResult {
         if (!this.challenge) {
             return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
@@ -178,11 +186,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                               this.challenge?.responseErrors?.non_field_errors || [],
                           )
                         : html``}
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${t`Continue`}
-                        </button>
-                    </div>
+                    ${this.renderContinue()}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">

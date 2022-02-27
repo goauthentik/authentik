@@ -7,6 +7,7 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import {
     ChallengeChoices,
     ChallengeTypes,
+    CurrentTenant,
     FlowChallengeResponseRequest,
     FlowsApi,
     ShellChallenge,
@@ -36,6 +37,14 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
 
     @property({ type: Boolean })
     loading = false;
+
+    @property({ attribute: false })
+    tenant!: CurrentTenant;
+
+    constructor() {
+        super();
+        tenant().then((tenant) => (this.tenant = tenant));
+    }
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         return new FlowsApi(DEFAULT_CONFIG)

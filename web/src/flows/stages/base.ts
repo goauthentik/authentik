@@ -1,13 +1,15 @@
 import { LitElement, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import { ErrorDetail } from "@goauthentik/api";
+import { CurrentTenant, ErrorDetail } from "@goauthentik/api";
 
 export interface StageHost {
     challenge?: unknown;
     flowSlug?: string;
     loading: boolean;
     submit(payload: unknown): Promise<boolean>;
+
+    readonly tenant: CurrentTenant;
 }
 
 export class BaseStage<Tin, Tout> extends LitElement {
