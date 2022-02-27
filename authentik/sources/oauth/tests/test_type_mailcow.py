@@ -14,7 +14,7 @@ MAILCOW_USER = {
     "displayName": "Example User",
     "created": "2020-05-15 11:33:08",
     "modified": "2020-05-15 12:23:31",
-    "active": 1
+    "active": 1,
 }
 
 
