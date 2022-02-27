@@ -2,9 +2,7 @@
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import (
-    User,
-)
+from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_key

@@ -49,6 +49,7 @@ class PromptSerializer(ModelSerializer):
             "order",
             "promptstage_set",
             "sub_text",
+            "placeholder_expression",
         ]
 
 

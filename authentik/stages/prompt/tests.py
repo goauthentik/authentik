@@ -42,6 +42,13 @@ class TestPromptStage(FlowTestCase):
             required=True,
             placeholder="TEXT_PLACEHOLDER",
         )
+        text_prompt_expression = Prompt.objects.create(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=FieldTypes.TEXT,
+            placeholder="import os;return os.getcwd()",
+            placeholder_expression=True,
+        )
         email_prompt = Prompt.objects.create(
             field_key="email_prompt",
             label="EMAIL_LABEL",
@@ -87,6 +94,7 @@ class TestPromptStage(FlowTestCase):
             [
                 username_prompt,
                 text_prompt,
+                text_prompt_expression,
                 email_prompt,
                 password_prompt,
                 password2_prompt,

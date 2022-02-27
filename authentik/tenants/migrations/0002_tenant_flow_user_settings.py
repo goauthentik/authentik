@@ -29,38 +29,43 @@ def create_default_user_settings_flow(apps: Apps, schema_editor: BaseDatabaseSch
 
     prompt_username, _ = Prompt.objects.using(db_alias).update_or_create(
         field_key="username",
+        order=200,
         defaults={
             "label": "Username",
-            "type": FieldTypes.USERNAME,
-            "placeholder": "Username",
-            "order": 100,
+            "type": FieldTypes.TEXT,
+            "placeholder": "return user.username",
+            "placeholder_expression": True,
         },
     )
     prompt_name, _ = Prompt.objects.using(db_alias).update_or_create(
         field_key="name",
+        order=201,
         defaults={
             "label": "Name",
             "type": FieldTypes.TEXT,
-            "placeholder": "Name",
-            "order": 101,
+            "placeholder": "return user.name",
+            "placeholder_expression": True,
         },
     )
     prompt_email, _ = Prompt.objects.using(db_alias).update_or_create(
         field_key="email",
+        order=202,
         defaults={
             "label": "Email",
             "type": FieldTypes.EMAIL,
-            "placeholder": "Email",
-            "order": 102,
+            "placeholder": "return user.email",
+            "placeholder_expression": True,
         },
     )
     prompt_locale, _ = Prompt.objects.using(db_alias).update_or_create(
         field_key="locale",
+        order=203,
         defaults={
             "label": "Locale",
             "type": FieldTypes.TEXT,
-            "placeholder": "Locale",
-            "order": 103,
+            "placeholder": 'return user.attributes.get("settings", {}).get("locale", "")',
+            "placeholder_expression": True,
+            "required": False
         },
     )
 
@@ -84,7 +89,7 @@ def create_default_user_settings_flow(apps: Apps, schema_editor: BaseDatabaseSch
         target=flow,
         stage=prompt_stage,
         defaults={
-            "order": 10,
+            "order": 20,
         },
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
@@ -105,6 +110,7 @@ def create_default_user_settings_flow(apps: Apps, schema_editor: BaseDatabaseSch
 class Migration(migrations.Migration):
 
     dependencies = [
+        ("authentik_stages_prompt", "0007_prompt_placeholder_expression"),
         ("authentik_flows", "0021_auto_20211227_2103"),
         ("authentik_tenants", "0001_squashed_0005_tenant_web_certificate"),
     ]
