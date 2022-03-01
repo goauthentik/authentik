@@ -1,16 +1,17 @@
 """Prompt tests"""
 from unittest.mock import MagicMock, patch
 
+from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework.exceptions import ErrorDetail
 
-from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptChallengeResponse
@@ -21,8 +22,8 @@ class TestPromptStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create(username="unittest", email="test@beryju.org")
-
+        self.user = create_test_admin_user()
+        self.factory = RequestFactory()
         self.flow = Flow.objects.create(
             name="test-prompt",
             slug="test-prompt",
@@ -41,13 +42,6 @@ class TestPromptStage(FlowTestCase):
             type=FieldTypes.TEXT,
             required=True,
             placeholder="TEXT_PLACEHOLDER",
-        )
-        text_prompt_expression = Prompt.objects.create(
-            field_key="text_prompt_expression",
-            label="TEXT_LABEL",
-            type=FieldTypes.TEXT,
-            placeholder="import os;return os.getcwd()",
-            placeholder_expression=True,
         )
         email_prompt = Prompt.objects.create(
             field_key="email_prompt",
@@ -94,7 +88,6 @@ class TestPromptStage(FlowTestCase):
             [
                 username_prompt,
                 text_prompt,
-                text_prompt_expression,
                 email_prompt,
                 password_prompt,
                 password2_prompt,
@@ -227,3 +220,38 @@ class TestPromptStage(FlowTestCase):
         self.assertNotEqual(challenge_response.validated_data["hidden_prompt"], "foo")
         self.assertEqual(challenge_response.validated_data["hidden_prompt"], "hidden")
         self.assertNotEqual(challenge_response.validated_data["static_prompt"], "foo")
+
+    def test_prompt_placeholder(self):
+        """Test placeholder and expression"""
+        context = {
+            "foo": generate_id(),
+        }
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=FieldTypes.TEXT,
+            placeholder="return foo",
+            placeholder_expression=True,
+        )
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), context["foo"]
+        )
+        context["text_prompt_expression"] = generate_id()
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")),
+            context["text_prompt_expression"],
+        )
+        self.assertNotEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), context["foo"]
+        )
+        context = {}
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=FieldTypes.TEXT,
+            placeholder="return foo",
+            placeholder_expression=False,
+        )
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), prompt.placeholder
+        )

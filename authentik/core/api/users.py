@@ -24,7 +24,6 @@ from drf_spectacular.utils import (
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, DictField, JSONField, SerializerMethodField
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -54,7 +53,6 @@ from authentik.core.models import (
     User,
 )
 from authentik.events.models import EventAction
-from authentik.lib.config import CONFIG
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage

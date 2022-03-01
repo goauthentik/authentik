@@ -108,7 +108,7 @@ class PromptChallengeResponse(ChallengeResponse):
         if password_fields.exists() and password_fields.count() == 2:
             self._validate_password_fields(*[field.field_key for field in password_fields])
 
-        user = self.plan.context.get(PLAN_CONTEXT_PENDING_USER, get_anonymous_user())
+        user = self.plan.context.get(PLAN_CONTEXT_PENDING_USER, self.request.user)
         engine = ListPolicyEngine(self.stage.validation_policies.all(), user, self.request)
         engine.mode = PolicyEngineMode.MODE_ALL
         engine.request.context[PLAN_CONTEXT_PROMPT] = attrs
