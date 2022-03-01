@@ -7,7 +7,6 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
-from guardian.shortcuts import get_anonymous_user
 from rest_framework.fields import BooleanField, CharField, ChoiceField, IntegerField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger

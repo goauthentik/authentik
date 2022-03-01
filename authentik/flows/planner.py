@@ -124,6 +124,8 @@ class FlowPlanner:
     ) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
+        if not default_context:
+            default_context = {}
         with Hub.current.start_span(
             op="authentik.flow.planner.plan", description=self.flow.slug
         ) as span:
@@ -137,16 +139,13 @@ class FlowPlanner:
             # Bit of a workaround here, if there is a pending user set in the default context
             # we use that user for our cache key
             # to make sure they don't get the generic response
-            if default_context and PLAN_CONTEXT_PENDING_USER in default_context:
-                user = default_context[PLAN_CONTEXT_PENDING_USER]
-            else:
-                user = request.user
+            if PLAN_CONTEXT_PENDING_USER not in default_context:
+                default_context[PLAN_CONTEXT_PENDING_USER] = request.user
             # First off, check the flow's direct policy bindings
             # to make sure the user even has access to the flow
             engine = PolicyEngine(self.flow, user, request)
-            if default_context:
-                span.set_data("default_context", cleanse_dict(default_context))
-                engine.request.context = default_context
+            span.set_data("default_context", cleanse_dict(default_context))
+            engine.request.context = default_context
             engine.build()
             result = engine.result
             if not result.passing:
