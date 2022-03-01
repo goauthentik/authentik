@@ -13,7 +13,7 @@ from authentik.core.models import User
 from authentik.events.models import cleanse_dict
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import Flow, FlowStageBinding, Stage
+from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage
 from authentik.lib.config import CONFIG
 from authentik.policies.engine import PolicyEngine
 
@@ -141,6 +141,7 @@ class FlowPlanner:
             # to make sure they don't get the generic response
             if PLAN_CONTEXT_PENDING_USER not in default_context:
                 default_context[PLAN_CONTEXT_PENDING_USER] = request.user
+            user = default_context[PLAN_CONTEXT_PENDING_USER]
             # First off, check the flow's direct policy bindings
             # to make sure the user even has access to the flow
             engine = PolicyEngine(self.flow, user, request)
@@ -155,14 +156,15 @@ class FlowPlanner:
             # User is passing so far, check if we have a cached plan
             cached_plan_key = cache_key(self.flow, user)
             cached_plan = cache.get(cached_plan_key, None)
-            if cached_plan and self.use_cache:
-                self._logger.debug(
-                    "f(plan): taking plan from cache",
-                    key=cached_plan_key,
-                )
-                # Reset the context as this isn't factored into caching
-                cached_plan.context = default_context or {}
-                return cached_plan
+            if self.flow.designation not in [FlowDesignation.STAGE_CONFIGURATION]:
+                if cached_plan and self.use_cache:
+                    self._logger.debug(
+                        "f(plan): taking plan from cache",
+                        key=cached_plan_key,
+                    )
+                    # Reset the context as this isn't factored into caching
+                    cached_plan.context = default_context or {}
+                    return cached_plan
             self._logger.debug(
                 "f(plan): building plan",
             )

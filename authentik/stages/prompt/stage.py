@@ -7,6 +7,7 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
+from guardian.shortcuts import get_anonymous_user
 from rest_framework.fields import BooleanField, CharField, ChoiceField, IntegerField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
@@ -107,7 +108,7 @@ class PromptChallengeResponse(ChallengeResponse):
         if password_fields.exists() and password_fields.count() == 2:
             self._validate_password_fields(*[field.field_key for field in password_fields])
 
-        user = self.plan.context.get(PLAN_CONTEXT_PENDING_USER, self.request.user)
+        user = self.plan.context.get(PLAN_CONTEXT_PENDING_USER, get_anonymous_user())
         engine = ListPolicyEngine(self.stage.validation_policies.all(), user, self.request)
         engine.mode = PolicyEngineMode.MODE_ALL
         engine.request.context[PLAN_CONTEXT_PROMPT] = attrs
