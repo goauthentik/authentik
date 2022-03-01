@@ -7,7 +7,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from hashlib import sha256
 from typing import Any, Optional
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
@@ -266,8 +266,8 @@ class OAuth2Provider(Provider):
         if self.redirect_uris == "":
             return None
         main_url = self.redirect_uris.split("\n", maxsplit=1)[0]
-        launch_url = urlparse(main_url)
-        return main_url.replace(launch_url.path, "")
+        launch_url = urlparse(main_url)._replace(path="")
+        return urlunparse(launch_url)
 
     @property
     def component(self) -> str:
