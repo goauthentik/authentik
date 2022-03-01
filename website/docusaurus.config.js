@@ -95,7 +95,8 @@ module.exports = {
             respectPrefersColorScheme: true,
         },
         algolia: {
-            apiKey: "1b60b8f630b127697cbe0d3b31841470",
+            appId: "36ROD0O0FV",
+            apiKey: "727db511300ca9aec5425645bbbddfb5",
             indexName: "goauthentik",
         },
     },

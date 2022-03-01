@@ -418,16 +418,12 @@ export class FlowExecutor extends LitElement implements StageHost {
                                                         </li>`;
                                                     }),
                                                 )}
-                                                ${this.tenant?.brandingTitle != "authentik"
-                                                    ? html`
-                                                          <li>
-                                                              <a
-                                                                  href="https://goauthentik.io?utm_source=authentik&amp;utm_medium=flow"
-                                                                  >${t`Powered by authentik`}</a
-                                                              >
-                                                          </li>
-                                                      `
-                                                    : html``}
+                                                <li>
+                                                    <a
+                                                        href="https://goauthentik.io?utm_source=authentik&amp;utm_medium=flow"
+                                                        >${t`Powered by authentik`}</a
+                                                    >
+                                                </li>
                                                 ${this.challenge?.flowInfo?.background?.startsWith(
                                                     "/static",
                                                 )

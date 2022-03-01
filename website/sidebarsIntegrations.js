@@ -18,6 +18,7 @@ module.exports = {
                 "services/gitlab/index",
                 "services/grafana/index",
                 "services/harbor/index",
+                "services/hashicorp-vault/index",
                 "services/hedgedoc/index",
                 "services/home-assistant/index",
                 "services/matrix-synapse/index",
