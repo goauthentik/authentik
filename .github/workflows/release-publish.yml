@@ -9,7 +9,7 @@ jobs:
   build-server:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
       - name: Set up Docker Buildx
@@ -54,7 +54,7 @@ jobs:
           - proxy
           - ldap
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-go@v2
         with:
           go-version: "^1.17"
@@ -105,7 +105,7 @@ jobs:
         goos: [linux, darwin]
         goarch: [amd64, arm64]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-go@v2
         with:
           go-version: "^1.17"
@@ -139,7 +139,7 @@ jobs:
       - build-outpost-binary
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run test suite in final docker images
         run: |
           echo "PG_PASS=$(openssl rand -base64 32)" >> .env
@@ -155,7 +155,7 @@ jobs:
       - build-outpost-binary
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Get static files from docker image
         run: |
           docker pull ghcr.io/goauthentik/server:latest

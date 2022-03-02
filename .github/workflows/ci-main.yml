@@ -31,7 +31,7 @@ jobs:
           - pending-migrations
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
       - uses: actions/setup-node@v3.0.0
         with:
@@ -50,7 +50,7 @@ jobs:
   test-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
       - id: cache-poetry
         uses: actions/cache@v2.1.7
@@ -66,7 +66,7 @@ jobs:
   test-migrations-from-stable:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v3
@@ -114,7 +114,7 @@ jobs:
   test-unittest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
       - id: cache-poetry
         uses: actions/cache@v2.1.7
@@ -141,7 +141,7 @@ jobs:
   test-integration:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
       - id: cache-poetry
         uses: actions/cache@v2.1.7
@@ -170,7 +170,7 @@ jobs:
   test-e2e-provider:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
       - uses: actions/setup-node@v3.0.0
         with:
@@ -215,7 +215,7 @@ jobs:
   test-e2e-rest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
       - uses: actions/setup-node@v3.0.0
         with:
@@ -279,7 +279,7 @@ jobs:
         arch:
           - 'linux/amd64'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
       - name: Set up Docker Buildx
