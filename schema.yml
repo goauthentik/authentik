@@ -20451,11 +20451,7 @@ components:
           items:
             $ref: '#/components/schemas/FooterLink'
           readOnly: true
-          default:
-          - href: https://goauthentik.io/docs/?utm_source=authentik
-            name: Documentation
-          - href: https://goauthentik.io/?utm_source=authentik
-            name: authentik Website
+          default: []
         flow_authentication:
           type: string
         flow_invalidation:
@@ -27754,6 +27750,8 @@ components:
             $ref: '#/components/schemas/StageRequest'
         sub_text:
           type: string
+        placeholder_expression:
+          type: boolean
     PatchedPromptStageRequest:
       type: object
       description: PromptStage Serializer
@@ -28709,6 +28707,8 @@ components:
             $ref: '#/components/schemas/Stage'
         sub_text:
           type: string
+        placeholder_expression:
+          type: boolean
       required:
       - field_key
       - label
@@ -28776,6 +28776,8 @@ components:
             $ref: '#/components/schemas/StageRequest'
         sub_text:
           type: string
+        placeholder_expression:
+          type: boolean
       required:
       - field_key
       - label

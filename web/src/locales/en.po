@@ -2560,6 +2560,10 @@ msgstr "Internal host"
 msgid "Internal host SSL Validation"
 msgstr "Internal host SSL Validation"
 
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "Interpret placeholder as expression"
+msgstr "Interpret placeholder as expression"
+
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid ""
 "Invalid login attempts will decrease the score for the client's IP, and the\n"
@@ -6130,6 +6134,14 @@ msgstr "When a user returns from the email successfully, their account will be a
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
 msgstr "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown."
+
+#: src/pages/stages/prompt/PromptForm.ts
+msgid ""
+"When checked, the placeholder will be evaluated in the same way environment as a property mapping.\n"
+"If the evaluation failed, the placeholder itself is returned."
+msgstr ""
+"When checked, the placeholder will be evaluated in the same way environment as a property mapping.\n"
+"If the evaluation failed, the placeholder itself is returned."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."

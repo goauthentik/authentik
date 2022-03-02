@@ -158,13 +158,25 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     <label class="pf-c-check__label"> ${t`Required`} </label>
                 </div>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="placeholderExpression">
+                <div class="pf-c-check">
+                    <input
+                        type="checkbox"
+                        class="pf-c-check__input"
+                        ?checked=${first(this.instance?.placeholderExpression, false)}
+                    />
+                    <label class="pf-c-check__label"
+                        >${t`Interpret placeholder as expression`}</label
+                    >
+                </div>
+                <p class="pf-c-form__helper-text">
+                    ${t`When checked, the placeholder will be evaluated in the same way environment as a property mapping.
+                    If the evaluation failed, the placeholder itself is returned.`}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Placeholder`} name="placeholder">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.placeholder)}"
-                    class="pf-c-form-control"
-                    required
-                />
+                <ak-codemirror mode="python" value="${ifDefined(this.instance?.placeholder)}">
+                </ak-codemirror>
                 <p class="pf-c-form__helper-text">${t`Optionally pre-fill the input value`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Help text`} name="subText">
