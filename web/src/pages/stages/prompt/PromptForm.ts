@@ -115,6 +115,12 @@ export class PromptForm extends ModelForm<Prompt, string> {
             >
                 ${t`Static: Static value, displayed as-is.`}
             </option>
+            <option
+                value=${PromptTypeEnum.AkLocale}
+                ?selected=${this.instance?.type === PromptTypeEnum.AkLocale}
+            >
+                ${t`authentik: Locale: Displays a list of locales authentik supports.`}
+            </option>
         `;
     }
 

@@ -23,6 +23,7 @@ import {
 import "../../../elements/Divider";
 import "../../../elements/EmptyState";
 import "../../../elements/forms/FormElement";
+import { LOCALES } from "../../../interfaces/locale";
 import { BaseStage } from "../base";
 
 @customElement("ak-stage-prompt")
@@ -106,6 +107,20 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     ?required=${prompt.required}>`;
             case PromptTypeEnum.Static:
                 return `<p>${prompt.placeholder}</p>`;
+            case PromptTypeEnum.AkLocale:
+                return `<select class="pf-c-form-control">
+                    <option value="" ?selected=${prompt.placeholder}>
+                        ${t`Auto-detect (based on your browser)`}
+                    </option>
+                    ${LOCALES.map((locale) => {
+                        return `<option
+                            value=${locale.code}
+                            ?selected=${prompt.placeholder === locale.code}
+                        >
+                            ${locale.code.toUpperCase()} - ${locale.label}
+                        </option>`;
+                    })}
+                </select>`;
             default:
                 return `<p>invalid type '${prompt.type}'</p>`;
         }

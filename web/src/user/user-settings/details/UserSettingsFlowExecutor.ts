@@ -1,8 +1,14 @@
 import { t } from "@lingui/macro";
 
-import { LitElement, TemplateResult, html } from "lit";
+import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
+
+import AKGlobal from "../../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     ChallengeChoices,
@@ -10,6 +16,7 @@ import {
     CurrentTenant,
     FlowChallengeResponseRequest,
     FlowsApi,
+    RedirectChallenge,
     ShellChallenge,
 } from "@goauthentik/api";
 
@@ -42,6 +49,10 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
 
     @property({ attribute: false })
     tenant!: CurrentTenant;
+
+    static get styles(): CSSResult[] {
+        return [PFBase, PFPage, PFButton, PFContent, AKGlobal];
+    }
 
     constructor() {
         super();
@@ -140,7 +151,14 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
         }
         switch (this.challenge.type) {
             case ChallengeChoices.Redirect:
-                return html`<a href="" class="pf-c-button">${"Edit settings"}</a>`;
+                if ((this.challenge as RedirectChallenge).to !== "/") {
+                    return html`<a href="${(this.challenge as RedirectChallenge).to}" class="pf-c-button pf-m-primary">${"Edit settings"}</a>`;
+                }
+                // Flow has finished, so let's load while in the background we can restart the flow
+                this.loading = true;
+                console.debug(`authentik/user/flows: redirect to '/', restarting flow.`);
+                this.firstUpdated();
+                return html``;
             case ChallengeChoices.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
             case ChallengeChoices.Native:
@@ -155,7 +173,7 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
                             `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
                         );
                         return html`
-                            <a href="/if/flow/${this.flowSlug}" class="pf-c-button">
+                            <a href="/if/flow/${this.flowSlug}" class="pf-c-button pf-m-primary">
                                 ${t`Open settings`}
                             </a>
                         `;

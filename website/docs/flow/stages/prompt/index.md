@@ -22,6 +22,7 @@ The prompt can be any of the following types:
 | Separator | Passive element to group surrounding elements |
 | Hidden | Hidden input field. Allows for the pre-setting of default values. |
 | Static | Display arbitrary value as is |
+| authentik: Locale | Display a list of all locales authentik supports. |
 
 Some types have special behaviors:
 

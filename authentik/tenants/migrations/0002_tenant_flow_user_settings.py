@@ -86,10 +86,10 @@ def create_default_user_settings_flow(apps: Apps, schema_editor: BaseDatabaseSch
         order=203,
         defaults={
             "label": "Locale",
-            "type": FieldTypes.TEXT,
+            "type": FieldTypes.AK_LOCALE,
             "placeholder": 'return user.attributes.get("settings", {}).get("locale", "")',
             "placeholder_expression": True,
-            "required": False,
+            "required": True,
         },
     )
 

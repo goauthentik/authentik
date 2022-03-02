@@ -543,9 +543,9 @@ msgstr "授权 URL"
 msgid "Authorized application:"
 msgstr "授权应用程序："
 
-#: src/user/user-settings/details/UserDetailsForm.ts
-#~ msgid "Auto-detect (based on your browser)"
-#~ msgstr "自动检测（基于您的浏览器）"
+#: src/flows/stages/prompt/PromptStage.ts
+msgid "Auto-detect (based on your browser)"
+msgstr "自动检测（基于您的浏览器）"
 
 #: src/interfaces/UserInterface.ts
 msgid "Avatar image"
@@ -6140,6 +6140,10 @@ msgstr "app1 在 app1.example.com 上运行"
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "authentik running on auth.example.com"
 msgstr "auth.example.com 上运行的 authentik"
+
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "authentik: Locale: Displays a list of locales authentik supports."
+msgstr ""
 
 #: src/elements/forms/DeleteForm.ts
 msgid "connecting object will be deleted"

@@ -17616,6 +17616,7 @@ paths:
         schema:
           type: string
           enum:
+          - ak-locale
           - checkbox
           - date
           - date-time
@@ -28865,6 +28866,7 @@ components:
       - separator
       - hidden
       - static
+      - ak-locale
       type: string
     PropertyMapping:
       type: object

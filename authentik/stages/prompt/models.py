@@ -65,6 +65,8 @@ class FieldTypes(models.TextChoices):
     HIDDEN = "hidden", _("Hidden: Hidden field, can be used to insert data into form.")
     STATIC = "static", _("Static: Static value, displayed as-is.")
 
+    AK_LOCALE = "ak-locale", _("authentik: Selection of locales authentik supports")
+
 
 class Prompt(SerializerModel):
     """Single Prompt, part of a prompt stage."""
@@ -123,10 +125,6 @@ class Prompt(SerializerModel):
             field_class = EmailField
         if self.type == FieldTypes.NUMBER:
             field_class = IntegerField
-        if self.type == FieldTypes.HIDDEN:
-            field_class = HiddenField
-            kwargs["required"] = False
-            kwargs["default"] = self.placeholder
         if self.type == FieldTypes.CHECKBOX:
             field_class = BooleanField
             kwargs["required"] = False
@@ -134,13 +132,22 @@ class Prompt(SerializerModel):
             field_class = DateField
         if self.type == FieldTypes.DATE_TIME:
             field_class = DateTimeField
+
+        if self.type == FieldTypes.SEPARATOR:
+            kwargs["required"] = False
+            kwargs["label"] = ""
+        if self.type == FieldTypes.HIDDEN:
+            field_class = HiddenField
+            kwargs["required"] = False
+            kwargs["default"] = self.placeholder
         if self.type == FieldTypes.STATIC:
             kwargs["default"] = self.placeholder
             kwargs["required"] = False
             kwargs["label"] = ""
-        if self.type == FieldTypes.SEPARATOR:
-            kwargs["required"] = False
-            kwargs["label"] = ""
+
+        if self.type == FieldTypes.AK_LOCALE:
+            kwargs["allow_blank"] = True
+
         if default:
             kwargs["default"] = default
         # May not set both `required` and `default`

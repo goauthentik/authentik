@@ -541,9 +541,9 @@ msgstr "URL autoryzacji"
 msgid "Authorized application:"
 msgstr "Autoryzowana aplikacja:"
 
-#: src/user/user-settings/details/UserDetailsForm.ts
-#~ msgid "Auto-detect (based on your browser)"
-#~ msgstr "Automatycznie wykryj (na podstawie Twojej przeglądarki)"
+#: src/flows/stages/prompt/PromptStage.ts
+msgid "Auto-detect (based on your browser)"
+msgstr "Automatycznie wykryj (na podstawie Twojej przeglądarki)"
 
 #: src/interfaces/UserInterface.ts
 msgid "Avatar image"
@@ -6140,6 +6140,10 @@ msgstr "app1 działająca na app1.example.com"
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "authentik running on auth.example.com"
 msgstr "authentik działa na auth.example.com"
+
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "authentik: Locale: Displays a list of locales authentik supports."
+msgstr ""
 
 #: src/elements/forms/DeleteForm.ts
 msgid "connecting object will be deleted"
