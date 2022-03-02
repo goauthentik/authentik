@@ -5599,7 +5599,7 @@ msgstr "Benutzer ändern"
 msgid "Update available"
 msgstr "Update verfügbar"
 
-#: src/user/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Update details"
 msgstr "Angaben aktualisieren"
 

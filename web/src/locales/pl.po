@@ -5590,7 +5590,7 @@ msgstr "Zaktualizuj użytkownika"
 msgid "Update available"
 msgstr "Dostępna aktualizacja"
 
-#: src/user/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Update details"
 msgstr "Zaktualizuj szczegóły"
 

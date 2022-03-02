@@ -5690,7 +5690,7 @@ msgstr ""
 msgid "Update available"
 msgstr ""
 
-#: src/user/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Update details"
 msgstr ""
 

@@ -64,7 +64,10 @@ def create_default_user_settings_flow(apps: Apps, schema_editor: BaseDatabaseSch
         defaults={
             "label": "Username",
             "type": FieldTypes.TEXT,
-            "placeholder": "return user.username",
+            "placeholder": """try:
+    return user.username
+except:
+    return """,
             "placeholder_expression": True,
         },
     )
@@ -74,7 +77,10 @@ def create_default_user_settings_flow(apps: Apps, schema_editor: BaseDatabaseSch
         defaults={
             "label": "Name",
             "type": FieldTypes.TEXT,
-            "placeholder": "return user.name",
+            "placeholder": """try:
+    return user.name
+except:
+    return """,
             "placeholder_expression": True,
         },
     )
@@ -84,17 +90,23 @@ def create_default_user_settings_flow(apps: Apps, schema_editor: BaseDatabaseSch
         defaults={
             "label": "Email",
             "type": FieldTypes.EMAIL,
-            "placeholder": "return user.email",
+            "placeholder": """try:
+    return user.email
+except:
+    return """,
             "placeholder_expression": True,
         },
     )
     prompt_locale, _ = Prompt.objects.using(db_alias).update_or_create(
-        field_key="locale",
+        field_key="attributes.settings.locale",
         order=203,
         defaults={
             "label": "Locale",
             "type": FieldTypes.AK_LOCALE,
-            "placeholder": 'return user.attributes.get("settings", {}).get("locale", "")',
+            "placeholder": """try:
+    return return user.attributes.get("settings", {}).get("locale", "")
+except:
+    return """,
             "placeholder_expression": True,
             "required": True,
         },

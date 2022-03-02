@@ -5710,7 +5710,7 @@ msgstr "Update User"
 msgid "Update available"
 msgstr "Update available"
 
-#: src/user/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Update details"
 msgstr "Update details"
 

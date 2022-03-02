@@ -5590,7 +5590,7 @@ msgstr "更新用户"
 msgid "Update available"
 msgstr "更新可用"
 
-#: src/user/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Update details"
 msgstr "更新详情"
 

@@ -5595,7 +5595,7 @@ msgstr "Kullanıcı Güncelle"
 msgid "Update available"
 msgstr "Güncelleme mevcut"
 
-#: src/user/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Update details"
 msgstr "Ayrıntıları güncelle"
 

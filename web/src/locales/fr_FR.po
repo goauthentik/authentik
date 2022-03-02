@@ -5651,7 +5651,7 @@ msgstr "Mettre à jour l'utilisateur"
 msgid "Update available"
 msgstr "Mise à jour disponibl"
 
-#: src/user/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Update details"
 msgstr "Détails de la mise à jour"
 
