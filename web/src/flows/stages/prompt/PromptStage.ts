@@ -109,17 +109,17 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                 return `<p>${prompt.placeholder}</p>`;
             case PromptTypeEnum.AkLocale:
                 return `<select class="pf-c-form-control">
-                    <option value="" ?selected=${prompt.placeholder}>
+                    <option value="" ${prompt.placeholder === "" ? "selected" : ""}>
                         ${t`Auto-detect (based on your browser)`}
                     </option>
                     ${LOCALES.map((locale) => {
                         return `<option
                             value=${locale.code}
-                            ?selected=${prompt.placeholder === locale.code}
+                            ${prompt.placeholder === locale.code ? "selected" : ""}
                         >
                             ${locale.code.toUpperCase()} - ${locale.label}
                         </option>`;
-                    })}
+                    }).join("")}
                 </select>`;
             default:
                 return `<p>invalid type '${prompt.type}'</p>`;
