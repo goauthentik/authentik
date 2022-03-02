@@ -22,6 +22,8 @@ import {
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG, tenant } from "../../../api/Config";
+import { refreshMe } from "../../../api/Users";
+import { EVENT_REFRESH } from "../../../constants";
 import "../../../elements/LoadingOverlay";
 import { MessageLevel } from "../../../elements/messages/Message";
 import { showMessage } from "../../../elements/messages/MessageContainer";
@@ -146,6 +148,24 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
         } as ChallengeTypes;
     }
 
+    globalRefresh(): void {
+        refreshMe().then(() => {
+            this.dispatchEvent(
+                new CustomEvent(EVENT_REFRESH, {
+                    bubbles: true,
+                    composed: true,
+                }),
+            );
+            try {
+                document.querySelectorAll("ak-interface-user").forEach((int) => {
+                    (int as LitElement).requestUpdate();
+                });
+            } catch {
+                console.debug("authentik/user/flows: failed to find interface to refresh");
+            }
+        });
+    }
+
     renderChallenge(): TemplateResult {
         if (!this.challenge) {
             return html``;
@@ -163,6 +183,7 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
                 this.loading = true;
                 console.debug("authentik/user/flows: redirect to '/', restarting flow.");
                 this.firstUpdated();
+                this.globalRefresh();
                 return html``;
             case ChallengeChoices.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;

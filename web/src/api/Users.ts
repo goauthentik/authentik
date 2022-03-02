@@ -2,7 +2,13 @@ import { CoreApi, SessionUser } from "@goauthentik/api";
 import { activateLocale } from "../interfaces/locale";
 import { DEFAULT_CONFIG } from "./Config";
 
-let globalMePromise: Promise<SessionUser>;
+let globalMePromise: Promise<SessionUser> | undefined;
+
+export function refreshMe(): Promise<SessionUser> {
+    globalMePromise = undefined;
+    return me();
+}
+
 export function me(): Promise<SessionUser> {
     if (!globalMePromise) {
         globalMePromise = new CoreApi(DEFAULT_CONFIG).coreUsersMeRetrieve().then((user) => {

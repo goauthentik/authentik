@@ -31209,7 +31209,6 @@ components:
           type: string
       required:
       - component
-      - icon_url
       - object_uid
       - title
     UserSourceConnection:
