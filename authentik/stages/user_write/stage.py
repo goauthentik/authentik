@@ -3,6 +3,7 @@ from typing import Any
 
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
 from django.db.utils import IntegrityError
 from django.http import HttpRequest, HttpResponse
@@ -56,7 +57,12 @@ class UserWriteStageView(StageView):
             return self.executor.stage_invalid()
         data = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
         user_created = False
-        if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
+        # check if pending user is set (default to anonymous user), if
+        # it's an anonymous user then we need to create a new user.
+        if isinstance(
+            self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER, AnonymousUser()),
+            AnonymousUser,
+        ):
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
                 is_active=not self.executor.current_stage.create_users_as_inactive
             )

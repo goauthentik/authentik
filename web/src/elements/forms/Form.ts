@@ -1,7 +1,6 @@
 import "@polymer/iron-form/iron-form";
 import { IronFormElement } from "@polymer/iron-form/iron-form";
 import "@polymer/paper-input/paper-input";
-import { PaperInputElement } from "@polymer/paper-input/paper-input";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -22,6 +21,7 @@ import { showMessage } from "../../elements/messages/MessageContainer";
 import { camelToSnake, convertToSlug } from "../../utils";
 import { SearchSelect } from "../SearchSelect";
 import { MessageLevel } from "../messages/Message";
+import { HorizontalFormElement } from "./HorizontalFormElement";
 
 export class APIError extends Error {
     constructor(public response: ValidationError) {
@@ -217,16 +217,15 @@ export class Form<T> extends LitElement {
                         throw errorMessage;
                     }
                     // assign all input-related errors to their elements
-                    const elements: PaperInputElement[] = ironForm._getSubmittableElements();
+                    const elements: HorizontalFormElement[] = ironForm._getSubmittableElements();
                     elements.forEach((element) => {
                         const elementName = element.name;
                         if (!elementName) return;
                         if (camelToSnake(elementName) in errorMessage) {
-                            element.errorMessage =
-                                errorMessage[camelToSnake(elementName)].join(", ");
+                            element.errorMessages = errorMessage[camelToSnake(elementName)];
                             element.invalid = true;
                         } else {
-                            element.errorMessage = "";
+                            element.errorMessages = [];
                             element.invalid = false;
                         }
                     });

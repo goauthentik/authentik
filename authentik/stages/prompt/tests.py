@@ -1,16 +1,17 @@
 """Prompt tests"""
 from unittest.mock import MagicMock, patch
 
+from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework.exceptions import ErrorDetail
 
-from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptChallengeResponse
@@ -21,8 +22,8 @@ class TestPromptStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create(username="unittest", email="test@beryju.org")
-
+        self.user = create_test_admin_user()
+        self.factory = RequestFactory()
         self.flow = Flow.objects.create(
             name="test-prompt",
             slug="test-prompt",
@@ -219,3 +220,95 @@ class TestPromptStage(FlowTestCase):
         self.assertNotEqual(challenge_response.validated_data["hidden_prompt"], "foo")
         self.assertEqual(challenge_response.validated_data["hidden_prompt"], "hidden")
         self.assertNotEqual(challenge_response.validated_data["static_prompt"], "foo")
+
+    def test_prompt_placeholder(self):
+        """Test placeholder and expression"""
+        context = {
+            "foo": generate_id(),
+        }
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=FieldTypes.TEXT,
+            placeholder="return prompt_context['foo']",
+            placeholder_expression=True,
+        )
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), context["foo"]
+        )
+        context["text_prompt_expression"] = generate_id()
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")),
+            context["text_prompt_expression"],
+        )
+        self.assertNotEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), context["foo"]
+        )
+
+    def test_prompt_placeholder_error(self):
+        """Test placeholder and expression"""
+        context = {}
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=FieldTypes.TEXT,
+            placeholder="something invalid dunno",
+            placeholder_expression=True,
+        )
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")),
+            "something invalid dunno",
+        )
+
+    def test_prompt_placeholder_disabled(self):
+        """Test placeholder and expression"""
+        context = {}
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=FieldTypes.TEXT,
+            placeholder="return prompt_context['foo']",
+            placeholder_expression=False,
+        )
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), prompt.placeholder
+        )
+
+    def test_field_types(self):
+        """Ensure all field types can successfully be created"""
+
+    def test_invalid_save(self):
+        """Ensure field can't be saved with invalid type"""
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type="foo",
+            placeholder="foo",
+            placeholder_expression=False,
+            sub_text="test",
+            order=123,
+        )
+        with self.assertRaises(ValueError):
+            prompt.save()
+
+
+def field_type_tester_factory(field_type: FieldTypes):
+    """Test field for field_type"""
+
+    def tester(self: TestPromptStage):
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=field_type,
+            placeholder="foo",
+            placeholder_expression=False,
+            sub_text="test",
+            order=123,
+        )
+        self.assertIsNotNone(prompt.field("foo"))
+
+    return tester
+
+
+for _type in FieldTypes:
+    setattr(TestPromptStage, f"test_field_type_{_type}", field_type_tester_factory(_type))

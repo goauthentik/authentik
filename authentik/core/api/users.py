@@ -24,7 +24,6 @@ from drf_spectacular.utils import (
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, DictField, JSONField, SerializerMethodField
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -46,9 +45,6 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
 from authentik.core.models import (
-    USER_ATTRIBUTE_CHANGE_EMAIL,
-    USER_ATTRIBUTE_CHANGE_NAME,
-    USER_ATTRIBUTE_CHANGE_USERNAME,
     USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     Group,
@@ -57,7 +53,6 @@ from authentik.core.models import (
     User,
 )
 from authentik.events.models import EventAction
-from authentik.lib.config import CONFIG
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -125,43 +120,6 @@ class UserSelfSerializer(ModelSerializer):
                 "name": group.name,
                 "pk": group.pk,
             }
-
-    def validate_email(self, email: str):
-        """Check if the user is allowed to change their email"""
-        if self.instance.group_attributes().get(
-            USER_ATTRIBUTE_CHANGE_EMAIL, CONFIG.y_bool("default_user_change_email", True)
-        ):
-            return email
-        if email != self.instance.email:
-            raise ValidationError("Not allowed to change email.")
-        return email
-
-    def validate_name(self, name: str):
-        """Check if the user is allowed to change their name"""
-        if self.instance.group_attributes().get(
-            USER_ATTRIBUTE_CHANGE_NAME, CONFIG.y_bool("default_user_change_name", True)
-        ):
-            return name
-        if name != self.instance.name:
-            raise ValidationError("Not allowed to change name.")
-        return name
-
-    def validate_username(self, username: str):
-        """Check if the user is allowed to change their username"""
-        if self.instance.group_attributes().get(
-            USER_ATTRIBUTE_CHANGE_USERNAME, CONFIG.y_bool("default_user_change_username", True)
-        ):
-            return username
-        if username != self.instance.username:
-            raise ValidationError("Not allowed to change username.")
-        return username
-
-    def save(self, **kwargs):
-        if self.instance:
-            attributes: dict = self.instance.attributes
-            attributes.update(self.validated_data.get("attributes", {}))
-            self.validated_data["attributes"] = attributes
-        return super().save(**kwargs)
 
     class Meta:
 
@@ -406,26 +364,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             LOGGER.debug("Updating session hash after password change")
             update_session_auth_hash(self.request, user)
         return Response(status=204)
-
-    @extend_schema(request=UserSelfSerializer, responses={200: SessionUserSerializer(many=False)})
-    @action(
-        methods=["PUT"],
-        detail=False,
-        pagination_class=None,
-        filter_backends=[],
-        permission_classes=[IsAuthenticated],
-    )
-    def update_self(self, request: Request) -> Response:
-        """Allow users to change information on their own profile"""
-        data = UserSelfSerializer(instance=User.objects.get(pk=request.user.pk), data=request.data)
-        if not data.is_valid():
-            return Response(data.errors, status=400)
-        new_user = data.save()
-        # If we're impersonating, we need to update that user object
-        # since it caches the full object
-        if SESSION_IMPERSONATE_USER in request.session:
-            request.session[SESSION_IMPERSONATE_USER] = new_user
-        return Response({"user": data.data})
 
     @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
     @extend_schema(responses={200: UserMetricsSerializer(many=False)})

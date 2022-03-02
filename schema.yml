@@ -2342,6 +2342,11 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: flow_user_settings
+        schema:
+          type: string
+          format: uuid
       - name: ordering
         required: false
         in: query
@@ -3364,31 +3369,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserServiceAccountResponse'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /core/users/update_self/:
-    put:
-      operationId: core_users_update_self_update
-      description: Allow users to change information on their own profile
-      tags:
-      - core
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserSelfRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SessionUser'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -17636,6 +17616,7 @@ paths:
         schema:
           type: string
           enum:
+          - ak-locale
           - checkbox
           - date
           - date-time
@@ -20471,11 +20452,7 @@ components:
           items:
             $ref: '#/components/schemas/FooterLink'
           readOnly: true
-          default:
-          - href: https://goauthentik.io/docs/?utm_source=authentik
-            name: Documentation
-          - href: https://goauthentik.io/?utm_source=authentik
-            name: authentik Website
+          default: []
         flow_authentication:
           type: string
         flow_invalidation:
@@ -20483,6 +20460,8 @@ components:
         flow_recovery:
           type: string
         flow_unenrollment:
+          type: string
+        flow_user_settings:
           type: string
       required:
       - branding_favicon
@@ -27772,6 +27751,8 @@ components:
             $ref: '#/components/schemas/StageRequest'
         sub_text:
           type: string
+        placeholder_expression:
+          type: boolean
     PatchedPromptStageRequest:
       type: object
       description: PromptStage Serializer
@@ -28141,6 +28122,10 @@ components:
           format: uuid
           nullable: true
         flow_unenrollment:
+          type: string
+          format: uuid
+          nullable: true
+        flow_user_settings:
           type: string
           format: uuid
           nullable: true
@@ -28723,6 +28708,8 @@ components:
             $ref: '#/components/schemas/Stage'
         sub_text:
           type: string
+        placeholder_expression:
+          type: boolean
       required:
       - field_key
       - label
@@ -28790,6 +28777,8 @@ components:
             $ref: '#/components/schemas/StageRequest'
         sub_text:
           type: string
+        placeholder_expression:
+          type: boolean
       required:
       - field_key
       - label
@@ -28877,6 +28866,7 @@ components:
       - separator
       - hidden
       - static
+      - ak-locale
       type: string
     PropertyMapping:
       type: object
@@ -30567,6 +30557,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_user_settings:
+          type: string
+          format: uuid
+          nullable: true
         event_retention:
           type: string
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
@@ -30611,6 +30605,10 @@ components:
           format: uuid
           nullable: true
         flow_unenrollment:
+          type: string
+          format: uuid
+          nullable: true
+        flow_user_settings:
           type: string
           format: uuid
           nullable: true
@@ -31174,33 +31172,6 @@ components:
       required:
       - name
       - pk
-    UserSelfRequest:
-      type: object
-      description: |-
-        User Serializer for information a user can retrieve about themselves and
-        update about themselves
-      properties:
-        username:
-          type: string
-          minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        settings:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - username
     UserServiceAccountRequest:
       type: object
       properties:
@@ -31238,7 +31209,6 @@ components:
           type: string
       required:
       - component
-      - icon_url
       - object_uid
       - title
     UserSourceConnection:

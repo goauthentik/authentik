@@ -3,6 +3,7 @@ from typing import Any, Optional
 from uuid import uuid4
 
 from django.db import models
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.fields import (
@@ -16,14 +17,22 @@ from rest_framework.fields import (
     ReadOnlyField,
 )
 from rest_framework.serializers import BaseSerializer
+from structlog.stdlib import get_logger
 
+from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression import PropertyMappingEvaluator
+from authentik.core.models import User
 from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import Policy
 
+LOGGER = get_logger()
+
 
 class FieldTypes(models.TextChoices):
     """Field types an Prompt can be"""
+
+    # update website/docs/flow/stages/prompt.index.md
 
     # Simple text field
     TEXT = "text", _("Text: Simple Text input")
@@ -56,6 +65,8 @@ class FieldTypes(models.TextChoices):
     HIDDEN = "hidden", _("Hidden: Hidden field, can be used to insert data into form.")
     STATIC = "static", _("Static: Static value, displayed as-is.")
 
+    AK_LOCALE = "ak-locale", _("authentik: Selection of locales authentik supports")
+
 
 class Prompt(SerializerModel):
     """Single Prompt, part of a prompt stage."""
@@ -73,11 +84,32 @@ class Prompt(SerializerModel):
 
     order = models.IntegerField(default=0)
 
+    placeholder_expression = models.BooleanField(default=False)
+
     @property
     def serializer(self) -> BaseSerializer:
         from authentik.stages.prompt.api import PromptSerializer
 
         return PromptSerializer
+
+    def get_placeholder(self, prompt_context: dict, user: User, request: HttpRequest) -> str:
+        """Get fully interpolated placeholder"""
+        if self.field_key in prompt_context:
+            # We don't want to parse this as an expression since a user will
+            # be able to control the input
+            return prompt_context[self.field_key]
+
+        if self.placeholder_expression:
+            evaluator = PropertyMappingEvaluator()
+            evaluator.set_context(user, request, self, prompt_context=prompt_context)
+            try:
+                return evaluator.evaluate(self.placeholder)
+            except Exception as exc:  # pylint:disable=broad-except
+                LOGGER.warning(
+                    "failed to evaluate prompt placeholder",
+                    exc=PropertyMappingExpressionException(str(exc)),
+                )
+        return self.placeholder
 
     def field(self, default: Optional[Any]) -> CharField:
         """Get field type for Challenge and response"""
@@ -93,10 +125,6 @@ class Prompt(SerializerModel):
             field_class = EmailField
         if self.type == FieldTypes.NUMBER:
             field_class = IntegerField
-        if self.type == FieldTypes.HIDDEN:
-            field_class = HiddenField
-            kwargs["required"] = False
-            kwargs["default"] = self.placeholder
         if self.type == FieldTypes.CHECKBOX:
             field_class = BooleanField
             kwargs["required"] = False
@@ -104,13 +132,22 @@ class Prompt(SerializerModel):
             field_class = DateField
         if self.type == FieldTypes.DATE_TIME:
             field_class = DateTimeField
+
+        if self.type == FieldTypes.SEPARATOR:
+            kwargs["required"] = False
+            kwargs["label"] = ""
+        if self.type == FieldTypes.HIDDEN:
+            field_class = HiddenField
+            kwargs["required"] = False
+            kwargs["default"] = self.placeholder
         if self.type == FieldTypes.STATIC:
             kwargs["default"] = self.placeholder
             kwargs["required"] = False
             kwargs["label"] = ""
-        if self.type == FieldTypes.SEPARATOR:
-            kwargs["required"] = False
-            kwargs["label"] = ""
+
+        if self.type == FieldTypes.AK_LOCALE:
+            kwargs["allow_blank"] = True
+
         if default:
             kwargs["default"] = default
         # May not set both `required` and `default`

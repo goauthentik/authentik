@@ -275,6 +275,43 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             ${t`If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.`}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`User settings flow`}
+                        name="flowUserSettings"
+                    >
+                        <select class="pf-c-form-control">
+                            <option
+                                value=""
+                                ?selected=${this.instance?.flowUserSettings === undefined}
+                            >
+                                ---------
+                            </option>
+                            ${until(
+                                new FlowsApi(DEFAULT_CONFIG)
+                                    .flowsInstancesList({
+                                        ordering: "slug",
+                                        designation:
+                                            FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    })
+                                    .then((flows) => {
+                                        return flows.results.map((flow) => {
+                                            const selected =
+                                                this.instance?.flowUserSettings === flow.pk;
+                                            return html`<option
+                                                value=${flow.pk}
+                                                ?selected=${selected}
+                                            >
+                                                ${flow.name} (${flow.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`If set, users are able to configure details of their profile.`}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>

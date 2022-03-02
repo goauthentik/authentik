@@ -53,7 +53,7 @@ import "./stages/prompt/PromptStage";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
-    flowSlug: string;
+    flowSlug?: string;
 
     private _challenge?: ChallengeTypes;
 
@@ -90,7 +90,7 @@ export class FlowExecutor extends LitElement implements StageHost {
     loading = false;
 
     @property({ attribute: false })
-    tenant?: CurrentTenant;
+    tenant!: CurrentTenant;
 
     @property({ attribute: false })
     inspectorOpen: boolean;
@@ -124,6 +124,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         this.ws = new WebsocketClient();
         this.flowSlug = window.location.pathname.split("/")[3];
         this.inspectorOpen = window.location.search.includes("inspector");
+        tenant().then((tenant) => (this.tenant = tenant));
     }
 
     setBackground(url: string): void {
@@ -142,7 +143,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         this.loading = true;
         return new FlowsApi(DEFAULT_CONFIG)
             .flowsExecutorSolve({
-                flowSlug: this.flowSlug,
+                flowSlug: this.flowSlug || "",
                 query: window.location.search.substring(1),
                 flowChallengeResponseRequest: payload,
             })
@@ -173,11 +174,10 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     firstUpdated(): void {
         configureSentry();
-        tenant().then((tenant) => (this.tenant = tenant));
         this.loading = true;
         new FlowsApi(DEFAULT_CONFIG)
             .flowsExecutorGet({
-                flowSlug: this.flowSlug,
+                flowSlug: this.flowSlug || "",
                 query: window.location.search.substring(1),
             })
             .then((challenge) => {

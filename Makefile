@@ -130,3 +130,8 @@ ci-pyright: ci--meta-debug
 
 ci-pending-migrations: ci--meta-debug
 	./manage.py makemigrations --check
+
+install:
+	poetry install
+	cd web && npm i
+	cd website && npm i

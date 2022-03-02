@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import AKGlobal from "../../../authentik.css";
@@ -97,7 +98,7 @@ export class UserSourceSettingsPage extends LitElement {
                             return html`<li class="pf-c-data-list__item">
                                 <div class="pf-c-data-list__item-content">
                                     <div class="pf-c-data-list__cell">
-                                        <img src="${stage.iconUrl}" />
+                                        <img src="${ifDefined(stage.iconUrl)}" />
                                         ${stage.title}
                                     </div>
                                     <div class="pf-c-data-list__cell">

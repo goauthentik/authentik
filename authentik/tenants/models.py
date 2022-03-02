@@ -40,6 +40,9 @@ class Tenant(models.Model):
     flow_unenrollment = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_unenrollment"
     )
+    flow_user_settings = models.ForeignKey(
+        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_user_settings"
+    )
 
     event_retention = models.TextField(
         default="days=365",
