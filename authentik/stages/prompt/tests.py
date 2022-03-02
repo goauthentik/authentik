@@ -230,7 +230,7 @@ class TestPromptStage(FlowTestCase):
             field_key="text_prompt_expression",
             label="TEXT_LABEL",
             type=FieldTypes.TEXT,
-            placeholder="return foo",
+            placeholder="return prompt_context['foo']",
             placeholder_expression=True,
         )
         self.assertEqual(
@@ -249,7 +249,7 @@ class TestPromptStage(FlowTestCase):
             field_key="text_prompt_expression",
             label="TEXT_LABEL",
             type=FieldTypes.TEXT,
-            placeholder="return foo",
+            placeholder="return prompt_context['foo']",
             placeholder_expression=False,
         )
         self.assertEqual(

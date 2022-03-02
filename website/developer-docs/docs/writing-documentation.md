@@ -16,7 +16,7 @@ the documentation is easy to read and uses similar phrasing.
     - **DON'T** `You may never click x.`
     - **DO** `x should never be clicked.`
 
-- When referring to other objects in authentik, use cursive text, and link to the corresponding documentation if possible.
+- When referring to other objects in authentik, use _cursive_ text, and link to the corresponding documentation if possible.
 - When referring to external tools, give an example how to use the tools or explain how the user can use them.
 - Make sure to add the documentation to add to the sidebar, if adding a new page.
 - Test how the documentation renders using the Netlify Preview, especially when using Docusaurus-specific features.

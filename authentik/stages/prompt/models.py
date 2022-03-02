@@ -32,6 +32,8 @@ LOGGER = get_logger()
 class FieldTypes(models.TextChoices):
     """Field types an Prompt can be"""
 
+    # update website/docs/flow/stages/prompt.index.md
+
     # Simple text field
     TEXT = "text", _("Text: Simple Text input")
     # Simple text field
@@ -97,7 +99,7 @@ class Prompt(SerializerModel):
 
         if self.placeholder_expression:
             evaluator = PropertyMappingEvaluator()
-            evaluator.set_context(user, request, self, **prompt_context)
+            evaluator.set_context(user, request, self, prompt_context=prompt_context)
             try:
                 return evaluator.evaluate(self.placeholder)
             except Exception as exc:  # pylint:disable=broad-except
