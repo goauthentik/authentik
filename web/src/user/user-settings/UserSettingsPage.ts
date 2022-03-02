@@ -78,12 +78,7 @@ export class UserSettingsPage extends LitElement {
                     >
                         <div class="pf-l-stack pf-m-gutter">
                             <div class="pf-l-stack__item">
-                                <div class="pf-c-card">
-                                    <div class="pf-c-card__title">${t`Update details`}</div>
-                                    <div class="pf-c-card__body">
-                                        <ak-user-settings-flow-executor></ak-user-settings-flow-executor>
-                                    </div>
-                                </div>
+                                <ak-user-settings-flow-executor></ak-user-settings-flow-executor>
                             </div>
                             <div class="pf-l-stack__item">
                                 ${until(

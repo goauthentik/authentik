@@ -6,6 +6,7 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -51,7 +52,7 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
     tenant!: CurrentTenant;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFButton, PFContent, AKGlobal];
+        return [PFBase, PFCard, PFPage, PFButton, PFContent, AKGlobal];
     }
 
     constructor() {
@@ -152,11 +153,15 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
         switch (this.challenge.type) {
             case ChallengeChoices.Redirect:
                 if ((this.challenge as RedirectChallenge).to !== "/") {
-                    return html`<a href="${(this.challenge as RedirectChallenge).to}" class="pf-c-button pf-m-primary">${"Edit settings"}</a>`;
+                    return html`<a
+                        href="${(this.challenge as RedirectChallenge).to}"
+                        class="pf-c-button pf-m-primary"
+                        >${"Edit settings"}</a
+                    >`;
                 }
                 // Flow has finished, so let's load while in the background we can restart the flow
                 this.loading = true;
-                console.debug(`authentik/user/flows: redirect to '/', restarting flow.`);
+                console.debug("authentik/user/flows: redirect to '/', restarting flow.");
                 this.firstUpdated();
                 return html``;
             case ChallengeChoices.Shell:
@@ -185,16 +190,21 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
         return html``;
     }
 
-    render(): TemplateResult {
+    renderChallengeWrapper(): TemplateResult {
         if (!this.flowSlug) {
-            return html` <p>${t`No settings flow configured.`}/p></p> `;
+            return html`<p>${t`No settings flow configured.`}</p> `;
         }
         if (!this.challenge) {
             return html`<ak-empty-state ?loading=${true} header=${t`Loading`}> </ak-empty-state>`;
         }
-        return html`
-            ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : html``}
-            ${this.renderChallenge()}
-        `;
+        return html` ${this.renderChallenge()} `;
+    }
+
+    render(): TemplateResult {
+        return html`${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : html``}
+            <div class="pf-c-card">
+                <div class="pf-c-card__title">${t`Update details`}</div>
+                <div class="pf-c-card__body">${this.renderChallengeWrapper()}</div>
+            </div>`;
     }
 }

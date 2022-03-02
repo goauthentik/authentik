@@ -9,27 +9,34 @@ from authentik.flows.models import FlowDesignation
 from authentik.stages.identification.models import UserFields
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
-AUTHORIZATION_POLICY = """
-from authentik.lib.config import CONFIG
+AUTHORIZATION_POLICY = """from authentik.lib.config import CONFIG
 from authentik.core.models import (
     USER_ATTRIBUTE_CHANGE_EMAIL,
     USER_ATTRIBUTE_CHANGE_NAME,
     USER_ATTRIBUTE_CHANGE_USERNAME
 )
-if request.user.group_attributes().get(
+prompt_data = request.context.get("prompt_data")
+
+if not request.user.group_attributes().get(
     USER_ATTRIBUTE_CHANGE_EMAIL, CONFIG.y_bool("default_user_change_email", True)
-) and request.context.get("email") != request.user.email:
-    return False
+):
+    if prompt_data.get("email") != request.user.email:
+        ak_message("Not allowed to change email address.")
+        return False
 
-if request.user.group_attributes().get(
+if not request.user.group_attributes().get(
     USER_ATTRIBUTE_CHANGE_NAME, CONFIG.y_bool("default_user_change_name", True)
-) and request.context.get("name") != request.user.name:
-    return False
+):
+    if prompt_data.get("name") != request.user.name:
+        ak_message("Not allowed to change name.")
+        return False
 
-if request.user.group_attributes().get(
+if not request.user.group_attributes().get(
     USER_ATTRIBUTE_CHANGE_USERNAME, CONFIG.y_bool("default_user_change_username", True)
-) and request.context.get("username") != request.user.username:
-    return False
+):
+    if prompt_data.get("username") != request.user.username:
+        ak_message("Not allowed to change username.")
+        return False
 
 return True
 """
