@@ -44,7 +44,7 @@ class BaseOAuthClient:
             response = self.do_request("get", profile_url, token=token)
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning("Unable to fetch user profile", exc=exc)
+            LOGGER.warning("Unable to fetch user profile", exc=exc, body=response.text)
             return None
         else:
             return response.json()
