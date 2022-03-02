@@ -244,6 +244,24 @@ class TestPromptStage(FlowTestCase):
         self.assertNotEqual(
             prompt.get_placeholder(context, self.user, self.factory.get("/")), context["foo"]
         )
+
+    def test_prompt_placeholder_error(self):
+        """Test placeholder and expression"""
+        context = {}
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=FieldTypes.TEXT,
+            placeholder="something invalid dunno",
+            placeholder_expression=True,
+        )
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")),
+            "something invalid dunno",
+        )
+
+    def test_prompt_placeholder_disabled(self):
+        """Test placeholder and expression"""
         context = {}
         prompt: Prompt = Prompt(
             field_key="text_prompt_expression",
@@ -255,3 +273,42 @@ class TestPromptStage(FlowTestCase):
         self.assertEqual(
             prompt.get_placeholder(context, self.user, self.factory.get("/")), prompt.placeholder
         )
+
+    def test_field_types(self):
+        """Ensure all field types can successfully be created"""
+
+    def test_invalid_save(self):
+        """Ensure field can't be saved with invalid type"""
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type="foo",
+            placeholder="foo",
+            placeholder_expression=False,
+            sub_text="test",
+            order=123,
+        )
+        with self.assertRaises(ValueError):
+            prompt.save()
+
+
+def field_type_tester_factory(field_type: FieldTypes):
+    """Test field for field_type"""
+
+    def tester(self: TestPromptStage):
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=field_type,
+            placeholder="foo",
+            placeholder_expression=False,
+            sub_text="test",
+            order=123,
+        )
+        self.assertIsNotNone(prompt.field("foo"))
+
+    return tester
+
+
+for _type in FieldTypes:
+    setattr(TestPromptStage, f"test_field_type_{_type}", field_type_tester_factory(_type))
