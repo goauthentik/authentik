@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/nmcclain/ldap"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/flags"
 )
 

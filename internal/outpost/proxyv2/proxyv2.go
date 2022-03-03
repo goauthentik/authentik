@@ -13,7 +13,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/application"

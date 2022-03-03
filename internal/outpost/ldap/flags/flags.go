@@ -1,6 +1,6 @@
 package flags
 
-import "goauthentik.io/api"
+import "goauthentik.io/api/v3"
 
 type UserFlags struct {
 	UserInfo  *api.User

@@ -20,7 +20,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/hs256"

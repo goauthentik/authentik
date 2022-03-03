@@ -27,10 +27,12 @@ require (
 	github.com/quasoft/memstore v0.0.0-20191010062613-2bce066d2b0b
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
-	goauthentik.io/api v0.2021125.1
-	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c
+	goauthentik.io/api/v3 v3.2022021.4
+	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
+	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	google.golang.org/appengine v1.6.7 // indirect
+	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/boj/redistore.v1 v1.0.0-20160128113310-fc113767cd6b
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0

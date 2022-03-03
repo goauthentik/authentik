@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 

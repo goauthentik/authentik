@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 )
 
 func (pi *ProviderInstance) GroupsForUser(user api.User) []string {

@@ -9,7 +9,7 @@ import (
 	"github.com/nmcclain/ldap"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/group"
 	"goauthentik.io/internal/outpost/ldap/metrics"

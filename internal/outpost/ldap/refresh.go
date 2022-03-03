@@ -9,7 +9,7 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	directbind "goauthentik.io/internal/outpost/ldap/bind/direct"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/flags"

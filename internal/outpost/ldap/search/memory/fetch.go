@@ -3,7 +3,7 @@ package memory
 import (
 	"context"
 
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 )
 
 const pageSize = 100

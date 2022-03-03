@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/sessions"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"gopkg.in/boj/redistore.v1"
 )

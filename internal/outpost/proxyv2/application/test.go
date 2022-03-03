@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/quasoft/memstore"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ak"
 )
 

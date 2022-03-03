@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"golang.org/x/oauth2"
 )
 

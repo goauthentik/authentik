@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 )
 
 func TestAKAttrsToLDAP_String(t *testing.T) {

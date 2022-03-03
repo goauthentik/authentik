@@ -11,7 +11,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/nmcclain/ldap"
 	"github.com/prometheus/client_golang/prometheus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/group"
 	"goauthentik.io/internal/outpost/ldap/metrics"

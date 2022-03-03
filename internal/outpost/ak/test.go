@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/securecookie"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 )
 
 func TestSecret() string {

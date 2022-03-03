@@ -6,7 +6,7 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
 )

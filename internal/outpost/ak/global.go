@@ -9,7 +9,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	httptransport "github.com/go-openapi/runtime/client"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
 )
 

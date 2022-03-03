@@ -2,7 +2,7 @@ package ldap
 
 import (
 	"github.com/nmcclain/ldap"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/utils"
 )
