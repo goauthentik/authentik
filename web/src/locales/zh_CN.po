@@ -38,6 +38,7 @@ msgstr "（格式：hours=1;minutes=2;seconds=3）。"
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/events/EventListPage.ts src/pages/events/EventListPage.ts
 #: src/pages/groups/GroupListPage.ts src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
@@ -46,7 +47,8 @@ msgstr "（格式：hours=1;minutes=2;seconds=3）。"
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
-#: src/pages/tokens/TokenListPage.ts src/pages/users/UserListPage.ts
+#: src/pages/tokens/TokenListPage.ts src/pages/users/RelatedUserList.ts
+#: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "-"
 msgstr "-"
@@ -166,7 +168,7 @@ msgstr "操作"
 #: src/pages/events/EventListPage.ts src/pages/events/RuleListPage.ts
 #: src/pages/events/TransportListPage.ts src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/FlowListPage.ts src/pages/groups/GroupListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
+#: src/pages/groups/RelatedGroupList.ts src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
@@ -175,7 +177,7 @@ msgstr "操作"
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Actions"
 msgstr "操作"
 
@@ -183,7 +185,8 @@ msgstr "操作"
 msgid "Actions over the last 24 hours"
 msgstr "过去 24 小时内的操作"
 
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Activate"
 msgstr "激活"
 
@@ -191,7 +194,8 @@ msgstr "激活"
 msgid "Activate pending user on success"
 msgstr "成功时激活待处理用户"
 
-#: src/pages/groups/MemberSelectModal.ts src/pages/users/UserListPage.ts
+#: src/pages/groups/MemberSelectModal.ts src/pages/users/RelatedUserList.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
 msgid "Active"
 msgstr "激活"
@@ -507,9 +511,8 @@ msgstr "授权"
 #~ msgid "Authorization Code"
 #~ msgstr "授权代码"
 
-#: src/elements/oauth/UserCodeList.ts
-msgid "Authorization Code(s)"
-msgstr "授权代码"
+#~ msgid "Authorization Code(s)"
+#~ msgstr "授权代码"
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
@@ -535,7 +538,7 @@ msgstr "授权 URL"
 msgid "Authorized application:"
 msgstr "已授权应用程序："
 
-#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/flows/stages/prompt/PromptStage.ts
 msgid "Auto-detect (based on your browser)"
 msgstr "自动检测（基于您的浏览器）"
 
@@ -760,7 +763,7 @@ msgstr "证书"
 msgid "Change password"
 msgstr "更改密码"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Change status"
 msgstr "更改状态"
 
@@ -769,7 +772,8 @@ msgid "Change your password"
 msgstr "更改您的密码"
 
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/flows/FlowViewPage.ts src/pages/providers/ProviderViewPage.ts
+#: src/pages/flows/FlowViewPage.ts src/pages/groups/GroupViewPage.ts
+#: src/pages/providers/ProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
@@ -914,7 +918,7 @@ msgstr "客户端类型"
 
 #: src/elements/notifications/NotificationDrawer.ts
 #: src/pages/outposts/OutpostDeploymentModal.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Close"
 msgstr "关闭"
 
@@ -1132,7 +1136,7 @@ msgstr "复制"
 msgid "Copy download URL"
 msgstr "复制下载 URL"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Copy recovery link"
 msgstr "复制恢复链接"
 
@@ -1170,8 +1174,9 @@ msgstr "复制恢复链接"
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/tenants/TenantListPage.ts src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts src/pages/tokens/TokenListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/RelatedUserList.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts src/pages/users/UserListPage.ts
-#: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Create"
@@ -1237,6 +1242,7 @@ msgstr "创建策略"
 msgid "Create Prompt"
 msgstr "创建输入"
 
+#: src/pages/users/RelatedUserList.ts src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts src/pages/users/UserListPage.ts
 msgid "Create Service account"
 msgstr "创建服务账户"
@@ -1259,7 +1265,7 @@ msgstr "创建租户"
 msgid "Create Token"
 msgstr "创建令牌"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Create User"
 msgstr "创建用户"
 
@@ -1334,7 +1340,8 @@ msgstr "日期"
 msgid "Date Time"
 msgstr "日期时间"
 
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Deactivate"
 msgstr "停用"
 
@@ -1365,13 +1372,14 @@ msgid "Define how notifications are sent to users, like Email or Webhook."
 msgstr "定义如何向用户发送通知，例如电子邮件或 Webhook。"
 
 #: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
-#: src/elements/oauth/UserCodeList.ts src/elements/oauth/UserRefreshList.ts
-#: src/elements/user/SessionList.ts src/elements/user/UserConsentList.ts
+#: src/elements/oauth/UserRefreshList.ts src/elements/user/SessionList.ts
+#: src/elements/user/UserConsentList.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts src/pages/events/TransportListPage.ts
 #: src/pages/flows/BoundStagesList.ts src/pages/flows/FlowListPage.ts
-#: src/pages/groups/GroupListPage.ts src/pages/outposts/OutpostListPage.ts
+#: src/pages/groups/GroupListPage.ts src/pages/groups/RelatedGroupList.ts
+#: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
@@ -1382,7 +1390,7 @@ msgstr "定义如何向用户发送通知，例如电子邮件或 Webhook。"
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Delete"
@@ -1403,7 +1411,7 @@ msgstr "删除"
 #~ msgid "Delete Session"
 #~ msgstr "删除会话"
 
-#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
 msgid "Delete account"
 msgstr "删除账户"
 
@@ -1611,6 +1619,7 @@ msgstr "根据应用程序 Slug，每个提供程序都有不同的颁发者。"
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/flows/FlowViewPage.ts src/pages/flows/FlowViewPage.ts
+#: src/pages/groups/GroupViewPage.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
@@ -1657,7 +1666,6 @@ msgstr "没有定义应用程序，或者您无权访问任何应用程序。"
 #: src/pages/events/TransportForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 #: src/pages/users/UserForm.ts src/pages/users/UserViewPage.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Email"
 msgstr "电子邮箱"
 
@@ -1669,7 +1677,7 @@ msgstr "电子邮箱地址"
 msgid "Email info:"
 msgstr "电子邮件信息："
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Email recovery link"
 msgstr "电子邮件恢复链接"
 
@@ -1845,8 +1853,8 @@ msgstr "执行 Python 代码段以确定是允许还是拒绝请求。"
 msgid "Execution logging"
 msgstr "记录执行日志"
 
-#: src/elements/oauth/UserCodeList.ts src/elements/oauth/UserRefreshList.ts
-#: src/elements/user/SessionList.ts src/elements/user/UserConsentList.ts
+#: src/elements/oauth/UserRefreshList.ts src/elements/user/SessionList.ts
+#: src/elements/user/UserConsentList.ts
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Expires"
 msgstr "过期"
@@ -2237,6 +2245,10 @@ msgstr "前往上一页"
 msgid "Group"
 msgstr "组"
 
+#: src/pages/groups/GroupViewPage.ts
+msgid "Group Info"
+msgstr "组信息"
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Group Property Mappings"
 msgstr "组属性映射"
@@ -2260,17 +2272,18 @@ msgid ""
 "Group users together and give them permissions based on the membership."
 msgstr "将用户分组在一起，并根据成员资格为他们授予权限。"
 
-#: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/groups/GroupViewPage.ts src/pages/policies/BoundPoliciesList.ts
 msgid "Group {0}"
 msgstr "组 {0}"
 
-#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupListPage.ts src/pages/groups/RelatedGroupList.ts
 msgid "Group(s)"
 msgstr "组"
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
 #: src/pages/groups/GroupListPage.ts src/pages/users/UserForm.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Groups"
 msgstr "组"
 
@@ -2313,7 +2326,7 @@ msgstr "隐藏：隐藏字段，可用于将数据插入表单。"
 msgid "Hide managed mappings"
 msgstr "隐藏管理映射"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Hide service-accounts"
 msgstr "隐藏服务账户"
 
@@ -2345,7 +2358,7 @@ msgstr "如何连接"
 
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "ID"
 msgstr "ID"
 
@@ -2414,6 +2427,10 @@ msgid ""
 msgstr "如果未指定显式重定向 URI，则将保存第一个成功使用的重定向 URI。"
 
 #: src/pages/tenants/TenantForm.ts
+msgid "If set, users are able to configure details of their profile."
+msgstr "设置后，用户可以配置他们个人资料的详细信息。"
+
+#: src/pages/tenants/TenantForm.ts
 msgid ""
 "If set, users are able to unenroll themselves using this flow. If no flow is"
 " set, option is not shown."
@@ -2450,7 +2467,8 @@ msgid ""
 "with, add this setting."
 msgstr "如果您的 authentik_host 设置与您要登录时使用的网址不匹配，请添加此设置。"
 
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Impersonate"
 msgstr "模拟身份"
 
@@ -2486,7 +2504,7 @@ msgid ""
 "Cookie domain to example.com."
 msgstr "在这种情况下，您需要将身份验证 URL 设置为 auth.example.com，并将 Cookie 域名设置为 example.com。"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Inactive"
 msgstr "未激活"
 
@@ -2531,6 +2549,10 @@ msgstr "内部主机"
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Internal host SSL Validation"
 msgstr "内部主机 SSL 验证"
+
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "Interpret placeholder as expression"
+msgstr "将占位符解释为表达式"
 
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 msgid ""
@@ -2642,8 +2664,8 @@ msgstr "标签会显示在输入侧方/上方。"
 msgid "Last IP"
 msgstr "上次 IP"
 
-#: src/pages/groups/MemberSelectModal.ts src/pages/users/UserListPage.ts
-#: src/pages/users/UserViewPage.ts
+#: src/pages/groups/MemberSelectModal.ts src/pages/users/RelatedUserList.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
 msgid "Last login"
 msgstr "上次登录"
 
@@ -2722,7 +2744,7 @@ msgstr "加载服务器"
 #: src/flows/stages/prompt/PromptStage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/sources/SourceSettings.ts src/utils.ts
 msgid "Loading"
@@ -2737,8 +2759,6 @@ msgstr "正在加载"
 #: src/pages/outposts/OutpostForm.ts src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
-#: src/pages/policies/PolicyBindingForm.ts
-#: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/policies/event_matcher/EventMatcherPolicyForm.ts
@@ -2790,8 +2810,9 @@ msgstr "正在加载"
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 #: src/pages/tenants/TenantForm.ts src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts src/pages/tenants/TenantForm.ts
-#: src/pages/tenants/TenantForm.ts src/pages/tokens/TokenForm.ts
-#: src/pages/users/UserForm.ts src/pages/users/UserResetEmailForm.ts
+#: src/pages/tenants/TenantForm.ts src/pages/tenants/TenantForm.ts
+#: src/pages/tokens/TokenForm.ts src/pages/users/UserForm.ts
+#: src/pages/users/UserResetEmailForm.ts
 msgid "Loading..."
 msgstr "正在加载……"
 
@@ -2801,9 +2822,8 @@ msgstr "正在加载……"
 msgid "Local"
 msgstr "本地"
 
-#: src/user/user-settings/details/UserDetailsForm.ts
-msgid "Locale"
-msgstr "区域设置"
+#~ msgid "Locale"
+#~ msgstr "区域设置"
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
@@ -2998,7 +3018,8 @@ msgstr "我的应用"
 #: src/pages/events/TransportListPage.ts src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/FlowForm.ts src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupForm.ts src/pages/groups/GroupListPage.ts
-#: src/pages/groups/MemberSelectModal.ts src/pages/outposts/OutpostForm.ts
+#: src/pages/groups/GroupViewPage.ts src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/RelatedGroupList.ts src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -3055,10 +3076,9 @@ msgstr "我的应用"
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 #: src/pages/stages/user_logout/UserLogoutStageForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
-#: src/pages/users/GroupSelectModal.ts src/pages/users/UserForm.ts
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
-#: src/user/user-settings/mfa/MFADeviceForm.ts
+#: src/pages/users/GroupSelectModal.ts src/pages/users/RelatedUserList.ts
+#: src/pages/users/UserForm.ts src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts src/user/user-settings/mfa/MFADeviceForm.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Name"
 msgstr "名称"
@@ -3115,12 +3135,14 @@ msgstr "Nginx（独立）"
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
-#: src/pages/users/GroupSelectModal.ts src/pages/users/UserListPage.ts
+#: src/pages/users/GroupSelectModal.ts src/pages/users/RelatedUserList.ts
+#: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "No"
 msgstr "否"
@@ -3173,13 +3195,17 @@ msgstr "当前没有策略绑定到此对象。"
 msgid "No preference is sent"
 msgstr "不发送偏好"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "No recovery flow is configured."
 msgstr "未配置恢复流程。"
 
 #: src/user/user-settings/sources/SourceSettings.ts
 msgid "No services available."
 msgstr "没有可用的服务。"
+
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+msgid "No settings flow configured."
+msgstr "未配置设置流程"
 
 #: src/pages/flows/BoundStagesList.ts
 msgid "No stages are currently bound to this flow."
@@ -3276,9 +3302,8 @@ msgstr "数字"
 msgid "Number the SMS will be sent from."
 msgstr "短信的发信人号码。"
 
-#: src/pages/users/UserViewPage.ts
-msgid "OAuth Authorization Codes"
-msgstr "OAuth 授权代码"
+#~ msgid "OAuth Authorization Codes"
+#~ msgstr "OAuth 授权代码"
 
 #: src/pages/users/UserViewPage.ts
 msgid "OAuth Refresh Codes"
@@ -3334,6 +3359,10 @@ msgstr "打开 API 浏览器"
 #: src/pages/events/EventInfo.ts
 msgid "Open issue on GitHub..."
 msgstr "在 GitHub 上提出议题..."
+
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+msgid "Open settings"
+msgstr "打开设置"
 
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "OpenID Configuration Issuer"
@@ -3452,7 +3481,7 @@ msgstr "前哨是对 authentik 组件的部署，用于支持不同的环境和�
 
 #: src/interfaces/AdminInterface.ts
 #: src/pages/applications/ApplicationViewPage.ts
-#: src/pages/providers/ProviderViewPage.ts
+#: src/pages/groups/GroupViewPage.ts src/pages/providers/ProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
@@ -3466,6 +3495,7 @@ msgid "PEM-encoded Certificate data."
 msgstr "PEM 编码的证书数据。"
 
 #: src/pages/groups/GroupForm.ts src/pages/groups/GroupListPage.ts
+#: src/pages/groups/RelatedGroupList.ts
 msgid "Parent"
 msgstr "父级"
 
@@ -3719,7 +3749,7 @@ msgid ""
 "Provide support for protocols like SAML and OAuth to assigned applications."
 msgstr "为分配的应用程序提供对 SAML 和 OAuth 等协议的支持。"
 
-#: src/elements/oauth/UserCodeList.ts src/elements/oauth/UserRefreshList.ts
+#: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
@@ -3825,7 +3855,7 @@ msgid "Receive a push notification on your device."
 msgstr "在您的设备上接收推送通知。"
 
 #: src/pages/flows/utils.ts src/pages/tokens/TokenListPage.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Recovery"
 msgstr "恢复"
 
@@ -3844,7 +3874,7 @@ msgstr "恢复流程。如果留空，则使用按 Slug 排序的第一个适用
 msgid "Recovery keys"
 msgstr "恢复密钥"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Recovery link cannot be emailed, user has no email address saved."
 msgstr "无法通过电子邮件发送恢复链接，用户没有保存电子邮件地址。"
 
@@ -3891,7 +3921,7 @@ msgid ""
 "is interpreted as a new expression."
 msgstr "用于描述何处不需要身份验证的正则表达式。每个新行都被解释为一个新的表达式。"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Regular user"
 msgstr "普通用户"
 
@@ -3960,7 +3990,6 @@ msgid "Required."
 msgstr "必需。"
 
 #: src/pages/users/ServiceAccountForm.ts src/pages/users/UserForm.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "必填。不超过 150 个字符。仅限字母、数字和 @/./+/-/_ 。"
 
@@ -3992,6 +4021,7 @@ msgid "Retry authentication"
 msgstr "重试身份验证"
 
 #: src/flows/FlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Return"
 msgstr "返回"
 
@@ -4083,7 +4113,7 @@ msgstr "SSO URL"
 msgid "Same identifier is used for all providers"
 msgstr "所有提供程序都使用相同的标识符"
 
-#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
 msgid "Save"
 msgstr "保存"
 
@@ -4095,7 +4125,7 @@ msgstr "作用域名称"
 msgid "Scope which the client can specify to access these properties."
 msgstr "客户端可以指定的访问这些属性的范围。"
 
-#: src/elements/oauth/UserCodeList.ts src/elements/oauth/UserRefreshList.ts
+#: src/elements/oauth/UserRefreshList.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Scopes"
@@ -4173,6 +4203,10 @@ msgstr "选择注册流程"
 #~ msgid "Select an identification method."
 #~ msgstr "选择身份识别方法。"
 
+#: src/elements/SearchSelect.ts
+msgid "Select an object."
+msgstr "选择一个对象。"
+
 #: src/pages/users/GroupSelectModal.ts
 msgid "Select groups to add user to"
 msgstr "选择要添加用户的组"
@@ -4233,7 +4267,7 @@ msgstr "选择用于测试密码的后端。"
 msgid "Send Email again."
 msgstr "再次发送电子邮件。"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Send link"
 msgstr "发送链接"
 
@@ -4247,7 +4281,7 @@ msgstr "每当特定事件被创建并匹配策略时，都会发送通知。"
 msgid "Send once"
 msgstr "发送一次"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Send recovery link to user"
 msgstr "向用户发送恢复链接"
 
@@ -4330,7 +4364,7 @@ msgstr "根据来自 authentik 的值设置自定义 HTTP-Basic 身份验证标�
 msgid "Set custom attributes using YAML or JSON."
 msgstr "使用 YAML 或 JSON 设置自定义属性。"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Set password"
 msgstr "设置密码"
 
@@ -4419,6 +4453,7 @@ msgid "Slug"
 msgstr "Slug"
 
 #: src/flows/FlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Something went wrong! Please try again later."
 msgstr "发生了某些错误！请稍后重试。"
 
@@ -4780,7 +4815,8 @@ msgstr "已成功删除 {0} {1}"
 msgid "Successfully generated certificate-key pair."
 msgstr "已成功生成证书密钥对。"
 
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Successfully generated recovery link"
 msgstr "已成功生成恢复链接"
 
@@ -4814,9 +4850,12 @@ msgstr "已成功更新绑定。"
 msgid "Successfully updated certificate-key pair."
 msgstr "已成功更新证书密钥对。"
 
-#: src/user/user-settings/details/UserDetailsForm.ts
-msgid "Successfully updated details."
-msgstr "已成功更新详情。"
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+msgid "Successfully updated details"
+msgstr "已成功更新详情"
+
+#~ msgid "Successfully updated details."
+#~ msgstr "已成功更新详情。"
 
 #: src/user/user-settings/mfa/MFADeviceForm.ts
 msgid "Successfully updated device."
@@ -4932,12 +4971,13 @@ msgstr "已成功更新用户。"
 msgid "Successfully updated {0} {1}"
 msgstr "已成功更新 {0} {1}"
 
-#: src/pages/users/GroupSelectModal.ts src/pages/users/UserListPage.ts
+#: src/pages/groups/GroupViewPage.ts src/pages/users/GroupSelectModal.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 #: src/pages/users/UserViewPage.ts
 msgid "Superuser"
 msgstr "超级用户"
 
-#: src/pages/groups/GroupListPage.ts
+#: src/pages/groups/GroupListPage.ts src/pages/groups/RelatedGroupList.ts
 msgid "Superuser privileges?"
 msgstr "超级用户权限？"
 
@@ -5295,7 +5335,7 @@ msgstr "要创建恢复链接，当前租户需要配置恢复流程。"
 #~ "currently active tenant."
 #~ msgstr "要直接重置用户的密码，请在当前活动的租户上配置恢复流程。"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid ""
 "To let a user directly reset a their password, configure a recovery flow on "
 "the currently active tenant."
@@ -5429,7 +5469,8 @@ msgstr "类型"
 msgid "UI settings"
 msgstr "用户界面设置"
 
-#: src/pages/events/EventInfo.ts src/pages/users/UserListPage.ts
+#: src/pages/events/EventInfo.ts src/pages/users/RelatedUserList.ts
+#: src/pages/users/UserListPage.ts
 msgid "UID"
 msgstr "UID"
 
@@ -5525,7 +5566,8 @@ msgstr "最新！"
 #: src/pages/events/RuleListPage.ts src/pages/events/TransportListPage.ts
 #: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/FlowListPage.ts src/pages/flows/FlowViewPage.ts
-#: src/pages/groups/GroupListPage.ts src/pages/outposts/OutpostListPage.ts
+#: src/pages/groups/GroupListPage.ts src/pages/groups/GroupViewPage.ts
+#: src/pages/groups/RelatedGroupList.ts src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
@@ -5545,8 +5587,8 @@ msgstr "最新！"
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 #: src/pages/stages/StageListPage.ts src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
-#: src/pages/users/UserActiveForm.ts src/pages/users/UserListPage.ts
-#: src/pages/users/UserViewPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserActiveForm.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Update"
@@ -5573,7 +5615,9 @@ msgstr "更新设备"
 msgid "Update Flow"
 msgstr "更新流程"
 
-#: src/pages/groups/GroupListPage.ts src/pages/policies/BoundPoliciesList.ts
+#: src/pages/groups/GroupListPage.ts src/pages/groups/GroupViewPage.ts
+#: src/pages/groups/RelatedGroupList.ts
+#: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Group"
 msgstr "更新组"
 
@@ -5638,8 +5682,8 @@ msgstr "更新租户"
 msgid "Update Token"
 msgstr "更新令牌"
 
-#: src/pages/policies/BoundPoliciesList.ts src/pages/users/UserListPage.ts
-#: src/pages/users/UserViewPage.ts
+#: src/pages/policies/BoundPoliciesList.ts src/pages/users/RelatedUserList.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
 msgid "Update User"
 msgstr "更新用户"
 
@@ -5647,10 +5691,11 @@ msgstr "更新用户"
 msgid "Update available"
 msgstr "更新可用"
 
-#: src/user/user-settings/UserSettingsPage.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Update details"
 msgstr "更新详情"
 
+#: src/pages/users/RelatedUserList.ts src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts src/pages/users/UserListPage.ts
 msgid "Update password"
 msgstr "更新密码"
@@ -5750,7 +5795,8 @@ msgstr "所有未设置专用租户的域名都将使用此租户。"
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/property-mappings/PropertyMappingTestForm.ts
 #: src/pages/tokens/TokenForm.ts src/pages/tokens/TokenListPage.ts
-#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "User"
 msgstr "用户"
@@ -5819,11 +5865,15 @@ msgstr "用户对象筛选器"
 msgid "User password writeback"
 msgstr "用户密码写回"
 
+#: src/pages/tenants/TenantForm.ts
+msgid "User settings flow"
+msgstr "用户设置流程"
+
 #: src/pages/admin-overview/DashboardUserPage.ts
 msgid "User statistics"
 msgstr "用户统计"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "User status"
 msgstr "用户状态"
 
@@ -5856,11 +5906,10 @@ msgid "User's avatar"
 msgstr "用户的头像"
 
 #: src/pages/users/UserForm.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
 msgid "User's display name."
 msgstr "用户的显示名称"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "User(s)"
 msgstr "用户"
 
@@ -5881,10 +5930,9 @@ msgstr "用户信息 URL"
 
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
-#: src/pages/users/ServiceAccountForm.ts src/pages/users/ServiceAccountForm.ts
-#: src/pages/users/UserForm.ts src/pages/users/UserListPage.ts
-#: src/pages/users/UserViewPage.ts
-#: src/user/user-settings/details/UserDetailsForm.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/ServiceAccountForm.ts src/pages/users/UserForm.ts
+#: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
 msgid "Username"
 msgstr "用户名"
 
@@ -5896,7 +5944,7 @@ msgstr "用户名：与文本输入相同，但检查并防止用户名重复。
 
 #: src/interfaces/AdminInterface.ts src/interfaces/AdminInterface.ts
 #: src/pages/admin-overview/AdminOverviewPage.ts
-#: src/pages/users/UserListPage.ts
+#: src/pages/groups/GroupViewPage.ts src/pages/users/UserListPage.ts
 msgid "Users"
 msgstr "用户"
 
@@ -6032,7 +6080,7 @@ msgstr "警告：提供程序未被任何前哨使用。"
 msgid "Warning: Provider not assigned to any application."
 msgstr "警告：提供程序未分配给任何应用程序。"
 
-#: src/pages/users/UserListPage.ts
+#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid ""
 "Warning: You're about to delete the user you're logged in as ({0}). Proceed "
 "at your own risk."
@@ -6086,6 +6134,14 @@ msgid ""
 "the user's username and avatar will be shown. Otherwise, the text that the "
 "user entered will be shown."
 msgstr "如果输入了有效的用户名/电子邮箱，并且启用了此选项，则会显示用户的用户名和头像。否则，将显示用户输入的文本。"
+
+#: src/pages/stages/prompt/PromptForm.ts
+msgid ""
+"When checked, the placeholder will be evaluated in the same way environment as a property mapping.\n"
+"If the evaluation failed, the placeholder itself is returned."
+msgstr ""
+"勾选时，占位符将以与属性映射相同的方式评估。\n"
+"如果评估失败，则返回占位符本身。"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid ""
@@ -6164,6 +6220,7 @@ msgstr ""
 "Auth（域名模式）时，将根据正则表达式检查请求的完整 URL（包括协议和主机名）。"
 
 #: src/flows/FlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Whoops!"
 msgstr "哎呦！"
 
@@ -6190,12 +6247,14 @@ msgstr "X509 主题"
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/groups/GroupListPage.ts src/pages/groups/MemberSelectModal.ts
+#: src/pages/groups/RelatedGroupList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
-#: src/pages/users/GroupSelectModal.ts src/pages/users/UserListPage.ts
+#: src/pages/users/GroupSelectModal.ts src/pages/users/RelatedUserList.ts
+#: src/pages/users/UserListPage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Yes"
 msgstr "是"
@@ -6230,6 +6289,10 @@ msgstr "app1.example.com 上运行的 app1"
 msgid "authentik running on auth.example.com"
 msgstr "auth.example.com 上运行的 authentik"
 
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "authentik: Locale: Displays a list of locales authentik supports."
+msgstr "authentik：语言：显示 authentik 支持的语言设置。"
+
 #: src/elements/forms/DeleteForm.ts
 msgid "connecting object will be deleted"
 msgstr "连接对象将被删除"
@@ -6259,6 +6322,7 @@ msgid "with inspector"
 msgstr "附加检视器"
 
 #: src/elements/Expand.ts src/elements/Expand.ts
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
 msgid "{0}"
 msgstr "{0}"
 
