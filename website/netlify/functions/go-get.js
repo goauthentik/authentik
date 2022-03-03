@@ -2,16 +2,12 @@ const gitHubNamespace = "goauthentik";
 
 exports.handler = async function (event, context) {
     let repo = "";
-    switch (event.path) {
-        case "/":
-            repo = "/authentik";
-            break;
-        case "/api":
-            repo = "/client-go";
-            break;
-        default:
-            repo = event.path;
-            break;
+    if (event.path === "/") {
+        repo = "/authentik";
+    } else if (event.path.startsWith("/api")) {
+        repo = "/client-go";
+    } else {
+        repo = event.path;
     }
     return {
         statusCode: 200,
