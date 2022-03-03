@@ -67,7 +67,7 @@ def create_default_user_settings_flow(apps: Apps, schema_editor: BaseDatabaseSch
             "placeholder": """try:
     return user.username
 except:
-    return """,
+    return ''""",
             "placeholder_expression": True,
         },
     )
@@ -80,7 +80,7 @@ except:
             "placeholder": """try:
     return user.name
 except:
-    return """,
+    return ''""",
             "placeholder_expression": True,
         },
     )
@@ -93,7 +93,7 @@ except:
             "placeholder": """try:
     return user.email
 except:
-    return """,
+    return ''""",
             "placeholder_expression": True,
         },
     )
@@ -104,9 +104,9 @@ except:
             "label": "Locale",
             "type": FieldTypes.AK_LOCALE,
             "placeholder": """try:
-    return return user.attributes.get("settings", {}).get("locale", "")
+    return user.attributes.get("settings", {}).get("locale", "")
 except:
-    return """,
+    return ''""",
             "placeholder_expression": True,
             "required": True,
         },
