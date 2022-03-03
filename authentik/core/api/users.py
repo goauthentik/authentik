@@ -199,6 +199,7 @@ class UsersFilter(FilterSet):
     )
 
     is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
+    uid = CharFilter(field_name="uid")
 
     groups_by_name = ModelMultipleChoiceFilter(
         field_name="ak_groups__name",
@@ -248,7 +249,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     queryset = User.objects.none()
     ordering = ["username"]
     serializer_class = UserSerializer
-    search_fields = ["username", "name", "is_active", "email"]
+    search_fields = ["username", "name", "is_active", "email", "uid"]
     filterset_class = UsersFilter
 
     def get_queryset(self):  # pragma: no cover

@@ -3037,6 +3037,10 @@ paths:
         schema:
           type: string
       - in: query
+        name: uid
+        schema:
+          type: string
+      - in: query
         name: username
         schema:
           type: string
