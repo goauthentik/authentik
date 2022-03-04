@@ -429,7 +429,8 @@ export class FlowExecutor extends LitElement implements StageHost {
                                                 )
                                                     ? html`
                                                           <li>
-                                                              <a href="https://unsplash.com/@sirajmv"
+                                                              <a
+                                                                  href="https://unsplash.com/@sirajmv"
                                                                   >${t`Background image`}</a
                                                               >
                                                           </li>
