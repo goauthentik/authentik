@@ -49,6 +49,6 @@ oidc_providers:
       - "email"
     user_mapping_provider:
       config:
-        localpart_template: "{{ user.preferred_username }}}"
+        localpart_template: "{{ user.preferred_username }}"
         display_name_template: "{{ user.name|capitalize }}"
 ```
