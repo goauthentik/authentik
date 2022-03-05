@@ -168,7 +168,7 @@ class TokenError(OAuth2Error):
     https://tools.ietf.org/html/rfc6749#section-5.2
     """
 
-    _errors = {
+    errors = {
         "invalid_request": "The request is otherwise malformed",
         "invalid_client": "Client authentication failed (e.g., unknown client, "
         "no client authentication included, or unsupported "
@@ -188,7 +188,7 @@ class TokenError(OAuth2Error):
     def __init__(self, error):
         super().__init__()
         self.error = error
-        self.description = self._errors[error]
+        self.description = self.errors[error]
 
 
 class BearerTokenError(OAuth2Error):
