@@ -10,6 +10,7 @@ from authentik.core.models import Application
 from authentik.providers.oauth2.constants import (
     ACR_AUTHENTIK_DEFAULT,
     GRANT_TYPE_AUTHORIZATION_CODE,
+    GRANT_TYPE_CLIENT_CREDENTIALS,
     GRANT_TYPE_REFRESH_TOKEN,
     SCOPE_OPENID,
 )
@@ -78,6 +79,7 @@ class ProviderInfoView(View):
                 GRANT_TYPE_AUTHORIZATION_CODE,
                 GRANT_TYPE_REFRESH_TOKEN,
                 GrantTypes.IMPLICIT,
+                GRANT_TYPE_CLIENT_CREDENTIALS,
             ],
             "id_token_signing_alg_values_supported": [supported_alg],
             # See: http://openid.net/specs/openid-connect-core-1_0.html#SubjectIDTypes

@@ -2,9 +2,12 @@
 
 GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code"
 GRANT_TYPE_REFRESH_TOKEN = "refresh_token"  # nosec
+GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials"
+
 PROMPT_NONE = "none"
 PROMPT_CONSNET = "consent"
 PROMPT_LOGIN = "login"
+
 SCOPE_OPENID = "openid"
 SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
