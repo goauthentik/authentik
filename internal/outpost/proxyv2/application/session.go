@@ -28,7 +28,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
 			rs.SetMaxAge(0)
 		}
 		rs.Options.Domain = *p.CookieDomain
-		a.log.Info("using redis session backend")
+		a.log.Debug("using redis session backend")
 		store = rs
 	} else {
 		dir := os.TempDir()
@@ -48,7 +48,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
 			cs.MaxAge(0)
 		}
 		cs.Options.Domain = *p.CookieDomain
-		a.log.WithField("dir", dir).Info("using filesystem session backend")
+		a.log.WithField("dir", dir).Debug("using filesystem session backend")
 		store = cs
 	}
 	return store

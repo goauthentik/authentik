@@ -24,12 +24,12 @@ func TestCheckRedirectParam(t *testing.T) {
 	assert.Equal(t, false, ok)
 	assert.Equal(t, "", rd)
 
-	req, _ = http.NewRequest("GET", "/outpost.goauthentik.io/auth/start?rd=https://ext.t.goauthentik.io/test", nil)
+	req, _ = http.NewRequest("GET", "/outpost.goauthentik.io/auth/start?rd=https://ext.t.goauthentik.io/test?foo", nil)
 
 	rd, ok = a.checkRedirectParam(req)
 
 	assert.Equal(t, true, ok)
-	assert.Equal(t, "https://ext.t.goauthentik.io/test", rd)
+	assert.Equal(t, "https://ext.t.goauthentik.io/test?foo", rd)
 }
 
 func TestCheckRedirectParam_Domain(t *testing.T) {
