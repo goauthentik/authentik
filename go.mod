@@ -8,7 +8,7 @@ require (
 	github.com/garyburd/redigo v1.6.2 // indirect
 	github.com/getsentry/sentry-go v0.12.0
 	github.com/go-ldap/ldap/v3 v3.4.2
-	github.com/go-openapi/runtime v0.23.1
+	github.com/go-openapi/runtime v0.23.2
 	github.com/go-openapi/strfmt v0.21.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
