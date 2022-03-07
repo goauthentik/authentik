@@ -252,7 +252,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	if scope >= 0 && (strings.EqualFold(req.BaseDN, ds.si.GetBaseDN()) || utils.HasSuffixNoCase(req.BaseDN, ds.si.GetBaseVirtualGroupDN())) {
 		singlevg := utils.HasSuffixNoCase(req.BaseDN, ","+ds.si.GetBaseVirtualGroupDN())
 
-		if !singlevg || utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
+		if !singlevg && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
 			entries = append(entries, utils.GetContainerEntry(filterOC, ds.si.GetBaseVirtualGroupDN(), constants.OUVirtualGroups))
 			scope -= 1
 		}
