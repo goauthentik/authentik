@@ -16,7 +16,7 @@ services:
       - "--entrypoints.web.address=:80"
 
   authentik-proxy:
-    image: ghcr.io/goauthentik/proxy:stable
+    image: ghcr.io/goauthentik/proxy
     ports:
       - 9000:9000
       - 9443:9443

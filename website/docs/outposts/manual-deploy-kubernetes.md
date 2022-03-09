@@ -88,7 +88,7 @@ spec:
               secretKeyRef:
                 key: authentik_host_insecure
                 name: authentik-outpost-api
-        image: ghcr.io/goauthentik/proxy:stable
+        image: ghcr.io/goauthentik/proxy
         name: proxy
         ports:
           - containerPort: 9000

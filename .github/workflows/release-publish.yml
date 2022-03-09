@@ -36,15 +36,6 @@ jobs:
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
           context: .
-      - name: Building Docker Image (stable)
-        if: ${{ github.event_name == 'release' && !contains('2022.2.1', 'rc') }}
-        run: |
-          docker pull beryju/authentik:latest
-          docker tag beryju/authentik:latest beryju/authentik:stable
-          docker push beryju/authentik:stable
-          docker pull ghcr.io/goauthentik/server:latest
-          docker tag ghcr.io/goauthentik/server:latest ghcr.io/goauthentik/server:stable
-          docker push ghcr.io/goauthentik/server:stable
   build-outpost:
     runs-on: ubuntu-latest
     strategy:
@@ -84,15 +75,6 @@ jobs:
             ghcr.io/goauthentik/${{ matrix.type }}:latest
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
-      - name: Building Docker Image (stable)
-        if: ${{ github.event_name == 'release' && !contains('2022.2.1', 'rc') }}
-        run: |
-          docker pull beryju/authentik-${{ matrix.type }}:latest
-          docker tag beryju/authentik-${{ matrix.type }}:latest beryju/authentik-${{ matrix.type }}:stable
-          docker push beryju/authentik-${{ matrix.type }}:stable
-          docker pull ghcr.io/goauthentik/${{ matrix.type }}:latest
-          docker tag ghcr.io/goauthentik/${{ matrix.type }}:latest ghcr.io/goauthentik/${{ matrix.type }}:stable
-          docker push ghcr.io/goauthentik/${{ matrix.type }}:stable
   build-outpost-binary:
     timeout-minutes: 120
     runs-on: ubuntu-latest
