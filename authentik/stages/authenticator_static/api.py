@@ -61,7 +61,7 @@ class StaticDeviceViewSet(
 ):
     """Viewset for static authenticator devices"""
 
-    queryset = StaticDevice.objects.all()
+    queryset = StaticDevice.objects.filter(confirmed=True)
     serializer_class = StaticDeviceSerializer
     permission_classes = [OwnerPermissions]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]

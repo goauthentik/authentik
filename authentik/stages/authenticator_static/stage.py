@@ -55,7 +55,7 @@ class AuthenticatorStaticStageView(ChallengeStageView):
         stage: AuthenticatorStaticStage = self.executor.current_stage
 
         if SESSION_STATIC_DEVICE not in self.request.session:
-            device = StaticDevice(user=user, confirmed=True, name="Static Token")
+            device = StaticDevice(user=user, confirmed=False, name="Static Token")
             tokens = []
             for _ in range(0, stage.token_count):
                 tokens.append(StaticToken(device=device, token=StaticToken.random_token()))
@@ -66,6 +66,7 @@ class AuthenticatorStaticStageView(ChallengeStageView):
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         """Verify OTP Token"""
         device: StaticDevice = self.request.session[SESSION_STATIC_DEVICE]
+        device.confirmed = True
         device.save()
         for token in self.request.session[SESSION_STATIC_TOKENS]:
             token.save()

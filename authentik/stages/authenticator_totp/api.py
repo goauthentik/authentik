@@ -54,7 +54,7 @@ class TOTPDeviceViewSet(
 ):
     """Viewset for totp authenticator devices"""
 
-    queryset = TOTPDevice.objects.all()
+    queryset = TOTPDevice.objects.filter(confirmed=True)
     serializer_class = TOTPDeviceSerializer
     permission_classes = [OwnerPermissions]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
