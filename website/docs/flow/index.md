@@ -18,6 +18,8 @@ To determine which flow is linked, authentik searches all flows with the require
 
 Flows can have policies assigned to them. These policies determine if the current user is allowed to see and use this flow.
 
+Keep in mind that in certain circumstances, policies cannot match against users and groups as there is no authenticated user yet.
+
 ## Designation
 
 Flows are designated for a single purpose. This designation changes when a flow is used. The following designations are available:
@@ -47,6 +49,6 @@ This designates a flow for unenrollment. This flow can contain any amount of ver
 This designates a flow for recovery. This flow normally contains an [**identification**](stages/identification/) stage to find the user. It can also contain any amount of verification stages, such as [**email**](stages/email/) or [**captcha**](stages/captcha/).
 Afterwards, use the [**prompt**](stages/prompt/) stage to ask the user for a new password and the [**user_write**](stages/user_write.md) stage to update the password.
 
-### Setup
+### Stage configuration
 
 This designates a flow for general setup. This designation doesn't have any constraints in what you can do. For example, by default this designation is used to configure Factors, like change a password and setup TOTP.

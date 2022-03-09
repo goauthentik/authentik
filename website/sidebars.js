@@ -75,7 +75,20 @@ module.exports = {
         {
             type: "category",
             label: "Flows",
-            items: ["flow/index", "flow/inspector", "flow/examples"],
+            items: [
+                "flow/index",
+                "flow/inspector",
+                "flow/examples",
+                {
+                    type: "category",
+                    label: "Executors",
+                    items: [
+                        "flow/executors/if-flow",
+                        "flow/executors/user-settings",
+                        "flow/executors/headless",
+                    ],
+                },
+            ],
         },
         {
             type: "category",
