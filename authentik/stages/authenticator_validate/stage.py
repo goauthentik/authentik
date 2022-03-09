@@ -87,16 +87,20 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     def validate_selected_challenge(self, challenge: dict) -> dict:
         """Check which challenge the user has selected. Actual logic only used for SMS stage."""
         # First check if the challenge is valid
+        allowed = False
         for device_challenge in self.stage.request.session.get(SESSION_DEVICE_CHALLENGES):
-            if device_challenge.get("device_class", "") != challenge.get("device_class", ""):
-                raise ValidationError("invalid challenge selected")
-            if device_challenge.get("device_uid", "") != challenge.get("device_uid", ""):
-                raise ValidationError("invalid challenge selected")
+            if device_challenge.get("device_class", "") == challenge.get(
+                "device_class", ""
+            ) and device_challenge.get("device_uid", "") == challenge.get("device_uid", ""):
+                allowed = True
+        if not allowed:
+            raise ValidationError("invalid challenge selected")
+
         if challenge.get("device_class", "") != "sms":
             return challenge
         devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
         if not devices.exists():
-            raise ValidationError("device does not exist")
+            raise ValidationError("invalid challenge selected")
         select_challenge(self.stage.request, devices.first())
         return challenge
 

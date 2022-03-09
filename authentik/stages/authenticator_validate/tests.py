@@ -1,6 +1,7 @@
 """Test validator stage"""
 from unittest.mock import MagicMock, patch
 
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.test.client import RequestFactory
 from django.urls.base import reverse
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -9,10 +10,18 @@ from webauthn.helpers import bytes_to_base64url
 
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
+from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
+from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id, generate_key
-from authentik.lib.tests.utils import get_request
+from authentik.lib.tests.utils import dummy_get_response, get_request
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
+from authentik.stages.authenticator_sms.models import (
+    AuthenticatorSMSStage,
+    SMSAuthTypes,
+    SMSDevice,
+    SMSProviders,
+)
 from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
@@ -21,6 +30,10 @@ from authentik.stages.authenticator_validate.challenge import (
     validate_challenge_webauthn,
 )
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
+from authentik.stages.authenticator_validate.stage import (
+    SESSION_DEVICE_CHALLENGES,
+    AuthenticatorValidationChallengeResponse,
+)
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
@@ -159,3 +172,39 @@ class AuthenticatorValidateStageTests(FlowTestCase):
         ):
             with self.assertRaises(ValidationError):
                 validate_challenge_duo(duo_device.pk, request, self.user)
+
+    def test_validate_selected_challenge(self):
+        """Test validate_selected_challenge"""
+        # Prepare request with session
+        request = self.request_factory.get("/")
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session[SESSION_DEVICE_CHALLENGES] = [
+            {
+                "device_class": "static",
+                "device_uid": "1",
+            },
+            {
+                "device_class": "totp",
+                "device_uid": "2",
+            },
+        ]
+        request.session.save()
+
+        res = AuthenticatorValidationChallengeResponse()
+        res.stage = StageView(FlowExecutorView())
+        res.stage.request = request
+        with self.assertRaises(ValidationError):
+            res.validate_selected_challenge(
+                {
+                    "device_class": "baz",
+                    "device_uid": "quox",
+                }
+            )
+        res.validate_selected_challenge(
+            {
+                "device_class": "static",
+                "device_uid": "1",
+            }
+        )
