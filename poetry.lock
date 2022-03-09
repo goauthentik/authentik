@@ -1534,7 +1534,7 @@ urllib3 = {version = ">=1.26,<2.0", extras = ["secure", "socks"]}
 
 [[package]]
 name = "sentry-sdk"
-version = "1.5.6"
+version = "1.5.7"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
@@ -3211,8 +3211,8 @@ selenium = [
     {file = "selenium-4.1.2-py3-none-any.whl", hash = "sha256:7da6d7ab2c83a21e498deda02bb5e7fb0ac5da5e72438f6d01b015b185b5e1df"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-1.5.6.tar.gz", hash = "sha256:ac2a50128409d57655279817aedcb7800cace1f76b266f3dd62055d5afd6e098"},
-    {file = "sentry_sdk-1.5.6-py2.py3-none-any.whl", hash = "sha256:1ab34e3851a34aeb3d1af1a0f77cec73978c4e9698e5210d050e4932953cb241"},
+    {file = "sentry-sdk-1.5.7.tar.gz", hash = "sha256:aa52da941c56b5a76fd838f8e9e92a850bf893a9eb1e33ffce6c21431d07ee30"},
+    {file = "sentry_sdk-1.5.7-py2.py3-none-any.whl", hash = "sha256:411a8495bd18cf13038e5749e4710beb4efa53da6351f67b4c2f307c2d9b6d49"},
 ]
 service-identity = [
     {file = "service-identity-21.1.0.tar.gz", hash = "sha256:6e6c6086ca271dc11b033d17c3a8bea9f24ebff920c587da090afc9519419d34"},
