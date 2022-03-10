@@ -16,12 +16,6 @@ from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.tests.utils import dummy_get_response, get_request
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_sms.models import (
-    AuthenticatorSMSStage,
-    SMSAuthTypes,
-    SMSDevice,
-    SMSProviders,
-)
 from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
