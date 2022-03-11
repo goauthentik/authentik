@@ -40,3 +40,15 @@ Create an application in authentik and select the provider you've created above.
 Create an outpost deployment for the provider you've created above, as described [here](../../../docs/outposts/). Deploy this Outpost either on the same host or a different host that can access Sonarr.
 
 The outpost will connect to authentik and configure itself.
+
+## Authentication Setup
+
+Because Sonarr can use HTTP Basic credentials, you can save your HTTP Basic Credentials in authentik. The recommended way to do this is to create a Group. Name the group "Sonarr Users", for example. For this group, add the following attributes:
+
+```yaml
+sonarr_user: username
+sonarr_password: password
+```
+Add all Sonarr users to the Group. You should also create a Group Membership Policy to limit access to the application.
+
+Enable the `Use Basic Authentication` option. Set and `HTTP-Basic Username` and `HTTP-Basic Password` to `sonarr_user` and `sonarr_password` respectively. These values can be chosen freely, `sonarr_` is just used as a prefix for clarity.
