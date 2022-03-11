@@ -23,7 +23,7 @@ export class UserSettingsPromptStage extends PromptStage {
                     return error.string;
                 })}
             >
-                ${unsafeHTML(this.renderPromptInner(prompt, true))} ${prompt.subText}
+                ${unsafeHTML(this.renderPromptInner(prompt, true))}
                 ${this.renderPromptHelpText(prompt)}
             </ak-form-element-horizontal>
         `;
