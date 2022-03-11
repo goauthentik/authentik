@@ -31,6 +31,7 @@ module.exports = {
                 "services/powerdns-admin/index",
                 "services/proxmox-ve/index",
                 "services/rancher/index",
+                "services/rocketchat/index",
                 "services/roundcube/index",
                 "services/sentry/index",
                 "services/sssd/index",
