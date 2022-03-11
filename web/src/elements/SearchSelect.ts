@@ -40,7 +40,7 @@ export class SearchSelect<T> extends LitElement {
     renderElement!: (element: T) => string;
 
     @property({ attribute: false })
-    value!: (element: T) => unknown;
+    value!: (element: T | undefined) => unknown;
 
     @property({ attribute: false })
     selected!: (element: T) => boolean;

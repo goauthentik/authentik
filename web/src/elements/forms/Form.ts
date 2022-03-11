@@ -153,7 +153,11 @@ export class Form<T> extends LitElement {
                 json[element.name] = element.checked;
             } else if (element.tagName.toLowerCase() === "ak-search-select") {
                 const select = element as unknown as SearchSelect<unknown>;
-                json[element.name] = select.value(select.selectedObject);
+                try {
+                    json[element.name] = select.value(select.selectedObject);
+                } catch {
+                    console.debug("authentik/form: SearchSelect.value error");
+                }
             } else {
                 for (let v = 0; v < values.length; v++) {
                     this.serializeFieldRecursive(element, values[v], json);
