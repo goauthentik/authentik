@@ -244,6 +244,15 @@ html > form > input {
     .pf-c-form-control[readonly] {
         background-color: var(--ak-dark-background-light);
     }
+    /* select toggle */
+    .pf-c-select__toggle::before {
+        --pf-c-select__toggle--before--BorderTopColor: var(--ak-dark-background-lighter);
+        --pf-c-select__toggle--before--BorderRightColor: var(--ak-dark-background-lighter);
+        --pf-c-select__toggle--before--BorderLeftColor: var(--ak-dark-background-lighter);
+    }
+    .pf-c-select__toggle.pf-m-typeahead {
+        --pf-c-select__toggle--BackgroundColor: var(--ak-dark-background-light);
+    }
     .pf-c-button.pf-m-plain:hover {
         color: var(--ak-dark-foreground);
     }
