@@ -253,6 +253,17 @@ html > form > input {
     .pf-c-select__toggle.pf-m-typeahead {
         --pf-c-select__toggle--BackgroundColor: var(--ak-dark-background-light);
     }
+    .pf-c-select__menu {
+        --pf-c-select__menu--BackgroundColor: var(--ak-dark-background-light-ish);
+        color: var(--ak-dark-foreground);
+    }
+    .pf-c-select__menu-item {
+        color: var(--ak-dark-foreground);
+    }
+    .pf-c-select__menu-wrapper:hover,
+    .pf-c-select__menu-item:hover {
+        --pf-c-select__menu-item--hover--BackgroundColor: var(--ak-dark-background-lighter);
+    }
     .pf-c-button.pf-m-plain:hover {
         color: var(--ak-dark-foreground);
     }
