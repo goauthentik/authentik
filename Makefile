@@ -135,3 +135,9 @@ install:
 	poetry install
 	cd web && npm i
 	cd website && npm i
+
+a: install
+	tmux \
+		new-session 'make run' \; \
+		split-window 'make web-watch'
+		# detach-client
