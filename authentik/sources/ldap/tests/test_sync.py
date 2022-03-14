@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.test import TestCase
 
 from authentik.core.models import Group, User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_key
 from authentik.managed.manager import ObjectManager
@@ -24,7 +25,7 @@ class LDAPSyncTests(TestCase):
 
     def setUp(self):
         ObjectManager().run()
-        self.source = LDAPSource.objects.create(
+        self.source: LDAPSource = LDAPSource.objects.create(
             name="ldap",
             slug="ldap",
             base_dn="dc=goauthentik,dc=io",
@@ -120,6 +121,9 @@ class LDAPSyncTests(TestCase):
         self.source.property_mappings_group.set(
             LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/default-name")
         )
+        _user = create_test_admin_user()
+        parent_group = Group.objects.get(name=_user.username)
+        self.source.sync_parent_group = parent_group
         connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             self.source.save()
@@ -127,8 +131,9 @@ class LDAPSyncTests(TestCase):
             group_sync.sync()
             membership_sync = MembershipLDAPSynchronizer(self.source)
             membership_sync.sync()
-            group = Group.objects.filter(name="test-group")
-            self.assertTrue(group.exists())
+            group: Group = Group.objects.filter(name="test-group").first()
+            self.assertIsNotNone(group)
+            self.assertEqual(group.parent, parent_group)
 
     def test_sync_groups_openldap(self):
         """Test group sync"""

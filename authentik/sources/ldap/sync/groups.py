@@ -37,6 +37,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             uniq = self._flatten(attributes[self._source.object_uniqueness_field])
             try:
                 defaults = self.build_group_properties(group_dn, **attributes)
+                defaults["parent"] = self._source.sync_parent_group
                 self._logger.debug("Creating group with attributes", **defaults)
                 if "name" not in defaults:
                     raise IntegrityError("Name was not set by propertymappings")
@@ -47,7 +48,6 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                     Group,
                     {
                         f"attributes__{LDAP_UNIQUENESS}": uniq,
-                        "parent": self._source.sync_parent_group,
                     },
                     defaults,
                 )

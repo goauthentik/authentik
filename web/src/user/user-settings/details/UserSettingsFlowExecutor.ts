@@ -101,11 +101,13 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
             if (!this.flowSlug) {
                 return;
             }
-            new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecuteRetrieve({
-                slug: this.flowSlug || "",
-            }).then(() => {
-                this.nextChallenge();
-            })
+            new FlowsApi(DEFAULT_CONFIG)
+                .flowsInstancesExecuteRetrieve({
+                    slug: this.flowSlug || "",
+                })
+                .then(() => {
+                    this.nextChallenge();
+                });
         });
     }
 
