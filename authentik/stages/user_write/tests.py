@@ -16,6 +16,7 @@ from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserWriteStage
+from authentik.stages.user_write.stage import UserWriteStageView
 
 
 class TestUserWriteStage(FlowTestCase):
@@ -77,7 +78,7 @@ class TestUserWriteStage(FlowTestCase):
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user-new",
             "password": new_password,
-            "attribute.some.custom-attribute": "test",
+            "attributes.some.custom-attribute": "test",
             "some_ignored_attribute": "bar",
         }
         session = self.client.session
@@ -171,4 +172,44 @@ class TestUserWriteStage(FlowTestCase):
             response,
             self.flow,
             component="ak-stage-access-denied",
+        )
+
+    def test_write_attribute(self):
+        """Test write_attribute"""
+        user = create_test_admin_user()
+        user.attributes = {
+            "foo": "bar",
+            "baz": {
+                "qwer": [
+                    "quox",
+                ]
+            },
+        }
+        user.save()
+        UserWriteStageView.write_attribute(user, "attributes.foo", "baz")
+        self.assertEqual(
+            user.attributes,
+            {
+                "foo": "baz",
+                "baz": {
+                    "qwer": [
+                        "quox",
+                    ]
+                },
+            },
+        )
+        UserWriteStageView.write_attribute(user, "attributes.foob.bar", "baz")
+        self.assertEqual(
+            user.attributes,
+            {
+                "foo": "baz",
+                "foob": {
+                    "bar": "baz",
+                },
+                "baz": {
+                    "qwer": [
+                        "quox",
+                    ]
+                },
+            },
         )

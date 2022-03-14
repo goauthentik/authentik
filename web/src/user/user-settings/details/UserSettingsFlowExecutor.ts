@@ -101,23 +101,31 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
             if (!this.flowSlug) {
                 return;
             }
-            this.loading = true;
-            new FlowsApi(DEFAULT_CONFIG)
-                .flowsExecutorGet({
-                    flowSlug: this.flowSlug,
-                    query: window.location.search.substring(1),
-                })
-                .then((challenge) => {
-                    this.challenge = challenge;
-                })
-                .catch((e: Error | Response) => {
-                    // Catch JSON or Update errors
-                    this.errorMessage(e);
-                })
-                .finally(() => {
-                    this.loading = false;
-                });
+            new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecuteRetrieve({
+                slug: this.flowSlug || "",
+            }).then(() => {
+                this.nextChallenge();
+            })
         });
+    }
+
+    nextChallenge(): void {
+        this.loading = true;
+        new FlowsApi(DEFAULT_CONFIG)
+            .flowsExecutorGet({
+                flowSlug: this.flowSlug || "",
+                query: window.location.search.substring(1),
+            })
+            .then((challenge) => {
+                this.challenge = challenge;
+            })
+            .catch((e: Error | Response) => {
+                // Catch JSON or Update errors
+                this.errorMessage(e);
+            })
+            .finally(() => {
+                this.loading = false;
+            });
     }
 
     async errorMessage(error: Error | Response): Promise<void> {

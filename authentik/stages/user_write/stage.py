@@ -3,7 +3,6 @@ from typing import Any
 
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
 from django.db.utils import IntegrityError
 from django.http import HttpRequest, HttpResponse
@@ -26,15 +25,16 @@ LOGGER = get_logger()
 class UserWriteStageView(StageView):
     """Finalise Enrollment flow by creating a user object."""
 
-    def write_attribute(self, user: User, key: str, value: Any):
+    @staticmethod
+    def write_attribute(user: User, key: str, value: Any):
         """Allow use of attributes.foo.bar when writing to a user, with full
         recursion"""
         parts = key.replace("_", ".").split(".")
         if len(parts) < 1:  # pragma: no cover
             return
-        # Function will always be called with a key like attribute.
+        # Function will always be called with a key like attributes.
         # this is just a sanity check to ensure that is removed
-        if parts[0] == "attribute":
+        if parts[0] == "attributes":
             parts = parts[1:]
         attrs = user.attributes
         for comp in parts[:-1]:
@@ -57,12 +57,7 @@ class UserWriteStageView(StageView):
             return self.executor.stage_invalid()
         data = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
         user_created = False
-        # check if pending user is set (default to anonymous user), if
-        # it's an anonymous user then we need to create a new user.
-        if isinstance(
-            self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER, AnonymousUser()),
-            AnonymousUser,
-        ):
+        if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
                 is_active=not self.executor.current_stage.create_users_as_inactive
             )
@@ -90,16 +85,20 @@ class UserWriteStageView(StageView):
                 setter = getattr(user, setter_name)
                 if callable(setter):
                     setter(value)
+            # For exact attributes match, update the dictionary in place
+            elif key == "attributes":
+                user.attributes.update(value)
             # User has this key already
-            elif hasattr(user, key):
+            elif hasattr(user, key) and not key.startswith("attributes."):
                 setattr(user, key, value)
             # Otherwise we just save it as custom attribute, but only if the value is prefixed with
             # `attribute_`, to prevent accidentally saving values
             else:
-                if not key.startswith("attribute.") and not key.startswith("attribute_"):
+                if not key.startswith("attributes.") and not key.startswith("attributes_"):
                     LOGGER.debug("discarding key", key=key)
                     continue
-                self.write_attribute(user, key, value)
+                UserWriteStageView.write_attribute(user, key, value)
+        print(user.attributes)
         # Extra check to prevent flows from saving a user with a blank username
         if user.username == "":
             LOGGER.warning("Aborting write to empty username", user=user)

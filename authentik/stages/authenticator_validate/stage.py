@@ -1,5 +1,4 @@
 """Authenticator Validation"""
-from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest, HttpResponse
 from django_otp import devices_for_user
 from rest_framework.fields import CharField, IntegerField, JSONField, ListField, UUIDField
@@ -280,7 +279,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
     def challenge_valid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
         # All validation is done by the serializer
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
-        if not user or isinstance(user, AnonymousUser):
+        if not user:
             webauthn_device: WebAuthnDevice = response.data.get("webauthn", None)
             if not webauthn_device:
                 return self.executor.stage_ok()
