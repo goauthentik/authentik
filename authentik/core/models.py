@@ -291,7 +291,7 @@ class Application(PolicyBindingModel):
             url = self.meta_launch_url
         if provider := self.get_provider():
             url = provider.launch_url
-        if user:
+        if user and url:
             if isinstance(user, SimpleLazyObject):
                 user._setup()
                 user = user._wrapped
