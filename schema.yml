@@ -3037,11 +3037,11 @@ paths:
         schema:
           type: string
       - in: query
-        name: uid
+        name: username
         schema:
           type: string
       - in: query
-        name: username
+        name: uuid
         schema:
           type: string
       tags:
