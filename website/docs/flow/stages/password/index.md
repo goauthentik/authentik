@@ -14,14 +14,14 @@ Depending on what kind of device you want to require the user to have:
 
 ```python
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-return WebAuthnDevice.objects.filter(user=request.user, active=True).exists()
+return WebAuthnDevice.objects.filter(user=request.user, confirmed=True).exists()
 ```
 
 #### Duo
 
 ```python
 from authentik.stages.authenticator_duo.models import DuoDevice
-return DuoDevice.objects.filter(user=request.user, active=True).exists()
+return DuoDevice.objects.filter(user=request.user, confirmed=True).exists()
 ```
 
 Afterwards, bind the policy you've created to the stage binding of the password stage.
