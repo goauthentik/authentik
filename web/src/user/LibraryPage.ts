@@ -165,7 +165,9 @@ export class LibraryPage extends LitElement {
                     <section class="pf-c-page__main-section">
                         ${loading(
                             this.apps,
-                            html`${(this.apps?.results.length || 0) > 0
+                            html`${((this.apps?.results || []).filter((app) => {
+                                return app.launchUrl !== null;
+                            })).length > 0
                                 ? this.renderApps(config)
                                 : this.renderEmptyState()}`,
                         )}
