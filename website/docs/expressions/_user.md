@@ -3,8 +3,7 @@
 Example:
 
 ```python
-if not 'custom_attribute' in request.user.attributes:
-  return {'custom_attribute': 'default'}
-
-return {"custom_attribute": request.user.attributes['custom_attribute']}
+return {
+  "custom_attribute": request.user.attributes.get("custom_attribute", "default"),
+}
 ```
