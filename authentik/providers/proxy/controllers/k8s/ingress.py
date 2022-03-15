@@ -129,7 +129,7 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
                                     ),
                                 ),
                                 path="/outpost.goauthentik.io",
-                                path_type="ImplementationSpecific",
+                                path_type="Prefix",
                             )
                         ]
                     ),
@@ -147,7 +147,7 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
                                     ),
                                 ),
                                 path="/",
-                                path_type="ImplementationSpecific",
+                                path_type="Prefix",
                             )
                         ]
                     ),
