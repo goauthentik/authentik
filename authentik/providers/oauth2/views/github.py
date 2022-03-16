@@ -73,12 +73,12 @@ class GitHubUserTeamsView(View):
         orgs_response = []
         for org in user.ak_groups.all():
             _org = {
-                "id": 0,
+                "id": str(org.pk),
                 "node_id": "",
                 "url": "",
                 "html_url": "",
-                "name": "",
-                "slug": "",
+                "name": org.name,
+                "slug": slugify(org.name),
                 "description": "",
                 "privacy": "",
                 "permission": "",
@@ -120,9 +120,6 @@ class GitHubUserTeamsView(View):
                     "type": "Organization"
                 }
             }
-            _org["id"] = str(org.pk)
-            _org["slug"] = slugify(org.name)
-            _org["name"] = org.name
             orgs_response.append(_org)
         return JsonResponse(orgs_response, safe=False)
     
