@@ -1,4 +1,6 @@
 """authentik pretend GitHub Views"""
+from copy import copy
+
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.views import View
 
@@ -66,4 +68,63 @@ class GitHubUserTeamsView(View):
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, token: RefreshToken) -> HttpResponse:
         """Emulate GitHub's /user/teams API Endpoint"""
-        return JsonResponse([], safe=False)
+        user = token.user
+
+        org_tpl = {
+            "id": 0,
+            "node_id": "",
+            "url": "",
+            "html_url": "",
+            "name": "",
+            "slug": "",
+            "description": "",
+            "privacy": "",
+            "permission": "",
+            "members_url": "",
+            "repositories_url": "",
+            "parent": None,
+            "members_count": 0,
+            "repos_count": 0,
+            "created_at": "",
+            "updated_at": "",
+            "organization": {
+                "login": "github",
+                "id": 1,
+                "node_id": "",
+                "url": "",
+                "repos_url": "",
+                "events_url": "",
+                "hooks_url": "",
+                "issues_url": "",
+                "members_url": "",
+                "public_members_url": "",
+                "avatar_url": "",
+                "description": "",
+                "name": "Authentik",
+                "company": "",
+                "blog": "",
+                "location": "",
+                "email": "",
+                "is_verified": True,
+                "has_organization_projects": True,
+                "has_repository_projects": True,
+                "public_repos": 0,
+                "public_gists": 0,
+                "followers": 0,
+                "following": 0,
+                "html_url": "",
+                "created_at": "",
+                "updated_at": "",
+                "type": "Organization"
+            }
+        }
+
+        orgs_response = []
+        for org in user.ak_groups.all():
+            _org = copy(org_tpl)
+            _org["id"] = str(org.pk)
+            _org["slug"] = org.name.replace(" ", "-").lower()
+            _org["name"] = org.name
+            orgs_response.append(_org)
+        return JsonResponse(orgs_response, safe=False)
+    
