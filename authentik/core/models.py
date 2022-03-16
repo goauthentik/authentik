@@ -287,10 +287,10 @@ class Application(PolicyBindingModel):
     def get_launch_url(self, user: Optional["User"] = None) -> Optional[str]:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
         url = None
-        if self.meta_launch_url:
-            url = self.meta_launch_url
         if provider := self.get_provider():
             url = provider.launch_url
+        if self.meta_launch_url:
+            url = self.meta_launch_url
         if user and url:
             if isinstance(user, SimpleLazyObject):
                 user._setup()

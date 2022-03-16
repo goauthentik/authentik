@@ -4,8 +4,10 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.flows.models import Flow
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
+from authentik.providers.oauth2.models import OAuth2Provider
 
 
 class TestApplicationsAPI(APITestCase):
@@ -13,8 +15,19 @@ class TestApplicationsAPI(APITestCase):
 
     def setUp(self) -> None:
         self.user = create_test_admin_user()
+        self.provider = OAuth2Provider.objects.create(
+            name="test",
+            redirect_uris="http://some-other-domain",
+            authorization_flow=Flow.objects.create(
+                name="test",
+                slug="test",
+            ),
+        )
         self.allowed = Application.objects.create(
-            name="allowed", slug="allowed", meta_launch_url="https://goauthentik.io/%(username)s"
+            name="allowed",
+            slug="allowed",
+            meta_launch_url="https://goauthentik.io/%(username)s",
+            provider=self.provider,
         )
         self.denied = Application.objects.create(name="denied", slug="denied")
         PolicyBinding.objects.create(
@@ -64,8 +77,19 @@ class TestApplicationsAPI(APITestCase):
                         "pk": str(self.allowed.pk),
                         "name": "allowed",
                         "slug": "allowed",
-                        "provider": None,
-                        "provider_obj": None,
+                        "provider": self.provider.pk,
+                        "provider_obj": {
+                            "assigned_application_name": "allowed",
+                            "assigned_application_slug": "allowed",
+                            "authorization_flow": str(self.provider.authorization_flow.pk),
+                            "component": "ak-provider-oauth2-form",
+                            "meta_model_name": "authentik_providers_oauth2.oauth2provider",
+                            "name": self.provider.name,
+                            "pk": self.provider.pk,
+                            "property_mappings": [],
+                            "verbose_name": "OAuth2/OpenID Provider",
+                            "verbose_name_plural": "OAuth2/OpenID Providers",
+                        },
                         "launch_url": f"https://goauthentik.io/{self.user.username}",
                         "meta_launch_url": "https://goauthentik.io/%(username)s",
                         "meta_icon": None,
@@ -100,8 +124,19 @@ class TestApplicationsAPI(APITestCase):
                         "pk": str(self.allowed.pk),
                         "name": "allowed",
                         "slug": "allowed",
-                        "provider": None,
-                        "provider_obj": None,
+                        "provider": self.provider.pk,
+                        "provider_obj": {
+                            "assigned_application_name": "allowed",
+                            "assigned_application_slug": "allowed",
+                            "authorization_flow": str(self.provider.authorization_flow.pk),
+                            "component": "ak-provider-oauth2-form",
+                            "meta_model_name": "authentik_providers_oauth2.oauth2provider",
+                            "name": self.provider.name,
+                            "pk": self.provider.pk,
+                            "property_mappings": [],
+                            "verbose_name": "OAuth2/OpenID Provider",
+                            "verbose_name_plural": "OAuth2/OpenID Providers",
+                        },
                         "launch_url": f"https://goauthentik.io/{self.user.username}",
                         "meta_launch_url": "https://goauthentik.io/%(username)s",
                         "meta_icon": None,
