@@ -222,8 +222,8 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             .renderElement=${(group: Group): string => {
                                 return group.name;
                             }}
-                            .value=${(group: Group | undefined): string => {
-                                return group ? group.pk : "";
+                            .value=${(group: Group | undefined): string | undefined => {
+                                return group ? group.pk : undefined;
                             }}
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.group;
@@ -256,8 +256,8 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             .renderElement=${(user: User): string => {
                                 return UserOption(user);
                             }}
-                            .value=${(user: User | undefined): number => {
-                                return user ? user.pk : 0;
+                            .value=${(user: User | undefined): number | undefined => {
+                                return user ? user.pk : undefined;
                             }}
                             .selected=${(user: User): boolean => {
                                 return user.pk === this.instance?.user;
