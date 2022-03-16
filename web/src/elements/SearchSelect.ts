@@ -26,6 +26,9 @@ export class SearchSelect<T> extends LitElement {
     @property({ type: Boolean })
     open = false;
 
+    @property({ type: Boolean })
+    blankable = false;
+
     @property()
     placeholder: string = t`Select an object.`;
 
@@ -82,6 +85,22 @@ export class SearchSelect<T> extends LitElement {
             </div>
 
             <ul class="pf-c-select__menu" role="listbox" ?hidden="${!this.open}">
+                ${this.blankable
+                    ? html`
+                          <li role="presentation">
+                              <button
+                                  class="pf-c-select__menu-item"
+                                  role="option"
+                                  @click=${() => {
+                                      this.selectedObject = undefined;
+                                      this.open = false;
+                                  }}
+                              >
+                                  ---------
+                              </button>
+                          </li>
+                      `
+                    : html``}
                 ${this.objects.map((obj) => {
                     return html`
                         <li role="presentation">

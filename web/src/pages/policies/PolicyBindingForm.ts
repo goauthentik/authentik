@@ -228,6 +228,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.group;
                             }}
+                            ?blankable=${true}
                         >
                         </ak-search-select>
                         ${this.policyOnly
@@ -262,6 +263,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             .selected=${(user: User): boolean => {
                                 return user.pk === this.instance?.user;
                             }}
+                            ?blankable=${true}
                         >
                         </ak-search-select>
                         ${this.policyOnly

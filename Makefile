@@ -137,6 +137,6 @@ install:
 	cd website && npm i
 
 a: install
-	tmux -CC \
+	tmux \
 		new-session 'make run' \; \
 		split-window 'make web-watch'
