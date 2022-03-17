@@ -1,8 +1,8 @@
 """authentik pretend GitHub Views"""
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.views import View
 from django.utils.text import slugify
+from django.views import View
 
 from authentik.providers.oauth2.models import RefreshToken
 
@@ -117,9 +117,8 @@ class GitHubUserTeamsView(View):
                     "html_url": "",
                     "created_at": "",
                     "updated_at": "",
-                    "type": "Organization"
-                }
+                    "type": "Organization",
+                },
             }
             orgs_response.append(_org)
         return JsonResponse(orgs_response, safe=False)
-    
