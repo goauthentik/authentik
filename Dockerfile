@@ -16,7 +16,7 @@ ENV NODE_ENV=production
 RUN cd /work/web && npm i && npm run build
 
 # Stage 3: Build go proxy
-FROM docker.io/golang:1.17.8-bullseye AS builder
+FROM docker.io/golang:1.18.0-bullseye AS builder
 
 WORKDIR /work
 
