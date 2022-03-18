@@ -6304,6 +6304,10 @@ msgid "reference will be set to an empty value"
 msgstr "reference will be set to an empty value"
 
 #: src/pages/flows/FlowViewPage.ts
+msgid "with current user"
+msgstr "with current user"
+
+#: src/pages/flows/FlowViewPage.ts
 msgid "with inspector"
 msgstr "with inspector"
 

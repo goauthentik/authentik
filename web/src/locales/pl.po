@@ -6173,6 +6173,10 @@ msgid "reference will be set to an empty value"
 msgstr "referencja zostanie ustawiona na pustą wartość"
 
 #: src/pages/flows/FlowViewPage.ts
+msgid "with current user"
+msgstr ""
+
+#: src/pages/flows/FlowViewPage.ts
 msgid "with inspector"
 msgstr "z inspektorem"
 

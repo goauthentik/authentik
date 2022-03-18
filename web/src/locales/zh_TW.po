@@ -6171,6 +6171,10 @@ msgid "reference will be set to an empty value"
 msgstr "引用将被设置为空值"
 
 #: src/pages/flows/FlowViewPage.ts
+msgid "with current user"
+msgstr ""
+
+#: src/pages/flows/FlowViewPage.ts
 msgid "with inspector"
 msgstr "和检查员一起"
 

@@ -120,6 +120,19 @@ export class FlowViewPage extends LitElement {
                                                 <button
                                                     class="pf-c-button pf-m-primary"
                                                     @click=${() => {
+                                                        const finalURL = `${
+                                                            window.location.origin
+                                                        }/if/flows/${this.flow.slug}/${AndNext(
+                                                            `${window.location.pathname}#${window.location.hash}`,
+                                                        )}`;
+                                                        window.open(finalURL, "_blank");
+                                                    }}
+                                                >
+                                                    ${t`Normal`}
+                                                </button>
+                                                <button
+                                                    class="pf-c-button pf-m-secondary"
+                                                    @click=${() => {
                                                         new FlowsApi(DEFAULT_CONFIG)
                                                             .flowsInstancesExecuteRetrieve({
                                                                 slug: this.flow.slug,
@@ -134,7 +147,7 @@ export class FlowViewPage extends LitElement {
                                                             });
                                                     }}
                                                 >
-                                                    ${t`Normal`}
+                                                    ${t`with current user`}
                                                 </button>
                                                 <button
                                                     class="pf-c-button pf-m-secondary"

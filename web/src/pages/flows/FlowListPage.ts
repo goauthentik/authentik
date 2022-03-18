@@ -6,7 +6,7 @@ import { customElement, property } from "lit/decorators.js";
 import { Flow, FlowsApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { AndNext, DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/ConfirmationForm";
@@ -113,17 +113,10 @@ export class FlowListPage extends TablePage<Flow> {
                 <button
                     class="pf-c-button pf-m-plain"
                     @click=${() => {
-                        new FlowsApi(DEFAULT_CONFIG)
-                            .flowsInstancesExecuteRetrieve({
-                                slug: item.slug,
-                            })
-                            .then((link) => {
-                                window.open(
-                                    `${link.link}?inspector&next=${encodeURIComponent(
-                                        `/#${window.location.href}`,
-                                    )}`,
-                                );
-                            });
+                        const finalURL = `${window.location.origin}/if/flows/${item.slug}/${AndNext(
+                            `${window.location.pathname}#${window.location.hash}`,
+                        )}`;
+                        window.open(finalURL, "_blank");
                     }}
                 >
                     <i class="fas fa-play"></i>

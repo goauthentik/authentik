@@ -6178,6 +6178,10 @@ msgid "reference will be set to an empty value"
 msgstr "referans boş bir değere ayarlanacaktır"
 
 #: src/pages/flows/FlowViewPage.ts
+msgid "with current user"
+msgstr ""
+
+#: src/pages/flows/FlowViewPage.ts
 msgid "with inspector"
 msgstr "müfettiş ile"
 
