@@ -223,8 +223,8 @@ html > form > input {
     option {
         color: var(--ak-dark-foreground);
     }
-    optgroup:checked,
-    option:checked {
+    select[multiple] optgroup:checked,
+    select[multiple] option:checked {
         color: var(--ak-dark-background);
     }
     .pf-c-input-group {
