@@ -116,12 +116,12 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	var users *[]api.User
 	var groups *[]api.Group
 
-	errs, _ := errgroup.WithContext(req.Context())
+	errs, errCtx := errgroup.WithContext(req.Context())
 
 	if needUsers {
 		errs.Go(func() error {
 			if flags.CanSearch {
-				uapisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.api_user")
+				uapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_user")
 				searchReq, skip := utils.ParseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter, false)
 
 				if skip {
@@ -140,8 +140,8 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				users = &u.Results
 			} else {
 				if flags.UserInfo == nil {
-					uapisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.api_user")
-					u, _, err := c.CoreApi.CoreUsersRetrieve(req.Context(), flags.UserPk).Execute()
+					uapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_user")
+					u, _, err := c.CoreApi.CoreUsersRetrieve(uapisp.Context(), flags.UserPk).Execute()
 					uapisp.Finish()
 
 					if err != nil {
@@ -164,7 +164,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 	if needGroups {
 		errs.Go(func() error {
-			gapisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.api_group")
+			gapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_group")
 			searchReq, skip := utils.ParseFilterForGroup(c.CoreApi.CoreGroupsList(gapisp.Context()), parsedFilter, false)
 			if skip {
 				req.Log().Trace("Skip backend request")
