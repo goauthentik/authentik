@@ -147,6 +147,16 @@ In pfSense, you can validate the authentication backend setup by going to _Diagn
 
 You can use the credentials of an authentik user, pfSense will tell you if the connection was successful or not. If it is, congratulations, you can now change the pfSense default authentication backend.
 
+
+
+## Change pfSense default authentication backend
+
+In pfSense, you can change the authentication backend used by the Web UI by going to _System/User Manager_ and then click on _Settings_ tab.
+
+- Authentication Server: `LDAP authentik`
+
+
+
 ## Notes
 
 :::tip
