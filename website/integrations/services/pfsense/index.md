@@ -56,9 +56,7 @@ In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` t
 - Name: LDAP
 - Type: LDAP
 
-## pfSense Setup
-
-### Unsecure setup (without SSL)
+## pfSense unsecure setup (without SSL)
 
 :::note
 This set up should only be used for testing purpose, because passwords will be sent in clear text to authentik.  
@@ -82,11 +80,11 @@ Change the following fields
 
 
 
-### Secure setup (with SSL)
+## pfSense secure setup (with SSL)
 
 When enabling SSL, authentik will send a certificate to pfSense. This certificate has to be signed by a certificate authority trusted by pfSense. In this setup we will create on our certificate authority in pfSense and create a certificate that will be used by authentik.
 
-#### Step 1 - Certificate Authority
+### Step 1 - Certificate Authority
 
 In pfSense, create a certificate authority under _System/Cert. Manager_ and click the `+ Add` button.
 
@@ -94,7 +92,7 @@ In pfSense, create a certificate authority under _System/Cert. Manager_ and clic
 - Method: Create an internal Certificate Authority
 - Common Name : `pfSense CA`
 
-#### Step 2 - Server Certificate
+### Step 2 - Server Certificate
 
 In pfSense, create a server certificate under _System/Cert. Manager_. Go to the _Certificates_ tab then click the `+ Add` button.
 
@@ -108,7 +106,7 @@ Change the following fields
 
 All other field can be left blank.
 
-#### Step 3 - Certificate import
+### Step 3 - Certificate import
 
 In pfsense, export the public **and** the private key of the certificate by going under _System/Cert. Manager_ and then to the _Certificate_ tab.
 
@@ -116,11 +114,11 @@ In pfsense, export the public **and** the private key of the certificate by goin
 
 In authentik, import the public **and** the private key by going under _System/Certificates_ and then click on `create`.
 
-#### Step 4 - Provider configuration
+### Step 4 - Provider configuration
 
 In authentik, edit the LDAP provider configuration under _Applications/Providers_ and select the certificate we just imported.
 
-#### Step 5 - pfSense authentication server
+### Step 5 - pfSense authentication server
 
 In pfSense, add your authentik LDAP server by going to your pfSense Web UI and clicking the `+ Add` under _System/User Manager/Authentication Servers_.
 
