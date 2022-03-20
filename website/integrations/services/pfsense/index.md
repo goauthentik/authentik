@@ -23,7 +23,7 @@ The following placeholders will be used:
 - `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
 
 
-### Step 1
+### Step 1 - Service account
 
 In authentik, create a service account (under _Directory/Users_) for pfSense to use as the LDAP Binder and take note of the password generated.
 
@@ -34,14 +34,14 @@ If you didn't keep the password, you can copy it from _Directory/Tokens & App pa
 :::
 
 
-### Step 2
+### Step 2 - LDAP Provider
 
 In authentik, create a LDAP Provider (under _Applications/Providers_) with these settings :
 - Name : LDAP
 - Bind DN : `DC=ldap,DC=goauthentik,DC=io`
 - Certificate : `self-signed`
 
-### Step 3
+### Step 3 - Application
 
 In authentik, create an application (under _Resources/Applications_) with these settings :
 
@@ -49,7 +49,7 @@ In authentik, create an application (under _Resources/Applications_) with these 
 - Slug: ldap
 - Provider: LDAP
 
-### Step 4
+### Step 4 - Outpost
 
 In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` that uses the LDAP Application you created in _Step 3_.
 
@@ -60,7 +60,7 @@ In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` t
 
 ### Unsecure setup (without SSL)
 
-:::caution
+:::note
 This set up should only be used for testing purpose, because passwords will be sent in clear text to authentik.  
 :::
 
@@ -80,6 +80,65 @@ Change the following fields
 - Extended Query: &(objectClass=user)
 - Allow unauthenticated bind: **unticked**
 
+
+
+### Secure setup (with SSL)
+
+When enabling SSL, authentik will send a certificate to pfSense. This certificate has to be signed by a certificate authority trusted by pfSense. In this setup we will create on our certificate authority in pfSense and create a certificate that will be used by authentik.
+
+#### Step 1 - Certificate Authority
+
+In pfSense, create a certificate authority under _System/Cert. Manager_ and click the `+ Add` button.
+
+- Descriptive Name: `pfSense CA`
+- Method: Create an internal Certificate Authority
+- Common Name : `pfSense CA`
+
+#### Step 2 - Server Certificate
+
+In pfSense, create a server certificate under _System/Cert. Manager_. Go to the _Certificates_ tab then click the `+ Add` button.
+
+Change the following fields
+
+- Method: Create an internal Certificate
+- Descriptive name: `authentik.company`
+- Lifetime: `398`
+- Common Name: `authentik.company`
+- Certificate Type: `Server Certificate`
+
+All other field can be left blank.
+
+#### Step 3 - Certificate import
+
+In pfsense, export the public **and** the private key of the certificate by going under _System/Cert. Manager_ and then to the _Certificate_ tab.
+
+![](./pfsense-certificate-export.png)
+
+In authentik, import the public **and** the private key by going under _System/Certificates_ and then click on `create`.
+
+#### Step 4 - Provider configuration
+
+In authentik, edit the LDAP provider configuration under _Applications/Providers_ and select the certificate we just imported.
+
+#### Step 5 - pfSense authentication server
+
+In pfSense, add your authentik LDAP server by going to your pfSense Web UI and clicking the `+ Add` under _System/User Manager/Authentication Servers_.
+
+Change the following fields
+
+- Descriptive name: LDAP authentik
+- Hostname or IP address: `authentik.company`
+- Port value: 636
+- Transport: SSL/TLS Encrypted
+- Peer Certificate Authority: `pfSense CA`
+- Base DN: `DC=ldap,DC=goauthentik,DC=io`
+- Authentication containers: `OU=users,DC=ldap,DC=goauthentik,DC=io`
+- Bind anonymous: **unticked**
+- Bind credentials:
+  - User DN: `cn=pfsense-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
+  - Password: `<pfsense-user password from step 2>`
+- Extended Query: &(objectClass=user)
+- Allow unauthenticated bind: **unticked**
 
 ## Notes
 
