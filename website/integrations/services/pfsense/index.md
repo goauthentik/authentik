@@ -68,6 +68,7 @@ Change the following fields
 
 - Descriptive name: LDAP authentik
 - Hostname or IP address: `authentik.company`
+- Port value: 389
 - Transport: Standard TCP
 - Base DN: `DC=ldap,DC=goauthentik,DC=io`
 - Authentication containers: `OU=users,DC=ldap,DC=goauthentik,DC=io`
