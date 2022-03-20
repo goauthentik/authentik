@@ -59,7 +59,7 @@ In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` t
 ## pfSense unsecure setup (without SSL)
 
 :::warning
-This set up should only be used for testing purpose, because passwords will be sent in clear text to authentik.  
+This setup should only be used for testing purpose, because passwords will be sent in clear text to authentik.  
 :::
 
 Add your authentik LDAP server to pfSense by going to your pfSense Web UI and clicking the `+ Add` under _System/User Manager/Authentication Servers_.
@@ -83,7 +83,7 @@ Change the following fields
 
 ## pfSense secure setup (with SSL)
 
-When enabling SSL, authentik will send a certificate to pfSense. This certificate has to be signed by a certificate authority trusted by pfSense. In this setup we will create on our certificate authority in pfSense and create a certificate that will be used by authentik.
+When enabling SSL, authentik will send a certificate to pfSense. This certificate has to be signed by a certificate authority trusted by pfSense. In this setup we will create our own certificate authority in pfSense and create a certificate that will be used by authentik.
 
 ### Step 1 - Certificate Authority
 
