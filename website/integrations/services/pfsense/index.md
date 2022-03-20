@@ -139,6 +139,14 @@ Change the following fields
 - Extended Query: &(objectClass=user)
 - Allow unauthenticated bind: **unticked**
 
+
+
+## Test your setup
+
+In pfSense, you can validate the authentication backend setup by going to _Diagnostics/Authentication_ and then select `LDAP authentik` as _Authentication Server_.
+
+You can use the credentials of an authentik user, pfSense will tell you if the connection was successful or not. If it is, congratulations, you can now change the pfSense default authentication backend.
+
 ## Notes
 
 :::tip
