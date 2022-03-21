@@ -39,7 +39,7 @@ You can also bind mount single files into the folder, as long as they fall under
     Otherwise it will be imported as certificate.
 
 - If the file is called `fullchain.pem` or `privkey.pem` (the output naming of certbot), they will get the name of the parent folder.
-- Files can be in any arbitrary file structure, and can have extension.
+- Files can be in any arbitrary file structure, and can have any extension.
 - If the path contains `archive`, the files will be ignored (to better support certbot setups).
 
 ```
@@ -47,10 +47,10 @@ certs/
 ├── baz
 │   └── bar.baz
 │       ├── fullchain.pem
-│       └── privkey.key
+│       └── privkey.pem
 ├── foo.bar
 │   ├── fullchain.pem
-│   └── privkey.key
+│   └── privkey.pem
 ├── foo.key
 └── foo.pem
 ```
