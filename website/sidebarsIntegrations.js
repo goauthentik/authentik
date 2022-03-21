@@ -27,6 +27,7 @@ module.exports = {
                 "services/onlyoffice/index",
                 "services/opnsense/index",
                 "services/paperless-ng/index",
+                "services/pfsense/index",
                 "services/portainer/index",
                 "services/powerdns-admin/index",
                 "services/proxmox-ve/index",
