@@ -21673,6 +21673,9 @@ components:
           format: uuid
           readOnly: true
           title: Group uuid
+        num_pk:
+          type: integer
+          readOnly: true
         name:
           type: string
           maxLength: 80
@@ -21700,6 +21703,7 @@ components:
           readOnly: true
       required:
       - name
+      - num_pk
       - parent
       - parent_name
       - pk

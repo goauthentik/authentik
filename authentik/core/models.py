@@ -81,6 +81,13 @@ class Group(models.Model):
     )
     attributes = models.JSONField(default=dict, blank=True)
 
+    @property
+    def num_pk(self) -> int:
+        """Get a numerical, int32 ID for the group"""
+        # int max is 2147483647 (10 digits) so 9 is the max usable
+        # in the LDAP Outpost we use the last 5 chars so match here
+        return int(str(self.pk.int)[:5])
+
     def is_member(self, user: "User") -> bool:
         """Recursively check if `user` is member of us, or any parent."""
         query = """
