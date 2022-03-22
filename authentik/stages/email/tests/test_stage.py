@@ -14,7 +14,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.email.models import EmailStage
-from authentik.stages.email.stage import QS_KEY_TOKEN
+from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, QS_KEY_TOKEN
 
 
 class TestEmailStage(FlowTestCase):
@@ -75,6 +75,27 @@ class TestEmailStage(FlowTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "authentik")
+            self.assertEqual(mail.outbox[0].to, ["test@beryju.org"])
+
+    def test_pending_user_override(self):
+        """Test with pending user (override to)"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        plan.context[PLAN_CONTEXT_EMAIL_OVERRIDE] = "foo@bar.baz"
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            response = self.client.post(url)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(mail.outbox[0].subject, "authentik")
+            self.assertEqual(mail.outbox[0].to, ["foo@bar.baz"])
 
     def test_use_global_settings(self):
         """Test use_global_settings"""

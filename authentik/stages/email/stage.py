@@ -23,6 +23,7 @@ from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
+PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
 
 
 class EmailChallenge(Challenge):
@@ -83,13 +84,16 @@ class EmailStageView(ChallengeStageView):
         """Helper function that sends the actual email. Implies that you've
         already checked that there is a pending user."""
         pending_user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        email = self.executor.plan.context.get(PLAN_CONTEXT_EMAIL_OVERRIDE, None)
+        if not email:
+            email = pending_user.email
         current_stage: EmailStage = self.executor.current_stage
         token = self.get_token()
         # Send mail to user
         message = TemplateEmailMessage(
             subject=_(current_stage.subject),
             template_name=current_stage.template,
-            to=[pending_user.email],
+            to=[email],
             template_context={
                 "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
                 "user": pending_user,

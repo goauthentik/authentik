@@ -6,6 +6,21 @@ This stage can be used for email verification. authentik's background worker wil
 
 ![](email_recovery.png)
 
+## Behaviour
+
+By default, the email is sent to the currently pending user. To override this, you can set `email` in the plan's context to another email address, which will override the user's email address (the user won't be changed).
+
+For example, create this expression policy and bind it to the email stage:
+
+```python
+request.context["email"] = "foo@bar.baz"
+# Or get it from a prompt
+# request.context["email"] = request.context["prompt_data"]["email"]
+# Or another user attribute
+# request.context["email"] = request.context["pending_user"].attributes.get("otherEmail")
+return True
+```
+
 ## Custom Templates
 
 You can also use custom email templates, to use your own design or layout.
