@@ -45,7 +45,7 @@ To get the value for `x509cert`, go to *System* > *Certificates*, and download t
 kimai:
   saml:
     activate: true
-    title: Login with Authentik
+    title: Login with authentik
     mapping:
       - {
           saml: $http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress,
@@ -62,7 +62,7 @@ kimai:
         - { saml: admin.group, kimai: ROLE_ADMIN }
     connection:
       # You SAML provider
-      # Your Authentik instance, replace https://authentik.company with your authentik URL
+      # Your authentik instance, replace https://authentik.company with your authentik URL
       idp:
         entityId: "https://authentik.company/"
         singleSignOnService:
