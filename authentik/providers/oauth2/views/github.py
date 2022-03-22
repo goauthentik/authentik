@@ -73,7 +73,7 @@ class GitHubUserTeamsView(View):
         orgs_response = []
         for org in user.ak_groups.all():
             _org = {
-                "id": str(org.pk),
+                "id": org.pk.int,
                 "node_id": "",
                 "url": "",
                 "html_url": "",
