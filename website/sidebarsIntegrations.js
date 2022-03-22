@@ -21,6 +21,7 @@ module.exports = {
                 "services/hashicorp-vault/index",
                 "services/hedgedoc/index",
                 "services/home-assistant/index",
+                "services/kimai/index",
                 "services/matrix-synapse/index",
                 "services/minio/index",
                 "services/nextcloud/index",
