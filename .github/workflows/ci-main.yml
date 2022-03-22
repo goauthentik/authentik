@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: '16'
       - id: cache-poetry
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
@@ -53,7 +53,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
       - id: cache-poetry
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
@@ -76,7 +76,7 @@ jobs:
           python ./scripts/gh_env.py
           sudo pip install -U pipenv
       - id: cache-poetry
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
@@ -117,7 +117,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
       - id: cache-poetry
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
@@ -144,7 +144,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
       - id: cache-poetry
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
@@ -181,7 +181,7 @@ jobs:
         with:
           domain: ${{github.repository_owner}}
       - id: cache-poetry
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
@@ -192,7 +192,7 @@ jobs:
           scripts/ci_prepare.sh
           docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
@@ -226,7 +226,7 @@ jobs:
         with:
           domain: ${{github.repository_owner}}
       - id: cache-poetry
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
@@ -237,7 +237,7 @@ jobs:
           scripts/ci_prepare.sh
           docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
