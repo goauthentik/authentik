@@ -75,10 +75,6 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
                 flowChallengeResponseRequest: payload,
             })
             .then((data) => {
-                showMessage({
-                    level: MessageLevel.success,
-                    message: t`Successfully updated details`,
-                });
                 this.challenge = data;
                 if (this.challenge.responseErrors) {
                     return false;
@@ -194,6 +190,10 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
                 console.debug("authentik/user/flows: redirect to '/', restarting flow.");
                 this.firstUpdated();
                 this.globalRefresh();
+                showMessage({
+                    level: MessageLevel.success,
+                    message: t`Successfully updated details`,
+                });
                 return html``;
             case ChallengeChoices.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
