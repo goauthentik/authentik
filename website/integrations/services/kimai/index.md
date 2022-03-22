@@ -18,7 +18,9 @@ The following placeholders will be used:
 - `authentik.company` is the FQDN of the authentik Install
 - `admin.group` is the authentik group to be made Admin in Kimai
 
-Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
+Create an application in authentik and use the slug for later as `<application-slug>`.
+
+Create a SAML provider with the following parameters:
 
 - ACS URL: `https://kimai.company/auth/saml/acs`
 - Audience: `https://kimai.company/auth/saml`
@@ -64,11 +66,11 @@ kimai:
       idp:
         entityId: "https://authentik.company/"
         singleSignOnService:
-          url: "https://authentik.company/application/saml/kimai-sso/sso/binding/redirect/"
+          url: "https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/"
           binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
         # the "single logout" feature was not yet tested, if you want to help, please let me know!
         singleLogoutService:
-          url: "https://authentik.company/if/session-end/kimai-sso/"
+          url: "https://authentik.company/if/session-end/<application-slug>/"
           binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
         # Signing certificate from *Advanced protocol settings*
         x509cert: "XXXXXXXXXXXXXXXXXXXXXXXXXXX=="
