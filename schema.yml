@@ -19231,9 +19231,11 @@ components:
           readOnly: true
         user_agent:
           type: object
+          description: User agent details
           properties:
             device:
               type: object
+              description: User agent device
               properties:
                 brand:
                   type: string
@@ -19241,8 +19243,13 @@ components:
                   type: string
                 model:
                   type: string
+              required:
+              - brand
+              - family
+              - model
             os:
               type: object
+              description: User agent os
               properties:
                 family:
                   type: string
@@ -19254,8 +19261,15 @@ components:
                   type: string
                 patch_minor:
                   type: string
+              required:
+              - family
+              - major
+              - minor
+              - patch
+              - patch_minor
             user_agent:
               type: object
+              description: User agent browser
               properties:
                 family:
                   type: string
@@ -19265,11 +19279,22 @@ components:
                   type: string
                 patch:
                   type: string
+              required:
+              - family
+              - major
+              - minor
+              - patch
             string:
               type: string
+          required:
+          - device
+          - os
+          - string
+          - user_agent
           readOnly: true
         geo_ip:
           type: object
+          description: GeoIP Details
           properties:
             continent:
               type: string
@@ -19283,6 +19308,12 @@ components:
               format: float
             city:
               type: string
+          required:
+          - city
+          - continent
+          - country
+          - lat
+          - long
           nullable: true
           readOnly: true
         user:
@@ -21033,7 +21064,7 @@ components:
           readOnly: true
         traces_sample_rate:
           type: number
-          format: float
+          format: double
           readOnly: true
       required:
       - enabled
@@ -30444,6 +30475,7 @@ components:
           readOnly: true
         runtime:
           type: object
+          description: Runtime information
           properties:
             python_version:
               type: string
@@ -30457,6 +30489,13 @@ components:
               type: string
             uname:
               type: string
+          required:
+          - architecture
+          - environment
+          - gunicorn_version
+          - platform
+          - python_version
+          - uname
           readOnly: true
         tenant:
           type: string
