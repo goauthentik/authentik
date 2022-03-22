@@ -292,7 +292,7 @@ class TestPromptStage(FlowTestCase):
             prompt.save()
 
 
-def field_type_tester_factory(field_type: FieldTypes):
+def field_type_tester_factory(field_type: FieldTypes, required: bool):
     """Test field for field_type"""
 
     def tester(self: TestPromptStage):
@@ -304,11 +304,16 @@ def field_type_tester_factory(field_type: FieldTypes):
             placeholder_expression=False,
             sub_text="test",
             order=123,
+            required=required,
         )
         self.assertIsNotNone(prompt.field("foo"))
 
     return tester
 
 
-for _type in FieldTypes:
-    setattr(TestPromptStage, f"test_field_type_{_type}", field_type_tester_factory(_type))
+for _required in (True, False):
+    for _type in FieldTypes:
+        test_name = f"test_field_type_{_type}"
+        if _required:
+            test_name += "_required"
+        setattr(TestPromptStage, test_name, field_type_tester_factory(_type, _required))

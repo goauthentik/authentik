@@ -119,10 +119,12 @@ class Prompt(SerializerModel):
         }
         if self.type == FieldTypes.TEXT:
             kwargs["trim_whitespace"] = False
+            kwargs["allow_blank"] = not self.required
         if self.type == FieldTypes.TEXT_READ_ONLY:
             field_class = ReadOnlyField
         if self.type == FieldTypes.EMAIL:
             field_class = EmailField
+            kwargs["allow_blank"] = not self.required
         if self.type == FieldTypes.NUMBER:
             field_class = IntegerField
         if self.type == FieldTypes.CHECKBOX:
