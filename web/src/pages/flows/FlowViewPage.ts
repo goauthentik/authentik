@@ -122,7 +122,7 @@ export class FlowViewPage extends LitElement {
                                                     @click=${() => {
                                                         const finalURL = `${
                                                             window.location.origin
-                                                        }/if/flows/${this.flow.slug}/${AndNext(
+                                                        }/if/flow/${this.flow.slug}/${AndNext(
                                                             `${window.location.pathname}#${window.location.hash}`,
                                                         )}`;
                                                         window.open(finalURL, "_blank");
