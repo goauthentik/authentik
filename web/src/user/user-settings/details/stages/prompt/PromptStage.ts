@@ -46,4 +46,31 @@ export class UserSettingsPromptStage extends PromptStage {
             </div>
         </div>`;
     }
+
+    render(): TemplateResult {
+        if (!this.challenge) {
+            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+        }
+        return html`<div class="pf-c-login__main-body">
+                <form
+                    class="pf-c-form"
+                    @submit=${(e: Event) => {
+                        this.submitForm(e);
+                    }}
+                >
+                    ${this.challenge.fields.map((prompt) => {
+                        return this.renderField(prompt);
+                    })}
+                    ${"non_field_errors" in (this.challenge?.responseErrors || {})
+                        ? this.renderNonFieldErrors(
+                              this.challenge?.responseErrors?.non_field_errors || [],
+                          )
+                        : html``}
+                    ${this.renderContinue()}
+                </form>
+            </div>
+            <footer class="pf-c-login__main-footer">
+                <ul class="pf-c-login__main-footer-links"></ul>
+            </footer>`;
+    }
 }
