@@ -129,7 +129,10 @@ class TestPromptStage(FlowTestCase):
     def test_valid_challenge_with_policy(self) -> PromptChallengeResponse:
         """Test challenge_response validation"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        expr = "return request.context['password_prompt'] == request.context['password2_prompt']"
+        expr = (
+            "return request.context['prompt_data']['password_prompt'] "
+            "== request.context['prompt_data']['password2_prompt']"
+        )
         expr_policy = ExpressionPolicy.objects.create(name="validate-form", expression=expr)
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
@@ -273,9 +276,6 @@ class TestPromptStage(FlowTestCase):
         self.assertEqual(
             prompt.get_placeholder(context, self.user, self.factory.get("/")), prompt.placeholder
         )
-
-    def test_field_types(self):
-        """Ensure all field types can successfully be created"""
 
     def test_invalid_save(self):
         """Ensure field can't be saved with invalid type"""
