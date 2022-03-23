@@ -53,7 +53,7 @@ POST /application/o/token/ HTTP/1.1
 Host: authentik.company
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=client_credentials&username=my-service-account&password=my-token
+grant_type=client_credentials&username=my-service-account&password=my-token&client_id=application_client_id
 ```
 
 This will return a JSON response with an `access_token`, which is a signed JWT token. This token can be sent along requests to other hosts, which can then validate the JWT based on the signing key configured in authentik.
