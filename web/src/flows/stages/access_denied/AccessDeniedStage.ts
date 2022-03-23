@@ -15,7 +15,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
 
 import "../../../elements/EmptyState";
-import { PFSize } from "../../../elements/Spinner";
 import "../../FormStatic";
 import { BaseStage } from "../base";
 
@@ -48,11 +47,6 @@ export class AccessDeniedStage extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
-                    <div class="ak-loading">
-                        <ak-spinner size=${PFSize.XLarge}></ak-spinner>
-                    </div>
-                </form>
-                <div class="pf-c-form">
                     <div class="pf-c-form__group">
                         <p>
                             <i class="pf-icon pf-icon-error-circle-o"></i>
@@ -62,7 +56,7 @@ export class AccessDeniedStage extends BaseStage<
                         html`<hr />
                             <p>${this.challenge.errorMessage}</p>`}
                     </div>
-                </div>
+                </form>
             </div>
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links"></ul>
