@@ -1,5 +1,7 @@
 """authentik pretend GitHub Views"""
+
 from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.utils.text import slugify
 from django.views import View
 
 from authentik.providers.oauth2.models import RefreshToken
@@ -66,4 +68,57 @@ class GitHubUserTeamsView(View):
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, token: RefreshToken) -> HttpResponse:
         """Emulate GitHub's /user/teams API Endpoint"""
-        return JsonResponse([], safe=False)
+        user = token.user
+
+        orgs_response = []
+        for org in user.ak_groups.all():
+            _org = {
+                "id": org.num_pk,
+                "node_id": "",
+                "url": "",
+                "html_url": "",
+                "name": org.name,
+                "slug": slugify(org.name),
+                "description": "",
+                "privacy": "",
+                "permission": "",
+                "members_url": "",
+                "repositories_url": "",
+                "parent": None,
+                "members_count": 0,
+                "repos_count": 0,
+                "created_at": "",
+                "updated_at": "",
+                "organization": {
+                    "login": slugify(request.tenant.branding_title),
+                    "id": 1,
+                    "node_id": "",
+                    "url": "",
+                    "repos_url": "",
+                    "events_url": "",
+                    "hooks_url": "",
+                    "issues_url": "",
+                    "members_url": "",
+                    "public_members_url": "",
+                    "avatar_url": "",
+                    "description": "",
+                    "name": request.tenant.branding_title,
+                    "company": "",
+                    "blog": "",
+                    "location": "",
+                    "email": "",
+                    "is_verified": True,
+                    "has_organization_projects": True,
+                    "has_repository_projects": True,
+                    "public_repos": 0,
+                    "public_gists": 0,
+                    "followers": 0,
+                    "following": 0,
+                    "html_url": "",
+                    "created_at": "",
+                    "updated_at": "",
+                    "type": "Organization",
+                },
+            }
+            orgs_response.append(_org)
+        return JsonResponse(orgs_response, safe=False)
