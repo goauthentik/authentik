@@ -8,7 +8,7 @@ from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
-from rest_framework.fields import BooleanField, CharField, ChoiceField, IntegerField
+from rest_framework.fields import BooleanField, CharField, ChoiceField, IntegerField, empty
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
@@ -93,7 +93,21 @@ class PromptChallengeResponse(ChallengeResponse):
         if len(all_passwords) > 1:
             raise ValidationError(_("Passwords don't match."))
 
+    def check_empty(self, root: dict) -> dict:
+        """Check dictionary recursively for empty"""
+        for key, value in root.items():
+            if isinstance(value, dict):
+                root[key] = self.check_empty(value)
+            elif isinstance(value, empty) or value == empty:
+                root[key] = ""
+        return root
+
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        # Check if any fields that are allowed to be blank are empty
+        # and replace with an empty string (currently all fields that support
+        # allow_blank are string-based)
+        attrs = self.check_empty(attrs)
+
         # Check if we have any static or hidden fields, and ensure they
         # still have the same value
         static_hidden_fields: QuerySet[Prompt] = self.stage.fields.filter(
