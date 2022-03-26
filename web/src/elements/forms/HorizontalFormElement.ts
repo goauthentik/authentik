@@ -9,6 +9,7 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import { convertToSlug } from "../../utils";
 import { FormGroup } from "./FormGroup";
 
 @customElement("ak-form-element-horizontal")
@@ -48,6 +49,9 @@ export class HorizontalFormElement extends LitElement {
     @property({ attribute: false })
     errorMessages: string[] = [];
 
+    @property({ type: Boolean })
+    slugMode = false;
+
     _invalid = false;
 
     @property({ type: Boolean })
@@ -70,6 +74,13 @@ export class HorizontalFormElement extends LitElement {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
         });
+        if (this.name === "slug" || this.slugMode) {
+            this.querySelectorAll<HTMLInputElement>("input[type='text']").forEach((input) => {
+                input.addEventListener("keyup", () => {
+                    input.value = convertToSlug(input.value);
+                });
+            });
+        }
         this.querySelectorAll("*").forEach((input) => {
             switch (input.tagName.toLowerCase()) {
                 case "input":

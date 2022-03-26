@@ -1,5 +1,3 @@
-import { UserVerificationEnum } from "@goauthentik/api/dist/models/UserVerificationEnum";
-
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -14,6 +12,7 @@ import {
     FlowsInstancesListDesignationEnum,
     ResidentKeyRequirementEnum,
     StagesApi,
+    UserVerificationEnum,
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
