@@ -178,6 +178,7 @@ msgstr "Action"
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 #: src/pages/stages/StageListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tenants/TenantListPage.ts
@@ -5598,6 +5599,7 @@ msgstr "Up-to-date!"
 #: src/pages/sources/plex/PlexSourceViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 #: src/pages/stages/StageListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
@@ -5638,6 +5640,10 @@ msgstr "Update Flow"
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Group"
 msgstr "Update Group"
+
+#: src/pages/stages/invitation/InvitationListPage.ts
+msgid "Update Invitation"
+msgstr "Update Invitation"
 
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 msgid "Update LDAP Provider"

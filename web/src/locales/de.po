@@ -193,6 +193,7 @@ msgstr "Ereignis"
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 #: src/pages/stages/StageListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tenants/TenantListPage.ts
@@ -5487,6 +5488,7 @@ msgstr "Aktuell!"
 #: src/pages/sources/plex/PlexSourceViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 #: src/pages/stages/StageListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
@@ -5527,6 +5529,10 @@ msgstr "Ablauf aktualisieren"
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Group"
 msgstr "Gruppe aktualisieren"
+
+#: src/pages/stages/invitation/InvitationListPage.ts
+msgid "Update Invitation"
+msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 msgid "Update LDAP Provider"

@@ -182,6 +182,7 @@ msgstr "操作"
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 #: src/pages/stages/StageListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tenants/TenantListPage.ts
@@ -5474,6 +5475,7 @@ msgstr "最新！"
 #: src/pages/sources/plex/PlexSourceViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 #: src/pages/stages/StageListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
@@ -5514,6 +5516,10 @@ msgstr "更新流程"
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Group"
 msgstr "更新组"
+
+#: src/pages/stages/invitation/InvitationListPage.ts
+msgid "Update Invitation"
+msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 msgid "Update LDAP Provider"

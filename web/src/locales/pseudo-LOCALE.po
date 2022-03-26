@@ -178,6 +178,7 @@ msgstr ""
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
 #: src/pages/stages/StageListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tenants/TenantListPage.ts
@@ -5578,6 +5579,7 @@ msgstr ""
 #: src/pages/sources/plex/PlexSourceViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 #: src/pages/stages/StageListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts
 #: src/pages/tokens/TokenListPage.ts
@@ -5617,6 +5619,10 @@ msgstr ""
 #: src/pages/groups/RelatedGroupList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Group"
+msgstr ""
+
+#: src/pages/stages/invitation/InvitationListPage.ts
+msgid "Update Invitation"
 msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
