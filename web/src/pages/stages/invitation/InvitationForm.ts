@@ -44,6 +44,15 @@ export class InvitationForm extends ModelForm<Invitation, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${this.instance?.name || ""}"
+                    class="pf-c-form-control"
+                    required
+                    data-ak-slug="true"
+                />
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Expires`} ?required=${true} name="expires">
                 <input
                     type="datetime-local"

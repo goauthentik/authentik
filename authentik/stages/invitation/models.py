@@ -52,6 +52,8 @@ class Invitation(ExpiringModel):
 
     invite_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
+    name = models.SlugField()
+
     single_use = models.BooleanField(
         default=False,
         help_text=_("When enabled, the invitation will be deleted after usage."),

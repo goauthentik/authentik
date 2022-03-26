@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import { InvitationStage, StagesApi } from "@goauthentik/api";
 
@@ -49,7 +48,7 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
             <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
+                    value="${this.instance?.name || ""}"
                     class="pf-c-form-control"
                     required
                 />

@@ -65,7 +65,7 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`ID`, "pk"),
+            new TableColumn(t`Name`, "name"),
             new TableColumn(t`Created by`, "created_by"),
             new TableColumn(t`Expiry`),
             new TableColumn(t`Actions`),
@@ -96,7 +96,7 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     row(item: Invitation): TemplateResult[] {
         return [
-            html`${item.pk}`,
+            html`${item.name}`,
             html`${item.createdBy?.username}`,
             html`${item.expires?.toLocaleString() || t`-`}`,
             html` <ak-forms-modal>

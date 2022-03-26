@@ -16924,6 +16924,10 @@ paths:
         schema:
           type: string
           format: date-time
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -16973,6 +16977,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/InvitationRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -17031,6 +17036,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/InvitationRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -22105,6 +22111,10 @@ components:
           format: uuid
           readOnly: true
           title: Invite uuid
+        name:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
         expires:
           type: string
           format: date-time
@@ -22120,11 +22130,17 @@ components:
           description: When enabled, the invitation will be deleted after usage.
       required:
       - created_by
+      - name
       - pk
     InvitationRequest:
       type: object
       description: Invitation Serializer
       properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
         expires:
           type: string
           format: date-time
@@ -22134,6 +22150,8 @@ components:
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
+      required:
+      - name
     InvitationStage:
       type: object
       description: InvitationStage Serializer
@@ -27141,6 +27159,11 @@ components:
       type: object
       description: Invitation Serializer
       properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
         expires:
           type: string
           format: date-time

@@ -2338,7 +2338,6 @@ msgid "How to connect"
 msgstr "如何连接"
 
 #: src/elements/forms/DeleteBulkForm.ts
-#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 msgid "ID"
@@ -3037,6 +3036,8 @@ msgstr "我的应用"
 #: src/pages/stages/dummy/DummyStageForm.ts
 #: src/pages/stages/email/EmailStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/invitation/InvitationForm.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/invitation/InvitationStageForm.ts
 #: src/pages/stages/password/PasswordStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
