@@ -56,7 +56,7 @@ gen-web:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		openapitools/openapi-generator-cli generate \
+		openapitools/openapi-generator-cli:v5.4.0 generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/web-api \
