@@ -231,6 +231,30 @@ msgstr "Aktiv"
 msgid "Add"
 msgstr "Hinzufügen"
 
+#: src/pages/providers/ProviderWizard.ts
+msgid ""
+"Add a provider which does not support any other method. Requests will be routed\n"
+"through the authentik proxy, which authenticates all requests."
+msgstr ""
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "Add a provider which support LDAP."
+msgstr ""
+
+#: src/pages/providers/ProviderWizard.ts
+msgid ""
+"Add a provider which supports OAuth, OIDC or \"Login with GitHub\n"
+"Enterprise\"."
+msgstr ""
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "Add a provider which supports SAML 2.0, by importing it's metadata."
+msgstr ""
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "Add a provider which supports SAML 2.0."
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Addition Group DN"
 msgstr "Zusatz Gruppen-DN"
@@ -563,6 +587,10 @@ msgstr "Automatische Erkennung (basierend auf Ihrem Browser)"
 msgid "Avatar image"
 msgstr "Profilbild"
 
+#: src/elements/wizard/Wizard.ts
+msgid "Back"
+msgstr ""
+
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "Backends"
 msgstr "Backends"
@@ -715,6 +743,7 @@ msgstr "Kann das Format 'unix://' haben, wenn eine Verbindung zu einem lokalen D
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
 #: src/elements/forms/ModalForm.ts
+#: src/elements/wizard/Wizard.ts
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/GroupSelectModal.ts
 #: src/pages/users/UserActiveForm.ts
@@ -925,6 +954,7 @@ msgid "Client type"
 msgstr "Clienttyp"
 
 #: src/elements/notifications/NotificationDrawer.ts
+#: src/elements/wizard/Wizard.ts
 #: src/pages/outposts/OutpostDeploymentModal.ts
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
@@ -1170,7 +1200,6 @@ msgstr "Wiederherstellungslink kopieren"
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/providers/ProviderListPage.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/sources/SourcesListPage.ts
@@ -1291,6 +1320,10 @@ msgstr "Benutzer erstellen"
 msgid "Create a new application"
 msgstr "Erstelle eine neue Anwendung"
 
+#: src/pages/providers/ProviderWizard.ts
+msgid "Create a new provider."
+msgstr ""
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "Gruppe erstellen"
@@ -1309,7 +1342,6 @@ msgstr "Benutzer als inaktiv anlegen"
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/providers/ProviderListPage.ts
 #: src/pages/sources/SourcesListPage.ts
 #: src/pages/stages/StageListPage.ts
 msgid "Create {0}"
@@ -2031,6 +2063,10 @@ msgstr "Felder"
 msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr "Felder, mit denen sich ein Benutzer identifizieren kann. Wenn keine Felder ausgewählt sind, kann der Benutzer nur Quellen verwenden."
 
+#: src/elements/wizard/Wizard.ts
+msgid "Finish"
+msgstr ""
+
 #: src/pages/flows/FlowImportForm.ts
 msgid "Flow"
 msgstr "Ablauf"
@@ -2138,6 +2174,8 @@ msgid "Forgot username or password?"
 msgstr "Anmeldename oder Passwort vergessen?"
 
 #: src/elements/forms/ModalForm.ts
+#: src/elements/wizard/FormWizardStep.ts
+#: src/elements/wizard/FormWizardStep.ts
 msgid "Form didn't return a promise for submitting"
 msgstr "Das Formular hat kein Wert zum Absenden zurückgegeben"
 
@@ -2603,6 +2641,7 @@ msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
 #: src/pages/outposts/OutpostListPage.ts
+#: src/pages/providers/ProviderWizard.ts
 msgid "LDAP"
 msgstr "LDAP"
 
@@ -2621,6 +2660,10 @@ msgstr "LDAP DN, unter dem Bind-Requests und Suchanfragen gestellt werden könne
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "LDAP Sync status"
 msgstr "LDAP-Synchronisierungsstatus"
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "LDAP details"
+msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -3101,6 +3144,10 @@ msgstr "Ergebnis verneinen"
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "Negiert das Ergebnis der Bindung. Nachrichten sind nicht betroffen."
 
+#: src/pages/providers/ProviderWizard.ts
+msgid "New provider"
+msgstr ""
+
 #: src/pages/events/EventInfo.ts
 msgid "New version available!"
 msgstr "Neue Version verfügbar!"
@@ -3108,6 +3155,10 @@ msgstr "Neue Version verfügbar!"
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Newly created users are added to this group, if a group is selected."
 msgstr "Neu erstellte Benutzer werden dieser Gruppe hinzugefügt, wenn eine Gruppe ausgewählt ist."
+
+#: src/elements/wizard/Wizard.ts
+msgid "Next"
+msgstr ""
 
 #: src/flows/FlowInspector.ts
 msgid "Next stage"
@@ -3170,6 +3221,8 @@ msgid "No additional setup is required."
 msgstr "Keine weitere Einrichtung benötigt."
 
 #: src/elements/forms/ModalForm.ts
+#: src/elements/wizard/FormWizardStep.ts
+#: src/elements/wizard/FormWizardStep.ts
 msgid "No form found"
 msgstr "Kein Formular gefunden"
 
@@ -3316,6 +3369,14 @@ msgstr "Nummer, von der die SMS gesendet wird"
 #: src/pages/users/UserViewPage.ts
 msgid "OAuth Refresh Codes"
 msgstr "OAuth-Aktualisierungscodes"
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "OAuth details"
+msgstr ""
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "OAuth/OIDC"
+msgstr ""
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "OK"
@@ -3772,10 +3833,15 @@ msgstr "Anbieter"
 
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
+#: src/pages/providers/ProviderWizard.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Proxy"
 msgstr "Proxy"
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "Proxy details"
+msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
@@ -4030,6 +4096,14 @@ msgstr "Widerrufen?"
 msgid "Run sync again"
 msgstr "Synchronisation erneut ausführen"
 
+#: src/pages/providers/ProviderWizard.ts
+msgid "SAML"
+msgstr ""
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "SAML (metadata import)"
+msgstr ""
+
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "SAML Attribute Name"
 msgstr "SAML-Attributsname"
@@ -4037,6 +4111,14 @@ msgstr "SAML-Attributsname"
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "SAML Metadata"
 msgstr "SAML-Metadaten"
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "SAML details"
+msgstr ""
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "SAML details (import from metadata)"
+msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -4204,6 +4286,10 @@ msgstr "Wählen Sie eine der folgenden Quellen aus, um sich anzumelden."
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
 msgstr "Es sollten ausgewählte Quellen angezeigt werden, mit denen sich Benutzer authentifizieren können. Dies betrifft nur webbasierte Quellen, nicht LDAP."
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "Select type"
+msgstr ""
 
 #: src/pages/groups/MemberSelectModal.ts
 msgid "Select users to add"
