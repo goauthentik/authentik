@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
@@ -17,11 +16,7 @@ import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
-import "./ldap/LDAPProviderForm";
-import "./oauth2/OAuth2ProviderForm";
-import "./proxy/ProxyProviderForm";
-import "./saml/SAMLProviderForm";
-import "./saml/SAMLProviderImportForm";
+import "./ProviderWizard";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
@@ -114,33 +109,9 @@ export class ProviderListPage extends TablePage<Provider> {
     }
 
     renderToolbar(): TemplateResult {
-        return html` <ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
-                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-                </button>
-                <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(
-                        new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((types) => {
-                            return types.map((type) => {
-                                return html`<li>
-                                    <ak-forms-modal>
-                                        <span slot="submit"> ${t`Create`} </span>
-                                        <span slot="header"> ${t`Create ${type.name}`} </span>
-                                        <ak-proxy-form slot="form" type=${type.component}>
-                                        </ak-proxy-form>
-                                        <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                            ${type.name}<br />
-                                            <small>${type.description}</small>
-                                        </button>
-                                    </ak-forms-modal>
-                                </li>`;
-                            });
-                        }),
-                        html`<ak-spinner></ak-spinner>`,
-                    )}
-                </ul>
-            </ak-dropdown>
+        return html`<ak-provider-wizard>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-provider-wizard>
             ${super.renderToolbar()}`;
     }
 }
