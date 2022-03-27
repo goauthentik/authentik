@@ -843,6 +843,14 @@ msgstr "Check Username"
 msgid "Check access"
 msgstr "Check access"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid ""
+"Check if password is on HaveIBeenPwned's list by uploading the first\n"
+"5 characters of the SHA1 Hash."
+msgstr ""
+"Check if password is on HaveIBeenPwned's list by uploading the first\n"
+"5 characters of the SHA1 Hash."
+
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "Check outposts."
 msgstr "Check outposts."
@@ -1204,7 +1212,6 @@ msgstr "Copy recovery link"
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
-#: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
@@ -1328,6 +1335,10 @@ msgstr "Create User"
 msgid "Create a new application"
 msgstr "Create a new application"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Create a new policy."
+msgstr "Create a new policy."
+
 #: src/pages/providers/ProviderWizard.ts
 msgid "Create a new provider."
 msgstr "Create a new provider."
@@ -1348,7 +1359,6 @@ msgstr "Create users as inactive"
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/sources/SourcesListPage.ts
 #: src/pages/stages/StageListPage.ts
@@ -1656,6 +1666,10 @@ msgstr "Download signing certificate"
 msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
 msgstr "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Dummy"
+msgstr "Dummy"
+
 #: src/pages/stages/dummy/DummyStageForm.ts
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr "Dummy stage used for testing. Shows a simple continue button and always passes."
@@ -1880,6 +1894,15 @@ msgstr "Event Log"
 msgid "Event info"
 msgstr "Event info"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Event matcher"
+msgstr "Event matcher"
+
+#: src/pages/policies/PolicyWizard.ts
+#: src/pages/policies/PolicyWizard.ts
+msgid "Event matcher policy"
+msgstr "Event matcher policy"
+
 #: src/pages/tenants/TenantForm.ts
 msgid "Event retention"
 msgstr "Event retention"
@@ -1905,6 +1928,10 @@ msgstr "Exception"
 #: 
 #~ msgid "Execute"
 #~ msgstr "Execute"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Execute arbitrary Python code to implement custom checks and validation."
+msgstr "Execute arbitrary Python code to implement custom checks and validation."
 
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
@@ -1980,6 +2007,7 @@ msgid "Export flow"
 msgstr "Export flow"
 
 #: src/pages/events/EventInfo.ts
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
 #: src/pages/property-mappings/PropertyMappingNotification.ts
@@ -1987,6 +2015,10 @@ msgstr "Export flow"
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Expression"
 msgstr "Expression"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Expression policy"
+msgstr "Expression policy"
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
@@ -2370,6 +2402,14 @@ msgstr "HTTP-Basic Username Key"
 msgid "HTTPS is not detected correctly"
 msgstr "HTTPS is not detected correctly"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Have I been pwned"
+msgstr "Have I been pwned"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Have I been pwned policy"
+msgstr "Have I been pwned policy"
+
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Health and Version"
 msgstr "Health and Version"
@@ -2491,6 +2531,14 @@ msgstr "If multiple providers share an outpost, a self-signed certificate is use
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved."
 msgstr "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved."
+
+#: src/pages/policies/PolicyWizard.ts
+msgid ""
+"If password change date is more than x days in the past, invalidate the user's password\n"
+"and show a notice."
+msgstr ""
+"If password change date is more than x days in the past, invalidate the user's password\n"
+"and show a notice."
 
 #: src/pages/tenants/TenantForm.ts
 msgid "If set, users are able to configure details of their profile."
@@ -3193,6 +3241,10 @@ msgstr "Negate result"
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "Negates the outcome of the binding. Messages are unaffected."
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "New policy"
+msgstr "New policy"
+
 #: src/pages/providers/ProviderWizard.ts
 msgid "New provider"
 msgstr "New provider"
@@ -3624,6 +3676,10 @@ msgstr "Parent group for all the groups imported from LDAP."
 msgid "Pass policy?"
 msgstr "Pass policy?"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Passes when Event matches selected criteria."
+msgstr "Passes when Event matches selected criteria."
+
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/policies/PolicyTestForm.ts
@@ -3633,15 +3689,28 @@ msgstr "Passing"
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserPasswordForm.ts
 msgid "Password"
 msgstr "Password"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Password expiry"
+msgstr "Password expiry"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Password expiry policy"
+msgstr "Password expiry policy"
+
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Password field"
 msgstr "Password field"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Password policy"
+msgstr "Password policy"
 
 #: src/pages/events/utils.ts
 msgid "Password set"
@@ -3749,6 +3818,18 @@ msgstr "Policy exception"
 #: src/pages/events/utils.ts
 msgid "Policy execution"
 msgstr "Policy execution"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Policy to make sure passwords have certain properties."
+msgstr "Policy to make sure passwords have certain properties."
+
+#: src/pages/policies/PolicyWizard.ts
+msgid ""
+"Policy used for debugging the PolicyEngine. Returns a fixed result,\n"
+"but takes a random time to process."
+msgstr ""
+"Policy used for debugging the PolicyEngine. Returns a fixed result,\n"
+"but takes a random time to process."
 
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy {0}"
@@ -4063,6 +4144,7 @@ msgstr "Related objects"
 msgid "Remove the user from the current session."
 msgstr "Remove the user from the current session."
 
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/policies/reputation/ReputationListPage.ts
 msgid "Reputation"
 msgstr "Reputation"
@@ -4078,6 +4160,10 @@ msgstr "Reputation for IP and user identifiers. Scores are decreased for each fa
 #: src/pages/policies/reputation/UserReputationListPage.ts
 #~ msgid "Reputation for usernames. Scores are decreased for each failed login and increased for each successful login."
 #~ msgstr "Reputation for usernames. Scores are decreased for each failed login and increased for each successful login."
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Reputation policy"
+msgstr "Reputation policy"
 
 #: src/interfaces/AdminInterface.ts
 #~ msgid "Reputation policy - IPs"
@@ -4161,6 +4247,10 @@ msgstr "Return home"
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts
 msgid "Return to device picker"
 msgstr "Return to device picker"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Return true if request IP/target username's score is below a certain threshold."
+msgstr "Return true if request IP/target username's score is below a certain threshold."
 
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Revoked?"
@@ -4363,6 +4453,7 @@ msgstr "Select one of the sources below to login."
 msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
 msgstr "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
 
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 msgid "Select type"
 msgstr "Select type"

@@ -844,6 +844,12 @@ msgstr "Benutzername prüfen"
 msgid "Check access"
 msgstr "Zugang prüfen"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid ""
+"Check if password is on HaveIBeenPwned's list by uploading the first\n"
+"5 characters of the SHA1 Hash."
+msgstr ""
+
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "Check outposts."
 msgstr "Outposts prüfen"
@@ -1196,7 +1202,6 @@ msgstr "Wiederherstellungslink kopieren"
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
-#: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
@@ -1320,6 +1325,10 @@ msgstr "Benutzer erstellen"
 msgid "Create a new application"
 msgstr "Erstelle eine neue Anwendung"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Create a new policy."
+msgstr ""
+
 #: src/pages/providers/ProviderWizard.ts
 msgid "Create a new provider."
 msgstr ""
@@ -1340,7 +1349,6 @@ msgstr "Benutzer als inaktiv anlegen"
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/sources/SourcesListPage.ts
 #: src/pages/stages/StageListPage.ts
@@ -1633,6 +1641,10 @@ msgstr "Signierzertifikat herunterladen"
 msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
 msgstr "Aufgrund von Protokolleinschränkungen wird dieses Zertifikat nur verwendet, wenn der Outpost einen einzigen Provider hat."
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Dummy"
+msgstr ""
+
 #: src/pages/stages/dummy/DummyStageForm.ts
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr "Dummy-Stage zum Testen verwendet. Zeigt eine einfache Schaltfläche zum Fortfahren und besteht immer."
@@ -1849,6 +1861,15 @@ msgstr "Ereignisprotokoll"
 msgid "Event info"
 msgstr "Ereignis Info"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Event matcher"
+msgstr ""
+
+#: src/pages/policies/PolicyWizard.ts
+#: src/pages/policies/PolicyWizard.ts
+msgid "Event matcher policy"
+msgstr ""
+
 #: src/pages/tenants/TenantForm.ts
 msgid "Event retention"
 msgstr "Ereignisspeicherung"
@@ -1873,6 +1894,10 @@ msgstr "Ausnahme"
 
 #~ msgid "Execute"
 #~ msgstr "Ausführen"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Execute arbitrary Python code to implement custom checks and validation."
+msgstr ""
 
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
@@ -1947,6 +1972,7 @@ msgid "Export flow"
 msgstr "Ablauf exportieren"
 
 #: src/pages/events/EventInfo.ts
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
 #: src/pages/property-mappings/PropertyMappingNotification.ts
@@ -1954,6 +1980,10 @@ msgstr "Ablauf exportieren"
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Expression"
 msgstr "Ausdruck"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Expression policy"
+msgstr ""
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
@@ -2333,6 +2363,14 @@ msgstr "HTTP-Basic Benutzername Schlüssel"
 msgid "HTTPS is not detected correctly"
 msgstr "HTTPS wird nicht korrekt erkannt"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Have I been pwned"
+msgstr ""
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Have I been pwned policy"
+msgstr ""
+
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Health and Version"
 msgstr "Zustand und Version"
@@ -2450,6 +2488,12 @@ msgstr "Wenn sich mehrere Anbieter einen Außenposten teilen, wird ein selbstsig
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved."
 msgstr "Wenn keine expliziten Umleitungs-URIs angegeben sind, wird die erste erfolgreich verwendete Umleitungs-URI gespeichert."
+
+#: src/pages/policies/PolicyWizard.ts
+msgid ""
+"If password change date is more than x days in the past, invalidate the user's password\n"
+"and show a notice."
+msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
 msgid "If set, users are able to configure details of their profile."
@@ -3144,6 +3188,10 @@ msgstr "Ergebnis verneinen"
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "Negiert das Ergebnis der Bindung. Nachrichten sind nicht betroffen."
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "New policy"
+msgstr ""
+
 #: src/pages/providers/ProviderWizard.ts
 msgid "New provider"
 msgstr ""
@@ -3565,6 +3613,10 @@ msgstr "Übergeordnete Gruppe für alle aus LDAP importierten Gruppen."
 msgid "Pass policy?"
 msgstr "Pass-Richtlinie?"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Passes when Event matches selected criteria."
+msgstr ""
+
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/policies/PolicyTestForm.ts
@@ -3574,15 +3626,28 @@ msgstr "Erlauben"
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserPasswordForm.ts
 msgid "Password"
 msgstr "Passwort"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Password expiry"
+msgstr ""
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Password expiry policy"
+msgstr ""
+
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Password field"
 msgstr "Passwortfeld "
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Password policy"
+msgstr ""
 
 #: src/pages/events/utils.ts
 msgid "Password set"
@@ -3688,6 +3753,16 @@ msgstr "Richtlinien-Ausnahme"
 #: src/pages/events/utils.ts
 msgid "Policy execution"
 msgstr "Richtlinien-Ausführung"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Policy to make sure passwords have certain properties."
+msgstr ""
+
+#: src/pages/policies/PolicyWizard.ts
+msgid ""
+"Policy used for debugging the PolicyEngine. Returns a fixed result,\n"
+"but takes a random time to process."
+msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy {0}"
@@ -3995,6 +4070,7 @@ msgstr "Verwandte Objekte"
 msgid "Remove the user from the current session."
 msgstr "Entfernen Sie den Benutzer aus der aktuellen Sitzung."
 
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/policies/reputation/ReputationListPage.ts
 msgid "Reputation"
 msgstr "Reputation"
@@ -4008,6 +4084,10 @@ msgstr "Reputation für IP und Benutzerkennungen. Die Punktzahl wird für jede f
 
 #~ msgid "Reputation for usernames. Scores are decreased for each failed login and increased for each successful login."
 #~ msgstr "Reputation für Benutzerkennungen. Die Punktzahl wird für jede fehlgeschlagene Anmeldung verringert und für jede erfolgreiche Anmeldung erhöht."
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Reputation policy"
+msgstr ""
 
 #~ msgid "Reputation policy - IPs"
 #~ msgstr "Reputations Regelwerke - IPs"
@@ -4087,6 +4167,10 @@ msgstr "Zurück zum Home"
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts
 msgid "Return to device picker"
 msgstr "Zurück zur Geräteauswahl"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Return true if request IP/target username's score is below a certain threshold."
+msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Revoked?"
@@ -4287,6 +4371,7 @@ msgstr "Wählen Sie eine der folgenden Quellen aus, um sich anzumelden."
 msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
 msgstr "Es sollten ausgewählte Quellen angezeigt werden, mit denen sich Benutzer authentifizieren können. Dies betrifft nur webbasierte Quellen, nicht LDAP."
 
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 msgid "Select type"
 msgstr ""

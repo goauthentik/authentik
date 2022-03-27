@@ -17,6 +17,10 @@ import "../../elements/forms/ProxyForm";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import "./ProviderWizard";
+import "./ldap/LDAPProviderForm";
+import "./oauth2/OAuth2ProviderForm";
+import "./proxy/ProxyProviderForm";
+import "./saml/SAMLProviderForm";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
