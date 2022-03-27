@@ -834,6 +834,12 @@ msgstr "Kullanıcı Adını Kontrol Et"
 msgid "Check access"
 msgstr "Erişimi kontrol"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid ""
+"Check if password is on HaveIBeenPwned's list by uploading the first\n"
+"5 characters of the SHA1 Hash."
+msgstr ""
+
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "Check outposts."
 msgstr "İleri üsleri kontrol edin."
@@ -1187,7 +1193,6 @@ msgstr "Kurtarma bağlantısı kopyalama"
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
-#: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
@@ -1311,6 +1316,10 @@ msgstr "Kullanıcı Oluştur"
 msgid "Create a new application"
 msgstr "Yeni bir uygulama oluştur"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Create a new policy."
+msgstr ""
+
 #: src/pages/providers/ProviderWizard.ts
 msgid "Create a new provider."
 msgstr ""
@@ -1331,7 +1340,6 @@ msgstr "Kullanıcıları etkin olmayan olarak oluşturma"
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/sources/SourcesListPage.ts
 #: src/pages/stages/StageListPage.ts
@@ -1624,6 +1632,10 @@ msgstr "İmzalama sertifikasını indirme"
 msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
 msgstr "Protokol sınırlamaları nedeniyle, bu sertifika yalnızca üssün tek bir sağlayıcısı olduğunda kullanılır."
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Dummy"
+msgstr ""
+
 #: src/pages/stages/dummy/DummyStageForm.ts
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr "Test için kullanılan kukla aşama. Basit bir devam düğmesi gösterir ve her zaman geçer."
@@ -1840,6 +1852,15 @@ msgstr "Olay Günlüğü"
 msgid "Event info"
 msgstr "Olay bilgileri"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Event matcher"
+msgstr ""
+
+#: src/pages/policies/PolicyWizard.ts
+#: src/pages/policies/PolicyWizard.ts
+msgid "Event matcher policy"
+msgstr ""
+
 #: src/pages/tenants/TenantForm.ts
 msgid "Event retention"
 msgstr "Etkinliği saklama"
@@ -1864,6 +1885,10 @@ msgstr "Hata"
 
 #~ msgid "Execute"
 #~ msgstr "Yürütme"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Execute arbitrary Python code to implement custom checks and validation."
+msgstr ""
 
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
@@ -1938,6 +1963,7 @@ msgid "Export flow"
 msgstr "Akışı aktar"
 
 #: src/pages/events/EventInfo.ts
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
 #: src/pages/property-mappings/PropertyMappingNotification.ts
@@ -1945,6 +1971,10 @@ msgstr "Akışı aktar"
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 msgid "Expression"
 msgstr "İfade"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Expression policy"
+msgstr ""
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
@@ -2324,6 +2354,14 @@ msgstr "HTTP-Basic Kullanıcı Adı Anahtarı"
 msgid "HTTPS is not detected correctly"
 msgstr "HTTPS doğru algılanmadı"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Have I been pwned"
+msgstr ""
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Have I been pwned policy"
+msgstr ""
+
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Health and Version"
 msgstr "Sağlık ve Versiyon"
@@ -2440,6 +2478,12 @@ msgstr "Birden çok sağlayıcı bir üssü paylaşıyorsa, otomatik olarak imza
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved."
+msgstr ""
+
+#: src/pages/policies/PolicyWizard.ts
+msgid ""
+"If password change date is more than x days in the past, invalidate the user's password\n"
+"and show a notice."
 msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
@@ -3127,6 +3171,10 @@ msgstr "Negate sonucu"
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "Bağlamanın sonucunu susturur. Mesajlar etkilenmez."
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "New policy"
+msgstr ""
+
 #: src/pages/providers/ProviderWizard.ts
 msgid "New provider"
 msgstr ""
@@ -3544,6 +3592,10 @@ msgstr "LDAP'den alınan tüm gruplar için ebeveyn grubu."
 msgid "Pass policy?"
 msgstr "Geçiş ilkesi?"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Passes when Event matches selected criteria."
+msgstr ""
+
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/policies/PolicyTestForm.ts
@@ -3553,15 +3605,28 @@ msgstr "Geçiyor"
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserPasswordForm.ts
 msgid "Password"
 msgstr "Parola"
 
+#: src/pages/policies/PolicyWizard.ts
+msgid "Password expiry"
+msgstr ""
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Password expiry policy"
+msgstr ""
+
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Password field"
 msgstr "Parola alanı"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Password policy"
+msgstr ""
 
 #: src/pages/events/utils.ts
 msgid "Password set"
@@ -3667,6 +3732,16 @@ msgstr "İlke hatası"
 #: src/pages/events/utils.ts
 msgid "Policy execution"
 msgstr "İlke yürütme"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Policy to make sure passwords have certain properties."
+msgstr ""
+
+#: src/pages/policies/PolicyWizard.ts
+msgid ""
+"Policy used for debugging the PolicyEngine. Returns a fixed result,\n"
+"but takes a random time to process."
+msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy {0}"
@@ -3974,6 +4049,7 @@ msgstr "İlgili nesneler"
 msgid "Remove the user from the current session."
 msgstr "Kullanıcıyı geçerli oturumdan kaldırın."
 
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/policies/reputation/ReputationListPage.ts
 msgid "Reputation"
 msgstr "İtibar"
@@ -3987,6 +4063,10 @@ msgstr "IP ve kullanıcı tanımlayıcıları için itibar. Başarısız olan he
 
 #~ msgid "Reputation for usernames. Scores are decreased for each failed login and increased for each successful login."
 #~ msgstr "Kullanıcı adları için itibar. Başarısız olan her giriş için puanlar azaltılır ve her başarılı oturum açma için artırılır."
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Reputation policy"
+msgstr ""
 
 #~ msgid "Reputation policy - IPs"
 #~ msgstr "İtibar ilkesi - IP'ler"
@@ -4066,6 +4146,10 @@ msgstr "Eve dön"
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts
 msgid "Return to device picker"
 msgstr "Aygıt seçiciye geri dön"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Return true if request IP/target username's score is below a certain threshold."
+msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Revoked?"
@@ -4266,6 +4350,7 @@ msgstr "Giriş yapmak için aşağıdaki kaynaklardan birini seçin."
 msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
 msgstr "Kullanıcıların kimlik doğrulaması için belirli kaynaklar gösterilmelidir. Bu, LDAP'yi değil, yalnızca web tabanlı kaynakları etkiler."
 
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 msgid "Select type"
 msgstr ""
