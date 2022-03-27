@@ -174,6 +174,7 @@ msgstr "操作"
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts src/pages/stages/StageListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
@@ -2356,9 +2357,8 @@ msgstr "在取消流程之前，用户可以尝试多少次。要锁定用户，
 msgid "How to connect"
 msgstr "如何连接"
 
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/pages/stages/invitation/InvitationListPage.ts
-#: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
+#: src/elements/forms/DeleteBulkForm.ts src/pages/users/RelatedUserList.ts
+#: src/pages/users/UserListPage.ts
 msgid "ID"
 msgstr "ID"
 
@@ -2745,6 +2745,7 @@ msgstr "加载服务器"
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/sources/SourceSettings.ts src/utils.ts
 msgid "Loading"
@@ -3069,6 +3070,8 @@ msgstr "我的应用"
 #: src/pages/stages/dummy/DummyStageForm.ts
 #: src/pages/stages/email/EmailStageForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
+#: src/pages/stages/invitation/InvitationForm.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/invitation/InvitationStageForm.ts
 #: src/pages/stages/password/PasswordStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
@@ -5585,7 +5588,9 @@ msgstr "最新！"
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
-#: src/pages/stages/StageListPage.ts src/pages/stages/prompt/PromptListPage.ts
+#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/invitation/InvitationListPage.ts
+#: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
 #: src/pages/users/RelatedUserList.ts src/pages/users/UserActiveForm.ts
 #: src/pages/users/UserListPage.ts src/pages/users/UserViewPage.ts
@@ -5620,6 +5625,10 @@ msgstr "更新流程"
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Group"
 msgstr "更新组"
+
+#: src/pages/stages/invitation/InvitationListPage.ts
+msgid "Update Invitation"
+msgstr "更新邀请"
 
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 msgid "Update LDAP Provider"
