@@ -163,11 +163,11 @@ class User(GuardianUserMixin, AbstractUser):
         """superuser == staff user"""
         return self.is_superuser  # type: ignore
 
-    def set_password(self, password, signal=True):
+    def set_password(self, raw_password, signal=True):
         if self.pk and signal:
-            password_changed.send(sender=self, user=self, password=password)
+            password_changed.send(sender=self, user=self, password=raw_password)
         self.password_change_date = now()
-        return super().set_password(password)
+        return super().set_password(raw_password)
 
     def check_password(self, raw_password: str) -> bool:
         """
