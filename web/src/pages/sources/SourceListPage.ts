@@ -10,7 +10,6 @@ import { Source, SourcesApi } from "@goauthentik/api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
-import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
@@ -21,6 +20,7 @@ import "./ldap/LDAPSourceForm";
 import "./oauth/OAuthSourceForm";
 import "./plex/PlexSourceForm";
 import "./saml/SAMLSourceForm";
+import "./SourceWizard";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
@@ -117,38 +117,9 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     renderToolbar(): TemplateResult {
-        return html` <ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
-                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-                </button>
-                <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(
-                        new SourcesApi(DEFAULT_CONFIG).sourcesAllTypesList().then((types) => {
-                            return types.map((type) => {
-                                return html`<li>
-                                    <ak-forms-modal>
-                                        <span slot="submit"> ${t`Create`} </span>
-                                        <span slot="header"> ${t`Create ${type.name}`} </span>
-                                        <ak-proxy-form
-                                            slot="form"
-                                            .args=${{
-                                                modelName: type.modelName,
-                                            }}
-                                            type=${type.component}
-                                        >
-                                        </ak-proxy-form>
-                                        <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                            ${type.name}
-                                        </button>
-                                    </ak-forms-modal>
-                                </li>`;
-                            });
-                        }),
-                        html`<ak-spinner></ak-spinner>`,
-                    )}
-                </ul>
-            </ak-dropdown>
+        return html`<ak-source-wizard>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-source-wizard>
             ${super.renderToolbar()}`;
     }
 }

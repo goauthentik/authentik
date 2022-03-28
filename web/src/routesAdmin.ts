@@ -22,7 +22,7 @@ import "./pages/property-mappings/PropertyMappingListPage";
 import "./pages/providers/ProviderListPage";
 import "./pages/providers/ProviderViewPage";
 import "./pages/sources/SourceViewPage";
-import "./pages/sources/SourcesListPage";
+import "./pages/sources/SourceListPage";
 import "./pages/stages/StageListPage";
 import "./pages/stages/invitation/InvitationListPage";
 import "./pages/stages/prompt/PromptListPage";
