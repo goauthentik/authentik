@@ -67,9 +67,9 @@ def certificate_discovery(self: MonitoredTask):
                     private_keys[cert_name] = ensure_private_key_valid(body)
                 else:
                     certs[cert_name] = ensure_certificate_valid(body)
+            discovered += 1
         except (OSError, ValueError) as exc:
             LOGGER.warning("Failed to open file or invalid format", exc=exc, file=path)
-        discovered += 1
     for name, cert_data in certs.items():
         cert = CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % name).first()
         if not cert:
