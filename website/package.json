@@ -12,8 +12,8 @@
         "serve": "docusaurus serve"
     },
     "dependencies": {
-        "@docusaurus/plugin-client-redirects": "2.0.0-beta.17",
-        "@docusaurus/preset-classic": "2.0.0-beta.17",
+        "@docusaurus/plugin-client-redirects": "2.0.0-beta.18",
+        "@docusaurus/preset-classic": "2.0.0-beta.18",
         "@mdx-js/react": "^1.6.22",
         "clsx": "^1.1.1",
         "postcss": "^8.4.12",
@@ -37,6 +37,6 @@
         ]
     },
     "devDependencies": {
-        "prettier": "2.6.0"
+        "prettier": "2.6.1"
     }
 }

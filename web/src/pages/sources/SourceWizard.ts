@@ -25,8 +25,7 @@ export class SourceInitialStep extends WizardStep {
     }
 
     render(): TemplateResult {
-        return html`
-            <div class="pf-c-radio">
+        return html` <div class="pf-c-radio">
                 <input
                     class="pf-c-radio__input"
                     type="radio"
@@ -70,9 +69,7 @@ export class SourceInitialStep extends WizardStep {
                     }}
                 />
                 <label class="pf-c-radio__label" for="plex">${t`Plex`}</label>
-                <span class="pf-c-radio__description"
-                    >${t`Authenticate against plex.tv.`}</span
-                >
+                <span class="pf-c-radio__description">${t`Authenticate against plex.tv.`}</span>
             </div>`;
     }
 }

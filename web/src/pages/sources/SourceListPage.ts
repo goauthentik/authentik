@@ -16,11 +16,11 @@ import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
+import "./SourceWizard";
 import "./ldap/LDAPSourceForm";
 import "./oauth/OAuthSourceForm";
 import "./plex/PlexSourceForm";
 import "./saml/SAMLSourceForm";
-import "./SourceWizard";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
