@@ -92,7 +92,7 @@
         "country-flag-icons": "^1.4.25",
         "eslint": "^8.11.0",
         "eslint-config-google": "^0.14.0",
-        "eslint-plugin-custom-elements": "0.0.5",
+        "eslint-plugin-custom-elements": "0.0.6",
         "eslint-plugin-lit": "^1.6.1",
         "flowchart.js": "^1.17.1",
         "fuse.js": "^6.5.3",
