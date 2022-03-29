@@ -1,5 +1,6 @@
 """authentik saml source processor"""
 from base64 import b64decode
+from time import mktime
 from typing import TYPE_CHECKING, Any
 
 import xmlsec
@@ -7,9 +8,16 @@ from defusedxml.lxml import fromstring
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest, HttpResponse
+from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
+from authentik.core.models import (
+    USER_ATTRIBUTE_DELETE_ON_LOGOUT,
+    USER_ATTRIBUTE_EXPIRES,
+    USER_ATTRIBUTE_GENERATED,
+    USER_ATTRIBUTE_SOURCES,
+    User,
+)
 from authentik.flows.models import Flow
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
@@ -19,6 +27,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.utils import delete_none_keys
 from authentik.sources.saml.exceptions import (
@@ -124,9 +133,19 @@ class ResponseProcessor:
         on logout and periodically."""
         # Create a temporary User
         name_id = self._get_name_id().text
+        expiry = mktime(
+            (now() + timedelta_from_string(self._source.temporary_user_delete_after)).timetuple()
+        )
         user: User = User.objects.create(
             username=name_id,
-            attributes={"saml": {"source": self._source.pk.hex, "delete_on_logout": True}},
+            attributes={
+                USER_ATTRIBUTE_GENERATED: True,
+                USER_ATTRIBUTE_SOURCES: [
+                    self._source.name,
+                ],
+                USER_ATTRIBUTE_DELETE_ON_LOGOUT: True,
+                USER_ATTRIBUTE_EXPIRES: expiry,
+            },
         )
         LOGGER.debug("Created temporary user for NameID Transient", username=name_id)
         user.set_unusable_password()

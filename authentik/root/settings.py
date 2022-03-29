@@ -345,6 +345,11 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(hour="*/24", minute=0),
         "options": {"queue": "authentik_scheduled"},
     },
+    "user_cleanup": {
+        "task": "authentik.core.tasks.clean_temporary_users",
+        "schedule": crontab(minute="*/5"),
+        "options": {"queue": "authentik_scheduled"},
+    },
 }
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
