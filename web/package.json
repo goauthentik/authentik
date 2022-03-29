@@ -80,7 +80,7 @@
         "@types/chart.js": "^2.9.35",
         "@types/codemirror": "5.60.5",
         "@types/grecaptcha": "^3.0.4",
-        "@typescript-eslint/eslint-plugin": "^5.16.0",
+        "@typescript-eslint/eslint-plugin": "^5.17.0",
         "@typescript-eslint/parser": "^5.16.0",
         "@webcomponents/webcomponentsjs": "^2.6.0",
         "babel-plugin-macros": "^3.1.0",
