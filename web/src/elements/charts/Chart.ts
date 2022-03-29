@@ -22,7 +22,7 @@ export abstract class AKChart<T> extends LitElement {
     abstract apiRequest(): Promise<T>;
     abstract getChartData(data: T): ChartData;
 
-    chart?: Chart;
+    chart: Chart;
 
     @property()
     centerText?: string;
@@ -45,17 +45,22 @@ export abstract class AKChart<T> extends LitElement {
 
     constructor() {
         super();
+        const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
+        if (!canvas) {
+            console.warn("Failed to get canvas element");
+            return;
+        }
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+            console.warn("failed to get 2d context");
+            return;
+        }
+        this.chart = this.configureChart(undefined, ctx);
         window.addEventListener("resize", () => {
-            if (this.chart) {
-                this.chart.resize();
-            }
+            this.chart.resize();
         });
         window.addEventListener(EVENT_REFRESH, () => {
-            this.apiRequest().then((r: T) => {
-                if (!this.chart) return;
-                this.chart.data = this.getChartData(r);
-                this.chart.update();
-            });
+            this.firstUpdated();
         });
         const matcher = window.matchMedia("(prefers-color-scheme: light)");
         const handler = (ev?: MediaQueryListEvent) => {
@@ -71,18 +76,9 @@ export abstract class AKChart<T> extends LitElement {
     }
 
     firstUpdated(): void {
-        this.apiRequest().then((r) => {
-            const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
-            if (!canvas) {
-                console.warn("Failed to get canvas element");
-                return false;
-            }
-            const ctx = canvas.getContext("2d");
-            if (!ctx) {
-                console.warn("failed to get 2d context");
-                return false;
-            }
-            this.chart = this.configureChart(r, ctx);
+        this.apiRequest().then((r: T) => {
+            this.chart.data = this.getChartData(r);
+            this.chart.update();
         });
     }
 
@@ -155,10 +151,10 @@ export abstract class AKChart<T> extends LitElement {
         } as ChartOptions;
     }
 
-    configureChart(data: T, ctx: CanvasRenderingContext2D): Chart {
+    configureChart(data: T | undefined, ctx: CanvasRenderingContext2D): Chart {
         const config = {
             type: this.getChartType(),
-            data: this.getChartData(data),
+            data: data ? this.getChartData(data) : {},
             options: this.getOptions(),
             plugins: this.getPlugins(),
         };
