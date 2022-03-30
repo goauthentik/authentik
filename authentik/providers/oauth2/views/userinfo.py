@@ -10,6 +10,7 @@ from structlog.stdlib import get_logger
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
 from authentik.providers.oauth2.constants import (
+    SCOPE_AUTHENTIK_API,
     SCOPE_GITHUB_ORG_READ,
     SCOPE_GITHUB_USER,
     SCOPE_GITHUB_USER_EMAIL,
@@ -35,15 +36,16 @@ class UserInfoView(View):
                 scope_descriptions.append({"id": scope.scope_name, "name": scope.description})
         # GitHub Compatibility Scopes are handled differently, since they required custom paths
         # Hence they don't exist as Scope objects
-        github_scope_map = {
+        special_scope_map = {
             SCOPE_GITHUB_USER: ("GitHub Compatibility: Access your User Information"),
             SCOPE_GITHUB_USER_READ: ("GitHub Compatibility: Access your User Information"),
             SCOPE_GITHUB_USER_EMAIL: ("GitHub Compatibility: Access you Email addresses"),
             SCOPE_GITHUB_ORG_READ: ("GitHub Compatibility: Access your Groups"),
+            SCOPE_AUTHENTIK_API: ("authentik API Access on behalf of your user"),
         }
         for scope in scopes:
-            if scope in github_scope_map:
-                scope_descriptions.append({"id": scope, "name": github_scope_map[scope]})
+            if scope in special_scope_map:
+                scope_descriptions.append({"id": scope, "name": special_scope_map[scope]})
         return scope_descriptions
 
     def get_claims(self, token: RefreshToken) -> dict[str, Any]:
