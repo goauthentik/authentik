@@ -32,6 +32,8 @@ def validate_auth(header: bytes) -> str:
 def bearer_auth(raw_header: bytes) -> Optional[User]:
     """raw_header in the Format of `Bearer ....`"""
     auth_credentials = validate_auth(raw_header)
+    if not auth_credentials:
+        return None
     # first, check traditional tokens
     token = Token.filter_not_expired(key=auth_credentials, intent=TokenIntents.INTENT_API).first()
     if hasattr(LOCAL, "authentik"):
