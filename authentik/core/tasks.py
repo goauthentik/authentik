@@ -56,11 +56,11 @@ def clean_expired_models(self: MonitoredTask):
 @prefill_task
 def clean_temporary_users(self: MonitoredTask):
     """Remove temporary users created by SAML Sources"""
-    _now = now()
+    _now = datetime.now()
     messages = []
     deleted_users = 0
-    for user in User.objects.filter(**{f"attributes_{USER_ATTRIBUTE_GENERATED}": True}):
-        delta: timedelta = _now() - datetime.fromtimestamp(
+    for user in User.objects.filter(**{f"attributes__{USER_ATTRIBUTE_GENERATED}": True}):
+        delta: timedelta = _now - datetime.fromtimestamp(
             user.attributes.get(USER_ATTRIBUTE_EXPIRES)
         )
         if delta.total_seconds() > 0:

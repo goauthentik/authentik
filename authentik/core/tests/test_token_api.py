@@ -2,12 +2,10 @@
 from json import loads
 
 from django.urls.base import reverse
-from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
 from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenIntents, User
-from authentik.core.tasks import clean_expired_models
 from authentik.core.tests.utils import create_test_admin_user
 
 
@@ -52,16 +50,6 @@ class TestTokenAPI(APITestCase):
         self.assertEqual(token.user, self.user)
         self.assertEqual(token.intent, TokenIntents.INTENT_API)
         self.assertEqual(token.expiring, False)
-
-    def test_token_expire(self):
-        """Test Token expire task"""
-        token: Token = Token.objects.create(
-            expires=now(), user=get_anonymous_user(), intent=TokenIntents.INTENT_API
-        )
-        key = token.key
-        clean_expired_models.delay().get()
-        token.refresh_from_db()
-        self.assertNotEqual(key, token.key)
 
     def test_list(self):
         """Test Token List (Test normal authentication)"""
