@@ -7,7 +7,7 @@ from typing import Any, Optional
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import datetime, now
 from django.views import View
-from jwt import DecodeError, decode
+from jwt import InvalidTokenError, decode
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
@@ -262,7 +262,7 @@ class TokenParams:
                         "verify_aud": False,
                     },
                 )
-            except (DecodeError, ValueError) as last_exc:
+            except (InvalidTokenError, ValueError) as last_exc:
                 LOGGER.warning("failed to validate jwt", last_exc=last_exc)
         if not token:
             raise TokenError("invalid_grant")
