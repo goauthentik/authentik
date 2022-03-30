@@ -4,7 +4,7 @@ title: OAuth2 Provider
 
 This provider supports both generic OAuth2 as well as OpenID Connect
 
-Scopes can be configured using Scope Mappings, a type of [Property Mappings](../property-mappings/#scope-mapping).
+Scopes can be configured using Scope Mappings, a type of [Property Mappings](../../property-mappings/#scope-mapping).
 
 | Endpoint             | URL                                                                  |
 | -------------------- | -------------------------------------------------------------------- |
@@ -42,18 +42,4 @@ Refresh tokens can be used as long-lived tokens to access user data, and further
 
 ### `client_credentials`:
 
-Client credentials can be used for machine-to-machine communication authentication. Clients can authenticate themselves using service-accounts; standard client_id + client_secret is not sufficient. This behavior is due to providers only being able to have a single secret at any given time.
-
-Hence identification is based on service-accounts, and authentication is based on App-password tokens. These objects can be created in a single step using the *Create Service account* function.
-
-An example request can look like this:
-
-```
-POST /application/o/token/ HTTP/1.1
-Host: authentik.company
-Content-Type: application/x-www-form-urlencoded
-
-grant_type=client_credentials&username=my-service-account&password=my-token&client_id=application_client_id
-```
-
-This will return a JSON response with an `access_token`, which is a signed JWT token. This token can be sent along requests to other hosts, which can then validate the JWT based on the signing key configured in authentik.
+See [Machine-to-machine authentication](./client_credentials)

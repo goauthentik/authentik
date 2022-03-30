@@ -2318,6 +2318,7 @@ msgstr "Ocultar cuentas de servicio"
 #: src/pages/events/RuleForm.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -2576,6 +2577,10 @@ msgstr "Modo emisor"
 #~ msgstr "algoritmo JWT"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "JWTs signed by certificates configured here can be used to authenticate to the provider."
+msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Key used to sign the tokens."
 msgstr "Clave utilizada para firmar los tokens."
 
@@ -2735,6 +2740,7 @@ msgstr "Cargando"
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
@@ -5899,6 +5905,10 @@ msgstr "Verificación"
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Verification Certificate"
 msgstr "Certificado de verificación"
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Verification certificates"
+msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."

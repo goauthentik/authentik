@@ -212,12 +212,21 @@ class OAuth2Provider(Provider):
 
     signing_key = models.ForeignKey(
         CertificateKeyPair,
-        verbose_name=_("RSA Key"),
+        verbose_name=_("Signing Key"),
         on_delete=models.SET_NULL,
         null=True,
         help_text=_(
             "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
         ),
+    )
+
+    verification_keys = models.ManyToManyField(
+        CertificateKeyPair,
+        verbose_name=_("Allowed certificates for JWT-based client_credentials"),
+        help_text=_(
+            "JWTs created with the configured certificates can authenticate with this provider."
+        ),
+        related_name="+",
     )
 
     def create_refresh_token(

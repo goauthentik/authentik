@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
+from authentik.core.models import USER_ATTRIBUTE_DELETE_ON_LOGOUT, User
 
 LOGGER = get_logger()
 
@@ -15,8 +15,6 @@ def on_user_logged_out(sender, request: HttpRequest, user: User, **_):
     """Delete temporary user if the `delete_on_logout` flag is enabled"""
     if not user:
         return
-    if "saml" in user.attributes:
-        if "delete_on_logout" in user.attributes["saml"]:
-            if user.attributes["saml"]["delete_on_logout"]:
-                LOGGER.debug("Deleted temporary user", user=user)
-                user.delete()
+    if user.attributes.get(USER_ATTRIBUTE_DELETE_ON_LOGOUT, False):
+        LOGGER.debug("Deleted temporary user", user=user)
+        user.delete()

@@ -23091,7 +23091,6 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: RSA Key
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
         redirect_uris:
@@ -23106,6 +23105,15 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
+        verification_keys:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Allowed certificates for JWT-based client_credentials
+          title: Allowed certificates for JWT-based client_credentials
+          description: JWTs created with the configured certificates can authenticate
+            with this provider.
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -23116,6 +23124,7 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+      - verification_keys
     OAuth2ProviderRequest:
       type: object
       description: OAuth2Provider Serializer
@@ -23163,7 +23172,6 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: RSA Key
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
         redirect_uris:
@@ -23178,9 +23186,19 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
+        verification_keys:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Allowed certificates for JWT-based client_credentials
+          title: Allowed certificates for JWT-based client_credentials
+          description: JWTs created with the configured certificates can authenticate
+            with this provider.
       required:
       - authorization_flow
       - name
+      - verification_keys
     OAuth2ProviderSetupURLs:
       type: object
       description: OAuth2 Provider Metadata serializer
@@ -27488,7 +27506,6 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: RSA Key
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
         redirect_uris:
@@ -27503,6 +27520,15 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
+        verification_keys:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Allowed certificates for JWT-based client_credentials
+          title: Allowed certificates for JWT-based client_credentials
+          description: JWTs created with the configured certificates can authenticate
+            with this provider.
     PatchedOAuthSourceRequest:
       type: object
       description: OAuth Source Serializer

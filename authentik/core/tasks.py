@@ -1,10 +1,18 @@
 """authentik core tasks"""
+from datetime import datetime, timedelta
+
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
 from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
-from authentik.core.models import AuthenticatedSession, ExpiringModel
+from authentik.core.models import (
+    USER_ATTRIBUTE_EXPIRES,
+    USER_ATTRIBUTE_GENERATED,
+    AuthenticatedSession,
+    ExpiringModel,
+    User,
+)
 from authentik.events.monitored_tasks import (
     MonitoredTask,
     TaskResult,
@@ -41,4 +49,23 @@ def clean_expired_models(self: MonitoredTask):
             amount += 1
     LOGGER.debug("Expired sessions", model=AuthenticatedSession, amount=amount)
     messages.append(f"Expired {amount} {AuthenticatedSession._meta.verbose_name_plural}")
+    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, messages))
+
+
+@CELERY_APP.task(bind=True, base=MonitoredTask)
+@prefill_task
+def clean_temporary_users(self: MonitoredTask):
+    """Remove temporary users created by SAML Sources"""
+    _now = datetime.now()
+    messages = []
+    deleted_users = 0
+    for user in User.objects.filter(**{f"attributes__{USER_ATTRIBUTE_GENERATED}": True}):
+        delta: timedelta = _now - datetime.fromtimestamp(
+            user.attributes.get(USER_ATTRIBUTE_EXPIRES)
+        )
+        if delta.total_seconds() > 0:
+            LOGGER.debug("User is expired and will be deleted.", user=user, delta=delta)
+            user.delete()
+            deleted_users += 1
+    messages.append(f"Successfully deleted {deleted_users} users.")
     self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, messages))

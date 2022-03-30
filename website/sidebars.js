@@ -33,7 +33,14 @@ module.exports = {
             type: "category",
             label: "Providers",
             items: [
-                "providers/oauth2",
+                {
+                    type: "category",
+                    label: "OAuth2 Provider",
+                    items: [
+                        "providers/oauth2/index",
+                        "providers/oauth2/client_credentials",
+                    ],
+                },
                 "providers/saml",
                 {
                     type: "category",

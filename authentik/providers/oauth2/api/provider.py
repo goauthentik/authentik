@@ -34,6 +34,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "sub_mode",
             "property_mappings",
             "issuer_mode",
+            "verification_keys",
         ]
 
 

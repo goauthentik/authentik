@@ -117,7 +117,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     }
 
     renderExpanded(item: CertificateKeyPair): TemplateResult {
-        return html`<td role="cell" colspan="3">
+        return html`<td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
                         <div class="pf-c-description-list__group">

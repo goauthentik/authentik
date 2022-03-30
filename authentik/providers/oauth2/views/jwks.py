@@ -36,7 +36,6 @@ class JWKSView(View):
 
         if signing_key:
             private_key = signing_key.private_key
-            print(type(private_key))
             if isinstance(private_key, RSAPrivateKey):
                 public_key: RSAPublicKey = private_key.public_key()
                 public_numbers = public_key.public_numbers()

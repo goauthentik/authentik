@@ -4,6 +4,10 @@ GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code"
 GRANT_TYPE_REFRESH_TOKEN = "refresh_token"  # nosec
 GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials"
 
+CLIENT_ASSERTION_TYPE = "client_assertion_type"
+CLIENT_ASSERTION = "client_assertion"
+CLIENT_ASSERTION_TYPE_JWT = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+
 PROMPT_NONE = "none"
 PROMPT_CONSNET = "consent"
 PROMPT_LOGIN = "login"

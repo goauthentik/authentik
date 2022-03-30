@@ -6,7 +6,7 @@ from django.apps import AppConfig
 
 
 class AuthentikSourceSAMLConfig(AppConfig):
-    """authentik saml_idp app config"""
+    """authentik saml source app config"""
 
     name = "authentik.sources.saml"
     label = "authentik_sources_saml"
