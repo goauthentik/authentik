@@ -14,12 +14,6 @@ from authentik.outposts.managed import OutpostManager
 class TestAPIAuth(TestCase):
     """Test API Authentication"""
 
-    def test_valid_basic(self):
-        """Test valid token"""
-        token = Token.objects.create(intent=TokenIntents.INTENT_API, user=get_anonymous_user())
-        auth = b64encode(f":{token.key}".encode()).decode()
-        self.assertEqual(bearer_auth(f"Basic {auth}".encode()), token.user)
-
     def test_valid_bearer(self):
         """Test valid token"""
         token = Token.objects.create(intent=TokenIntents.INTENT_API, user=get_anonymous_user())
@@ -29,16 +23,6 @@ class TestAPIAuth(TestCase):
         """Test invalid type"""
         with self.assertRaises(AuthenticationFailed):
             bearer_auth("foo bar".encode())
-
-    def test_invalid_decode(self):
-        """Test invalid bas64"""
-        with self.assertRaises(AuthenticationFailed):
-            bearer_auth("Basic bar".encode())
-
-    def test_invalid_empty_password(self):
-        """Test invalid with empty password"""
-        with self.assertRaises(AuthenticationFailed):
-            bearer_auth("Basic :".encode())
 
     def test_invalid_no_token(self):
         """Test invalid with no token"""
