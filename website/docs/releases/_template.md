@@ -5,7 +5,6 @@ slug: "xxxx.x"
 
 ## Breaking changes
 
-
 ## New features
 
 ## Minor changes/fixes
