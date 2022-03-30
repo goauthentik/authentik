@@ -42,7 +42,11 @@ client_assertion=$inputJWT&
 client_id=application_client_id
 ```
 
-To limit which input JWTs can be used to authenticate, you can use *[Expression policies](../../policies/expression)*:
+Alternatively, you can set the `client_secret` parameter to the `$inputJWT`, for applications which can set the password from a file but not other parameters.
+
+Input JWTs are checked to be signed by any of the selected *Verification certificates*, and their `exp` attribute must not be now or in the past.
+
+To do additional checks, you can use *[Expression policies](../../policies/expression)*:
 
 ```python
 return request.context["JWT"]["iss"] == "https://my.issuer"

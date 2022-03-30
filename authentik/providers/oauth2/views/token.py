@@ -5,7 +5,7 @@ from hashlib import sha256
 from typing import Any, Optional
 
 from django.http import HttpRequest, HttpResponse
-from django.utils.timezone import now
+from django.utils.timezone import datetime, now
 from django.views import View
 from jwt import DecodeError, decode
 from structlog.stdlib import get_logger
@@ -245,9 +245,11 @@ class TokenParams:
         if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
             raise TokenError("invalid_grant")
 
-        assertion = request.POST.get(CLIENT_ASSERTION, None)
+        client_secret = request.POST.get("client_secret", None)
+        assertion = request.POST.get(CLIENT_ASSERTION, client_secret)
         if not assertion:
             raise TokenError("invalid_grant")
+
         token = None
         for cert in self.provider.verification_keys.all():
             LOGGER.debug("verifying jwt with key", key=cert.name)
@@ -265,8 +267,15 @@ class TokenParams:
         if not token:
             raise TokenError("invalid_grant")
 
+        exp = datetime.fromtimestamp(token["exp"])
+        # Non-timezone aware check since we assume `exp` is in UTC
+        if datetime.now() >= exp:
+            LOGGER.info("JWT token expired")
+            raise TokenError("invalid_grant")
+
         app = Application.objects.filter(provider=self.provider).first()
         if not app or not app.provider:
+            LOGGER.info("client_credentials grant for provider without application")
             raise TokenError("invalid_grant")
 
         engine = PolicyEngine(app, self.user, request)
