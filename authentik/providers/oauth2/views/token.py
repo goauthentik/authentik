@@ -28,6 +28,7 @@ from authentik.providers.oauth2.constants import (
     CLIENT_ASSERTION_TYPE_JWT,
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_CLIENT_CREDENTIALS,
+    GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
 )
 from authentik.providers.oauth2.errors import TokenError, UserAuthError
@@ -108,7 +109,7 @@ class TokenParams:
             self.__post_init_code(raw_code)
         elif self.grant_type == GRANT_TYPE_REFRESH_TOKEN:
             self.__post_init_refresh(raw_token, request)
-        elif self.grant_type == GRANT_TYPE_CLIENT_CREDENTIALS:
+        elif self.grant_type in [GRANT_TYPE_CLIENT_CREDENTIALS, GRANT_TYPE_PASSWORD]:
             self.__post_init_client_credentials(request)
         else:
             LOGGER.warning("Invalid grant type", grant_type=self.grant_type)

@@ -2,6 +2,8 @@
 
 Client credentials can be used for machine-to-machine communication authentication. Clients can authenticate themselves using service-accounts; standard client_id + client_secret is not sufficient. This behavior is due to providers only being able to have a single secret at any given time.
 
+Note that authentik does treat a grant type of `password` the same as `client_credentials` to support applications which rely on a password grant.
+
 ### Static authentication
 
 Hence identification is based on service-accounts, and authentication is based on App-password tokens. These objects can be created in a single step using the *Create Service account* function.
