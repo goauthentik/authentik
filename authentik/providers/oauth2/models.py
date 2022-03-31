@@ -227,6 +227,8 @@ class OAuth2Provider(Provider):
             "JWTs created with the configured certificates can authenticate with this provider."
         ),
         related_name="+",
+        default=None,
+        blank=True,
     )
 
     def create_refresh_token(

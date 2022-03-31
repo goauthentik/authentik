@@ -23124,7 +23124,6 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-      - verification_keys
     OAuth2ProviderRequest:
       type: object
       description: OAuth2Provider Serializer
@@ -23198,7 +23197,6 @@ components:
       required:
       - authorization_flow
       - name
-      - verification_keys
     OAuth2ProviderSetupURLs:
       type: object
       description: OAuth2 Provider Metadata serializer
