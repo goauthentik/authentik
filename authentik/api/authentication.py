@@ -38,12 +38,12 @@ def bearer_auth(raw_header: bytes) -> Optional[User]:
         return None
     if not hasattr(LOCAL, "authentik"):
         LOCAL.authentik = {}
-    LOCAL.authentik[KEY_AUTH_VIA] = "api_token"
     # first, check traditional tokens
     key_token = Token.filter_not_expired(
         key=auth_credentials, intent=TokenIntents.INTENT_API
     ).first()
     if key_token:
+        LOCAL.authentik[KEY_AUTH_VIA] = "api_token"
         return key_token.user
     # then try to auth via JWT
     jwt_token = RefreshToken.filter_not_expired(
