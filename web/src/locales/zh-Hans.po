@@ -2614,8 +2614,10 @@ msgstr "Issuer 模式"
 #~ msgstr "JWT 算法"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "JWTs signed by certificates configured here can be used to authenticate to the provider."
-msgstr ""
+msgid ""
+"JWTs signed by certificates configured here can be used to authenticate to "
+"the provider."
+msgstr "此处配置的证书签名的 JWT 可以用于此提供程序的身份验证。"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Key used to sign the tokens."
@@ -6023,7 +6025,7 @@ msgstr "验证证书"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Verification certificates"
-msgstr ""
+msgstr "验证证书"
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid ""
