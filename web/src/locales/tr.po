@@ -2805,6 +2805,11 @@ msgstr "Yerel"
 #~ msgid "Locale"
 #~ msgstr "Yerelleştirme"
 
+#: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/policies/PolicyTestForm.ts
+msgid "Log messages"
+msgstr ""
+
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
 msgstr "Şu anda bekleyen kullanıcıya oturum açın."
@@ -3165,6 +3170,11 @@ msgstr "Form bulunamadı"
 #: src/pages/outposts/OutpostListPage.ts
 msgid "No integration active"
 msgstr "Entegrasyon etkin"
+
+#: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/policies/PolicyTestForm.ts
+msgid "No log messages."
+msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts

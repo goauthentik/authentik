@@ -2804,6 +2804,11 @@ msgstr "Local"
 #~ msgid "Locale"
 #~ msgstr "Lugar"
 
+#: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/policies/PolicyTestForm.ts
+msgid "Log messages"
+msgstr ""
+
 #: src/pages/stages/user_login/UserLoginStageForm.ts
 msgid "Log the currently pending user in."
 msgstr "Registra al usuario pendiente en ese momento."
@@ -3164,6 +3169,11 @@ msgstr "No se encontró ningún formulario"
 #: src/pages/outposts/OutpostListPage.ts
 msgid "No integration active"
 msgstr "Sin integración activa"
+
+#: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/policies/PolicyTestForm.ts
+msgid "No log messages."
+msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts

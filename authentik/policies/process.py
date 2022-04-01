@@ -90,6 +90,7 @@ class PolicyProcess(PROCESS_CLASS):
             "P_ENG(proc): Running policy",
             policy=self.binding.policy,
             user=self.request.user,
+            # this is used for filtering in access checking where logs are sent to the admin
             process="PolicyProcess",
         )
         try:
@@ -121,6 +122,7 @@ class PolicyProcess(PROCESS_CLASS):
             "P_ENG(proc): finished and cached ",
             policy=self.binding.policy,
             result=policy_result,
+            # this is used for filtering in access checking where logs are sent to the admin
             process="PolicyProcess",
             passing=policy_result.passing,
             user=self.request.user,

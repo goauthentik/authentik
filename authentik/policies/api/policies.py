@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
+from structlog.testing import capture_logs
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.applications import user_app_cache_key
@@ -166,6 +167,13 @@ class PolicyViewSet(
         p_request.context = test_params.validated_data.get("context", {})
 
         proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
-        result = proc.execute()
+        with capture_logs() as logs:
+            result = proc.execute()
+        log_messages = []
+        for log in logs:
+            if log.get("process", "") == "PolicyProcess":
+                continue
+            log_messages.append(log)
+        result.log_messages = log_messages
         response = PolicyTestResultSerializer(result)
         return Response(response.data)

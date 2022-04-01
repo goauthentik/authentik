@@ -17,6 +17,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 from structlog.stdlib import get_logger
+from structlog.testing import capture_logs
 
 from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.decorators import permission_required
@@ -132,13 +133,22 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 return HttpResponseBadRequest("for_user must be numerical")
         engine = PolicyEngine(application, for_user, request)
         engine.use_cache = False
-        engine.build()
-        result = engine.result
+        with capture_logs() as logs:
+            engine.build()
+            result = engine.result
         response = PolicyTestResultSerializer(PolicyResult(False))
         if result.passing:
             response = PolicyTestResultSerializer(PolicyResult(True))
         if request.user.is_superuser:
+            log_messages = []
+            for log in logs:
+                if log.get("process", "") == "PolicyProcess":
+                    continue
+                log_messages.append(log)
+            result.log_messages = log_messages
             response = PolicyTestResultSerializer(result)
+        # print(response.log_messages)
+        print(response.data)
         return Response(response.data)
 
     @extend_schema(

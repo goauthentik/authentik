@@ -28761,7 +28761,14 @@ components:
           items:
             type: string
           readOnly: true
+        log_messages:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
       required:
+      - log_messages
       - messages
       - passing
     Prompt:
