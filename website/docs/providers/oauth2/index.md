@@ -43,3 +43,14 @@ Refresh tokens can be used as long-lived tokens to access user data, and further
 ### `client_credentials`:
 
 See [Machine-to-machine authentication](./client_credentials)
+
+## Scope authorization
+
+By default, every user that has access to an application can request any of the configured scopes. Starting with authentik 2022.4, you can do additional checks for the scope in an expression policy (bound to the application):
+
+```python
+# There are additional fields set in the context, use `ak_logger.debug(request.context)` to see them.
+if "my-admin-scope" in request.context["oauth_scopes"]:
+    return ak_is_group_member(request.user, name="my-admin-group")
+return True
+```

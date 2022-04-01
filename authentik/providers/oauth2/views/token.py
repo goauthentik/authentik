@@ -93,6 +93,18 @@ class TokenParams:
             code_verifier=request.POST.get("code_verifier"),
         )
 
+    def __check_policy_access(self, app: Application, request: HttpRequest, **kwargs):
+        engine = PolicyEngine(app, self.user, request)
+        engine.request.context["oauth_scopes"] = self.scope
+        engine.request.context["oauth_grant_type"] = self.grant_type
+        engine.request.context["oauth_code_verifier"] = self.code_verifier
+        engine.request.context.update(kwargs)
+        engine.build()
+        result = engine.result
+        if not result.passing:
+            LOGGER.info("User not authenticated for application", user=self.user, app=app)
+            raise TokenError("invalid_grant")
+
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
         if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
             if (
@@ -233,12 +245,7 @@ class TokenParams:
         app = Application.objects.filter(provider=self.provider).first()
         if not app or not app.provider:
             raise TokenError("invalid_grant")
-        engine = PolicyEngine(app, self.user, request)
-        engine.build()
-        result = engine.result
-        if not result.passing:
-            LOGGER.info("User not authenticated for application", user=self.user, app=app)
-            raise TokenError("invalid_grant")
+        self.__check_policy_access(app, request)
         return None
 
     def __post_init_client_credentials_jwt(self, request: HttpRequest):
@@ -279,13 +286,8 @@ class TokenParams:
             LOGGER.info("client_credentials grant for provider without application")
             raise TokenError("invalid_grant")
 
-        engine = PolicyEngine(app, self.user, request)
-        engine.request.context["JWT"] = token
-        engine.build()
-        result = engine.result
-        if not result.passing:
-            LOGGER.info("JWT not authenticated for application", app=app)
-            raise TokenError("invalid_grant")
+        self.__check_policy_access(app, request, oauth_jwt=token)
+
         self.user, _ = User.objects.update_or_create(
             username=f"{self.provider.name}-{token.get('sub')}",
             defaults={

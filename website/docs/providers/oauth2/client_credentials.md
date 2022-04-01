@@ -51,5 +51,5 @@ Input JWTs are checked to be signed by any of the selected *Verification certifi
 To do additional checks, you can use *[Expression policies](../../policies/expression)*:
 
 ```python
-return request.context["JWT"]["iss"] == "https://my.issuer"
+return request.context["oauth_jwt"]["iss"] == "https://my.issuer"
 ```

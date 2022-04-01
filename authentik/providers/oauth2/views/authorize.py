@@ -27,6 +27,7 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
+from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView, RequestValidationError
 from authentik.providers.oauth2.constants import (
     PROMPT_CONSNET,
@@ -437,6 +438,16 @@ class AuthorizationFlowInitView(PolicyAccessView):
         client_id = self.request.GET.get("client_id")
         self.provider = get_object_or_404(OAuth2Provider, client_id=client_id)
         self.application = self.provider.application
+
+    def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
+        request.context["oauth_scopes"] = self.params.scope
+        request.context["oauth_grant_type"] = self.params.grant_type
+        request.context["oauth_code_challenge"] = self.params.code_challenge
+        request.context["oauth_code_challenge_method"] = self.params.code_challenge_method
+        request.context["oauth_max_age"] = self.params.max_age
+        request.context["oauth_redirect_uri"] = self.params.redirect_uri
+        request.context["oauth_response_type"] = self.params.response_type
+        return request
 
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

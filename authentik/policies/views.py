@@ -14,7 +14,7 @@ from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.engine import PolicyEngine
-from authentik.policies.types import PolicyResult
+from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 
@@ -103,11 +103,16 @@ class PolicyAccessView(AccessMixin, View):
             response.policy_result = result
         return response
 
+    def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
+        """optionally modify the policy request"""
+        return request
+
     def user_has_access(self, user: Optional[User] = None) -> PolicyResult:
         """Check if user has access to application."""
         user = user or self.request.user
         policy_engine = PolicyEngine(self.application, user or self.request.user, self.request)
         policy_engine.use_cache = False
+        policy_engine.request = self.modify_policy_request(policy_engine.request)
         policy_engine.build()
         result = policy_engine.result
         LOGGER.debug(
