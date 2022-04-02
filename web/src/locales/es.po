@@ -1185,8 +1185,7 @@ msgstr "Enlace de recuperación de copia"
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/ServiceConnectionListPage.ts
-#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/outposts/ServiceConnectionWizard.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyWizard.ts
@@ -1310,6 +1309,10 @@ msgstr "Crear usuario"
 msgid "Create a new application"
 msgstr "Crea una nueva aplicación"
 
+#: src/pages/outposts/ServiceConnectionWizard.ts
+msgid "Create a new outpost integration."
+msgstr ""
+
 #: src/pages/policies/PolicyWizard.ts
 msgid "Create a new policy."
 msgstr ""
@@ -1342,7 +1345,7 @@ msgstr "Crear proveedor"
 msgid "Create users as inactive"
 msgstr "Crear usuarios como inactivos"
 
-#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/outposts/ServiceConnectionWizard.ts
 #: src/pages/policies/PolicyWizard.ts
 #: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
@@ -3184,6 +3187,10 @@ msgstr "Negar el resultado"
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "Niega el resultado de la unión. Los mensajes no se ven afectados."
 
+#: src/pages/outposts/ServiceConnectionWizard.ts
+msgid "New outpost integration"
+msgstr ""
+
 #: src/pages/policies/PolicyWizard.ts
 msgid "New policy"
 msgstr ""
@@ -4376,6 +4383,7 @@ msgstr "Seleccione una de las fuentes a continuación para iniciar sesión."
 msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
 msgstr "Se deben mostrar las fuentes seleccionadas para que los usuarios se autentiquen con ellas. Esto solo afecta a las fuentes basadas en web, no a LDAP."
 
+#: src/pages/outposts/ServiceConnectionWizard.ts
 #: src/pages/policies/PolicyWizard.ts
 #: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts

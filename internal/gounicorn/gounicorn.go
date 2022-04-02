@@ -70,7 +70,7 @@ func (g *GoUnicorn) Start() error {
 func (g *GoUnicorn) healthcheck() {
 	g.log.Debug("starting healthcheck")
 	h := &http.Client{
-		Transport: ak.NewUserAgentTransport("goauthentik.io go proxy healthcheck", http.DefaultTransport),
+		Transport: ak.NewUserAgentTransport("goauthentik.io/proxy/healthcheck", http.DefaultTransport),
 	}
 	check := func() bool {
 		res, err := h.Get("http://localhost:8000/-/health/live/")
