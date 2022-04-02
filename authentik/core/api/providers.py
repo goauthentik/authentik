@@ -1,13 +1,18 @@
 """Provider API Views"""
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
+from rest_framework.decorators import action
 from rest_framework.fields import ReadOnlyField
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer
+from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import Provider
+from authentik.lib.utils.reflection import all_subclasses
 
 
 class ProviderSerializer(ModelSerializer, MetaNameSerializer):
@@ -63,3 +68,28 @@ class ProviderViewSet(
 
     def get_queryset(self):  # pragma: no cover
         return Provider.objects.select_subclasses()
+
+    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
+    @action(detail=False, pagination_class=None, filter_backends=[])
+    def types(self, request: Request) -> Response:
+        """Get all creatable provider types"""
+        data = []
+        for subclass in all_subclasses(self.queryset.model):
+            subclass: Provider
+            data.append(
+                {
+                    "name": subclass._meta.verbose_name,
+                    "description": subclass.__doc__,
+                    "component": subclass().component,
+                    "model_name": subclass._meta.model_name,
+                }
+            )
+        data.append(
+            {
+                "name": _("SAML Provider from Metadata"),
+                "description": _("Create a SAML Provider by importing its Metadata."),
+                "component": "ak-provider-saml-import-form",
+                "model_name": "",
+            }
+        )
+        return Response(TypeCreateSerializer(data, many=True).data)
