@@ -1178,7 +1178,6 @@ msgstr "Download URL kopieren"
 msgid "Copy recovery link"
 msgstr "Wiederherstellungslink kopieren"
 
-#: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -1189,7 +1188,6 @@ msgstr "Wiederherstellungslink kopieren"
 #: src/pages/events/TransportListPage.ts
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/flows/FlowListPage.ts
 #: src/pages/groups/GroupListPage.ts
@@ -1198,7 +1196,6 @@ msgstr "Wiederherstellungslink kopieren"
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
-#: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyWizard.ts
@@ -1354,10 +1351,7 @@ msgstr "Anbieter erstellen"
 msgid "Create users as inactive"
 msgstr "Benutzer als inaktiv anlegen"
 
-#: src/pages/applications/ApplicationForm.ts
-#: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
-#: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyWizard.ts
 #: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts

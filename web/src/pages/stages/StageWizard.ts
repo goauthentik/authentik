@@ -78,6 +78,9 @@ export class StageWizard extends LitElement {
         return [PFBase, PFButton, AKGlobal, PFRadio];
     }
 
+    @property()
+    createText = t`Create`;
+
     @property({ attribute: false })
     stageTypes: TypeCreate[] = [];
 
@@ -110,7 +113,7 @@ export class StageWizard extends LitElement {
                         </ak-wizard-page-form>
                     `;
                 })}
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
             </ak-wizard>
         `;
     }

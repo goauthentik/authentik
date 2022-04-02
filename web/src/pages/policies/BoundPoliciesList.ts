@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
@@ -13,13 +12,12 @@ import { uiConfig } from "../../common/config";
 import { PFColor } from "../../elements/Label";
 import { PFSize } from "../../elements/Spinner";
 import "../../elements/Tabs";
-import "../../elements/buttons/Dropdown";
-import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
 import { Table, TableColumn } from "../../elements/table/Table";
 import "../groups/GroupForm";
+import "../policies/PolicyWizard";
 import "../users/UserForm";
 import "./PolicyBindingForm";
 
@@ -198,33 +196,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     ${t`Create Binding`}
                 </button>
             </ak-forms-modal>
-            <ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-secondary pf-c-button pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${t`Create Policy`}</span>
-                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-                </button>
-                <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(
-                        new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
-                            return types.map((type) => {
-                                return html`<li>
-                                    <ak-forms-modal>
-                                        <span slot="submit"> ${t`Create`} </span>
-                                        <span slot="header"> ${t`Create ${type.name}`} </span>
-                                        <ak-proxy-form slot="form" type=${type.component}>
-                                        </ak-proxy-form>
-                                        <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                            ${type.name}<br />
-                                            <small>${type.description}</small>
-                                        </button>
-                                    </ak-forms-modal>
-                                </li>`;
-                            });
-                        }),
-                        html`<ak-spinner></ak-spinner>`,
-                    )}
-                </ul>
-            </ak-dropdown>
+            <ak-policy-wizard createText=${t`Create Policy`}></ak-policy-wizard>
             ${super.renderToolbar()}`;
     }
 }
