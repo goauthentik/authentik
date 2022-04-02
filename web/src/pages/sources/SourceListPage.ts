@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import { Source, SourcesApi } from "@goauthentik/api";
 
@@ -16,11 +15,11 @@ import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
+import "./SourceWizard";
 import "./ldap/LDAPSourceForm";
 import "./oauth/OAuthSourceForm";
 import "./plex/PlexSourceForm";
 import "./saml/SAMLSourceForm";
-import "./SourceWizard";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {

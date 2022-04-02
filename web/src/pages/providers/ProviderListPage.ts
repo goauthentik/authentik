@@ -112,9 +112,6 @@ export class ProviderListPage extends TablePage<Provider> {
     }
 
     renderToolbar(): TemplateResult {
-        return html`<ak-provider-wizard>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
-            </ak-provider-wizard>
-            ${super.renderToolbar()}`;
+        return html`<ak-provider-wizard> </ak-provider-wizard> ${super.renderToolbar()}`;
     }
 }

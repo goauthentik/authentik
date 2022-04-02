@@ -3,9 +3,9 @@ import { t } from "@lingui/macro";
 import { TemplateResult } from "lit";
 
 import { Form } from "../forms/Form";
-import { WizardStep } from "./WizardStep";
+import { WizardPage } from "./WizardPage";
 
-export class FormWizardStep extends WizardStep {
+export class FormWizardPage extends WizardPage {
     _valid = true;
 
     isValid(): boolean {

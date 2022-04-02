@@ -3,16 +3,14 @@ import { t } from "@lingui/macro";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { property } from "@lit/reactive-element/decorators/property.js";
 import { CSSResult, TemplateResult, html } from "lit";
-import { cache } from "lit/directives/cache.js";
 
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
 import { ModalButton } from "../buttons/ModalButton";
-import { WizardStep } from "./WizardStep";
-import { WizardStepContainer } from "./WizardStepContainer";
+import { WizardPage } from "./WizardPage";
 
 @customElement("ak-wizard")
-export class Wizard extends ModalButton implements WizardStepContainer {
+export class Wizard extends ModalButton {
     @property()
     header?: string;
 
@@ -24,33 +22,30 @@ export class Wizard extends ModalButton implements WizardStepContainer {
     }
 
     @property({ attribute: false })
-    steps: WizardStep[] = [];
+    steps: string[] = [];
 
-    set currentStep(value: WizardStep) {
+    @property({ attribute: false })
+    _currentStep?: WizardPage;
+
+    set currentStep(value: WizardPage | undefined) {
         this._currentStep = value;
-        this._currentStep.host = this;
-        this._currentStep.activeCallback();
+        if (this._currentStep) {
+            this._currentStep.activeCallback();
+        }
     }
 
-    get currentStep(): WizardStep {
+    get currentStep(): WizardPage | undefined {
         return this._currentStep;
     }
 
-    @property({ attribute: false })
-    _currentStep!: WizardStep;
-
     finalHandler?: () => Promise<void>;
 
-    setSteps(...steps: WizardStep[]): void {
-        this.steps = steps;
-        this.requestUpdate();
-    }
-
     renderModalInner(): TemplateResult {
-        if (!this.currentStep) {
-            this.currentStep = this.steps[0];
+        const firstPage = this.querySelector<WizardPage>(`[slot=${this.steps[0]}]`);
+        if (!this.currentStep && firstPage) {
+            this.currentStep = firstPage;
         }
-        const currentIndex = this.steps.indexOf(this.currentStep);
+        const currentIndex = this.currentStep ? this.steps.indexOf(this.currentStep.slot) : 0;
         return html`<div class="pf-c-wizard">
             <div class="pf-c-wizard__header">
                 <button
@@ -68,19 +63,27 @@ export class Wizard extends ModalButton implements WizardStepContainer {
                     <nav class="pf-c-wizard__nav">
                         <ol class="pf-c-wizard__nav-list">
                             ${this.steps.map((step, idx) => {
-                                const currentIdx = this.steps.indexOf(this.currentStep);
+                                const currentIdx = this.currentStep
+                                    ? this.steps.indexOf(this.currentStep.slot)
+                                    : 0;
                                 return html`
                                     <li class="pf-c-wizard__nav-item">
                                         <button
                                             class="pf-c-wizard__nav-link ${idx === currentIdx
                                                 ? "pf-m-current"
                                                 : ""}"
-                                            ?disabled=${this.steps.indexOf(this.currentStep) < idx}
+                                            ?disabled=${currentIdx < idx}
                                             @click=${() => {
-                                                this.currentStep = step;
+                                                const stepEl = this.querySelector<WizardPage>(
+                                                    `[slot=${step}]`,
+                                                );
+                                                if (stepEl) {
+                                                    this.currentStep = stepEl;
+                                                }
                                             }}
                                         >
-                                            ${step.renderNavList()}
+                                            ${this.querySelector<WizardPage>(`[slot=${step}]`)
+                                                ?.sidebarLabel()}
                                         </button>
                                     </li>
                                 `;
@@ -89,7 +92,7 @@ export class Wizard extends ModalButton implements WizardStepContainer {
                     </nav>
                     <main class="pf-c-wizard__main">
                         <div class="pf-c-wizard__main-body">
-                            ${cache(this.currentStep.render())}
+                            <slot name=${this.currentStep?.slot}></slot>
                         </div>
                     </main>
                 </div>
@@ -97,9 +100,9 @@ export class Wizard extends ModalButton implements WizardStepContainer {
                     <button
                         class="pf-c-button pf-m-primary"
                         type="submit"
-                        ?disabled=${!this._currentStep.isValid()}
+                        ?disabled=${!this._currentStep?.isValid()}
                         @click=${async () => {
-                            const cb = await this.currentStep.nextCallback();
+                            const cb = await this.currentStep?.nextCallback();
                             if (!cb) {
                                 return;
                             }
@@ -109,19 +112,29 @@ export class Wizard extends ModalButton implements WizardStepContainer {
                                 }
                                 this.open = false;
                             } else {
-                                this.currentStep = this.steps[currentIndex + 1];
+                                const nextPage = this.querySelector<WizardPage>(
+                                    `[slot=${this.steps[currentIndex + 1]}]`,
+                                );
+                                if (nextPage) {
+                                    this.currentStep = nextPage;
+                                }
                             }
                         }}
                     >
                         ${currentIndex === this.steps.length - 1 ? t`Finish` : t`Next`}
                     </button>
-                    ${this.steps.indexOf(this.currentStep) > 0
+                    ${(this.currentStep ? this.steps.indexOf(this.currentStep.slot) : 0) > 0
                         ? html`
                               <button
                                   class="pf-c-button pf-m-secondary"
                                   type="button"
                                   @click=${() => {
-                                      this.currentStep = this.steps[currentIndex - 1];
+                                      const prevPage = this.querySelector<WizardPage>(
+                                          `[slot=${this.steps[currentIndex - 1]}]`,
+                                      );
+                                      if (prevPage) {
+                                          this.currentStep = prevPage;
+                                      }
                                   }}
                               >
                                   ${t`Back`}
@@ -134,7 +147,12 @@ export class Wizard extends ModalButton implements WizardStepContainer {
                             type="button"
                             @click=${() => {
                                 this.open = false;
-                                this.currentStep = this.steps[0];
+                                const firstPage = this.querySelector<WizardPage>(
+                                    `[slot=${this.steps[0]}]`,
+                                );
+                                if (firstPage) {
+                                    this.currentStep = firstPage;
+                                }
                             }}
                         >
                             ${t`Cancel`}

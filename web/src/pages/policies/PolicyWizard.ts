@@ -8,9 +8,9 @@ import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import { PoliciesApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { FormWizardStep } from "../../elements/wizard/FormWizardStep";
+import { FormWizardPage } from "../../elements/wizard/FormWizardPage";
 import { Wizard } from "../../elements/wizard/Wizard";
-import { WizardStep } from "../../elements/wizard/WizardStep";
+import { WizardPage } from "../../elements/wizard/WizardPage";
 import "./dummy/DummyPolicyForm";
 import "./event_matcher/EventMatcherPolicyForm";
 import "./expiry/ExpiryPolicyForm";
@@ -19,7 +19,7 @@ import "./hibp/HaveIBeenPwnedPolicyForm";
 import "./password/PasswordPolicyForm";
 import "./reputation/ReputationPolicyForm";
 
-export class PolicyInitialStep extends WizardStep {
+export class PolicyInitialStep extends WizardPage {
     selected = false;
 
     isValid(): boolean {
@@ -161,7 +161,7 @@ export class PolicyInitialStep extends WizardStep {
     }
 }
 
-class PolicyDummyStep extends FormWizardStep {
+class PolicyDummyStep extends FormWizardPage {
     renderNavList(): TemplateResult {
         return html`${t`Event matcher policy`}`;
     }
@@ -170,7 +170,7 @@ class PolicyDummyStep extends FormWizardStep {
     }
 }
 
-class PolicyEventMatcherStep extends FormWizardStep {
+class PolicyEventMatcherStep extends FormWizardPage {
     renderNavList(): TemplateResult {
         return html`${t`Event matcher policy`}`;
     }
@@ -179,7 +179,7 @@ class PolicyEventMatcherStep extends FormWizardStep {
     }
 }
 
-class PolicyPasswordExpiryStep extends FormWizardStep {
+class PolicyPasswordExpiryStep extends FormWizardPage {
     renderNavList(): TemplateResult {
         return html`${t`Password expiry policy`}`;
     }
@@ -188,7 +188,7 @@ class PolicyPasswordExpiryStep extends FormWizardStep {
     }
 }
 
-class PolicyExpressionStep extends FormWizardStep {
+class PolicyExpressionStep extends FormWizardPage {
     renderNavList(): TemplateResult {
         return html`${t`Expression policy`}`;
     }
@@ -197,7 +197,7 @@ class PolicyExpressionStep extends FormWizardStep {
     }
 }
 
-class PolicyHaveIBeenPwnedStep extends FormWizardStep {
+class PolicyHaveIBeenPwnedStep extends FormWizardPage {
     renderNavList(): TemplateResult {
         return html`${t`Have I been pwned policy`}`;
     }
@@ -206,7 +206,7 @@ class PolicyHaveIBeenPwnedStep extends FormWizardStep {
     }
 }
 
-class PolicyPasswordStep extends FormWizardStep {
+class PolicyPasswordStep extends FormWizardPage {
     renderNavList(): TemplateResult {
         return html`${t`Password policy`}`;
     }
@@ -215,7 +215,7 @@ class PolicyPasswordStep extends FormWizardStep {
     }
 }
 
-class PolicyReputationStep extends FormWizardStep {
+class PolicyReputationStep extends FormWizardPage {
     renderNavList(): TemplateResult {
         return html`${t`Reputation policy`}`;
     }

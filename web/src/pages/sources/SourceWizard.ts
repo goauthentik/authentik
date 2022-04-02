@@ -5,15 +5,15 @@ import { CSSResult, TemplateResult, html } from "lit";
 
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 
-import { FormWizardStep } from "../../elements/wizard/FormWizardStep";
+import { FormWizardPage } from "../../elements/wizard/FormWizardPage";
 import { Wizard } from "../../elements/wizard/Wizard";
-import { WizardStep } from "../../elements/wizard/WizardStep";
+import { WizardPage } from "../../elements/wizard/WizardPage";
 import "./ldap/LDAPSourceForm";
 import "./oauth/OAuthSourceForm";
 import "./plex/PlexSourceForm";
 import "./saml/SAMLSourceForm";
 
-export class SourceInitialStep extends WizardStep {
+export class SourceInitialStep extends WizardPage {
     selected = false;
 
     isValid(): boolean {
@@ -25,8 +25,7 @@ export class SourceInitialStep extends WizardStep {
     }
 
     render(): TemplateResult {
-        return html`
-            <div class="pf-c-radio">
+        return html` <div class="pf-c-radio">
                 <input
                     class="pf-c-radio__input"
                     type="radio"
@@ -70,14 +69,12 @@ export class SourceInitialStep extends WizardStep {
                     }}
                 />
                 <label class="pf-c-radio__label" for="plex">${t`Plex`}</label>
-                <span class="pf-c-radio__description"
-                    >${t`Authenticate against plex.tv.`}</span
-                >
+                <span class="pf-c-radio__description">${t`Authenticate against plex.tv.`}</span>
             </div>`;
     }
 }
 
-class SourceOAuthDetailStep extends FormWizardStep {
+class SourceOAuthDetailStep extends FormWizardPage {
     renderNavList(): TemplateResult {
         return html`${t`OAuth details`}`;
     }
@@ -86,7 +83,7 @@ class SourceOAuthDetailStep extends FormWizardStep {
     }
 }
 
-class SourceSAMLDetailStep extends FormWizardStep {
+class SourceSAMLDetailStep extends FormWizardPage {
     renderNavList(): TemplateResult {
         return html`${t`SAML details`}`;
     }
@@ -95,7 +92,7 @@ class SourceSAMLDetailStep extends FormWizardStep {
     }
 }
 
-class SourceLDAPDetailStep extends FormWizardStep {
+class SourceLDAPDetailStep extends FormWizardPage {
     renderNavList(): TemplateResult {
         return html`${t`LDAP details`}`;
     }
@@ -104,7 +101,7 @@ class SourceLDAPDetailStep extends FormWizardStep {
     }
 }
 
-class SourcePlexDetailStep extends FormWizardStep {
+class SourcePlexDetailStep extends FormWizardPage {
     renderNavList(): TemplateResult {
         return html`${t`Plex details`}`;
     }
