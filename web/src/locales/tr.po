@@ -219,28 +219,28 @@ msgid "Add"
 msgstr "Ekle"
 
 #: src/pages/providers/ProviderWizard.ts
-msgid ""
-"Add a provider which does not support any other method. Requests will be routed\n"
-"through the authentik proxy, which authenticates all requests."
-msgstr ""
+#~ msgid ""
+#~ "Add a provider which does not support any other method. Requests will be routed\n"
+#~ "through the authentik proxy, which authenticates all requests."
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "Add a provider which support LDAP."
-msgstr ""
+#~ msgid "Add a provider which support LDAP."
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid ""
-"Add a provider which supports OAuth, OIDC or \"Login with GitHub\n"
-"Enterprise\"."
-msgstr ""
+#~ msgid ""
+#~ "Add a provider which supports OAuth, OIDC or \"Login with GitHub\n"
+#~ "Enterprise\"."
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "Add a provider which supports SAML 2.0, by importing it's metadata."
-msgstr ""
+#~ msgid "Add a provider which supports SAML 2.0, by importing it's metadata."
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "Add a provider which supports SAML 2.0."
-msgstr ""
+#~ msgid "Add a provider which supports SAML 2.0."
+#~ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Addition Group DN"
@@ -693,8 +693,8 @@ msgstr "Derleme karması:"
 #~ msgid "Build hash: {0}"
 #~ msgstr "Yapı karması: {0}"
 
-#: src/pages/sources/SourcesListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid "Built-in"
 msgstr "Dahili"
 
@@ -835,10 +835,10 @@ msgid "Check access"
 msgstr "Erişimi kontrol"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid ""
-"Check if password is on HaveIBeenPwned's list by uploading the first\n"
-"5 characters of the SHA1 Hash."
-msgstr ""
+#~ msgid ""
+#~ "Check if password is on HaveIBeenPwned's list by uploading the first\n"
+#~ "5 characters of the SHA1 Hash."
+#~ msgstr ""
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "Check outposts."
@@ -1192,14 +1192,13 @@ msgstr "Kurtarma bağlantısı kopyalama"
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/providers/ProviderListPage.ts
+#: src/pages/providers/ProviderWizard.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/providers/RelatedApplicationButton.ts
-#: src/pages/sources/SourcesListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceWizard.ts
 #: src/pages/stages/StageListPage.ts
 #: src/pages/stages/StageListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
@@ -1324,6 +1323,10 @@ msgstr ""
 msgid "Create a new provider."
 msgstr ""
 
+#: src/pages/sources/SourceWizard.ts
+msgid "Create a new source."
+msgstr ""
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "Grup oluştur"
@@ -1340,8 +1343,10 @@ msgstr "Kullanıcıları etkin olmayan olarak oluşturma"
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/providers/ProviderWizard.ts
+#: src/pages/sources/SourceWizard.ts
 #: src/pages/stages/StageListPage.ts
 msgid "Create {0}"
 msgstr "Oluştur {0}"
@@ -1442,7 +1447,7 @@ msgstr "E-posta veya Webhook gibi kullanıcılara bildirimlerin nasıl gönderil
 #: src/pages/policies/reputation/ReputationListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 #: src/pages/stages/StageListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -1590,7 +1595,7 @@ msgstr "Rehber"
 #~ msgid "Disable Time-based OTP"
 #~ msgstr "Zaman tabanlı OTP'yi devre dışı bırak"
 
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid "Disabled"
 msgstr "Devre Dışı"
 
@@ -1633,8 +1638,8 @@ msgid "Due to protocol limitations, this certificate is only used when the outpo
 msgstr "Protokol sınırlamaları nedeniyle, bu sertifika yalnızca üssün tek bir sağlayıcısı olduğunda kullanılır."
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Dummy"
-msgstr ""
+#~ msgid "Dummy"
+#~ msgstr ""
 
 #: src/pages/stages/dummy/DummyStageForm.ts
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
@@ -1853,13 +1858,13 @@ msgid "Event info"
 msgstr "Olay bilgileri"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Event matcher"
-msgstr ""
+#~ msgid "Event matcher"
+#~ msgstr ""
 
 #: src/pages/policies/PolicyWizard.ts
 #: src/pages/policies/PolicyWizard.ts
-msgid "Event matcher policy"
-msgstr ""
+#~ msgid "Event matcher policy"
+#~ msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
 msgid "Event retention"
@@ -1887,8 +1892,8 @@ msgstr "Hata"
 #~ msgstr "Yürütme"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Execute arbitrary Python code to implement custom checks and validation."
-msgstr ""
+#~ msgid "Execute arbitrary Python code to implement custom checks and validation."
+#~ msgstr ""
 
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
@@ -1963,7 +1968,6 @@ msgid "Export flow"
 msgstr "Akışı aktar"
 
 #: src/pages/events/EventInfo.ts
-#: src/pages/policies/PolicyWizard.ts
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
 #: src/pages/property-mappings/PropertyMappingNotification.ts
@@ -1973,8 +1977,8 @@ msgid "Expression"
 msgstr "İfade"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Expression policy"
-msgstr ""
+#~ msgid "Expression policy"
+#~ msgstr ""
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
@@ -2044,7 +2048,7 @@ msgid "Favicon"
 msgstr "Favicon"
 
 #: src/interfaces/AdminInterface.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid "Federation & Social login"
 msgstr "Federasyon ve Sosyal Giriş"
 
@@ -2195,8 +2199,8 @@ msgid "Forgot username or password?"
 msgstr "Kullanıcı adı veya parolayı mı unuttunuz?"
 
 #: src/elements/forms/ModalForm.ts
-#: src/elements/wizard/FormWizardStep.ts
-#: src/elements/wizard/FormWizardStep.ts
+#: src/elements/wizard/FormWizardPage.ts
+#: src/elements/wizard/FormWizardPage.ts
 msgid "Form didn't return a promise for submitting"
 msgstr "Form göndermek için bir söz vermedi"
 
@@ -2355,12 +2359,12 @@ msgid "HTTPS is not detected correctly"
 msgstr "HTTPS doğru algılanmadı"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Have I been pwned"
-msgstr ""
+#~ msgid "Have I been pwned"
+#~ msgstr ""
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Have I been pwned policy"
-msgstr ""
+#~ msgid "Have I been pwned policy"
+#~ msgstr ""
 
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Health and Version"
@@ -2482,10 +2486,10 @@ msgid "If no explicit redirect URIs are specified, the first successfully used r
 msgstr ""
 
 #: src/pages/policies/PolicyWizard.ts
-msgid ""
-"If password change date is more than x days in the past, invalidate the user's password\n"
-"and show a notice."
-msgstr ""
+#~ msgid ""
+#~ "If password change date is more than x days in the past, invalidate the user's password\n"
+#~ "and show a notice."
+#~ msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
 msgid "If set, users are able to configure details of their profile."
@@ -2679,7 +2683,6 @@ msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/providers/ProviderWizard.ts
 msgid "LDAP"
 msgstr "LDAP"
 
@@ -2700,8 +2703,8 @@ msgid "LDAP Sync status"
 msgstr "LDAP Eşitleme durumu"
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "LDAP details"
-msgstr ""
+#~ msgid "LDAP details"
+#~ msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -3117,7 +3120,7 @@ msgstr "Uygulamalarım"
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
@@ -3188,6 +3191,10 @@ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
 msgid "New provider"
+msgstr ""
+
+#: src/pages/sources/SourceWizard.ts
+msgid "New source"
 msgstr ""
 
 #: src/pages/events/EventInfo.ts
@@ -3263,8 +3270,8 @@ msgid "No additional setup is required."
 msgstr "Ek kurulum gerekmez."
 
 #: src/elements/forms/ModalForm.ts
-#: src/elements/wizard/FormWizardStep.ts
-#: src/elements/wizard/FormWizardStep.ts
+#: src/elements/wizard/FormWizardPage.ts
+#: src/elements/wizard/FormWizardPage.ts
 msgid "No form found"
 msgstr "Form bulunamadı"
 
@@ -3414,12 +3421,12 @@ msgid "OAuth Refresh Codes"
 msgstr "OAuth Yenile Kodları"
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "OAuth details"
-msgstr ""
+#~ msgid "OAuth details"
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "OAuth/OIDC"
-msgstr ""
+#~ msgid "OAuth/OIDC"
+#~ msgstr ""
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "OK"
@@ -3609,8 +3616,8 @@ msgid "Pass policy?"
 msgstr "Geçiş ilkesi?"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Passes when Event matches selected criteria."
-msgstr ""
+#~ msgid "Passes when Event matches selected criteria."
+#~ msgstr ""
 
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/events/EventInfo.ts
@@ -3621,19 +3628,18 @@ msgstr "Geçiyor"
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
-#: src/pages/policies/PolicyWizard.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserPasswordForm.ts
 msgid "Password"
 msgstr "Parola"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Password expiry"
-msgstr ""
+#~ msgid "Password expiry"
+#~ msgstr ""
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Password expiry policy"
-msgstr ""
+#~ msgid "Password expiry policy"
+#~ msgstr ""
 
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/pages/policies/password/PasswordPolicyForm.ts
@@ -3641,8 +3647,8 @@ msgid "Password field"
 msgstr "Parola alanı"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Password policy"
-msgstr ""
+#~ msgid "Password policy"
+#~ msgstr ""
 
 #: src/pages/events/utils.ts
 msgid "Password set"
@@ -3750,14 +3756,14 @@ msgid "Policy execution"
 msgstr "İlke yürütme"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Policy to make sure passwords have certain properties."
-msgstr ""
+#~ msgid "Policy to make sure passwords have certain properties."
+#~ msgstr ""
 
 #: src/pages/policies/PolicyWizard.ts
-msgid ""
-"Policy used for debugging the PolicyEngine. Returns a fixed result,\n"
-"but takes a random time to process."
-msgstr ""
+#~ msgid ""
+#~ "Policy used for debugging the PolicyEngine. Returns a fixed result,\n"
+#~ "but takes a random time to process."
+#~ msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy {0}"
@@ -3903,15 +3909,14 @@ msgstr "Sağlayıcılar"
 
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/providers/ProviderWizard.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Proxy"
 msgstr "Vekil Sunucu"
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "Proxy details"
-msgstr ""
+#~ msgid "Proxy details"
+#~ msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
@@ -4065,7 +4070,6 @@ msgstr "İlgili nesneler"
 msgid "Remove the user from the current session."
 msgstr "Kullanıcıyı geçerli oturumdan kaldırın."
 
-#: src/pages/policies/PolicyWizard.ts
 #: src/pages/policies/reputation/ReputationListPage.ts
 msgid "Reputation"
 msgstr "İtibar"
@@ -4081,8 +4085,8 @@ msgstr "IP ve kullanıcı tanımlayıcıları için itibar. Başarısız olan he
 #~ msgstr "Kullanıcı adları için itibar. Başarısız olan her giriş için puanlar azaltılır ve her başarılı oturum açma için artırılır."
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Reputation policy"
-msgstr ""
+#~ msgid "Reputation policy"
+#~ msgstr ""
 
 #~ msgid "Reputation policy - IPs"
 #~ msgstr "İtibar ilkesi - IP'ler"
@@ -4164,8 +4168,8 @@ msgid "Return to device picker"
 msgstr "Aygıt seçiciye geri dön"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Return true if request IP/target username's score is below a certain threshold."
-msgstr ""
+#~ msgid "Return true if request IP/target username's score is below a certain threshold."
+#~ msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Revoked?"
@@ -4176,12 +4180,12 @@ msgid "Run sync again"
 msgstr "Eşzamanlamayı tekrar çalıştır"
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "SAML"
-msgstr ""
+#~ msgid "SAML"
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "SAML (metadata import)"
-msgstr ""
+#~ msgid "SAML (metadata import)"
+#~ msgstr ""
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "SAML Attribute Name"
@@ -4192,12 +4196,12 @@ msgid "SAML Metadata"
 msgstr "SAML Meta Verileri"
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "SAML details"
-msgstr ""
+#~ msgid "SAML details"
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "SAML details (import from metadata)"
-msgstr ""
+#~ msgid "SAML details (import from metadata)"
+#~ msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -4368,6 +4372,7 @@ msgstr "Kullanıcıların kimlik doğrulaması için belirli kaynaklar gösteril
 
 #: src/pages/policies/PolicyWizard.ts
 #: src/pages/providers/ProviderWizard.ts
+#: src/pages/sources/SourceWizard.ts
 msgid "Select type"
 msgstr ""
 
@@ -4604,7 +4609,7 @@ msgstr "Kaynak bağlantılı"
 #~ msgid "Source {0}"
 #~ msgstr "Kaynak {0}"
 
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid "Source(s)"
 msgstr "Kaynak (lar)"
 
@@ -4615,7 +4620,7 @@ msgstr "Kaynaklar"
 #~ msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 #~ msgstr "LDAP gibi authentik'in veritabanıyla senkronize edilebilen ya da kullanıcılar tarafından OAuth ve sosyal girişler gibi kimlik doğrulaması ve kayıt yaptırmak için kullanılabilen kimlik kaynakları"
 
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
 msgstr "Auentik'in veritabanına senkronize edilebilen ya da kullanıcılar tarafından kimlik doğrulaması ve kayıt yaptırmak için kullanılabilen kimliklerin kaynakları."
 
@@ -5540,7 +5545,7 @@ msgstr "Twilio Auth Belirteci"
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
@@ -5666,7 +5671,7 @@ msgstr "Güncel!"
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
@@ -5807,7 +5812,7 @@ msgstr "Parolayı güncelle"
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 #: src/pages/stages/StageListPage.ts
 #: src/pages/users/UserActiveForm.ts
 msgid "Update {0}"

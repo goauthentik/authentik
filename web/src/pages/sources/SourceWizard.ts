@@ -1,123 +1,107 @@
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { property } from "lit/decorators.js";
 
+import AKGlobal from "../../authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { FormWizardPage } from "../../elements/wizard/FormWizardPage";
-import { Wizard } from "../../elements/wizard/Wizard";
+import { SourcesApi, TypeCreate } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../api/Config";
+import "../../elements/forms/ProxyForm";
+import "../../elements/wizard/FormWizardPage";
+import "../../elements/wizard/Wizard";
 import { WizardPage } from "../../elements/wizard/WizardPage";
 import "./ldap/LDAPSourceForm";
 import "./oauth/OAuthSourceForm";
 import "./plex/PlexSourceForm";
 import "./saml/SAMLSourceForm";
 
-export class SourceInitialStep extends WizardPage {
-    selected = false;
+@customElement("ak-source-wizard-initial")
+export class InitialSourceWizardPage extends WizardPage {
+    @property({ attribute: false })
+    sourceTypes: TypeCreate[] = [];
 
-    isValid(): boolean {
-        return this.selected;
-    }
-
-    renderNavList(): TemplateResult {
-        return html`${t`Select type`}`;
+    static get styles(): CSSResult[] {
+        return [PFBase, PFButton, AKGlobal, PFRadio];
     }
 
     render(): TemplateResult {
-        return html` <div class="pf-c-radio">
-                <input
-                    class="pf-c-radio__input"
-                    type="radio"
-                    name="type"
-                    id="oauth"
-                    @change=${() => {
-                        this.host.setSteps(this, new SourceOAuthDetailStep());
-                        this.selected = true;
-                    }}
-                />
-                <label class="pf-c-radio__label" for="oauth">${t`OAuth/OIDC`}</label>
-                <span class="pf-c-radio__description"
-                    >${t`Add a Source which supports SAML 2.0, by importing it's metadata.`}</span
-                >
-            </div>
-            <div class="pf-c-radio">
-                <input
-                    class="pf-c-radio__input"
-                    type="radio"
-                    name="type"
-                    id="saml"
-                    @change=${() => {
-                        this.host.setSteps(this, new SourceSAMLDetailStep());
-                        this.selected = true;
-                    }}
-                />
-                <label class="pf-c-radio__label" for="saml">${t`SAML`}</label>
-                <span class="pf-c-radio__description"
-                    >${t`Authenticate using an external SAML Identity Provider.`}</span
-                >
-            </div>
-            <div class="pf-c-radio">
-                <input
-                    class="pf-c-radio__input"
-                    type="radio"
-                    name="type"
-                    id="plex"
-                    @change=${() => {
-                        this.host.setSteps(this, new SourcePlexDetailStep());
-                        this.selected = true;
-                    }}
-                />
-                <label class="pf-c-radio__label" for="plex">${t`Plex`}</label>
-                <span class="pf-c-radio__description">${t`Authenticate against plex.tv.`}</span>
-            </div>`;
-    }
-}
-
-class SourceOAuthDetailStep extends FormWizardPage {
-    renderNavList(): TemplateResult {
-        return html`${t`OAuth details`}`;
-    }
-    render(): TemplateResult {
-        return html`<ak-source-oauth-form></ak-source-oauth-form>`;
-    }
-}
-
-class SourceSAMLDetailStep extends FormWizardPage {
-    renderNavList(): TemplateResult {
-        return html`${t`SAML details`}`;
-    }
-    render(): TemplateResult {
-        return html`<ak-source-saml-form></ak-source-saml-form>`;
-    }
-}
-
-class SourceLDAPDetailStep extends FormWizardPage {
-    renderNavList(): TemplateResult {
-        return html`${t`LDAP details`}`;
-    }
-    render(): TemplateResult {
-        return html`<ak-source-ldap-form></ak-source-ldap-form>`;
-    }
-}
-
-class SourcePlexDetailStep extends FormWizardPage {
-    renderNavList(): TemplateResult {
-        return html`${t`Plex details`}`;
-    }
-    render(): TemplateResult {
-        return html`<ak-source-plex-form></ak-source-plex-form>`;
+        return html`
+            ${this.sourceTypes.map((type) => {
+                return html`<div class="pf-c-radio">
+                    <input
+                        class="pf-c-radio__input"
+                        type="radio"
+                        name="type"
+                        id=${`${type.component}-${type.modelName}`}
+                        @change=${() => {
+                            this.host.setSteps(
+                                "initial",
+                                `type-${type.component}-${type.modelName}`,
+                            );
+                            this._isValid = true;
+                        }}
+                    />
+                    <label class="pf-c-radio__label" for=${`${type.component}-${type.modelName}`}
+                        >${type.name}</label
+                    >
+                    <span class="pf-c-radio__description">${type.description}</span>
+                </div>`;
+            })}
+        `;
     }
 }
 
 @customElement("ak-source-wizard")
-export class SourceWizard extends Wizard {
-    header = t`New Source`;
-    description = t`Create a new Source.`;
-
-    steps = [new SourceInitialStep()];
-
+export class SourceWizard extends LitElement {
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFRadio);
+        return [PFBase, PFButton, AKGlobal, PFRadio];
+    }
+
+    @property({ attribute: false })
+    sourceTypes: TypeCreate[] = [];
+
+    firstUpdated(): void {
+        new SourcesApi(DEFAULT_CONFIG).sourcesAllTypesList().then((types) => {
+            this.sourceTypes = types;
+        });
+    }
+
+    render(): TemplateResult {
+        return html`
+            <ak-wizard
+                .steps=${["initial"]}
+                header=${t`New source`}
+                description=${t`Create a new source.`}
+            >
+                <ak-source-wizard-initial
+                    slot="initial"
+                    .sidebarLabel=${() => t`Select type`}
+                    .sourceTypes=${this.sourceTypes}
+                >
+                </ak-source-wizard-initial>
+                ${this.sourceTypes.map((type) => {
+                    return html`
+                        <ak-wizard-page-form
+                            slot=${`type-${type.component}-${type.modelName}`}
+                            .sidebarLabel=${() => t`Create ${type.name}`}
+                        >
+                            <ak-proxy-form
+                                .args=${{
+                                    modelName: type.modelName,
+                                }}
+                                type=${type.component}
+                            ></ak-proxy-form>
+                        </ak-wizard-page-form>
+                    `;
+                })}
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            </ak-wizard>
+        `;
     }
 }

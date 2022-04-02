@@ -128,9 +128,7 @@ export class PolicyListPage extends TablePage<Policy> {
     }
 
     renderToolbar(): TemplateResult {
-        return html`<ak-policy-wizard>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
-            </ak-policy-wizard>
+        return html`<ak-policy-wizard> </ak-policy-wizard>
             ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${t`Successfully cleared policy cache`}

@@ -3,6 +3,7 @@ import { t } from "@lingui/macro";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { property } from "@lit/reactive-element/decorators/property.js";
 import { CSSResult, TemplateResult, html } from "lit";
+import { state } from "lit/decorators.js";
 
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
@@ -24,7 +25,7 @@ export class Wizard extends ModalButton {
     @property({ attribute: false })
     steps: string[] = [];
 
-    @property({ attribute: false })
+    @state()
     _currentStep?: WizardPage;
 
     set currentStep(value: WizardPage | undefined) {
@@ -100,7 +101,7 @@ export class Wizard extends ModalButton {
                     </nav>
                     <main class="pf-c-wizard__main">
                         <div class="pf-c-wizard__main-body">
-                            <slot name=${this.currentStep?.slot}></slot>
+                            <slot name=${this.currentStep?.slot || this.steps[0]}></slot>
                         </div>
                     </main>
                 </div>

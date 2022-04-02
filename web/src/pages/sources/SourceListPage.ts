@@ -116,9 +116,6 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     renderToolbar(): TemplateResult {
-        return html`<ak-source-wizard>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
-            </ak-source-wizard>
-            ${super.renderToolbar()}`;
+        return html`<ak-source-wizard> </ak-source-wizard> ${super.renderToolbar()}`;
     }
 }

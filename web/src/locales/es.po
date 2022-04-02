@@ -219,28 +219,28 @@ msgid "Add"
 msgstr "Añadir"
 
 #: src/pages/providers/ProviderWizard.ts
-msgid ""
-"Add a provider which does not support any other method. Requests will be routed\n"
-"through the authentik proxy, which authenticates all requests."
-msgstr ""
+#~ msgid ""
+#~ "Add a provider which does not support any other method. Requests will be routed\n"
+#~ "through the authentik proxy, which authenticates all requests."
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "Add a provider which support LDAP."
-msgstr ""
+#~ msgid "Add a provider which support LDAP."
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid ""
-"Add a provider which supports OAuth, OIDC or \"Login with GitHub\n"
-"Enterprise\"."
-msgstr ""
+#~ msgid ""
+#~ "Add a provider which supports OAuth, OIDC or \"Login with GitHub\n"
+#~ "Enterprise\"."
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "Add a provider which supports SAML 2.0, by importing it's metadata."
-msgstr ""
+#~ msgid "Add a provider which supports SAML 2.0, by importing it's metadata."
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "Add a provider which supports SAML 2.0."
-msgstr ""
+#~ msgid "Add a provider which supports SAML 2.0."
+#~ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Addition Group DN"
@@ -693,8 +693,8 @@ msgstr "Compilar hash:"
 #~ msgid "Build hash: {0}"
 #~ msgstr "Hash de compilación: {0}"
 
-#: src/pages/sources/SourcesListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid "Built-in"
 msgstr "Incorporado"
 
@@ -835,10 +835,10 @@ msgid "Check access"
 msgstr "Comprobar acceso"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid ""
-"Check if password is on HaveIBeenPwned's list by uploading the first\n"
-"5 characters of the SHA1 Hash."
-msgstr ""
+#~ msgid ""
+#~ "Check if password is on HaveIBeenPwned's list by uploading the first\n"
+#~ "5 characters of the SHA1 Hash."
+#~ msgstr ""
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "Check outposts."
@@ -1192,14 +1192,13 @@ msgstr "Enlace de recuperación de copia"
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/policies/PolicyListPage.ts
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/providers/ProviderListPage.ts
+#: src/pages/providers/ProviderWizard.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/providers/RelatedApplicationButton.ts
-#: src/pages/sources/SourcesListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceWizard.ts
 #: src/pages/stages/StageListPage.ts
 #: src/pages/stages/StageListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
@@ -1324,6 +1323,10 @@ msgstr ""
 msgid "Create a new provider."
 msgstr ""
 
+#: src/pages/sources/SourceWizard.ts
+msgid "Create a new source."
+msgstr ""
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "Crear grupo"
@@ -1340,8 +1343,10 @@ msgstr "Crear usuarios como inactivos"
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
+#: src/pages/policies/PolicyWizard.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/providers/ProviderWizard.ts
+#: src/pages/sources/SourceWizard.ts
 #: src/pages/stages/StageListPage.ts
 msgid "Create {0}"
 msgstr "Crear {0}"
@@ -1442,7 +1447,7 @@ msgstr "Defina cómo se envían las notificaciones a los usuarios, como el corre
 #: src/pages/policies/reputation/ReputationListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 #: src/pages/stages/StageListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -1590,7 +1595,7 @@ msgstr "Directorio"
 #~ msgid "Disable Time-based OTP"
 #~ msgstr "Deshabilitar OTP basada en tiempo"
 
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid "Disabled"
 msgstr "Discapacitado"
 
@@ -1633,8 +1638,8 @@ msgid "Due to protocol limitations, this certificate is only used when the outpo
 msgstr "Debido a las limitaciones del protocolo, este certificado solo se usa cuando el puesto de avanzada tiene un único proveedor."
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Dummy"
-msgstr ""
+#~ msgid "Dummy"
+#~ msgstr ""
 
 #: src/pages/stages/dummy/DummyStageForm.ts
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
@@ -1853,13 +1858,13 @@ msgid "Event info"
 msgstr "Información del evento"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Event matcher"
-msgstr ""
+#~ msgid "Event matcher"
+#~ msgstr ""
 
 #: src/pages/policies/PolicyWizard.ts
 #: src/pages/policies/PolicyWizard.ts
-msgid "Event matcher policy"
-msgstr ""
+#~ msgid "Event matcher policy"
+#~ msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
 msgid "Event retention"
@@ -1887,8 +1892,8 @@ msgstr "Excepción"
 #~ msgstr "Ejecutar"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Execute arbitrary Python code to implement custom checks and validation."
-msgstr ""
+#~ msgid "Execute arbitrary Python code to implement custom checks and validation."
+#~ msgstr ""
 
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
@@ -1963,7 +1968,6 @@ msgid "Export flow"
 msgstr "Flujo de exportación"
 
 #: src/pages/events/EventInfo.ts
-#: src/pages/policies/PolicyWizard.ts
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
 #: src/pages/property-mappings/PropertyMappingNotification.ts
@@ -1973,8 +1977,8 @@ msgid "Expression"
 msgstr "Expresión"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Expression policy"
-msgstr ""
+#~ msgid "Expression policy"
+#~ msgstr ""
 
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
@@ -2044,7 +2048,7 @@ msgid "Favicon"
 msgstr "Favicon"
 
 #: src/interfaces/AdminInterface.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid "Federation & Social login"
 msgstr "Inicio de sesión de federación y redes"
 
@@ -2195,8 +2199,8 @@ msgid "Forgot username or password?"
 msgstr "¿Olvidó su nombre de usuario"
 
 #: src/elements/forms/ModalForm.ts
-#: src/elements/wizard/FormWizardStep.ts
-#: src/elements/wizard/FormWizardStep.ts
+#: src/elements/wizard/FormWizardPage.ts
+#: src/elements/wizard/FormWizardPage.ts
 msgid "Form didn't return a promise for submitting"
 msgstr "El formulario no devolvió una promesa para enviarla"
 
@@ -2355,12 +2359,12 @@ msgid "HTTPS is not detected correctly"
 msgstr "HTTPS no se detecta correctamente"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Have I been pwned"
-msgstr ""
+#~ msgid "Have I been pwned"
+#~ msgstr ""
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Have I been pwned policy"
-msgstr ""
+#~ msgid "Have I been pwned policy"
+#~ msgstr ""
 
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Health and Version"
@@ -2481,10 +2485,10 @@ msgid "If no explicit redirect URIs are specified, the first successfully used r
 msgstr "Si no se especifican URI de redireccionamiento explícitos, se guardará el primer URI de redireccionamiento utilizado correctamente."
 
 #: src/pages/policies/PolicyWizard.ts
-msgid ""
-"If password change date is more than x days in the past, invalidate the user's password\n"
-"and show a notice."
-msgstr ""
+#~ msgid ""
+#~ "If password change date is more than x days in the past, invalidate the user's password\n"
+#~ "and show a notice."
+#~ msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
 msgid "If set, users are able to configure details of their profile."
@@ -2678,7 +2682,6 @@ msgid "Kubeconfig"
 msgstr "Configuración de Kube"
 
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/providers/ProviderWizard.ts
 msgid "LDAP"
 msgstr "LDAP"
 
@@ -2699,8 +2702,8 @@ msgid "LDAP Sync status"
 msgstr "Estado de sincronización de LDAP"
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "LDAP details"
-msgstr ""
+#~ msgid "LDAP details"
+#~ msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -3116,7 +3119,7 @@ msgstr "Mis solicitudes"
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
@@ -3187,6 +3190,10 @@ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
 msgid "New provider"
+msgstr ""
+
+#: src/pages/sources/SourceWizard.ts
+msgid "New source"
 msgstr ""
 
 #: src/pages/events/EventInfo.ts
@@ -3262,8 +3269,8 @@ msgid "No additional setup is required."
 msgstr "No se requiere ninguna configuración adicional."
 
 #: src/elements/forms/ModalForm.ts
-#: src/elements/wizard/FormWizardStep.ts
-#: src/elements/wizard/FormWizardStep.ts
+#: src/elements/wizard/FormWizardPage.ts
+#: src/elements/wizard/FormWizardPage.ts
 msgid "No form found"
 msgstr "No se encontró ningún formulario"
 
@@ -3412,12 +3419,12 @@ msgid "OAuth Refresh Codes"
 msgstr "Códigos de actualización de OAuth"
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "OAuth details"
-msgstr ""
+#~ msgid "OAuth details"
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "OAuth/OIDC"
-msgstr ""
+#~ msgid "OAuth/OIDC"
+#~ msgstr ""
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "OK"
@@ -3607,8 +3614,8 @@ msgid "Pass policy?"
 msgstr "¿Política de pases?"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Passes when Event matches selected criteria."
-msgstr ""
+#~ msgid "Passes when Event matches selected criteria."
+#~ msgstr ""
 
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/events/EventInfo.ts
@@ -3619,19 +3626,18 @@ msgstr "Paso"
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/identification/IdentificationStage.ts
 #: src/flows/stages/password/PasswordStage.ts
-#: src/pages/policies/PolicyWizard.ts
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserPasswordForm.ts
 msgid "Password"
 msgstr "Contraseña"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Password expiry"
-msgstr ""
+#~ msgid "Password expiry"
+#~ msgstr ""
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Password expiry policy"
-msgstr ""
+#~ msgid "Password expiry policy"
+#~ msgstr ""
 
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/pages/policies/password/PasswordPolicyForm.ts
@@ -3639,8 +3645,8 @@ msgid "Password field"
 msgstr "Campo de contraseña"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Password policy"
-msgstr ""
+#~ msgid "Password policy"
+#~ msgstr ""
 
 #: src/pages/events/utils.ts
 msgid "Password set"
@@ -3748,14 +3754,14 @@ msgid "Policy execution"
 msgstr "Ejecución de políticas"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Policy to make sure passwords have certain properties."
-msgstr ""
+#~ msgid "Policy to make sure passwords have certain properties."
+#~ msgstr ""
 
 #: src/pages/policies/PolicyWizard.ts
-msgid ""
-"Policy used for debugging the PolicyEngine. Returns a fixed result,\n"
-"but takes a random time to process."
-msgstr ""
+#~ msgid ""
+#~ "Policy used for debugging the PolicyEngine. Returns a fixed result,\n"
+#~ "but takes a random time to process."
+#~ msgstr ""
 
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy {0}"
@@ -3901,15 +3907,14 @@ msgstr "Proveedores"
 
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
-#: src/pages/providers/ProviderWizard.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Proxy"
 msgstr "Proxy"
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "Proxy details"
-msgstr ""
+#~ msgid "Proxy details"
+#~ msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
@@ -4063,7 +4068,6 @@ msgstr "Objetos relacionados"
 msgid "Remove the user from the current session."
 msgstr "Elimina al usuario de la sesión actual."
 
-#: src/pages/policies/PolicyWizard.ts
 #: src/pages/policies/reputation/ReputationListPage.ts
 msgid "Reputation"
 msgstr "Reputación"
@@ -4079,8 +4083,8 @@ msgstr "Reputación de identificadores de usuario e IP. Las puntuaciones disminu
 #~ msgstr "Reputación de nombres de usuario. Las puntuaciones disminuyen por cada inicio de sesión fallido y aumentan por cada inicio de sesión exitoso."
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Reputation policy"
-msgstr ""
+#~ msgid "Reputation policy"
+#~ msgstr ""
 
 #~ msgid "Reputation policy - IPs"
 #~ msgstr "Política de reputación - IPs"
@@ -4162,8 +4166,8 @@ msgid "Return to device picker"
 msgstr "Regresar al selector de dispositivos"
 
 #: src/pages/policies/PolicyWizard.ts
-msgid "Return true if request IP/target username's score is below a certain threshold."
-msgstr ""
+#~ msgid "Return true if request IP/target username's score is below a certain threshold."
+#~ msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Revoked?"
@@ -4174,12 +4178,12 @@ msgid "Run sync again"
 msgstr "Vuelve a ejecutar la sincronización"
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "SAML"
-msgstr ""
+#~ msgid "SAML"
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "SAML (metadata import)"
-msgstr ""
+#~ msgid "SAML (metadata import)"
+#~ msgstr ""
 
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "SAML Attribute Name"
@@ -4190,12 +4194,12 @@ msgid "SAML Metadata"
 msgstr "Metadatos SAML"
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "SAML details"
-msgstr ""
+#~ msgid "SAML details"
+#~ msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
-msgid "SAML details (import from metadata)"
-msgstr ""
+#~ msgid "SAML details (import from metadata)"
+#~ msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -4366,6 +4370,7 @@ msgstr "Se deben mostrar las fuentes seleccionadas para que los usuarios se aute
 
 #: src/pages/policies/PolicyWizard.ts
 #: src/pages/providers/ProviderWizard.ts
+#: src/pages/sources/SourceWizard.ts
 msgid "Select type"
 msgstr ""
 
@@ -4602,7 +4607,7 @@ msgstr "Fuente enlazada"
 #~ msgid "Source {0}"
 #~ msgstr "Fuente {0}"
 
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid "Source(s)"
 msgstr "Fuente (s)"
 
@@ -4613,7 +4618,7 @@ msgstr "Fuentes"
 #~ msgid "Sources of identities, which can either be synced into authentik's database, like LDAP, or can be used by users to authenticate and enroll themselves, like OAuth and social logins"
 #~ msgstr "Fuentes de identidades, que se pueden sincronizar en la base de datos de authentik, como LDAP, o que los usuarios pueden usar para autenticarse e inscribirse, como inicios de sesión sociales y de OAuth"
 
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves."
 msgstr "Fuentes de identidades, que se pueden sincronizar en la base de datos de authentik o que los usuarios pueden utilizar para autenticarse e inscribirse ellos mismos."
 
@@ -5538,7 +5543,7 @@ msgstr "Token de autenticación de Twilio"
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
@@ -5664,7 +5669,7 @@ msgstr "¡Actuales!"
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
@@ -5805,7 +5810,7 @@ msgstr "Actualizar contraseña"
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
 #: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 #: src/pages/stages/StageListPage.ts
 #: src/pages/users/UserActiveForm.ts
 msgid "Update {0}"
