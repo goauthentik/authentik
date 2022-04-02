@@ -75,6 +75,7 @@ class PolicyResult:
         self.messages = messages
         self.source_binding = None
         self.source_results = []
+        self.log_messages = []
 
     def __repr__(self):
         return self.__str__()
