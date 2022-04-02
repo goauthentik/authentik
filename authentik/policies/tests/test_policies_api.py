@@ -28,7 +28,6 @@ class TestPoliciesAPI(APITestCase):
         body = loads(response.content.decode())
         self.assertEqual(body["passing"], True)
         self.assertEqual(body["messages"], ["dummy"])
-        self.assertEqual(body["log_messages"][0]["event"], ["Policy waiting"])
 
     def test_types(self):
         """Test Policy's types endpoint"""
