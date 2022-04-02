@@ -68,6 +68,7 @@ class ApplicationSerializer(ModelSerializer):
             "meta_description",
             "meta_publisher",
             "policy_engine_mode",
+            "group",
         ]
         extra_kwargs = {
             "meta_icon": {"read_only": True},
@@ -85,6 +86,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         "meta_launch_url",
         "meta_description",
         "meta_publisher",
+        "group",
     ]
     lookup_field = "slug"
     ordering = ["name"]

@@ -11,6 +11,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
@@ -20,7 +21,7 @@ import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { UIConfig, uiConfig } from "../common/config";
 import { getURLParam, updateURLParams } from "../elements/router/RouteMatch";
-import { loading } from "../utils";
+import { groupBy, loading } from "../utils";
 import "./LibraryApplication";
 
 @customElement("ak-library")
@@ -41,7 +42,7 @@ export class LibraryPage extends LitElement {
         new CoreApi(DEFAULT_CONFIG).coreApplicationsList({}).then((apps) => {
             this.apps = apps;
             this.fuse = new Fuse(apps.results, {
-                keys: ["slug", "name", "metaDescription", "metaPublisher"],
+                keys: ["slug", "name", "metaDescription", "metaPublisher", "group"],
             });
             if (!this.fuse || !this.query) return;
             const matchingApps = this.fuse.search(this.query);
@@ -55,7 +56,8 @@ export class LibraryPage extends LitElement {
     }
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFDisplay, PFEmptyState, PFPage, PFContent, PFGallery, AKGlobal].concat(css`
+        return [PFBase, PFDisplay, PFEmptyState, PFPage, PFContent, PFGrid, PFGallery, AKGlobal]
+            .concat(css`
             :host,
             main {
                 padding: 3% 5%;
@@ -80,6 +82,10 @@ export class LibraryPage extends LitElement {
             .pf-c-page__main-section {
                 background-color: transparent;
             }
+            .app-group-header {
+                margin-bottom: 1em;
+                margin-top: 1.2em;
+            }
         `);
     }
 
@@ -95,29 +101,43 @@ export class LibraryPage extends LitElement {
         </div>`;
     }
 
-    renderApps(config: UIConfig): TemplateResult {
-        return html`<div class="pf-l-gallery pf-m-gutter">
-            ${this.apps?.results
-                .filter((app) => {
-                    if (app.launchUrl) {
-                        // If the launch URL is a full URL, only show with http or https
-                        if (app.launchUrl.indexOf("://") !== -1) {
-                            return app.launchUrl.startsWith("http");
-                        }
-                        // If the URL doesn't include a protocol, assume its a relative path
-                        return true;
+    getApps(): [string, Application[]][] {
+        return groupBy(
+            this.apps?.results.filter((app) => {
+                if (app.launchUrl) {
+                    // If the launch URL is a full URL, only show with http or https
+                    if (app.launchUrl.indexOf("://") !== -1) {
+                        return app.launchUrl.startsWith("http");
                     }
-                    return false;
-                })
-                .map(
-                    (app) =>
-                        html`<ak-library-app
+                    // If the URL doesn't include a protocol, assume its a relative path
+                    return true;
+                }
+                return false;
+            }) || [],
+            (app) => app.group || "",
+        );
+    }
+
+    renderApps(config: UIConfig): TemplateResult {
+        return html`${this.getApps().map(([group, apps]) => {
+            return html`
+                <div class="pf-c-content app-group-header">
+                    <h2>${group}</h2>
+                </div>
+                <div
+                    class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-5-col-on-lg pf-m-all-3-col-on-xl"
+                >
+                    ${apps.map((app) => {
+                        return html`<ak-library-app
+                            class="pf-l-grid__item"
                             .application=${app}
                             background=${config.color.cardBackground}
                             ?selected=${app.slug === this.selectedApp?.slug}
-                        ></ak-library-app>`,
-                )}
-        </div>`;
+                        ></ak-library-app>`;
+                    })}
+                </div>
+            `;
+        })}`;
     }
 
     render(): TemplateResult {

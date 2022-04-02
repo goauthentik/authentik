@@ -19108,6 +19108,8 @@ components:
           type: string
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        group:
+          type: string
       required:
       - launch_url
       - meta_icon
@@ -19142,6 +19144,8 @@ components:
           type: string
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        group:
+          type: string
       required:
       - name
       - slug
@@ -26598,6 +26602,8 @@ components:
           type: string
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        group:
+          type: string
     PatchedAuthenticateWebAuthnStageRequest:
       type: object
       description: AuthenticateWebAuthnStage Serializer

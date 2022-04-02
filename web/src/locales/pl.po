@@ -35,6 +35,7 @@ msgstr "(Format: hours=1;minutes=2;seconds=3)."
 #: src/elements/events/UserEvents.ts
 #: src/elements/user/SessionList.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/events/EventListPage.ts
 #: src/pages/events/EventListPage.ts
 #: src/pages/groups/GroupListPage.ts
@@ -2293,6 +2294,8 @@ msgstr "Wróć do poprzedniej strony"
 #~ msgid "Go to user interface"
 #~ msgstr "Przejdź do interfejsu użytkownika"
 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
@@ -3528,6 +3531,10 @@ msgstr "Opcjonalny przepływ odzyskiwania, do którego link znajduje się na dol
 msgid "Optional, comma-separated SubjectAlt Names."
 msgstr "Opcjonalne, rozdzielone przecinkami nazwy SubjectAlt."
 
+#: src/pages/applications/ApplicationForm.ts
+msgid "Optionally enter a group name. Applications with identical groups are shown grouped together."
+msgstr ""
+
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Optionally pre-fill the input value"
 msgstr "Opcjonalnie wstępnie wypełnij wartość wejściową"
@@ -4595,7 +4602,6 @@ msgstr "Jednorazowego użytku"
 #~ msgstr "Pomiń path regex"
 
 #: src/pages/applications/ApplicationForm.ts
-#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/flows/FlowForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts

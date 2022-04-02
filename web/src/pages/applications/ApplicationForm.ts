@@ -121,6 +121,16 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 />
                 <p class="pf-c-form__helper-text">${t`Internal application name, used in URLs.`}</p>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Group`} name="group">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.group)}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Optionally enter a group name. Applications with identical groups are shown grouped together.`}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Provider`} name="provider">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.provider === undefined}>

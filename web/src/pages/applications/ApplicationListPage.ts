@@ -73,7 +73,7 @@ export class ApplicationListPage extends TablePage<Application> {
         return [
             new TableColumn(""),
             new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Slug`, "slug"),
+            new TableColumn(t`Group`, "group"),
             new TableColumn(t`Provider`),
             new TableColumn(t`Provider Type`),
             new TableColumn(t`Actions`),
@@ -135,7 +135,7 @@ export class ApplicationListPage extends TablePage<Application> {
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
             </a>`,
-            html`<code>${item.slug}</code>`,
+            html`${item.group || t`-`}`,
             item.provider
                 ? html`<a href="#/core/providers/${item.providerObj?.pk}">
                       ${item.providerObj?.name}

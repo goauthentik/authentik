@@ -267,6 +267,8 @@ class Application(PolicyBindingModel):
 
     name = models.TextField(help_text=_("Application's display Name."))
     slug = models.SlugField(help_text=_("Internal application name, used in URLs."), unique=True)
+    group = models.TextField(blank=True, default="")
+
     provider = models.OneToOneField(
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
