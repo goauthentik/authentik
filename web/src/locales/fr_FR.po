@@ -38,6 +38,7 @@ msgstr ""
 #: src/elements/events/UserEvents.ts
 #: src/elements/user/SessionList.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/events/EventListPage.ts
 #: src/pages/events/EventListPage.ts
 #: src/pages/groups/GroupListPage.ts
@@ -2321,6 +2322,8 @@ msgstr "Aller à la page précédente"
 #~ msgid "Go to user interface"
 #~ msgstr "Aller à l'interface utilisateu"
 
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
@@ -3565,6 +3568,10 @@ msgstr "Flux de récupération facultatif, qui sera accessible en bas de page."
 msgid "Optional, comma-separated SubjectAlt Names."
 msgstr "Liste optionnelle de noms alternatifs (SubjetAlt Names), séparés par des virgules."
 
+#: src/pages/applications/ApplicationForm.ts
+msgid "Optionally enter a group name. Applications with identical groups are shown grouped together."
+msgstr ""
+
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Optionally pre-fill the input value"
 msgstr "Pré-remplir la valeur du champ (optionnel)"
@@ -4648,7 +4655,6 @@ msgstr "Usage unique"
 #~ msgstr "Regex chemins exclus"
 
 #: src/pages/applications/ApplicationForm.ts
-#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/flows/FlowForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
