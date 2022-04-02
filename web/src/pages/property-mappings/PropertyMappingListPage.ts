@@ -3,15 +3,12 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import { PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
-import "../../elements/buttons/Dropdown";
-import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import "../../elements/forms/ProxyForm";
@@ -24,6 +21,7 @@ import "./PropertyMappingNotification";
 import "./PropertyMappingSAMLForm";
 import "./PropertyMappingScopeForm";
 import "./PropertyMappingTestForm";
+import "./PropertyMappingWizard";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
@@ -124,35 +122,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     }
 
     renderToolbar(): TemplateResult {
-        return html` <ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
-                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-                </button>
-                <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(
-                        new PropertymappingsApi(DEFAULT_CONFIG)
-                            .propertymappingsAllTypesList()
-                            .then((types) => {
-                                return types.map((type) => {
-                                    return html`<li>
-                                        <ak-forms-modal>
-                                            <span slot="submit"> ${t`Create`} </span>
-                                            <span slot="header"> ${t`Create ${type.name}`} </span>
-                                            <ak-proxy-form slot="form" type=${type.component}>
-                                            </ak-proxy-form>
-                                            <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                                ${type.name}<br />
-                                                <small>${type.description}</small>
-                                            </button>
-                                        </ak-forms-modal>
-                                    </li>`;
-                                });
-                            }),
-                        html`<ak-spinner></ak-spinner>`,
-                    )}
-                </ul>
-            </ak-dropdown>
+        return html`<ak-property-mapping-wizard></ak-property-mapping-wizard>
             ${super.renderToolbar()}`;
     }
 

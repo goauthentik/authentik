@@ -1200,8 +1200,7 @@ msgstr ""
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyWizard.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/providers/RelatedApplicationButton.ts
@@ -1326,6 +1325,10 @@ msgstr ""
 msgid "Create a new policy."
 msgstr ""
 
+#: src/pages/property-mappings/PropertyMappingWizard.ts
+msgid "Create a new property mapping."
+msgstr ""
+
 #: src/pages/providers/ProviderWizard.ts
 msgid "Create a new provider."
 msgstr ""
@@ -1351,7 +1354,7 @@ msgstr ""
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyWizard.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/sources/SourceWizard.ts
 #: src/pages/stages/StageListPage.ts
@@ -3230,6 +3233,10 @@ msgstr ""
 msgid "New policy"
 msgstr ""
 
+#: src/pages/property-mappings/PropertyMappingWizard.ts
+msgid "New property mapping"
+msgstr ""
+
 #: src/pages/providers/ProviderWizard.ts
 msgid "New provider"
 msgstr ""
@@ -4438,6 +4445,7 @@ msgid "Select sources should be shown for users to authenticate with. This only 
 msgstr ""
 
 #: src/pages/policies/PolicyWizard.ts
+#: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/sources/SourceWizard.ts
 msgid "Select type"

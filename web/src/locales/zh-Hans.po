@@ -1166,8 +1166,7 @@ msgstr "复制恢复链接"
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyWizard.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/providers/RelatedApplicationButton.ts
@@ -1292,6 +1291,10 @@ msgstr "创建新应用程序"
 msgid "Create a new policy."
 msgstr ""
 
+#: src/pages/property-mappings/PropertyMappingWizard.ts
+msgid "Create a new property mapping."
+msgstr ""
+
 #: src/pages/providers/ProviderWizard.ts
 msgid "Create a new provider."
 msgstr ""
@@ -1317,7 +1320,7 @@ msgstr "创建未激活用户"
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyWizard.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/sources/SourceWizard.ts
 #: src/pages/stages/StageListPage.ts
@@ -3156,6 +3159,10 @@ msgstr "反转绑定的结果。消息不受影响。"
 msgid "New policy"
 msgstr ""
 
+#: src/pages/property-mappings/PropertyMappingWizard.ts
+msgid "New property mapping"
+msgstr ""
+
 #: src/pages/providers/ProviderWizard.ts
 msgid "New provider"
 msgstr ""
@@ -4308,6 +4315,7 @@ msgid "Select sources should be shown for users to authenticate with. This only 
 msgstr "选择的源应显示给用户进行身份验证。这只会影响基于 Web 的源，而不影响 LDAP。"
 
 #: src/pages/policies/PolicyWizard.ts
+#: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/sources/SourceWizard.ts
 msgid "Select type"

@@ -1212,8 +1212,7 @@ msgstr "Copy recovery link"
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyWizard.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/providers/RelatedApplicationButton.ts
@@ -1338,6 +1337,10 @@ msgstr "Create a new application"
 msgid "Create a new policy."
 msgstr "Create a new policy."
 
+#: src/pages/property-mappings/PropertyMappingWizard.ts
+msgid "Create a new property mapping."
+msgstr "Create a new property mapping."
+
 #: src/pages/providers/ProviderWizard.ts
 msgid "Create a new provider."
 msgstr "Create a new provider."
@@ -1363,7 +1366,7 @@ msgstr "Create users as inactive"
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyWizard.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
+#: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/sources/SourceWizard.ts
 #: src/pages/stages/StageListPage.ts
@@ -3248,6 +3251,10 @@ msgstr "Negates the outcome of the binding. Messages are unaffected."
 msgid "New policy"
 msgstr "New policy"
 
+#: src/pages/property-mappings/PropertyMappingWizard.ts
+msgid "New property mapping"
+msgstr "New property mapping"
+
 #: src/pages/providers/ProviderWizard.ts
 msgid "New provider"
 msgstr "New provider"
@@ -4458,6 +4465,7 @@ msgid "Select sources should be shown for users to authenticate with. This only 
 msgstr "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
 
 #: src/pages/policies/PolicyWizard.ts
+#: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/sources/SourceWizard.ts
 msgid "Select type"
