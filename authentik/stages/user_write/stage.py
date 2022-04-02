@@ -98,7 +98,6 @@ class UserWriteStageView(StageView):
                     LOGGER.debug("discarding key", key=key)
                     continue
                 UserWriteStageView.write_attribute(user, key, value)
-        print(user.attributes)
         # Extra check to prevent flows from saving a user with a blank username
         if user.username == "":
             LOGGER.warning("Aborting write to empty username", user=user)

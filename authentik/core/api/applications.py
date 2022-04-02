@@ -26,6 +26,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import FilePathSerializer, FileUploadSerializer
 from authentik.core.models import Application, User
 from authentik.events.models import EventAction
+from authentik.events.utils import sanitize_dict
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
@@ -144,11 +145,9 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             for log in logs:
                 if log.get("process", "") == "PolicyProcess":
                     continue
-                log_messages.append(log)
+                log_messages.append(sanitize_dict(log))
             result.log_messages = log_messages
             response = PolicyTestResultSerializer(result)
-        # print(response.log_messages)
-        print(response.data)
         return Response(response.data)
 
     @extend_schema(
