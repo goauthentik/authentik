@@ -62,7 +62,6 @@ class TestApplicationsAPI(APITestCase):
         body = loads(response.content.decode())
         self.assertEqual(body["passing"], False)
         self.assertEqual(body["messages"], ["dummy"])
-        self.assertEqual(body["log_messages"][0]["event"], "Policy waiting")
 
     def test_list(self):
         """Test list operation without superuser_full_list"""
