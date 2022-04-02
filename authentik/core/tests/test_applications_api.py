@@ -84,6 +84,7 @@ class TestApplicationsAPI(APITestCase):
                         "pk": str(self.allowed.pk),
                         "name": "allowed",
                         "slug": "allowed",
+                        "group": "",
                         "provider": self.provider.pk,
                         "provider_obj": {
                             "assigned_application_name": "allowed",
@@ -131,6 +132,7 @@ class TestApplicationsAPI(APITestCase):
                         "pk": str(self.allowed.pk),
                         "name": "allowed",
                         "slug": "allowed",
+                        "group": "",
                         "provider": self.provider.pk,
                         "provider_obj": {
                             "assigned_application_name": "allowed",
@@ -157,6 +159,7 @@ class TestApplicationsAPI(APITestCase):
                         "meta_icon": None,
                         "meta_launch_url": "",
                         "meta_publisher": "",
+                        "group": "",
                         "name": "denied",
                         "pk": str(self.denied.pk),
                         "policy_engine_mode": "any",
