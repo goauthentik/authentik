@@ -3,15 +3,12 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import { PoliciesApi, Policy } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { uiConfig } from "../../common/config";
-import "../../elements/buttons/Dropdown";
-import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/ConfirmationForm";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
@@ -20,6 +17,7 @@ import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import { groupBy } from "../../utils";
 import "./PolicyTestForm";
+import "./PolicyWizard";
 import "./dummy/DummyPolicyForm";
 import "./event_matcher/EventMatcherPolicyForm";
 import "./expiry/ExpiryPolicyForm";
@@ -129,33 +127,7 @@ export class PolicyListPage extends TablePage<Policy> {
     }
 
     renderToolbar(): TemplateResult {
-        return html` <ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
-                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-                </button>
-                <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(
-                        new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
-                            return types.map((type) => {
-                                return html`<li>
-                                    <ak-forms-modal>
-                                        <span slot="submit"> ${t`Create`} </span>
-                                        <span slot="header"> ${t`Create ${type.name}`} </span>
-                                        <ak-proxy-form slot="form" type=${type.component}>
-                                        </ak-proxy-form>
-                                        <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                            ${type.name}<br />
-                                            <small>${type.description}</small>
-                                        </button>
-                                    </ak-forms-modal>
-                                </li>`;
-                            });
-                        }),
-                        html`<ak-spinner></ak-spinner>`,
-                    )}
-                </ul>
-            </ak-dropdown>
+        return html`<ak-policy-wizard> </ak-policy-wizard>
             ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${t`Successfully cleared policy cache`}

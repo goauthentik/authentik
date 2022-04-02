@@ -9,7 +9,7 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 
 
 class ExpressionPolicy(Policy):
-    """Execute arbitrary Python code to implement custom checks and validation."""
+    """Execute arbitrary Python code to implement custom checks and validation."""
 
     expression = models.TextField()
 

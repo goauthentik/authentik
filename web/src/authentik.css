@@ -367,6 +367,21 @@ html > form > input {
         --pf-c-data-list__item--BorderBottomColor: var(--ak-dark-background-lighter);
         color: var(--ak-dark-foreground);
     }
+    /* wizards */
+    .pf-c-wizard__nav {
+        --pf-c-wizard__nav--BackgroundColor: var(--ak-dark-background-lighter);
+        --pf-c-wizard__nav--lg--BorderRightColor: transparent;
+    }
+    .pf-c-wizard__main {
+        background-color: var(--ak-dark-background-light-ish);
+    }
+    .pf-c-wizard__footer {
+        --pf-c-wizard__footer--BackgroundColor: var(--ak-dark-background-light-ish);
+    }
+    .pf-c-wizard__toggle-num,
+    .pf-c-wizard__nav-link::before {
+        --pf-c-wizard__nav-link--before--BackgroundColor: transparent;
+    }
 }
 
 .pf-c-data-list__item {
