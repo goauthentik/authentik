@@ -1217,8 +1217,7 @@ msgstr "Copy recovery link"
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/sources/SourceWizard.ts
-#: src/pages/stages/StageListPage.ts
-#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/StageWizard.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -1349,6 +1348,10 @@ msgstr "Create a new provider."
 msgid "Create a new source."
 msgstr "Create a new source."
 
+#: src/pages/stages/StageWizard.ts
+msgid "Create a new stage."
+msgstr "Create a new stage."
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "Create group"
@@ -1369,7 +1372,7 @@ msgstr "Create users as inactive"
 #: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/sources/SourceWizard.ts
-#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/StageWizard.ts
 msgid "Create {0}"
 msgstr "Create {0}"
 
@@ -3263,6 +3266,10 @@ msgstr "New provider"
 msgid "New source"
 msgstr "New source"
 
+#: src/pages/stages/StageWizard.ts
+msgid "New stage"
+msgstr "New stage"
+
 #: src/pages/events/EventInfo.ts
 msgid "New version available!"
 msgstr "New version available!"
@@ -4468,6 +4475,7 @@ msgstr "Select sources should be shown for users to authenticate with. This only
 #: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/sources/SourceWizard.ts
+#: src/pages/stages/StageWizard.ts
 msgid "Select type"
 msgstr "Select type"
 

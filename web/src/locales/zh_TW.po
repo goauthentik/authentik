@@ -1171,8 +1171,7 @@ msgstr "复制恢复链接"
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/sources/SourceWizard.ts
-#: src/pages/stages/StageListPage.ts
-#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/StageWizard.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -1303,6 +1302,10 @@ msgstr ""
 msgid "Create a new source."
 msgstr ""
 
+#: src/pages/stages/StageWizard.ts
+msgid "Create a new stage."
+msgstr ""
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "创建组"
@@ -1323,7 +1326,7 @@ msgstr "将用户创建为非活动用户"
 #: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/sources/SourceWizard.ts
-#: src/pages/stages/StageListPage.ts
+#: src/pages/stages/StageWizard.ts
 msgid "Create {0}"
 msgstr "创建 {0}"
 
@@ -3171,6 +3174,10 @@ msgstr ""
 msgid "New source"
 msgstr ""
 
+#: src/pages/stages/StageWizard.ts
+msgid "New stage"
+msgstr ""
+
 #: src/pages/events/EventInfo.ts
 msgid "New version available!"
 msgstr "新版本可用！"
@@ -4318,6 +4325,7 @@ msgstr "应显示选择的源以供用户进行身份验证。这只会影响基
 #: src/pages/property-mappings/PropertyMappingWizard.ts
 #: src/pages/providers/ProviderWizard.ts
 #: src/pages/sources/SourceWizard.ts
+#: src/pages/stages/StageWizard.ts
 msgid "Select type"
 msgstr ""
 
