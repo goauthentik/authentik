@@ -32,11 +32,12 @@ class TestApplicationsAPI(APITestCase):
             provider=self.provider,
         )
         self.denied = Application.objects.create(name="denied", slug="denied")
-        PolicyBinding.objects.create(
+        self.pb = PolicyBinding.objects.create(
             target=self.denied,
             policy=DummyPolicy.objects.create(name="deny", result=False, wait_min=1, wait_max=2),
             order=0,
         )
+        self.maxDiff = None
 
     def test_check_access(self):
         """Test check_access operation"""
