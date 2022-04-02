@@ -12,13 +12,46 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { ProvidersApi, TypeCreate } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../api/Config";
+import "../../elements/forms/ProxyForm";
+import "../../elements/wizard/FormWizardPage";
 import "../../elements/wizard/Wizard";
-import "../../elements/wizard/WizardPage";
+import { WizardPage } from "../../elements/wizard/WizardPage";
 import "./ldap/LDAPProviderForm";
 import "./oauth2/OAuth2ProviderForm";
 import "./proxy/ProxyProviderForm";
 import "./saml/SAMLProviderForm";
 import "./saml/SAMLProviderImportForm";
+
+@customElement("ak-provider-wizard-initial")
+export class InitialProviderWizardPage extends WizardPage {
+    @property({ attribute: false })
+    providerTypes: TypeCreate[] = [];
+
+    static get styles(): CSSResult[] {
+        return [PFBase, PFButton, AKGlobal, PFRadio];
+    }
+
+    render(): TemplateResult {
+        return html`
+            ${this.providerTypes.map((type) => {
+                return html`<div class="pf-c-radio">
+                    <input
+                        class="pf-c-radio__input"
+                        type="radio"
+                        name="type"
+                        id=${type.component}
+                        @change=${() => {
+                            this.host.setSteps("initial", `type-${type.component}`);
+                            this._isValid = true;
+                        }}
+                    />
+                    <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
+                    <span class="pf-c-radio__description">${type.description}</span>
+                </div>`;
+            })}
+        `;
+    }
+}
 
 @customElement("ak-provider-wizard")
 export class ProviderWizard extends LitElement {
@@ -26,7 +59,7 @@ export class ProviderWizard extends LitElement {
         return [PFBase, PFButton, AKGlobal, PFRadio];
     }
 
-    @property()
+    @property({ attribute: false })
     providerTypes: TypeCreate[] = [];
 
     firstUpdated(): void {
@@ -42,39 +75,20 @@ export class ProviderWizard extends LitElement {
                 header=${t`New provider`}
                 description=${t`Create a new provider.`}
             >
-                <ak-wizard-page slot="initial" .sidebarLabel=${() => t`Select type`}>
-                    ${this.providerTypes.map((type) => {
-                        return html`<div class="pf-c-radio">
-                            <input
-                                class="pf-c-radio__input"
-                                type="radio"
-                                name="type"
-                                id=${type.component}
-                                @change=${() => {
-                                    this.dispatchEvent(
-                                        new CustomEvent("ak-wizard-set-pages", {
-                                            bubbles: true,
-                                            composed: true,
-                                            detail: ["initial", `type-${type.component}`],
-                                        }),
-                                    );
-                                }}
-                            />
-                            <label class="pf-c-radio__label" for=${type.component}
-                                >${type.name}</label
-                            >
-                            <span class="pf-c-radio__description">${type.description}</span>
-                        </div>`;
-                    })}
-                </ak-wizard-page>
+                <ak-provider-wizard-initial
+                    slot="initial"
+                    .sidebarLabel=${() => t`Select type`}
+                    .providerTypes=${this.providerTypes}
+                >
+                </ak-provider-wizard-initial>
                 ${this.providerTypes.map((type) => {
                     return html`
-                        <ak-wizard-page
+                        <ak-wizard-page-form
                             slot=${`type-${type.component}`}
                             .sidebarLabel=${() => t`Create ${type.name}`}
                         >
-                            <ak-proxy-form slot="form" type=${type.component}> </ak-proxy-form>
-                        </ak-wizard-page>
+                            <ak-proxy-form type=${type.component}></ak-proxy-form>
+                        </ak-wizard-page-form>
                     `;
                 })}
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>

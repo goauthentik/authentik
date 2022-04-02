@@ -31,11 +31,17 @@ export class Wizard extends ModalButton {
         this._currentStep = value;
         if (this._currentStep) {
             this._currentStep.activeCallback();
+            this._currentStep.requestUpdate();
         }
     }
 
     get currentStep(): WizardPage | undefined {
         return this._currentStep;
+    }
+
+    setSteps(...steps: string[]): void {
+        this.steps = steps;
+        this.requestUpdate();
     }
 
     finalHandler?: () => Promise<void>;
@@ -45,6 +51,7 @@ export class Wizard extends ModalButton {
         if (!this.currentStep && firstPage) {
             this.currentStep = firstPage;
         }
+        this.currentStep?.requestUpdate();
         const currentIndex = this.currentStep ? this.steps.indexOf(this.currentStep.slot) : 0;
         return html`<div class="pf-c-wizard">
             <div class="pf-c-wizard__header">
@@ -82,8 +89,9 @@ export class Wizard extends ModalButton {
                                                 }
                                             }}
                                         >
-                                            ${this.querySelector<WizardPage>(`[slot=${step}]`)
-                                                ?.sidebarLabel()}
+                                            ${this.querySelector<WizardPage>(
+                                                `[slot=${step}]`,
+                                            )?.sidebarLabel()}
                                         </button>
                                     </li>
                                 `;

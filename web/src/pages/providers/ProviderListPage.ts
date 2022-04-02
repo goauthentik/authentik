@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
@@ -101,7 +100,7 @@ export class ProviderListPage extends TablePage<Provider> {
                     .args=${{
                         instancePk: item.pk,
                     }}
-                    type=${ifDefined(item.component)}
+                    type=${item.component}
                 >
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
