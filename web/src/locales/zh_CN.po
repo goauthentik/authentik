@@ -36,6 +36,7 @@ msgstr "（格式：hours=1;minutes=2;seconds=3）。"
 #: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
 #: src/elements/user/SessionList.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/events/EventListPage.ts src/pages/events/EventListPage.ts
 #: src/pages/groups/GroupListPage.ts src/pages/groups/MemberSelectModal.ts
 #: src/pages/groups/RelatedGroupList.ts
@@ -204,6 +205,29 @@ msgstr "激活"
 #: src/pages/groups/MemberSelectModal.ts src/pages/users/GroupSelectModal.ts
 msgid "Add"
 msgstr "添加"
+
+#~ msgid ""
+#~ "Add a provider which does not support any other method. Requests will be routed\n"
+#~ "through the authentik proxy, which authenticates all requests."
+#~ msgstr ""
+#~ "添加一个不支持任何其他方法的提供程序。请求将会被路由到 authentik 代理，\n"
+#~ "此代理会验证所有请求的身份。"
+
+#~ msgid "Add a provider which support LDAP."
+#~ msgstr "添加一个支持 LDAP 的提供程序。"
+
+#~ msgid ""
+#~ "Add a provider which supports OAuth, OIDC or \"Login with GitHub\n"
+#~ "Enterprise\"."
+#~ msgstr ""
+#~ "添加一个支持 OAuth、OIDC 或“通过 GitHub Enterprise 登录”\n"
+#~ "的提供程序。"
+
+#~ msgid "Add a provider which supports SAML 2.0, by importing it's metadata."
+#~ msgstr "通过导入元数据添加一个支持 SAML 2.0 的提供程序。"
+
+#~ msgid "Add a provider which supports SAML 2.0."
+#~ msgstr "添加一个支持 SAML 2.0 的提供程序。"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Addition Group DN"
@@ -547,6 +571,10 @@ msgstr "自动检测（基于您的浏览器）"
 msgid "Avatar image"
 msgstr "头像图片"
 
+#: src/elements/wizard/Wizard.ts
+msgid "Back"
+msgstr "返回"
+
 #: src/pages/stages/password/PasswordStageForm.ts
 msgid "Backends"
 msgstr "后端"
@@ -657,7 +685,7 @@ msgstr "构建哈希："
 #~ msgid "Build hash: {0}"
 #~ msgstr "构建哈希：{0}"
 
-#: src/pages/sources/SourcesListPage.ts src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts src/pages/sources/SourceListPage.ts
 msgid "Built-in"
 msgstr "内置"
 
@@ -707,8 +735,8 @@ msgstr ""
 
 #: src/elements/forms/ConfirmationForm.ts src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts src/elements/forms/ModalForm.ts
-#: src/pages/groups/MemberSelectModal.ts src/pages/users/GroupSelectModal.ts
-#: src/pages/users/UserActiveForm.ts
+#: src/elements/wizard/Wizard.ts src/pages/groups/MemberSelectModal.ts
+#: src/pages/users/GroupSelectModal.ts src/pages/users/UserActiveForm.ts
 msgid "Cancel"
 msgstr "取消"
 
@@ -806,6 +834,13 @@ msgstr "检查用户名"
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "Check access"
 msgstr "检查访问权限"
+
+#~ msgid ""
+#~ "Check if password is on HaveIBeenPwned's list by uploading the first\n"
+#~ "5 characters of the SHA1 Hash."
+#~ msgstr ""
+#~ "上传密码前 5 位字符的哈希，检查密码是否在 Have I Been Pwned\n"
+#~ "列表中。"
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "Check outposts."
@@ -918,7 +953,7 @@ msgid "Client type"
 msgstr "客户端类型"
 
 #: src/elements/notifications/NotificationDrawer.ts
-#: src/pages/outposts/OutpostDeploymentModal.ts
+#: src/elements/wizard/Wizard.ts src/pages/outposts/OutpostDeploymentModal.ts
 #: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Close"
 msgstr "关闭"
@@ -1141,7 +1176,6 @@ msgstr "复制下载 URL"
 msgid "Copy recovery link"
 msgstr "复制恢复链接"
 
-#: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -1149,24 +1183,17 @@ msgstr "复制恢复链接"
 #: src/pages/events/RuleListPage.ts src/pages/events/RuleListPage.ts
 #: src/pages/events/TransportListPage.ts src/pages/events/TransportListPage.ts
 #: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
-#: src/pages/flows/BoundStagesList.ts src/pages/flows/FlowListPage.ts
-#: src/pages/flows/FlowListPage.ts src/pages/groups/GroupListPage.ts
-#: src/pages/groups/GroupListPage.ts src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/OutpostListPage.ts
-#: src/pages/outposts/ServiceConnectionListPage.ts
-#: src/pages/outposts/ServiceConnectionListPage.ts
+#: src/pages/flows/FlowListPage.ts src/pages/flows/FlowListPage.ts
+#: src/pages/groups/GroupListPage.ts src/pages/groups/GroupListPage.ts
+#: src/pages/outposts/OutpostListPage.ts src/pages/outposts/OutpostListPage.ts
+#: src/pages/outposts/ServiceConnectionWizard.ts
 #: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/policies/PolicyListPage.ts src/pages/policies/PolicyListPage.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/providers/ProviderListPage.ts
-#: src/pages/providers/ProviderListPage.ts
+#: src/pages/policies/BoundPoliciesList.ts src/pages/policies/PolicyWizard.ts
+#: src/pages/property-mappings/PropertyMappingWizard.ts
+#: src/pages/providers/ProviderWizard.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 #: src/pages/providers/RelatedApplicationButton.ts
-#: src/pages/sources/SourcesListPage.ts src/pages/sources/SourcesListPage.ts
-#: src/pages/stages/StageListPage.ts src/pages/stages/StageListPage.ts
+#: src/pages/sources/SourceWizard.ts src/pages/stages/StageWizard.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -1274,6 +1301,30 @@ msgstr "创建用户"
 msgid "Create a new application"
 msgstr "创建新应用程序"
 
+#: src/pages/outposts/ServiceConnectionWizard.ts
+msgid "Create a new outpost integration."
+msgstr "创建一个新前哨集成。"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "Create a new policy."
+msgstr "创建一个新策略。"
+
+#: src/pages/property-mappings/PropertyMappingWizard.ts
+msgid "Create a new property mapping."
+msgstr "创建一个新属性映射。"
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "Create a new provider."
+msgstr "创建一个新提供程序。"
+
+#: src/pages/sources/SourceWizard.ts
+msgid "Create a new source."
+msgstr "创建一个新身份来源。"
+
+#: src/pages/stages/StageWizard.ts
+msgid "Create a new stage."
+msgstr "创建一个新阶段。"
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "创建组"
@@ -1286,14 +1337,11 @@ msgstr "创建提供程序"
 msgid "Create users as inactive"
 msgstr "创建未激活用户"
 
-#: src/pages/applications/ApplicationForm.ts
-#: src/pages/flows/BoundStagesList.ts
-#: src/pages/outposts/ServiceConnectionListPage.ts
-#: src/pages/policies/BoundPoliciesList.ts
-#: src/pages/policies/PolicyListPage.ts
-#: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts src/pages/stages/StageListPage.ts
+#: src/pages/outposts/ServiceConnectionWizard.ts
+#: src/pages/policies/PolicyWizard.ts
+#: src/pages/property-mappings/PropertyMappingWizard.ts
+#: src/pages/providers/ProviderWizard.ts src/pages/sources/SourceWizard.ts
+#: src/pages/stages/StageWizard.ts
 msgid "Create {0}"
 msgstr "创建 {0}"
 
@@ -1386,8 +1434,8 @@ msgstr "定义如何向用户发送通知，例如电子邮件或 Webhook。"
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/policies/reputation/ReputationListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts src/pages/stages/StageListPage.ts
+#: src/pages/providers/ProviderListPage.ts src/pages/sources/SourceListPage.ts
+#: src/pages/stages/StageListPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/pages/tenants/TenantListPage.ts src/pages/tokens/TokenListPage.ts
@@ -1541,7 +1589,7 @@ msgstr "目录"
 #~ msgid "Disable Time-based OTP"
 #~ msgstr "禁用基于时间的 OTP"
 
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid "Disabled"
 msgstr "已禁用"
 
@@ -1583,6 +1631,9 @@ msgid ""
 "Due to protocol limitations, this certificate is only used when the outpost "
 "has a single provider."
 msgstr "由于协议限制，只在前哨有单个提供程序时才使用此证书。"
+
+#~ msgid "Dummy"
+#~ msgstr "占位"
 
 #: src/pages/stages/dummy/DummyStageForm.ts
 msgid ""
@@ -1808,6 +1859,12 @@ msgstr "事件日志"
 msgid "Event info"
 msgstr "事件信息"
 
+#~ msgid "Event matcher"
+#~ msgstr "事件匹配器"
+
+#~ msgid "Event matcher policy"
+#~ msgstr "事件匹配器策略"
+
 #: src/pages/tenants/TenantForm.ts
 msgid "Event retention"
 msgstr "事件保留"
@@ -1831,6 +1888,10 @@ msgstr "异常"
 
 #~ msgid "Execute"
 #~ msgstr "执行"
+
+#~ msgid ""
+#~ "Execute arbitrary Python code to implement custom checks and validation."
+#~ msgstr "执行任意 Python 代码以实现自定义检查和验证。"
 
 #: src/pages/flows/FlowViewPage.ts
 msgid "Execute flow"
@@ -1913,6 +1974,9 @@ msgstr "导出流程"
 msgid "Expression"
 msgstr "表达式"
 
+#~ msgid "Expression policy"
+#~ msgstr "表达式策略"
+
 #: src/pages/policies/expression/ExpressionPolicyForm.ts
 #: src/pages/property-mappings/PropertyMappingLDAPForm.ts
 #: src/pages/property-mappings/PropertyMappingNotification.ts
@@ -1982,7 +2046,7 @@ msgstr "更新 {0} 失败：{1}"
 msgid "Favicon"
 msgstr "网站图标"
 
-#: src/interfaces/AdminInterface.ts src/pages/sources/SourcesListPage.ts
+#: src/interfaces/AdminInterface.ts src/pages/sources/SourceListPage.ts
 msgid "Federation & Social login"
 msgstr "联结与社交登录"
 
@@ -2029,6 +2093,10 @@ msgid ""
 "Fields a user can identify themselves with. If no fields are selected, the "
 "user will only be able to use sources."
 msgstr "用户可以用来标识自己的字段。如果未选择任何字段，则用户将只能使用源。"
+
+#: src/elements/wizard/Wizard.ts
+msgid "Finish"
+msgstr "完成"
 
 #: src/pages/flows/FlowImportForm.ts
 msgid "Flow"
@@ -2146,7 +2214,8 @@ msgstr "忘记密码了吗？"
 msgid "Forgot username or password?"
 msgstr "忘记用户名或密码？"
 
-#: src/elements/forms/ModalForm.ts
+#: src/elements/forms/ModalForm.ts src/elements/wizard/FormWizardPage.ts
+#: src/elements/wizard/FormWizardPage.ts
 msgid "Form didn't return a promise for submitting"
 msgstr "表单提交未返回 Promise"
 
@@ -2239,7 +2308,9 @@ msgstr "前往上一页"
 #~ msgid "Go to user interface"
 #~ msgstr "前往用户界面"
 
-#: src/pages/events/RuleForm.ts src/pages/policies/PolicyBindingForm.ts
+#: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/ApplicationListPage.ts src/pages/events/RuleForm.ts
+#: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/stages/user_write/UserWriteStageForm.ts
@@ -2302,6 +2373,12 @@ msgstr "HTTP-Basic 用户名键"
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "HTTPS is not detected correctly"
 msgstr "未正确检测到 HTTPS"
+
+#~ msgid "Have I been pwned"
+#~ msgstr "Have I been pwned"
+
+#~ msgid "Have I been pwned policy"
+#~ msgstr "Have I been pwned 策略"
 
 #: src/pages/outposts/OutpostListPage.ts
 msgid "Health and Version"
@@ -2426,6 +2503,11 @@ msgid ""
 "If no explicit redirect URIs are specified, the first successfully used "
 "redirect URI will be saved."
 msgstr "如果未指定显式重定向 URI，则将保存第一个成功使用的重定向 URI。"
+
+#~ msgid ""
+#~ "If password change date is more than x days in the past, invalidate the user's password\n"
+#~ "and show a notice."
+#~ msgstr "如果密码已经超过 X 天未更改，使该用户的密码失效并显示提醒。       "
 
 #: src/pages/tenants/TenantForm.ts
 msgid "If set, users are able to configure details of their profile."
@@ -2657,6 +2739,9 @@ msgstr "可以发出绑定请求和搜索请求的 LDAP DN。"
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "LDAP Sync status"
 msgstr "LDAP 同步状态"
+
+#~ msgid "LDAP details"
+#~ msgstr "LDAP 详情"
 
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -3061,7 +3146,7 @@ msgstr "我的应用"
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
@@ -3123,6 +3208,30 @@ msgstr "反转结果"
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "反转绑定的结果。消息不受影响。"
 
+#: src/pages/outposts/ServiceConnectionWizard.ts
+msgid "New outpost integration"
+msgstr "新建前哨集成"
+
+#: src/pages/policies/PolicyWizard.ts
+msgid "New policy"
+msgstr "新建策略"
+
+#: src/pages/property-mappings/PropertyMappingWizard.ts
+msgid "New property mapping"
+msgstr "新建属性映射"
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "New provider"
+msgstr "新建提供程序"
+
+#: src/pages/sources/SourceWizard.ts
+msgid "New source"
+msgstr "新建身份来源"
+
+#: src/pages/stages/StageWizard.ts
+msgid "New stage"
+msgstr "新建阶段"
+
 #: src/pages/events/EventInfo.ts
 msgid "New version available!"
 msgstr "新版本可用！"
@@ -3130,6 +3239,10 @@ msgstr "新版本可用！"
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Newly created users are added to this group, if a group is selected."
 msgstr "如果选择了组，则会将新创建的用户添加到该组。"
+
+#: src/elements/wizard/Wizard.ts
+msgid "Next"
+msgstr "下一步"
 
 #: src/flows/FlowInspector.ts
 msgid "Next stage"
@@ -3187,7 +3300,8 @@ msgstr "没有可用的额外数据。"
 msgid "No additional setup is required."
 msgstr "无需进行额外设置。"
 
-#: src/elements/forms/ModalForm.ts
+#: src/elements/forms/ModalForm.ts src/elements/wizard/FormWizardPage.ts
+#: src/elements/wizard/FormWizardPage.ts
 msgid "No form found"
 msgstr "未找到表单"
 
@@ -3330,6 +3444,12 @@ msgstr "短信的发信人号码。"
 msgid "OAuth Refresh Codes"
 msgstr "OAuth 刷新代码"
 
+#~ msgid "OAuth details"
+#~ msgstr "OAuth 详情"
+
+#~ msgid "OAuth/OIDC"
+#~ msgstr "OAuth/OIDC"
+
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "OK"
 msgstr "好的"
@@ -3427,6 +3547,12 @@ msgstr "可选的恢复流程，链接在页面底部。"
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Optional, comma-separated SubjectAlt Names."
 msgstr "可选，逗号分隔的替代名称。"
+
+#: src/pages/applications/ApplicationForm.ts
+msgid ""
+"Optionally enter a group name. Applications with identical groups are shown "
+"grouped together."
+msgstr "输入可选的分组名称。分组相同的应用程序会显示在一起。 "
 
 #: src/pages/stages/prompt/PromptForm.ts
 msgid "Optionally pre-fill the input value"
@@ -3528,6 +3654,9 @@ msgstr "从 LDAP 导入的所有组的父组。"
 msgid "Pass policy?"
 msgstr "通过策略？"
 
+#~ msgid "Passes when Event matches selected criteria."
+#~ msgstr "当事件匹配选定的条件时通过。"
+
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/events/EventInfo.ts src/pages/policies/PolicyTestForm.ts
 msgid "Passing"
@@ -3540,10 +3669,19 @@ msgstr "通过"
 msgid "Password"
 msgstr "密码"
 
+#~ msgid "Password expiry"
+#~ msgstr "密码过期"
+
+#~ msgid "Password expiry policy"
+#~ msgstr "密码过期策略"
+
 #: src/pages/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Password field"
 msgstr "密码字段"
+
+#~ msgid "Password policy"
+#~ msgstr "密码策略"
 
 #: src/pages/events/utils.ts
 msgid "Password set"
@@ -3650,6 +3788,14 @@ msgstr "策略异常"
 #: src/pages/events/utils.ts
 msgid "Policy execution"
 msgstr "策略执行"
+
+#~ msgid "Policy to make sure passwords have certain properties."
+#~ msgstr "确保密码包含特定属性的策略。"
+
+#~ msgid ""
+#~ "Policy used for debugging the PolicyEngine. Returns a fixed result,\n"
+#~ "but takes a random time to process."
+#~ msgstr "用于调试策略引擎的策略。返回固定结果，但处理时间随机。"
 
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Policy {0}"
@@ -3800,6 +3946,9 @@ msgstr "提供程序"
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "Proxy"
 msgstr "代理"
+
+#~ msgid "Proxy details"
+#~ msgstr "代理详情"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
@@ -3979,6 +4128,9 @@ msgstr "IP 和用户标识符的信誉。每次登录失败分数都会降低，
 #~ "increased for each successful login."
 #~ msgstr "用户名的声誉。每次登录失败分数都会降低，每次登录成功分数都会增加。"
 
+#~ msgid "Reputation policy"
+#~ msgstr "信誉策略"
+
 #~ msgid "Reputation policy - IPs"
 #~ msgstr "信誉策略 - IP"
 
@@ -4056,6 +4208,11 @@ msgstr "返回主页"
 msgid "Return to device picker"
 msgstr "返回设备选择器"
 
+#~ msgid ""
+#~ "Return true if request IP/target username's score is below a certain "
+#~ "threshold."
+#~ msgstr "如果请求 IP/目标用户名的分数低于特定阈值则返回真。 "
+
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Revoked?"
 msgstr "已吊销？"
@@ -4064,6 +4221,12 @@ msgstr "已吊销？"
 msgid "Run sync again"
 msgstr "再次运行同步"
 
+#~ msgid "SAML"
+#~ msgstr "SAML"
+
+#~ msgid "SAML (metadata import)"
+#~ msgstr "SAML（元数据导入）"
+
 #: src/pages/property-mappings/PropertyMappingSAMLForm.ts
 msgid "SAML Attribute Name"
 msgstr "SAML 属性名称"
@@ -4071,6 +4234,12 @@ msgstr "SAML 属性名称"
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "SAML Metadata"
 msgstr "SAML 元数据"
+
+#~ msgid "SAML details"
+#~ msgstr "SAML 详情"
+
+#~ msgid "SAML details (import from metadata)"
+#~ msgstr "SAML 详情（从元数据导入）"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -4241,6 +4410,14 @@ msgid ""
 "Select sources should be shown for users to authenticate with. This only "
 "affects web-based sources, not LDAP."
 msgstr "选择的源应显示给用户进行身份验证。这只会影响基于 Web 的源，而不影响 LDAP。"
+
+#: src/pages/outposts/ServiceConnectionWizard.ts
+#: src/pages/policies/PolicyWizard.ts
+#: src/pages/property-mappings/PropertyMappingWizard.ts
+#: src/pages/providers/ProviderWizard.ts src/pages/sources/SourceWizard.ts
+#: src/pages/stages/StageWizard.ts
+msgid "Select type"
+msgstr "选择类型"
 
 #: src/pages/groups/MemberSelectModal.ts
 msgid "Select users to add"
@@ -4464,8 +4641,7 @@ msgstr "一次性使用"
 #~ msgid "Skip path regex"
 #~ msgstr "跳过路径正则表达式"
 
-#: src/pages/applications/ApplicationForm.ts
-#: src/pages/applications/ApplicationListPage.ts src/pages/flows/FlowForm.ts
+#: src/pages/applications/ApplicationForm.ts src/pages/flows/FlowForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -4491,7 +4667,7 @@ msgstr "源已链接"
 #~ msgid "Source {0}"
 #~ msgstr "源 {0}"
 
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid "Source(s)"
 msgstr "源"
 
@@ -4505,7 +4681,7 @@ msgstr "源"
 #~ "like OAuth and social logins"
 #~ msgstr "身份来源，既可以同步到 authentik 的数据库中，例如 LDAP，也可以被用户用来进行身份验证和注册，例如 OAuth 和社交登录"
 
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 msgid ""
 "Sources of identities, which can either be synced into authentik's database,"
 " or can be used by users to authenticate and enroll themselves."
@@ -5479,8 +5655,8 @@ msgstr "Twilio 身份验证令牌"
 #: src/pages/outposts/ServiceConnectionListPage.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts src/pages/stages/prompt/PromptForm.ts
+#: src/pages/providers/ProviderListPage.ts src/pages/sources/SourceListPage.ts
+#: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Type"
@@ -5601,7 +5777,7 @@ msgstr "最新！"
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
-#: src/pages/sources/SourcesListPage.ts
+#: src/pages/sources/SourceListPage.ts
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 #: src/pages/sources/plex/PlexSourceViewPage.ts
@@ -5732,9 +5908,8 @@ msgstr "更新密码"
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyListPage.ts
 #: src/pages/property-mappings/PropertyMappingListPage.ts
-#: src/pages/providers/ProviderListPage.ts
-#: src/pages/sources/SourcesListPage.ts src/pages/stages/StageListPage.ts
-#: src/pages/users/UserActiveForm.ts
+#: src/pages/providers/ProviderListPage.ts src/pages/sources/SourceListPage.ts
+#: src/pages/stages/StageListPage.ts src/pages/users/UserActiveForm.ts
 msgid "Update {0}"
 msgstr "更新 {0}"
 
