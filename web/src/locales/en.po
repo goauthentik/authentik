@@ -5571,8 +5571,8 @@ msgstr "To create a recovery link, the current tenant needs to have a recovery f
 
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
-msgid "To let a user directly reset a their password, configure a recovery flow on the currently active tenant."
-msgstr "To let a user directly reset a their password, configure a recovery flow on the currently active tenant."
+msgid "To let a user directly reset their password, configure a recovery flow on the currently active tenant."
+msgstr "To let a user directly reset their password, configure a recovery flow on the currently active tenant."
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "To use SSL instead, use 'ldaps://' and disable this option."
