@@ -125,7 +125,7 @@ export class LibraryPage extends LitElement {
                     <h2>${group}</h2>
                 </div>
                 <div
-                    class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-5-col-on-lg pf-m-all-3-col-on-xl"
+                    class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-5-col-on-lg pf-m-all-2-col-on-xl"
                 >
                     ${apps.map((app) => {
                         return html`<ak-library-app
