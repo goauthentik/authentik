@@ -16,8 +16,12 @@ import (
 func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
 	l := log.WithField("logger", "authentik.outpost")
 	m := outpost.Managed.Get()
+	level, ok := outpost.Config[ConfigLogLevel]
+	if !ok {
+		level = "info"
+	}
 	if m == nil || *m == "" {
-		switch outpost.Config[ConfigLogLevel].(string) {
+		switch level.(string) {
 		case "trace":
 			log.SetLevel(log.TraceLevel)
 		case "debug":
