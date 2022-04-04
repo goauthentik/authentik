@@ -1,0 +1,31 @@
+name: 'Setup authentik testing environemnt'
+description: 'Setup authentik testing environemnt'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install poetry
+      shell: bash
+      run: |
+        pipx install poetry || true
+        sudo apt update
+        sudo apt install -y libxmlsec1-dev pkg-config gettext
+    - name: Setup python and restore poetry
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+        cache: 'poetry'
+    - name: Setup node
+      uses: actions/setup-node@v3.1.0
+      with:
+        node-version: '16'
+        cache: 'npm'
+        cache-dependency-path: web/package-lock.json
+    - name: Setup dependencies
+      shell: bash
+      run: |
+        docker-compose -f scripts/ci.docker-compose.yml up -d
+        poetry env use python3.10
+        poetry install
+        poetry run python -m scripts.generate_ci_config
+        npm install -g pyright@1.1.136

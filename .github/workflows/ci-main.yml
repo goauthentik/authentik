@@ -32,27 +32,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.10'
-          cache: 'poetry'
-      - uses: actions/setup-node@v3.1.0
-        with:
-          node-version: '16'
-      - name: prepare
-        run: scripts/ci_prepare.sh
+      - uses: ./.github/actions/setup
       - name: run job
         run: poetry run make ci-${{ matrix.job }}
   test-migrations:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.10'
-          cache: 'poetry'
-      - name: prepare
-        run: scripts/ci_prepare.sh
+      - uses: ./.github/actions/setup
       - name: run migrations
         run: poetry run python -m lifecycle.migrate
   test-migrations-from-stable:
@@ -61,15 +48,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.10'
-          cache: 'poetry'
+      - uses: ./.github/actions/setup
       - name: prepare variables
         id: ev
         run: |
           python ./scripts/gh_env.py
-          sudo pip install -U pipenv
       - name: checkout stable
         run: |
           # Copy current, latest config to local
@@ -79,11 +62,7 @@ jobs:
           git checkout $(git describe --abbrev=0 --match 'version/*')
           rm -rf .github/ scripts/
           mv ../.github ../scripts .
-      - name: prepare
-        run: |
-          scripts/ci_prepare.sh
-          # install anyways since stable will have different dependencies
-          poetry install
+      - uses: ./.github/actions/setup
       - name: run migrations to stable
         run: poetry run python -m lifecycle.migrate
       - name: checkout current code
@@ -91,22 +70,17 @@ jobs:
           set -x
           git fetch
           git reset --hard HEAD
+          git clean -d -fx .
           git checkout $GITHUB_SHA
           poetry install
-      - name: prepare
-        run: scripts/ci_prepare.sh
+      - uses: ./.github/actions/setup
       - name: migrate to latest
         run: poetry run python -m lifecycle.migrate
   test-unittest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.10'
-          cache: 'poetry'
-      - name: prepare
-        run: scripts/ci_prepare.sh
+      - uses: ./.github/actions/setup
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
@@ -124,12 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.10'
-          cache: 'poetry'
-      - name: prepare
-        run: scripts/ci_prepare.sh
+      - uses: ./.github/actions/setup
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
@@ -149,21 +118,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.10'
-          cache: 'poetry'
-      - uses: actions/setup-node@v3.1.0
-        with:
-          node-version: '16'
-          cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+      - uses: ./.github/actions/setup
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
       - name: prepare
         run: |
-          scripts/ci_prepare.sh
           docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
         uses: actions/cache@v3
@@ -190,21 +150,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.10'
-          cache: 'poetry'
-      - uses: actions/setup-node@v3.1.0
-        with:
-          node-version: '16'
-          cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+      - uses: ./.github/actions/setup
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
       - name: prepare
         run: |
-          scripts/ci_prepare.sh
           docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
         uses: actions/cache@v3

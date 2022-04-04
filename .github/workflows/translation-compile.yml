@@ -21,15 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.10'
-          cache: 'poetry'
-      - name: prepare
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gettext
-          scripts/ci_prepare.sh
+      - uses: ./.github/actions/setup
       - name: run compile
         run: poetry run ./manage.py compilemessages
       - name: Create Pull Request
