@@ -37,14 +37,9 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: "^1.17"
-      - name: Get dependencies
-        run: |
-          go install github.com/axw/gocov/gocov
-          go install github.com/AlekSi/gocov-xml
-          go install github.com/jstemmer/go-junit-report
       - name: Go unittests
         run: |
-          go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./... | go-junit-report > junit.xml
+          go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./...
   ci-outpost-mark:
     needs:
       - lint-golint
