@@ -21,7 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - name: run compile
         run: poetry run ./manage.py compilemessages
       - name: Create Pull Request
