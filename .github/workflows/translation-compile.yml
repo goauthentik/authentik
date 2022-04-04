@@ -26,7 +26,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
         env:
           INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
