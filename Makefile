@@ -56,13 +56,12 @@ gen-web:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		openapitools/openapi-generator-cli:v5.4.0 generate \
+		openapitools/openapi-generator-cli:v6.0.0-beta generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/web-api \
 		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${NPM_VERSION}
 	mkdir -p web/node_modules/@goauthentik/api
-	python -m scripts.web_api_esm
 	\cp -fv scripts/web_api_readme.md web-api/README.md
 	cd web-api && npm i
 	\cp -rfv web-api/* web/node_modules/@goauthentik/api
@@ -75,7 +74,7 @@ gen-outpost:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		openapitools/openapi-generator-cli:v5.2.1 generate \
+		openapitools/openapi-generator-cli:v6.0.0-beta generate \
 		-i /local/schema.yml \
 		-g go \
 		-o /local/api \
