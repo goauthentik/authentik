@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
-      - uses: actions/setup-node@v3.0.0
+      - uses: actions/setup-node@v3.1.0
         with:
           node-version: '16'
       - id: cache-poetry
@@ -172,7 +172,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
-      - uses: actions/setup-node@v3.0.0
+      - uses: actions/setup-node@v3.1.0
         with:
           node-version: '16'
           cache: 'npm'
@@ -217,7 +217,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
-      - uses: actions/setup-node@v3.0.0
+      - uses: actions/setup-node@v3.1.0
         with:
           node-version: '16'
           cache: 'npm'
