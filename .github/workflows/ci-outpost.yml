@@ -39,9 +39,9 @@ jobs:
           go-version: "^1.17"
       - name: Get dependencies
         run: |
-          go get github.com/axw/gocov/gocov
-          go get github.com/AlekSi/gocov-xml
-          go get github.com/jstemmer/go-junit-report
+          go install github.com/axw/gocov/gocov
+          go install github.com/AlekSi/gocov-xml
+          go install github.com/jstemmer/go-junit-report
       - name: Go unittests
         run: |
           go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./... | go-junit-report > junit.xml
