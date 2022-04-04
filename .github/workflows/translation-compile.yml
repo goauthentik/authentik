@@ -22,14 +22,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
-      - id: cache-poetry
-        uses: actions/cache@v3
         with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
+          python-version: '3.10'
+          cache: 'poetry'
       - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: |
           sudo apt-get update
           sudo apt-get install -y gettext

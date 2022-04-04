@@ -33,17 +33,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          cache: 'poetry'
       - uses: actions/setup-node@v3.1.0
         with:
           node-version: '16'
-      - id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: run job
         run: poetry run make ci-${{ matrix.job }}
@@ -52,14 +48,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
-      - id: cache-poetry
-        uses: actions/cache@v3
         with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
+          python-version: '3.10'
+          cache: 'poetry'
       - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: run migrations
         run: poetry run python -m lifecycle.migrate
@@ -70,16 +62,14 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          cache: 'poetry'
       - name: prepare variables
         id: ev
         run: |
           python ./scripts/gh_env.py
           sudo pip install -U pipenv
-      - id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: checkout stable
         run: |
           # Copy current, latest config to local
@@ -90,8 +80,6 @@ jobs:
           rm -rf .github/ scripts/
           mv ../.github ../scripts .
       - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: |
           scripts/ci_prepare.sh
           # install anyways since stable will have different dependencies
@@ -106,8 +94,6 @@ jobs:
           git checkout $GITHUB_SHA
           poetry install
       - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - name: migrate to latest
         run: poetry run python -m lifecycle.migrate
@@ -116,14 +102,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
-      - id: cache-poetry
-        uses: actions/cache@v3
         with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
+          python-version: '3.10'
+          cache: 'poetry'
       - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - uses: testspace-com/setup-testspace@v1
         with:
@@ -143,14 +125,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
-      - id: cache-poetry
-        uses: actions/cache@v3
         with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
+          python-version: '3.10'
+          cache: 'poetry'
       - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: scripts/ci_prepare.sh
       - uses: testspace-com/setup-testspace@v1
         with:
@@ -172,6 +150,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          cache: 'poetry'
       - uses: actions/setup-node@v3.1.0
         with:
           node-version: '16'
@@ -180,14 +161,7 @@ jobs:
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
-      - id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: |
           scripts/ci_prepare.sh
           docker-compose -f tests/e2e/docker-compose.yml up -d
@@ -217,6 +191,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          cache: 'poetry'
       - uses: actions/setup-node@v3.1.0
         with:
           node-version: '16'
@@ -225,14 +202,7 @@ jobs:
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
-      - id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
       - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
         run: |
           scripts/ci_prepare.sh
           docker-compose -f tests/e2e/docker-compose.yml up -d
