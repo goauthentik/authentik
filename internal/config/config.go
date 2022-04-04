@@ -86,6 +86,6 @@ func ConfigureLogger() {
 	if G.Debug {
 		log.SetFormatter(&log.TextFormatter{FieldMap: fm})
 	} else {
-		log.SetFormatter(&log.JSONFormatter{FieldMap: fm})
+		log.SetFormatter(&log.JSONFormatter{FieldMap: fm, DisableHTMLEscape: true})
 	}
 }

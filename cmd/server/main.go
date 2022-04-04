@@ -28,6 +28,7 @@ func main() {
 			log.FieldKeyMsg:  "event",
 			log.FieldKeyTime: "timestamp",
 		},
+		DisableHTMLEscape: true,
 	})
 	go debug.EnableDebugServer()
 	l := log.WithField("logger", "authentik.root")

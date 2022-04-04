@@ -32,6 +32,7 @@ func main() {
 			log.FieldKeyMsg:  "event",
 			log.FieldKeyTime: "timestamp",
 		},
+		DisableHTMLEscape: true,
 	})
 	go debug.EnableDebugServer()
 	akURL, found := os.LookupEnv("AUTHENTIK_HOST")
