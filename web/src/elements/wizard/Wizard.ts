@@ -45,7 +45,10 @@ export class Wizard extends ModalButton {
         this.requestUpdate();
     }
 
-    finalHandler?: () => Promise<void>;
+    @property({ attribute: false })
+    finalHandler: () => Promise<void> = () => {
+        return Promise.resolve();
+    };
 
     renderModalInner(): TemplateResult {
         const firstPage = this.querySelector<WizardPage>(`[slot=${this.steps[0]}]`);
@@ -116,9 +119,7 @@ export class Wizard extends ModalButton {
                                 return;
                             }
                             if (currentIndex === this.steps.length - 1) {
-                                if (this.finalHandler) {
-                                    await this.finalHandler();
-                                }
+                                await this.finalHandler();
                                 this.open = false;
                             } else {
                                 const nextPage = this.querySelector<WizardPage>(

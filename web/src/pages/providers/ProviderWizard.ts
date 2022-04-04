@@ -65,6 +65,11 @@ export class ProviderWizard extends LitElement {
     @property({ attribute: false })
     providerTypes: TypeCreate[] = [];
 
+    @property({ attribute: false })
+    finalHandler: () => Promise<void> = () => {
+        return Promise.resolve();
+    };
+
     firstUpdated(): void {
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((types) => {
             this.providerTypes = types;
@@ -77,6 +82,9 @@ export class ProviderWizard extends LitElement {
                 .steps=${["initial"]}
                 header=${t`New provider`}
                 description=${t`Create a new provider.`}
+                .finalHandler=${() => {
+                    return this.finalHandler();
+                }}
             >
                 <ak-provider-wizard-initial
                     slot="initial"
