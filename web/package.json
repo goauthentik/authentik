@@ -97,7 +97,7 @@
         "flowchart.js": "^1.17.1",
         "fuse.js": "^6.5.3",
         "lit": "^2.2.1",
-        "moment": "^2.29.1",
+        "moment": "^2.29.2",
         "prettier": "^2.6.2",
         "rapidoc": "^9.2.0",
         "rollup": "^2.70.1",
