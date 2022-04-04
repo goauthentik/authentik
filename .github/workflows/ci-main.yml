@@ -32,35 +32,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-      - uses: actions/setup-node@v3.1.0
-        with:
-          node-version: '16'
-      - id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - name: run job
         run: poetry run make ci-${{ matrix.job }}
   test-migrations:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-      - id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - name: run migrations
         run: poetry run python -m lifecycle.migrate
   test-migrations-from-stable:
@@ -69,17 +50,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v3
-      - name: prepare variables
-        id: ev
-        run: |
-          python ./scripts/gh_env.py
-          sudo pip install -U pipenv
-      - id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - name: checkout stable
         run: |
           # Copy current, latest config to local
@@ -89,13 +61,8 @@ jobs:
           git checkout $(git describe --abbrev=0 --match 'version/*')
           rm -rf .github/ scripts/
           mv ../.github ../scripts .
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: |
-          scripts/ci_prepare.sh
-          # install anyways since stable will have different dependencies
-          poetry install
+      - name: Setup authentik env (ensure stable deps are installed)
+        uses: ./.github/actions/setup
       - name: run migrations to stable
         run: poetry run python -m lifecycle.migrate
       - name: checkout current code
@@ -103,28 +70,19 @@ jobs:
           set -x
           git fetch
           git reset --hard HEAD
+          git clean -d -fx .
           git checkout $GITHUB_SHA
           poetry install
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+      - name: Setup authentik env (ensure latest deps are installed)
+        uses: ./.github/actions/setup
       - name: migrate to latest
         run: poetry run python -m lifecycle.migrate
   test-unittest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-      - id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
@@ -142,16 +100,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-      - id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
@@ -171,25 +121,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-      - uses: actions/setup-node@v3.1.0
-        with:
-          node-version: '16'
-          cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
-      - id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
+      - name: Setup authentik env
         run: |
-          scripts/ci_prepare.sh
           docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
         uses: actions/cache@v3
@@ -216,25 +154,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-      - uses: actions/setup-node@v3.1.0
-        with:
-          node-version: '16'
-          cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
-      - id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v2-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
+      - name: Setup authentik env
         run: |
-          scripts/ci_prepare.sh
           docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
         uses: actions/cache@v3
@@ -288,8 +214,7 @@ jobs:
         id: ev
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        run: |
-          python ./scripts/gh_env.py
+        uses: ./.github/actions/docker-setup
       - name: Login to Container Registry
         uses: docker/login-action@v1
         if: ${{ steps.ev.outputs.shouldBuild == 'true' }}

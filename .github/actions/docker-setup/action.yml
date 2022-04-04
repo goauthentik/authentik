@@ -1,0 +1,49 @@
+name: 'Prepare docker environment variables'
+description: 'Prepare docker environment variables'
+
+outputs:
+  shouldBuild:
+    description: "Whether to build image or not"
+    value: ${{ steps.ev.outputs.shouldBuild }}
+  branchName:
+    description: "Branch name"
+    value: ${{ steps.ev.outputs.branchName }}
+  branchNameContainer:
+    description: "Branch name (for containers)"
+    value: ${{ steps.ev.outputs.branchNameContainer }}
+  timestamp:
+    description: "Timestamp"
+    value: ${{ steps.ev.outputs.timestamp }}
+  sha:
+    description: "sha"
+    value: ${{ steps.ev.outputs.sha }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate config
+      id: ev
+      shell: python
+      run: |
+        """Helper script to get the actual branch name, docker safe"""
+        import os
+        from time import time
+
+        env_pr_branch = "GITHUB_HEAD_REF"
+        default_branch = "GITHUB_REF"
+        sha = "GITHUB_SHA"
+
+        branch_name = os.environ[default_branch]
+        if os.environ.get(env_pr_branch, "") != "":
+            branch_name = os.environ[env_pr_branch]
+
+        should_build = str(os.environ.get("DOCKER_USERNAME", "") != "").lower()
+
+        print("##[set-output name=branchName]%s" % branch_name)
+        print(
+            "##[set-output name=branchNameContainer]%s"
+            % branch_name.replace("refs/heads/", "").replace("/", "-")
+        )
+        print("##[set-output name=timestamp]%s" % int(time()))
+        print("##[set-output name=sha]%s" % os.environ[sha])
+        print("##[set-output name=shouldBuild]%s" % should_build)
