@@ -44,7 +44,7 @@ class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
     launch_url = SerializerMethodField()
-    provider_obj = ProviderSerializer(source="get_provider", required=False)
+    provider_obj = ProviderSerializer(source="get_provider", required=False, read_only=True)
 
     meta_icon = ReadOnlyField(source="get_meta_icon")
 

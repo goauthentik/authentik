@@ -19090,7 +19090,9 @@ components:
           type: integer
           nullable: true
         provider_obj:
-          $ref: '#/components/schemas/Provider'
+          allOf:
+          - $ref: '#/components/schemas/Provider'
+          readOnly: true
         launch_url:
           type: string
           nullable: true
@@ -19115,6 +19117,7 @@ components:
       - meta_icon
       - name
       - pk
+      - provider_obj
       - slug
     ApplicationRequest:
       type: object
@@ -19133,8 +19136,6 @@ components:
         provider:
           type: integer
           nullable: true
-        provider_obj:
-          $ref: '#/components/schemas/ProviderRequest'
         meta_launch_url:
           type: string
           format: uri
@@ -26591,8 +26592,6 @@ components:
         provider:
           type: integer
           nullable: true
-        provider_obj:
-          $ref: '#/components/schemas/ProviderRequest'
         meta_launch_url:
           type: string
           format: uri
@@ -28252,8 +28251,6 @@ components:
           $ref: '#/components/schemas/IntentEnum'
         user:
           type: integer
-        user_obj:
-          $ref: '#/components/schemas/UserRequest'
         description:
           type: string
         expires:
@@ -30756,7 +30753,9 @@ components:
         user:
           type: integer
         user_obj:
-          $ref: '#/components/schemas/User'
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
         description:
           type: string
         expires:
@@ -30767,6 +30766,7 @@ components:
       required:
       - identifier
       - pk
+      - user_obj
     TokenRequest:
       type: object
       description: Token Serializer
@@ -30789,8 +30789,6 @@ components:
           $ref: '#/components/schemas/IntentEnum'
         user:
           type: integer
-        user_obj:
-          $ref: '#/components/schemas/UserRequest'
         description:
           type: string
         expires:
