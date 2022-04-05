@@ -19,7 +19,7 @@ import { Application, CoreApi } from "@goauthentik/api";
 
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
-import { UIConfig, uiConfig } from "../common/config";
+import { LayoutType, UIConfig, uiConfig } from "../common/config";
 import { getURLParam, updateURLParams } from "../elements/router/RouteMatch";
 import { groupBy, loading } from "../utils";
 import "./LibraryApplication";
@@ -79,6 +79,9 @@ export class LibraryPage extends LitElement {
             .header input:focus {
                 outline: 0;
             }
+            .pf-c-page__main {
+                overflow: hidden;
+            }
             .pf-c-page__main-section {
                 background-color: transparent;
             }
@@ -119,25 +122,44 @@ export class LibraryPage extends LitElement {
     }
 
     renderApps(config: UIConfig): TemplateResult {
-        return html`${this.getApps().map(([group, apps]) => {
-            return html`
-                <div class="pf-c-content app-group-header">
-                    <h2>${group}</h2>
-                </div>
-                <div
-                    class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-5-col-on-lg pf-m-all-2-col-on-xl"
-                >
-                    ${apps.map((app) => {
-                        return html`<ak-library-app
-                            class="pf-l-grid__item"
-                            .application=${app}
-                            background=${config.color.cardBackground}
-                            ?selected=${app.slug === this.selectedApp?.slug}
-                        ></ak-library-app>`;
-                    })}
-                </div>
-            `;
-        })}`;
+        let groupClass = "";
+        let groupGrid = "";
+        switch (config.layout.type) {
+            case LayoutType.row:
+                groupClass = "pf-m-12-col";
+                groupGrid =
+                    "pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-5-col-on-lg pf-m-all-2-col-on-xl";
+                break;
+            case LayoutType.column_2:
+                groupClass = "pf-m-6-col";
+                groupGrid =
+                    "pf-m-all-12-col-on-sm pf-m-all-12-col-on-md pf-m-all-4-col-on-lg pf-m-all-4-col-on-xl";
+                break;
+            case LayoutType.column_3:
+                groupClass = "pf-m-4-col";
+                groupGrid =
+                    "pf-m-all-12-col-on-sm pf-m-all-12-col-on-md pf-m-all-6-col-on-lg pf-m-all-4-col-on-xl";
+                break;
+        }
+        return html`<div class="pf-l-grid pf-m-gutter">
+            ${this.getApps().map(([group, apps]) => {
+                return html`<div class="pf-l-grid__item ${groupClass}">
+                    <div class="pf-c-content app-group-header">
+                        <h2>${group}</h2>
+                    </div>
+                    <div class="pf-l-grid pf-m-gutter ${groupGrid}">
+                        ${apps.map((app) => {
+                            return html`<ak-library-app
+                                class="pf-l-grid__item"
+                                .application=${app}
+                                background=${config.color.cardBackground}
+                                ?selected=${app.slug === this.selectedApp?.slug}
+                            ></ak-library-app>`;
+                        })}
+                    </div>
+                </div> `;
+            })}
+        </div>`;
     }
 
     render(): TemplateResult {

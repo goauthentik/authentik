@@ -3,9 +3,15 @@ import { UserSelf } from "@goauthentik/api";
 import { me } from "../api/Users";
 
 export enum UserDisplay {
-    "username",
-    "name",
-    "email",
+    username = "username",
+    name = "name",
+    email = "email",
+}
+
+export enum LayoutType {
+    row = "row",
+    column_2 = "2-column",
+    column_3 = "3-column",
 }
 
 export interface UIConfig {
@@ -31,6 +37,9 @@ export interface UIConfig {
     pagination: {
         perPage: number;
     };
+    layout: {
+        type: LayoutType;
+    };
     locale: string;
 }
 
@@ -41,6 +50,9 @@ export class DefaultUIConfig implements UIConfig {
         settings: true,
         applicationEdit: true,
         search: true,
+    };
+    layout = {
+        type: LayoutType.row,
     };
     navbar = {
         userDisplay: UserDisplay.username,
