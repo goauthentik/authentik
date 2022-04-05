@@ -141,6 +141,26 @@ module.exports = {
         },
         {
             type: "category",
+            label: "Interfaces",
+            items: [
+                {
+                    type: "category",
+                    label: "User",
+                    items: [
+                        "interfaces/user/customization",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Admin",
+                    items: [
+                        "interfaces/admin/customization",
+                    ],
+                },
+            ],
+        },
+        {
+            type: "category",
             label: "Users & Groups",
             items: ["user-group/user", "user-group/group"],
         },
