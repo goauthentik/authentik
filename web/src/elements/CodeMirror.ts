@@ -112,6 +112,12 @@ export class CodeMirrorTextarea extends LitElement {
             autoRefresh: true,
             lineWrapping: true,
             value: this._value,
+            extraKeys: {
+                Tab: (cm) => {
+                    cm.execCommand("insertSoftTab");
+                },
+            },
+            indentUnit: 4,
         });
         this.editor.on("blur", () => {
             this.editor?.save();
