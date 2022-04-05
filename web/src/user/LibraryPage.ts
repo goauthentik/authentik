@@ -89,6 +89,9 @@ export class LibraryPage extends LitElement {
                 margin-bottom: 1em;
                 margin-top: 1.2em;
             }
+            .text-shadow {
+                text-shadow: 2px 2px 5px var(--ak-dark-background-light);
+            }
         `);
     }
 
@@ -138,21 +141,21 @@ export class LibraryPage extends LitElement {
             case LayoutType.column_3:
                 groupClass = "pf-m-4-col";
                 groupGrid =
-                    "pf-m-all-12-col-on-sm pf-m-all-12-col-on-md pf-m-all-6-col-on-lg pf-m-all-4-col-on-xl";
+                    "pf-m-all-12-col-on-sm pf-m-all-12-col-on-md pf-m-all-6-col-on-lg pf-m-all-6-col-on-xl";
                 break;
         }
         return html`<div class="pf-l-grid pf-m-gutter">
             ${this.getApps().map(([group, apps]) => {
                 return html`<div class="pf-l-grid__item ${groupClass}">
                     <div class="pf-c-content app-group-header">
-                        <h2>${group}</h2>
+                        <h2 class="text-shadow">${group}</h2>
                     </div>
                     <div class="pf-l-grid pf-m-gutter ${groupGrid}">
                         ${apps.map((app) => {
                             return html`<ak-library-app
                                 class="pf-l-grid__item"
                                 .application=${app}
-                                background=${config.color.cardBackground}
+                                background=${config.theme.cardBackground}
                                 ?selected=${app.slug === this.selectedApp?.slug}
                             ></ak-library-app>`;
                         })}
@@ -172,7 +175,7 @@ export class LibraryPage extends LitElement {
                     id="main-content"
                 >
                     <div class="pf-c-content header">
-                        <h1>${t`My applications`}</h1>
+                        <h1 class="text-shadow">${t`My applications`}</h1>
                         ${config.enabledFeatures.search
                             ? html`<input
                                   @input=${(ev: InputEvent) => {
@@ -198,7 +201,7 @@ export class LibraryPage extends LitElement {
                                       }
                                   }}
                                   type="text"
-                                  class="pf-u-display-none pf-u-display-block-on-md"
+                                  class="pf-u-display-none pf-u-display-block-on-md text-shadow"
                                   autofocus
                                   placeholder=${t`Search...`}
                               />`

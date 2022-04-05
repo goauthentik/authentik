@@ -30,7 +30,7 @@ export interface UIConfig {
     navbar: {
         userDisplay: UserDisplay;
     };
-    color: {
+    theme: {
         background: string;
         cardBackground: string;
     };
@@ -57,7 +57,7 @@ export class DefaultUIConfig implements UIConfig {
     navbar = {
         userDisplay: UserDisplay.username,
     };
-    color = {
+    theme = {
         background: "",
         cardBackground: "",
     };

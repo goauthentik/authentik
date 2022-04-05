@@ -75,7 +75,7 @@ export class UserInterface extends LitElement {
                     background-color: transparent !important;
                 }
                 .pf-c-page {
-                    background-color: var(--pf-c-page--BackgroundColor) !important;
+                    background-color: transparent !important;
                 }
                 .display-none {
                     display: none;
@@ -86,6 +86,12 @@ export class UserInterface extends LitElement {
                 }
                 .has-notifications {
                     color: #2b9af3;
+                }
+                .background-wrapper {
+                    height: 100vh;
+                    width: 100vw;
+                    position: absolute;
+                    z-index: -1;
                 }
             `,
         ];
@@ -128,10 +134,8 @@ export class UserInterface extends LitElement {
     render(): TemplateResult {
         return html`${until(
             uiConfig().then((config) => {
-                return html`<div
-                    class="pf-c-page"
-                    style="background: ${config.color.background} !important"
-                >
+                return html`<div class="pf-c-page">
+                    <div class="background-wrapper" style="${config.theme.background}"></div>
                     <header class="pf-c-page__header">
                         <div class="pf-c-page__header-brand">
                             <a href="#/" class="pf-c-page__header-brand-link">
