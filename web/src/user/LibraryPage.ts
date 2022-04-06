@@ -89,9 +89,6 @@ export class LibraryPage extends LitElement {
                 margin-bottom: 1em;
                 margin-top: 1.2em;
             }
-            .text-shadow {
-                text-shadow: 2px 2px 5px var(--ak-dark-background-light);
-            }
         `);
     }
 
@@ -148,7 +145,7 @@ export class LibraryPage extends LitElement {
             ${this.getApps().map(([group, apps]) => {
                 return html`<div class="pf-l-grid__item ${groupClass}">
                     <div class="pf-c-content app-group-header">
-                        <h2 class="text-shadow">${group}</h2>
+                        <h2>${group}</h2>
                     </div>
                     <div class="pf-l-grid pf-m-gutter ${groupGrid}">
                         ${apps.map((app) => {
@@ -175,7 +172,7 @@ export class LibraryPage extends LitElement {
                     id="main-content"
                 >
                     <div class="pf-c-content header">
-                        <h1 class="text-shadow">${t`My applications`}</h1>
+                        <h1>${t`My applications`}</h1>
                         ${config.enabledFeatures.search
                             ? html`<input
                                   @input=${(ev: InputEvent) => {
@@ -201,7 +198,7 @@ export class LibraryPage extends LitElement {
                                       }
                                   }}
                                   type="text"
-                                  class="pf-u-display-none pf-u-display-block-on-md text-shadow"
+                                  class="pf-u-display-none pf-u-display-block-on-md"
                                   autofocus
                                   placeholder=${t`Search...`}
                               />`
