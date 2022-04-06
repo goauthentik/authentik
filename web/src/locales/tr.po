@@ -485,6 +485,7 @@ msgstr "SAML Onaylamaları için kullanılan öznitelik adı. URN OID, şema ref
 
 #: src/pages/groups/GroupForm.ts
 #: src/pages/stages/invitation/InvitationForm.ts
+#: src/pages/tenants/TenantForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Attributes"
 msgstr "Öznitellikler"
@@ -4531,6 +4532,10 @@ msgstr "authentik değerlerine göre özel bir HTTP-Basic Kimlik Doğrulama baş
 #: src/pages/users/UserForm.ts
 msgid "Set custom attributes using YAML or JSON."
 msgstr "YAML veya JSON kullanarak özel nitelikleri ayarlayın."
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant."
+msgstr ""
 
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts

@@ -481,6 +481,7 @@ msgstr ""
 
 #: src/pages/groups/GroupForm.ts
 #: src/pages/stages/invitation/InvitationForm.ts
+#: src/pages/tenants/TenantForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Attributes"
 msgstr ""
@@ -4603,6 +4604,10 @@ msgstr ""
 #: src/pages/policies/PolicyTestForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Set custom attributes using YAML or JSON."
+msgstr ""
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant."
 msgstr ""
 
 #: src/pages/users/RelatedUserList.ts

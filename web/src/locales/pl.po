@@ -485,6 +485,7 @@ msgstr "Nazwa atrybutu używana w asercjach SAML. Może być identyfikatorem URN
 
 #: src/pages/groups/GroupForm.ts
 #: src/pages/stages/invitation/InvitationForm.ts
+#: src/pages/tenants/TenantForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Attributes"
 msgstr "Atrybuty"
@@ -4526,6 +4527,10 @@ msgstr "Ustaw niestandardowy nagłówek HTTP-Basic Authentication na podstawie w
 #: src/pages/users/UserForm.ts
 msgid "Set custom attributes using YAML or JSON."
 msgstr "Ustaw atrybuty niestandardowe za pomocą YAML lub JSON."
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant."
+msgstr ""
 
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts

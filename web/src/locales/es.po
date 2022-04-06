@@ -485,6 +485,7 @@ msgstr "Nombre de atributo utilizado para aserciones SAML. Puede ser un OID de U
 
 #: src/pages/groups/GroupForm.ts
 #: src/pages/stages/invitation/InvitationForm.ts
+#: src/pages/tenants/TenantForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Attributes"
 msgstr "atributos"
@@ -4529,6 +4530,10 @@ msgstr "Establezca un encabezado de autenticación básica HTTP personalizado en
 #: src/pages/users/UserForm.ts
 msgid "Set custom attributes using YAML or JSON."
 msgstr "Establece atributos personalizados con YAML o JSON."
+
+#: src/pages/tenants/TenantForm.ts
+msgid "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant."
+msgstr ""
 
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts

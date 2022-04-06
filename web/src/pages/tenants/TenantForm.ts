@@ -1,5 +1,6 @@
-import { t } from "@lingui/macro";
 import YAML from "yaml";
+
+import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -15,6 +16,7 @@ import {
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../api/Config";
+import "../../elements/CodeMirror";
 import "../../elements/forms/FormGroup";
 import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
