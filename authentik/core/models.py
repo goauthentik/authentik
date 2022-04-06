@@ -147,10 +147,12 @@ class User(GuardianUserMixin, AbstractUser):
 
     objects = UserManager()
 
-    def group_attributes(self) -> dict[str, Any]:
+    def group_attributes(self, request: Optional[HttpRequest] = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
         including the users attributes"""
         final_attributes = {}
+        if request and hasattr(request, "tenant"):
+            always_merger.merge(final_attributes, request.tenant.attributes)
         for group in self.ak_groups.all().order_by("name"):
             always_merger.merge(final_attributes, group.attributes)
         always_merger.merge(final_attributes, self.attributes)

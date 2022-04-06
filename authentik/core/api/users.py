@@ -1,7 +1,7 @@
 """User API Views"""
 from datetime import timedelta
 from json import loads
-from typing import Optional
+from typing import Any, Optional
 
 from django.contrib.auth import update_session_auth_hash
 from django.db.models.query import QuerySet
@@ -23,7 +23,7 @@ from drf_spectacular.utils import (
 )
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, DictField, JSONField, SerializerMethodField
+from rest_framework.fields import CharField, JSONField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -96,14 +96,13 @@ class UserSerializer(ModelSerializer):
 
 
 class UserSelfSerializer(ModelSerializer):
-    """User Serializer for information a user can retrieve about themselves and
-    update about themselves"""
+    """User Serializer for information a user can retrieve about themselves"""
 
     is_superuser = BooleanField(read_only=True)
     avatar = CharField(read_only=True)
     groups = SerializerMethodField()
     uid = CharField(read_only=True)
-    settings = DictField(source="attributes.settings", default=dict)
+    settings = SerializerMethodField()
 
     @extend_schema_field(
         ListSerializer(
@@ -120,6 +119,10 @@ class UserSelfSerializer(ModelSerializer):
                 "name": group.name,
                 "pk": group.pk,
             }
+
+    def get_settings(self, user: User) -> dict[str, Any]:
+        """Get user settings with tenant and group settings applied"""
+        return user.group_attributes(self._context["request"]).get("settings", {})
 
     class Meta:
 
@@ -328,12 +331,14 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     # pylint: disable=invalid-name
     def me(self, request: Request) -> Response:
         """Get information about current user"""
+        context = {"request": request}
         serializer = SessionUserSerializer(
-            data={"user": UserSelfSerializer(instance=request.user).data}
+            data={"user": UserSelfSerializer(instance=request.user, context=context).data}
         )
         if SESSION_IMPERSONATE_USER in request._request.session:
             serializer.initial_data["original"] = UserSelfSerializer(
-                instance=request._request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
+                instance=request._request.session[SESSION_IMPERSONATE_ORIGINAL_USER],
+                context=context,
             ).data
         return Response(serializer.initial_data)
 

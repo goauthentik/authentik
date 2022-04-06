@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import YAML from "yaml";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -339,6 +340,16 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${t`Format: "weeks=3;days=2;hours=3,seconds=2".`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Attributes`} name="attributes">
+                        <ak-codemirror
+                            mode="yaml"
+                            value="${YAML.stringify(first(this.instance?.attributes, {}))}"
+                        >
+                        </ak-codemirror>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Web Certificate`} name="webCertificate">

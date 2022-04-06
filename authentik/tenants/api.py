@@ -53,6 +53,7 @@ class TenantSerializer(ModelSerializer):
             "flow_user_settings",
             "event_retention",
             "web_certificate",
+            "attributes",
         ]
 
 
@@ -86,7 +87,21 @@ class TenantViewSet(UsedByMixin, ModelViewSet):
         "branding_title",
         "web_certificate__name",
     ]
-    filterset_fields = "__all__"
+    filterset_fields = [
+        "tenant_uuid",
+        "domain",
+        "default",
+        "branding_title",
+        "branding_logo",
+        "branding_favicon",
+        "flow_authentication",
+        "flow_invalidation",
+        "flow_recovery",
+        "flow_unenrollment",
+        "flow_user_settings",
+        "event_retention",
+        "web_certificate",
+    ]
     ordering = ["domain"]
 
     @extend_schema(

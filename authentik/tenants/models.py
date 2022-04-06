@@ -63,6 +63,8 @@ class Tenant(models.Model):
         help_text=_(("Web Certificate used by the authentik Core webserver.")),
     )
 
+    attributes = models.JSONField(default=dict, blank=True)
+
     def __str__(self) -> str:
         if self.default:
             return "Default tenant"

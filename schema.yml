@@ -28229,6 +28229,9 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        attributes:
+          type: object
+          additionalProperties: {}
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -30673,6 +30676,9 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - domain
       - tenant_uuid
@@ -30725,6 +30731,9 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - domain
     Token:
@@ -31211,9 +31220,7 @@ components:
       - username
     UserSelf:
       type: object
-      description: |-
-        User Serializer for information a user can retrieve about themselves and
-        update about themselves
+      description: User Serializer for information a user can retrieve about themselves
       properties:
         pk:
           type: integer
@@ -31256,6 +31263,7 @@ components:
         settings:
           type: object
           additionalProperties: {}
+          readOnly: true
       required:
       - avatar
       - groups
@@ -31263,6 +31271,7 @@ components:
       - is_superuser
       - name
       - pk
+      - settings
       - uid
       - username
     UserSelfGroups:

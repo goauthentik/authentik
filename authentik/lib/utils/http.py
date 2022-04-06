@@ -45,7 +45,7 @@ def _get_outpost_override_ip(request: HttpRequest) -> Optional[str]:
         LOGGER.warning("Attempted remote-ip override without token", fake_ip=fake_ip)
         return None
     user = tokens.first().user
-    if not user.group_attributes().get(USER_ATTRIBUTE_CAN_OVERRIDE_IP, False):
+    if not user.group_attributes(request).get(USER_ATTRIBUTE_CAN_OVERRIDE_IP, False):
         LOGGER.warning(
             "Remote-IP override: user doesn't have permission",
             user=user,
