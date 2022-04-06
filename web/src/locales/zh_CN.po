@@ -483,7 +483,7 @@ msgstr ""
 "属性，则会丢弃此字段。"
 
 #: src/pages/groups/GroupForm.ts src/pages/stages/invitation/InvitationForm.ts
-#: src/pages/users/UserForm.ts
+#: src/pages/tenants/TenantForm.ts src/pages/users/UserForm.ts
 msgid "Attributes"
 msgstr "属性"
 
@@ -4561,6 +4561,12 @@ msgstr "根据来自 authentik 的值设置自定义 HTTP-Basic 身份验证标�
 #: src/pages/policies/PolicyTestForm.ts src/pages/users/UserForm.ts
 msgid "Set custom attributes using YAML or JSON."
 msgstr "使用 YAML 或 JSON 设置自定义属性。"
+
+#: src/pages/tenants/TenantForm.ts
+msgid ""
+"Set custom attributes using YAML or JSON. Any attributes set here will be "
+"inherited by users, if the request is handled by this tenant."
+msgstr "使用 YAML 或 JSON 格式设置自定义属性。如果请求由此租户处理，则用户会继承此处设置的任何自定义属性。  "
 
 #: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
 msgid "Set password"
