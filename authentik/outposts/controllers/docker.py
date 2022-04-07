@@ -157,7 +157,7 @@ class DockerController(BaseController):
         #   {'HostIp': '::', 'HostPort': '389'}
         # ]}
         # If no ports are mapped (either mapping disabled, or host network)
-        if not container.ports:
+        if not container.ports or not self.outpost.config.docker_map_ports:
             return False
         for port in self.deployment_ports:
             key = f"{port.inner_port or port.port}/{port.protocol.lower()}"
