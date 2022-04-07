@@ -99,6 +99,7 @@ export const POLY = {
             sourcemap: true,
         },
     ],
+    cache: true,
     plugins: [
         cssimport(),
         nodeResolve({ browser: true }),
@@ -120,6 +121,7 @@ export default [
     {
         input: "./src/interfaces/FlowInterface.ts",
         context: "window",
+        cache: true,
         output: [
             {
                 format: "es",
@@ -137,6 +139,7 @@ export default [
     {
         input: "./src/interfaces/AdminInterface.ts",
         context: "window",
+        cache: true,
         output: [
             {
                 format: "es",
@@ -154,6 +157,7 @@ export default [
     {
         input: "./src/interfaces/UserInterface.ts",
         context: "window",
+        cache: true,
         output: [
             {
                 format: "es",
