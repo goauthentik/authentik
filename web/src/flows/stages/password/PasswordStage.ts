@@ -46,7 +46,17 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
             if (!this.input) {
                 return;
             }
-            if (document.activeElement === this.input) {
+            // Because activeElement behaves differently with shadow dom
+            // we need to recursively check
+            const rootEl = document.activeElement;
+            const isActive = (el: Element | null): boolean => {
+                if (!rootEl) return false;
+                if (!("shadowRoot" in rootEl)) return false;
+                if (rootEl.shadowRoot === null) return false;
+                if (rootEl.shadowRoot.activeElement === el) return true;
+                return isActive(rootEl.shadowRoot.activeElement);
+            };
+            if (isActive(this.input)) {
                 this.cleanup();
             }
             this.input.focus();
