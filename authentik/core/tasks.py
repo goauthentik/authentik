@@ -60,7 +60,7 @@ def clean_temporary_users(self: MonitoredTask):
     messages = []
     deleted_users = 0
     for user in User.objects.filter(**{f"attributes__{USER_ATTRIBUTE_GENERATED}": True}):
-        if USER_ATTRIBUTE_EXPIRES not in user.attributes:
+        if not user.attributes.get(USER_ATTRIBUTE_EXPIRES):
             continue
         delta: timedelta = _now - datetime.fromtimestamp(
             user.attributes.get(USER_ATTRIBUTE_EXPIRES)
