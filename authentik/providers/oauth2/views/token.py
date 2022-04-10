@@ -19,6 +19,7 @@ from authentik.core.models import (
     TokenIntents,
     User,
 )
+from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
@@ -261,16 +262,20 @@ class TokenParams:
         token = None
         for cert in self.provider.verification_keys.all():
             LOGGER.debug("verifying jwt with key", key=cert.name)
+            cert: CertificateKeyPair
+            public_key = cert.certificate.public_key()
+            if cert.private_key:
+                public_key = cert.private_key.public_key()
             try:
                 token = decode(
                     assertion,
-                    cert.certificate.public_key(),
+                    public_key,
                     algorithms=[JWTAlgorithms.RS256, JWTAlgorithms.EC256],
                     options={
                         "verify_aud": False,
                     },
                 )
-            except (InvalidTokenError, ValueError) as last_exc:
+            except (InvalidTokenError, ValueError, TypeError) as last_exc:
                 LOGGER.warning("failed to validate jwt", last_exc=last_exc)
         if not token:
             raise TokenError("invalid_grant")
