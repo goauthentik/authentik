@@ -7,6 +7,11 @@ import (
 	"goauthentik.io/api/v3"
 )
 
+func Test_ldapResolveTypeSingle_nil(t *testing.T) {
+	var ex *string
+	assert.Equal(t, ex, ldapResolveTypeSingle(nil))
+}
+
 func TestAKAttrsToLDAP_String(t *testing.T) {
 	var d *map[string]interface{}
 
@@ -54,7 +59,7 @@ func TestAKAttrsToLDAP_Dict(t *testing.T) {
 	assert.Equal(t, 1, len(AKAttrsToLDAP(d)))
 	assert.Equal(t, "foo", AKAttrsToLDAP(d)[0].Name)
 	// Dicts are currently unsupported, but make sure we don't crash
-	// assert.Equal(t, []string{nil}, AKAttrsToLDAP(d)[0].Values)
+	assert.Equal(t, []string([]string(nil)), AKAttrsToLDAP(d)[0].Values)
 }
 
 func TestAKAttrsToLDAP_Mixed(t *testing.T) {
@@ -68,5 +73,5 @@ func TestAKAttrsToLDAP_Mixed(t *testing.T) {
 	assert.Equal(t, 1, len(AKAttrsToLDAP(d)))
 	assert.Equal(t, "foo", AKAttrsToLDAP(d)[0].Name)
 	// Dicts are currently unsupported, but make sure we don't crash
-	// assert.Equal(t, []string{nil}, AKAttrsToLDAP(d)[0].Values)
+	assert.Equal(t, []string{"foo", ""}, AKAttrsToLDAP(d)[0].Values)
 }

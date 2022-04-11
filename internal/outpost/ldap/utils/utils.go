@@ -29,7 +29,9 @@ func ldapResolveTypeSingle(in interface{}) *string {
 		s := BoolToString(*t)
 		return &s
 	default:
-		log.WithField("type", reflect.TypeOf(in).String()).Warning("Type can't be mapped to LDAP yet")
+		if in != nil {
+			log.WithField("type", reflect.TypeOf(in).String()).Warning("Type can't be mapped to LDAP yet")
+		}
 		return nil
 	}
 }
