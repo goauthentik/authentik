@@ -2,7 +2,7 @@
 from typing import Any
 
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import assign_perm, get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -20,6 +20,7 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenIntents
 from authentik.events.models import Event, EventAction
+from authentik.events.utils import model_to_dict
 from authentik.managed.api import ManagedSerializer
 
 
@@ -110,10 +111,39 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
             404: OpenApiResponse(description="Token not found or expired"),
         }
     )
-    @action(detail=True, pagination_class=None, filter_backends=[])
+    @action(detail=True, pagination_class=None, filter_backends=[], methods=["GET"])
     # pylint: disable=unused-argument
     def view_key(self, request: Request, identifier: str) -> Response:
         """Return token key and log access"""
         token: Token = self.get_object()
         Event.new(EventAction.SECRET_VIEW, secret=token).from_http(request)  # noqa # nosec
         return Response(TokenViewSerializer({"key": token.key}).data)
+
+    @permission_required("authentik_core.set_token_key")
+    @extend_schema(
+        request=inline_serializer(
+            "TokenSetKey",
+            {
+                "key": CharField(),
+            },
+        ),
+        responses={
+            204: OpenApiResponse(description="Successfully changed key"),
+            400: OpenApiResponse(description="Missing key"),
+            404: OpenApiResponse(description="Token not found or expired"),
+        },
+    )
+    @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
+    # pylint: disable=unused-argument
+    def set_key(self, request: Request, identifier: str) -> Response:
+        """Return token key and log access"""
+        token: Token = self.get_object()
+        key = request.POST.get("key")
+        if not key:
+            return Response(status=400)
+        token.key = key
+        token.save()
+        Event.new(EventAction.MODEL_UPDATED, model=model_to_dict(token)).from_http(
+            request
+        )  # noqa # nosec
+        return Response(status=204)

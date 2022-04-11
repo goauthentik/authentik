@@ -2787,6 +2787,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /core/tokens/{identifier}/set_key/:
+    post:
+      operationId: core_tokens_set_key_create
+      description: Return token key and log access
+      parameters:
+      - in: path
+        name: identifier
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenSetKeyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully changed key
+        '400':
+          description: Missing key
+        '404':
+          description: Token not found or expired
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /core/tokens/{identifier}/used_by/:
     get:
       operationId: core_tokens_used_by_list
@@ -30807,6 +30836,14 @@ components:
           type: boolean
       required:
       - identifier
+    TokenSetKeyRequest:
+      type: object
+      properties:
+        key:
+          type: string
+          minLength: 1
+      required:
+      - key
     TokenView:
       type: object
       description: Show token's current key
