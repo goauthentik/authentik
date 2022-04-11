@@ -46,7 +46,7 @@ jobs:
           - ldap
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v3
         with:
           go-version: "^1.17"
       - name: Set up QEMU
@@ -88,7 +88,7 @@ jobs:
         goarch: [amd64, arm64]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v3
         with:
           go-version: "^1.17"
       - uses: actions/setup-node@v3.1.0
