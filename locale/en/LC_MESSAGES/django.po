@@ -678,7 +678,7 @@ msgid "RS256 (Asymmetric Encryption)"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py:93
-msgid "EC256 (Asymmetric Encryption)"
+msgid "ES256 (Asymmetric Encryption)"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py:99

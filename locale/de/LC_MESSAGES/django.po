@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # Vri, 2021
 # Lars Lehmann <lars@lars-lehmann.net>, 2021
@@ -11,7 +11,7 @@
 # Rhea Alleen, 2021
 # David <david@techniknews.net>, 2021
 # Steve Oswald, 2022
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -734,7 +734,7 @@ msgid "RS256 (Asymmetric Encryption)"
 msgstr "RS256 (Asymmetrische Verschlüsselung)"
 
 #: authentik/providers/oauth2/models.py:93
-msgid "EC256 (Asymmetric Encryption)"
+msgid "ES256 (Asymmetric Encryption)"
 msgstr "RS256 (Asymmetrische Verschlüsselung)"
 
 #: authentik/providers/oauth2/models.py:99

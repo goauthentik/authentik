@@ -2,10 +2,10 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # jcamat, 2022
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -726,8 +726,8 @@ msgid "RS256 (Asymmetric Encryption)"
 msgstr "RS256 (cifrado asimétrico)"
 
 #: authentik/providers/oauth2/models.py:93
-msgid "EC256 (Asymmetric Encryption)"
-msgstr "EC256 (cifrado asimétrico)"
+msgid "ES256 (Asymmetric Encryption)"
+msgstr "ES256 (cifrado asimétrico)"
 
 #: authentik/providers/oauth2/models.py:99
 msgid "Scope used by the client"

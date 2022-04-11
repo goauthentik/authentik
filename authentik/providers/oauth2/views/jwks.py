@@ -55,7 +55,7 @@ class JWKSView(View):
                 response_data["keys"] = [
                     {
                         "kty": "EC",
-                        "alg": JWTAlgorithms.EC256,
+                        "alg": JWTAlgorithms.ES256,
                         "use": "sig",
                         "kid": signing_key.kid,
                         "n": b64_enc(public_numbers.n),

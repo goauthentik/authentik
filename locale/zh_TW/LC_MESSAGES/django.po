@@ -2,11 +2,11 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # Chen Zhikai, 2022
 # 刘松, 2022
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -696,8 +696,8 @@ msgid "RS256 (Asymmetric Encryption)"
 msgstr "RS256（非对称加密）"
 
 #: authentik/providers/oauth2/models.py:93
-msgid "EC256 (Asymmetric Encryption)"
-msgstr "EC256（非对称加密）"
+msgid "ES256 (Asymmetric Encryption)"
+msgstr "ES256（非对称加密）"
 
 #: authentik/providers/oauth2/models.py:99
 msgid "Scope used by the client"

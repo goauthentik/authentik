@@ -97,7 +97,7 @@ class JWTAlgorithms(models.TextChoices):
 
     HS256 = "HS256", _("HS256 (Symmetric Encryption)")
     RS256 = "RS256", _("RS256 (Asymmetric Encryption)")
-    EC256 = "EC256", _("EC256 (Asymmetric Encryption)")
+    ES256 = "ES256", _("ES256 (Asymmetric Encryption)")
 
 
 class ScopeMapping(PropertyMapping):
@@ -255,7 +255,7 @@ class OAuth2Provider(Provider):
         if isinstance(private_key, RSAPrivateKey):
             return key.key_data, JWTAlgorithms.RS256
         if isinstance(private_key, EllipticCurvePrivateKey):
-            return key.key_data, JWTAlgorithms.EC256
+            return key.key_data, JWTAlgorithms.ES256
         raise Exception(f"Invalid private key type: {type(private_key)}")
 
     def get_issuer(self, request: HttpRequest) -> Optional[str]:

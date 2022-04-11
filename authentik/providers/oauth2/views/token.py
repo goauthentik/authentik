@@ -270,7 +270,7 @@ class TokenParams:
                 token = decode(
                     assertion,
                     public_key,
-                    algorithms=[JWTAlgorithms.RS256, JWTAlgorithms.EC256],
+                    algorithms=[JWTAlgorithms.RS256, JWTAlgorithms.ES256],
                     options={
                         "verify_aud": False,
                     },
