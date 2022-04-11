@@ -179,6 +179,14 @@ Requires authentik 2021.12.1
 
 When enabled, all the events caused by a user will be deleted upon the user's deletion. Defaults to `true`.
 
+### AUTHENTIK_DEFAULT_TOKEN_LENGTH
+
+:::info
+Requires authentik 2022.4.1
+:::
+
+Configure the length of generated tokens. Defaults to 128.
+
 ### AUTHENTIK_FOOTER_LINKS
 
 :::info

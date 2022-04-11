@@ -62,7 +62,7 @@ def default_token_key():
     """Default token key"""
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
-    return generate_id(128)
+    return generate_id(int(CONFIG.y("default_token_length")))
 
 
 class Group(models.Model):
