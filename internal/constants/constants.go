@@ -25,4 +25,4 @@ func OutpostUserAgent() string {
 	return fmt.Sprintf("goauthentik.io/outpost/%s", FullVersion())
 }
 
-const VERSION = "2022.3.3"
+const VERSION = "2022.4.1"
