@@ -84,26 +84,6 @@ class TestTokenClientCredentials(OAuthTestCase):
             {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
         )
 
-    def test_non_sa(self):
-        """test non service-account"""
-        self.user.attributes[USER_ATTRIBUTE_SA] = False
-        self.user.save()
-        response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
-            {
-                "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
-                "scope": SCOPE_OPENID,
-                "client_id": self.provider.client_id,
-                "username": "sa",
-                "password": self.token.key,
-            },
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertJSONEqual(
-            response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
-        )
-
     def test_no_provider(self):
         """test no provider"""
         self.app.provider = None
