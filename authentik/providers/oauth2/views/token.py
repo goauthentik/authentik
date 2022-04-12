@@ -13,7 +13,6 @@ from structlog.stdlib import get_logger
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
-    USER_ATTRIBUTE_SA,
     Application,
     Token,
     TokenIntents,
@@ -229,10 +228,6 @@ class TokenParams:
         if not token or token.user.uid != user.uid:
             raise TokenError("invalid_grant")
         self.user = user
-        if not self.user.attributes.get(USER_ATTRIBUTE_SA, False):
-            # Non-service accounts are not allowed
-            LOGGER.info("Non-service-account tried to use client credentials", user=self.user)
-            raise TokenError("invalid_grant")
 
         Event.new(
             action=EventAction.LOGIN,
