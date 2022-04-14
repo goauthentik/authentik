@@ -1,5 +1,6 @@
 """Authenticator Validation"""
 from django.http import HttpRequest, HttpResponse
+from django.utils.timezone import now
 from django_otp import devices_for_user
 from rest_framework.fields import CharField, IntegerField, JSONField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
@@ -13,6 +14,7 @@ from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUse
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
@@ -139,6 +141,9 @@ class AuthenticatorValidateStageView(ChallengeStageView):
 
         stage: AuthenticatorValidateStage = self.executor.current_stage
 
+        _now = now()
+        threshold = timedelta_from_string(stage.last_auth_threshold)
+
         for device in user_devices:
             device_class = device.__class__.__name__.lower().replace("device", "")
             if device_class not in stage.device_classes:
@@ -148,6 +153,11 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             # WebAuthn does another device loop to find all webuahtn devices
             if device_class in seen_classes:
                 continue
+            # check if device has been used within threshold and skip this stage if so
+            if hasattr(device, "last_t") and threshold.total_seconds() > 0:
+                if _now - timedelta_from_string(device.last_t) >= threshold:
+                    LOGGER.info("Device has been used within threshold", device=device)
+                    return self.executor.stage_ok()
             if device_class not in seen_classes:
                 seen_classes.append(device_class)
             challenge = DeviceChallenge(

@@ -168,6 +168,8 @@ class SMSDevice(SideChannelDevice):
 
     phone_number = models.TextField()
 
+    last_t = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return self.name or str(self.user)
 
