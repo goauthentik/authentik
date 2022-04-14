@@ -120,9 +120,12 @@ class ChallengeStageView(StageView):
             return self.executor.flow.title
         try:
             return self.executor.flow.title % {
-                "app": self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, "")
+                "app": self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, ""),
+                "user": self.get_pending_user(for_display=True),
             }
-        except ValueError:
+        # pylint: disable=broad-except
+        except Exception as exc:
+            LOGGER.warning("failed to template title", exc=exc)
             return self.executor.flow.title
 
     def _get_challenge(self, *args, **kwargs) -> Challenge:
@@ -131,25 +134,29 @@ class ChallengeStageView(StageView):
             description=self.__class__.__name__,
         ):
             challenge = self.get_challenge(*args, **kwargs)
-        if "flow_info" not in challenge.initial_data:
-            flow_info = ContextualFlowInfo(
-                data={
-                    "title": self.format_title(),
-                    "background": self.executor.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                }
-            )
-            flow_info.is_valid()
-            challenge.initial_data["flow_info"] = flow_info.data
-        if isinstance(challenge, WithUserInfoChallenge):
-            # If there's a pending user, update the `username` field
-            # this field is only used by password managers.
-            # If there's no user set, an error is raised later.
-            if user := self.get_pending_user(for_display=True):
-                challenge.initial_data["pending_user"] = user.username
-            challenge.initial_data["pending_user_avatar"] = DEFAULT_AVATAR
-            if not isinstance(user, AnonymousUser):
-                challenge.initial_data["pending_user_avatar"] = user.avatar
+        with Hub.current.start_span(
+            op="authentik.flow.stage._get_challenge",
+            description=self.__class__.__name__,
+        ):
+            if "flow_info" not in challenge.initial_data:
+                flow_info = ContextualFlowInfo(
+                    data={
+                        "title": self.format_title(),
+                        "background": self.executor.flow.background_url,
+                        "cancel_url": reverse("authentik_flows:cancel"),
+                    }
+                )
+                flow_info.is_valid()
+                challenge.initial_data["flow_info"] = flow_info.data
+            if isinstance(challenge, WithUserInfoChallenge):
+                # If there's a pending user, update the `username` field
+                # this field is only used by password managers.
+                # If there's no user set, an error is raised later.
+                if user := self.get_pending_user(for_display=True):
+                    challenge.initial_data["pending_user"] = user.username
+                challenge.initial_data["pending_user_avatar"] = DEFAULT_AVATAR
+                if not isinstance(user, AnonymousUser):
+                    challenge.initial_data["pending_user_avatar"] = user.avatar
         return challenge
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
