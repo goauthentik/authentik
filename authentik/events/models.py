@@ -261,7 +261,7 @@ class Event(ExpiringModel):
 
     def save(self, *args, **kwargs):
         if self._state.adding:
-            LOGGER.debug(
+            LOGGER.info(
                 "Created Event",
                 action=self.action,
                 context=self.context,
