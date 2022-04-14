@@ -8,6 +8,7 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import datetime, now
 from django.views import View
 from jwt import InvalidTokenError, decode
+from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
@@ -94,16 +95,19 @@ class TokenParams:
         )
 
     def __check_policy_access(self, app: Application, request: HttpRequest, **kwargs):
-        engine = PolicyEngine(app, self.user, request)
-        engine.request.context["oauth_scopes"] = self.scope
-        engine.request.context["oauth_grant_type"] = self.grant_type
-        engine.request.context["oauth_code_verifier"] = self.code_verifier
-        engine.request.context.update(kwargs)
-        engine.build()
-        result = engine.result
-        if not result.passing:
-            LOGGER.info("User not authenticated for application", user=self.user, app=app)
-            raise TokenError("invalid_grant")
+        with Hub.current.start_span(
+            op="authentik.providers.oauth2.token.policy",
+        ):
+            engine = PolicyEngine(app, self.user, request)
+            engine.request.context["oauth_scopes"] = self.scope
+            engine.request.context["oauth_grant_type"] = self.grant_type
+            engine.request.context["oauth_code_verifier"] = self.code_verifier
+            engine.request.context.update(kwargs)
+            engine.build()
+            result = engine.result
+            if not result.passing:
+                LOGGER.info("User not authenticated for application", user=self.user, app=app)
+                raise TokenError("invalid_grant")
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
         if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
@@ -118,11 +122,20 @@ class TokenParams:
                 raise TokenError("invalid_client")
 
         if self.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
-            self.__post_init_code(raw_code)
+            with Hub.current.start_span(
+                op="authentik.providers.oauth2.post.parse.code",
+            ):
+                self.__post_init_code(raw_code)
         elif self.grant_type == GRANT_TYPE_REFRESH_TOKEN:
-            self.__post_init_refresh(raw_token, request)
+            with Hub.current.start_span(
+                op="authentik.providers.oauth2.post.parse.refresh",
+            ):
+                self.__post_init_refresh(raw_token, request)
         elif self.grant_type in [GRANT_TYPE_CLIENT_CREDENTIALS, GRANT_TYPE_PASSWORD]:
-            self.__post_init_client_credentials(request)
+            with Hub.current.start_span(
+                op="authentik.providers.oauth2.post.parse.client_credentials",
+            ):
+                self.__post_init_client_credentials(request)
         else:
             LOGGER.warning("Invalid grant type", grant_type=self.grant_type)
             raise TokenError("unsupported_grant_type")
@@ -330,27 +343,33 @@ class TokenView(View):
     def post(self, request: HttpRequest) -> HttpResponse:
         """Generate tokens for clients"""
         try:
-            client_id, client_secret = extract_client_auth(request)
-            try:
-                self.provider = OAuth2Provider.objects.get(client_id=client_id)
-            except OAuth2Provider.DoesNotExist:
-                LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
-                raise TokenError("invalid_client")
+            with Hub.current.start_span(
+                op="authentik.providers.oauth2.post.parse",
+            ):
+                client_id, client_secret = extract_client_auth(request)
+                try:
+                    self.provider = OAuth2Provider.objects.get(client_id=client_id)
+                except OAuth2Provider.DoesNotExist:
+                    LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
+                    raise TokenError("invalid_client")
 
-            if not self.provider:
-                raise ValueError
-            self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
+                if not self.provider:
+                    raise ValueError
+                self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
 
-            if self.params.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
-                LOGGER.debug("Converting authorization code to refresh token")
-                return TokenResponse(self.create_code_response())
-            if self.params.grant_type == GRANT_TYPE_REFRESH_TOKEN:
-                LOGGER.debug("Refreshing refresh token")
-                return TokenResponse(self.create_refresh_response())
-            if self.params.grant_type == GRANT_TYPE_CLIENT_CREDENTIALS:
-                LOGGER.debug("Client credentials grant")
-                return TokenResponse(self.create_client_credentials_response())
-            raise ValueError(f"Invalid grant_type: {self.params.grant_type}")
+            with Hub.current.start_span(
+                op="authentik.providers.oauth2.post.response",
+            ):
+                if self.params.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
+                    LOGGER.debug("Converting authorization code to refresh token")
+                    return TokenResponse(self.create_code_response())
+                if self.params.grant_type == GRANT_TYPE_REFRESH_TOKEN:
+                    LOGGER.debug("Refreshing refresh token")
+                    return TokenResponse(self.create_refresh_response())
+                if self.params.grant_type == GRANT_TYPE_CLIENT_CREDENTIALS:
+                    LOGGER.debug("Client credentials grant")
+                    return TokenResponse(self.create_client_credentials_response())
+                raise ValueError(f"Invalid grant_type: {self.params.grant_type}")
         except TokenError as error:
             return TokenResponse(error.create_dict(), status=400)
         except UserAuthError as error:
