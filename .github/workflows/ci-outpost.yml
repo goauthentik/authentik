@@ -116,7 +116,7 @@ jobs:
       - name: Build web
         run: |
           cd web
-          npm install
+          npm ci
           npm run build-proxy
       - name: Build outpost
         run: |

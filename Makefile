@@ -132,8 +132,8 @@ ci-pending-migrations: ci--meta-debug
 
 install:
 	poetry install
-	cd web && npm i
-	cd website && npm i
+	cd web && npm ci
+	cd website && npm ci
 
 a: install
 	tmux \

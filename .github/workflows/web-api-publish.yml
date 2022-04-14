@@ -19,7 +19,7 @@ jobs:
       - name: Publish package
         run: |
           cd web-api/
-          npm i
+          npm ci
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

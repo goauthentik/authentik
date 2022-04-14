@@ -22,7 +22,7 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - run: |
           cd web
-          npm install
+          npm ci
       - name: Generate API
         run: make gen-web
       - name: Eslint
@@ -40,7 +40,7 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - run: |
           cd web
-          npm install
+          npm ci
       - name: Generate API
         run: make gen-web
       - name: prettier
@@ -58,7 +58,7 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - run: |
           cd web
-          npm install
+          npm ci
       - name: Generate API
         run: make gen-web
       - name: lit-analyse
@@ -86,7 +86,7 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - run: |
           cd web
-          npm install
+          npm ci
       - name: Generate API
         run: make gen-web
       - name: build
