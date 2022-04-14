@@ -231,7 +231,7 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         return FlowStageBindingSerializer
 
     def __str__(self) -> str:
-        return f"Flow-stage binding #{self.order} to {self.target}"
+        return f"Flow-stage binding #{self.order} to {self.target_id}"
 
     class Meta:
 
