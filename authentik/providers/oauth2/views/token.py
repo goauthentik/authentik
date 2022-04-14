@@ -241,6 +241,11 @@ class TokenParams:
         if not token or token.user.uid != user.uid:
             raise TokenError("invalid_grant")
         self.user = user
+        # Authorize user access
+        app = Application.objects.filter(provider=self.provider).first()
+        if not app or not app.provider:
+            raise TokenError("invalid_grant")
+        self.__check_policy_access(app, request)
 
         Event.new(
             action=EventAction.LOGIN,
@@ -248,13 +253,8 @@ class TokenParams:
             PLAN_CONTEXT_METHOD_ARGS={
                 "identifier": token.identifier,
             },
+            PLAN_CONTEXT_APPLICATION=app,
         ).from_http(request, user=user)
-
-        # Authorize user access
-        app = Application.objects.filter(provider=self.provider).first()
-        if not app or not app.provider:
-            raise TokenError("invalid_grant")
-        self.__check_policy_access(app, request)
         return None
 
     def __post_init_client_credentials_jwt(self, request: HttpRequest):
@@ -320,6 +320,7 @@ class TokenParams:
             PLAN_CONTEXT_METHOD_ARGS={
                 "jwt": token,
             },
+            PLAN_CONTEXT_APPLICATION=app,
         ).from_http(request, user=self.user)
 
 
