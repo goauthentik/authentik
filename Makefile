@@ -63,7 +63,7 @@ gen-web:
 		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${NPM_VERSION}
 	mkdir -p web/node_modules/@goauthentik/api
 	\cp -fv scripts/web_api_readme.md web-api/README.md
-	cd web-api && npm i
+	cd web-api && npm ci
 	\cp -rfv web-api/* web/node_modules/@goauthentik/api
 
 gen-outpost:
@@ -132,8 +132,8 @@ ci-pending-migrations: ci--meta-debug
 
 install:
 	poetry install
-	cd web && npm i
-	cd website && npm i
+	cd web && npm ci
+	cd website && npm ci
 
 a: install
 	tmux \
