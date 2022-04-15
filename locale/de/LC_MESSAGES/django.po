@@ -2,16 +2,17 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 # Translators:
-# Vri, 2021
 # Lars Lehmann <lars@lars-lehmann.net>, 2021
 # Johannes —/—, 2021
 # flip yksflip, 2021
 # Rhea Alleen, 2021
 # David <david@techniknews.net>, 2021
 # Steve Oswald, 2022
-#
+# 97cce0ae0cad2a2cc552d3165d04643e_de3d740, 2022
+# 3ole, 2022
+# 
 #, fuzzy
 msgid ""
 msgstr ""
@@ -19,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-03 12:29+0000\n"
 "PO-Revision-Date: 2021-10-09 18:10+0000\n"
-"Last-Translator: Steve Oswald, 2022\n"
+"Last-Translator: 3ole, 2022\n"
 "Language-Team: German (https://www.transifex.com/beryjuorg/teams/119923/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -288,11 +289,11 @@ msgstr "Versendet für Benutzer"
 
 #: authentik/events/models.py:439
 msgid "Notification Transport"
-msgstr "Benachrichtigung Transport"
+msgstr "Mitteilungszustellungsart"
 
 #: authentik/events/models.py:440
 msgid "Notification Transports"
-msgstr "Benachrichtigung Transporter"
+msgstr "Mitteilungszustellungsarten"
 
 #: authentik/events/models.py:446
 msgid "Notice"
@@ -735,7 +736,7 @@ msgstr "RS256 (Asymmetrische Verschlüsselung)"
 
 #: authentik/providers/oauth2/models.py:93
 msgid "ES256 (Asymmetric Encryption)"
-msgstr "RS256 (Asymmetrische Verschlüsselung)"
+msgstr "ES256 (Asymmetrische Verschlüsselung)"
 
 #: authentik/providers/oauth2/models.py:99
 msgid "Scope used by the client"
