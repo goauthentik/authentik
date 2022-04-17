@@ -108,6 +108,10 @@ msgstr ""
 msgid "ANY, any policy must match to include this stage access."
 msgstr ""
 
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "API"
+msgstr ""
+
 #: src/pages/tokens/TokenListPage.ts
 msgid "API Access"
 msgstr ""
@@ -404,6 +408,10 @@ msgstr ""
 msgid "Application requires following permissions:"
 msgstr ""
 
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Application type"
+msgstr ""
+
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
@@ -419,6 +427,14 @@ msgstr ""
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/outposts/OutpostForm.ts
 msgid "Applications"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Applications which handle the authentication server-side (for example, Python, Go, Rust, Java, PHP)"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Applications which redirect users to a non-web callback (for example, Android, iOS)"
 msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
@@ -530,6 +546,14 @@ msgstr ""
 #: src/pages/sources/saml/SAMLSourceForm.ts
 #: src/pages/tenants/TenantForm.ts
 msgid "Authentication flow"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Authentication method"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Authentication without user interaction, or machine-to-machine authentication."
 msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
@@ -2741,6 +2765,7 @@ msgstr ""
 msgid "Kubeconfig"
 msgstr ""
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
 msgstr ""
@@ -3131,8 +3156,12 @@ msgid "Model updated"
 msgstr ""
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Modern applications, APIs and Single-page=applications."
+msgid "Modern applications, APIs and Single-page applications."
 msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#~ msgid "Modern applications, APIs and Single-page=applications."
+#~ msgstr ""
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #~ msgid "Modern applications, APIs and Single=page=applications"
@@ -3250,6 +3279,10 @@ msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "NameID Property Mapping"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Native application"
 msgstr ""
 
 #: src/flows/stages/identification/IdentificationStage.ts
@@ -3526,6 +3559,10 @@ msgstr ""
 #: src/pages/providers/ProviderWizard.ts
 #~ msgid "OAuth/OIDC"
 #~ msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "OAuth2/OIDC"
+msgstr ""
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "OK"
@@ -3981,8 +4018,8 @@ msgid "Protocol Settings"
 msgstr ""
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Protocol details"
-msgstr ""
+#~ msgid "Protocol details"
+#~ msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
@@ -4028,6 +4065,7 @@ msgstr ""
 msgid "Providers"
 msgstr ""
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -4311,9 +4349,9 @@ msgstr ""
 msgid "Run sync again"
 msgstr ""
 
-#: src/pages/providers/ProviderWizard.ts
-#~ msgid "SAML"
-#~ msgstr ""
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "SAML"
+msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
 #~ msgid "SAML (metadata import)"
@@ -4723,6 +4761,10 @@ msgstr ""
 
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Single use"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Single-page applications"
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -6354,6 +6396,10 @@ msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
 msgid "Web Certificate"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Web application"
 msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts

@@ -2,10 +2,10 @@ import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
-import { property } from "lit/decorators.js";
 
 import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -15,42 +15,41 @@ import { WizardPage } from "../../../elements/wizard/WizardPage";
 
 @customElement("ak-application-wizard-type")
 export class TypeApplicationWizardPage extends WizardPage {
-    @property({ attribute: false })
     applicationTypes: TypeCreate[] = [
         {
             component: "oauth",
-            name: "OAuth2/OIDC",
+            name: t`OAuth2/OIDC`,
             description: t`Modern applications, APIs and Single-page applications.`,
             modelName: "",
         },
         {
             component: "saml",
-            name: "SAML",
+            name: t`SAML`,
             description: "XML-based SSO standard. Use this if your application only supports SAML.",
             modelName: "",
         },
         {
             component: "proxy",
-            name: "Proxy",
+            name: t`Proxy`,
             description: t`Legacy applications which don't natively support SSO.`,
             modelName: "",
         },
         {
             component: "ldap",
-            name: "LDAP",
+            name: t`LDAP`,
             description: t`Provide an LDAP interface for applications and users to authenticate against.`,
             modelName: "",
         },
     ];
 
-    sidebarLabel = () => t`Protocol details`;
+    sidebarLabel = () => t`Authentication method`;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, AKGlobal, PFRadio];
+        return [PFBase, PFButton, PFForm, PFRadio, AKGlobal];
     }
 
     render(): TemplateResult {
-        return html`
+        return html`<form class="pf-c-form pf-m-horizontal">
             ${this.applicationTypes.map((type) => {
                 return html`<div class="pf-c-radio">
                     <input
@@ -65,9 +64,8 @@ export class TypeApplicationWizardPage extends WizardPage {
                     />
                     <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
                     <span class="pf-c-radio__description">${type.description}</span>
-                    <span class="pf-c-radio__body"></span>
                 </div>`;
             })}
-        `;
+        </form>`;
     }
 }

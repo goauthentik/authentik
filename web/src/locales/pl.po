@@ -111,6 +111,10 @@ msgstr "ANY, dowolna zasada musi być zgodna, aby przyznać dostęp."
 msgid "ANY, any policy must match to include this stage access."
 msgstr "ANY, każda zasada musi być zgodna, aby uwzględnić dostęp do tego etapu."
 
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "API"
+msgstr ""
+
 #: src/pages/tokens/TokenListPage.ts
 msgid "API Access"
 msgstr "Dostęp API"
@@ -405,6 +409,10 @@ msgstr ""
 msgid "Application requires following permissions:"
 msgstr "Aplikacja wymaga następujących uprawnień:"
 
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Application type"
+msgstr ""
+
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
@@ -421,6 +429,14 @@ msgstr "Aplikacja(e)"
 #: src/pages/outposts/OutpostForm.ts
 msgid "Applications"
 msgstr "Aplikacje"
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Applications which handle the authentication server-side (for example, Python, Go, Rust, Java, PHP)"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Applications which redirect users to a non-web callback (for example, Android, iOS)"
+msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Apps with most usage"
@@ -534,6 +550,14 @@ msgstr "URL uwierzytelniania"
 #: src/pages/tenants/TenantForm.ts
 msgid "Authentication flow"
 msgstr "Przepływ uwierzytelniania"
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Authentication method"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Authentication without user interaction, or machine-to-machine authentication."
+msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Authenticator"
@@ -2698,6 +2722,7 @@ msgstr "Para kluczy służąca do podpisywania żądań wychodzących. Pozostaw 
 msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
 msgstr "LDAP"
@@ -3087,8 +3112,12 @@ msgid "Model updated"
 msgstr "Zaktualizowano model"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Modern applications, APIs and Single-page=applications."
+msgid "Modern applications, APIs and Single-page applications."
 msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#~ msgid "Modern applications, APIs and Single-page=applications."
+#~ msgstr ""
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #~ msgid "Modern applications, APIs and Single=page=applications"
@@ -3206,6 +3235,10 @@ msgstr "Zasada NameID"
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "NameID Property Mapping"
 msgstr "Mapowanie właściwości NameID"
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Native application"
+msgstr ""
 
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Need an account?"
@@ -3476,6 +3509,10 @@ msgstr "Kody odświeżania OAuth"
 #: src/pages/providers/ProviderWizard.ts
 #~ msgid "OAuth/OIDC"
 #~ msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "OAuth2/OIDC"
+msgstr ""
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "OK"
@@ -3922,8 +3959,8 @@ msgid "Protocol Settings"
 msgstr "Ustawienia protokołu"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Protocol details"
-msgstr ""
+#~ msgid "Protocol details"
+#~ msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
@@ -3968,6 +4005,7 @@ msgstr "Dostawca(y)"
 msgid "Providers"
 msgstr "Dostawcy"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -4241,9 +4279,9 @@ msgstr "Unieważniono?"
 msgid "Run sync again"
 msgstr "Uruchom ponownie synchronizację"
 
-#: src/pages/providers/ProviderWizard.ts
-#~ msgid "SAML"
-#~ msgstr ""
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "SAML"
+msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
 #~ msgid "SAML (metadata import)"
@@ -4646,6 +4684,10 @@ msgstr "Pojedyncze monity, których można używać dla etapów monitów."
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Single use"
 msgstr "Jednorazowego użytku"
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Single-page applications"
+msgstr ""
 
 #~ msgid "Skip path regex"
 #~ msgstr "Pomiń path regex"
@@ -6249,6 +6291,10 @@ msgstr "Ostrzeżenie: domena authentik nie jest skonfigurowana, uwierzytelnianie
 #: src/pages/tenants/TenantForm.ts
 msgid "Web Certificate"
 msgstr "Certyfikat sieciowy"
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Web application"
+msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "WebAuthn Authenticators"

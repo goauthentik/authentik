@@ -113,6 +113,10 @@ msgstr "ANY，必须匹配任意策略才能授予访问权限。"
 msgid "ANY, any policy must match to include this stage access."
 msgstr "ANY，必须匹配任意策略才能包含此阶段访问权限。"
 
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "API"
+msgstr ""
+
 #: src/pages/tokens/TokenListPage.ts
 msgid "API Access"
 msgstr "API 访问权限"
@@ -406,6 +410,10 @@ msgstr ""
 msgid "Application requires following permissions:"
 msgstr "应用程序需要以下权限："
 
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Application type"
+msgstr ""
+
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
@@ -422,6 +430,14 @@ msgstr "应用程序"
 #: src/pages/outposts/OutpostForm.ts
 msgid "Applications"
 msgstr "应用程序"
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Applications which handle the authentication server-side (for example, Python, Go, Rust, Java, PHP)"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Applications which redirect users to a non-web callback (for example, Android, iOS)"
+msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Apps with most usage"
@@ -535,6 +551,14 @@ msgstr "身份验证 URL"
 #: src/pages/tenants/TenantForm.ts
 msgid "Authentication flow"
 msgstr "身份验证流程"
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Authentication method"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Authentication without user interaction, or machine-to-machine authentication."
+msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Authenticator"
@@ -2689,6 +2713,7 @@ msgstr "用于签名传出请求的密钥对。留空则禁用签名。"
 msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
 msgstr "LDAP"
@@ -3076,8 +3101,12 @@ msgid "Model updated"
 msgstr "模型已更新"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Modern applications, APIs and Single-page=applications."
+msgid "Modern applications, APIs and Single-page applications."
 msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#~ msgid "Modern applications, APIs and Single-page=applications."
+#~ msgstr ""
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #~ msgid "Modern applications, APIs and Single=page=applications"
@@ -3195,6 +3224,10 @@ msgstr "NameID 策略"
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "NameID Property Mapping"
 msgstr "NameID 属性映射"
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Native application"
+msgstr ""
 
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Need an account?"
@@ -3462,6 +3495,10 @@ msgstr "OAuth 刷新代码"
 
 #~ msgid "OAuth/OIDC"
 #~ msgstr "OAuth/OIDC"
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "OAuth2/OIDC"
+msgstr ""
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "OK"
@@ -3902,8 +3939,8 @@ msgid "Protocol Settings"
 msgstr "协议设置"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Protocol details"
-msgstr ""
+#~ msgid "Protocol details"
+#~ msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
@@ -3948,6 +3985,7 @@ msgstr "提供程序"
 msgid "Providers"
 msgstr "提供程序"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -4219,8 +4257,9 @@ msgstr "已吊销？"
 msgid "Run sync again"
 msgstr "再次运行同步"
 
-#~ msgid "SAML"
-#~ msgstr "SAML"
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "SAML"
+msgstr "SAML"
 
 #~ msgid "SAML (metadata import)"
 #~ msgstr "SAML（元数据导入）"
@@ -4620,6 +4659,10 @@ msgstr "可用于输入阶段的单个输入项。"
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Single use"
 msgstr "一次性使用"
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Single-page applications"
+msgstr ""
 
 #~ msgid "Skip path regex"
 #~ msgstr "跳过路径正则表达式"
@@ -6221,6 +6264,10 @@ msgstr "警告：未配置 authentik 域名，身份验证将不起作用。"
 #: src/pages/tenants/TenantForm.ts
 msgid "Web Certificate"
 msgstr "Web 证书"
+
+#: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
+msgid "Web application"
+msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "WebAuthn Authenticators"
