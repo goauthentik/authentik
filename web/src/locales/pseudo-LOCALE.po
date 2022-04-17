@@ -253,6 +253,10 @@ msgstr ""
 msgid "Additional Scope"
 msgstr ""
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Additional UI settings"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional group DN, prepended to the Base DN."
 msgstr ""
@@ -402,6 +406,7 @@ msgstr ""
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
 msgid "Application's display Name."
 msgstr ""
 
@@ -2804,7 +2809,11 @@ msgid "Launch URL"
 msgstr ""
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Legacy applications which don't natively support SSO"
+#~ msgid "Legacy applications which don't natively support SSO"
+#~ msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Legacy applications which don't natively support SSO."
 msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
@@ -3122,8 +3131,12 @@ msgid "Model updated"
 msgstr ""
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Modern applications, APIs and Single=page=applications"
+msgid "Modern applications, APIs and Single-page=applications."
 msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#~ msgid "Modern applications, APIs and Single=page=applications"
+#~ msgstr ""
 
 #: 
 #~ msgid "Monitor"
@@ -3141,6 +3154,7 @@ msgstr ""
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts

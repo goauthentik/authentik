@@ -2,28 +2,55 @@ import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
+import { property } from "lit/decorators.js";
 
 import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFPanel from "@patternfly/patternfly/components/Panel/panel.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import { CoreApi } from "@goauthentik/api";
+
+import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { WizardPage } from "../../../elements/wizard/WizardPage";
+import { convertToSlug } from "../../../utils";
 
 @customElement("ak-application-wizard-initial")
 export class InitialApplicationWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFFormControl, PFFormControl, PFButton, AKGlobal, PFRadio];
+        return [PFBase, PFForm, PFPanel, PFFormControl, PFFormControl, PFButton, AKGlobal, PFRadio];
     }
+
+    @property()
+    name?: string;
 
     sidebarLabel = () => t`Application details`;
 
+    nextCallback = async (): Promise<boolean> => {
+        let slug = convertToSlug(this.name || "");
+        // Check if an application with the generated slug already exists
+        try {
+            await new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({
+                slug: slug,
+            });
+            slug += "-1";
+        } catch {}
+        this.host.state["slug"] = slug;
+        return true;
+    };
+
     render(): TemplateResult {
         return html`
+            <div class="pf-c-panel">
+                <div class="pf-c-panel__main">
+                    <div class="pf-c-panel__main-body">Main content</div>
+                </div>
+            </div>
             <form class="pf-c-form pf-m-horizontal">
                 <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
                     <input
@@ -32,7 +59,9 @@ export class InitialApplicationWizardPage extends WizardPage {
                         class="pf-c-form-control"
                         required
                         @input=${(ev: InputEvent) => {
-                            this._isValid = (ev.target as HTMLInputElement).value !== "";
+                            const value = (ev.target as HTMLInputElement).value;
+                            this._isValid = value !== "";
+                            this.name = value;
                             this.host.requestUpdate();
                         }}
                     />

@@ -18,13 +18,13 @@ export class TypeApplicationWizardPage extends WizardPage {
     @property({ attribute: false })
     applicationTypes: TypeCreate[] = [
         {
-            component: "",
+            component: "oauth",
             name: "OAuth2/OIDC",
-            description: t`Modern applications, APIs and Single-page=applications.`,
+            description: t`Modern applications, APIs and Single-page applications.`,
             modelName: "",
         },
         {
-            component: "",
+            component: "saml",
             name: "SAML",
             description: "XML-based SSO standard. Use this if your application only supports SAML.",
             modelName: "",
@@ -36,7 +36,7 @@ export class TypeApplicationWizardPage extends WizardPage {
             modelName: "",
         },
         {
-            component: "",
+            component: "ldap",
             name: "LDAP",
             description: t`Provide an LDAP interface for applications and users to authenticate against.`,
             modelName: "",
@@ -65,6 +65,7 @@ export class TypeApplicationWizardPage extends WizardPage {
                     />
                     <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
                     <span class="pf-c-radio__description">${type.description}</span>
+                    <span class="pf-c-radio__body"></span>
                 </div>`;
             })}
         `;

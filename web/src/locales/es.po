@@ -255,6 +255,10 @@ msgstr "DN de usuario adicional"
 msgid "Additional Scope"
 msgstr "Ámbito adicional"
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Additional UI settings"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional group DN, prepended to the Base DN."
 msgstr "DN de grupo adicional, antepuesto al DN base."
@@ -403,6 +407,7 @@ msgstr "La aplicación requiere los siguientes permisos:"
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
 msgid "Application's display Name."
 msgstr "Nombre para mostrar de la aplicación."
 
@@ -2764,7 +2769,11 @@ msgid "Launch URL"
 msgstr "URL de lanzamiento"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Legacy applications which don't natively support SSO"
+#~ msgid "Legacy applications which don't natively support SSO"
+#~ msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Legacy applications which don't natively support SSO."
 msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
@@ -3081,8 +3090,12 @@ msgid "Model updated"
 msgstr "Modelo actualizado"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Modern applications, APIs and Single=page=applications"
+msgid "Modern applications, APIs and Single-page=applications."
 msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#~ msgid "Modern applications, APIs and Single=page=applications"
+#~ msgstr ""
 
 #~ msgid "Monitor"
 #~ msgstr "Monitor"
@@ -3099,6 +3112,7 @@ msgstr "Mis solicitudes"
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts

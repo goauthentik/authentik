@@ -50,6 +50,9 @@ export class Wizard extends ModalButton {
         return Promise.resolve();
     };
 
+    @property({ attribute: false })
+    state: { [key: string]: unknown } = {};
+
     renderModalInner(): TemplateResult {
         const firstPage = this.querySelector<WizardPage>(`[slot=${this.steps[0]}]`);
         if (!this.currentStep && firstPage) {

@@ -32,7 +32,7 @@ export class WebsocketClient {
         });
         this.messageSocket.addEventListener("close", (e) => {
             console.debug(`authentik/ws: closed ws connection: ${e}`);
-            if (this.retryDelay > 3000) {
+            if (this.retryDelay > 6000) {
                 showMessage(
                     {
                         level: MessageLevel.error,

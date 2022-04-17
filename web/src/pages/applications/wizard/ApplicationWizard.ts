@@ -11,6 +11,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import "./InitialApplicationWizardPage";
 import "./TypeApplicationWizardPage";
+import "./TypeOAuthApplicationWizardPage";
 import "./TypeProxyApplicationWizardPage";
 
 @customElement("ak-application-wizard")
@@ -43,9 +44,14 @@ export class ApplicationWizard extends LitElement {
             >
                 <ak-application-wizard-initial slot="initial"> </ak-application-wizard-initial>
                 <ak-application-wizard-type slot="type"> </ak-application-wizard-type>
+                <!--Proxy -->
                 <ak-application-wizard-type-proxy
                     slot="type-proxy"
                 ></ak-application-wizard-type-proxy>
+                <!--OAuth -->
+                <ak-application-wizard-type-oauth
+                    slot="type-oauth"
+                ></ak-application-wizard-type-oauth>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
             </ak-wizard>
         `;

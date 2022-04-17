@@ -255,6 +255,10 @@ msgstr "Ekleme Kullanıcı DN"
 msgid "Additional Scope"
 msgstr "Ek Kapsam"
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Additional UI settings"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional group DN, prepended to the Base DN."
 msgstr "Ek grup DN, Base DN için eklenmiş."
@@ -403,6 +407,7 @@ msgstr "Uygulama aşağıdaki izinleri gerektirir:"
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
 msgid "Application's display Name."
 msgstr "Uygulamanın görünen Adı."
 
@@ -2765,7 +2770,11 @@ msgid "Launch URL"
 msgstr "URL Başlat"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Legacy applications which don't natively support SSO"
+#~ msgid "Legacy applications which don't natively support SSO"
+#~ msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Legacy applications which don't natively support SSO."
 msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
@@ -3082,8 +3091,12 @@ msgid "Model updated"
 msgstr "Model güncellendi"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Modern applications, APIs and Single=page=applications"
+msgid "Modern applications, APIs and Single-page=applications."
 msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#~ msgid "Modern applications, APIs and Single=page=applications"
+#~ msgstr ""
 
 #~ msgid "Monitor"
 #~ msgstr "Monitör"
@@ -3100,6 +3113,7 @@ msgstr "Uygulamalarım"
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts

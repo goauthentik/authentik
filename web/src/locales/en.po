@@ -257,6 +257,10 @@ msgstr "Addition User DN"
 msgid "Additional Scope"
 msgstr "Additional Scope"
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Additional UI settings"
+msgstr "Additional UI settings"
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional group DN, prepended to the Base DN."
 msgstr "Additional group DN, prepended to the Base DN."
@@ -406,6 +410,7 @@ msgstr "Application requires following permissions:"
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
 msgid "Application's display Name."
 msgstr "Application's display Name."
 
@@ -2822,8 +2827,12 @@ msgid "Launch URL"
 msgstr "Launch URL"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Legacy applications which don't natively support SSO"
-msgstr "Legacy applications which don't natively support SSO"
+#~ msgid "Legacy applications which don't natively support SSO"
+#~ msgstr "Legacy applications which don't natively support SSO"
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Legacy applications which don't natively support SSO."
+msgstr "Legacy applications which don't natively support SSO."
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Let the user identify themselves with their username or Email address."
@@ -3140,8 +3149,12 @@ msgid "Model updated"
 msgstr "Model updated"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-msgid "Modern applications, APIs and Single=page=applications"
-msgstr "Modern applications, APIs and Single=page=applications"
+msgid "Modern applications, APIs and Single-page=applications."
+msgstr "Modern applications, APIs and Single-page=applications."
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#~ msgid "Modern applications, APIs and Single=page=applications"
+#~ msgstr "Modern applications, APIs and Single=page=applications"
 
 #: 
 #~ msgid "Monitor"
@@ -3159,6 +3172,7 @@ msgstr "My applications"
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
