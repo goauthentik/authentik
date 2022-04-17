@@ -6,6 +6,7 @@ import { property } from "lit/decorators.js";
 
 import AKGlobal from "../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -27,12 +28,12 @@ export class InitialSourceWizardPage extends WizardPage {
     sourceTypes: TypeCreate[] = [];
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, AKGlobal, PFRadio];
+        return [PFBase, PFForm, PFButton, AKGlobal, PFRadio];
     }
     sidebarLabel = () => t`Select type`;
 
     render(): TemplateResult {
-        return html`
+        return html`<form class="pf-c-form pf-m-horizontal">
             ${this.sourceTypes.map((type) => {
                 return html`<div class="pf-c-radio">
                     <input
@@ -54,7 +55,7 @@ export class InitialSourceWizardPage extends WizardPage {
                     <span class="pf-c-radio__description">${type.description}</span>
                 </div>`;
             })}
-        `;
+        </form>`;
     }
 }
 
