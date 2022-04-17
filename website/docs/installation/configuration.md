@@ -188,6 +188,14 @@ Requires authentik 2022.4.1
 
 Configure the length of generated tokens. Defaults to 128.
 
+### AUTHENTIK_IMPERSONATION
+
+:::info
+Requires authentik 2022.4.2
+:::
+
+Globally enable/disable impersonation. Defaults to `true`.
+
 ### AUTHENTIK_FOOTER_LINKS
 
 :::info

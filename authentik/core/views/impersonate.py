@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from structlog.stdlib import get_logger
-
+from authentik.lib.config import CONFIG
 from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
@@ -17,6 +17,9 @@ class ImpersonateInitView(View):
 
     def get(self, request: HttpRequest, user_id: int) -> HttpResponse:
         """Impersonation handler, checks permissions"""
+        if not CONFIG.y_bool("impersonation"):
+            LOGGER.debug("User attempted to impersonate", user=request.user)
+            return HttpResponse("Unauthorized", status=401)
         if not request.user.has_perm("impersonate"):
             LOGGER.debug("User attempted to impersonate without permissions", user=request.user)
             return HttpResponse("Unauthorized", status=401)

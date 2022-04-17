@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { until } from "lit/directives/until.js";
 
 import AKGlobal from "../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -15,9 +16,9 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { CoreApi, User } from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, User } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../api/Config";
+import { DEFAULT_CONFIG, config } from "../../api/Config";
 import { EVENT_REFRESH } from "../../constants";
 import "../../elements/CodeMirror";
 import { PFColor } from "../../elements/Label";
@@ -239,14 +240,22 @@ export class UserViewPage extends LitElement {
                                 ${t`Reset Password`}
                             </ak-action-button>
                         </div>
-                        <div class="pf-c-card__footer">
-                            <a
-                                class="pf-c-button pf-m-tertiary"
-                                href="${`/-/impersonation/${this.user.pk}/`}"
-                            >
-                                ${t`Impersonate`}
-                            </a>
-                        </div>
+
+                        ${until(
+                            config().then((config) => {
+                                if (config.capabilities.includes(CapabilitiesEnum.Impersonate)) {
+                                    return html` <div class="pf-c-card__footer">
+                                        <a
+                                            class="pf-c-button pf-m-tertiary"
+                                            href="${`/-/impersonation/${this.user?.pk}/`}"
+                                        >
+                                            ${t`Impersonate`}
+                                        </a>
+                                    </div>`;
+                                }
+                                return html``;
+                            }),
+                        )}
                     </div>
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"

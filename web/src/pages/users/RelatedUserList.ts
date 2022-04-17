@@ -7,10 +7,10 @@ import { until } from "lit/directives/until.js";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CoreApi, User } from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, User } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG, tenant } from "../../api/Config";
+import { DEFAULT_CONFIG, config, tenant } from "../../api/Config";
 import { me } from "../../api/Users";
 import { uiConfig } from "../../common/config";
 import { PFColor } from "../../elements/Label";
@@ -143,9 +143,19 @@ export class RelatedUserList extends Table<User> {
                         <i class="fas fa-edit"></i>
                     </button>
                 </ak-forms-modal>
-                <a class="pf-c-button pf-m-tertiary" href="${`/-/impersonation/${item.pk}/`}">
-                    ${t`Impersonate`}
-                </a>`,
+                ${until(
+                    config().then((config) => {
+                        if (config.capabilities.includes(CapabilitiesEnum.Impersonate)) {
+                            return html`<a
+                                class="pf-c-button pf-m-tertiary"
+                                href="${`/-/impersonation/${item.pk}/`}"
+                            >
+                                ${t`Impersonate`}
+                            </a>`;
+                        }
+                        return html``;
+                    }),
+                )}`,
         ];
     }
 
