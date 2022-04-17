@@ -4,10 +4,11 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from structlog.stdlib import get_logger
-from authentik.lib.config import CONFIG
+
 from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
+from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
 
