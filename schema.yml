@@ -20087,6 +20087,7 @@ components:
       enum:
       - can_save_media
       - can_geo_ip
+      - can_impersonate
       type: string
     CaptchaChallenge:
       type: object

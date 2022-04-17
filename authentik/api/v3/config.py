@@ -27,6 +27,7 @@ class Capabilities(models.TextChoices):
 
     CAN_SAVE_MEDIA = "can_save_media"
     CAN_GEO_IP = "can_geo_ip"
+    CAN_IMPERSONATE = "can_impersonate"
 
 
 class ErrorReportingConfigSerializer(PassiveSerializer):
@@ -63,6 +64,8 @@ class ConfigView(APIView):
             caps.append(Capabilities.CAN_SAVE_MEDIA)
         if GEOIP_READER.enabled:
             caps.append(Capabilities.CAN_GEO_IP)
+        if CONFIG.y_bool("impersonation"):
+            caps.append(Capabilities.CAN_IMPERSONATE)
         return caps
 
     @extend_schema(responses={200: ConfigSerializer(many=False)})

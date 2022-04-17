@@ -72,3 +72,4 @@ default_user_change_username: true
 gdpr_compliance: true
 cert_discovery_dir: /certs
 default_token_length: 128
+impersonation: true

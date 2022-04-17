@@ -26,6 +26,7 @@ All of these variables can be set to values, but you can also use a URI-like for
 ## Redis Settings
 
 - `AUTHENTIK_REDIS__HOST`: Hostname of your Redis Server
+- `AUTHENTIK_REDIS__PORT`: Redis port, defaults to 6379
 - `AUTHENTIK_REDIS__PASSWORD`: Password for your Redis Server
 - `AUTHENTIK_REDIS__CACHE_DB`: Database for caching, defaults to 0
 - `AUTHENTIK_REDIS__MESSAGE_QUEUE_DB`: Database for the message queue, defaults to 1
@@ -186,6 +187,14 @@ Requires authentik 2022.4.1
 :::
 
 Configure the length of generated tokens. Defaults to 128.
+
+### AUTHENTIK_IMPERSONATION
+
+:::info
+Requires authentik 2022.4.2
+:::
+
+Globally enable/disable impersonation. Defaults to `true`.
 
 ### AUTHENTIK_FOOTER_LINKS
 
