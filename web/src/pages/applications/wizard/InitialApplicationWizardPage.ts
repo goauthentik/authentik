@@ -10,6 +10,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { WizardPage } from "../../../elements/wizard/WizardPage";
 
@@ -32,18 +33,22 @@ export class InitialApplicationWizardPage extends WizardPage {
                         required
                         @input=${(ev: InputEvent) => {
                             this._isValid = (ev.target as HTMLInputElement).value !== "";
-                            console.log(this._isValid);
                             this.host.requestUpdate();
                         }}
                     />
                     <p class="pf-c-form__helper-text">${t`Application's display Name.`}</p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${t`Publisher`} name="metaPublisher">
-                    <input type="text" value="" class="pf-c-form-control" />
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${t`Description`} name="metaDescription">
-                    <textarea class="pf-c-form-control"></textarea>
-                </ak-form-element-horizontal>
+                <ak-form-group>
+                    <span slot="header"> ${t`Additional UI settings`} </span>
+                    <div slot="body" class="pf-c-form">
+                        <ak-form-element-horizontal label=${t`Publisher`} name="metaPublisher">
+                            <input type="text" value="" class="pf-c-form-control" />
+                        </ak-form-element-horizontal>
+                        <ak-form-element-horizontal label=${t`Description`} name="metaDescription">
+                            <textarea class="pf-c-form-control"></textarea>
+                        </ak-form-element-horizontal>
+                    </div>
+                </ak-form-group>
             </form>
         `;
     }

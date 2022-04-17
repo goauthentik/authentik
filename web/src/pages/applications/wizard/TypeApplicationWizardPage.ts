@@ -20,19 +20,19 @@ export class TypeApplicationWizardPage extends WizardPage {
         {
             component: "",
             name: "OAuth2/OIDC",
-            description: t`Modern applications, APIs and Single=page=applications`,
+            description: t`Modern applications, APIs and Single-page=applications.`,
             modelName: "",
         },
         {
             component: "",
             name: "SAML",
-            description: "",
+            description: "XML-based SSO standard. Use this if your application only supports SAML.",
             modelName: "",
         },
         {
             component: "proxy",
             name: "Proxy",
-            description: t`Legacy applications which don't natively support SSO`,
+            description: t`Legacy applications which don't natively support SSO.`,
             modelName: "",
         },
         {

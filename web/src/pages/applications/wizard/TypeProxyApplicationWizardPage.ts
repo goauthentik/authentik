@@ -31,7 +31,6 @@ export class TypeProxyApplicationWizardPage extends WizardPage {
                     required
                     @input=${(ev: InputEvent) => {
                         this._isValid = (ev.target as HTMLInputElement).value !== "";
-                        console.log(this._isValid);
                         this.host.requestUpdate();
                     }}
                 />
