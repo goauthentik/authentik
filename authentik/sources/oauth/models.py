@@ -152,7 +152,7 @@ class DiscordOAuthSource(OAuthSource):
 
 
 class GoogleOAuthSource(OAuthSource):
-    """Social Login using Google or Gsuite."""
+    """Social Login using Google or Google Workspace (GSuite)."""
 
     class Meta:
 
@@ -182,7 +182,7 @@ class OpenIDConnectOAuthSource(OAuthSource):
 
 
 class AppleOAuthSource(OAuthSource):
-    """Login using a apple.com."""
+    """Social Login using Apple."""
 
     class Meta:
 
@@ -192,7 +192,7 @@ class AppleOAuthSource(OAuthSource):
 
 
 class OktaOAuthSource(OAuthSource):
-    """Login using a okta.com."""
+    """Social Login using Okta."""
 
     class Meta:
 
