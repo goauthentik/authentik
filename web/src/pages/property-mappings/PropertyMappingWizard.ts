@@ -30,6 +30,7 @@ export class InitialPropertyMappingWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, AKGlobal, PFRadio];
     }
+    sidebarLabel = () => t`Select type`;
 
     render(): TemplateResult {
         return html`
@@ -82,7 +83,6 @@ export class PropertyMappingWizard extends LitElement {
             >
                 <ak-property-mapping-wizard-initial
                     slot="initial"
-                    .sidebarLabel=${() => t`Select type`}
                     .mappingTypes=${this.mappingTypes}
                 >
                 </ak-property-mapping-wizard-initial>

@@ -397,11 +397,16 @@ msgstr "Autorisations de l'application"
 msgid "Application authorized"
 msgstr "Application autorisé"
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Application details"
+msgstr ""
+
 #: src/flows/stages/consent/ConsentStage.ts
 msgid "Application requires following permissions:"
 msgstr "Cette application requiert les permissions suivantes :"
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Application's display Name."
 msgstr "Nom d'affichage de l'application"
 
@@ -1183,8 +1188,7 @@ msgstr "Copier l'URL de téléchargement"
 msgid "Copy recovery link"
 msgstr "Copier le lien de récupération"
 
-#: src/pages/applications/ApplicationListPage.ts
-#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/wizard/ApplicationWizard.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -1235,7 +1239,6 @@ msgstr "Créer"
 msgid "Create App password"
 msgstr "Créer un mot de passe App"
 
-#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 msgid "Create Application"
 msgstr "Créer une application"
@@ -1321,6 +1324,10 @@ msgstr "Créer un utilisateu"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Create a new application"
+msgstr ""
+
+#: src/pages/applications/wizard/ApplicationWizard.ts
+msgid "Create a new application."
 msgstr ""
 
 #: src/pages/outposts/ServiceConnectionWizard.ts
@@ -1526,6 +1533,7 @@ msgid "Deny the user access"
 msgstr "Refuser l'accès à l'utilisateu"
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tokens/TokenForm.ts
@@ -2786,6 +2794,10 @@ msgstr "Lancer"
 msgid "Launch URL"
 msgstr "URL de lancement"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Legacy applications which don't natively support SSO"
+msgstr ""
+
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Let the user identify themselves with their username or Email address."
 msgstr "Laisser l'utilisateur s'identifier lui-même avec son nom d'utilisateur ou son adresse e-mail."
@@ -3099,6 +3111,10 @@ msgstr "Modèle supprimé"
 msgid "Model updated"
 msgstr "Modèle mis à jour"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Modern applications, APIs and Single=page=applications"
+msgstr ""
+
 #~ msgid "Monitor"
 #~ msgstr "Surveiller"
 
@@ -3113,6 +3129,7 @@ msgstr "Mes applications"
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -3221,6 +3238,10 @@ msgstr "Inverser le résultat"
 #: src/pages/policies/PolicyBindingForm.ts
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "Inverse le résultat de la liaison. Les messages ne sont pas affectés."
+
+#: src/pages/applications/wizard/ApplicationWizard.ts
+msgid "New application"
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionWizard.ts
 msgid "New outpost integration"
@@ -3925,6 +3946,10 @@ msgstr "Mappages de propriété utilisés lors de la création d'utilisateurs"
 msgid "Protocol Settings"
 msgstr "Paramètres du protocole"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Protocol details"
+msgstr ""
+
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -3933,6 +3958,10 @@ msgstr "Paramètres du protocole"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Protocol settings"
 msgstr "Paramètres du protocole"
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Provide an LDAP interface for applications and users to authenticate against."
+msgstr ""
 
 #: src/pages/providers/ProviderListPage.ts
 msgid "Provide support for protocols like SAML and OAuth to assigned applications."
@@ -3971,9 +4000,9 @@ msgstr "Fournisseurs"
 msgid "Proxy"
 msgstr "Proxy"
 
-#: src/pages/providers/ProviderWizard.ts
-#~ msgid "Proxy details"
-#~ msgstr ""
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
+msgid "Proxy details"
+msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
@@ -3988,6 +4017,7 @@ msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.
 msgstr "Clé publique, obtenue depuis https://www.google.com/recaptcha/intro/v3.html."
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Publisher"
 msgstr "Éditeur"
 

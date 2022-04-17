@@ -32,6 +32,7 @@ export class InitialPolicyWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, AKGlobal, PFRadio];
     }
+    sidebarLabel = () => t`Select type`;
 
     render(): TemplateResult {
         return html`
@@ -85,11 +86,7 @@ export class PolicyWizard extends LitElement {
                 header=${t`New policy`}
                 description=${t`Create a new policy.`}
             >
-                <ak-policy-wizard-initial
-                    slot="initial"
-                    .sidebarLabel=${() => t`Select type`}
-                    .policyTypes=${this.policyTypes}
-                >
+                <ak-policy-wizard-initial slot="initial" .policyTypes=${this.policyTypes}>
                 </ak-policy-wizard-initial>
                 ${this.policyTypes.map((type) => {
                     return html`

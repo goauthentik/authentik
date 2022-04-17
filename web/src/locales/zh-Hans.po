@@ -394,11 +394,16 @@ msgstr "应用程序授权"
 msgid "Application authorized"
 msgstr "应用程序已授权"
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Application details"
+msgstr ""
+
 #: src/flows/stages/consent/ConsentStage.ts
 msgid "Application requires following permissions:"
 msgstr "应用程序需要以下权限："
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Application's display Name."
 msgstr "应用的显示名称。"
 
@@ -1168,8 +1173,7 @@ msgstr "复制下载 URL"
 msgid "Copy recovery link"
 msgstr "复制恢复链接"
 
-#: src/pages/applications/ApplicationListPage.ts
-#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/wizard/ApplicationWizard.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -1220,7 +1224,6 @@ msgstr "创建"
 msgid "Create App password"
 msgstr "创建应用密码"
 
-#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 msgid "Create Application"
 msgstr "创建应用程序"
@@ -1307,6 +1310,10 @@ msgstr "创建用户"
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Create a new application"
 msgstr "创建新应用程序"
+
+#: src/pages/applications/wizard/ApplicationWizard.ts
+msgid "Create a new application."
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionWizard.ts
 msgid "Create a new outpost integration."
@@ -1511,6 +1518,7 @@ msgid "Deny the user access"
 msgstr "拒绝用户访问"
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tokens/TokenForm.ts
@@ -2742,6 +2750,10 @@ msgstr "启动"
 msgid "Launch URL"
 msgstr "启动 URL"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Legacy applications which don't natively support SSO"
+msgstr ""
+
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Let the user identify themselves with their username or Email address."
 msgstr "让用户使用用户名或电子邮件地址来标识自己。"
@@ -3054,6 +3066,10 @@ msgstr "模型已删除"
 msgid "Model updated"
 msgstr "模型已更新"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Modern applications, APIs and Single=page=applications"
+msgstr ""
+
 #~ msgid "Monitor"
 #~ msgstr "监控"
 
@@ -3068,6 +3084,7 @@ msgstr "我的应用"
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -3176,6 +3193,10 @@ msgstr "反转结果"
 #: src/pages/policies/PolicyBindingForm.ts
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "反转绑定的结果。消息不受影响。"
+
+#: src/pages/applications/wizard/ApplicationWizard.ts
+msgid "New application"
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionWizard.ts
 msgid "New outpost integration"
@@ -3866,6 +3887,10 @@ msgstr "用于创建用户的属性映射。"
 msgid "Protocol Settings"
 msgstr "协议设置"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Protocol details"
+msgstr ""
+
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -3874,6 +3899,10 @@ msgstr "协议设置"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Protocol settings"
 msgstr "协议设置"
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Provide an LDAP interface for applications and users to authenticate against."
+msgstr ""
 
 #: src/pages/providers/ProviderListPage.ts
 msgid "Provide support for protocols like SAML and OAuth to assigned applications."
@@ -3912,8 +3941,9 @@ msgstr "提供程序"
 msgid "Proxy"
 msgstr "代理"
 
-#~ msgid "Proxy details"
-#~ msgstr "代理详情"
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
+msgid "Proxy details"
+msgstr "代理详情"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
@@ -3928,6 +3958,7 @@ msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.
 msgstr "公钥，从 https://www.google.com/recaptcha/intro/v3.html 获取。"
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Publisher"
 msgstr "发布者"
 

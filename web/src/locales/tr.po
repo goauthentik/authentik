@@ -393,11 +393,16 @@ msgstr "Uygulama yetkilendirmeleri"
 msgid "Application authorized"
 msgstr "Başvuru yetkili"
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Application details"
+msgstr ""
+
 #: src/flows/stages/consent/ConsentStage.ts
 msgid "Application requires following permissions:"
 msgstr "Uygulama aşağıdaki izinleri gerektirir:"
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Application's display Name."
 msgstr "Uygulamanın görünen Adı."
 
@@ -1171,8 +1176,7 @@ msgstr "İndirme URL'sini"
 msgid "Copy recovery link"
 msgstr "Kurtarma bağlantısı kopyalama"
 
-#: src/pages/applications/ApplicationListPage.ts
-#: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/wizard/ApplicationWizard.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -1223,7 +1227,6 @@ msgstr "Oluştur"
 msgid "Create App password"
 msgstr "Uygulama parolası oluştur"
 
-#: src/pages/applications/ApplicationListPage.ts
 #: src/pages/providers/RelatedApplicationButton.ts
 msgid "Create Application"
 msgstr "Uygulama Oluştur"
@@ -1310,6 +1313,10 @@ msgstr "Kullanıcı Oluştur"
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Create a new application"
 msgstr "Yeni bir uygulama oluştur"
+
+#: src/pages/applications/wizard/ApplicationWizard.ts
+msgid "Create a new application."
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionWizard.ts
 msgid "Create a new outpost integration."
@@ -1514,6 +1521,7 @@ msgid "Deny the user access"
 msgstr "Kullanıcı erişimini engelle"
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tokens/TokenForm.ts
@@ -2756,6 +2764,10 @@ msgstr "Eriş"
 msgid "Launch URL"
 msgstr "URL Başlat"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Legacy applications which don't natively support SSO"
+msgstr ""
+
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Let the user identify themselves with their username or Email address."
 msgstr "Kullanıcının kullanıcı adı veya E-posta adresi ile kendilerini tanımlamasına izin verin."
@@ -3069,6 +3081,10 @@ msgstr "Model silindi"
 msgid "Model updated"
 msgstr "Model güncellendi"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Modern applications, APIs and Single=page=applications"
+msgstr ""
+
 #~ msgid "Monitor"
 #~ msgstr "Monitör"
 
@@ -3083,6 +3099,7 @@ msgstr "Uygulamalarım"
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -3191,6 +3208,10 @@ msgstr "Negate sonucu"
 #: src/pages/policies/PolicyBindingForm.ts
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "Bağlamanın sonucunu susturur. Mesajlar etkilenmez."
+
+#: src/pages/applications/wizard/ApplicationWizard.ts
+msgid "New application"
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionWizard.ts
 msgid "New outpost integration"
@@ -3891,6 +3912,10 @@ msgstr "Kullanıcı oluşturma için kullanılan özellik eşlemeleri."
 msgid "Protocol Settings"
 msgstr "Protokol Ayarları"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Protocol details"
+msgstr ""
+
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -3899,6 +3924,10 @@ msgstr "Protokol Ayarları"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Protocol settings"
 msgstr "Protokol ayarları"
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Provide an LDAP interface for applications and users to authenticate against."
+msgstr ""
 
 #: src/pages/providers/ProviderListPage.ts
 msgid "Provide support for protocols like SAML and OAuth to assigned applications."
@@ -3937,9 +3966,9 @@ msgstr "Sağlayıcılar"
 msgid "Proxy"
 msgstr "Vekil Sunucu"
 
-#: src/pages/providers/ProviderWizard.ts
-#~ msgid "Proxy details"
-#~ msgstr ""
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
+msgid "Proxy details"
+msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
@@ -3954,6 +3983,7 @@ msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.
 msgstr "https://www.google.com/recaptcha/intro/v3.html adresinden edinilen genel anahtar."
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Publisher"
 msgstr "Yayıncı"
 

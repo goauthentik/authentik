@@ -27,6 +27,7 @@ export class InitialServiceConnectionWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, AKGlobal, PFRadio];
     }
+    sidebarLabel = () => t`Select type`;
 
     render(): TemplateResult {
         return html`
@@ -82,7 +83,6 @@ export class ServiceConnectionWizard extends LitElement {
             >
                 <ak-service-connection-wizard-initial
                     slot="initial"
-                    .sidebarLabel=${() => t`Select type`}
                     .connectionTypes=${this.connectionTypes}
                 >
                 </ak-service-connection-wizard-initial>

@@ -30,6 +30,7 @@ export class InitialProviderWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, AKGlobal, PFRadio];
     }
+    sidebarLabel = () => t`Select type`;
 
     render(): TemplateResult {
         return html`
@@ -86,11 +87,7 @@ export class ProviderWizard extends LitElement {
                     return this.finalHandler();
                 }}
             >
-                <ak-provider-wizard-initial
-                    slot="initial"
-                    .sidebarLabel=${() => t`Select type`}
-                    .providerTypes=${this.providerTypes}
-                >
+                <ak-provider-wizard-initial slot="initial" .providerTypes=${this.providerTypes}>
                 </ak-provider-wizard-initial>
                 ${this.providerTypes.map((type) => {
                     return html`

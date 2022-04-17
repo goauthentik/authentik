@@ -29,6 +29,7 @@ export class InitialSourceWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, AKGlobal, PFRadio];
     }
+    sidebarLabel = () => t`Select type`;
 
     render(): TemplateResult {
         return html`
@@ -79,11 +80,7 @@ export class SourceWizard extends LitElement {
                 header=${t`New source`}
                 description=${t`Create a new source.`}
             >
-                <ak-source-wizard-initial
-                    slot="initial"
-                    .sidebarLabel=${() => t`Select type`}
-                    .sourceTypes=${this.sourceTypes}
-                >
+                <ak-source-wizard-initial slot="initial" .sourceTypes=${this.sourceTypes}>
                 </ak-source-wizard-initial>
                 ${this.sourceTypes.map((type) => {
                     return html`

@@ -22,6 +22,7 @@ import { getURLParam } from "../../elements/router/RouteMatch";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import "./ApplicationForm";
+import "./wizard/ApplicationWizard";
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends TablePage<Application> {
@@ -161,12 +162,9 @@ export class ApplicationListPage extends TablePage<Application> {
 
     renderToolbar(): TemplateResult {
         return html`
-            <ak-forms-modal .open=${getURLParam("createForm", false)}>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Application`} </span>
-                <ak-application-form slot="form"> </ak-application-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
-            </ak-forms-modal>
+            <ak-application-wizard
+                .open=${getURLParam("createForm", false)}
+            ></ak-application-wizard>
             ${super.renderToolbar()}
         `;
     }
