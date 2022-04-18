@@ -393,6 +393,10 @@ msgstr "Uygulama"
 msgid "Application Icon"
 msgstr "Uygulama Simgesi"
 
+#: src/pages/applications/wizard/TypeLinkApplicationWizardPage.ts
+msgid "Application Link"
+msgstr ""
+
 #: src/elements/charts/UserChart.ts
 msgid "Application authorizations"
 msgstr "Uygulama yetkilendirmeleri"
@@ -436,6 +440,10 @@ msgstr ""
 
 #: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
 msgid "Applications which redirect users to a non-web callback (for example, Android, iOS)"
+msgstr ""
+
+#: src/elements/wizard/ActionWizardPage.ts
+msgid "Apply changes"
 msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
@@ -1371,13 +1379,17 @@ msgstr ""
 msgid "Create a new stage."
 msgstr ""
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Create application"
+msgstr ""
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "Grup oluştur"
 
 #: src/pages/applications/ApplicationForm.ts
-msgid "Create provider"
-msgstr "Sağlayıcı oluştur"
+#~ msgid "Create provider"
+#~ msgstr "Sağlayıcı oluştur"
 
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Create users as inactive"
@@ -2809,6 +2821,11 @@ msgstr "Kullanıcının kullanıcı adı veya E-posta adresi ile kendilerini tan
 #~ msgid "Library"
 #~ msgstr "Kitaplık"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeLinkApplicationWizardPage.ts
+msgid "Link"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses"
@@ -3071,6 +3088,10 @@ msgstr "İletiler"
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Metadata"
 msgstr "Meta veriler"
+
+#: src/pages/applications/wizard/TypeOAuthDetailsApplicationWizardPage.ts
+msgid "Method details"
+msgstr ""
 
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Minimum amount of Digits"
@@ -3976,6 +3997,7 @@ msgstr "Protokol Ayarları"
 msgid "Protocol settings"
 msgstr "Protokol ayarları"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Provide an LDAP interface for applications and users to authenticate against."
 msgstr ""
@@ -5709,6 +5731,10 @@ msgstr "Auentik tarafından belirteçleri almak için kullanılan URL."
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr "İlk belirteci istemek için kullanılan URL. Bu URL yalnızca OAuth 1 için gereklidir."
+
+#: src/pages/applications/wizard/TypeLinkApplicationWizardPage.ts
+msgid "URL which will be opened when a user clicks on the application."
+msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Unauthenticated Paths"

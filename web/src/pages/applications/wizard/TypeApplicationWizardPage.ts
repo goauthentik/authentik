@@ -40,6 +40,12 @@ export class TypeApplicationWizardPage extends WizardPage {
             description: t`Provide an LDAP interface for applications and users to authenticate against.`,
             modelName: "",
         },
+        {
+            component: "link",
+            name: t`Link`,
+            description: t`Provide an LDAP interface for applications and users to authenticate against.`,
+            modelName: "",
+        },
     ];
 
     sidebarLabel = () => t`Authentication method`;

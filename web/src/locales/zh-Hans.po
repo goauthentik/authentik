@@ -394,6 +394,10 @@ msgstr "应用程序"
 msgid "Application Icon"
 msgstr "应用程序图标"
 
+#: src/pages/applications/wizard/TypeLinkApplicationWizardPage.ts
+msgid "Application Link"
+msgstr ""
+
 #: src/elements/charts/UserChart.ts
 msgid "Application authorizations"
 msgstr "应用程序授权"
@@ -437,6 +441,10 @@ msgstr ""
 
 #: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
 msgid "Applications which redirect users to a non-web callback (for example, Android, iOS)"
+msgstr ""
+
+#: src/elements/wizard/ActionWizardPage.ts
+msgid "Apply changes"
 msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
@@ -1368,13 +1376,17 @@ msgstr "创建一个新身份来源。"
 msgid "Create a new stage."
 msgstr "创建一个新阶段。"
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Create application"
+msgstr ""
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "创建组"
 
 #: src/pages/applications/ApplicationForm.ts
-msgid "Create provider"
-msgstr "创建提供程序"
+#~ msgid "Create provider"
+#~ msgstr "创建提供程序"
 
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Create users as inactive"
@@ -2795,6 +2807,11 @@ msgstr "让用户使用用户名或电子邮件地址来标识自己。"
 #~ msgid "Library"
 #~ msgstr "Library"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeLinkApplicationWizardPage.ts
+msgid "Link"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses"
@@ -3056,6 +3073,10 @@ msgstr "消息"
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Metadata"
 msgstr "元数据"
+
+#: src/pages/applications/wizard/TypeOAuthDetailsApplicationWizardPage.ts
+msgid "Method details"
+msgstr ""
 
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Minimum amount of Digits"
@@ -3951,6 +3972,7 @@ msgstr "协议设置"
 msgid "Protocol settings"
 msgstr "协议设置"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Provide an LDAP interface for applications and users to authenticate against."
 msgstr ""
@@ -5677,6 +5699,10 @@ msgstr "authentik 用来获取令牌的 URL。"
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr "用于请求初始令牌的 URL。只有 OAuth 1 才需要此网址。"
+
+#: src/pages/applications/wizard/TypeLinkApplicationWizardPage.ts
+msgid "URL which will be opened when a user clicks on the application."
+msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Unauthenticated Paths"

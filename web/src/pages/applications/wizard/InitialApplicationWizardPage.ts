@@ -5,13 +5,12 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import AKGlobal from "../../../authentik.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { CoreApi } from "@goauthentik/api";
+import { ApplicationRequest, CoreApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
@@ -22,7 +21,7 @@ import { convertToSlug } from "../../../utils";
 @customElement("ak-application-wizard-initial")
 export class InitialApplicationWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFFormControl, PFFormControl, PFButton, AKGlobal, PFRadio];
+        return [PFBase, PFForm, PFFormControl, PFFormControl, AKGlobal, PFRadio];
     }
 
     @property()
@@ -33,16 +32,33 @@ export class InitialApplicationWizardPage extends WizardPage {
     nextCallback = async (): Promise<boolean> => {
         let slug = convertToSlug(this.name || "");
         // Check if an application with the generated slug already exists
-        try {
-            await new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({
-                slug: slug,
-            });
+        const apps = await new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
+            search: slug,
+        });
+        if (apps.results.filter((app) => app.slug == slug)) {
             slug += "-1";
-        } catch {
-            // Error means application doesn't exist yet so the slug is good to go
         }
         this.host.state["slug"] = slug;
         this.host.state["name"] = this.name;
+        this.host.addActionBefore(t`Create application`, (): Promise<boolean> => {
+            const req: ApplicationRequest = {
+                name: this.name || "",
+                slug: slug,
+            };
+            if ("provider" in this.host.state) {
+                req.provider = this.host.state["provider"] as number;
+            }
+            if ("link" in this.host.state) {
+                req.metaLaunchUrl = this.host.state["link"] as string;
+            }
+            return new CoreApi(DEFAULT_CONFIG)
+                .coreApplicationsCreate({
+                    applicationRequest: req,
+                })
+                .then(() => {
+                    return true;
+                });
+        });
         return true;
     };
 

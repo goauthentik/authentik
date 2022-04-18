@@ -91,6 +91,9 @@ run:
 	go run -v cmd/server/main.go
 
 web-watch:
+	rm -rf web/dist/
+	mkdir web/dist/
+	touch web/dist/.gitkeep
 	cd web && npm run watch
 
 web: web-lint-fix web-lint web-extract

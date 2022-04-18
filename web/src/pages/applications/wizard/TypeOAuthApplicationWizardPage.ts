@@ -64,7 +64,7 @@ export class TypeOAuthApplicationWizardPage extends WizardPage {
                                 "initial",
                                 "type",
                                 "type-oauth",
-                                `type-oauth-${type.component}`,
+                                "type-oauth-details",
                             );
                             this.host.state["oauth-type"] = type.component;
                             this._isValid = true;

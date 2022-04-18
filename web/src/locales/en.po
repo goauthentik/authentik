@@ -396,6 +396,10 @@ msgstr "Application"
 msgid "Application Icon"
 msgstr "Application Icon"
 
+#: src/pages/applications/wizard/TypeLinkApplicationWizardPage.ts
+msgid "Application Link"
+msgstr "Application Link"
+
 #: src/elements/charts/UserChart.ts
 msgid "Application authorizations"
 msgstr "Application authorizations"
@@ -440,6 +444,10 @@ msgstr "Applications which handle the authentication server-side (for example, P
 #: src/pages/applications/wizard/TypeOAuthApplicationWizardPage.ts
 msgid "Applications which redirect users to a non-web callback (for example, Android, iOS)"
 msgstr "Applications which redirect users to a non-web callback (for example, Android, iOS)"
+
+#: src/elements/wizard/ActionWizardPage.ts
+msgid "Apply changes"
+msgstr "Apply changes"
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Apps with most usage"
@@ -1390,13 +1398,17 @@ msgstr "Create a new source."
 msgid "Create a new stage."
 msgstr "Create a new stage."
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Create application"
+msgstr "Create application"
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "Create group"
 
 #: src/pages/applications/ApplicationForm.ts
-msgid "Create provider"
-msgstr "Create provider"
+#~ msgid "Create provider"
+#~ msgstr "Create provider"
 
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Create users as inactive"
@@ -2867,6 +2879,11 @@ msgstr "Let the user identify themselves with their username or Email address."
 #~ msgid "Library"
 #~ msgstr "Library"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeLinkApplicationWizardPage.ts
+msgid "Link"
+msgstr "Link"
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses"
@@ -3129,6 +3146,10 @@ msgstr "Messages"
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Metadata"
 msgstr "Metadata"
+
+#: src/pages/applications/wizard/TypeOAuthDetailsApplicationWizardPage.ts
+msgid "Method details"
+msgstr "Method details"
 
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Minimum amount of Digits"
@@ -4050,6 +4071,7 @@ msgstr "Protocol Settings"
 msgid "Protocol settings"
 msgstr "Protocol settings"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Provide an LDAP interface for applications and users to authenticate against."
 msgstr "Provide an LDAP interface for applications and users to authenticate against."
@@ -5833,6 +5855,10 @@ msgstr "URL used by authentik to retrieve tokens."
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr "URL used to request the initial token. This URL is only required for OAuth 1."
+
+#: src/pages/applications/wizard/TypeLinkApplicationWizardPage.ts
+msgid "URL which will be opened when a user clicks on the application."
+msgstr "URL which will be opened when a user clicks on the application."
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Unauthenticated Paths"

@@ -21,7 +21,6 @@ import "../../elements/forms/ModalForm";
 import { ModelForm } from "../../elements/forms/ModelForm";
 import "../../elements/forms/ProxyForm";
 import { first } from "../../utils";
-import "../providers/ProviderWizard";
 
 @customElement("ak-application-form")
 export class ApplicationForm extends ModelForm<Application, string> {
@@ -146,13 +145,6 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 <p class="pf-c-form__helper-text">
                     ${t`Select a provider that this application should use. Alternatively, create a new provider.`}
                 </p>
-                <ak-provider-wizard
-                    .finalHandler=${async () => {
-                        this.requestUpdate();
-                    }}
-                    createText=${t`Create provider`}
-                >
-                </ak-provider-wizard>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Policy engine mode`}
