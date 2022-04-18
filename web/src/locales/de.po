@@ -5430,6 +5430,10 @@ msgstr "Die externe URL, bei der Sie sich authentifizieren. Unter dieser URL sol
 msgid "The following objects use {objName}"
 msgstr "Die folgenden Objekte verwenden {objName}"
 
+#: src/pages/providers/ProviderWizard.ts
+msgid "The new application wizard greatly simplifies the steps required to create applications and providers."
+msgstr ""
+
 #~ msgid ""
 #~ "The policy passes when the reputation score is above the threshold, and\n"
 #~ "doesn't pass when either or both of the selected options are equal or less than the\n"
@@ -5662,6 +5666,14 @@ msgstr "Vorübergehend"
 #: src/pages/events/RuleForm.ts
 msgid "Transports"
 msgstr "Zustellungsarten"
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "Try it now"
+msgstr ""
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "Try the new application wizard"
+msgstr ""
 
 #: src/interfaces/locale.ts
 msgid "Turkish"

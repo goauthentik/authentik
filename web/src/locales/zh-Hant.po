@@ -5394,6 +5394,10 @@ msgstr "您将在其中进行身份验证的外部 URL。在此 URL 下应该可
 msgid "The following objects use {objName}"
 msgstr "以下对象使用 {objName}"
 
+#: src/pages/providers/ProviderWizard.ts
+msgid "The new application wizard greatly simplifies the steps required to create applications and providers."
+msgstr ""
+
 #~ msgid ""
 #~ "The policy passes when the reputation score is above the threshold, and\n"
 #~ "doesn't pass when either or both of the selected options are equal or less than the\n"
@@ -5626,6 +5630,14 @@ msgstr "暂时的"
 #: src/pages/events/RuleForm.ts
 msgid "Transports"
 msgstr "传输"
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "Try it now"
+msgstr ""
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "Try the new application wizard"
+msgstr ""
 
 #: src/interfaces/locale.ts
 msgid "Turkish"
