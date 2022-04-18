@@ -123,8 +123,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         </ak-forms-delete-bulk>`;
     }
 
-    renderToolbar(): TemplateResult {
-        return html`<ak-service-connection-wizard></ak-service-connection-wizard>
-            ${super.renderToolbar()}`;
+    renderObjectCreate(): TemplateResult {
+        return html`<ak-service-connection-wizard></ak-service-connection-wizard> `;
     }
 }

@@ -186,7 +186,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             <td></td>`;
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -201,7 +201,6 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                 </ak-crypto-certificate-generate-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Generate`}</button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 }

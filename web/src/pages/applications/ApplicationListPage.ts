@@ -160,12 +160,11 @@ export class ApplicationListPage extends TablePage<Application> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-application-wizard
                 .open=${getURLParam("createForm", false)}
             ></ak-application-wizard>
-            ${super.renderToolbar()}
         `;
     }
 }

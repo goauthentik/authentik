@@ -300,7 +300,7 @@ export class UserListPage extends TablePage<User> {
             <td></td>`;
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -316,7 +316,6 @@ export class UserListPage extends TablePage<User> {
                     ${t`Create Service account`}
                 </button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 

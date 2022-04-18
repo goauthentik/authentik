@@ -86,8 +86,4 @@ export class RelatedGroupList extends Table<Group> {
             </ak-forms-modal>`,
         ];
     }
-
-    renderToolbar(): TemplateResult {
-        return html` ${super.renderToolbar()} `;
-    }
 }

@@ -123,7 +123,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             <td></td>`;
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -131,7 +131,6 @@ export class InvitationListPage extends TablePage<Invitation> {
                 <ak-invitation-form slot="form"> </ak-invitation-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 

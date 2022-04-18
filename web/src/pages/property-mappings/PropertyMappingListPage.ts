@@ -121,9 +121,8 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
-        return html`<ak-property-mapping-wizard></ak-property-mapping-wizard>
-            ${super.renderToolbar()}`;
+    renderObjectCreate(): TemplateResult {
+        return html`<ak-property-mapping-wizard></ak-property-mapping-wizard> `;
     }
 
     renderToolbarAfter(): TemplateResult {
