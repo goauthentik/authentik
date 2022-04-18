@@ -101,7 +101,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -109,7 +109,6 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 <ak-event-transport-form slot="form"> </ak-event-transport-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 }

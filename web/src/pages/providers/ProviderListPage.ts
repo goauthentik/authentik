@@ -110,7 +110,7 @@ export class ProviderListPage extends TablePage<Provider> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
-        return html`<ak-provider-wizard> </ak-provider-wizard> ${super.renderToolbar()}`;
+    renderObjectCreate(): TemplateResult {
+        return html`<ak-provider-wizard> </ak-provider-wizard> `;
     }
 }

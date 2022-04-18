@@ -114,7 +114,7 @@ export class SourceListPage extends TablePage<Source> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
-        return html`<ak-source-wizard> </ak-source-wizard> ${super.renderToolbar()}`;
+    renderObjectCreate(): TemplateResult {
+        return html`<ak-source-wizard> </ak-source-wizard> `;
     }
 }

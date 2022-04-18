@@ -178,7 +178,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -186,7 +186,6 @@ export class OutpostListPage extends TablePage<Outpost> {
                 <ak-outpost-form slot="form"> </ak-outpost-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 }

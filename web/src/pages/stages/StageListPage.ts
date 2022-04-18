@@ -132,7 +132,7 @@ export class StageListPage extends TablePage<Stage> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
-        return html`<ak-stage-wizard></ak-stage-wizard> ${super.renderToolbar()}`;
+    renderObjectCreate(): TemplateResult {
+        return html`<ak-stage-wizard></ak-stage-wizard> `;
     }
 }

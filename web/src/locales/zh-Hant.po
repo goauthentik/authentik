@@ -3342,6 +3342,7 @@ msgid "No matching events could be found."
 msgstr "找不到匹配的事件。"
 
 #: src/elements/table/Table.ts
+#: src/elements/table/TablePage.ts
 msgid "No objects found."
 msgstr "未找到任何对象。"
 

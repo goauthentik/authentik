@@ -126,9 +126,12 @@ export class PolicyListPage extends TablePage<Policy> {
         </ak-forms-delete-bulk>`;
     }
 
+    renderObjectCreate(): TemplateResult {
+        return html`<ak-policy-wizard> </ak-policy-wizard>`;
+    }
+
     renderToolbar(): TemplateResult {
-        return html`<ak-policy-wizard> </ak-policy-wizard>
-            ${super.renderToolbar()}
+        return html` ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${t`Successfully cleared policy cache`}
                 errorMessage=${t`Failed to delete policy cache`}

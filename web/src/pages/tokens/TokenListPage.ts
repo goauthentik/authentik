@@ -92,7 +92,7 @@ export class TokenListPage extends TablePage<Token> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -100,7 +100,6 @@ export class TokenListPage extends TablePage<Token> {
                 <ak-token-form slot="form"> </ak-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 

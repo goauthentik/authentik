@@ -3416,6 +3416,7 @@ msgid "No matching events could be found."
 msgstr "No matching events could be found."
 
 #: src/elements/table/Table.ts
+#: src/elements/table/TablePage.ts
 msgid "No objects found."
 msgstr "No objects found."
 

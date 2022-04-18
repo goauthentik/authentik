@@ -159,7 +159,7 @@ export class ApplicationListPage extends TablePage<Application> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal .open=${getURLParam("createForm", false)}>
                 <span slot="submit"> ${t`Create`} </span>
@@ -167,7 +167,6 @@ export class ApplicationListPage extends TablePage<Application> {
                 <ak-application-form slot="form"> </ak-application-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 }

@@ -3357,6 +3357,7 @@ msgid "No matching events could be found."
 msgstr "Eşleşen olay bulunamadı."
 
 #: src/elements/table/Table.ts
+#: src/elements/table/TablePage.ts
 msgid "No objects found."
 msgstr "Nesne bulunamadı."
 

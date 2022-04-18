@@ -127,8 +127,9 @@ export class FlowListPage extends TablePage<Flow> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
-        return html` <ak-forms-modal>
+    renderObjectCreate(): TemplateResult {
+        return html`
+            <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
                 <span slot="header"> ${t`Create Flow`} </span>
                 <ak-flow-form slot="form"> </ak-flow-form>
@@ -140,6 +141,11 @@ export class FlowListPage extends TablePage<Flow> {
                 <ak-flow-import-form slot="form"> </ak-flow-import-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Import`}</button>
             </ak-forms-modal>
+        `;
+    }
+
+    renderToolbar(): TemplateResult {
+        return html`
             ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${t`Successfully cleared flow cache`}
@@ -158,6 +164,7 @@ export class FlowListPage extends TablePage<Flow> {
                     ${t`Clear cache`}
                 </button>
                 <div slot="modal"></div>
-            </ak-forms-confirm>`;
+            </ak-forms-confirm>
+        `;
     }
 }

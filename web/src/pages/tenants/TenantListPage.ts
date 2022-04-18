@@ -95,7 +95,7 @@ export class TenantListPage extends TablePage<Tenant> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -103,7 +103,6 @@ export class TenantListPage extends TablePage<Tenant> {
                 <ak-tenant-form slot="form"> </ak-tenant-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 }
