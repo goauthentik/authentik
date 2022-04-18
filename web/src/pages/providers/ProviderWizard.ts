@@ -43,7 +43,7 @@ export class InitialProviderWizardPage extends WizardPage {
                         name="type"
                         id=${type.component}
                         @change=${() => {
-                            this.host.setSteps("initial", `type-${type.component}`);
+                            this.host.steps = ["initial", `type-${type.component}`];
                             this._isValid = true;
                         }}
                     />

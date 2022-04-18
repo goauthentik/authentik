@@ -37,28 +37,13 @@ export class ApplicationWizard extends LitElement {
         return html`
             <ak-wizard
                 .open=${this.open}
-                .steps=${["initial", "type"]}
+                .steps=${["ak-application-wizard-initial", "ak-application-wizard-type"]}
                 header=${t`New application`}
                 description=${t`Create a new application.`}
                 .finalHandler=${() => {
                     return this.finalHandler();
                 }}
             >
-                <ak-application-wizard-initial slot="initial"> </ak-application-wizard-initial>
-                <ak-application-wizard-type slot="type"> </ak-application-wizard-type>
-                <!--Proxy -->
-                <ak-application-wizard-type-proxy
-                    slot="type-proxy"
-                ></ak-application-wizard-type-proxy>
-                <!--OAuth -->
-                <ak-application-wizard-type-oauth
-                    slot="type-oauth"
-                ></ak-application-wizard-type-oauth>
-                <ak-application-wizard-type-oauth-details
-                    slot="type-oauth-details"
-                ></ak-application-wizard-type-oauth-details>
-                <!--Link -->
-                <ak-application-wizard-type-link slot="type-link"></ak-application-wizard-type-link>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
             </ak-wizard>
         `;

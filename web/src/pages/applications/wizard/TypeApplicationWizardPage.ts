@@ -17,7 +17,7 @@ import { WizardPage } from "../../../elements/wizard/WizardPage";
 export class TypeApplicationWizardPage extends WizardPage {
     applicationTypes: TypeCreate[] = [
         {
-            component: "oauth",
+            component: "ak-application-wizard-type-oauth",
             name: t`OAuth2/OIDC`,
             description: t`Modern applications, APIs and Single-page applications.`,
             modelName: "",
@@ -29,7 +29,7 @@ export class TypeApplicationWizardPage extends WizardPage {
             modelName: "",
         },
         {
-            component: "proxy",
+            component: "ak-application-wizard-type-proxy",
             name: t`Proxy`,
             description: t`Legacy applications which don't natively support SSO.`,
             modelName: "",
@@ -41,7 +41,7 @@ export class TypeApplicationWizardPage extends WizardPage {
             modelName: "",
         },
         {
-            component: "link",
+            component: "ak-application-wizard-type-link",
             name: t`Link`,
             description: t`Provide an LDAP interface for applications and users to authenticate against.`,
             modelName: "",
@@ -64,7 +64,11 @@ export class TypeApplicationWizardPage extends WizardPage {
                         name="type"
                         id=${type.component}
                         @change=${() => {
-                            this.host.setSteps("initial", "type", `type-${type.component}`);
+                            this.host.steps = [
+                                "ak-application-wizard-initial",
+                                "ak-application-wizard-type",
+                                type.component,
+                            ];
                             this._isValid = true;
                         }}
                     />

@@ -40,10 +40,10 @@ export class InitialServiceConnectionWizardPage extends WizardPage {
                         name="type"
                         id=${`${type.component}-${type.modelName}`}
                         @change=${() => {
-                            this.host.setSteps(
+                            this.host.steps = [
                                 "initial",
                                 `type-${type.component}-${type.modelName}`,
-                            );
+                            ];
                             this._isValid = true;
                         }}
                     />

@@ -31,8 +31,30 @@ export class Wizard extends ModalButton {
         return super.styles.concat(PFWizard);
     }
 
-    @property({ attribute: false })
-    steps: string[] = [];
+    @state()
+    _steps: string[] = [];
+
+    get steps(): string[] {
+        return this._steps;
+    }
+
+    set steps(steps: string[]) {
+        const addApplyActionsSlot = this.steps.includes(ApplyActionsSlot);
+        this._steps = steps;
+        if (addApplyActionsSlot) {
+            this.steps.push(ApplyActionsSlot);
+        }
+        this.steps.forEach((step) => {
+            const exists = this.querySelector(`[slot=${step}]`) !== null;
+            if (!exists) {
+                const el = document.createElement(step);
+                el.slot = step;
+                el.dataset["wizardmanaged"] = "true";
+                this.appendChild(el);
+            }
+        });
+        this.requestUpdate();
+    }
 
     _initialSteps: string[] = [];
 
@@ -63,16 +85,7 @@ export class Wizard extends ModalButton {
     state: { [key: string]: unknown } = {};
 
     firstUpdated(): void {
-        this._initialSteps = this.steps;
-    }
-
-    setSteps(...steps: string[]): void {
-        const addApplyActionsSlot = this.steps.includes(ApplyActionsSlot);
-        this.steps = steps;
-        if (addApplyActionsSlot) {
-            this.steps.push(ApplyActionsSlot);
-        }
-        this.requestUpdate();
+        this._initialSteps = this._steps;
     }
 
     addActionBefore(displayName: string, run: () => Promise<boolean>): void {
@@ -97,11 +110,12 @@ export class Wizard extends ModalButton {
         this.currentStep?.requestUpdate();
         const currentIndex = this.currentStep ? this.steps.indexOf(this.currentStep.slot) : 0;
         const lastPage = currentIndex === this.steps.length - 1;
-        if (lastPage && !this.steps.includes(ApplyActionsSlot) && this.actions.length > 0) {
-            this.steps.push(ApplyActionsSlot);
-            const applyActionsPage = document.createElement("ak-wizard-page-action");
-            applyActionsPage.slot = ApplyActionsSlot;
-            this.appendChild(applyActionsPage);
+        if (lastPage && !this.steps.includes("ak-wizard-page-action") && this.actions.length > 0) {
+            this.steps = this.steps.concat("ak-wizard-page-action");
+            // const applyActionsPage = document.createElement("ak-wizard-page-action");
+            // applyActionsPage.slot = ApplyActionsSlot;
+            //     applyActionsPage.dataset["wizardmanaged"] = "true";
+            // this.appendChild(applyActionsPage);
         }
         return html`<div class="pf-c-wizard">
             <div class="pf-c-wizard__header">
@@ -205,12 +219,6 @@ export class Wizard extends ModalButton {
                             class="pf-c-button pf-m-link"
                             type="button"
                             @click=${() => {
-                                const firstPage = this.querySelector<WizardPage>(
-                                    `[slot=${this.steps[0]}]`,
-                                );
-                                if (firstPage) {
-                                    this.currentStep = firstPage;
-                                }
                                 this.reset();
                             }}
                         >
@@ -224,11 +232,11 @@ export class Wizard extends ModalButton {
 
     reset(): void {
         this.open = false;
-        this.querySelectorAll<WizardPage>("*").forEach((el) => {
-            if ("_isValid" in el) {
-                el._isValid = false;
-            }
+        this.querySelectorAll("[data-wizardmanaged=true]").forEach((el) => {
+            el.remove();
         });
         this.steps = this._initialSteps;
+        this.actions = [];
+        this.currentStep = undefined;
     }
 }

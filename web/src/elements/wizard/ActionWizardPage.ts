@@ -68,7 +68,12 @@ export class ActionWizardPage extends WizardPage {
                 this.currentStep.state = ActionState.done;
                 this.requestUpdate();
             } catch (exc) {
-                this.currentStep.action.subText = (exc as Error).toString();
+                if (exc instanceof Response) {
+                    // TODO: Better error message
+                    this.currentStep.action.subText = exc.statusText;
+                } else {
+                    this.currentStep.action.subText = (exc as Error).toString();
+                }
                 this.currentStep.state = ActionState.failed;
                 this.requestUpdate();
                 return;

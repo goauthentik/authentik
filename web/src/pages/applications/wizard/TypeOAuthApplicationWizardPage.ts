@@ -60,12 +60,12 @@ export class TypeOAuthApplicationWizardPage extends WizardPage {
                         name="type"
                         id=${type.component}
                         @change=${() => {
-                            this.host.setSteps(
-                                "initial",
-                                "type",
-                                "type-oauth",
+                            this.host.steps = [
+                                "ak-application-wizard-initial",
+                                "ak-application-wizard-type",
+                                "ak-application-wizard-type-oauth",
                                 "type-oauth-details",
-                            );
+                            ];
                             this.host.state["oauth-type"] = type.component;
                             this._isValid = true;
                         }}
