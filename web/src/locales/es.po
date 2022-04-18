@@ -419,7 +419,6 @@ msgstr ""
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
-#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
 msgid "Application's display Name."
 msgstr "Nombre para mostrar de la aplicación."
 
@@ -1387,9 +1386,9 @@ msgstr ""
 msgid "Create group"
 msgstr "Crear grupo"
 
-#: src/pages/applications/ApplicationForm.ts
-#~ msgid "Create provider"
-#~ msgstr "Crear proveedor"
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
+msgid "Create provider"
+msgstr "Crear proveedor"
 
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Create users as inactive"
@@ -2053,6 +2052,14 @@ msgstr "Aplicaciones externas que usan authentik como proveedor de identidad, ut
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "External Host"
 msgstr "Anfitrión externo"
+
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
+msgid "External domain"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
+msgid "External domain you will be accessing the domain from."
+msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -3162,7 +3169,6 @@ msgstr "Mis solicitudes"
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
-#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -3397,6 +3403,7 @@ msgid "No matching events could be found."
 msgstr "No se han encontrado eventos coincidentes."
 
 #: src/elements/table/Table.ts
+#: src/elements/table/TablePage.ts
 msgid "No objects found."
 msgstr "No se han encontrado objetos."
 

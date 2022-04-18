@@ -418,7 +418,6 @@ msgstr ""
 
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
-#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
 msgid "Application's display Name."
 msgstr ""
 
@@ -1394,9 +1393,9 @@ msgstr ""
 msgid "Create group"
 msgstr ""
 
-#: src/pages/applications/ApplicationForm.ts
-#~ msgid "Create provider"
-#~ msgstr ""
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
+msgid "Create provider"
+msgstr ""
 
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Create users as inactive"
@@ -2082,6 +2081,14 @@ msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderViewPage.ts
 msgid "External Host"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
+msgid "External domain"
+msgstr ""
+
+#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
+msgid "External domain you will be accessing the domain from."
 msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -3204,7 +3211,6 @@ msgstr ""
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
-#: src/pages/applications/wizard/TypeProxyApplicationWizardPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -3439,6 +3445,7 @@ msgid "No matching events could be found."
 msgstr ""
 
 #: src/elements/table/Table.ts
+#: src/elements/table/TablePage.ts
 msgid "No objects found."
 msgstr ""
 

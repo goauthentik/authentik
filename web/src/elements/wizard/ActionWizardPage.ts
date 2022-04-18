@@ -94,9 +94,7 @@ export class ActionWizardPage extends WizardPage {
             <div class="pf-c-empty-state pf-m-lg">
                 <div class="pf-c-empty-state__content">
                     <i class="fas fa- fa-cogs pf-c-empty-state__icon" aria-hidden="true"></i>
-                    <h1 class="pf-c-title pf-m-lg" id="wizard-finished-empty-state-title">
-                        ${this.currentStep?.action.displayName}
-                    </h1>
+                    <h1 class="pf-c-title pf-m-lg">${this.currentStep?.action.displayName}</h1>
                     <div class="pf-c-empty-state__body">
                         <ol class="pf-c-progress-stepper pf-m-vertical">
                             ${this.states.map((state) => {

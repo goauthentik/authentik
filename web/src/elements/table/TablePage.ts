@@ -1,3 +1,5 @@
+import { t } from "@lingui/macro";
+
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -24,6 +26,17 @@ export abstract class TablePage<T> extends Table<T> {
 
     renderSidebarAfter(): TemplateResult {
         return html``;
+    }
+
+    renderEmpty(inner?: TemplateResult): TemplateResult {
+        return super.renderEmpty(html`
+            ${inner
+                ? inner
+                : html`<ak-empty-state
+                      icon=${this.pageIcon()}
+                      header="${t`No objects found.`}"
+                  ></ak-empty-state>`}
+        `);
     }
 
     render(): TemplateResult {

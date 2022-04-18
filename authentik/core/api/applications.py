@@ -88,6 +88,14 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         "meta_publisher",
         "group",
     ]
+    filterset_fields = [
+        "name",
+        "slug",
+        "meta_launch_url",
+        "meta_description",
+        "meta_publisher",
+        "group",
+    ]
     lookup_field = "slug"
     ordering = ["name"]
 

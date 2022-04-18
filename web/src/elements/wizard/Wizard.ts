@@ -237,6 +237,7 @@ export class Wizard extends ModalButton {
         });
         this.steps = this._initialSteps;
         this.actions = [];
+        this.state = {};
         this.currentStep = undefined;
     }
 }
