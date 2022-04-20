@@ -6,7 +6,7 @@ from authentik.lib.utils.time import fqdn_rand
 CELERY_BEAT_SCHEDULE = {
     "outposts_controller": {
         "task": "authentik.outposts.tasks.outpost_controller_all",
-        "schedule": crontab(minute=fqdn_rand("outposts_controller", 60), hour="*/4"),
+        "schedule": crontab(minute=fqdn_rand("outposts_controller"), hour="*/4"),
         "options": {"queue": "authentik_scheduled"},
     },
     "outposts_service_connection_check": {
@@ -16,12 +16,12 @@ CELERY_BEAT_SCHEDULE = {
     },
     "outpost_token_ensurer": {
         "task": "authentik.outposts.tasks.outpost_token_ensurer",
-        "schedule": crontab(minute=fqdn_rand("outpost_token_ensurer", 60), hour="*/8"),
+        "schedule": crontab(minute=fqdn_rand("outpost_token_ensurer"), hour="*/8"),
         "options": {"queue": "authentik_scheduled"},
     },
     "outpost_local_connection": {
         "task": "authentik.outposts.tasks.outpost_local_connection",
-        "schedule": crontab(minute=fqdn_rand("outpost_local_connection", 60), hour="*/8"),
+        "schedule": crontab(minute=fqdn_rand("outpost_local_connection"), hour="*/8"),
         "options": {"queue": "authentik_scheduled"},
     },
 }
