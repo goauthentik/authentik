@@ -337,17 +337,12 @@ CELERY_WORKER_MAX_TASKS_PER_CHILD = 50
 CELERY_BEAT_SCHEDULE = {
     "clean_expired_models": {
         "task": "authentik.core.tasks.clean_expired_models",
-        "schedule": crontab(minute="*/5"),
-        "options": {"queue": "authentik_scheduled"},
-    },
-    "db_backup": {
-        "task": "authentik.core.tasks.backup_database",
-        "schedule": crontab(hour="*/24", minute=0),
+        "schedule": crontab(minute="2-59/5"),
         "options": {"queue": "authentik_scheduled"},
     },
     "user_cleanup": {
         "task": "authentik.core.tasks.clean_temporary_users",
-        "schedule": crontab(minute="*/5"),
+        "schedule": crontab(minute="9-59/5"),
         "options": {"queue": "authentik_scheduled"},
     },
 }

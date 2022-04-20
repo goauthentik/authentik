@@ -1,6 +1,10 @@
 """Time utilities"""
 import datetime
+from hashlib import sha256
+from random import randrange, seed
+from socket import getfqdn
 
+from celery.schedules import crontab
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
@@ -38,3 +42,12 @@ def timedelta_from_string(expr: str) -> datetime.timedelta:
     if len(kwargs) < 1:
         raise ValueError("No valid keys to pass to timedelta")
     return datetime.timedelta(**kwargs)
+
+
+def fqdn_rand(task: str, max: int) -> int:
+    """Get a random number within max based on the FQDN and task name"""
+    entropy = f"{getfqdn()}:{task}"
+    hasher = sha256()
+    hasher.update(entropy.encode("utf-8"))
+    seed(hasher.hexdigest())
+    return randrange(0, max)  # nosec
