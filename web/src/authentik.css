@@ -37,6 +37,7 @@ html > form > input {
 .pf-c-login__main {
     display: block;
     position: relative;
+    width: 100%;
 }
 .ak-login-container {
     height: calc(100vh - var(--pf-global--spacer--lg) - var(--pf-global--spacer--lg));
