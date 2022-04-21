@@ -1,6 +1,7 @@
 """authentik URL Configuration"""
 from django.urls import include, path
 from structlog.stdlib import get_logger
+from django.conf import settings
 
 from authentik.core.views import error
 from authentik.lib.utils.reflection import get_apps
@@ -47,3 +48,8 @@ urlpatterns += [
     path("-/health/live/", LiveView.as_view(), name="health-live"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("debug/silk/", include("silk.urls", namespace="silk")),
+    ]

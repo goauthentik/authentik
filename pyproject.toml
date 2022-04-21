@@ -158,6 +158,7 @@ pytest-django = "*"
 pytest-randomly = "*"
 requests-mock = "*"
 selenium = "*"
+django-silk = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

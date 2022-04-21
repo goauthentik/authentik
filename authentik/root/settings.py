@@ -460,7 +460,6 @@ _LOGGING_HANDLER_MAP = {
     "django": "WARNING",
     "celery": "WARNING",
     "selenium": "WARNING",
-    "grpc": LOG_LEVEL,
     "docker": "WARNING",
     "urllib3": "WARNING",
     "websockets": "WARNING",
@@ -468,6 +467,7 @@ _LOGGING_HANDLER_MAP = {
     "kubernetes": "INFO",
     "asyncio": "WARNING",
     "aioredis": "WARNING",
+    "silk": "INFO",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
@@ -504,6 +504,11 @@ for _app in INSTALLED_APPS:
 if DEBUG:
     CELERY_TASK_ALWAYS_EAGER = True
     os.environ[ENV_GIT_HASH_KEY] = "dev"
+    INSTALLED_APPS.append("silk")
+    SILKY_PYTHON_PROFILER = True
+    MIDDLEWARE = [
+        "silk.middleware.SilkyMiddleware"
+    ] + MIDDLEWARE
 
 INSTALLED_APPS.append("authentik.core")
 
