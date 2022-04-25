@@ -61,7 +61,7 @@
         "@fortawesome/fontawesome-free": "^6.1.1",
         "@goauthentik/api": "^2022.4.1-1650207200",
         "@jackfranklin/rollup-plugin-markdown": "^0.3.0",
-        "@lingui/cli": "^3.13.2",
+        "@lingui/cli": "^3.13.3",
         "@lingui/core": "^3.13.3",
         "@lingui/detect-locale": "^3.13.2",
         "@lingui/macro": "^3.13.3",
