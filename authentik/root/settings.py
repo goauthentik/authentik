@@ -506,9 +506,7 @@ if DEBUG:
     os.environ[ENV_GIT_HASH_KEY] = "dev"
     INSTALLED_APPS.append("silk")
     SILKY_PYTHON_PROFILER = True
-    MIDDLEWARE = [
-        "silk.middleware.SilkyMiddleware"
-    ] + MIDDLEWARE
+    MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
 
 INSTALLED_APPS.append("authentik.core")
 

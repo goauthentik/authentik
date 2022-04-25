@@ -1,7 +1,7 @@
 """authentik URL Configuration"""
+from django.conf import settings
 from django.urls import include, path
 from structlog.stdlib import get_logger
-from django.conf import settings
 
 from authentik.core.views import error
 from authentik.lib.utils.reflection import get_apps

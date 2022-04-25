@@ -25,11 +25,11 @@ IGNORED_MODELS = [
     AuthenticatedSession,
     StaticToken,
 ]
-try:
+if settings.DEBUG:
     from silk.models import Request, Response
+
     IGNORED_MODELS += [Request, Response]
-except:
-    pass
+IGNORED_MODELS = tuple(IGNORED_MODELS)
 
 
 class AuditMiddleware:
