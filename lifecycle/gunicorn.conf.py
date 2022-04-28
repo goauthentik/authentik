@@ -3,14 +3,18 @@ import os
 import pwd
 from hashlib import sha512
 from multiprocessing import cpu_count
+from tempfile import gettempdir
 
 import structlog
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
+from prometheus_client import values
+from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
+from lifecycle.worker import DjangoUvicornWorker
 
 bind = "127.0.0.1:8000"
 
@@ -22,9 +26,7 @@ except KeyError:
     pass
 
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
-# Docker containers don't have /tmp as tmpfs
-if os.path.exists("/dev/shm"):  # nosec
-    worker_tmp_dir = "/dev/shm"  # nosec
+worker_tmp_dir = gettempdir()
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 
@@ -70,11 +72,17 @@ workers = int(os.environ.get("WORKERS", default_workers))
 threads = int(os.environ.get("THREADS", 4))
 
 # pylint: disable=unused-argument
-def worker_exit(server, worker):
+def post_fork(server, worker: DjangoUvicornWorker):
+    """Tell prometheus to use worker number instead of process ID for multiprocess"""
+    values.ValueClass = MultiProcessValue(lambda: worker.nr)
+
+
+# pylint: disable=unused-argument
+def worker_exit(server, worker: DjangoUvicornWorker):
     """Remove pid dbs when worker is shutdown"""
     from prometheus_client import multiprocess
 
-    multiprocess.mark_process_dead(worker.pid)
+    multiprocess.mark_process_dead(worker.nr)
 
 
 if not CONFIG.y_bool("disable_startup_analytics", False):
