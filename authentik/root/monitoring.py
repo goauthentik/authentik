@@ -1,5 +1,6 @@
 """Metrics view"""
 from base64 import b64encode
+from json import JSONDecodeError
 
 from django.conf import settings
 from django.db import connections
@@ -33,7 +34,7 @@ class MetricsView(View):
 
         try:
             return ExportToDjangoView(request)
-        except (UnicodeDecodeError, KeyError, ValueError):
+        except (UnicodeDecodeError, KeyError, ValueError, JSONDecodeError):
             return HttpResponse(status_code=500)
 
 
