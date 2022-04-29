@@ -1,15 +1,14 @@
 """Metrics view"""
 from base64 import b64encode
 
-import prometheus_client
 from django.conf import settings
 from django.db import connections
 from django.db.utils import OperationalError
 from django.dispatch import Signal
 from django.http import HttpRequest, HttpResponse
 from django.views import View
+from django_prometheus.exports import ExportToDjangoView
 from django_redis import get_redis_connection
-from prometheus_client import multiprocess
 from redis.exceptions import RedisError
 
 monitoring_set = Signal()
@@ -32,12 +31,9 @@ class MetricsView(View):
 
         monitoring_set.send_robust(self)
 
-        registry = prometheus_client.CollectorRegistry()
-        multiprocess.MultiProcessCollector(registry)
         try:
-            metrics_page = prometheus_client.generate_latest(registry)
-            return HttpResponse(metrics_page, content_type=prometheus_client.CONTENT_TYPE_LATEST)
-        except (UnicodeDecodeError, KeyError):
+            return ExportToDjangoView(request)
+        except (UnicodeDecodeError, KeyError, ValueError):
             return HttpResponse(status_code=500)
 
 
