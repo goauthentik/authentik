@@ -18,13 +18,18 @@ from authentik.events.utils import model_to_dict
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 
-IGNORED_MODELS = (
+IGNORED_MODELS = [
     Event,
     Notification,
     UserObjectPermission,
     AuthenticatedSession,
     StaticToken,
-)
+]
+if settings.DEBUG:
+    from silk.models import Request, Response
+
+    IGNORED_MODELS += [Request, Response]
+IGNORED_MODELS = tuple(IGNORED_MODELS)
 
 
 class AuditMiddleware:

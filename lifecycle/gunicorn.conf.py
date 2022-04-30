@@ -3,6 +3,7 @@ import os
 import pwd
 from hashlib import sha512
 from multiprocessing import cpu_count
+from tempfile import gettempdir
 
 import structlog
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
@@ -22,9 +23,7 @@ except KeyError:
     pass
 
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
-# Docker containers don't have /tmp as tmpfs
-if os.path.exists("/dev/shm"):  # nosec
-    worker_tmp_dir = "/dev/shm"  # nosec
+worker_tmp_dir = gettempdir()
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 

@@ -12,8 +12,21 @@
 {% endblock %}
 
 {% block card %}
-<form method="POST" class="pf-c-form">
+<form class="pf-c-form">
     {% csrf_token %}
+    {% if user.is_authenticated %}
+        <div class="pf-c-form__group">
+            <div class="form-control-static">
+                <div class="avatar">
+                    <img class="pf-c-avatar" src="{{ user.avatar }}" alt="{% trans "User's avatar" %}" />
+                    {{ user.username }}
+                </div>
+                <div slot="link">
+                    <a href="{{ cancel }}">{% trans "Not you?" %}</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     <div class="pf-c-form__group">
         <p>
             <i class="pf-icon pf-icon-error-circle-o"></i>

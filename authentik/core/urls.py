@@ -1,4 +1,5 @@
 """authentik URL Configuration"""
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -6,6 +7,7 @@ from django.views.generic import RedirectView
 from django.views.generic.base import TemplateView
 
 from authentik.core.views import apps, impersonate
+from authentik.core.views.debug import AccessDeniedView
 from authentik.core.views.interface import FlowInterfaceView
 from authentik.core.views.session import EndSessionView
 
@@ -60,3 +62,8 @@ urlpatterns = [
         TemplateView.as_view(template_name="if/admin.html"),
     ),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("debug/policy/deny/", AccessDeniedView.as_view(), name="debug-policy-deny"),
+    ]

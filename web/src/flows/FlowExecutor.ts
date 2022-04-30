@@ -113,9 +113,6 @@ export class FlowExecutor extends LitElement implements StageHost {
             .pf-c-drawer__content {
                 background-color: transparent;
             }
-            .pf-c-login__main {
-                width: 100%;
-            }
         `);
     }
 

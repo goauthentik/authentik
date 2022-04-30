@@ -3,6 +3,7 @@ from typing import Any, Optional
 
 from django.http.request import HttpRequest
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from authentik.core.models import USER_ATTRIBUTE_DEBUG
@@ -37,4 +38,5 @@ class AccessDeniedResponse(TemplateResponse):
                     self._request
                 ).get(USER_ATTRIBUTE_DEBUG, False):
                     context["policy_result"] = self.policy_result
+        context["cancel"] = reverse("authentik_flows:cancel")
         return context
