@@ -48,8 +48,8 @@ class TestUserDeleteStage(FlowTestCase):
 
     def test_user_delete_get(self):
         """Test Form render"""
+        self.client.force_login(self.user)
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()

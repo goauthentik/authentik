@@ -37,7 +37,7 @@ export class UserSettingsPromptStage extends PromptStage {
                     ${this.host.tenant.flowUnenrollment
                         ? html` <a
                               class="pf-c-button pf-m-danger"
-                              href="/if/flow/${this.host.tenant.flowUnenrollment}"
+                              href="/if/flow/${this.host.tenant.flowUnenrollment}/"
                           >
                               ${t`Delete account`}
                           </a>`
