@@ -76,7 +76,7 @@ Change the following fields
 - Hostname or IP address: authentik.company
 - Transport: SSL - Encrypted
 - Bind credentials
-  - User DN: CN=CN=opnsense-user,OU=users,DC=ldap,DC=goauthentik,DC=io
+  - User DN: CN=opnsense-user,OU=users,DC=ldap,DC=goauthentik,DC=io
   - Password: whatever-you-set
   - Base DN: DC=ldap,DC=goauthentik,DC=io
 - Authentication containers: OU=users,DC=ldap,DC=goauthentik,DC=io;OU=groups,DC=ldap,DC=goauthentik,DC=io
