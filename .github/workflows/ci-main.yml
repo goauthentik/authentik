@@ -96,12 +96,6 @@ jobs:
           testspace [unittest]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v3
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          name: "core-unittest"
-          files: "unittest.xml"
   test-integration:
     runs-on: ubuntu-latest
     steps:
@@ -123,12 +117,6 @@ jobs:
           testspace [integration]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v3
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          name: "core-integration"
-          files: "unittest.xml"
   test-e2e-provider:
     runs-on: ubuntu-latest
     steps:
@@ -162,12 +150,6 @@ jobs:
           testspace [e2e-provider]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v3
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          name: "core-e2e-provider"
-          files: "unittest.xml"
   test-e2e-rest:
     runs-on: ubuntu-latest
     steps:
@@ -201,12 +183,6 @@ jobs:
           testspace [e2e-rest]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v3
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          name: "core-e2e-rest"
-          files: "unittest.xml"
   ci-core-mark:
     needs:
       - lint
