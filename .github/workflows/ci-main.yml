@@ -100,7 +100,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
-          check_name: "core-unittest"
+          name: "core-unittest"
           files: "unittest.xml"
   test-integration:
     runs-on: ubuntu-latest
@@ -127,7 +127,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
-          check_name: "core-integration"
+          name: "core-integration"
           files: "unittest.xml"
   test-e2e-provider:
     runs-on: ubuntu-latest
@@ -166,7 +166,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
-          check_name: "core-e2e-provider"
+          name: "core-e2e-provider"
           files: "unittest.xml"
   test-e2e-rest:
     runs-on: ubuntu-latest
@@ -205,7 +205,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
-          check_name: "core-e2e-rest"
+          name: "core-e2e-rest"
           files: "unittest.xml"
   ci-core-mark:
     needs:
