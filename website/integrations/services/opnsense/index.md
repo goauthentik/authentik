@@ -19,13 +19,13 @@ This is based on authentik 2022.4.1 and OPNsense 22.1.6-amd64 installed using ht
 The following placeholders will be used:
 
 - `authentik.company` is the FQDN of authentik.
-- `opnsense-user` is the name of the authentik Service account we'll create.
+- `opnsense` is the name of the authentik Service account we'll create.
 - `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
 
 ### Step 1
 
 In authentik, go and 'Create Service account' (under _Directory/Users_) for OPNsense to use as the LDAP Binder, leaving 'Create group' ticked as we'll need that group for the provider.
-In this example, we'll use `opnsense-user` as the Service account's username
+In this example, we'll use `opnsense` as the Service account's username
 
 :::note
 Take note of the password for this user as you'll need to give it to OPNsense in _Step 4_.
@@ -41,7 +41,7 @@ Only settings that have been modified from default have been listed.
 
 **Protocol Settings**
 - Name: LDAP
-- Search group: opnsense-user
+- Search group: opnsense
 - Certificate: authentik Self-signed certificate
 
 ### Step 3
