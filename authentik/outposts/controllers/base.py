@@ -3,11 +3,11 @@ from dataclasses import dataclass
 from typing import Optional
 
 from structlog.stdlib import get_logger
-from structlog.testing import capture_logs
 
 from authentik import __version__, get_build_hash
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.utils.log import capture_logs_tee
 from authentik.outposts.models import (
     Outpost,
     OutpostServiceConnection,
@@ -66,11 +66,8 @@ class BaseController:
 
     def up_with_logs(self) -> list[str]:
         """Call .up() but capture all log output and return it."""
-        with capture_logs() as logs:
+        with capture_logs_tee(self.logger) as logs:
             self.up()
-        # We still want to output the logs here so they can be output with all keyword-args
-        for log in logs:
-            self.logger.info(**log)
         return [x["event"] for x in logs]
 
     def down(self):
@@ -79,11 +76,8 @@ class BaseController:
 
     def down_with_logs(self) -> list[str]:
         """Call .down() but capture all log output and return it."""
-        with capture_logs() as logs:
+        with capture_logs_tee(self.logger) as logs:
             self.down()
-        # We still want to output the logs here so they can be output with all keyword-args
-        for log in logs:
-            self.logger.info(**log)
         return [x["event"] for x in logs]
 
     def __enter__(self):

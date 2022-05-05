@@ -17,7 +17,6 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 from structlog.stdlib import get_logger
-from structlog.testing import capture_logs
 
 from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.decorators import permission_required
@@ -27,6 +26,7 @@ from authentik.core.api.utils import FilePathSerializer, FileUploadSerializer
 from authentik.core.models import Application, User
 from authentik.events.models import EventAction
 from authentik.events.utils import sanitize_dict
+from authentik.lib.utils.log import capture_logs_tee
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
@@ -136,12 +136,9 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 return HttpResponseBadRequest("for_user must be numerical")
         engine = PolicyEngine(application, for_user, request)
         engine.use_cache = False
-        with capture_logs() as logs:
+        with capture_logs_tee(LOGGER.bind()) as logs:
             engine.build()
             result = engine.result
-        # We still want to output the logs here so they can be output with all keyword-args
-        for log in logs:
-            LOGGER.info(**log)
         response = PolicyTestResultSerializer(PolicyResult(False))
         if result.passing:
             response = PolicyTestResultSerializer(PolicyResult(True))

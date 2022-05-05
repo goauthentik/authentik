@@ -8,10 +8,10 @@ from kubernetes.client.exceptions import OpenApiException
 from kubernetes.config.config_exception import ConfigException
 from kubernetes.config.incluster_config import load_incluster_config
 from kubernetes.config.kube_config import load_kube_config_from_dict
-from structlog.testing import capture_logs
 from urllib3.exceptions import HTTPError
 from yaml import dump_all
 
+from authentik.lib.utils.log import capture_logs_tee
 from authentik.outposts.controllers.base import BaseClient, BaseController, ControllerException
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
@@ -86,12 +86,9 @@ class KubernetesController(BaseController):
                 if reconcile_key in self.outpost.config.kubernetes_disabled_components:
                     all_logs += [f"{reconcile_key.title()}: Disabled"]
                     continue
-                with capture_logs() as logs:
+                with capture_logs_tee(self.logger) as logs:
                     reconciler = self.reconcilers[reconcile_key](self)
                     reconciler.up()
-                # We still want to output the logs here so they can be output with all keyword-args
-                for log in logs:
-                    self.logger.info(**log)
                 all_logs += [f"{reconcile_key.title()}: {x['event']}" for x in logs]
             return all_logs
         except (OpenApiException, HTTPError, ServiceConnectionInvalid) as exc:
@@ -114,12 +111,9 @@ class KubernetesController(BaseController):
                 if reconcile_key in self.outpost.config.kubernetes_disabled_components:
                     all_logs += [f"{reconcile_key.title()}: Disabled"]
                     continue
-                with capture_logs() as logs:
+                with capture_logs_tee(self.logger) as logs:
                     reconciler = self.reconcilers[reconcile_key](self)
                     reconciler.down()
-                # We still want to output the logs here so they can be output with all keyword-args
-                for log in logs:
-                    self.logger.info(**log)
                 all_logs += [f"{reconcile_key.title()}: {x['event']}" for x in logs]
             return all_logs
         except (OpenApiException, HTTPError, ServiceConnectionInvalid) as exc:

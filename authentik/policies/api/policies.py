@@ -11,13 +11,13 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
-from structlog.testing import capture_logs
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.applications import user_app_cache_key
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import CacheSerializer, MetaNameSerializer, TypeCreateSerializer
 from authentik.events.utils import sanitize_dict
+from authentik.lib.utils.log import capture_logs_tee
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
 from authentik.policies.models import Policy, PolicyBinding
@@ -168,11 +168,8 @@ class PolicyViewSet(
         p_request.context = test_params.validated_data.get("context", {})
 
         proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
-        with capture_logs() as logs:
+        with capture_logs_tee(LOGGER.bind()) as logs:
             result = proc.execute()
-        # We still want to output the logs here so they can be output with all keyword-args
-        for log in logs:
-            LOGGER.info(**log)
         log_messages = []
         for log in logs:
             if log.get("process", "") == "PolicyProcess":

@@ -1,9 +1,9 @@
 """Test config loader"""
 from os import chmod, environ, unlink, write
 from tempfile import mkstemp
+from unittest import TestCase
 
 from django.conf import ImproperlyConfigured
-from django.test import TestCase
 
 from authentik.lib.config import ENV_PREFIX, ConfigLoader
 
