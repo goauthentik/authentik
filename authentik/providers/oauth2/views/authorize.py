@@ -74,6 +74,7 @@ class OAuthAuthorizationParams:
     client_id: str
     redirect_uri: str
     response_type: str
+    response_mode: Optional[str]
     scope: list[str]
     state: str
     nonce: Optional[str]
@@ -124,6 +125,16 @@ class OAuthAuthorizationParams:
         if not grant_type:
             LOGGER.warning("Invalid response type", type=response_type)
             raise AuthorizeError(redirect_uri, "unsupported_response_type", "", state)
+
+        # Validate and check the response_mode against the predefined dict
+        # Set to Query or Fragment if not defined in request
+        response_mode = query_dict.get('response_mode', False)
+
+        if response_mode not in ResponseMode.values:
+            response_mode = ResponseMode.QUERY
+
+            if grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
+                response_mode = ResponseMode.FRAGMENT
 
         max_age = query_dict.get("max_age")
         return OAuthAuthorizationParams(
@@ -304,29 +315,46 @@ class OAuthFulfillmentStage(StageView):
                 code = self.params.create_code(self.request)
                 code.save(force_insert=True)
 
-            query_dict = self.request.POST if self.request.method == "POST" else self.request.GET
-            response_mode = ResponseMode.QUERY
+            # Commented for now, left for comparison
+            # Since query_mode is assigned at request, this should not be needed anymore
+            # query_dict = self.request.POST if self.request.method == "POST" else self.request.GET
+            # response_mode = ResponseMode.QUERY
             # Get response mode from url param, otherwise decide based on grant type
-            if "response_mode" in query_dict:
-                response_mode = query_dict["response_mode"]
-            elif self.params.grant_type == GrantTypes.AUTHORIZATION_CODE:
-                response_mode = ResponseMode.QUERY
-            elif self.params.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
-                response_mode = ResponseMode.FRAGMENT
+            # if "response_mode" in query_dict:
+            #     response_mode = query_dict["response_mode"]
+            # elif self.params.grant_type == GrantTypes.AUTHORIZATION_CODE:
+            #     response_mode = ResponseMode.QUERY
+            # elif self.params.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
+            #     response_mode = ResponseMode.FRAGMENT
 
-            if response_mode == ResponseMode.QUERY:
+            if self.params.response_mode == ResponseMode.QUERY:
                 query_params["code"] = code.code
                 query_params["state"] = [str(self.params.state) if self.params.state else ""]
-
+            
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
                 return urlunsplit(uri)
-            if response_mode == ResponseMode.FRAGMENT:
+
+            if self.params.response_mode == ResponseMode.FRAGMENT:
                 query_fragment = self.create_implicit_response(code)
 
                 uri = uri._replace(
                     fragment=uri.fragment + urlencode(query_fragment, doseq=True),
                 )
                 return urlunsplit(uri)
+
+            # I found it easiest to generate an implicit response here for the purpose of redirecting to a GET/POST-translator
+            if self.params.response_mode == ResponseMode.FORM_POST:
+                query_param = self.create_implicit_response(code)
+                
+                # EXAMPLE
+                uri = urlsplit('https://authentik.local/generate/get/post/redirect/url')
+                uri = uri._replace(query=query_param)
+                
+                # Here, I'd need to find a way to either present the ak-stage-autosubmit view or redirect to a different url with the parameters 
+                # Haven't been able to sort that out yet though
+
+                return urlunsplit(uri)
+
             raise OAuth2Error()
         except OAuth2Error as error:
             LOGGER.warning("Error when trying to create response uri", error=error)

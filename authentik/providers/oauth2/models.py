@@ -50,6 +50,7 @@ class ResponseMode(models.TextChoices):
 
     QUERY = "query"
     FRAGMENT = "fragment"
+    FORM_POST = "form_post"
 
 
 class SubModes(models.TextChoices):
