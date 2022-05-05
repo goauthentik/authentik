@@ -68,6 +68,9 @@ class BaseController:
         """Call .up() but capture all log output and return it."""
         with capture_logs() as logs:
             self.up()
+        # We still want to output the logs here so they can be output with all keyword-args
+        for log in logs:
+            self.logger.info(**log)
         return [x["event"] for x in logs]
 
     def down(self):
@@ -78,6 +81,9 @@ class BaseController:
         """Call .down() but capture all log output and return it."""
         with capture_logs() as logs:
             self.down()
+        # We still want to output the logs here so they can be output with all keyword-args
+        for log in logs:
+            self.logger.info(**log)
         return [x["event"] for x in logs]
 
     def __enter__(self):

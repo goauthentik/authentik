@@ -170,6 +170,9 @@ class PolicyViewSet(
         proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
         with capture_logs() as logs:
             result = proc.execute()
+        # We still want to output the logs here so they can be output with all keyword-args
+        for log in logs:
+            LOGGER.info(**log)
         log_messages = []
         for log in logs:
             if log.get("process", "") == "PolicyProcess":

@@ -139,6 +139,9 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         with capture_logs() as logs:
             engine.build()
             result = engine.result
+        # We still want to output the logs here so they can be output with all keyword-args
+        for log in logs:
+            LOGGER.info(**log)
         response = PolicyTestResultSerializer(PolicyResult(False))
         if result.passing:
             response = PolicyTestResultSerializer(PolicyResult(True))

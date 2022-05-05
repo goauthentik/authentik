@@ -130,10 +130,8 @@ def outpost_controller(
         if not controller_type:
             return
         with controller_type(outpost, outpost.service_connection) as controller:
-            logs = getattr(controller, f"{action}_with_logs")()
             LOGGER.debug("---------------Outpost Controller logs starting----------------")
-            for log in logs:
-                LOGGER.debug(log)
+            logs = getattr(controller, f"{action}_with_logs")()
             LOGGER.debug("-----------------Outpost Controller logs end-------------------")
     except (ControllerException, ServiceConnectionInvalid) as exc:
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))

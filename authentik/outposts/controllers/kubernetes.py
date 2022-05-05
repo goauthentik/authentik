@@ -89,6 +89,9 @@ class KubernetesController(BaseController):
                 with capture_logs() as logs:
                     reconciler = self.reconcilers[reconcile_key](self)
                     reconciler.up()
+                # We still want to output the logs here so they can be output with all keyword-args
+                for log in logs:
+                    self.logger.info(**log)
                 all_logs += [f"{reconcile_key.title()}: {x['event']}" for x in logs]
             return all_logs
         except (OpenApiException, HTTPError, ServiceConnectionInvalid) as exc:
@@ -114,6 +117,9 @@ class KubernetesController(BaseController):
                 with capture_logs() as logs:
                     reconciler = self.reconcilers[reconcile_key](self)
                     reconciler.down()
+                # We still want to output the logs here so they can be output with all keyword-args
+                for log in logs:
+                    self.logger.info(**log)
                 all_logs += [f"{reconcile_key.title()}: {x['event']}" for x in logs]
             return all_logs
         except (OpenApiException, HTTPError, ServiceConnectionInvalid) as exc:
