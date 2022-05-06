@@ -11,7 +11,7 @@ CLIENT_ASSERTION = "client_assertion"
 CLIENT_ASSERTION_TYPE_JWT = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
 
 PROMPT_NONE = "none"
-PROMPT_CONSNET = "consent"
+PROMPT_CONSENT = "consent"
 PROMPT_LOGIN = "login"
 
 SCOPE_OPENID = "openid"

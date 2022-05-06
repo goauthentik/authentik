@@ -30,7 +30,7 @@ from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView, RequestValidationError
 from authentik.providers.oauth2.constants import (
-    PROMPT_CONSNET,
+    PROMPT_CONSENT,
     PROMPT_LOGIN,
     PROMPT_NONE,
     SCOPE_OPENID,
@@ -63,7 +63,7 @@ LOGGER = get_logger()
 PLAN_CONTEXT_PARAMS = "params"
 SESSION_NEEDS_LOGIN = "authentik_oauth2_needs_login"
 
-ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSNET, PROMPT_LOGIN}
+ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
 
 
 @dataclass
@@ -265,7 +265,7 @@ class OAuthFulfillmentStage(StageView):
         self.provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
         try:
             # At this point we don't need to check permissions anymore
-            if {PROMPT_NONE, PROMPT_CONSNET}.issubset(self.params.prompt):
+            if {PROMPT_NONE, PROMPT_CONSENT}.issubset(self.params.prompt):
                 raise AuthorizeError(
                     self.params.redirect_uri,
                     "consent_required",
@@ -494,7 +494,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         )
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
         # need to inject a consent stage
-        if PROMPT_CONSNET in self.params.prompt:
+        if PROMPT_CONSENT in self.params.prompt:
             if not any(isinstance(x.stage, ConsentStageView) for x in plan.bindings):
                 # Plan does not have any consent stage, so we add an in-memory one
                 stage = ConsentStage(
