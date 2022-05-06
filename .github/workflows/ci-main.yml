@@ -209,7 +209,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2.0.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
       - name: prepare variables
         id: ev
         env:
