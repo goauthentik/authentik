@@ -640,7 +640,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 plan.append_stage(stage)
 
         if self.params.response_mode == ResponseMode.FORM_POST:
-            plan.append_stage(in_memory_stage(OauthPostFulfillmentStage))
+            plan.append_stage(in_memory_stage(OAuthPostFulfillmentStage))
         else:
             plan.append_stage(in_memory_stage(OAuthFulfillmentStage))
 
