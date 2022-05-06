@@ -15,11 +15,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
-from authentik.flows.challenge import (
-    Challenge, 
-    ChallengeResponse, 
-    ChallengeTypes
-)
+from authentik.flows.challenge import ChallengeTypes, HttpChallengeResponse
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
@@ -27,7 +23,7 @@ from authentik.flows.planner import (
     FlowPlan,
     FlowPlanner,
 )
-from authentik.flows.stage import StageView, ChallengeStageView
+from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.utils.urls import redirect_with_qs
@@ -55,7 +51,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 from authentik.providers.oauth2.views.userinfo import UserInfoView
-from authentik.providers.saml.views.flows import AutosubmitChallenge, AutoSubmitChallengeResponse
+from authentik.providers.saml.views.flows import AutosubmitChallenge
 from authentik.stages.consent.models import ConsentMode, ConsentStage
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
@@ -256,132 +252,6 @@ class OAuthAuthorizationParams:
 
         return code
 
-class OAuthPostFulfillmentStage(ChallengeStageView):
-    response_class = AutoSubmitChallengeResponse
-
-    params: OAuthAuthorizationParams
-    provider: OAuth2Provider
-
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """final Stage of an OAuth2 Flow when using response_mode = form_post"""
-
-        if PLAN_CONTEXT_PARAMS not in self.executor.plan.context:
-            LOGGER.warning("Got to fulfillment stage with no pending context (POST STAGE)")
-            return HttpResponseBadRequest()
-
-        self.params: OAuthAuthorizationParams = self.executor.plan.context.pop(PLAN_CONTEXT_PARAMS)
-        application: Application = self.executor.plan.context.pop(PLAN_CONTEXT_APPLICATION)
-
-        self.provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
-
-        # At this point we don't need to check permissions anymore
-        if {PROMPT_NONE, PROMPT_CONSNET}.issubset(self.params.prompt):
-            raise AuthorizeError(
-                self.params.redirect_uri,
-                "consent_required",
-                self.params.grant_type,
-                self.params.state,
-            )
-
-        Event.new(
-            EventAction.AUTHORIZE_APPLICATION,
-            authorized_application=application,
-            flow=self.executor.plan.flow_pk,
-            scopes=", ".join(self.params.scope),
-        ).from_http(self.request)
-
-
-        if self.params.grant_type in [
-            GrantTypes.AUTHORIZATION_CODE,
-            GrantTypes.HYBRID,
-        ]:
-            code = self.params.create_code(self.request)
-            code.save(force_insert=True)
-
-        form_attrs = self.get_post_params(code)
-        form_attrs["code"] = code.code
-        form_attrs["state"] = [str(self.params.state) if self.params.state else ""]
-
-        return super().get(
-            self.request,
-            **{
-                "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-autosubmit",
-                "title": "Redirecting to %(app)s..." % {"app": application.name},
-                "url": self.params.redirect_uri,
-                "attrs": form_attrs
-            }
-        )
-
-    def get_challenge(self, *args, **kwargs) -> Challenge:
-        return AutosubmitChallenge(data=kwargs)
-
-    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        # We'll never get here since the challenge redirects to the SP
-        return HttpResponseBadRequest()
-
-    def get_post_params(self, code: Optional[AuthorizationCode]) -> dict:
-        """Create implicit response's URL Fragment dictionary"""
-        query_fragment = {}
-
-        token = self.provider.create_refresh_token(
-            user=self.request.user,
-            scope=self.params.scope,
-            request=self.request,
-        )
-
-        # Check if response_type must include access_token in the response.
-        if self.params.response_type in [
-            ResponseTypes.ID_TOKEN_TOKEN,
-            ResponseTypes.CODE_ID_TOKEN_TOKEN,
-            ResponseTypes.ID_TOKEN,
-            ResponseTypes.CODE_TOKEN,
-        ]:
-            query_fragment["access_token"] = token.access_token
-
-        # We don't need id_token if it's an OAuth2 request.
-        if SCOPE_OPENID in self.params.scope:
-            id_token = token.create_id_token(
-                user=self.request.user,
-                request=self.request,
-            )
-            id_token.nonce = self.params.nonce
-
-            # Include at_hash when access_token is being returned.
-            if "access_token" in query_fragment:
-                id_token.at_hash = token.at_hash
-
-            if self.params.response_type in [
-                ResponseTypes.CODE_ID_TOKEN,
-                ResponseTypes.CODE_ID_TOKEN_TOKEN,
-            ]:
-                id_token.c_hash = code.c_hash
-
-            # Check if response_type must include id_token in the response.
-            if self.params.response_type in [
-                ResponseTypes.ID_TOKEN,
-                ResponseTypes.ID_TOKEN_TOKEN,
-                ResponseTypes.CODE_ID_TOKEN,
-                ResponseTypes.CODE_ID_TOKEN_TOKEN,
-            ]:
-                query_fragment["id_token"] = self.provider.encode(id_token.to_dict())
-            token.id_token = id_token
-
-        # Store the token.
-        token.save()
-
-        # Code parameter must be present if it's Hybrid Flow.
-        if self.params.grant_type == GrantTypes.HYBRID:
-            query_fragment["code"] = code.code
-
-        query_fragment["token_type"] = "bearer"  # nosec
-        query_fragment["expires_in"] = int(
-            timedelta_from_string(self.provider.access_code_validity).total_seconds()
-        )
-        query_fragment["state"] = self.params.state if self.params.state else ""
-
-        return query_fragment
-
 class OAuthFulfillmentStage(StageView):
     """Final stage, restores params from Flow."""
 
@@ -391,6 +261,26 @@ class OAuthFulfillmentStage(StageView):
     def redirect(self, uri: str) -> HttpResponse:
         """Redirect using HttpResponseRedirectScheme, compatible with non-http schemes"""
         parsed = urlparse(uri)
+
+        if self.params.response_mode == ResponseMode.FORM_POST:
+            query_params = parse_qs(parsed.query)
+
+            challenge = AutosubmitChallenge(
+                data={
+                    "type": ChallengeTypes.NATIVE.value,
+                    "component": "ak-stage-autosubmit",
+                    "title": "Redirecting back to application...",
+                    "url": self.params.redirect_uri,
+                    "attrs": query_params
+                }
+            )
+
+            challenge.is_valid()
+
+            return HttpChallengeResponse(
+                challenge=challenge,
+            )
+
         return HttpResponseRedirectScheme(uri, allowed_schemes=[parsed.scheme])
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -461,7 +351,19 @@ class OAuthFulfillmentStage(StageView):
                 uri = uri._replace(
                     fragment=uri.fragment + urlencode(query_fragment, doseq=True),
                 )
+
                 return urlunsplit(uri)
+
+
+            if self.params.response_mode == ResponseMode.FORM_POST:
+                post_params = self.create_implicit_response(code)
+
+                uri = uri._replace(
+                    query=urlencode(post_params, doseq=True)
+                )
+
+                return urlunsplit(uri)
+
 
             raise OAuth2Error()
         except OAuth2Error as error:
@@ -639,10 +541,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 )
                 plan.append_stage(stage)
 
-        if self.params.response_mode == ResponseMode.FORM_POST:
-            plan.append_stage(in_memory_stage(OAuthPostFulfillmentStage))
-        else:
-            plan.append_stage(in_memory_stage(OAuthFulfillmentStage))
+        plan.append_stage(in_memory_stage(OAuthFulfillmentStage))
 
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
