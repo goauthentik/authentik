@@ -33,6 +33,13 @@ The rest of the settings usually don't need changing and have sane defaults. The
 
 - Flow settings: If you have build your own authentication flows, change to use them here.
 
+### Adding authentik as a server provider with your IDP
+This will depend heavily on what software you are using on your Identity Provider. On the Metadata tab in the SAML Federation Source you can download the metadata for the service provider, this should enable you to import this into most Identity Providers. If this does not work, the important parts are:
+
+- Entity ID: Taken from the Issuer/Entity ID field above
+- Return URL/Assertion Consumer Service URL/ACS: https://authentik.example.com/source/saml/[source-slug]/acs/
+- Certificate: If you have chosen to sign your outgoing requests, use the public side of the certificate that you specified in the settings
+
 ### Example metadata
 ```xml
 <md:EntityDescriptor entityID="https://federation.example.com/idp">
