@@ -337,11 +337,10 @@ class OAuthFulfillmentStage(StageView):
                 code = self.params.create_code(self.request)
                 code.save(force_insert=True)
 
-            # At this stage, self.params.response_mode is always going to be QUERY or FRAGMENT
             if self.params.response_mode == ResponseMode.QUERY:
                 query_params["code"] = code.code
                 query_params["state"] = [str(self.params.state) if self.params.state else ""]
-            
+
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
                 return urlunsplit(uri)
 
