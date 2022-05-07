@@ -54,9 +54,7 @@ elif [[ "$1" == "flower" ]]; then
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test" ]]; then
-    # https://github.com/python-poetry/poetry/issues/4493
-    pip install platformdirs
-    poetry install
+    pip install --no-cache-dir -r /requirements-dev.txt
     touch /unittest.xml
     chown authentik:authentik /unittest.xml
     check_if_root "python -m manage test authentik"
