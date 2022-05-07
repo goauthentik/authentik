@@ -130,7 +130,7 @@ class OAuthAuthorizationParams:
 
         # Validate and check the response_mode against the predefined dict
         # Set to Query or Fragment if not defined in request
-        response_mode = query_dict.get('response_mode', False)
+        response_mode = query_dict.get("response_mode", False)
 
         if response_mode not in ResponseMode.values:
             response_mode = ResponseMode.QUERY
@@ -252,6 +252,7 @@ class OAuthAuthorizationParams:
 
         return code
 
+
 class OAuthFulfillmentStage(StageView):
     """Final stage, restores params from Flow."""
 
@@ -271,7 +272,7 @@ class OAuthFulfillmentStage(StageView):
                     "component": "ak-stage-autosubmit",
                     "title": "Redirecting back to application...",
                     "url": self.params.redirect_uri,
-                    "attrs": query_params
+                    "attrs": query_params,
                 }
             )
 
@@ -353,16 +354,12 @@ class OAuthFulfillmentStage(StageView):
 
                 return urlunsplit(uri)
 
-
             if self.params.response_mode == ResponseMode.FORM_POST:
                 post_params = self.create_implicit_response(code)
 
-                uri = uri._replace(
-                    query=urlencode(post_params, doseq=True)
-                )
+                uri = uri._replace(query=urlencode(post_params, doseq=True))
 
                 return urlunsplit(uri)
-
 
             raise OAuth2Error()
         except OAuth2Error as error:
