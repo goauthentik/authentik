@@ -18,6 +18,15 @@ test-e2e-rest:
 test-go:
 	go test -timeout 0 -v -race -cover ./...
 
+test-docker:
+	echo "PG_PASS=$(openssl rand -base64 32)" >> .env
+	echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
+	docker-compose pull -q
+	docker-compose up --no-start
+	docker-compose start postgresql redis
+	docker-compose run -u root server test
+	rm -f .env
+
 test:
 	coverage run manage.py test authentik
 	coverage html
