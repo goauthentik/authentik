@@ -662,6 +662,10 @@ msgstr "Parola Bağla"
 msgid "Bind flow"
 msgstr "Bağlama akışı"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Bind mode"
+msgstr ""
+
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/BoundStagesList.ts
 msgid "Bind stage"
@@ -707,6 +711,10 @@ msgstr "Varsayılan olarak, kaynaklar için yalnızca simgeler gösterilir. Tam 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "Uç noktanın Sertifikası karşı doğrulanan CA. Doğrulama yapılmadan boş bırakılabilir."
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
+msgstr ""
 
 #: src/pages/admin-overview/charts/FlowStatusChart.ts
 msgid "Cached flows"
@@ -1035,6 +1043,10 @@ msgstr "Akış yürütücüsünün bir meydan okuma için geçersiz bir yanıt n
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Kimlik Belirtecinin yayımcı alanının nasıl doldurulacağını yapılandırın."
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Configure how the outpost authenticates requests."
+msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Configure how the outpost queries the core authentik server's users."
@@ -1576,6 +1588,10 @@ msgstr "Digest algoritması"
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Digits"
 msgstr "Rakamlar"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Direct querying, always execute the configured bind flow to authenticate the user."
+msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Direct querying, always returns the latest data, but slower than cached querying."

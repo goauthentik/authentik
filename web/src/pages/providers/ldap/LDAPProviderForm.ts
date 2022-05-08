@@ -6,6 +6,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import {
+    BindModeEnum,
     CoreApi,
     CryptoApi,
     FlowsApi,
@@ -117,6 +118,25 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 </select>
                 <p class="pf-c-form__helper-text">
                     ${t`Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.`}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Bind mode`} name="bindMode">
+                <select class="pf-c-form-control">
+                    <option
+                        value="${BindModeEnum.Cached}"
+                        ?selected=${this.instance?.bindMode === BindModeEnum.Cached}
+                    >
+                        ${t`Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires.`}
+                    </option>
+                    <option
+                        value="${BindModeEnum.Direct}"
+                        ?selected=${this.instance?.searchMode === BindModeEnum.Direct}
+                    >
+                        ${t`Direct querying, always execute the configured bind flow to authenticate the user.`}
+                    </option>
+                </select>
+                <p class="pf-c-form__helper-text">
+                    ${t`Configure how the outpost authenticates requests.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Search mode`} name="searchMode">
