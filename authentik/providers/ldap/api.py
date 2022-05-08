@@ -25,6 +25,7 @@ class LDAPProviderSerializer(ProviderSerializer):
             "gid_start_number",
             "outpost_set",
             "search_mode",
+            "bind_mode",
         ]
 
 
@@ -70,6 +71,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
             "uid_start_number",
             "gid_start_number",
             "search_mode",
+            "bind_mode",
         ]
 
 

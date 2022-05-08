@@ -3,8 +3,10 @@ package ldap
 import (
 	"net"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/nmcclain/ldap"
 	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/utils"
@@ -24,6 +26,16 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
 		req.Log().WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Bind request")
 	}()
+
+	defer func() {
+		err := recover()
+		if err == nil {
+			return
+		}
+		log.WithError(err.(error)).Error("recover in bind request")
+		sentry.CaptureException(err.(error))
+	}()
+
 	for _, instance := range ls.providers {
 		username, err := instance.binder.GetUsername(bindDN)
 		if err == nil {

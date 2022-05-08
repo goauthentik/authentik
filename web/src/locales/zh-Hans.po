@@ -659,6 +659,10 @@ msgstr "Bind 密码"
 msgid "Bind flow"
 msgstr "Bind 流程"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Bind mode"
+msgstr ""
+
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/BoundStagesList.ts
 msgid "Bind stage"
@@ -704,6 +708,10 @@ msgstr "默认情况下，只为源显示图标。启用此选项可显示它们
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "验证端点证书所依据的 CA。可以留空，表示不进行验证。"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
+msgstr ""
 
 #: src/pages/admin-overview/charts/FlowStatusChart.ts
 msgid "Cached flows"
@@ -1032,6 +1040,10 @@ msgstr "配置流程执行器应如何处理对质询的无效响应。"
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "配置如何填写 ID 令牌的颁发者字段。"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Configure how the outpost authenticates requests."
+msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Configure how the outpost queries the core authentik server's users."
@@ -1573,6 +1585,10 @@ msgstr "摘要算法"
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Digits"
 msgstr "数字"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Direct querying, always execute the configured bind flow to authenticate the user."
+msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Direct querying, always returns the latest data, but slower than cached querying."

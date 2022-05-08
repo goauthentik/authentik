@@ -24,7 +24,7 @@ jobs:
           cd web
           npm ci
       - name: Generate API
-        run: make gen-web
+        run: make gen-client-web
       - name: Eslint
         run: |
           cd web
@@ -42,7 +42,7 @@ jobs:
           cd web
           npm ci
       - name: Generate API
-        run: make gen-web
+        run: make gen-client-web
       - name: prettier
         run: |
           cd web
@@ -60,7 +60,7 @@ jobs:
           cd web
           npm ci
       - name: Generate API
-        run: make gen-web
+        run: make gen-client-web
       - name: lit-analyse
         run: |
           cd web
@@ -88,7 +88,7 @@ jobs:
           cd web
           npm ci
       - name: Generate API
-        run: make gen-web
+        run: make gen-client-web
       - name: build
         run: |
           cd web

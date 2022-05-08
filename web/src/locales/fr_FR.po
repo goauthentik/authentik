@@ -668,6 +668,10 @@ msgstr "Mot de passe"
 msgid "Bind flow"
 msgstr "Lier un flux"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Bind mode"
+msgstr ""
+
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/BoundStagesList.ts
 msgid "Bind stage"
@@ -713,6 +717,10 @@ msgstr ""
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "AC auprès de laquelle le certificat du terminal est vérifié. Peut être laissé vide en l'absence de validation."
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
+msgstr ""
 
 #: src/pages/admin-overview/charts/FlowStatusChart.ts
 msgid "Cached flows"
@@ -1044,6 +1052,10 @@ msgstr "Configure comment l'exécuteur de flux gère une réponse invalide à un
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Configure comment le champ émetteur du jeton ID sera rempli."
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Configure how the outpost authenticates requests."
+msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Configure how the outpost queries the core authentik server's users."
@@ -1589,6 +1601,10 @@ msgstr "Algorithme d'empreinte"
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Digits"
 msgstr "Chiffres"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Direct querying, always execute the configured bind flow to authenticate the user."
+msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Direct querying, always returns the latest data, but slower than cached querying."

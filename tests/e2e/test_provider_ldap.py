@@ -15,7 +15,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
 from authentik.outposts.managed import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
-from authentik.providers.ldap.models import LDAPProvider, SearchModes
+from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
 from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 
@@ -55,7 +55,7 @@ class TestProviderLDAP(SeleniumTestCase):
             name="ldap_provider",
             authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
             search_group=self.user.ak_groups.first(),
-            search_mode=SearchModes.CACHED,
+            search_mode=APIAccessMode.CACHED,
         )
         # we need to create an application to actually access the ldap
         Application.objects.create(name="ldap", slug="ldap", provider=ldap)

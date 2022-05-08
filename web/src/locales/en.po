@@ -668,6 +668,10 @@ msgstr "Bind Password"
 msgid "Bind flow"
 msgstr "Bind flow"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Bind mode"
+msgstr "Bind mode"
+
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/BoundStagesList.ts
 msgid "Bind stage"
@@ -714,6 +718,10 @@ msgstr "By default, only icons are shown for sources. Enable this to show their 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
+msgstr "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
 
 #: src/pages/admin-overview/charts/FlowStatusChart.ts
 msgid "Cached flows"
@@ -1049,6 +1057,10 @@ msgstr "Configure how the flow executor should handle an invalid response to a c
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Configure how the issuer field of the ID Token should be filled."
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Configure how the outpost authenticates requests."
+msgstr "Configure how the outpost authenticates requests."
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Configure how the outpost queries the core authentik server's users."
@@ -1604,6 +1616,10 @@ msgstr "Digest algorithm"
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Digits"
 msgstr "Digits"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Direct querying, always execute the configured bind flow to authenticate the user."
+msgstr "Direct querying, always execute the configured bind flow to authenticate the user."
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Direct querying, always returns the latest data, but slower than cached querying."
