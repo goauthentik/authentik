@@ -61,21 +61,21 @@ gen-clean:
 	rm -rf web/api/src/
 	rm -rf api/
 
-gen-web:
+gen-client-web:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
 		openapitools/openapi-generator-cli:v6.0.0-beta generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
-		-o /local/web-api \
+		-o /local/gen-ts-api \
 		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${NPM_VERSION}
 	mkdir -p web/node_modules/@goauthentik/api
-	\cp -fv scripts/web_api_readme.md web-api/README.md
-	cd web-api && npm i
-	\cp -rfv web-api/* web/node_modules/@goauthentik/api
+	\cp -fv scripts/web_api_readme.md gen-ts-api/README.md
+	cd gen-ts-api && npm i
+	\cp -rfv gen-ts-api/* web/node_modules/@goauthentik/api
 
-gen-outpost:
+gen-client-go:
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O config.yaml
 	mkdir -p templates
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O templates/README.mustache
@@ -86,12 +86,12 @@ gen-outpost:
 		openapitools/openapi-generator-cli:v6.0.0-beta generate \
 		-i /local/schema.yml \
 		-g go \
-		-o /local/api \
+		-o /local/gen-go-api \
 		-c /local/config.yaml
-	go mod edit -replace goauthentik.io/api=./api
+	go mod edit -replace goauthentik.io/api/v3=./gen-go-api
 	rm -rf config.yaml ./templates/
 
-gen: gen-build gen-clean gen-web
+gen: gen-build gen-clean gen-client-web
 
 migrate:
 	python -m lifecycle.migrate

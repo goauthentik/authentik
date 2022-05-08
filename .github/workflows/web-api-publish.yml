@@ -15,7 +15,7 @@ jobs:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'
       - name: Generate API Client
-        run: make gen-web
+        run: make gen-client-web
       - name: Publish package
         run: |
           cd web-api/
