@@ -24,12 +24,8 @@ jobs:
           mkdir -p web/dist
           mkdir -p website/help
           touch web/dist/test website/help/test
-          docker run \
-            --rm \
-            -v $(pwd):/app \
-            -w /app \
-            golangci/golangci-lint:v1.43 \
-            golangci-lint run -v --timeout 200s
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
   test-unittest:
     runs-on: ubuntu-latest
     steps:
