@@ -62,8 +62,8 @@ AUTH_USER_MODEL = "authentik_core.User"
 
 CSRF_COOKIE_NAME = "authentik_csrf"
 CSRF_HEADER_NAME = "HTTP_X_AUTHENTIK_CSRF"
-LANGUAGE_COOKIE_NAME = f"authentik_language"
-SESSION_COOKIE_NAME = f"authentik_session"
+LANGUAGE_COOKIE_NAME = "authentik_language"
+SESSION_COOKIE_NAME = "authentik_session"
 SESSION_COOKIE_DOMAIN = CONFIG.y("cookie_domain", None)
 
 AUTHENTICATION_BACKENDS = [
