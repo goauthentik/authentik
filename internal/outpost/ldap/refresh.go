@@ -11,6 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
 	directbind "goauthentik.io/internal/outpost/ldap/bind/direct"
+	memorybind "goauthentik.io/internal/outpost/ldap/bind/memory"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/flags"
 	directsearch "goauthentik.io/internal/outpost/ldap/search/direct"
@@ -81,7 +82,11 @@ func (ls *LDAPServer) Refresh() error {
 		} else if *provider.SearchMode.Ptr() == api.SEARCHMODEENUM_DIRECT {
 			providers[idx].searcher = directsearch.NewDirectSearcher(providers[idx])
 		}
-		providers[idx].binder = directbind.NewDirectBinder(providers[idx])
+		if *provider.BindMode.Ptr() == api.BINDMODEENUM_CACHED {
+			providers[idx].binder = memorybind.NewSessionBinder(providers[idx])
+		} else if *provider.BindMode.Ptr() == api.BINDMODEENUM_DIRECT {
+			providers[idx].binder = directbind.NewDirectBinder(providers[idx])
+		}
 	}
 	ls.providers = providers
 	ls.log.Info("Update providers")

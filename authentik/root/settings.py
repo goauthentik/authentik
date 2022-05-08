@@ -60,11 +60,10 @@ LOGIN_URL = "authentik_flows:default-authentication"
 # Custom user model
 AUTH_USER_MODEL = "authentik_core.User"
 
-_cookie_suffix = "_debug" if DEBUG else ""
 CSRF_COOKIE_NAME = "authentik_csrf"
 CSRF_HEADER_NAME = "HTTP_X_AUTHENTIK_CSRF"
-LANGUAGE_COOKIE_NAME = f"authentik_language{_cookie_suffix}"
-SESSION_COOKIE_NAME = f"authentik_session{_cookie_suffix}"
+LANGUAGE_COOKIE_NAME = f"authentik_language"
+SESSION_COOKIE_NAME = f"authentik_session"
 SESSION_COOKIE_DOMAIN = CONFIG.y("cookie_domain", None)
 
 AUTHENTICATION_BACKENDS = [

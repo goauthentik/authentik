@@ -10,8 +10,8 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import OutpostModel
 
 
-class SearchModes(models.TextChoices):
-    """Search modes"""
+class APIAccessMode(models.TextChoices):
+    """API Access modes"""
 
     DIRECT = "direct"
     CACHED = "cached"
@@ -66,7 +66,8 @@ class LDAPProvider(OutpostModel, Provider):
         ),
     )
 
-    search_mode = models.TextField(default=SearchModes.DIRECT, choices=SearchModes.choices)
+    bind_mode = models.TextField(default=APIAccessMode.DIRECT, choices=APIAccessMode.choices)
+    search_mode = models.TextField(default=APIAccessMode.DIRECT, choices=APIAccessMode.choices)
 
     @property
     def launch_url(self) -> Optional[str]:
