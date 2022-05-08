@@ -3300,9 +3300,9 @@ paths:
       - authentik: []
       responses:
         '204':
-          description: No response body
+          description: Successfully sent recover email
         '404':
-          description: No response body
+          description: Bad request
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -3330,9 +3330,9 @@ paths:
       - authentik: []
       responses:
         '204':
-          description: No response body
+          description: Successfully changed password
         '400':
-          description: No response body
+          description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
   /core/users/{id}/used_by/:
@@ -20068,6 +20068,11 @@ components:
       - authentik.core.auth.TokenBackend
       - authentik.sources.ldap.auth.LDAPBackend
       type: string
+    BindModeEnum:
+      enum:
+      - direct
+      - cached
+      type: string
     BindingTypeEnum:
       enum:
       - REDIRECT
@@ -22352,6 +22357,8 @@ components:
             local groups or users primary groups gidNumber
         search_mode:
           $ref: '#/components/schemas/SearchModeEnum'
+        bind_mode:
+          $ref: '#/components/schemas/BindModeEnum'
       required:
       - application_slug
       - bind_flow_slug
@@ -22503,6 +22510,8 @@ components:
           readOnly: true
         search_mode:
           $ref: '#/components/schemas/SearchModeEnum'
+        bind_mode:
+          $ref: '#/components/schemas/BindModeEnum'
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -22563,6 +22572,8 @@ components:
             local groups or users primary groups gidNumber
         search_mode:
           $ref: '#/components/schemas/SearchModeEnum'
+        bind_mode:
+          $ref: '#/components/schemas/BindModeEnum'
       required:
       - authorization_flow
       - name
@@ -27327,6 +27338,8 @@ components:
             local groups or users primary groups gidNumber
         search_mode:
           $ref: '#/components/schemas/SearchModeEnum'
+        bind_mode:
+          $ref: '#/components/schemas/BindModeEnum'
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
