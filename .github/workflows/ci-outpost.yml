@@ -18,12 +18,14 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: "^1.17"
-      - name: Run linter
+      - name: Prepare and generate API
         run: |
           # Create folder structure for go embeds
           mkdir -p web/dist
           mkdir -p website/help
           touch web/dist/test website/help/test
+      - name: Generate API
+        run: make gen-client-go
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
   test-unittest:
@@ -33,6 +35,8 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: "^1.17"
+      - name: Generate API
+        run: make gen-client-go
       - name: Go unittests
         run: |
           go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./...
@@ -74,6 +78,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate API
+        run: make gen-client-go
       - name: Building Docker Image
         uses: docker/build-push-action@v3
         with:
@@ -109,6 +115,8 @@ jobs:
           node-version: '16'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
+      - name: Generate API
+        run: make gen-client-go
       - name: Build web
         run: |
           cd web
