@@ -21,6 +21,7 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import "../../../elements/utils/TimeDeltaHelp";
 
 @customElement("ak-provider-saml-form")
 export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
@@ -299,9 +300,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         <p class="pf-c-form__helper-text">
                             ${t`Configure the maximum allowed time drift for an assertion.`}
                         </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
-                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Assertion valid not on or after`}
@@ -315,8 +314,9 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).`}
+                            ${t`Assertion not valid on or after current time + this value.`}
                         </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Session valid not on or after`}
@@ -330,8 +330,9 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).`}
+                            ${t`Session not valid on or after current time + this value.`}
                         </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal

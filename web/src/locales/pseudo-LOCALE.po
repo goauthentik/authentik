@@ -17,16 +17,17 @@ msgstr ""
 #~ msgid "#/identity/users/{0}"
 #~ msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/proxy/ProxyProviderForm.ts
-#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/elements/utils/TimeDeltaHelp.ts
+#~ msgid "(Format: days=-1;minutes=-2;seconds=-3)."
+#~ msgstr ""
+
+#: src/elements/utils/TimeDeltaHelp.ts
 msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
 msgstr ""
 
 #: src/pages/stages/user_login/UserLoginStageForm.ts
-msgid "(Format: hours=1;minutes=2;seconds=3)."
-msgstr ""
+#~ msgid "(Format: hours=1;minutes=2;seconds=3)."
+#~ msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -440,7 +441,11 @@ msgid "Are you sure you want to update {0} \"{1}\"?"
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
+#~ msgid "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
+#~ msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderForm.ts
+msgid "Assertion not valid on or after current time + this value."
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -2524,6 +2529,10 @@ msgstr ""
 #~ msgid "Identity & Cryptography"
 #~ msgstr ""
 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "If any of the devices user of the types selected above have been used within this duration, this stage will be skipped."
+msgstr ""
+
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
 msgid "If enabled, use the local connection. Required Docker socket/Kubernetes Integration."
@@ -2800,6 +2809,10 @@ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Last sync: {0}"
+msgstr ""
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Last validation threshold"
 msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts
@@ -3530,8 +3543,12 @@ msgid "Objects created"
 msgstr ""
 
 #: src/pages/stages/consent/ConsentStageForm.ts
-msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
+msgid "Offset after which consent expires."
 msgstr ""
+
+#: src/pages/stages/consent/ConsentStageForm.ts
+#~ msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
+#~ msgstr ""
 
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -4590,7 +4607,11 @@ msgid "Session duration"
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
+#~ msgid "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
+#~ msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderForm.ts
+msgid "Session not valid on or after current time + this value."
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -5526,8 +5547,12 @@ msgid "Time in minutes the token sent is valid."
 msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
-msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
+msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually."
 msgstr ""
+
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#~ msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
+#~ msgstr ""
 
 #: 
 #~ msgid "Time-based One-Time Passwords"

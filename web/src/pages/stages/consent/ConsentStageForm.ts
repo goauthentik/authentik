@@ -10,6 +10,7 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import "../../../elements/utils/TimeDeltaHelp";
 
 @customElement("ak-stage-consent-form")
 export class ConsentStageForm extends ModelForm<ConsentStage, string> {
@@ -113,8 +114,9 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).`}
+                            ${t`Offset after which consent expires.`}
                         </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

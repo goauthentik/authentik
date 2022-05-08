@@ -16,6 +16,7 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import "../../../elements/utils/TimeDeltaHelp";
 
 @customElement("ak-stage-authenticator-validate-form")
 export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValidateStage, string> {
@@ -122,6 +123,22 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                         <p class="pf-c-form__helper-text">
                             ${t`Hold control/command to select multiple items.`}
                         </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Last validation threshold`}
+                        ?required=${true}
+                        name="lastAuthThreshold"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.lastAuthThreshold || "seconds=0"}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`If any of the devices user of the types selected above have been used within this duration, this stage will be skipped.`}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Not configured action`}

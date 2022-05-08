@@ -21,6 +21,7 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import "../../../elements/utils/TimeDeltaHelp";
 import { first, randomString } from "../../../utils";
 
 @customElement("ak-provider-oauth2-form")
@@ -230,9 +231,7 @@ ${this.instance?.redirectUris}</textarea
                         <p class="pf-c-form__helper-text">
                             ${t`If you are using an Implicit, client-side flow (where the token-endpoint isn't used), you probably want to increase this time.`}
                         </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
-                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Token validity`}
@@ -248,9 +247,7 @@ ${this.instance?.redirectUris}</textarea
                         <p class="pf-c-form__helper-text">
                             ${t`Configure how long refresh tokens and their id_tokens are valid for.`}
                         </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
-                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Scopes`} name="propertyMappings">
                         <select class="pf-c-form-control" multiple>
