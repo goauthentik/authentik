@@ -28,9 +28,9 @@ msgstr ""
 msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
 msgstr "(Format: hours=-1;minutes=-2;seconds=-3)."
 
-#: src/pages/stages/user_login/UserLoginStageForm.ts
-#~ msgid "(Format: hours=1;minutes=2;seconds=3)."
-#~ msgstr "(Format: hours=1;minutes=2;seconds=3)."
+#: src/elements/utils/TimeDeltaHelp.ts
+msgid "(Format: hours=1;minutes=2;seconds=3)."
+msgstr "(Format: hours=1;minutes=2;seconds=3)."
 
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -5342,6 +5342,10 @@ msgstr "Zewnętrzny adres URL, pod którym uzyskasz dostęp do aplikacji. Uwzgl�
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "The external URL you'll authenticate at. The authentik core server should be reachable under this URL."
 msgstr "Zewnętrzny adres URL, pod którym będziesz się uwierzytelniać. Jądro serwera authentik powinien być dostępny pod tym adresem URL."
+
+#: src/elements/utils/TimeDeltaHelp.ts
+msgid "The following keywords are supported:"
+msgstr ""
 
 #~ msgid "The following objects use {0}:"
 #~ msgstr "Następujące obiekty używają {0}:"
