@@ -24,17 +24,17 @@ Kerberos is also not supported.
 
 The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik install.
-- `ldap.baseDN` is the Base DN you configure in the LDAP provider.
-- `ldap.domain` is (typically) an FQDN for your domain. Usually
-  it is just the components of your base DN. For example, if
-  `ldap.baseDN` is `dc=ldap,dc=goauthentik,dc=io` then the domain
-  might be `ldap.goauthentik.io`.
-- `ldap.searchGroup` is the "Search Group" that can can see all
-  users and groups in authentik.
-- `sssd.serviceAccount` is a service account created in authentik
-- `sssd.serviceAccountToken` is the service account token generated
-  by authentik.
+-   `authentik.company` is the FQDN of the authentik install.
+-   `ldap.baseDN` is the Base DN you configure in the LDAP provider.
+-   `ldap.domain` is (typically) an FQDN for your domain. Usually
+    it is just the components of your base DN. For example, if
+    `ldap.baseDN` is `dc=ldap,dc=goauthentik,dc=io` then the domain
+    might be `ldap.goauthentik.io`.
+-   `ldap.searchGroup` is the "Search Group" that can can see all
+    users and groups in authentik.
+-   `sssd.serviceAccount` is a service account created in authentik
+-   `sssd.serviceAccountToken` is the service account token generated
+    by authentik.
 
 Create an LDAP Provider if you don't already have one setup.
 This guide assumes you will be running with TLS and that you've
@@ -134,8 +134,8 @@ authentik is providing a simple LDAP server, not an Active Directory
 domain. Be sure you're looking at the correct sections in these guides.
 :::
 
-- https://sssd.io/docs/quick-start.html#quick-start-ldap
-- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system-level_authentication_guide/configuring_services
-- https://ubuntu.com/server/docs/service-sssd
-- https://manpages.debian.org/unstable/sssd-ldap/sssd-ldap.5.en.html
-- https://wiki.archlinux.org/title/LDAP_authentication
+-   https://sssd.io/docs/quick-start.html#quick-start-ldap
+-   https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system-level_authentication_guide/configuring_services
+-   https://ubuntu.com/server/docs/service-sssd
+-   https://manpages.debian.org/unstable/sssd-ldap/sssd-ldap.5.en.html
+-   https://wiki.archlinux.org/title/LDAP_authentication

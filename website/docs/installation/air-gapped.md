@@ -6,10 +6,10 @@ title: Air-gapped environments
 
 By default, authentik creates outbound connections to the following URLs:
 
-- https://version.goauthentik.io: Periodic update check
-- https://goauthentik.io: Anonymous analytics on startup
-- https://secure.gravatar.com: Avatars for users
-- https://sentry.beryju.org: Error reporting
+-   https://version.goauthentik.io: Periodic update check
+-   https://goauthentik.io: Anonymous analytics on startup
+-   https://secure.gravatar.com: Avatars for users
+-   https://sentry.beryju.org: Error reporting
 
 To disable these outbound connections, set the following in your `.env` file:
 
@@ -35,6 +35,6 @@ authentik:
 
 Container images can be pulled from the following URLs:
 
-- ghcr.io/goauthentik/server (https://ghcr.io)
-- goauthentik.io/server (https://goauthentik.io)
-- beryju/authentik (https://index.docker.io)
+-   ghcr.io/goauthentik/server (https://ghcr.io)
+-   goauthentik.io/server (https://goauthentik.io)
+-   beryju/authentik (https://index.docker.io)

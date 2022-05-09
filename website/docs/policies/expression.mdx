@@ -3,13 +3,17 @@ title: Expression Policies
 ---
 
 The passing of the policy is determined by the return value of the code. Use
+
 ```python
 return True
 ```
+
 to pass a policy and
+
 ```python
 return False
 ```
+
 to fail it.
 
 ## Available Functions
@@ -31,10 +35,10 @@ Check if a user has any authenticator devices. Only fully validated devices are 
 
 Optionally, you can filter a specific device type. The following options are valid:
 
-- `totp`
-- `duo`
-- `static`
-- `webauthn`
+-   `totp`
+-   `duo`
+-   `static`
+-   `webauthn`
 
 Example:
 
@@ -44,7 +48,7 @@ return ak_user_has_authenticator(request.user)
 
 ### `ak_call_policy(name: str, **kwargs) -> PolicyResult` (2021.12+)
 
-Call another policy with the name *name*. Current request is passed to policy. Key-word arguments
+Call another policy with the name _name_. Current request is passed to policy. Key-word arguments
 can be used to modify the request's context.
 
 Example:
@@ -59,24 +63,24 @@ result = ak_call_policy("test-policy-2", foo="bar")
 return result.passing
 ```
 
-import Functions from '../expressions/_functions.md'
+import Functions from "../expressions/_functions.md";
 
 <Functions />
 
 ## Variables
 
-import Objects from '../expressions/_objects.md'
+import Objects from "../expressions/_objects.md";
 
 <Objects />
 
-- `request`: A PolicyRequest object, which has the following properties:
-    - `request.user`: The current user, against which the policy is applied. See [User](../user-group/user.md#object-attributes)
-    - `request.http_request`: The Django HTTP Request. See ([Django documentation](https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects))
-    - `request.obj`: A Django Model instance. This is only set if the policy is ran against an object.
-    - `request.context`: A dictionary with dynamic data. This depends on the origin of the execution.
-- `geoip`: GeoIP object, which is added when GeoIP is enabled. See [GeoIP](https://geoip2.readthedocs.io/en/latest/#geoip2.models.City)
-- `ak_is_sso_flow`: Boolean which is true if request was initiated by authenticating through an external provider.
-- `ak_client_ip`: Client's IP Address or 255.255.255.255 if no IP Address could be extracted. Can be [compared](#comparing-ip-addresses), for example
+-   `request`: A PolicyRequest object, which has the following properties:
+    -   `request.user`: The current user, against which the policy is applied. See [User](../user-group/user.md#object-attributes)
+    -   `request.http_request`: The Django HTTP Request. See ([Django documentation](https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects))
+    -   `request.obj`: A Django Model instance. This is only set if the policy is ran against an object.
+    -   `request.context`: A dictionary with dynamic data. This depends on the origin of the execution.
+-   `geoip`: GeoIP object, which is added when GeoIP is enabled. See [GeoIP](https://geoip2.readthedocs.io/en/latest/#geoip2.models.City)
+-   `ak_is_sso_flow`: Boolean which is true if request was initiated by authenticating through an external provider.
+-   `ak_client_ip`: Client's IP Address or 255.255.255.255 if no IP Address could be extracted. Can be [compared](#comparing-ip-addresses), for example
 
     ```python
     return ak_client_ip in ip_network('10.0.0.0/24')
@@ -90,19 +94,20 @@ Additionally, when the policy is executed from a flow, every variable from the f
 
 This includes the following:
 
-- `context['prompt_data']`: Data which has been saved from a prompt stage or an external source.
-- `context['application']`: The application the user is in the process of authorizing.
-- `context['pending_user']`: The currently pending user, see [User](../user-group/user.md#object-attributes)
-- `context['auth_method']`: Authentication method set (this value is set by password stages)
+-   `context['prompt_data']`: Data which has been saved from a prompt stage or an external source.
+-   `context['application']`: The application the user is in the process of authorizing.
+-   `context['pending_user']`: The currently pending user, see [User](../user-group/user.md#object-attributes)
+-   `context['auth_method']`: Authentication method set (this value is set by password stages)
 
     Depending on method, `context['auth_method_args']` is also set.
 
     Can be any of:
 
-    - `password`: Standard password login
-    - `app_password`: App password (token)
+    -   `password`: Standard password login
+    -   `app_password`: App password (token)
 
         Sets `context['auth_method_args']` to
+
         ```json
         {
             "token": {
@@ -113,9 +118,11 @@ This includes the following:
             }
         }
         ```
-    - `ldap`: LDAP bind authentication
+
+    -   `ldap`: LDAP bind authentication
 
         Sets `context['auth_method_args']` to
+
         ```json
         {
             "source": {} // Information about the source used

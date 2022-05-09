@@ -8,11 +8,11 @@ Allows users to authenticate using their Google credentials
 
 The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 ## Google
 
-You will need to create a new project, and OAuth credentials in the Google Developer console.  The developer console can be overwhelming at first.
+You will need to create a new project, and OAuth credentials in the Google Developer console. The developer console can be overwhelming at first.
 
 1. Visit https://console.developers.google.com/ to create a new project
 2. Create a New project.
@@ -27,7 +27,7 @@ You will need to create a new project, and OAuth credentials in the Google Devel
 
 6. Click **Create**
 7. Choose your project from the drop down at the top
-8. Click the **Credentials** menu item on the left.  It looks like a key.
+8. Click the **Credentials** menu item on the left. It looks like a key.
 
 ![Example Screen](googledeveloper3.png)
 
@@ -35,8 +35,7 @@ You will need to create a new project, and OAuth credentials in the Google Devel
 
 ![Example Screen](googledeveloper4.png)
 
-
-10. **User Type:** If you do not have a Google Workspace (GSuite) account choose _External_.  If you do have a Google Workspace (Gsuite) account and want to limit access to only users inside of your organization choose _Internal_
+10. **User Type:** If you do not have a Google Workspace (GSuite) account choose _External_. If you do have a Google Workspace (Gsuite) account and want to limit access to only users inside of your organization choose _Internal_
 
 _I'm only going to list the mandatory/important fields to complete._
 
@@ -45,9 +44,9 @@ _I'm only going to list the mandatory/important fields to complete._
 13. **Authorized Domains:** authentik.company
 14. **Developer Contact Info:** Must have a value
 15. Click **Save and Continue**
-16. If you have special scopes configured for google, enter them on this screen.  If not click **Save and Continue**
+16. If you have special scopes configured for google, enter them on this screen. If not click **Save and Continue**
 17. If you want to create Test Users enter them here, if not click **Save and Continue**
-18. From the _Summary Page_ click on the **Credentials* link on the left.  Same link as step 8
+18. From the _Summary Page_ click on the \*_Credentials_ link on the left. Same link as step 8
 19. Click **Create Credentials** on the top of the screen
 20. Choose **OAuth Client ID**
 

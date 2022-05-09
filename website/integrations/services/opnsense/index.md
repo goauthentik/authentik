@@ -18,9 +18,9 @@ This is based on authentik 2022.4.1 and OPNsense 22.1.6-amd64 installed using ht
 
 The following placeholders will be used:
 
-- `authentik.company` is the FQDN of authentik.
-- `opnsense` is the name of the authentik Service account we'll create.
-- `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
+-   `authentik.company` is the FQDN of authentik.
+-   `opnsense` is the name of the authentik Service account we'll create.
+-   `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
 
 ### Step 1
 
@@ -40,9 +40,10 @@ Only settings that have been modified from default have been listed.
 :::
 
 **Protocol Settings**
-- Name: LDAP
-- Search group: opnsense
-- Certificate: authentik Self-signed certificate
+
+-   Name: LDAP
+-   Search group: opnsense
+-   Certificate: authentik Self-signed certificate
 
 ### Step 3
 
@@ -52,9 +53,9 @@ In authentik, create an application (under _Applications/Applications_) which us
 Only settings that have been modified from default have been listed.
 :::
 
-- Name: LDAP
-- Slug: ldap
-- Provider: LDAP
+-   Name: LDAP
+-   Slug: ldap
+-   Provider: LDAP
 
 ### Step 4
 
@@ -64,25 +65,27 @@ In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` t
 Only settings that have been modified from default have been listed.
 :::
 
-- Name: LDAP
-- Type: LDAP
+-   Name: LDAP
+-   Type: LDAP
+
 ### Step 5
 
 Add your authentik LDAP server to OPNsense by going to your OPNsense Web UI and clicking the `+` under _System/Access/Servers_.
 
 Change the following fields
 
-- Descriptive name: authentik
-- Hostname or IP address: authentik.company
-- Transport: SSL - Encrypted
-- Bind credentials
-  - User DN: CN=opnsense-user,OU=users,DC=ldap,DC=goauthentik,DC=io
-  - Password: whatever-you-set
-  - Base DN: DC=ldap,DC=goauthentik,DC=io
-- Authentication containers: OU=users,DC=ldap,DC=goauthentik,DC=io;OU=groups,DC=ldap,DC=goauthentik,DC=io
-- Extended Query: &(objectClass=user)
+-   Descriptive name: authentik
+-   Hostname or IP address: authentik.company
+-   Transport: SSL - Encrypted
+-   Bind credentials
+    -   User DN: CN=opnsense-user,OU=users,DC=ldap,DC=goauthentik,DC=io
+    -   Password: whatever-you-set
+    -   Base DN: DC=ldap,DC=goauthentik,DC=io
+-   Authentication containers: OU=users,DC=ldap,DC=goauthentik,DC=io;OU=groups,DC=ldap,DC=goauthentik,DC=io
+-   Extended Query: &(objectClass=user)
 
 ![](./opnsense1.png)
+
 ### Step 6
 
 In OPNsense, go to _System/Settings/Administration_ and under _Authentication_ at the bottom of that page, add `authentik` to the Server list

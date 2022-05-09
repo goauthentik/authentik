@@ -10,4 +10,4 @@ To check if a user has used an invitation within a policy, you can check `reques
 
 To use an invitation, use the URL `https://authentik.tld/if/flow/your-enrollment-flow/?itoken=invitation-token`.
 
-You can also prompt the user for an invite by using the [*Prompt stage*](../prompt/) by using a field with a field key of `token`.
+You can also prompt the user for an invite by using the [_Prompt stage_](../prompt/) by using a field with a field key of `token`.

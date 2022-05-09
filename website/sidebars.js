@@ -146,16 +146,12 @@ module.exports = {
                 {
                     type: "category",
                     label: "User",
-                    items: [
-                        "interfaces/user/customization",
-                    ],
+                    items: ["interfaces/user/customization"],
                 },
                 {
                     type: "category",
                     label: "Admin",
-                    items: [
-                        "interfaces/admin/customization",
-                    ],
+                    items: ["interfaces/admin/customization"],
                 },
             ],
         },

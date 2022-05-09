@@ -18,8 +18,8 @@ This is based on authentik 2022.3.1 and Rocket.chat 4.5.1 using the [Docker-Comp
 
 The following placeholders will be used:
 
-- `rocket.company` is the FQDN of Rocket.chat.
-- `authentik.company` is the FQDN of authentik.
+-   `rocket.company` is the FQDN of Rocket.chat.
+-   `authentik.company` is the FQDN of authentik.
 
 ### Step 1
 
@@ -30,11 +30,13 @@ Only settings that have been modified from default have been listed.
 :::
 
 **Protocol Settings**
-- Name: RocketChat
-- Client type: Confidential
-- Client ID: Copy and Save this for Later
-- Client Secret: Copy and Save this for later
-- Redirect URIs/Origins:
+
+-   Name: RocketChat
+-   Client type: Confidential
+-   Client ID: Copy and Save this for Later
+-   Client Secret: Copy and Save this for later
+-   Redirect URIs/Origins:
+
 ```
 https://rocket.company/_oauth/authentik
 
@@ -47,10 +49,12 @@ https://rocket.company/_oauth/authentik
 In authentik, under _Applications_, create a new application with these settings:
 
 **Application Settings**
-- Name: Rocket.chat
-- Slug: rocketchat
-- Provider: RocketChat
-- Launch URL:
+
+-   Name: Rocket.chat
+-   Slug: rocketchat
+-   Provider: RocketChat
+-   Launch URL:
+
 ```
 https://rocket.company/_oauth/authentik
 
@@ -79,42 +83,41 @@ In Rocket.chat, follow the procedure below:
 ![](./rocketchat6.png)
 
 5. Scroll down to the new OAuth application, expand the dropdown, and enter the following settings:
-   - Enable: Turn the radio button to the _on_ position
-   - URL: https://authentik.company/application/o
-   - Token Path: /token/
-   - Token Sent Via: Payload
-   - Identity Token Sent Via: Same as "Token Sent Via"
-   - Identity Path: /userinfo/
-   - Authorize Path: /authorize/
-   - Scope: email profile openid
-   - Param Name for access token: access_token
-   - Id: _THIS IS THE CLIENT ID YOU COPIED FROM STEP 1 in authentik_
-   - Secret: _THIS IS THE CLIENT SECRET YOU COPIED FROM STEP 1 in authentik_
-   - Login Style: Redirect
-   - Button Text: _Fill in with what you want the SSO button to say_
-   - Button Text Color: _Hex Color for Text on the SSO login button_
-   - Button Color: _Hex Color for the SSO login button_
-   - Key Field: Username
-   - Username field: preferred_username
-   - Email field: email
-   - Name field: name
-   - Roles/Groups field name: groups
-   - Roles/Groups field for channel mapping: groups
-   - User Data Group Map: rocket.cat
-   - Merge users: Turn the radio button to the _on_ position
-   - Show Button on Login Page: Turn the radio button to the _on_ position
 
-   ![](./rocketchat7.png)
+    - Enable: Turn the radio button to the _on_ position
+    - URL: https://authentik.company/application/o
+    - Token Path: /token/
+    - Token Sent Via: Payload
+    - Identity Token Sent Via: Same as "Token Sent Via"
+    - Identity Path: /userinfo/
+    - Authorize Path: /authorize/
+    - Scope: email profile openid
+    - Param Name for access token: access_token
+    - Id: _THIS IS THE CLIENT ID YOU COPIED FROM STEP 1 in authentik_
+    - Secret: _THIS IS THE CLIENT SECRET YOU COPIED FROM STEP 1 in authentik_
+    - Login Style: Redirect
+    - Button Text: _Fill in with what you want the SSO button to say_
+    - Button Text Color: _Hex Color for Text on the SSO login button_
+    - Button Color: _Hex Color for the SSO login button_
+    - Key Field: Username
+    - Username field: preferred_username
+    - Email field: email
+    - Name field: name
+    - Roles/Groups field name: groups
+    - Roles/Groups field for channel mapping: groups
+    - User Data Group Map: rocket.cat
+    - Merge users: Turn the radio button to the _on_ position
+    - Show Button on Login Page: Turn the radio button to the _on_ position
 
-   ![](./rocketchat8.png)
+    ![](./rocketchat7.png)
 
-   ![](./rocketchat9.png)
+    ![](./rocketchat8.png)
 
-   ![](./rocketchat10.png)
+    ![](./rocketchat9.png)
+
+    ![](./rocketchat10.png)
 
 6. Click _Save changes_ in the top right corner of the screen
-
-
 
 ### Step 4 (Optional)
 
@@ -126,10 +129,10 @@ By default, Rocket.chat will attempt to use two-factor authentication with any n
 
 Navigate to the _Accounts_ settings to change the following:
 
-- Allow Name Change: Off
-- Allow Username Change: Off
-- Allow Email Change: Off
-- Allow Password Change for OAuth Users: Off
+-   Allow Name Change: Off
+-   Allow Username Change: Off
+-   Allow Email Change: Off
+-   Allow Password Change for OAuth Users: Off
 
 **If you are using Two Factor authentication through authentik:**
 
@@ -138,4 +141,4 @@ Navigate to the _Accounts_ settings, Scroll Down to Two Factor Authentication an
 **Registration Options**
 Navigate to the _Accounts_ settings, Scroll Down to Registration and choose your [registration options](https://docs.rocket.chat/guides/administration/settings/account-settings#registration), such as:
 
-- Registration Form: Disabled
+-   Registration Form: Disabled

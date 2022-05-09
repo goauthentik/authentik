@@ -6,7 +6,7 @@ Note that authentik does treat a grant type of `password` the same as `client_cr
 
 ### Static authentication
 
-Hence identification is based on service-accounts, and authentication is based on App-password tokens. These objects can be created in a single step using the *Create Service account* function.
+Hence identification is based on service-accounts, and authentication is based on App-password tokens. These objects can be created in a single step using the _Create Service account_ function.
 
 An example request can look like this:
 
@@ -29,7 +29,7 @@ Starting with authentik 2022.4, you can authenticate and get a token using an ex
 
 (For readability we will refer to the JWT issued by the external issuer/platform as input JWT, and the resulting JWT from authentik as the output JWT)
 
-To configure this, the certificate used to sign the input JWT must be created in authentik. The certificate is enough, a private key is not required. Afterwards, configure the certificate in the OAuth2 provider settings under *Verification certificates*.
+To configure this, the certificate used to sign the input JWT must be created in authentik. The certificate is enough, a private key is not required. Afterwards, configure the certificate in the OAuth2 provider settings under _Verification certificates_.
 
 With this configure, any JWT issued by the configured certificates can be used to authenticate:
 
@@ -46,9 +46,9 @@ client_id=application_client_id
 
 Alternatively, you can set the `client_secret` parameter to the `$inputJWT`, for applications which can set the password from a file but not other parameters.
 
-Input JWTs are checked to be signed by any of the selected *Verification certificates*, and their `exp` attribute must not be now or in the past.
+Input JWTs are checked to be signed by any of the selected _Verification certificates_, and their `exp` attribute must not be now or in the past.
 
-To do additional checks, you can use *[Expression policies](../../policies/expression)*:
+To do additional checks, you can use _[Expression policies](../../policies/expression)_:
 
 ```python
 return request.context["oauth_jwt"]["iss"] == "https://my.issuer"

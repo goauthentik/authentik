@@ -6,7 +6,7 @@ This is a generic password prompt which authenticates the current `pending_user`
 
 ## Passwordless login
 
-To achieve a "passwordless" experience; authenticating users based only on TOTP/WebAuthn/Duo, create an expression policy  and optionally skip the password stage.
+To achieve a "passwordless" experience; authenticating users based only on TOTP/WebAuthn/Duo, create an expression policy and optionally skip the password stage.
 
 Depending on what kind of device you want to require the user to have:
 
@@ -26,4 +26,4 @@ return DuoDevice.objects.filter(user=request.user, confirmed=True).exists()
 
 Afterwards, bind the policy you've created to the stage binding of the password stage.
 
-Make sure to uncheck *Evaluate on plan* and check *Re-evaluate policies*, otherwise an invalid result will be cached.
+Make sure to uncheck _Evaluate on plan_ and check _Re-evaluate policies_, otherwise an invalid result will be cached.

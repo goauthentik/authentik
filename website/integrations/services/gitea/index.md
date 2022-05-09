@@ -18,8 +18,8 @@ This is based on authentik 2021.10.3 and Gitea 1.16.0+rc1 installed using https:
 
 The following placeholders will be used:
 
-- `authentik.company` is the FQDN of authentik.
-- `gitea.company` is the FQDN of Gitea.
+-   `authentik.company` is the FQDN of authentik.
+-   `gitea.company` is the FQDN of Gitea.
 
 ### Step 1
 
@@ -31,8 +31,8 @@ Only settings that have been modified from default have been listed.
 
 **Protocol Settings**
 
-- Name: Gitea
-- Signing Key: Select any available key
+-   Name: Gitea
+-   Signing Key: Select any available key
 
 :::note
 Take note of the `Client ID` and `Client Secret`, you'll need to give them to Gitea in _Step 3_.
@@ -46,9 +46,9 @@ In authentik, create an application (under _Resources/Applications_) which uses 
 Only settings that have been modified from default have been listed.
 :::
 
-- Name: Gitea
-- Slug: gitea-slug
-- Provider: Gitea
+-   Name: Gitea
+-   Slug: gitea-slug
+-   Provider: Gitea
 
 ### Step 3
 
@@ -56,13 +56,13 @@ Navigate to the _Authentication Sources_ page at https://gitea.company/admin/aut
 
 Change the following fields
 
-- Authentication Name: authentik
-- OAuth2 Provider: OpenID Connect
-- Client ID (Key): Step 2
-- Client Secret: Step 2
-- Icon URL: https://raw.githubusercontent.com/goauthentik/authentik/master/web/icons/icon.png
-- OpenID Connect Auto Discovery URL: https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration
-- Additional Scopes: `email profile`
+-   Authentication Name: authentik
+-   OAuth2 Provider: OpenID Connect
+-   Client ID (Key): Step 2
+-   Client Secret: Step 2
+-   Icon URL: https://raw.githubusercontent.com/goauthentik/authentik/master/web/icons/icon.png
+-   OpenID Connect Auto Discovery URL: https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration
+-   Additional Scopes: `email profile`
 
 ![](./gitea1.png)
 

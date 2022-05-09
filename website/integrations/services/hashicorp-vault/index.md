@@ -18,8 +18,8 @@ This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ bet
 
 The following placeholders will be used:
 
-- `authentik.company` is the FQDN of authentik.
-- `vault.company` is the FQDN of Vault.
+-   `authentik.company` is the FQDN of authentik.
+-   `vault.company` is the FQDN of Vault.
 
 ### Step 1
 
@@ -31,15 +31,17 @@ Only settings that have been modified from default have been listed.
 
 **Protocol Settings**
 
-- Name: Vault
-- Signing Key: Select any available key
+-   Name: Vault
+-   Signing Key: Select any available key
 
-- Redirect URIs/Origins:
+-   Redirect URIs/Origins:
+
 ```
 https://vault.company/ui/vault/auth/oidc/oidc/callback
 https://vault.company/oidc/callback
 http://localhost:8250/oidc/callback
 ```
+
 :::note
 Take note of the `Client ID` and `Client Secret`, you'll need to give them to Vault in _Step 3_.
 :::
@@ -52,16 +54,17 @@ In authentik, create an application (under _Resources/Applications_) which uses 
 Only settings that have been modified from default have been listed.
 :::
 
-- Name: Vault
-- Slug: vault-slug
-- Provider: Vault
+-   Name: Vault
+-   Slug: vault-slug
+-   Provider: Vault
 
 ### Step 3
 
 Enable the oidc auth method
-```vault auth enable oidc```
+`vault auth enable oidc`
 
 Configure the oidc auth method, oidc discovery url is the OpenID Configuration Issuer in your provider
+
 ```
 vault write auth/oidc/config \
          oidc_discovery_url="https://authentik.company/application/o/vault-slug/" \
@@ -71,6 +74,7 @@ vault write auth/oidc/config \
 ```
 
 Create the reader role
+
 ```
 vault write auth/oidc/role/reader \
       bound_audiences="Client ID" \
@@ -82,4 +86,4 @@ vault write auth/oidc/role/reader \
 ```
 
 You should then be able to sign in via OIDC
-```vault login -method=oidc role="reader"```
+`vault login -method=oidc role="reader"`

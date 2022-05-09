@@ -10,15 +10,15 @@ Upon creation, a service account and a token is generated. The service account o
 
 authentik can manage the deployment, updating and general lifecycle of an Outpost. To communicate with the underlying platforms on which the outpost is deployed, authentik has several built-in integrations.
 
-- If you've deployed authentik on docker-compose, authentik automatically creates an integration for the local docker socket (See [Docker](./integrations/docker.md)).
-- If you've deployed authentik on Kubernetes, with `kubernetesIntegration` set to true (default), authentik automatically creates an integrations for the local Kubernetes Cluster (See [Kubernetes](./integrations/kubernetes.md)).
+-   If you've deployed authentik on docker-compose, authentik automatically creates an integration for the local docker socket (See [Docker](./integrations/docker.md)).
+-   If you've deployed authentik on Kubernetes, with `kubernetesIntegration` set to true (default), authentik automatically creates an integrations for the local Kubernetes Cluster (See [Kubernetes](./integrations/kubernetes.md)).
 
 To deploy an outpost with these integrations, simply select them during the creation of an Outpost. A background task is started, which creates the container/deployment. You can see that Status on the System Tasks page.
 
 To deploy an outpost manually, see:
 
-- [Kubernetes](./manual-deploy-kubernetes.md)
-- [docker-compose](./manual-deploy-docker-compose.md)
+-   [Kubernetes](./manual-deploy-kubernetes.md)
+-   [docker-compose](./manual-deploy-docker-compose.md)
 
 ## Configuration
 

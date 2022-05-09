@@ -1,5 +1,5 @@
 ---
-title:  PowerDNS-Admin
+title: PowerDNS-Admin
 ---
 
 ## What is PowerDNS-Admin
@@ -14,17 +14,17 @@ A PowerDNS web interface with advanced features.
 
 The following placeholders will be used:
 
-- `pdns-admin.company` is the FQDN of the PowerDNS-Admin install.
-- `authentik.company` is the FQDN of the authentik install.
+-   `pdns-admin.company` is the FQDN of the PowerDNS-Admin install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 Create a SAML provider with the following parameters:
 
-- ACS URL: `https://pdns-admin.company/saml/authorized`
-- Issuer: `https://authentik.company`
-- Service Provider Binding: `Post`
-- Audience: `pdns-admin`
-- Signing Keypair: Select any certificate you have.
-- Property mappings: Select all Managed mappings.
+-   ACS URL: `https://pdns-admin.company/saml/authorized`
+-   Issuer: `https://authentik.company`
+-   Service Provider Binding: `Post`
+-   Audience: `pdns-admin`
+-   Signing Keypair: Select any certificate you have.
+-   Property mappings: Select all Managed mappings.
 
 You can of course use a custom signing certificate, and adjust durations.
 
@@ -58,14 +58,15 @@ SAML_CERT=/saml.crt
 You must mount the certificate selected in authentik as a file in the Docker container. The path in the container must match the path in the env variable `SAML_CERT`.
 
 ### docker-compose
+
 ```yaml
-version: '3.3'
+version: "3.3"
 services:
-  powerdns-admin:
-    image: ngoduykhanh/powerdns-admin:latest
-    restart: always
-    ports:
-      - 80:80
-    volumes:
-      - ./saml.crt:/saml.crt:ro
+    powerdns-admin:
+        image: ngoduykhanh/powerdns-admin:latest
+        restart: always
+        ports:
+            - 80:80
+        volumes:
+            - ./saml.crt:/saml.crt:ro
 ```
