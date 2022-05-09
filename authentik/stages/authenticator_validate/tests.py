@@ -1,9 +1,11 @@
 """Test validator stage"""
+from time import sleep
 from unittest.mock import MagicMock, patch
 
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test.client import RequestFactory
 from django.urls.base import reverse
+from django_otp.oath import TOTP
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.exceptions import ValidationError
 from webauthn.helpers import bytes_to_base64url
@@ -23,7 +25,7 @@ from authentik.stages.authenticator_validate.challenge import (
     validate_challenge_duo,
     validate_challenge_webauthn,
 )
-from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_validate.stage import (
     SESSION_DEVICE_CHALLENGES,
     AuthenticatorValidationChallengeResponse,
@@ -76,6 +78,87 @@ class AuthenticatorValidateStageTests(FlowTestCase):
             sources=[],
             show_source_labels=False,
         )
+
+    def test_last_auth_threshold(self):
+        """Test last_auth_threshold"""
+        conf_stage = IdentificationStage.objects.create(
+            name="conf",
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        device: TOTPDevice = TOTPDevice.objects.create(
+            user=self.user,
+            confirmed=True,
+        )
+        # Verify token once here to set last_t etc
+        totp = TOTP(device.key.encode())
+        device.verify_token(totp.token())
+        stage = AuthenticatorValidateStage.objects.create(
+            name="foo",
+            last_auth_threshold="milliseconds=0",
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.TOTP],
+        )
+        sleep(1)
+        stage.configuration_stages.set([conf_stage])
+        flow = Flow.objects.create(name="test", slug="test", title="test")
+        FlowStageBinding.objects.create(target=flow, stage=conf_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {"uid_field": self.user.username},
+        )
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            follow=True,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-authenticator-validate",
+        )
+
+    def test_last_auth_threshold_valid(self):
+        """Test last_auth_threshold"""
+        conf_stage = IdentificationStage.objects.create(
+            name="conf",
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        device: TOTPDevice = TOTPDevice.objects.create(
+            user=self.user,
+            confirmed=True,
+        )
+        # Verify token once here to set last_t etc
+        totp = TOTP(device.key.encode())
+        device.verify_token(totp.token())
+        stage = AuthenticatorValidateStage.objects.create(
+            name="foo",
+            last_auth_threshold="hours=1",
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.TOTP],
+        )
+        stage.configuration_stages.set([conf_stage])
+        flow = Flow.objects.create(name="test", slug="test", title="test")
+        FlowStageBinding.objects.create(target=flow, stage=conf_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {"uid_field": self.user.username},
+        )
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            follow=True,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(response, component="xak-flow-redirect", to="/")
 
     def test_stage_validation(self):
         """Test serializer validation"""

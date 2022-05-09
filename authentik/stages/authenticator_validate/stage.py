@@ -1,6 +1,8 @@
 """Authenticator Validation"""
+from datetime import timezone
+
 from django.http import HttpRequest, HttpResponse
-from django.utils.timezone import now
+from django.utils.timezone import datetime, now
 from django_otp import devices_for_user
 from rest_framework.fields import CharField, IntegerField, JSONField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
@@ -11,6 +13,7 @@ from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import cleanse_dict, sanitize_dict
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
+from authentik.flows.exceptions import FlowSkipStageException
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
@@ -155,9 +158,12 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 continue
             # check if device has been used within threshold and skip this stage if so
             if hasattr(device, "last_t") and threshold.total_seconds() > 0:
-                if _now - timedelta_from_string(device.last_t) >= threshold:
+                if (
+                    _now - datetime.fromtimestamp(device.last_t).replace(tzinfo=timezone.utc)
+                    >= threshold
+                ):
                     LOGGER.info("Device has been used within threshold", device=device)
-                    return self.executor.stage_ok()
+                    raise FlowSkipStageException()
             if device_class not in seen_classes:
                 seen_classes.append(device_class)
             challenge = DeviceChallenge(
@@ -191,7 +197,10 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         user = self.get_pending_user()
         stage: AuthenticatorValidateStage = self.executor.current_stage
         if user and not user.is_anonymous:
-            challenges = self.get_device_challenges()
+            try:
+                challenges = self.get_device_challenges()
+            except FlowSkipStageException:
+                return self.executor.stage_ok()
         else:
             if self.executor.flow.designation != FlowDesignation.AUTHENTICATION:
                 LOGGER.debug("Refusing passwordless flow in non-authentication flow")

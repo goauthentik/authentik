@@ -12,3 +12,7 @@ class FlowNonApplicableException(SentryIgnoredException):
 
 class EmptyFlowException(SentryIgnoredException):
     """Flow has no stages."""
+
+
+class FlowSkipStageException(SentryIgnoredException):
+    """Exception to skip a stage"""
