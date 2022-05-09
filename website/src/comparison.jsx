@@ -105,6 +105,30 @@ function Comparison() {
                                     <X></X>
                                 </td>
                             </tr>
+                            <tr>
+                                <td className="row-label">SCIM</td>
+                                <td className="result failed authentik">
+                                    <X></X>
+                                </td>
+                                <td className="result warning">
+                                    <AlertTriangle></AlertTriangle>
+                                </td>
+                                <td className="result failed">
+                                    <X></X>
+                                </td>
+                                <td className="result passed">
+                                    <Check></Check>
+                                </td>
+                                <td className="result passed">
+                                    <Check></Check>
+                                </td>
+                                <td className="result failed">
+                                    <X></X>
+                                </td>
+                                <td className="result failed">
+                                    <X></X>
+                                </td>
+                            </tr>
                         </tbody>
                         <thead className="group">
                             <tr>
@@ -213,6 +237,30 @@ function Comparison() {
                                 </td>
                                 <td className="result passed">
                                     <Check></Check>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="row-label">SCIM</td>
+                                <td className="result failed authentik">
+                                    <X></X>
+                                </td>
+                                <td className="result warning">
+                                    <AlertTriangle></AlertTriangle>
+                                </td>
+                                <td className="result failed">
+                                    <X></X>
+                                </td>
+                                <td className="result passed">
+                                    <Check></Check>
+                                </td>
+                                <td className="result passed">
+                                    <Check></Check>
+                                </td>
+                                <td className="result failed">
+                                    <X></X>
+                                </td>
+                                <td className="result failed">
+                                    <X></X>
                                 </td>
                             </tr>
                         </tbody>
