@@ -23,6 +23,7 @@ class FlowTestCase(APITestCase):
         **kwargs,
     ) -> dict[str, Any]:
         """Assert various attributes of a stage response"""
+        self.assertEqual(response.status_code, 200)
         raw_response = loads(response.content.decode())
         self.assertIsNotNone(raw_response["component"])
         self.assertIsNotNone(raw_response["type"])

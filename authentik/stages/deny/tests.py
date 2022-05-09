@@ -36,7 +36,6 @@ class TestUserDenyStage(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(response, self.flow, component="ak-stage-access-denied")
 
     def test_valid_post(self):
@@ -50,5 +49,4 @@ class TestUserDenyStage(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(response, self.flow, component="ak-stage-access-denied")

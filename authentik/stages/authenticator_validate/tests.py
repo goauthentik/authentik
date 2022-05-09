@@ -67,7 +67,6 @@ class AuthenticatorValidateStageTests(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             follow=True,
         )
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             flow,
@@ -115,7 +114,6 @@ class AuthenticatorValidateStageTests(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             follow=True,
         )
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             flow,
@@ -157,7 +155,6 @@ class AuthenticatorValidateStageTests(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             follow=True,
         )
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(response, component="xak-flow-redirect", to="/")
 
     def test_stage_validation(self):
