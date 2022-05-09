@@ -9,8 +9,8 @@ const config = {
 };
 
 async function getToken(event) {
-    const fetch = await import('node-fetch');
-    const querystring = await import('querystring');
+    const fetch = await import("node-fetch");
+    const querystring = await import("querystring");
     let scope = event.queryStringParameters["scope"];
     let tokenParams = {
         service: config.registryService,
@@ -28,12 +28,14 @@ async function getToken(event) {
     } else {
         console.debug(`oci-proxy[token]: no scope`);
         // For non-scoped requests, we need to forward some URL parameters
-        ["account", "client_id", "offline_token", "token"].forEach(param => {
-            tokenParams[param] = event.queryStringParameters[param]
+        ["account", "client_id", "offline_token", "token"].forEach((param) => {
+            tokenParams[param] = event.queryStringParameters[param];
         });
     }
-    const tokenUrl = `${config.registryTokenEndpoint}?${querystring.stringify(tokenParams)}`
-    console.debug(`oci-proxy[token]: final URL to fetch: ${tokenUrl}`)
+    const tokenUrl = `${config.registryTokenEndpoint}?${querystring.stringify(
+        tokenParams
+    )}`;
+    console.debug(`oci-proxy[token]: final URL to fetch: ${tokenUrl}`);
     const tokenRes = await fetch.default(tokenUrl, {
         headers: forwardHeaders,
     });
@@ -51,7 +53,10 @@ exports.handler = async function (event, context) {
         console.debug("oci-proxy: handler=token proxy");
         return await getToken(event);
     }
-    if (event.headers.authorization && event.headers.authorization.startsWith("Bearer ")) {
+    if (
+        event.headers.authorization &&
+        event.headers.authorization.startsWith("Bearer ")
+    ) {
         console.debug("oci-proxy: authenticated root handler, returning 200");
         return {
             statusCode: 200,
@@ -60,9 +65,11 @@ exports.handler = async function (event, context) {
                 "content-type": "application/json",
             },
             body: JSON.stringify({}),
-        }
+        };
     }
-    console.debug("oci-proxy: root handler, returning 401 with www-authenticate");
+    console.debug(
+        "oci-proxy: root handler, returning 401 with www-authenticate"
+    );
     return {
         statusCode: 401,
         headers: {
@@ -72,4 +79,4 @@ exports.handler = async function (event, context) {
         },
         body: JSON.stringify({}),
     };
-}
+};

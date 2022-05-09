@@ -14,22 +14,22 @@ Grafana is a multi-platform open source analytics and interactive visualization 
 
 The following placeholders will be used:
 
-- `grafana.company` is the FQDN of the Grafana install.
-- `authentik.company` is the FQDN of the authentik install.
+-   `grafana.company` is the FQDN of the Grafana install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 Create an application in authentik. Create an OAuth2/OpenID provider with the following parameters:
 
-- Client Type: `Confidential`
-- Scopes: OpenID, Email and Profile
-- Signing Key: Select any available key
-- Redirect URIs: `https://grafana.company/login/generic_oauth`
+-   Client Type: `Confidential`
+-   Scopes: OpenID, Email and Profile
+-   Signing Key: Select any available key
+-   Redirect URIs: `https://grafana.company/login/generic_oauth`
 
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above. Note the slug of the application you've created.
 
 ## Grafana
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 <Tabs
   defaultValue="docker"
@@ -56,6 +56,7 @@ environment:
     # Optionally map user groups to Grafana roles
     GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'"
 ```
+
   </TabItem>
   <TabItem value="standalone">
 If you are using a config-file instead, you have to set these options:
@@ -78,6 +79,7 @@ api_url = https://authentik.company/application/o/userinfo/
 # Optionally map user groups to Grafana roles
 role_attribute_path = contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
 ```
+
   </TabItem>
 </Tabs>
 

@@ -8,12 +8,12 @@ Allows users to authenticate using their Mailcow credentials
 
 The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik install.
-- `mailcow.company` is the FQDN of the mailcow install.
+-   `authentik.company` is the FQDN of the authentik install.
+-   `mailcow.company` is the FQDN of the mailcow install.
 
 ## Mailcow
 
-1. Log into mailcow as an admin and navigate to the OAuth2 Apps settings 
+1. Log into mailcow as an admin and navigate to the OAuth2 Apps settings
 
 ![OAuth2 Apps menu](mailcow1.png)
 

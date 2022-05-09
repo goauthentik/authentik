@@ -136,8 +136,8 @@ jobs:
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
+        working-directory: web
         run: |
-          cd web
           npm ci
           npm run build
       - name: run e2e
@@ -169,8 +169,8 @@ jobs:
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
+        working-directory: web/
         run: |
-          cd web
           npm ci
           npm run build
       - name: run e2e

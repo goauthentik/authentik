@@ -22,17 +22,17 @@ In case something goes wrong with the configuration, you can use the URL `http:/
 
 The following placeholders will be used:
 
-- `nextcloud.company` is the FQDN of the NextCloud install.
-- `authentik.company` is the FQDN of the authentik install.
+-   `nextcloud.company` is the FQDN of the NextCloud install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to Applications->Providers. Create a SAML provider with the following parameters:
 
-- ACS URL: `https://nextcloud.company/apps/user_saml/saml/acs`
-- Issuer: `https://authentik.company`
-- Service Provider Binding: `Post`
-- Audience: `https://nextcloud.company/apps/user_saml/saml/metadata`
-- Signing certificate: Select any certificate you have.
-- Property mappings: Select all Managed mappings.
+-   ACS URL: `https://nextcloud.company/apps/user_saml/saml/acs`
+-   Issuer: `https://authentik.company`
+-   Service Provider Binding: `Post`
+-   Audience: `https://nextcloud.company/apps/user_saml/saml/metadata`
+-   Signing certificate: Select any certificate you have.
+-   Property mappings: Select all Managed mappings.
 
 You can of course use a custom signing certificate, and adjust durations.
 
@@ -42,18 +42,18 @@ In NextCloud, ensure that the `SSO & SAML Authentication` app is installed. Navi
 
 Set the following values:
 
-- Attribute to map the UID to.: `http://schemas.goauthentik.io/2021/02/saml/username`
-- Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
-- Identifier of the IdP entity (must be a URI): `https://authentik.company`
-- URL Target of the IdP where the SP will send the Authentication Request Message: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
-- URL Location of IdP where the SP will send the SLO Request: `https://authentik.company/if/session-end/<application-slug>/`
-- Public X.509 certificate of the IdP: Copy the PEM of the Selected Signing Certificate
+-   Attribute to map the UID to.: `http://schemas.goauthentik.io/2021/02/saml/username`
+-   Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
+-   Identifier of the IdP entity (must be a URI): `https://authentik.company`
+-   URL Target of the IdP where the SP will send the Authentication Request Message: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
+-   URL Location of IdP where the SP will send the SLO Request: `https://authentik.company/if/session-end/<application-slug>/`
+-   Public X.509 certificate of the IdP: Copy the PEM of the Selected Signing Certificate
 
 Under Attribute mapping, set these values:
 
-- Attribute to map the displayname to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
-- Attribute to map the email address to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
-- Attribute to map the users groups to.: `http://schemas.xmlsoap.org/claims/Group`
+-   Attribute to map the displayname to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+-   Attribute to map the email address to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+-   Attribute to map the users groups to.: `http://schemas.xmlsoap.org/claims/Group`
 
 You should now be able to log in with authentik.
 
@@ -68,8 +68,8 @@ See https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/r
 Create a group for each different level of quota you want users to have. Set a custom attribute, for example called `nextcloud_quota`, to the quota you want, for example `15 GB`.
 
 Afterwards, create a custom SAML Property Mapping with the name `SAML NextCloud Quota`.
-Set the *SAML Name* to `nextcloud_quota`.
-Set the *Expression* to `return user.group_attributes().get("nextcloud_quota", "1 GB")`, where `1 GB` is the default value for users that don't belong to another group (or have another value set).
+Set the _SAML Name_ to `nextcloud_quota`.
+Set the _Expression_ to `return user.group_attributes().get("nextcloud_quota", "1 GB")`, where `1 GB` is the default value for users that don't belong to another group (or have another value set).
 
 ## Admin Group
 

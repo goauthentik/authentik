@@ -4,51 +4,51 @@ title: Overview
 
 The proxy outpost sets the following user-specific headers:
 
-- X-authentik-username: `akadmin`
+-   X-authentik-username: `akadmin`
 
     The username of the currently logged in user
 
-- X-authentik-groups: `foo|bar|baz`
+-   X-authentik-groups: `foo|bar|baz`
 
     The groups the user is member of, separated by a pipe
 
-- X-authentik-email: `root@localhost`
+-   X-authentik-email: `root@localhost`
 
     The email address of the currently logged in user
 
-- X-authentik-name: `authentik Default Admin`
+-   X-authentik-name: `authentik Default Admin`
 
     Full name of the current user
 
-- X-authentik-uid: `900347b8a29876b45ca6f75722635ecfedf0e931c6022e3a29a8aa13fb5516fb`
+-   X-authentik-uid: `900347b8a29876b45ca6f75722635ecfedf0e931c6022e3a29a8aa13fb5516fb`
 
     The hashed identifier of the currently logged in user.
 
 Additionally, you can set `additionalHeaders` on groups or users to set additional headers.
 
-If you enable *Set HTTP-Basic Authentication* option, the HTTP Authorization header is being set.
+If you enable _Set HTTP-Basic Authentication_ option, the HTTP Authorization header is being set.
 
 Besides these user-specific headers, some application specific headers are also set:
 
-- X-authentik-meta-outpost: `authentik Embedded Outpost`
+-   X-authentik-meta-outpost: `authentik Embedded Outpost`
 
     The authentik outpost's name.
 
-- X-authentik-meta-provider: `test`
+-   X-authentik-meta-provider: `test`
 
     The authentik provider's name.
 
-- X-authentik-meta-app: `test`
+-   X-authentik-meta-app: `test`
 
     The authentik application's slug.
 
-- X-authentik-meta-version: `goauthentik.io/outpost/1.2.3`
+-   X-authentik-meta-version: `goauthentik.io/outpost/1.2.3`
 
     The authentik outpost's version.
 
 ### Only in proxy mode
 
-- X-Forwarded-Host:
+-   X-Forwarded-Host:
 
     The original Host header sent by the client. This is set as the `Host` header is set to the host of the configured backend.
 
@@ -72,7 +72,7 @@ To log out, navigate to `/outpost.goauthentik.io/sign_out`.
 
 ## Allowing unauthenticated requests
 
-To allow un-authenticated requests to certain paths/URLs, you can use the *Unauthenticated URLs* / *Unauthenticated Paths* field.
+To allow un-authenticated requests to certain paths/URLs, you can use the _Unauthenticated URLs_ / _Unauthenticated Paths_ field.
 
 Each new line is interpreted as a regular expression, and is compiled and checked using the standard Golang regex parser.
 
@@ -88,7 +88,7 @@ In this mode, the regular expressions are matched against the Request's full URL
 
 ## Dynamic backend selection
 
-You can configure the backend the proxy should access dynamically via *Scope mappings*. To do so, create a new *Scope mapping*, with a name and scope of your choice. As expression, use this:
+You can configure the backend the proxy should access dynamically via _Scope mappings_. To do so, create a new _Scope mapping_, with a name and scope of your choice. As expression, use this:
 
 ```python
 return {
@@ -98,4 +98,4 @@ return {
 }
 ```
 
-Afterwards, edit the *Proxy provider* and add this new mapping. The expression is only evaluated when the user logs into the application.
+Afterwards, edit the _Proxy provider_ and add this new mapping. The expression is only evaluated when the user logs into the application.

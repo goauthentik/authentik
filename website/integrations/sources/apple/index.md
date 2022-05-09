@@ -12,7 +12,7 @@ An Apple developer account is required for this.
 
 The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 ## Apple
 

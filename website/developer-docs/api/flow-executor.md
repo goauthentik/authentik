@@ -33,10 +33,7 @@ Below is the response, for example for an Identification stage.
     "component": "ak-stage-identification",
 
     // Stage-specific fields
-    "user_fields": [
-        "username",
-        "email"
-    ],
+    "user_fields": ["username", "email"],
     "password_fields": false,
     "primary_action": "Log in",
     "sources": []

@@ -11,8 +11,8 @@ This stage provides a ready-to-go form for users to identify themselves.
 Select which fields the user can use to identify themselves. Multiple fields can be specified and separated with a comma.
 Valid choices:
 
-- email
-- username
+-   email
+-   username
 
 ### Template
 

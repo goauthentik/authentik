@@ -118,8 +118,8 @@ jobs:
       - name: Generate API
         run: make gen-client-go
       - name: Build web
+        working-directory: web/
         run: |
-          cd web
           npm ci
           npm run build-proxy
       - name: Build outpost
