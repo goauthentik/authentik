@@ -6,9 +6,9 @@ This installation method is for test-setups and small-scale productive setups.
 
 ## Requirements
 
-- A Linux host with at least 2 CPU cores and 2 GB of RAM.
-- docker
-- docker-compose
+-   A Linux host with at least 2 CPU cores and 2 GB of RAM.
+-   docker
+-   docker-compose
 
 ## Preparation
 
@@ -95,15 +95,15 @@ To start the initial setup, navigate to `https://<your server>/if/flow/initial-s
 
 The docker-compose project contains the following containers:
 
-- server
+-   server
 
     This is the backend service, which does all the logic, runs the API and the actual SSO part. It also runs the frontend, hosts the JS/CSS files, and also serves the files you've uploaded for icons/etc.
 
-- worker
+-   worker
 
-    This container executes background tasks, everything you can see on the *System Tasks* page in the frontend.
+    This container executes background tasks, everything you can see on the _System Tasks_ page in the frontend.
 
-- redis & postgresql
+-   redis & postgresql
 
     Cache and database respectively.
 

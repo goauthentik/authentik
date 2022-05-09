@@ -2,10 +2,10 @@
 title: Beta versions
 ---
 
-You can test upcoming authentik versions by switching to the *next* images. These beta versions supported upgrades from the latest stable version, and have a supported upgrade plan to the next stable version.
+You can test upcoming authentik versions by switching to the _next_ images. These beta versions supported upgrades from the latest stable version, and have a supported upgrade plan to the next stable version.
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 <Tabs
   defaultValue="docker-compose"
@@ -23,21 +23,23 @@ AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-nex
 ```
 
 Afterwards, run the upgrade commands from the latest release notes.
+
   </TabItem>
   <TabItem value="kubernetes">
 Add the following block to your `values.yml` file:
 
 ```yaml
 authentik:
-  outposts:
-    container_image_base: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
+    outposts:
+        container_image_base: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
 image:
-  repository: ghcr.io/goauthentik/dev-server
-  tag: gh-next
-  # pullPolicy: Always to ensure you always get the latest version
-  pullPolicy: Always
+    repository: ghcr.io/goauthentik/dev-server
+    tag: gh-next
+    # pullPolicy: Always to ensure you always get the latest version
+    pullPolicy: Always
 ```
 
 Afterwards, run the upgrade commands from the latest release notes.
+
   </TabItem>
 </Tabs>

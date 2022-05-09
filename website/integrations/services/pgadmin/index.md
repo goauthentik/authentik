@@ -18,31 +18,32 @@ This is based on authentik 2022.3.3 and pgAdmin4 v6.7
 
 The following placeholders will be used:
 
-- `pgadmin.company` is the FQDN of pgAdmin.
-- `authentik.company` is the FQDN of authentik.
-
+-   `pgadmin.company` is the FQDN of pgAdmin.
+-   `authentik.company` is the FQDN of authentik.
 
 ### Step 1: Create authentik Provider
 
 In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
 
 **Provider Settings**
-- Name: pgAdmin
-- Client type: Confidential
-- Client ID: Copy and Save this for Later
-- Client Secret: Copy and Save this for later
-- Redirect URIs/Origins: `http://pgadmin.company/oauth2/authorize`
+
+-   Name: pgAdmin
+-   Client type: Confidential
+-   Client ID: Copy and Save this for Later
+-   Client Secret: Copy and Save this for later
+-   Redirect URIs/Origins: `http://pgadmin.company/oauth2/authorize`
 
 ### Step 2: Create authentik Application
+
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 
-- Name: pgAdmin
-- Slug: pgadmin
-- Provider: pgAdmin
-- Launch URL: https://pgadmin.company
-
+-   Name: pgAdmin
+-   Slug: pgadmin
+-   Provider: pgAdmin
+-   Launch URL: https://pgadmin.company
 
 ### Step 3: Configure pgAdmin
+
 All settings for OAuth in pgAdmin are configured in the `config_local.py` file. This file can usually be found in the path `/pgadmin4/config_local.py`
 
 :::note
@@ -71,12 +72,14 @@ OAUTH2_CONFIG = [{
 	'OAUTH2_BUTTON_COLOR' : '<button-color>'
 }]
 ```
+
 In the code above the following placeholders have been used:
-- `<display-name>`: The name that is displayed on the Login Button
-- `<client-id>`: The Client ID from step 1
-- `<client-secret>`: The Client Secret from step 1
-- `<fontawesome-icon>`: An icon name from [fontawesome](https://fontawesome.com). Only brand icons seem to be supported. This icon is displayed in front of the `<display-name>`. E.g.: _fa-github_.
-- `<button-color>`: Sets the color of the Login Button. Should be in Hex format, E.g.: _#fd4b2d_
+
+-   `<display-name>`: The name that is displayed on the Login Button
+-   `<client-id>`: The Client ID from step 1
+-   `<client-secret>`: The Client Secret from step 1
+-   `<fontawesome-icon>`: An icon name from [fontawesome](https://fontawesome.com). Only brand icons seem to be supported. This icon is displayed in front of the `<display-name>`. E.g.: _fa-github_.
+-   `<button-color>`: Sets the color of the Login Button. Should be in Hex format, E.g.: _#fd4b2d_
 
 :::note
 To only allow authentication via authentik set `AUTHENTICATION_SOURCES` to _['oauth2']_. This should **only** be done once at least one user registered via authentik has been made an admin in pgAdmin.

@@ -14,8 +14,8 @@ Veeam Backup Enterprise Manager (Enterprise Manager) is a management and reporti
 
 The following placeholders will be used:
 
-- `veeam.company` is the FQDN of the Veeam Enterprise Manager install.
-- `authentik.company` is the FQDN of the authentik install.
+-   `veeam.company` is the FQDN of the Veeam Enterprise Manager install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 You will need an existing group or multiple in authentik to assign roles in Veeam Enterprise Manager to.
 

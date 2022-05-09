@@ -1,0 +1,33 @@
+name: authentik-ci-website
+
+on:
+  push:
+    branches:
+      - master
+      - next
+      - version-*
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint-prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3.1.1
+        with:
+          node-version: '16'
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+      - working-directory: website/
+        run: npm ci
+      - name: prettier
+        working-directory: website/
+        run: npm run prettier-check
+  ci-web-mark:
+    needs:
+      - lint-prettier
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo mark

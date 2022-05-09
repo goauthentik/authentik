@@ -14,25 +14,25 @@ Apache Guacamole is a clientless remote desktop gateway. It supports standard pr
 
 The following placeholders will be used:
 
-- `guacamole.company` is the FQDN of the Guacamole install.
-- `authentik.company` is the FQDN of the authentik install.
+-   `guacamole.company` is the FQDN of the Guacamole install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 Create an OAuth2/OpenID provider with the following parameters:
 
-- Client Type: `Confidential`
-- Redirect URIs: `https://guacamole.company/` (depending on your Tomcat setup, you might have to add `/guacamole/` if the application runs in a subfolder)
-- Scopes: OpenID, Email and Profile
+-   Client Type: `Confidential`
+-   Redirect URIs: `https://guacamole.company/` (depending on your Tomcat setup, you might have to add `/guacamole/` if the application runs in a subfolder)
+-   Scopes: OpenID, Email and Profile
 
-Under *Advanced protocol settings*, set the following:
+Under _Advanced protocol settings_, set the following:
 
-- Token validity: Any value to configure how long the session should last. Guacamole will not accept any tokens valid longer than 300 Minutes.
+-   Token validity: Any value to configure how long the session should last. Guacamole will not accept any tokens valid longer than 300 Minutes.
 
 Note the Client ID value. Create an application, using the provider you've created above.
 
 ## Guacamole
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 <Tabs
   defaultValue="docker"
@@ -50,6 +50,7 @@ OPENID_ISSUER: https://authentik.company/application/o/*Slug of the application 
 OPENID_JWKS_ENDPOINT: https://authentik.company/application/o/*Slug of the application from above*/jwks/
 OPENID_REDIRECT_URI: https://guacamole.company/ # This must match the redirect URI above
 ```
+
   </TabItem>
   <TabItem value="standalone">
     Standalone Guacamole is configured using the `guacamole.properties` file. Add the following settings:
@@ -61,5 +62,6 @@ openid-issuer=https://authentik.company/application/o/*Slug of the application f
 openid-jwks-endpoint=https://authentik.company/application/o/*Slug of the application from above*/jwks/
 openid-redirect-uri=https://guacamole.company/ # This must match the redirect URI above
 ```
+
   </TabItem>
 </Tabs>

@@ -35,29 +35,29 @@ ldapsearch \
 
 The following fields are currently sent for users:
 
-- `cn`: User's username
-- `uid`: Unique user identifier
-- `uidNumber`: A unique numeric identifier for the user
-- `name`: User's name
-- `displayName`: User's name
-- `mail`: User's email address
-- `objectClass`: A list of these strings:
-  - "user"
-  - "organizationalPerson"
-  - "goauthentik.io/ldap/user"
-- `memberOf`: A list of all DNs that the user is a member of
-- `goauthentik.io/ldap/active`: "true" if the account is active, otherwise "false"
-- `goauthentik.io/ldap/superuser`: "true" if the account is part of a group with superuser permissions, otherwise "false"
+-   `cn`: User's username
+-   `uid`: Unique user identifier
+-   `uidNumber`: A unique numeric identifier for the user
+-   `name`: User's name
+-   `displayName`: User's name
+-   `mail`: User's email address
+-   `objectClass`: A list of these strings:
+    -   "user"
+    -   "organizationalPerson"
+    -   "goauthentik.io/ldap/user"
+-   `memberOf`: A list of all DNs that the user is a member of
+-   `goauthentik.io/ldap/active`: "true" if the account is active, otherwise "false"
+-   `goauthentik.io/ldap/superuser`: "true" if the account is part of a group with superuser permissions, otherwise "false"
 
 The following fields are current set for groups:
 
-- `cn`: The group's name
-- `uid`: Unique group identifier
-- `gidNumber`: A unique numeric identifier for the group
-- `member`: A list of all DNs of the groups members
-- `objectClass`: A list of these strings:
-  - "group"
-  - "goauthentik.io/ldap/group"
+-   `cn`: The group's name
+-   `uid`: Unique group identifier
+-   `gidNumber`: A unique numeric identifier for the group
+-   `member`: A list of all DNs of the groups members
+-   `objectClass`: A list of these strings:
+    -   "group"
+    -   "goauthentik.io/ldap/group"
 
 A virtual group is also created for each user, they have the same fields as groups but have an additional objectClass: `goauthentik.io/ldap/virtual-group`.
 The virtual groups gidNumber is equal to the uidNumber of the user.
@@ -85,11 +85,11 @@ All bind modes rely on flows.
 
 The following stages are supported:
 
-  - [Identification](../flow/stages/identification/)
-  - [Password](../flow/stages/password/)
-  - [Authenticator validation](../flow/stages/authenticator_validate/)
+-   [Identification](../flow/stages/identification/)
+-   [Password](../flow/stages/password/)
+-   [Authenticator validation](../flow/stages/authenticator_validate/)
 
-      Note: Authenticator validation currently only supports DUO devices
+    Note: Authenticator validation currently only supports DUO devices
 
 #### Direct bind
 
@@ -97,7 +97,7 @@ In this mode, the outpost will always execute the configured flow when a new bin
 
 #### Cached bind
 
-This mode uses the same logic as direct bind, however the result is cached for the entered credentials, and saved in memory for the standard session duration. Sessions are saved independently, meaning that revoking sessions does *not* remove them from the outpost, and neither will changing a users credentials.
+This mode uses the same logic as direct bind, however the result is cached for the entered credentials, and saved in memory for the standard session duration. Sessions are saved independently, meaning that revoking sessions does _not_ remove them from the outpost, and neither will changing a users credentials.
 
 ## Search Modes
 

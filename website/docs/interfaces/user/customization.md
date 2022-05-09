@@ -6,19 +6,23 @@ The user interface can be customized through attributes, and will be inherited f
 
 The following features can be enabled/disabled. By default, all of them are enabled:
 
-- `settings.enabledFeatures.apiDrawer`
+-   `settings.enabledFeatures.apiDrawer`
 
     API Request drawer in navbar
-- `settings.enabledFeatures.notificationDrawer`
+
+-   `settings.enabledFeatures.notificationDrawer`
 
     Notification drawer in navbar
-- `settings.enabledFeatures.settings`
+
+-   `settings.enabledFeatures.settings`
 
     Settings link in navbar
-- `settings.enabledFeatures.applicationEdit`
+
+-   `settings.enabledFeatures.applicationEdit`
 
     Application edit in library (only shown when user is superuser)
-- `settings.enabledFeatures.search`
+
+-   `settings.enabledFeatures.search`
 
     Search bar
 
@@ -34,13 +38,13 @@ Optional CSS which is applied in the background of the background of the user in
 
 ```yaml
 settings:
-  theme:
-    background: >
-      background: url('https://picsum.photos/1920/1080');
-      filter: blur(8px);
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
+    theme:
+        background: >
+            background: url('https://picsum.photos/1920/1080');
+            filter: blur(8px);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
 ```
 
 ### `settings.layout.type`

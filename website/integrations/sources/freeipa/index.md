@@ -6,9 +6,9 @@ title: FreeIPA
 
 The following placeholders will be used:
 
-- `svc_authentik` is the name of the bind account.
-- `freeipa.company` is the Name of the domain.
-- `ipa1.freeipa.company` is the Name of the FreeIPA server.
+-   `svc_authentik` is the name of the bind account.
+-   `freeipa.company` is the Name of the domain.
+-   `ipa1.freeipa.company` is the Name of the FreeIPA server.
 
 ## FreeIPA Setup
 
@@ -40,31 +40,32 @@ The following placeholders will be used:
 Additional info: [22.1.2. Enabling Password Reset Without Prompting for a Password Change at the Next Login](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/linux_domain_identity_authentication_and_policy_guide/user-authentication#user-passwords-no-expiry)
 
 ## authentik Setup
+
 In authentik, create a new LDAP Source in Resources -> Sources.
 
 Use these settings:
 
-- Server URI: `ldaps://ipa1.freeipa.company`
+-   Server URI: `ldaps://ipa1.freeipa.company`
 
     You can specify multiple servers by separating URIs with a comma, like `ldap://ipa1.freeipa.company,ldap://ipa2.freeipa.company`.
 
     When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
 
-- Bind CN: `uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company`
-- Bind Password: The password you've given the user above
-- Base DN: `dc=freeipa,dc=company`
-- Property mappings: Control/Command-select all Mappings which start with "authentik default LDAP" and "authentik default OpenLDAP"
-- Group property mappings: Select "authentik default OpenLDAP Mapping: cn"
+-   Bind CN: `uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company`
+-   Bind Password: The password you've given the user above
+-   Base DN: `dc=freeipa,dc=company`
+-   Property mappings: Control/Command-select all Mappings which start with "authentik default LDAP" and "authentik default OpenLDAP"
+-   Group property mappings: Select "authentik default OpenLDAP Mapping: cn"
 
 Additional settings:
 
-- Group: If selected, all synchronized groups will be given this group as a parent.
-- Addition User/Group DN: `cn=users,cn=accounts`
-- Addition Group DN: `cn=groups,cn=accounts`
-- User object filter: `(objectClass=person)`
-- Group object filter: `(objectClass=groupofnames)`
-- Group membership field: `member`
-- Object uniqueness field: `ipaUniqueID`
+-   Group: If selected, all synchronized groups will be given this group as a parent.
+-   Addition User/Group DN: `cn=users,cn=accounts`
+-   Addition Group DN: `cn=groups,cn=accounts`
+-   User object filter: `(objectClass=person)`
+-   Group object filter: `(objectClass=groupofnames)`
+-   Group membership field: `member`
+-   Object uniqueness field: `ipaUniqueID`
 
     ![](./04_source_settings_1.png)
     ![](./05_source_settings_2.png)

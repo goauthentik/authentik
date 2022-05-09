@@ -10,28 +10,27 @@ Create a values.yaml file with a minimum of these settings:
 
 ```yaml
 authentik:
-  secret_key: "PleaseGenerateA50CharKey"
-  # This sends anonymous usage-data, stack traces on errors and
-  # performance data to sentry.beryju.org, and is fully opt-in
-  error_reporting:
-    enabled: true
-  postgresql:
-    password: "ThisIsNotASecurePassword"
+    secret_key: "PleaseGenerateA50CharKey"
+    # This sends anonymous usage-data, stack traces on errors and
+    # performance data to sentry.beryju.org, and is fully opt-in
+    error_reporting:
+        enabled: true
+    postgresql:
+        password: "ThisIsNotASecurePassword"
 
 ingress:
-  enabled: true
-  hosts:
-  - host: authentik.domain.tld
-    paths:
-    - path: "/"
-      pathType: Prefix
+    enabled: true
+    hosts:
+        - host: authentik.domain.tld
+          paths:
+              - path: "/"
+                pathType: Prefix
 
 postgresql:
-  enabled: true
-  postgresqlPassword: "ThisIsNotASecurePassword"
+    enabled: true
+    postgresqlPassword: "ThisIsNotASecurePassword"
 redis:
-  enabled: true
-
+    enabled: true
 ```
 
 See all configurable values on [artifacthub](https://artifacthub.io/packages/helm/goauthentik/authentik).

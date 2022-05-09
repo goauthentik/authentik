@@ -23,6 +23,6 @@ Update your values to use the new images:
 
 ```yaml
 image:
-  repository: ghcr.io/goauthentik/server
-  tag: xxxx.x.1
+    repository: ghcr.io/goauthentik/server
+    tag: xxxx.x.1
 ```

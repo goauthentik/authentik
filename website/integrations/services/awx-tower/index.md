@@ -20,15 +20,15 @@ AWX is the open-source version of Tower. The term "AWX" will be used interchange
 
 The following placeholders will be used:
 
-- `awx.company` is the FQDN of the AWX/Tower install.
-- `authentik.company` is the FQDN of the authentik install.
+-   `awx.company` is the FQDN of the AWX/Tower install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
-- ACS URL: `https://awx.company/sso/complete/saml/`
-- Audience: `awx`
-- Service Provider Binding: Post
-- Issuer: `https://awx.company/sso/metadata/saml/`
+-   ACS URL: `https://awx.company/sso/complete/saml/`
+-   Audience: `awx`
+-   Service Provider Binding: Post
+-   Issuer: `https://awx.company/sso/metadata/saml/`
 
 You can of course use a custom signing certificate, and adjust durations.
 

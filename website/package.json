@@ -9,7 +9,9 @@
         "build-docs-only": "docusaurus build --config docusaurus.docs-only.js --out-dir help",
         "swizzle": "docusaurus swizzle",
         "deploy": "docusaurus deploy",
-        "serve": "docusaurus serve"
+        "serve": "docusaurus serve",
+        "prettier-check": "prettier --check .",
+        "prettier": "prettier --write ."
     },
     "dependencies": {
         "@docusaurus/plugin-client-redirects": "2.0.0-beta.18",

@@ -8,8 +8,7 @@ Allows users to authenticate using their Discord credentials
 
 The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik install.
-
+-   `authentik.company` is the FQDN of the authentik install.
 
 ## Discord
 

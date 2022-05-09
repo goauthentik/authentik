@@ -7,20 +7,20 @@ title: Roundcube
 From https://roundcube.net
 
 :::note
-**Roundcube** is a browser-based multilingual IMAP client with an application-like user interface. 
-It provides full functionality you expect from an email client, including MIME support, address book, folder manipulation, message searching and spell checking 
+**Roundcube** is a browser-based multilingual IMAP client with an application-like user interface.
+It provides full functionality you expect from an email client, including MIME support, address book, folder manipulation, message searching and spell checking
 :::
 
-This integration describes how to use Roundcube's oauth support with authentik to automatically sign into an email account. 
+This integration describes how to use Roundcube's oauth support with authentik to automatically sign into an email account.
 The mail server must support XOAUTH2 for both SMTPD and IMAP/POP. Postfix SMTP server can also use Dovecot for authentication which provides Postfix with xoauth2 capability without configuring it separately.
 
 ## Preperation
 
 The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik install.
+-   `authentik.company` is the FQDN of the authentik install.
 
-Create a new oauth2 Scope Mapping which does not return the 'group' values and associate this mapping 
+Create a new oauth2 Scope Mapping which does not return the 'group' values and associate this mapping
 in the provider settings instead of the default oauth mapping.
 
 Under _Property Mappings_, create a _Scope Mapping_. Give it a name like "oauth2-Scope-dovecot". Set the scope name to `dovecotprofile` and the expression to the following
@@ -38,9 +38,9 @@ return {
 
 Create an application in authentik. Create an _OAuth2/OpenID Provider_ with the following parameters:
 
-- Client Type: `Confidential`
-- Scopes: OpenID, Email, and the scope you created above
-- Signing Key: Select any available key
+-   Client Type: `Confidential`
+-   Scopes: OpenID, Email, and the scope you created above
+-   Signing Key: Select any available key
 
 ## Roundcube Configuration
 
@@ -56,6 +56,7 @@ $config['oauth_scope'] = "email openid dovecotprofile";
 $config['oauth_auth_parameters'] = [];
 $config['oauth_identity_fields'] = ['email'];
 ```
+
 ## Dovecot Configuration
 
 Add xoauth2 as an authentication mechanism and configure the following parameters in your Dovecot configuration.
@@ -72,7 +73,7 @@ tls_ca_cert_file = /etc/ssl/certs/ca-certificates.crt
 ```
 
 :::note
-With this setup Dovecot can also be used with other email clients that support XOAUTH2 authentication, however 
+With this setup Dovecot can also be used with other email clients that support XOAUTH2 authentication, however
 most available software (including Fair Email for Android and Thunderbird) only come with support for Gmail,
 Outlook etc with no way to configure custom email servers.
 :::
@@ -81,6 +82,6 @@ Outlook etc with no way to configure custom email servers.
 
 Please refer to the following for further configuration information:
 
-- https://roundcube.net
-- https://github.com/roundcube/roundcubemail/wiki/Configuration:-OAuth2
-- https://doc.dovecot.org/configuration_manual/authentication/oauth2/
+-   https://roundcube.net
+-   https://github.com/roundcube/roundcubemail/wiki/Configuration:-OAuth2
+-   https://doc.dovecot.org/configuration_manual/authentication/oauth2/

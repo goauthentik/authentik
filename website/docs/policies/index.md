@@ -23,11 +23,11 @@ This policy can enforce regular password rotation by expiring set passwords afte
 This policy allows you to specify password rules, such as length and required characters.
 The following rules can be set:
 
-- Minimum amount of uppercase characters.
-- Minimum amount of lowercase characters.
-- Minimum amount of symbols characters.
-- Minimum length.
-- Symbol charset (define which characters are counted as symbols).
+-   Minimum amount of uppercase characters.
+-   Minimum amount of lowercase characters.
+-   Minimum amount of symbols characters.
+-   Minimum length.
+-   Symbol charset (define which characters are counted as symbols).
 
 ## Reputation Policy
 

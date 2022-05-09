@@ -1,4 +1,3 @@
-
 ```
 server {
     # SSL and VHost configuration
