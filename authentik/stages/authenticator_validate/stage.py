@@ -4,6 +4,7 @@ from datetime import timezone
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import datetime, now
 from django_otp import devices_for_user
+from django_otp.models import Device
 from rest_framework.fields import CharField, IntegerField, JSONField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
@@ -126,6 +127,15 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         return attrs
 
 
+def get_device_last_usage(device: Device) -> datetime:
+    """Get a datetime object from last_t"""
+    if not hasattr(device, "last_t"):
+        return datetime.fromtimestamp(0, tz=timezone.utc)
+    if isinstance(device.last_t, datetime):
+        return device.last_t
+    return datetime.fromtimestamp(device.last_t * device.step, tz=timezone.utc)
+
+
 class AuthenticatorValidateStageView(ChallengeStageView):
     """Authenticator Validation"""
 
@@ -157,11 +167,13 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             if device_class in seen_classes:
                 continue
             # check if device has been used within threshold and skip this stage if so
-            if hasattr(device, "last_t") and threshold.total_seconds() > 0:
-                if (
-                    _now - datetime.fromtimestamp(device.last_t).replace(tzinfo=timezone.utc)
-                    >= threshold
-                ):
+            if threshold.total_seconds() > 0:
+                print("yeet")
+                print(get_device_last_usage(device))
+                print(_now - get_device_last_usage(device))
+                print(threshold)
+                print(_now - get_device_last_usage(device) <= threshold)
+                if _now - get_device_last_usage(device) <= threshold:
                     LOGGER.info("Device has been used within threshold", device=device)
                     raise FlowSkipStageException()
             if device_class not in seen_classes:

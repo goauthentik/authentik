@@ -74,6 +74,8 @@ class DuoDevice(Device):
     stage = models.ForeignKey(AuthenticatorDuoStage, on_delete=models.CASCADE)
     duo_user_id = models.TextField()
 
+    last_t = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return self.name or str(self.user)
 

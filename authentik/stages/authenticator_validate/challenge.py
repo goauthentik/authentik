@@ -147,4 +147,5 @@ def validate_challenge_duo(device_pk: int, request: HttpRequest, user: User) -> 
     # {'result': 'allow', 'status': 'allow', 'status_msg': 'Success. Logging you in...'}
     if response["result"] == "deny":
         raise ValidationError("Duo denied access")
+    device.save()
     return device_pk
