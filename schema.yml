@@ -20068,11 +20068,6 @@ components:
       - authentik.core.auth.TokenBackend
       - authentik.sources.ldap.auth.LDAPBackend
       type: string
-    BindModeEnum:
-      enum:
-      - direct
-      - cached
-      type: string
     BindingTypeEnum:
       enum:
       - REDIRECT
@@ -22311,6 +22306,11 @@ components:
             the currently selected context.
       required:
       - name
+    LDAPAPIAccessMode:
+      enum:
+      - direct
+      - cached
+      type: string
     LDAPOutpostConfig:
       type: object
       description: LDAPProvider Serializer
@@ -22356,9 +22356,9 @@ components:
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         search_mode:
-          $ref: '#/components/schemas/SearchModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
         bind_mode:
-          $ref: '#/components/schemas/BindModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
       required:
       - application_slug
       - bind_flow_slug
@@ -22509,9 +22509,9 @@ components:
             type: string
           readOnly: true
         search_mode:
-          $ref: '#/components/schemas/SearchModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
         bind_mode:
-          $ref: '#/components/schemas/BindModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -22571,9 +22571,9 @@ components:
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         search_mode:
-          $ref: '#/components/schemas/SearchModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
         bind_mode:
-          $ref: '#/components/schemas/BindModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
       required:
       - authorization_flow
       - name
@@ -27337,9 +27337,9 @@ components:
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         search_mode:
-          $ref: '#/components/schemas/SearchModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
         bind_mode:
-          $ref: '#/components/schemas/BindModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
@@ -30160,11 +30160,6 @@ components:
       - expression
       - name
       - scope_name
-    SearchModeEnum:
-      enum:
-      - direct
-      - cached
-      type: string
     SelectableStage:
       type: object
       description: Serializer for stages which can be selected by users
