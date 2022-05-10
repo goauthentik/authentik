@@ -4,6 +4,7 @@ on:
     branches: [ master ]
     paths:
       - 'schema.yml'
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,7 +27,7 @@ jobs:
       - name: Upgrade /web
         working-directory: web/
         run: |
-          export VERSION=`node -e 'console.log(require("../web-api/package.json").version)'`
+          export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
           npm i @goauthentik/api@$VERSION
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4

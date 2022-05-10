@@ -6,14 +6,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import {
-    BindModeEnum,
     CoreApi,
     CryptoApi,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    LDAPAPIAccessMode,
     LDAPProvider,
     ProvidersApi,
-    SearchModeEnum,
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG, tenant } from "../../../api/Config";
@@ -123,14 +122,14 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
             <ak-form-element-horizontal label=${t`Bind mode`} name="bindMode">
                 <select class="pf-c-form-control">
                     <option
-                        value="${BindModeEnum.Cached}"
-                        ?selected=${this.instance?.bindMode === BindModeEnum.Cached}
+                        value="${LDAPAPIAccessMode.Cached}"
+                        ?selected=${this.instance?.bindMode === LDAPAPIAccessMode.Cached}
                     >
                         ${t`Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires.`}
                     </option>
                     <option
-                        value="${BindModeEnum.Direct}"
-                        ?selected=${this.instance?.searchMode === BindModeEnum.Direct}
+                        value="${LDAPAPIAccessMode.Direct}"
+                        ?selected=${this.instance?.searchMode === LDAPAPIAccessMode.Direct}
                     >
                         ${t`Direct querying, always execute the configured bind flow to authenticate the user.`}
                     </option>
@@ -142,14 +141,14 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
             <ak-form-element-horizontal label=${t`Search mode`} name="searchMode">
                 <select class="pf-c-form-control">
                     <option
-                        value="${SearchModeEnum.Cached}"
-                        ?selected=${this.instance?.searchMode === SearchModeEnum.Cached}
+                        value="${LDAPAPIAccessMode.Cached}"
+                        ?selected=${this.instance?.searchMode === LDAPAPIAccessMode.Cached}
                     >
                         ${t`Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes.`}
                     </option>
                     <option
-                        value="${SearchModeEnum.Direct}"
-                        ?selected=${this.instance?.searchMode === SearchModeEnum.Direct}
+                        value="${LDAPAPIAccessMode.Direct}"
+                        ?selected=${this.instance?.searchMode === LDAPAPIAccessMode.Direct}
                     >
                         ${t`Direct querying, always returns the latest data, but slower than cached querying.`}
                     </option>
