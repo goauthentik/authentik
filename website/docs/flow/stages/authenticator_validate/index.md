@@ -18,6 +18,9 @@ Using the `Not configured action`, you can choose what happens when a user does 
 -   Deny: Access is denied, the flow execution ends
 -   Configure: This option requires a _Configuration stage_ to be set. The validation stage will be marked as successful, and the configuration stage will be injected into the flow.
 
+By default, authenticator validation is required every time the flow containing this stage is executed. To only change this behavior, set *Last validation threshold* to a non-zero value. (Requires authentik 2022.5)
+Keep in mind that when using Code-based devices (TOTP, Static and SMS), values lower than `seconds=30` cannot be used, as with the way TOTP devices are saved, there is no exact timestamp.
+
 ## Passwordless authentication
 
 :::info
