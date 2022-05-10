@@ -79,7 +79,6 @@ class TestIdentificationStage(FlowTestCase):
         }
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, form_data)
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             self.flow,
@@ -122,7 +121,6 @@ class TestIdentificationStage(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             form_data,
         )
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             self.flow,
@@ -175,7 +173,6 @@ class TestIdentificationStage(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             self.flow,
@@ -218,7 +215,6 @@ class TestIdentificationStage(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             self.flow,

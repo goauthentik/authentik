@@ -53,7 +53,6 @@ class TestPasswordStage(FlowTestCase):
             {"password": self.password},
         )
 
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             self.flow,
@@ -159,7 +158,6 @@ class TestPasswordStage(FlowTestCase):
             {"password": self.password + "test"},
         )
 
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             self.flow,

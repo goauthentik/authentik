@@ -87,7 +87,6 @@ class TestFlowExecutor(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             flow=flow,
@@ -406,7 +405,6 @@ class TestFlowExecutor(FlowTestCase):
         # A get request will evaluate the policies and this will return stage 4
         # but it won't save it, hence we can't check the plan
         response = self.client.get(exec_url)
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(response, flow, component="ak-stage-dummy")
 
         # fourth request, this confirms the last stage (dummy4)
@@ -479,7 +477,6 @@ class TestFlowExecutor(FlowTestCase):
         exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
         # First request, run the planner
         response = self.client.get(exec_url)
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             flow,
@@ -491,5 +488,4 @@ class TestFlowExecutor(FlowTestCase):
             user_fields=[UserFields.E_MAIL],
         )
         response = self.client.post(exec_url, {"uid_field": "invalid-string"}, follow=True)
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(response, flow, component="ak-stage-access-denied")

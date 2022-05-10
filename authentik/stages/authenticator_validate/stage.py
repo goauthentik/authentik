@@ -1,6 +1,10 @@
 """Authenticator Validation"""
+from datetime import timezone
+
 from django.http import HttpRequest, HttpResponse
+from django.utils.timezone import datetime, now
 from django_otp import devices_for_user
+from django_otp.models import Device
 from rest_framework.fields import CharField, IntegerField, JSONField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
@@ -10,9 +14,11 @@ from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import cleanse_dict, sanitize_dict
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
+from authentik.flows.exceptions import FlowSkipStageException
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
@@ -121,6 +127,15 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         return attrs
 
 
+def get_device_last_usage(device: Device) -> datetime:
+    """Get a datetime object from last_t"""
+    if not hasattr(device, "last_t"):
+        return datetime.fromtimestamp(0, tz=timezone.utc)
+    if isinstance(device.last_t, datetime):
+        return device.last_t
+    return datetime.fromtimestamp(device.last_t * device.step, tz=timezone.utc)
+
+
 class AuthenticatorValidateStageView(ChallengeStageView):
     """Authenticator Validation"""
 
@@ -139,6 +154,9 @@ class AuthenticatorValidateStageView(ChallengeStageView):
 
         stage: AuthenticatorValidateStage = self.executor.current_stage
 
+        _now = now()
+        threshold = timedelta_from_string(stage.last_auth_threshold)
+
         for device in user_devices:
             device_class = device.__class__.__name__.lower().replace("device", "")
             if device_class not in stage.device_classes:
@@ -148,6 +166,16 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             # WebAuthn does another device loop to find all webuahtn devices
             if device_class in seen_classes:
                 continue
+            # check if device has been used within threshold and skip this stage if so
+            if threshold.total_seconds() > 0:
+                print("yeet")
+                print(get_device_last_usage(device))
+                print(_now - get_device_last_usage(device))
+                print(threshold)
+                print(_now - get_device_last_usage(device) <= threshold)
+                if _now - get_device_last_usage(device) <= threshold:
+                    LOGGER.info("Device has been used within threshold", device=device)
+                    raise FlowSkipStageException()
             if device_class not in seen_classes:
                 seen_classes.append(device_class)
             challenge = DeviceChallenge(
@@ -181,7 +209,10 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         user = self.get_pending_user()
         stage: AuthenticatorValidateStage = self.executor.current_stage
         if user and not user.is_anonymous:
-            challenges = self.get_device_challenges()
+            try:
+                challenges = self.get_device_challenges()
+            except FlowSkipStageException:
+                return self.executor.stage_ok()
         else:
             if self.executor.flow.designation != FlowDesignation.AUTHENTICATION:
                 LOGGER.debug("Refusing passwordless flow in non-authentication flow")

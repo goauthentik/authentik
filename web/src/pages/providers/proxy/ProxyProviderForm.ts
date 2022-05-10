@@ -25,6 +25,7 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import "../../../elements/utils/TimeDeltaHelp";
 import { first } from "../../../utils";
 
 @customElement("ak-provider-proxy-form")
@@ -329,9 +330,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">${t`Configure how long tokens are valid for.`}</p>
-                <p class="pf-c-form__helper-text">
-                    ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
-                </p>
+                <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
 
             <ak-form-group>

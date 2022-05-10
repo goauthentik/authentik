@@ -125,7 +125,7 @@ class WebAuthnDevice(Device):
     rp_id = models.CharField(max_length=253)
 
     created_on = models.DateTimeField(auto_now_add=True)
-    last_used_on = models.DateTimeField(default=now)
+    last_t = models.DateTimeField(default=now)
 
     @property
     def descriptor(self) -> PublicKeyCredentialDescriptor:
@@ -133,9 +133,9 @@ class WebAuthnDevice(Device):
         return PublicKeyCredentialDescriptor(id=base64url_to_bytes(self.credential_id))
 
     def set_sign_count(self, sign_count: int) -> None:
-        """Set the sign_count and update the last_used_on datetime."""
+        """Set the sign_count and update the last_t datetime."""
         self.sign_count = sign_count
-        self.last_used_on = now()
+        self.last_t = now()
         self.save()
 
     def __str__(self):

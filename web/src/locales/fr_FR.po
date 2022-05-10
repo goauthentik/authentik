@@ -19,18 +19,19 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: @lingui/cli\n"
 
-#: 
+#:
 #~ msgid "#/identity/users/{0}"
 #~ msgstr ""
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/proxy/ProxyProviderForm.ts
-#: src/pages/providers/saml/SAMLProviderForm.ts
+#: src/elements/utils/TimeDeltaHelp.ts
+#~ msgid "(Format: days=-1;minutes=-2;seconds=-3)."
+#~ msgstr ""
+
+#: src/elements/utils/TimeDeltaHelp.ts
 msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
 msgstr "(Format : heures=-1;minutes=-2;seconds=-3)"
 
-#: src/pages/stages/user_login/UserLoginStageForm.ts
+#: src/elements/utils/TimeDeltaHelp.ts
 msgid "(Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 
@@ -449,8 +450,12 @@ msgid "Are you sure you want to update {0} \"{1}\"?"
 msgstr "Êtes-vous sûr de vouloir modifier {0} {1} ?"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-msgstr "Assertion non valide après écoulement de ce délai (format : hours=1;minutes=2;seconds=3)"
+#~ msgid "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
+#~ msgstr "Assertion non valide après écoulement de ce délai (format : hours=1;minutes=2;seconds=3)"
+
+#: src/pages/providers/saml/SAMLProviderForm.ts
+msgid "Assertion not valid on or after current time + this value."
+msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Assertion valid not before"
@@ -500,7 +505,7 @@ msgstr "Attributs"
 msgid "Audience"
 msgstr "Audience"
 
-#: 
+#:
 #~ msgid "Auth Type"
 #~ msgstr ""
 
@@ -873,7 +878,7 @@ msgstr ""
 msgid "Check the logs"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Check your Emails for a password reset link."
 #~ msgstr "Vérifiez vos courriels pour un lien de récupération de mot de passe."
 
@@ -1022,7 +1027,7 @@ msgstr "Flux de configuration"
 msgid "Configuration stages"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Configure WebAuthn"
 #~ msgstr "Configurer WebAuthn"
 
@@ -1182,7 +1187,7 @@ msgstr "Domaine des cookies"
 msgid "Copy"
 msgstr "Copier"
 
-#: 
+#:
 #~ msgid "Copy Key"
 #~ msgstr "Copier la clé"
 
@@ -1384,7 +1389,7 @@ msgstr "Créer {0}"
 msgid "Created by"
 msgstr "Créé par"
 
-#: 
+#:
 #~ msgid "Created {0}"
 #~ msgstr "Créé {0}"
 
@@ -1394,7 +1399,7 @@ msgstr "Créé par"
 msgid "Creation Date"
 msgstr "Date de création"
 
-#: 
+#:
 #~ msgid "Current plan cntext"
 #~ msgstr "Contexte du plan courant"
 
@@ -1581,7 +1586,7 @@ msgstr "Classes d'équipement"
 msgid "Device classes which can be used to authenticate."
 msgstr "Classe d'équipement qui peut être utilisé pour s'authentifier"
 
-#: 
+#:
 #~ msgid "Device name"
 #~ msgstr "Nom de l'équipement"
 
@@ -1617,19 +1622,19 @@ msgstr ""
 #~ msgid "Disable"
 #~ msgstr "Désactiver"
 
-#: 
+#:
 #~ msgid "Disable Duo authenticator"
 #~ msgstr "Désactiver l'authentificateur Duo"
 
-#: 
+#:
 #~ msgid "Disable SMS authenticator"
 #~ msgstr ""
 
-#: 
+#:
 #~ msgid "Disable Static Tokens"
 #~ msgstr "Désactiver les jetons statiques"
 
-#: 
+#:
 #~ msgid "Disable Time-based OTP"
 #~ msgstr "Désactiver les OTP basés sur le temps"
 
@@ -1683,7 +1688,7 @@ msgstr "En raison des limitations de protocole, ce certificat n'est utilisé que
 msgid "Dummy stage used for testing. Shows a simple continue button and always passes."
 msgstr "Étape factice utilisée pour les tests. Montre un simple bouton continuer et réussit toujours."
 
-#: 
+#:
 #~ msgid "Duo"
 #~ msgstr "Duo"
 
@@ -1797,11 +1802,11 @@ msgstr "L'avant poste intégré n'est pas configuré correctement"
 #~ msgid "Enable"
 #~ msgstr "Activer"
 
-#: 
+#:
 #~ msgid "Enable Duo authenticator"
 #~ msgstr "Activer l'authentificateur Duo"
 
-#: 
+#:
 #~ msgid "Enable SMS authenticator"
 #~ msgstr ""
 
@@ -1809,11 +1814,11 @@ msgstr "L'avant poste intégré n'est pas configuré correctement"
 msgid "Enable StartTLS"
 msgstr "Activer StartTLS"
 
-#: 
+#:
 #~ msgid "Enable Static Tokens"
 #~ msgstr "Activer les jetons statiques"
 
-#: 
+#:
 #~ msgid "Enable TOTP"
 #~ msgstr "Activer TOTP"
 
@@ -1877,7 +1882,7 @@ msgstr "Erreur lors de la validation de l'assertion sur le serveur : {err}"
 msgid "Error: unsupported source settings: {0}"
 msgstr "Erreur : paramètres source non supportés : {0}"
 
-#: 
+#:
 #~ msgid "Error: unsupported stage settings: {0}"
 #~ msgstr "Erreur : paramètres d'étape non supporté : {0}"
 
@@ -1932,7 +1937,7 @@ msgstr "Tout va bien."
 msgid "Exception"
 msgstr "Exception"
 
-#: 
+#:
 #~ msgid "Execute"
 #~ msgstr "Exécuter"
 
@@ -1944,7 +1949,7 @@ msgstr "Exception"
 msgid "Execute flow"
 msgstr "Exécuter le flux"
 
-#: 
+#:
 #~ msgid "Execute with inspector"
 #~ msgstr "Exécuter avec inspection"
 
@@ -2516,6 +2521,10 @@ msgstr "Identifiant"
 #~ msgid "Identity & Cryptography"
 #~ msgstr "Identité et chiffrement"
 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "If any of the devices user of the types selected above have been used within this duration, this stage will be skipped."
+msgstr ""
+
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
 msgid "If enabled, use the local connection. Required Docker socket/Kubernetes Integration."
@@ -2792,6 +2801,10 @@ msgstr "Vu le : {0}"
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Last sync: {0}"
 msgstr "Dernière synchro : {0}"
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Last validation threshold"
+msgstr ""
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
@@ -3517,8 +3530,12 @@ msgid "Objects created"
 msgstr ""
 
 #: src/pages/stages/consent/ConsentStageForm.ts
-msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
-msgstr "Durée d'expiration du consentement (Format : hours=1;minutes=2;seconds=3)."
+msgid "Offset after which consent expires."
+msgstr ""
+
+#: src/pages/stages/consent/ConsentStageForm.ts
+#~ msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
+#~ msgstr "Durée d'expiration du consentement (Format : hours=1;minutes=2;seconds=3)."
 
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -3730,7 +3747,7 @@ msgstr "Mot de passe défini"
 msgid "Password stage"
 msgstr "Étape de mot de passe"
 
-#: 
+#:
 #~ msgid "Password, 2FA, etc"
 #~ msgstr "Mot de passe, 2FA, etc"
 
@@ -4397,7 +4414,7 @@ msgstr "Clé secrète"
 msgid "Secret was rotated"
 msgstr ""
 
-#: 
+#:
 #~ msgid "Secret was rotation"
 #~ msgstr "Rotation du secret effectuée"
 
@@ -4564,8 +4581,12 @@ msgid "Session duration"
 msgstr "Durée de la session"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-msgstr "La session n'est plus valide à partir de l'heure actuelle + cette valeur (Format: hours=1;minutes=2;seconds=3)."
+#~ msgid "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
+#~ msgstr "La session n'est plus valide à partir de l'heure actuelle + cette valeur (Format: hours=1;minutes=2;seconds=3)."
+
+#: src/pages/providers/saml/SAMLProviderForm.ts
+msgid "Session not valid on or after current time + this value."
+msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Session valid not on or after"
@@ -4696,7 +4717,7 @@ msgstr "Une erreur s'est produite ! Veuillez réessayer plus tard."
 msgid "Source linked"
 msgstr "Source liée"
 
-#: 
+#:
 #~ msgid "Source name"
 #~ msgstr ""
 
@@ -4861,17 +4882,17 @@ msgstr "Refuser statiquement le flux. Pour utiliser cette étape efficacement, d
 msgid "Status"
 msgstr "Statut"
 
-#: 
-#: 
-#: 
-#: 
+#:
+#:
+#:
+#:
 #~ msgid "Status: Disabled"
 #~ msgstr "Statut : Désactivé"
 
-#: 
-#: 
-#: 
-#: 
+#:
+#:
+#:
+#:
 #~ msgid "Status: Enabled"
 #~ msgstr "Statut : Activé"
 
@@ -5230,7 +5251,7 @@ msgstr "Requête suspecte"
 msgid "Symbol charset"
 msgstr "Set de symboles"
 
-#: 
+#:
 #~ msgid "Sync"
 #~ msgstr "Synchroniser"
 
@@ -5390,6 +5411,10 @@ msgstr "L'URL externe par laquelle vous accéderez à l'application. Incluez un 
 msgid "The external URL you'll authenticate at. The authentik core server should be reachable under this URL."
 msgstr ""
 
+#: src/elements/utils/TimeDeltaHelp.ts
+msgid "The following keywords are supported:"
+msgstr ""
+
 #~ msgid "The following objects use {0}:"
 #~ msgstr "Les objets suivants utilisent {0} :"
 
@@ -5490,10 +5515,14 @@ msgid "Time in minutes the token sent is valid."
 msgstr "Temps en minutes durant lequel le jeton envoyé est valide."
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
-msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
-msgstr "Délai de suppression des utilisateurs temporaires. Ceci s'applique uniquement si votre fournisseur d'identité utilise le format NameID transitoire ('transient') et que l'utilisateur ne se déconnecte pas manuellement. (Format : heures=1;minutes=2;secondes=3)."
+msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually."
+msgstr ""
 
-#: 
+#: src/pages/sources/saml/SAMLSourceForm.ts
+#~ msgid "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
+#~ msgstr "Délai de suppression des utilisateurs temporaires. Ceci s'applique uniquement si votre fournisseur d'identité utilise le format NameID transitoire ('transient') et que l'utilisateur ne se déconnecte pas manuellement. (Format : heures=1;minutes=2;secondes=3)."
+
+#:
 #~ msgid "Time-based One-Time Passwords"
 #~ msgstr "Mots de passe unique basés sur le temps"
 
@@ -6291,7 +6320,7 @@ msgstr ""
 msgid "WebAuthn Authenticators"
 msgstr "Authentificateurs WebAuthn"
 
-#: 
+#:
 #~ msgid "WebAuthn Devices"
 #~ msgstr "Équipements WebAuthn"
 

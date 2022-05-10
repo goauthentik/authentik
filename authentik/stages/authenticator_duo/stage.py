@@ -1,5 +1,6 @@
 """Duo stage"""
 from django.http import HttpRequest, HttpResponse
+from django.utils.timezone import now
 from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
@@ -85,7 +86,11 @@ class AuthenticatorDuoStageView(ChallengeStageView):
         self.request.session.pop(SESSION_KEY_DUO_ACTIVATION_CODE)
         if not existing_device:
             DuoDevice.objects.create(
-                name="Duo Device", user=self.get_pending_user(), duo_user_id=user_id, stage=stage
+                name="Duo Device",
+                user=self.get_pending_user(),
+                duo_user_id=user_id,
+                stage=stage,
+                last_t=now(),
             )
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")

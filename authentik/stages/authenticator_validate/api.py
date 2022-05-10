@@ -30,6 +30,7 @@ class AuthenticatorValidateStageSerializer(StageSerializer):
             "not_configured_action",
             "device_classes",
             "configuration_stages",
+            "last_auth_threshold",
         ]
 
 

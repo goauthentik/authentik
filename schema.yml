@@ -19894,6 +19894,10 @@ components:
           description: Stages used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
+        last_auth_threshold:
+          type: string
+          description: If any of the user's device has been used within this threshold,
+            this stage will be skipped
       required:
       - component
       - meta_model_name
@@ -19927,6 +19931,11 @@ components:
           description: Stages used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
+        last_auth_threshold:
+          type: string
+          minLength: 1
+          description: If any of the user's device has been used within this threshold,
+            this stage will be skipped
       required:
       - name
     AuthenticatorValidationChallenge:
@@ -26797,6 +26806,11 @@ components:
           description: Stages used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
+        last_auth_threshold:
+          type: string
+          minLength: 1
+          description: If any of the user's device has been used within this threshold,
+            this stage will be skipped
     PatchedCaptchaStageRequest:
       type: object
       description: CaptchaStage Serializer
