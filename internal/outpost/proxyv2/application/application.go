@@ -96,7 +96,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		errorTemplates: templates.GetTemplates(),
 		ak:             ak,
 	}
-	a.sessions = a.getStore(p)
+	a.sessions = a.getStore(p, externalHost)
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
 		s, err := a.sessions.Get(r, constants.SeesionName)
 		if err != nil {
