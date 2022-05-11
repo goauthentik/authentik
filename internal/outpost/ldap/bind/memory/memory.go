@@ -56,7 +56,7 @@ func (sb *SessionBinder) Bind(username string, req *bind.Request) (ldap.LDAPResu
 		sb.sessions.Set(Credentials{
 			DN:       req.BindDN,
 			Password: req.BindPW,
-		}, result, time.Duration(flags.Session.MaxAge))
+		}, result, time.Until(flags.Session.Expires))
 	}
 	return result, err
 }
