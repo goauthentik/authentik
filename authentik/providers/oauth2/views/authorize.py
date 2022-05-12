@@ -15,6 +15,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
+from authentik.flows.challenge import ChallengeTypes, HttpChallengeResponse
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
@@ -50,6 +51,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 from authentik.providers.oauth2.views.userinfo import UserInfoView
+from authentik.providers.saml.views.flows import AutosubmitChallenge
 from authentik.stages.consent.models import ConsentMode, ConsentStage
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
@@ -74,6 +76,7 @@ class OAuthAuthorizationParams:
     client_id: str
     redirect_uri: str
     response_type: str
+    response_mode: Optional[str]
     scope: list[str]
     state: str
     nonce: Optional[str]
@@ -125,11 +128,22 @@ class OAuthAuthorizationParams:
             LOGGER.warning("Invalid response type", type=response_type)
             raise AuthorizeError(redirect_uri, "unsupported_response_type", "", state)
 
+        # Validate and check the response_mode against the predefined dict
+        # Set to Query or Fragment if not defined in request
+        response_mode = query_dict.get("response_mode", False)
+
+        if response_mode not in ResponseMode.values:
+            response_mode = ResponseMode.QUERY
+
+            if grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
+                response_mode = ResponseMode.FRAGMENT
+
         max_age = query_dict.get("max_age")
         return OAuthAuthorizationParams(
             client_id=query_dict.get("client_id", ""),
             redirect_uri=redirect_uri,
             response_type=response_type,
+            response_mode=response_mode,
             grant_type=grant_type,
             scope=query_dict.get("scope", "").split(),
             state=state,
@@ -248,6 +262,26 @@ class OAuthFulfillmentStage(StageView):
     def redirect(self, uri: str) -> HttpResponse:
         """Redirect using HttpResponseRedirectScheme, compatible with non-http schemes"""
         parsed = urlparse(uri)
+
+        if self.params.response_mode == ResponseMode.FORM_POST:
+            query_params = parse_qs(parsed.query)
+
+            challenge = AutosubmitChallenge(
+                data={
+                    "type": ChallengeTypes.NATIVE.value,
+                    "component": "ak-stage-autosubmit",
+                    "title": "Redirecting back to application...",
+                    "url": self.params.redirect_uri,
+                    "attrs": query_params,
+                }
+            )
+
+            challenge.is_valid()
+
+            return HttpChallengeResponse(
+                challenge=challenge,
+            )
+
         return HttpResponseRedirectScheme(uri, allowed_schemes=[parsed.scheme])
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -304,29 +338,29 @@ class OAuthFulfillmentStage(StageView):
                 code = self.params.create_code(self.request)
                 code.save(force_insert=True)
 
-            query_dict = self.request.POST if self.request.method == "POST" else self.request.GET
-            response_mode = ResponseMode.QUERY
-            # Get response mode from url param, otherwise decide based on grant type
-            if "response_mode" in query_dict:
-                response_mode = query_dict["response_mode"]
-            elif self.params.grant_type == GrantTypes.AUTHORIZATION_CODE:
-                response_mode = ResponseMode.QUERY
-            elif self.params.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
-                response_mode = ResponseMode.FRAGMENT
-
-            if response_mode == ResponseMode.QUERY:
+            if self.params.response_mode == ResponseMode.QUERY:
                 query_params["code"] = code.code
                 query_params["state"] = [str(self.params.state) if self.params.state else ""]
 
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
                 return urlunsplit(uri)
-            if response_mode == ResponseMode.FRAGMENT:
+
+            if self.params.response_mode == ResponseMode.FRAGMENT:
                 query_fragment = self.create_implicit_response(code)
 
                 uri = uri._replace(
                     fragment=uri.fragment + urlencode(query_fragment, doseq=True),
                 )
+
                 return urlunsplit(uri)
+
+            if self.params.response_mode == ResponseMode.FORM_POST:
+                post_params = self.create_implicit_response(code)
+
+                uri = uri._replace(query=urlencode(post_params, doseq=True))
+
+                return urlunsplit(uri)
+
             raise OAuth2Error()
         except OAuth2Error as error:
             LOGGER.warning("Error when trying to create response uri", error=error)
@@ -502,7 +536,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
                     mode=ConsentMode.ALWAYS_REQUIRE,
                 )
                 plan.append_stage(stage)
+
         plan.append_stage(in_memory_stage(OAuthFulfillmentStage))
+
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",
