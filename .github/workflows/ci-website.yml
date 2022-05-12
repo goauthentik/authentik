@@ -25,7 +25,7 @@ jobs:
       - name: prettier
         working-directory: website/
         run: npm run prettier-check
-  ci-web-mark:
+  ci-website-mark:
     needs:
       - lint-prettier
     runs-on: ubuntu-latest
