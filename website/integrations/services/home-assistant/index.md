@@ -11,7 +11,7 @@ Open source home automation that puts local control and privacy first. Powered b
 :::
 
 :::warning
-You might run into CSRF errors, this is caused by Home-assistant and not authentik, see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
+You might run into CSRF errors, this is caused by a technology Home-assistant uses and not authentik, see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
 :::
 
 ## Preparation
@@ -20,10 +20,6 @@ The following placeholders will be used:
 
 -   `hass.company` is the FQDN of the Home-Assistant install.
 -   `authentik.company` is the FQDN of the authentik install.
-
-:::note
-This setup uses https://github.com/BeryJu/hass-auth-header and the authentik proxy for authentication. When this [PR](https://github.com/home-assistant/core/pull/32926) is merged, this will no longer be necessary.
-:::
 
 ## Home-Assistant
 
