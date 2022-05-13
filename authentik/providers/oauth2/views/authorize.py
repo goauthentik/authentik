@@ -253,6 +253,119 @@ class OAuthAuthorizationParams:
         return code
 
 
+
+class AuthorizationFlowInitView(PolicyAccessView):
+    """OAuth2 Flow initializer, checks access to application and starts flow"""
+
+    params: OAuthAuthorizationParams
+
+    def pre_permission_check(self):
+        """Check prompt parameter before checking permission/authentication,
+        see https://openid.net/specs/openid-connect-core-1_0.html#rfc.section.3.1.2.6"""
+        # Quick sanity check at the beginning to prevent event spamming
+        if len(self.request.GET) < 1:
+            raise Http404
+        try:
+            self.params = OAuthAuthorizationParams.from_request(self.request)
+        except AuthorizeError as error:
+            LOGGER.warning(error.description, redirect_uri=error.redirect_uri)
+            raise RequestValidationError(HttpResponseRedirect(error.create_uri()))
+        except OAuth2Error as error:
+            LOGGER.warning(error.description)
+            raise RequestValidationError(
+                bad_request_message(self.request, error.description, title=error.error)
+            )
+        except OAuth2Provider.DoesNotExist:
+            raise Http404
+        if PROMPT_NONE in self.params.prompt and not self.request.user.is_authenticated:
+            # When "prompt" is set to "none" but the user is not logged in, show an error message
+            error = AuthorizeError(
+                self.params.redirect_uri,
+                "login_required",
+                self.params.grant_type,
+                self.params.state,
+            )
+            error.to_event(redirect_uri=error.redirect_uri).from_http(self.request)
+            raise RequestValidationError(HttpResponseRedirect(error.create_uri()))
+
+    def resolve_provider_application(self):
+        client_id = self.request.GET.get("client_id")
+        self.provider = get_object_or_404(OAuth2Provider, client_id=client_id)
+        self.application = self.provider.application
+
+    def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
+        request.context["oauth_scopes"] = self.params.scope
+        request.context["oauth_grant_type"] = self.params.grant_type
+        request.context["oauth_code_challenge"] = self.params.code_challenge
+        request.context["oauth_code_challenge_method"] = self.params.code_challenge_method
+        request.context["oauth_max_age"] = self.params.max_age
+        request.context["oauth_redirect_uri"] = self.params.redirect_uri
+        request.context["oauth_response_type"] = self.params.response_type
+        return request
+
+    # pylint: disable=unused-argument
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Start FlowPLanner, return to flow executor shell"""
+        # After we've checked permissions, and the user has access, check if we need
+        # to re-authenticate the user
+        if self.params.max_age:
+            current_age: timedelta = (
+                timezone.now()
+                - Event.objects.filter(action=EventAction.LOGIN, user=get_user(self.request.user))
+                .latest("created")
+                .created
+            )
+            if current_age.total_seconds() > self.params.max_age:
+                return self.handle_no_permission()
+        # If prompt=login, we need to re-authenticate the user regardless
+        if (
+            PROMPT_LOGIN in self.params.prompt
+            and SESSION_NEEDS_LOGIN not in self.request.session
+            # To prevent the user from having to double login when prompt is set to login
+            # and the user has just signed it. This session variable is set in the UserLoginStage
+            # and is (quite hackily) removed from the session in applications's API's List method
+            and USER_LOGIN_AUTHENTICATED not in self.request.session
+        ):
+            self.request.session[SESSION_NEEDS_LOGIN] = True
+            return self.handle_no_permission()
+        # Regardless, we start the planner and return to it
+        planner = FlowPlanner(self.provider.authorization_flow)
+        # planner.use_cache = False
+        planner.allow_empty_flows = True
+        scope_descriptions = UserInfoView().get_scope_descriptions(self.params.scope)
+        plan: FlowPlan = planner.plan(
+            self.request,
+            {
+                PLAN_CONTEXT_SSO: True,
+                PLAN_CONTEXT_APPLICATION: self.application,
+                # OAuth2 related params
+                PLAN_CONTEXT_PARAMS: self.params,
+                # Consent related params
+                PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
+                % {"application": self.application.name},
+                PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
+            },
+        )
+        # OpenID clients can specify a `prompt` parameter, and if its set to consent we
+        # need to inject a consent stage
+        if PROMPT_CONSENT in self.params.prompt:
+            if not any(isinstance(x.stage, ConsentStageView) for x in plan.bindings):
+                # Plan does not have any consent stage, so we add an in-memory one
+                stage = ConsentStage(
+                    name="OAuth2 Provider In-memory consent stage",
+                    mode=ConsentMode.ALWAYS_REQUIRE,
+                )
+                plan.append_stage(stage)
+
+        plan.append_stage(in_memory_stage(OAuthFulfillmentStage))
+
+        self.request.session[SESSION_KEY_PLAN] = plan
+        return redirect_with_qs(
+            "authentik_core:if-flow",
+            self.request.GET,
+            flow_slug=self.provider.authorization_flow.slug,
+        )
+
 class OAuthFulfillmentStage(StageView):
     """Final stage, restores params from Flow."""
 
@@ -439,116 +552,3 @@ class OAuthFulfillmentStage(StageView):
         query_fragment["state"] = self.params.state if self.params.state else ""
 
         return query_fragment
-
-
-class AuthorizationFlowInitView(PolicyAccessView):
-    """OAuth2 Flow initializer, checks access to application and starts flow"""
-
-    params: OAuthAuthorizationParams
-
-    def pre_permission_check(self):
-        """Check prompt parameter before checking permission/authentication,
-        see https://openid.net/specs/openid-connect-core-1_0.html#rfc.section.3.1.2.6"""
-        # Quick sanity check at the beginning to prevent event spamming
-        if len(self.request.GET) < 1:
-            raise Http404
-        try:
-            self.params = OAuthAuthorizationParams.from_request(self.request)
-        except AuthorizeError as error:
-            error.to_event(redirect_uri=error.redirect_uri).from_http(self.request)
-            raise RequestValidationError(HttpResponseRedirect(error.create_uri()))
-        except OAuth2Error as error:
-            error.to_event().from_http(self.request)
-            raise RequestValidationError(
-                bad_request_message(self.request, error.description, title=error.error)
-            )
-        except OAuth2Provider.DoesNotExist:
-            raise Http404
-        if PROMPT_NONE in self.params.prompt and not self.request.user.is_authenticated:
-            # When "prompt" is set to "none" but the user is not logged in, show an error message
-            error = AuthorizeError(
-                self.params.redirect_uri,
-                "login_required",
-                self.params.grant_type,
-                self.params.state,
-            )
-            error.to_event(redirect_uri=error.redirect_uri).from_http(self.request)
-            raise RequestValidationError(HttpResponseRedirect(error.create_uri()))
-
-    def resolve_provider_application(self):
-        client_id = self.request.GET.get("client_id")
-        self.provider = get_object_or_404(OAuth2Provider, client_id=client_id)
-        self.application = self.provider.application
-
-    def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
-        request.context["oauth_scopes"] = self.params.scope
-        request.context["oauth_grant_type"] = self.params.grant_type
-        request.context["oauth_code_challenge"] = self.params.code_challenge
-        request.context["oauth_code_challenge_method"] = self.params.code_challenge_method
-        request.context["oauth_max_age"] = self.params.max_age
-        request.context["oauth_redirect_uri"] = self.params.redirect_uri
-        request.context["oauth_response_type"] = self.params.response_type
-        return request
-
-    # pylint: disable=unused-argument
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Start FlowPLanner, return to flow executor shell"""
-        # After we've checked permissions, and the user has access, check if we need
-        # to re-authenticate the user
-        if self.params.max_age:
-            current_age: timedelta = (
-                timezone.now()
-                - Event.objects.filter(action=EventAction.LOGIN, user=get_user(self.request.user))
-                .latest("created")
-                .created
-            )
-            if current_age.total_seconds() > self.params.max_age:
-                return self.handle_no_permission()
-        # If prompt=login, we need to re-authenticate the user regardless
-        if (
-            PROMPT_LOGIN in self.params.prompt
-            and SESSION_NEEDS_LOGIN not in self.request.session
-            # To prevent the user from having to double login when prompt is set to login
-            # and the user has just signed it. This session variable is set in the UserLoginStage
-            # and is (quite hackily) removed from the session in applications's API's List method
-            and USER_LOGIN_AUTHENTICATED not in self.request.session
-        ):
-            self.request.session[SESSION_NEEDS_LOGIN] = True
-            return self.handle_no_permission()
-        # Regardless, we start the planner and return to it
-        planner = FlowPlanner(self.provider.authorization_flow)
-        # planner.use_cache = False
-        planner.allow_empty_flows = True
-        scope_descriptions = UserInfoView().get_scope_descriptions(self.params.scope)
-        plan: FlowPlan = planner.plan(
-            self.request,
-            {
-                PLAN_CONTEXT_SSO: True,
-                PLAN_CONTEXT_APPLICATION: self.application,
-                # OAuth2 related params
-                PLAN_CONTEXT_PARAMS: self.params,
-                # Consent related params
-                PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
-                % {"application": self.application.name},
-                PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
-            },
-        )
-        # OpenID clients can specify a `prompt` parameter, and if its set to consent we
-        # need to inject a consent stage
-        if PROMPT_CONSENT in self.params.prompt:
-            if not any(isinstance(x.stage, ConsentStageView) for x in plan.bindings):
-                # Plan does not have any consent stage, so we add an in-memory one
-                stage = ConsentStage(
-                    name="OAuth2 Provider In-memory consent stage",
-                    mode=ConsentMode.ALWAYS_REQUIRE,
-                )
-                plan.append_stage(stage)
-
-        plan.append_stage(in_memory_stage(OAuthFulfillmentStage))
-
-        self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=self.provider.authorization_flow.slug,
-        )

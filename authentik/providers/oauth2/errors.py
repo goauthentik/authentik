@@ -24,7 +24,7 @@ class OAuth2Error(SentryIgnoredException):
         return self.error
 
     def to_event(self, message: Optional[str] = None, **kwargs) -> Event:
-        """Create configuration_error Event and save it."""
+        """Create configuration_error Event."""
         return Event.new(
             EventAction.CONFIGURATION_ERROR,
             message=message or self.description,
