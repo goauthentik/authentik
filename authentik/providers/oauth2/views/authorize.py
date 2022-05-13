@@ -52,6 +52,7 @@ from authentik.providers.oauth2.models import (
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 from authentik.providers.oauth2.views.userinfo import UserInfoView
 from authentik.providers.saml.views.flows import AutosubmitChallenge
+from authentik.sources.saml.views import PLAN_CONTEXT_TITLE
 from authentik.stages.consent.models import ConsentMode, ConsentStage
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
@@ -253,7 +254,6 @@ class OAuthAuthorizationParams:
         return code
 
 
-
 class AuthorizationFlowInitView(PolicyAccessView):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
 
@@ -366,11 +366,13 @@ class AuthorizationFlowInitView(PolicyAccessView):
             flow_slug=self.provider.authorization_flow.slug,
         )
 
+
 class OAuthFulfillmentStage(StageView):
     """Final stage, restores params from Flow."""
 
     params: OAuthAuthorizationParams
     provider: OAuth2Provider
+    application: Application
 
     def redirect(self, uri: str) -> HttpResponse:
         """Redirect using HttpResponseRedirectScheme, compatible with non-http schemes"""
@@ -390,7 +392,12 @@ class OAuthFulfillmentStage(StageView):
                 data={
                     "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-stage-autosubmit",
-                    "title": "Redirecting back to application...",
+                    "title": (
+                        self.executor.plan.context.get(
+                            PLAN_CONTEXT_TITLE,
+                            _("Redirecting to %(app)s..." % {"app": self.application.name}),
+                        )
+                    ),
                     "url": self.params.redirect_uri,
                     "attrs": query_params,
                 }
@@ -415,8 +422,8 @@ class OAuthFulfillmentStage(StageView):
             LOGGER.warning("Got to fulfillment stage with no pending context")
             return HttpResponseBadRequest()
         self.params: OAuthAuthorizationParams = self.executor.plan.context.pop(PLAN_CONTEXT_PARAMS)
-        application: Application = self.executor.plan.context.pop(PLAN_CONTEXT_APPLICATION)
-        self.provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
+        self.application: Application = self.executor.plan.context.pop(PLAN_CONTEXT_APPLICATION)
+        self.provider = get_object_or_404(OAuth2Provider, pk=self.application.provider_id)
         try:
             # At this point we don't need to check permissions anymore
             if {PROMPT_NONE, PROMPT_CONSENT}.issubset(self.params.prompt):
@@ -428,18 +435,18 @@ class OAuthFulfillmentStage(StageView):
                 )
             Event.new(
                 EventAction.AUTHORIZE_APPLICATION,
-                authorized_application=application,
+                authorized_application=self.application,
                 flow=self.executor.plan.flow_pk,
                 scopes=", ".join(self.params.scope),
             ).from_http(self.request)
             return self.redirect(self.create_response_uri())
         except (ClientIdError, RedirectUriError) as error:
-            error.to_event(application=application).from_http(request)
+            error.to_event(application=self.application).from_http(request)
             self.executor.stage_invalid()
             # pylint: disable=no-member
             return bad_request_message(request, error.description, title=error.error)
         except AuthorizeError as error:
-            error.to_event(application=application).from_http(request)
+            error.to_event(application=self.application).from_http(request)
             self.executor.stage_invalid()
             return self.redirect(error.create_uri())
 
