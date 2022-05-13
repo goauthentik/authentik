@@ -4,6 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.http import urlencode
+from django.utils.translation import gettext as _
 from rest_framework.fields import CharField, DictField
 from structlog.stdlib import get_logger
 
@@ -18,6 +19,7 @@ from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.request_parser import AuthNRequest
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
 from authentik.sources.saml.exceptions import SAMLException
+from authentik.sources.saml.views import PLAN_CONTEXT_TITLE
 
 LOGGER = get_logger()
 URL_VALIDATOR = URLValidator(schemes=("http", "https"))
@@ -35,6 +37,7 @@ class AutosubmitChallenge(Challenge):
 
     url = CharField()
     attrs = DictField(child=CharField())
+    title = CharField(required=False)
     component = CharField(default="ak-stage-autosubmit")
 
 
@@ -88,7 +91,12 @@ class SAMLFlowFinalView(ChallengeStageView):
                 **{
                     "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-stage-autosubmit",
-                    "title": "Redirecting to %(app)s..." % {"app": application.name},
+                    "title": (
+                        self.executor.plan.context.get(
+                            PLAN_CONTEXT_TITLE,
+                            _("Redirecting to %(app)s..." % {"app": application.name}),
+                        )
+                    ),
                     "url": provider.acs_url,
                     "attrs": form_attrs,
                 },

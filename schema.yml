@@ -19342,10 +19342,10 @@ components:
               type: string
             lat:
               type: number
-              format: float
+              format: double
             long:
               type: number
-              format: float
+              format: double
             city:
               type: string
           required:
@@ -20067,6 +20067,8 @@ components:
           type: object
           additionalProperties:
             type: string
+        title:
+          type: string
       required:
       - attrs
       - type
@@ -29234,7 +29236,7 @@ components:
           type: string
         token_validity:
           type: number
-          format: float
+          format: double
           nullable: true
           readOnly: true
         scopes_to_request:
