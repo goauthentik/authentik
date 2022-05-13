@@ -264,7 +264,14 @@ class OAuthFulfillmentStage(StageView):
         parsed = urlparse(uri)
 
         if self.params.response_mode == ResponseMode.FORM_POST:
-            query_params = parse_qs(parsed.query)
+            # parse_qs returns a dictionary with values wrapped in lists, however
+            # we need a flat dictionary for the autosubmit challenge
+
+            # this picks the first item in the list if the value is a list,
+            # otherwise just the value as-is
+            query_params = dict(
+                (k, v[0] if isinstance(v, list) else v) for k, v in parse_qs(parsed.query).items()
+            )
 
             challenge = AutosubmitChallenge(
                 data={
