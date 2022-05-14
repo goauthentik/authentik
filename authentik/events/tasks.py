@@ -1,4 +1,5 @@
 """Event notification tasks"""
+from django.db.models.query_utils import Q
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
@@ -10,7 +11,12 @@ from authentik.events.models import (
     NotificationTransport,
     NotificationTransportError,
 )
-from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.monitored_tasks import (
+    MonitoredTask,
+    TaskResult,
+    TaskResultStatus,
+    prefill_task,
+)
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.root.celery import CELERY_APP
@@ -114,3 +120,15 @@ def gdpr_cleanup(user_pk: int):
     events = Event.objects.filter(user__pk=user_pk)
     LOGGER.debug("GDPR cleanup, removing events from user", events=events.count())
     events.delete()
+
+
+@CELERY_APP.task(bind=True, base=MonitoredTask)
+@prefill_task
+def notification_cleanup(self: MonitoredTask):
+    """Cleanup seen notifications and notifications whose event expired."""
+    notifications = Notification.objects.filter(Q(event=None) | Q(seen=True))
+    amount = notifications.count()
+    for notification in notifications:
+        notification.delete()
+    LOGGER.debug("Expired notifications", amount=amount)
+    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, [f"Expired {amount} Notifications"]))
