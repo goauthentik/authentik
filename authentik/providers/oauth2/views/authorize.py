@@ -15,7 +15,12 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
-from authentik.flows.challenge import ChallengeTypes, HttpChallengeResponse
+from authentik.flows.challenge import (
+    PLAN_CONTEXT_TITLE,
+    AutosubmitChallenge,
+    ChallengeTypes,
+    HttpChallengeResponse,
+)
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
@@ -51,8 +56,6 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 from authentik.providers.oauth2.views.userinfo import UserInfoView
-from authentik.providers.saml.views.flows import AutosubmitChallenge
-from authentik.sources.saml.views import PLAN_CONTEXT_TITLE
 from authentik.stages.consent.models import ConsentMode, ConsentStage
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,

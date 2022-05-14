@@ -12,6 +12,10 @@ from authentik.flows.transfer.common import DataclassEncoder
 if TYPE_CHECKING:
     from authentik.flows.stage import StageView
 
+PLAN_CONTEXT_TITLE = "title"
+PLAN_CONTEXT_URL = "url"
+PLAN_CONTEXT_ATTRS = "attrs"
+
 
 class ChallengeTypes(Enum):
     """Currently defined challenge types"""
@@ -95,6 +99,21 @@ class ChallengeResponse(PassiveSerializer):
     def __init__(self, instance=None, data=None, **kwargs):
         self.stage = kwargs.pop("stage", None)
         super().__init__(instance=instance, data=data, **kwargs)
+
+
+class AutosubmitChallenge(Challenge):
+    """Autosubmit challenge used to send and navigate a POST request"""
+
+    url = CharField()
+    attrs = DictField(child=CharField())
+    title = CharField(required=False)
+    component = CharField(default="ak-stage-autosubmit")
+
+
+class AutoSubmitChallengeResponse(ChallengeResponse):
+    """Pseudo class for autosubmit response"""
+
+    component = CharField(default="ak-stage-autosubmit")
 
 
 class HttpChallengeResponse(JsonResponse):

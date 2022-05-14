@@ -5,12 +5,18 @@ from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.http import urlencode
 from django.utils.translation import gettext as _
-from rest_framework.fields import CharField, DictField
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import (
+    PLAN_CONTEXT_TITLE,
+    AutosubmitChallenge,
+    AutoSubmitChallengeResponse,
+    Challenge,
+    ChallengeResponse,
+    ChallengeTypes,
+)
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.views import bad_request_message
@@ -19,7 +25,6 @@ from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.request_parser import AuthNRequest
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
 from authentik.sources.saml.exceptions import SAMLException
-from authentik.sources.saml.views import PLAN_CONTEXT_TITLE
 
 LOGGER = get_logger()
 URL_VALIDATOR = URLValidator(schemes=("http", "https"))
@@ -30,22 +35,6 @@ REQUEST_KEY_SAML_RESPONSE = "SAMLResponse"
 REQUEST_KEY_RELAY_STATE = "RelayState"
 
 SESSION_KEY_AUTH_N_REQUEST = "authn_request"
-
-
-class AutosubmitChallenge(Challenge):
-    """Autosubmit challenge used to send and navigate a POST request"""
-
-    url = CharField()
-    attrs = DictField(child=CharField())
-    title = CharField(required=False)
-    component = CharField(default="ak-stage-autosubmit")
-
-
-class AutoSubmitChallengeResponse(ChallengeResponse):
-    """Pseudo class for autosubmit response"""
-
-    component = CharField(default="ak-stage-autosubmit")
-
 
 # This View doesn't have a URL on purpose, as its called by the FlowExecutor
 class SAMLFlowFinalView(ChallengeStageView):

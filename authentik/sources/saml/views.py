@@ -13,7 +13,15 @@ from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 from xmlsec import InternalError, VerificationError
 
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import (
+    PLAN_CONTEXT_ATTRS,
+    PLAN_CONTEXT_TITLE,
+    PLAN_CONTEXT_URL,
+    AutosubmitChallenge,
+    Challenge,
+    ChallengeResponse,
+    ChallengeTypes,
+)
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_REDIRECT,
@@ -26,7 +34,6 @@ from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSI
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
-from authentik.providers.saml.views.flows import AutosubmitChallenge
 from authentik.sources.saml.exceptions import MissingSAMLResponse, UnsupportedNameIDFormat
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
@@ -38,9 +45,6 @@ from authentik.stages.consent.stage import (
     ConsentStageView,
 )
 
-PLAN_CONTEXT_TITLE = "title"
-PLAN_CONTEXT_URL = "url"
-PLAN_CONTEXT_ATTRS = "attrs"
 LOGGER = get_logger()
 
 
