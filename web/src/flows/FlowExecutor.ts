@@ -31,25 +31,13 @@ import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "../constants";
 import "../elements/LoadingOverlay";
 import { first } from "../utils";
 import "./FlowInspector";
-import "./sources/apple/AppleLoginInit";
-import "./sources/plex/PlexLoginInit";
 import "./stages/RedirectStage";
 import "./stages/access_denied/AccessDeniedStage";
-import "./stages/authenticator_duo/AuthenticatorDuoStage";
-import "./stages/authenticator_sms/AuthenticatorSMSStage";
-import "./stages/authenticator_static/AuthenticatorStaticStage";
-import "./stages/authenticator_totp/AuthenticatorTOTPStage";
-import "./stages/authenticator_validate/AuthenticatorValidateStage";
-import "./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import "./stages/autosubmit/AutosubmitStage";
 import { StageHost } from "./stages/base";
 import "./stages/captcha/CaptchaStage";
-import "./stages/consent/ConsentStage";
-import "./stages/dummy/DummyStage";
-import "./stages/email/EmailStage";
 import "./stages/identification/IdentificationStage";
 import "./stages/password/PasswordStage";
-import "./stages/prompt/PromptStage";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -229,7 +217,117 @@ export class FlowExecutor extends LitElement implements StageHost {
         } as ChallengeTypes;
     }
 
-    renderChallenge(): TemplateResult {
+    async renderChallengeNativeElement(): Promise<TemplateResult> {
+        switch (this.challenge?.component) {
+            case "ak-stage-access-denied":
+                // Statically imported for performance reasons
+                return html`<ak-stage-access-denied
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-access-denied>`;
+            case "ak-stage-identification":
+                // Statically imported for performance reasons
+                return html`<ak-stage-identification
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-identification>`;
+            case "ak-stage-password":
+                // Statically imported for performance reasons
+                return html`<ak-stage-password
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-password>`;
+            case "ak-stage-captcha":
+                // Statically imported to prevent browsers blocking urls
+                return html`<ak-stage-captcha
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-captcha>`;
+            case "ak-stage-consent":
+                await import("./stages/consent/ConsentStage");
+                return html`<ak-stage-consent
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-consent>`;
+            case "ak-stage-dummy":
+                await import("./stages/dummy/DummyStage");
+                return html`<ak-stage-dummy
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-dummy>`;
+            case "ak-stage-email":
+                await import("./stages/email/EmailStage");
+                return html`<ak-stage-email
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-email>`;
+            case "ak-stage-autosubmit":
+                // Statically imported for performance reasons
+                return html`<ak-stage-autosubmit
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-autosubmit>`;
+            case "ak-stage-prompt":
+                await import("./stages/prompt/PromptStage");
+                return html`<ak-stage-prompt
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-prompt>`;
+            case "ak-stage-authenticator-totp":
+                await import("./stages/authenticator_totp/AuthenticatorTOTPStage");
+                return html`<ak-stage-authenticator-totp
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-authenticator-totp>`;
+            case "ak-stage-authenticator-duo":
+                await import("./stages/authenticator_duo/AuthenticatorDuoStage");
+                return html`<ak-stage-authenticator-duo
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-authenticator-duo>`;
+            case "ak-stage-authenticator-static":
+                await import("./stages/authenticator_static/AuthenticatorStaticStage");
+                return html`<ak-stage-authenticator-static
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-authenticator-static>`;
+            case "ak-stage-authenticator-webauthn":
+                await import("./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage");
+                return html`<ak-stage-authenticator-webauthn
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-authenticator-webauthn>`;
+            case "ak-stage-authenticator-sms":
+                await import("./stages/authenticator_sms/AuthenticatorSMSStage");
+                return html`<ak-stage-authenticator-sms
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-authenticator-sms>`;
+            case "ak-stage-authenticator-validate":
+                await import("./stages/authenticator_validate/AuthenticatorValidateStage");
+                return html`<ak-stage-authenticator-validate
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-authenticator-validate>`;
+            case "ak-flow-sources-plex":
+                await import("./sources/plex/PlexLoginInit");
+                return html`<ak-flow-sources-plex
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-flow-sources-plex>`;
+            case "ak-flow-sources-oauth-apple":
+                await import("./sources/apple/AppleLoginInit");
+                return html`<ak-flow-sources-oauth-apple
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-flow-sources-oauth-apple>`;
+            default:
+                break;
+        }
+        return html`Invalid native challenge element`;
+    }
+
+    async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
             return html``;
         }
@@ -247,96 +345,7 @@ export class FlowExecutor extends LitElement implements StageHost {
             case ChallengeChoices.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
             case ChallengeChoices.Native:
-                switch (this.challenge.component) {
-                    case "ak-stage-access-denied":
-                        return html`<ak-stage-access-denied
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-access-denied>`;
-                    case "ak-stage-identification":
-                        return html`<ak-stage-identification
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-identification>`;
-                    case "ak-stage-password":
-                        return html`<ak-stage-password
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-password>`;
-                    case "ak-stage-captcha":
-                        return html`<ak-stage-captcha
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-captcha>`;
-                    case "ak-stage-consent":
-                        return html`<ak-stage-consent
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-consent>`;
-                    case "ak-stage-dummy":
-                        return html`<ak-stage-dummy
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-dummy>`;
-                    case "ak-stage-email":
-                        return html`<ak-stage-email
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-email>`;
-                    case "ak-stage-autosubmit":
-                        return html`<ak-stage-autosubmit
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-autosubmit>`;
-                    case "ak-stage-prompt":
-                        return html`<ak-stage-prompt
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-prompt>`;
-                    case "ak-stage-authenticator-totp":
-                        return html`<ak-stage-authenticator-totp
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-authenticator-totp>`;
-                    case "ak-stage-authenticator-duo":
-                        return html`<ak-stage-authenticator-duo
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-authenticator-duo>`;
-                    case "ak-stage-authenticator-static":
-                        return html`<ak-stage-authenticator-static
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-authenticator-static>`;
-                    case "ak-stage-authenticator-webauthn":
-                        return html`<ak-stage-authenticator-webauthn
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-authenticator-webauthn>`;
-                    case "ak-stage-authenticator-validate":
-                        return html`<ak-stage-authenticator-validate
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-authenticator-validate>`;
-                    case "ak-stage-authenticator-sms":
-                        return html`<ak-stage-authenticator-sms
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-stage-authenticator-sms>`;
-                    case "ak-flow-sources-plex":
-                        return html`<ak-flow-sources-plex
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-flow-sources-plex>`;
-                    case "ak-flow-sources-oauth-apple":
-                        return html`<ak-flow-sources-oauth-apple
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-flow-sources-oauth-apple>`;
-                    default:
-                        break;
-                }
-                break;
+                return await this.renderChallengeNativeElement();
             default:
                 console.debug(`authentik/flows: unexpected data type ${this.challenge.type}`);
                 break;
@@ -350,7 +359,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         }
         return html`
             ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : html``}
-            ${this.renderChallenge()}
+            ${until(this.renderChallenge())}
         `;
     }
 
