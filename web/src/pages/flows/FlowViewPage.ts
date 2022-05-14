@@ -163,6 +163,10 @@ export class FlowViewPage extends LitElement {
                                                                     `inspector&next=/#${window.location.hash}`,
                                                                 )}`;
                                                                 window.open(finalURL, "_blank");
+                                                            }).catch((exc: Response) => {
+                                                                // This request can return a HTTP 400 when a flow
+                                                                // is not applicable.
+                                                                window.open(exc.url, "_blank");
                                                             });
                                                     }}
                                                 >
