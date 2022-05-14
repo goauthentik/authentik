@@ -14,6 +14,7 @@ import { EventsApi, Notification } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { me } from "../../api/Users";
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "../../constants";
 import { ActionToLabel } from "../../pages/events/utils";
 import { MessageLevel } from "../messages/Message";
@@ -53,15 +54,18 @@ export class NotificationDrawer extends LitElement {
     }
 
     firstUpdated(): void {
-        new EventsApi(DEFAULT_CONFIG)
-            .eventsNotificationsList({
-                seen: false,
-                ordering: "-created",
-            })
-            .then((r) => {
-                this.notifications = r;
-                this.unread = r.results.length;
-            });
+        me().then((user) => {
+            new EventsApi(DEFAULT_CONFIG)
+                .eventsNotificationsList({
+                    seen: false,
+                    ordering: "-created",
+                    user: user.user.pk,
+                })
+                .then((r) => {
+                    this.notifications = r;
+                    this.unread = r.results.length;
+                });
+        });
     }
 
     renderItem(item: Notification): TemplateResult {

@@ -13,6 +13,7 @@ import { EventsApi } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG, tenant } from "../api/Config";
 import { currentInterface } from "../api/Sentry";
+import { me } from "../api/Users";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
@@ -102,15 +103,18 @@ export class PageHeader extends LitElement {
     }
 
     firstUpdated(): void {
-        new EventsApi(DEFAULT_CONFIG)
-            .eventsNotificationsList({
-                seen: false,
-                ordering: "-created",
-                pageSize: 1,
-            })
-            .then((r) => {
-                this.hasNotifications = r.pagination.count > 0;
-            });
+        me().then((user) => {
+            new EventsApi(DEFAULT_CONFIG)
+                .eventsNotificationsList({
+                    seen: false,
+                    ordering: "-created",
+                    pageSize: 1,
+                    user: user.user.pk,
+                })
+                .then((r) => {
+                    this.hasNotifications = r.pagination.count > 0;
+                });
+        });
     }
 
     renderIcon(): TemplateResult {

@@ -4070,6 +4070,10 @@ paths:
           - alert
           - notice
           - warning
+      - in: query
+        name: user
+        schema:
+          type: integer
       tags:
       - events
       security:

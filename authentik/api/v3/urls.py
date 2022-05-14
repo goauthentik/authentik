@@ -22,11 +22,11 @@ from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSe
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.users import UserViewSet
 from authentik.crypto.api import CertificateKeyPairViewSet
-from authentik.events.api.event import EventViewSet
-from authentik.events.api.notification import NotificationViewSet
-from authentik.events.api.notification_mapping import NotificationWebhookMappingViewSet
-from authentik.events.api.notification_rule import NotificationRuleViewSet
-from authentik.events.api.notification_transport import NotificationTransportViewSet
+from authentik.events.api.events import EventViewSet
+from authentik.events.api.notification_mappings import NotificationWebhookMappingViewSet
+from authentik.events.api.notification_rules import NotificationRuleViewSet
+from authentik.events.api.notification_transports import NotificationTransportViewSet
+from authentik.events.api.notifications import NotificationViewSet
 from authentik.flows.api.bindings import FlowStageBindingViewSet
 from authentik.flows.api.flows import FlowViewSet
 from authentik.flows.api.stages import StageViewSet
