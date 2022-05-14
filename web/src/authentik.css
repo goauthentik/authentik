@@ -95,6 +95,11 @@ html > form > input {
     vertical-align: middle;
 }
 
+.pf-c-description-list__description .pf-c-button {
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+
 @media (prefers-color-scheme: dark) {
     .ak-static-page h1 {
         color: var(--ak-dark-foreground);

@@ -1,95 +1,121 @@
-import { de, en, es, fr, pl, tr, zh } from "make-plural/plurals";
-
 import { Messages, i18n } from "@lingui/core";
 import { detect, fromNavigator, fromUrl } from "@lingui/detect-locale";
 import { t } from "@lingui/macro";
 
 import { LitElement } from "lit";
 
-import { messages as localeDE } from "../locales/de";
-import { messages as localeEN } from "../locales/en";
-import { messages as localeES } from "../locales/es";
-import { messages as localeFR_FR } from "../locales/fr_FR";
-import { messages as localePL } from "../locales/pl";
-import { messages as localeDEBUG } from "../locales/pseudo-LOCALE";
-import { messages as localeTR } from "../locales/tr";
-import { messages as localeZH_Hans } from "../locales/zh-Hans";
-import { messages as localeZH_Hant } from "../locales/zh-Hant";
-import { messages as localeZH_TW } from "../locales/zh_TW";
+interface Locale {
+    locale: Messages;
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    plurals: Function;
+}
 
 export const LOCALES: {
     code: string;
     label: string;
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    plurals: Function;
-    locale: Messages;
+    locale: () => Promise<Locale>;
 }[] = [
     {
         code: "en",
-        plurals: en,
         label: t`English`,
-        locale: localeEN,
+        locale: async () => {
+            return {
+                locale: (await import("../locales/en")).messages,
+                plurals: (await import("make-plural/plurals")).en,
+            };
+        },
     },
     {
         code: "debug",
-        plurals: en,
         label: t`Debug`,
-        locale: localeDEBUG,
+        locale: async () => {
+            return {
+                locale: (await import("../locales/pseudo-LOCALE")).messages,
+                plurals: (await import("make-plural/plurals")).en,
+            };
+        },
     },
     {
         code: "fr",
-        plurals: fr,
         label: t`French`,
-        locale: localeFR_FR,
+        locale: async () => {
+            return {
+                locale: (await import("../locales/fr_FR")).messages,
+                plurals: (await import("make-plural/plurals")).fr,
+            };
+        },
     },
     {
         code: "tr",
-        plurals: tr,
         label: t`Turkish`,
-        locale: localeTR,
+        locale: async () => {
+            return {
+                locale: (await import("../locales/tr")).messages,
+                plurals: (await import("make-plural/plurals")).tr,
+            };
+        },
     },
     {
         code: "es",
-        plurals: es,
         label: t`Spanish`,
-        locale: localeES,
+        locale: async () => {
+            return {
+                locale: (await import("../locales/es")).messages,
+                plurals: (await import("make-plural/plurals")).es,
+            };
+        },
     },
     {
         code: "pl",
-        plurals: pl,
         label: t`Polish`,
-        locale: localePL,
+        locale: async () => {
+            return {
+                locale: (await import("../locales/pl")).messages,
+                plurals: (await import("make-plural/plurals")).pl,
+            };
+        },
     },
     {
         code: "zh_TW",
-        plurals: zh,
         label: t`Taiwanese Mandarin`,
-        locale: localeZH_TW,
+        locale: async () => {
+            return {
+                locale: (await import("../locales/zh_TW")).messages,
+                plurals: (await import("make-plural/plurals")).zh,
+            };
+        },
     },
     {
         code: "zh-CN",
-        plurals: zh,
         label: t`Chinese (simplified)`,
-        locale: localeZH_Hans,
+        locale: async () => {
+            return {
+                locale: (await import("../locales/zh-Hans")).messages,
+                plurals: (await import("make-plural/plurals")).zh,
+            };
+        },
     },
     {
         code: "zh-HK",
-        plurals: zh,
         label: t`Chinese (traditional)`,
-        locale: localeZH_Hant,
+        locale: async () => {
+            return {
+                locale: (await import("../locales/zh-Hant")).messages,
+                plurals: (await import("make-plural/plurals")).zh,
+            };
+        },
     },
     {
         code: "de",
-        plurals: de,
         label: t`German`,
-        locale: localeDE,
+        locale: async () => {
+            return {
+                locale: (await import("../locales/de")).messages,
+                plurals: (await import("make-plural/plurals")).de,
+            };
+        },
     },
 ];
-
-LOCALES.forEach((locale) => {
-    i18n.loadLocaleData(locale.code, { plurals: locale.plurals });
-    i18n.load(locale.code, locale.locale);
-});
 
 const DEFAULT_FALLBACK = () => "en";
 
@@ -102,25 +128,33 @@ export function autoDetectLanguage() {
     }
     if (detected in i18n._messages) {
         console.debug(`authentik/locale: Activating detected locale '${detected}'`);
-        i18n.activate(detected);
+        activateLocale(detected);
     } else {
         console.debug(`authentik/locale: No locale for '${detected}', falling back to en`);
-        i18n.activate(DEFAULT_FALLBACK());
+        activateLocale(DEFAULT_FALLBACK());
     }
 }
 export function activateLocale(code: string) {
     const urlLocale = fromUrl("locale");
     if (urlLocale !== null && urlLocale !== "") {
-        i18n.activate(urlLocale);
-    } else {
-        i18n.activate(code);
+        code = urlLocale;
     }
-    document.querySelectorAll("[data-refresh-on-locale=true]").forEach((el) => {
-        try {
-            (el as LitElement).requestUpdate();
-        } catch {
-            console.debug(`authentik/locale: failed to update element ${el}`);
-        }
+    const locale = LOCALES.find((locale) => locale.code == code);
+    if (!locale) {
+        console.warn(`authentik/locale: failed to find locale for code ${code}`);
+        return;
+    }
+    locale.locale().then((localeData) => {
+        i18n.loadLocaleData(locale.code, { plurals: localeData.plurals });
+        i18n.load(locale.code, localeData.locale);
+        i18n.activate(locale.code);
+        document.querySelectorAll("[data-refresh-on-locale=true]").forEach((el) => {
+            try {
+                (el as LitElement).requestUpdate();
+            } catch {
+                console.debug(`authentik/locale: failed to update element ${el}`);
+            }
+        });
     });
 }
 autoDetectLanguage();
