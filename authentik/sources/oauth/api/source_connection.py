@@ -4,12 +4,12 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
-from authentik.core.api.sources import SourceSerializer
+from authentik.core.api.sources import UserSourceConnectionSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.oauth.models import UserOAuthSourceConnection
 
 
-class UserOAuthSourceConnectionSerializer(SourceSerializer):
+class UserOAuthSourceConnectionSerializer(UserSourceConnectionSerializer):
     """OAuth Source Serializer"""
 
     class Meta:

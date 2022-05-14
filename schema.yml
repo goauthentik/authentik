@@ -27782,9 +27782,6 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
-        source:
-          type: string
-          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -28364,9 +28361,6 @@ components:
       properties:
         user:
           type: integer
-        source:
-          type: string
-          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -28566,8 +28560,9 @@ components:
           type: integer
           readOnly: true
         source:
-          type: string
-          format: uuid
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
         identifier:
           type: string
         plex_token:
@@ -28582,9 +28577,6 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
-        source:
-          type: string
-          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -28594,7 +28586,6 @@ components:
       required:
       - identifier
       - plex_token
-      - source
     PlexSourceRequest:
       type: object
       description: Plex Source Serializer
@@ -31201,8 +31192,9 @@ components:
         user:
           type: integer
         source:
-          type: string
-          format: uuid
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
         identifier:
           type: string
           maxLength: 255
@@ -31217,9 +31209,6 @@ components:
       properties:
         user:
           type: integer
-        source:
-          type: string
-          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -31230,7 +31219,6 @@ components:
           nullable: true
       required:
       - identifier
-      - source
       - user
     UserPasswordSetRequest:
       type: object
