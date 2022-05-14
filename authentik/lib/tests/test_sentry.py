@@ -13,4 +13,4 @@ class TestSentry(TestCase):
 
     def test_error_sent(self):
         """Test error sent"""
-        self.assertEqual(None, before_send({}, {"exc_info": (0, ValueError(), 0)}))
+        self.assertEqual({}, before_send({}, {"exc_info": (0, ValueError(), 0)}))

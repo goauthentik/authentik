@@ -292,6 +292,7 @@ class TestAuthorize(OAuthTestCase):
                 "component": "ak-stage-autosubmit",
                 "type": ChallengeTypes.NATIVE.value,
                 "url": "http://localhost",
+                "title": "Redirecting to app...",
                 "attrs": {
                     "access_token": token.access_token,
                     "id_token": provider.encode(token.id_token.to_dict()),

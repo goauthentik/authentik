@@ -72,7 +72,7 @@ def sentry_init(**sentry_init_kwargs):
         ],
         before_send=before_send,
         release=f"authentik@{__version__}",
-        **kwargs
+        **kwargs,
     )
     set_tag("authentik.build_hash", get_build_hash("tagged"))
     set_tag("authentik.env", get_env())
@@ -81,6 +81,7 @@ def sentry_init(**sentry_init_kwargs):
         "Error reporting is enabled",
         env=kwargs["environment"],
     )
+
 
 def before_send(event: dict, hint: dict) -> Optional[dict]:
     """Check if error is database error, and ignore if so"""
