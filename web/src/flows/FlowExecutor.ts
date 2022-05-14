@@ -30,7 +30,6 @@ import { WebsocketClient } from "../common/ws";
 import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "../constants";
 import "../elements/LoadingOverlay";
 import { first } from "../utils";
-import "./FlowInspector";
 import "./stages/RedirectStage";
 import "./stages/access_denied/AccessDeniedStage";
 import "./stages/autosubmit/AutosubmitStage";
@@ -363,6 +362,16 @@ export class FlowExecutor extends LitElement implements StageHost {
         `;
     }
 
+    async renderInspector(): Promise<TemplateResult> {
+        if (!this.inspectorOpen) {
+            return html``;
+        }
+        await import("./FlowInspector");
+        return html`<ak-flow-inspector
+            class="pf-c-drawer__panel pf-m-width-33"
+        ></ak-flow-inspector>`;
+    }
+
     render(): TemplateResult {
         return html`<div class="pf-c-background-image">
                 <svg
@@ -448,13 +457,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                                 </div>
                             </div>
                         </div>
-
-                        <ak-flow-inspector
-                            class="pf-c-drawer__panel pf-m-width-33 ${this.inspectorOpen
-                                ? ""
-                                : "display-none"}"
-                            ?hidden=${!this.inspectorOpen}
-                        ></ak-flow-inspector>
+                        ${until(this.renderInspector())}
                     </div>
                 </div>
             </div>`;
