@@ -20511,8 +20511,11 @@ components:
           type: string
         cancel_url:
           type: string
+        layout:
+          $ref: '#/components/schemas/LayoutEnum'
       required:
       - cancel_url
+      - layout
     Coordinate:
       type: object
       description: Coordinates for diagrams
@@ -21473,6 +21476,8 @@ components:
         export_url:
           type: string
           readOnly: true
+        layout:
+          $ref: '#/components/schemas/LayoutEnum'
       required:
       - background
       - cache_count
@@ -21608,6 +21613,8 @@ components:
           type: boolean
           description: Enable compatibility mode, increases compatibility with password
             managers on mobile devices.
+        layout:
+          $ref: '#/components/schemas/LayoutEnum'
       required:
       - designation
       - name
@@ -22815,6 +22822,14 @@ components:
       - name
       - server_uri
       - slug
+    LayoutEnum:
+      enum:
+      - stacked
+      - content_left
+      - content_right
+      - sidebar_left
+      - sidebar_right
+      type: string
     Link:
       type: object
       description: Returns a single link
@@ -27108,6 +27123,8 @@ components:
           type: boolean
           description: Enable compatibility mode, increases compatibility with password
             managers on mobile devices.
+        layout:
+          $ref: '#/components/schemas/LayoutEnum'
     PatchedFlowStageBindingRequest:
       type: object
       description: FlowStageBinding Serializer

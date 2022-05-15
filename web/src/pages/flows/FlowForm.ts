@@ -10,6 +10,7 @@ import {
     Flow,
     FlowDesignationEnum,
     FlowsApi,
+    LayoutEnum,
     PolicyEngineMode,
 } from "@goauthentik/api";
 
@@ -17,7 +18,7 @@ import { DEFAULT_CONFIG, config } from "../../api/Config";
 import "../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../elements/forms/ModelForm";
 import { first } from "../../utils";
-import { DesignationToLabel } from "./utils";
+import { DesignationToLabel, LayoutToLabel } from "./utils";
 
 @customElement("ak-flow-form")
 export class FlowForm extends ModelForm<Flow, string> {
@@ -118,6 +119,41 @@ export class FlowForm extends ModelForm<Flow, string> {
         `;
     }
 
+    renderLayout(): TemplateResult {
+        return html`
+            <option
+                value=${LayoutEnum.Stacked}
+                ?selected=${this.instance?.layout === LayoutEnum.Stacked}
+            >
+                ${LayoutToLabel(LayoutEnum.Stacked)}
+            </option>
+            <option
+                value=${LayoutEnum.ContentLeft}
+                ?selected=${this.instance?.layout === LayoutEnum.ContentLeft}
+            >
+                ${LayoutToLabel(LayoutEnum.ContentLeft)}
+            </option>
+            <option
+                value=${LayoutEnum.ContentRight}
+                ?selected=${this.instance?.layout === LayoutEnum.ContentRight}
+            >
+                ${LayoutToLabel(LayoutEnum.ContentRight)}
+            </option>
+            <option
+                value=${LayoutEnum.SidebarLeft}
+                ?selected=${this.instance?.layout === LayoutEnum.SidebarLeft}
+            >
+                ${LayoutToLabel(LayoutEnum.SidebarLeft)}
+            </option>
+            <option
+                value=${LayoutEnum.SidebarRight}
+                ?selected=${this.instance?.layout === LayoutEnum.SidebarRight}
+            >
+                ${LayoutToLabel(LayoutEnum.SidebarRight)}
+            </option>
+        `;
+    }
+
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
@@ -180,6 +216,11 @@ export class FlowForm extends ModelForm<Flow, string> {
                 <p class="pf-c-form__helper-text">
                     ${t`Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.`}
                 </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Layout`} ?required=${true} name="layout">
+                <select class="pf-c-form-control">
+                    ${this.renderLayout()}
+                </select>
             </ak-form-element-horizontal>
             ${until(
                 config().then((c) => {

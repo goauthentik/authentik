@@ -1134,6 +1134,14 @@ msgstr "Klucz klienta"
 msgid "Consumer secret"
 msgstr "Sekret klienta"
 
+#: src/pages/flows/utils.ts
+msgid "Content left"
+msgstr ""
+
+#: src/pages/flows/utils.ts
+msgid "Content right"
+msgstr ""
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
@@ -2781,6 +2789,10 @@ msgstr "Uruchom"
 #: src/pages/applications/ApplicationForm.ts
 msgid "Launch URL"
 msgstr "URL uruchamiania"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Layout"
+msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Let the user identify themselves with their username or Email address."
@@ -4613,6 +4625,14 @@ msgstr "Pokaż etykiety źródeł"
 msgid "Shown as the Title in Flow pages."
 msgstr "Wyświetlany jako tytuł na stronach przepływu."
 
+#: src/pages/flows/utils.ts
+msgid "Sidebar left"
+msgstr ""
+
+#: src/pages/flows/utils.ts
+msgid "Sidebar right"
+msgstr ""
+
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Sign up."
 msgstr "Zapisz się."
@@ -4694,6 +4714,10 @@ msgstr "Hiszpański"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Specify multiple server URIs by separating them with a comma."
 msgstr "Określ wiele identyfikatorów URI serwera, oddzielając je przecinkami."
+
+#: src/pages/flows/utils.ts
+msgid "Stacked"
+msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
