@@ -2753,13 +2753,14 @@ msgstr ""
 msgid "Kubeconfig"
 msgstr ""
 
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
 msgstr ""
 
 #: src/pages/outposts/OutpostForm.ts
-msgid "LDAP (Technical preview)"
-msgstr ""
+#~ msgid "LDAP (Technical preview)"
+#~ msgstr ""
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "LDAP Attribute mapping"

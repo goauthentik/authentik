@@ -2744,13 +2744,14 @@ msgstr "Paire de clés utilisée pour signer le requêtes sortantes. Laisser vid
 msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
 msgstr ""
 
 #: src/pages/outposts/OutpostForm.ts
-msgid "LDAP (Technical preview)"
-msgstr "LDAP (aperçu technique)"
+#~ msgid "LDAP (Technical preview)"
+#~ msgstr "LDAP (aperçu technique)"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "LDAP Attribute mapping"

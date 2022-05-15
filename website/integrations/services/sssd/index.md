@@ -2,11 +2,6 @@
 title: sssd
 ---
 
-:::info
-This feature is still in technical preview, so please report any
-Bugs you run into on [GitHub](https://github.com/goauthentik/authentik/issues)
-:::
-
 ## What is sssd
 
 From https://sssd.io/

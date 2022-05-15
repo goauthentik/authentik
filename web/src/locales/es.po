@@ -2713,13 +2713,14 @@ msgstr "Keypair que se usa para firmar solicitudes salientes. Déjelo vacío par
 msgid "Kubeconfig"
 msgstr "Configuración de Kube"
 
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
 msgstr "LDAP"
 
 #: src/pages/outposts/OutpostForm.ts
-msgid "LDAP (Technical preview)"
-msgstr "LDAP (vista previa técnica)"
+#~ msgid "LDAP (Technical preview)"
+#~ msgstr "LDAP (vista previa técnica)"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "LDAP Attribute mapping"

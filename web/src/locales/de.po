@@ -2720,13 +2720,14 @@ msgstr "Schlüsselpaar, das zum Signieren ausgehender Anfragen verwendet wird. L
 msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
 msgstr "LDAP"
 
 #: src/pages/outposts/OutpostForm.ts
-msgid "LDAP (Technical preview)"
-msgstr "LDAP (Technische Voransicht)"
+#~ msgid "LDAP (Technical preview)"
+#~ msgstr "LDAP (Technische Voransicht)"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "LDAP Attribute mapping"

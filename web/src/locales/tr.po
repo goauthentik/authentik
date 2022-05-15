@@ -2714,13 +2714,14 @@ msgstr "Giden istekleri imzalamak için kullanılan anahtar çifti. İmzalamayı
 msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
 msgstr "LDAP"
 
 #: src/pages/outposts/OutpostForm.ts
-msgid "LDAP (Technical preview)"
-msgstr "LDAP (Teknik önizleme)"
+#~ msgid "LDAP (Technical preview)"
+#~ msgstr "LDAP (Teknik önizleme)"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "LDAP Attribute mapping"
