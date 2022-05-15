@@ -20,15 +20,13 @@ jobs:
           node-version: '16'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
-      - run: |
-          cd web
-          npm ci
+      - working-directory: web/
+        run: npm ci
       - name: Generate API
-        run: make gen-web
+        run: make gen-client-web
       - name: Eslint
-        run: |
-          cd web
-          npm run lint
+        working-directory: web/
+        run: npm run lint
   lint-prettier:
     runs-on: ubuntu-latest
     steps:
@@ -38,15 +36,13 @@ jobs:
           node-version: '16'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
-      - run: |
-          cd web
-          npm ci
+      - working-directory: web/
+        run: npm ci
       - name: Generate API
-        run: make gen-web
+        run: make gen-client-web
       - name: prettier
-        run: |
-          cd web
-          npm run prettier-check
+        working-directory: web/
+        run: npm run prettier-check
   lint-lit-analyse:
     runs-on: ubuntu-latest
     steps:
@@ -56,15 +52,13 @@ jobs:
           node-version: '16'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
-      - run: |
-          cd web
-          npm ci
+      - working-directory: web/
+        run: npm ci
       - name: Generate API
-        run: make gen-web
+        run: make gen-client-web
       - name: lit-analyse
-        run: |
-          cd web
-          npm run lit-analyse
+        working-directory: web/
+        run: npm run lit-analyse
   ci-web-mark:
     needs:
       - lint-eslint
@@ -84,12 +78,10 @@ jobs:
           node-version: '16'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
-      - run: |
-          cd web
-          npm ci
+      - working-directory: web/
+        run: npm ci
       - name: Generate API
-        run: make gen-web
+        run: make gen-client-web
       - name: build
-        run: |
-          cd web
-          npm run build
+        working-directory: web/
+        run: npm run build

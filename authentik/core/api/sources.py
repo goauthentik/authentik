@@ -12,7 +12,7 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.authorization import OwnerFilter, OwnerPermissions
+from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import Source, UserSourceConnection
@@ -150,6 +150,6 @@ class UserSourceConnectionViewSet(
 
     queryset = UserSourceConnection.objects.all()
     serializer_class = UserSourceConnectionSerializer
-    permission_classes = [OwnerPermissions]
+    permission_classes = [OwnerSuperuserPermissions]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering = ["pk"]

@@ -3324,9 +3324,9 @@ paths:
       - authentik: []
       responses:
         '204':
-          description: No response body
+          description: Successfully sent recover email
         '404':
-          description: No response body
+          description: Bad request
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -3354,9 +3354,9 @@ paths:
       - authentik: []
       responses:
         '204':
-          description: No response body
+          description: Successfully changed password
         '400':
-          description: No response body
+          description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
   /core/users/{id}/used_by/:
@@ -4094,6 +4094,10 @@ paths:
           - alert
           - notice
           - warning
+      - in: query
+        name: user
+        schema:
+          type: integer
       tags:
       - events
       security:
@@ -19366,10 +19370,10 @@ components:
               type: string
             lat:
               type: number
-              format: float
+              format: double
             long:
               type: number
-              format: float
+              format: double
             city:
               type: string
           required:
@@ -19918,6 +19922,10 @@ components:
           description: Stages used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
+        last_auth_threshold:
+          type: string
+          description: If any of the user's device has been used within this threshold,
+            this stage will be skipped
       required:
       - component
       - meta_model_name
@@ -19951,6 +19959,11 @@ components:
           description: Stages used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
+        last_auth_threshold:
+          type: string
+          minLength: 1
+          description: If any of the user's device has been used within this threshold,
+            this stage will be skipped
       required:
       - name
     AuthenticatorValidationChallenge:
@@ -20082,6 +20095,8 @@ components:
           type: object
           additionalProperties:
             type: string
+        title:
+          type: string
       required:
       - attrs
       - type
@@ -22330,6 +22345,11 @@ components:
             the currently selected context.
       required:
       - name
+    LDAPAPIAccessMode:
+      enum:
+      - direct
+      - cached
+      type: string
     LDAPOutpostConfig:
       type: object
       description: LDAPProvider Serializer
@@ -22375,7 +22395,9 @@ components:
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         search_mode:
-          $ref: '#/components/schemas/SearchModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
+        bind_mode:
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
       required:
       - application_slug
       - bind_flow_slug
@@ -22526,7 +22548,9 @@ components:
             type: string
           readOnly: true
         search_mode:
-          $ref: '#/components/schemas/SearchModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
+        bind_mode:
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -22586,7 +22610,9 @@ components:
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         search_mode:
-          $ref: '#/components/schemas/SearchModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
+        bind_mode:
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
       required:
       - authorization_flow
       - name
@@ -26810,6 +26836,11 @@ components:
           description: Stages used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
+        last_auth_threshold:
+          type: string
+          minLength: 1
+          description: If any of the user's device has been used within this threshold,
+            this stage will be skipped
     PatchedCaptchaStageRequest:
       type: object
       description: CaptchaStage Serializer
@@ -27350,7 +27381,9 @@ components:
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         search_mode:
-          $ref: '#/components/schemas/SearchModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
+        bind_mode:
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
@@ -27777,9 +27810,6 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
-        source:
-          type: string
-          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -28359,9 +28389,6 @@ components:
       properties:
         user:
           type: integer
-        source:
-          type: string
-          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -28561,8 +28588,9 @@ components:
           type: integer
           readOnly: true
         source:
-          type: string
-          format: uuid
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
         identifier:
           type: string
         plex_token:
@@ -28577,9 +28605,6 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
-        source:
-          type: string
-          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -28589,7 +28614,6 @@ components:
       required:
       - identifier
       - plex_token
-      - source
     PlexSourceRequest:
       type: object
       description: Plex Source Serializer
@@ -29231,7 +29255,7 @@ components:
           type: string
         token_validity:
           type: number
-          format: float
+          format: double
           nullable: true
           readOnly: true
         scopes_to_request:
@@ -30171,11 +30195,6 @@ components:
       - expression
       - name
       - scope_name
-    SearchModeEnum:
-      enum:
-      - direct
-      - cached
-      type: string
     SelectableStage:
       type: object
       description: Serializer for stages which can be selected by users
@@ -31201,8 +31220,9 @@ components:
         user:
           type: integer
         source:
-          type: string
-          format: uuid
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
         identifier:
           type: string
           maxLength: 255
@@ -31217,9 +31237,6 @@ components:
       properties:
         user:
           type: integer
-        source:
-          type: string
-          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -31230,7 +31247,6 @@ components:
           nullable: true
       required:
       - identifier
-      - source
       - user
     UserPasswordSetRequest:
       type: object

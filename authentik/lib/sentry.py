@@ -18,13 +18,22 @@ from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
 from rest_framework.exceptions import APIException
 from sentry_sdk import Hub
+from sentry_sdk import init as sentry_sdk_init
+from sentry_sdk.api import set_tag
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
+from sentry_sdk.integrations.threading import ThreadingIntegration
 from sentry_sdk.tracing import Transaction
 from structlog.stdlib import get_logger
 from websockets.exceptions import WebSocketException
 
-from authentik.lib.utils.reflection import class_to_path
+from authentik import __version__, get_build_hash
+from authentik.lib.config import CONFIG
+from authentik.lib.utils.reflection import class_to_path, get_env
 
 LOGGER = get_logger()
+SENTRY_DSN = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
 
 
 class SentryWSMiddleware(BaseMiddleware):
@@ -41,6 +50,37 @@ class SentryWSMiddleware(BaseMiddleware):
 
 class SentryIgnoredException(Exception):
     """Base Class for all errors that are suppressed, and not sent to sentry."""
+
+
+def sentry_init(**sentry_init_kwargs):
+    """Configure sentry SDK"""
+    sentry_env = CONFIG.y("error_reporting.environment", "customer")
+    kwargs = {
+        "traces_sample_rate": float(CONFIG.y("error_reporting.sample_rate", 0.5)),
+        "environment": sentry_env,
+        "send_default_pii": CONFIG.y_bool("error_reporting.send_pii", False),
+    }
+    kwargs.update(**sentry_init_kwargs)
+    # pylint: disable=abstract-class-instantiated
+    sentry_sdk_init(
+        dsn=SENTRY_DSN,
+        integrations=[
+            DjangoIntegration(transaction_style="function_name"),
+            CeleryIntegration(),
+            RedisIntegration(),
+            ThreadingIntegration(propagate_hub=True),
+        ],
+        before_send=before_send,
+        release=f"authentik@{__version__}",
+        **kwargs,
+    )
+    set_tag("authentik.build_hash", get_build_hash("tagged"))
+    set_tag("authentik.env", get_env())
+    set_tag("authentik.component", "backend")
+    LOGGER.info(
+        "Error reporting is enabled",
+        env=kwargs["environment"],
+    )
 
 
 def before_send(event: dict, hint: dict) -> Optional[dict]:
@@ -108,6 +148,6 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         ]:
             return None
     LOGGER.debug("sending event to sentry", exc=exc_value, source_logger=event.get("logger", None))
-    if settings.DEBUG or settings.TEST:
+    if settings.DEBUG:
         return None
     return event

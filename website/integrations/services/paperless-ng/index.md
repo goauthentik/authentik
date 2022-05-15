@@ -20,18 +20,19 @@ The author of Paperless-ng recommends you do not expose Paperless outside your n
 
 The following placeholders will be used:
 
-- `paperless.company` is the FQDN of the Paperless-ng install.
-  
+-   `paperless.company` is the FQDN of the Paperless-ng install.
+
 Also set up your proxy server to use forward auth with paperless.company: https://goauthentik.io/docs/providers/proxy/forward_auth
 
-  
 ## Paperless
-  
+
 Start by adding the following environment variables to your Paperless-ng setup. If you are using docker-compose, then add the following to your docker-compose.env file:
+
 ```
 PAPERLESS_ENABLE_HTTP_REMOTE_USER=TRUE
 PAPERLESS_HTTP_REMOTE_USER_HEADER_NAME=HTTP_X_AUTHENTIK_USERNAME
 ```
+
 Authentik automatically sets this header when we use a proxy outpost.
 
 Now restart your container:
@@ -44,28 +45,28 @@ In authentik, go to the Admin Interface and click _Applications/Providers_.
 
 Create a Proxy Provider. Give it a name (e.g. `Paperless Proxy`), then choose explicit or implicit consent (whether you want authentic to show a button to proceed to Paperless after login, or to just go there).
 
-Choose Forward Auth (single application), then add the External host: `https://paperless.company` 
+Choose Forward Auth (single application), then add the External host: `https://paperless.company`
 
 Click Create to finish creating the provider.
-  
+
 **Application**
-  
+
 Now go to _Applications/Applications_ and create a new application.
 
 Give it a name, this one is displayed to users. E.g. `Paperless`.
 
 Set the slug, let's use `paperless`.
-  
+
 Now select the provider we created earlier, e.g. `Paperless Proxy`.
-  
+
 Click Create to create the application.
- 
+
 **Outpost**
- 
+
 Now go to _Applications/Outposts_ and click the edit button for _"authentik Embedded Outpost"_.
 
-Under Applications, click Paperless to select it (use ctrl+click to select multiple), then click Update at the bottom. 
+Under Applications, click Paperless to select it (use ctrl+click to select multiple), then click Update at the bottom.
 
 ## Finished
-  
+
 Now you can access Paperless-ng by logging in with authentik. Note that your authentik username and your Paperless username MUST match.

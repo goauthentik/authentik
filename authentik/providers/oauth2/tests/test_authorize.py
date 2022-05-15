@@ -5,7 +5,6 @@ from django.urls import reverse
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.flows.challenge import ChallengeTypes
-from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, RedirectUriError
 from authentik.providers.oauth2.models import (
@@ -178,7 +177,7 @@ class TestAuthorize(OAuthTestCase):
 
     def test_full_code(self):
         """Test full authorization"""
-        flow = Flow.objects.create(slug="empty")
+        flow = create_test_flow()
         provider = OAuth2Provider.objects.create(
             name="test",
             client_id="test",
@@ -214,7 +213,7 @@ class TestAuthorize(OAuthTestCase):
 
     def test_full_implicit(self):
         """Test full authorization"""
-        flow = Flow.objects.create(slug="empty")
+        flow = create_test_flow()
         provider = OAuth2Provider.objects.create(
             name="test",
             client_id="test",
@@ -252,6 +251,55 @@ class TestAuthorize(OAuthTestCase):
                     f"&id_token={provider.encode(token.id_token.to_dict())}&token_type=bearer"
                     f"&expires_in=60&state={state}"
                 ),
+            },
+        )
+        self.validate_jwt(token, provider)
+
+    def test_full_form_post(self):
+        """Test full authorization (form_post response)"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name="test",
+            client_id="test",
+            client_secret=generate_key(),
+            authorization_flow=flow,
+            redirect_uris="http://localhost",
+            signing_key=create_test_cert(),
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        # Step 1, initiate params and get redirect to flow
+        self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "id_token",
+                "response_mode": "form_post",
+                "client_id": "test",
+                "state": state,
+                "scope": "openid",
+                "redirect_uri": "http://localhost",
+            },
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        token: RefreshToken = RefreshToken.objects.filter(user=user).first()
+        self.assertJSONEqual(
+            response.content.decode(),
+            {
+                "component": "ak-stage-autosubmit",
+                "type": ChallengeTypes.NATIVE.value,
+                "url": "http://localhost",
+                "title": "Redirecting to app...",
+                "attrs": {
+                    "access_token": token.access_token,
+                    "id_token": provider.encode(token.id_token.to_dict()),
+                    "token_type": "bearer",
+                    "expires_in": "60",
+                    "state": state,
+                },
             },
         )
         self.validate_jwt(token, provider)

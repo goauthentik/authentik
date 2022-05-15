@@ -9,6 +9,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import "../../../elements/wizard/Wizard";
 import "./InitialApplicationWizardPage";
 import "./TypeApplicationWizardPage";
 import "./TypeLinkApplicationWizardPage";

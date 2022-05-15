@@ -18,8 +18,8 @@ This is based on authentik 2021.7.3 and Vikunja V0.17.1 using the Docker-Compose
 
 The following placeholders will be used:
 
-- `vik.company` is the FQDN of Vikunja.
-- `authentik.company` is the FQDN of authentik.
+-   `vik.company` is the FQDN of Vikunja.
+-   `authentik.company` is the FQDN of authentik.
 
 ### Step 1
 
@@ -30,11 +30,13 @@ Only settings that have been modified from default have been listed.
 :::
 
 **Protocol Settings**
-- Name: Vikunja
-- Client type: Confidential
-- Client ID: Copy and Save this for Later
-- Client Secret: Copy and Save this for later
-- Redirect URIs/Origins:
+
+-   Name: Vikunja
+-   Client type: Confidential
+-   Client ID: Copy and Save this for Later
+-   Client Secret: Copy and Save this for later
+-   Redirect URIs/Origins:
+
 ```
 https://vik.company/auth/openid
 https://vik.company/auth/openid/Vikunja
@@ -89,10 +91,10 @@ Vikunja Reference link: https://vikunja.io/docs/config-options/#auth
 
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 
-- Name: Vikunja
-- Slug: vikunja
-- Provider: vikunja
-- Launch URL: https://vik.company
+-   Name: Vikunja
+-   Slug: vikunja
+-   Provider: vikunja
+-   Launch URL: https://vik.company
 
 ## Notes
 

@@ -9,6 +9,7 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
+import "../../../elements/utils/TimeDeltaHelp";
 import { first } from "../../../utils";
 
 @customElement("ak-stage-user-login-form")
@@ -68,9 +69,7 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
                         <p class="pf-c-form__helper-text">
                             ${t`Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed.`}
                         </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`(Format: hours=1;minutes=2;seconds=3).`}
-                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

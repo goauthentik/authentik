@@ -55,7 +55,6 @@ class TestUserLoginStage(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             flow=self.flow,

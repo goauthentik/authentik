@@ -43,13 +43,12 @@ class TestUserDeleteStage(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(response, self.flow, component="ak-stage-access-denied")
 
     def test_user_delete_get(self):
         """Test Form render"""
+        self.client.force_login(self.user)
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()

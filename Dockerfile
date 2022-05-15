@@ -4,7 +4,8 @@ FROM --platform=${BUILDPLATFORM} docker.io/node:18 as website-builder
 COPY ./website /work/website/
 
 ENV NODE_ENV=production
-RUN cd /work/website && npm ci && npm run build-docs-only
+WORKDIR /work/website
+RUN npm ci && npm run build-docs-only
 
 # Stage 2: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:18 as web-builder
@@ -13,10 +14,22 @@ COPY ./web /work/web/
 COPY ./website /work/website/
 
 ENV NODE_ENV=production
-RUN cd /work/web && npm ci && npm run build
+WORKDIR /work/web
+RUN npm ci && npm run build
 
-# Stage 3: Build go proxy
-FROM docker.io/golang:1.18.1-bullseye AS builder
+# Stage 3: Poetry to requirements.txt export
+FROM docker.io/python:3.10.4-slim-bullseye AS poetry-locker
+
+WORKDIR /work
+COPY ./pyproject.toml /work
+COPY ./poetry.lock /work
+
+RUN pip install --no-cache-dir poetry && \
+    poetry export -f requirements.txt --output requirements.txt && \
+    poetry export -f requirements.txt --dev --output requirements-dev.txt
+
+# Stage 4: Build go proxy
+FROM docker.io/golang:1.18.2-bullseye AS builder
 
 WORKDIR /work
 
@@ -31,7 +44,7 @@ COPY ./go.sum /work/go.sum
 
 RUN go build -o /work/authentik ./cmd/server/main.go
 
-# Stage 4: Run
+# Stage 5: Run
 FROM docker.io/python:3.10.4-slim-bullseye
 
 LABEL org.opencontainers.image.url https://goauthentik.io
@@ -43,19 +56,18 @@ WORKDIR /
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
-COPY ./pyproject.toml /
-COPY ./poetry.lock /
+COPY --from=poetry-locker /work/requirements.txt /
+COPY --from=poetry-locker /work/requirements-dev.txt /
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        curl ca-certificates gnupg git runit libpq-dev \
-        postgresql-client build-essential libxmlsec1-dev \
-        pkg-config libmaxminddb0 && \
-    pip install poetry && \
-    poetry config virtualenvs.create false && \
-    poetry install --no-dev && \
-    rm -rf ~/.cache/pypoetry && \
-    apt-get remove --purge -y build-essential git && \
+    # Required for installing pip packages
+    apt-get install -y --no-install-recommends build-essential pkg-config libxmlsec1-dev && \
+    # Required for runtime
+    apt-get install -y --no-install-recommends libxmlsec1-openssl libmaxminddb0 && \
+    # Required for other things
+    apt-get install -y --no-install-recommends runit && \
+    pip install --no-cache-dir -r /requirements.txt && \
+    apt-get remove --purge -y build-essential pkg-config libxmlsec1-dev && \
     apt-get autoremove --purge -y && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \

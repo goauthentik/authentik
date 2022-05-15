@@ -6,9 +6,9 @@ Flows are a method of describing a sequence of stages. A stage represents a sing
 
 For example, a standard login flow would consist of the following stages:
 
-- Identification, user identifies themselves via a username or email address
-- Password, the user's password is checked against the hash in the database
-- Log the user in
+-   Identification, user identifies themselves via a username or email address
+-   Password, the user's password is checked against the hash in the database
+-   Log the user in
 
 Upon flow execution, a plan containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Re-evaluate Policies** option on the binding.
 

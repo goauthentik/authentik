@@ -136,8 +136,8 @@ jobs:
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
+        working-directory: web
         run: |
-          cd web
           npm ci
           npm run build
       - name: run e2e
@@ -169,8 +169,8 @@ jobs:
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
+        working-directory: web/
         run: |
-          cd web
           npm ci
           npm run build
       - name: run e2e
@@ -207,23 +207,23 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1.2.0
+        uses: docker/setup-qemu-action@v2.0.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
       - name: prepare variables
         id: ev
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         uses: ./.github/actions/docker-setup
       - name: Login to Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Building Docker Image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |

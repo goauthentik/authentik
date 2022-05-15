@@ -1,4 +1,5 @@
 """SAML Identity Provider Metadata Processor"""
+from hashlib import sha256
 from typing import Iterator, Optional
 
 import xmlsec  # nosec
@@ -7,7 +8,6 @@ from django.urls import reverse
 from lxml.etree import Element, SubElement, tostring  # nosec
 
 from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.encoding import strip_pem_header
 from authentik.sources.saml.processors.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
@@ -35,7 +35,7 @@ class MetadataProcessor:
         self.provider = provider
         self.http_request = request
         self.force_binding = None
-        self.xml_id = get_random_id()
+        self.xml_id = sha256(f"{provider.name}-{provider.pk}".encode("ascii")).hexdigest()
 
     def get_signing_key_descriptor(self) -> Optional[Element]:
         """Get Signing KeyDescriptor, if enabled for the provider"""

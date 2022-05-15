@@ -29,6 +29,19 @@ class TestMetadataProcessor(TestCase):
         schema = etree.XMLSchema(etree.parse("xml/saml-schema-metadata-2.0.xsd"))  # nosec
         self.assertTrue(schema.validate(metadata))
 
+    def test_metadata_consistent(self):
+        """Test Metadata generation being consistent (xml stays the same)"""
+        source = SAMLSource.objects.create(
+            slug="provider",
+            issuer="authentik",
+            signing_kp=create_test_cert(),
+            pre_authentication_flow=create_test_flow(),
+        )
+        request = self.factory.get("/")
+        xml_a = MetadataProcessor(source, request).build_entity_descriptor()
+        xml_b = MetadataProcessor(source, request).build_entity_descriptor()
+        self.assertEqual(xml_a, xml_b)
+
     def test_metadata(self):
         """Test Metadata generation being valid"""
         source = SAMLSource.objects.create(

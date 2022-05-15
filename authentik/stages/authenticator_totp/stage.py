@@ -40,10 +40,11 @@ class AuthenticatorTOTPChallengeResponse(ChallengeResponse):
 
     def validate_code(self, code: int) -> int:
         """Validate totp code"""
-        if self.device is not None:
-            if not self.device.verify_token(code):
-                self.device.confirmed = False
-                raise ValidationError(_("Code does not match"))
+        if not self.device:
+            raise ValidationError(_("Code does not match"))
+        if not self.device.verify_token(code):
+            self.device.confirmed = False
+            raise ValidationError(_("Code does not match"))
         return code
 
 
@@ -65,7 +66,7 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
 
     def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
         response = super().get_response_instance(data)
-        response.device = self.request.session[SESSION_TOTP_DEVICE]
+        response.device = self.request.session.get(SESSION_TOTP_DEVICE)
         return response
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

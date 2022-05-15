@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from django.conf import settings
 
 from authentik.lib.config import CONFIG
+from authentik.lib.sentry import sentry_init
 from tests.e2e.utils import get_docker_tag
 
 
@@ -15,7 +16,7 @@ class PytestTestRunner:  # pragma: no cover
         self.failfast = failfast
         self.keepdb = keepdb
 
-        self.args = ["-vv"]
+        self.args = ["-vv", "-s"]
         if self.failfast:
             self.args.append("--exitfirst")
         if self.keepdb:
@@ -31,6 +32,11 @@ class PytestTestRunner:  # pragma: no cover
         CONFIG.y_set(
             "outposts.container_image_base",
             f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
+        )
+        sentry_init(
+            sample_rate=1.0,
+            environment="testing",
+            send_default_pii=True,
         )
 
     @classmethod

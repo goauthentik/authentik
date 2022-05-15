@@ -9,6 +9,7 @@ from structlog.stdlib import get_logger
 from authentik.lib.utils.http import get_http_session
 from authentik.policies.models import Policy, PolicyResult
 from authentik.policies.types import PolicyRequest
+from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 LOGGER = get_logger()
 
@@ -38,14 +39,17 @@ class HaveIBeenPwendPolicy(Policy):
         """Check if password is in HIBP DB. Hashes given Password with SHA1, uses the first 5
         characters of Password in request and checks if full hash is in response. Returns 0
         if Password is not in result otherwise the count of how many times it was used."""
-        if self.password_field not in request.context:
+        password = request.context.get(PLAN_CONTEXT_PROMPT, {}).get(
+            self.password_field, request.context.get(self.password_field)
+        )
+        if not password:
             LOGGER.warning(
                 "Password field not set in Policy Request",
                 field=self.password_field,
                 fields=request.context.keys(),
             )
             return PolicyResult(False, _("Password not set in context"))
-        password = str(request.context[self.password_field])
+        password = str(password)
 
         pw_hash = sha1(password.encode("utf-8")).hexdigest()  # nosec
         url = f"https://api.pwnedpasswords.com/range/{pw_hash[:5]}"

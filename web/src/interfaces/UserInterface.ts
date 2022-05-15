@@ -123,15 +123,18 @@ export class UserInterface extends LitElement {
     }
 
     firstUpdated(): void {
-        new EventsApi(DEFAULT_CONFIG)
-            .eventsNotificationsList({
-                seen: false,
-                ordering: "-created",
-                pageSize: 1,
-            })
-            .then((r) => {
-                this.notificationsCount = r.pagination.count;
-            });
+        me().then((user) => {
+            new EventsApi(DEFAULT_CONFIG)
+                .eventsNotificationsList({
+                    seen: false,
+                    ordering: "-created",
+                    pageSize: 1,
+                    user: user.user.pk,
+                })
+                .then((r) => {
+                    this.notificationsCount = r.pagination.count;
+                });
+        });
     }
 
     render(): TemplateResult {

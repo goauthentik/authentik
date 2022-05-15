@@ -169,10 +169,11 @@ class FlowExecutorView(APIView):
                     self.request.session[SESSION_KEY_PLAN] = plan
             # Early check if there's an active Plan for the current session
             if SESSION_KEY_PLAN in self.request.session:
-                self.plan = self.request.session[SESSION_KEY_PLAN]
+                self.plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
                 if self.plan.flow_pk != self.flow.pk.hex:
                     self._logger.warning(
                         "f(exec): Found existing plan for other flow, deleting plan",
+                        other_flow=self.plan.flow_pk,
                     )
                     # Existing plan is deleted from session and instance
                     self.plan = None

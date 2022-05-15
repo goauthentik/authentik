@@ -12,6 +12,8 @@ class OwnerFilter(BaseFilterBackend):
     owner_key = "user"
 
     def filter_queryset(self, request: Request, queryset: QuerySet, view) -> QuerySet:
+        if request.user.is_superuser:
+            return queryset
         return queryset.filter(**{self.owner_key: request.user})
 
 

@@ -18,6 +18,15 @@ test-e2e-rest:
 test-go:
 	go test -timeout 0 -v -race -cover ./...
 
+test-docker:
+	echo "PG_PASS=$(openssl rand -base64 32)" >> .env
+	echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
+	docker-compose pull -q
+	docker-compose up --no-start
+	docker-compose start postgresql redis
+	docker-compose run -u root server test
+	rm -f .env
+
 test:
 	coverage run manage.py test authentik
 	coverage html
@@ -52,21 +61,21 @@ gen-clean:
 	rm -rf web/api/src/
 	rm -rf api/
 
-gen-web:
+gen-client-web:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
 		openapitools/openapi-generator-cli:v6.0.0-beta generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
-		-o /local/web-api \
+		-o /local/gen-ts-api \
 		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${NPM_VERSION}
 	mkdir -p web/node_modules/@goauthentik/api
-	\cp -fv scripts/web_api_readme.md web-api/README.md
-	cd web-api && npm i
-	\cp -rfv web-api/* web/node_modules/@goauthentik/api
+	\cp -fv scripts/web_api_readme.md gen-ts-api/README.md
+	cd gen-ts-api && npm i
+	\cp -rfv gen-ts-api/* web/node_modules/@goauthentik/api
 
-gen-outpost:
+gen-client-go:
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O config.yaml
 	mkdir -p templates
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O templates/README.mustache
@@ -74,15 +83,15 @@ gen-outpost:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		openapitools/openapi-generator-cli:v6.0.0-beta generate \
+		openapitools/openapi-generator-cli:v5.2.1 generate \
 		-i /local/schema.yml \
 		-g go \
-		-o /local/api \
+		-o /local/gen-go-api \
 		-c /local/config.yaml
-	go mod edit -replace goauthentik.io/api=./api
+	go mod edit -replace goauthentik.io/api/v3=./gen-go-api
 	rm -rf config.yaml ./templates/
 
-gen: gen-build gen-clean gen-web
+gen: gen-build gen-clean gen-client-web
 
 migrate:
 	python -m lifecycle.migrate
@@ -90,13 +99,20 @@ migrate:
 run:
 	go run -v cmd/server/main.go
 
+#########################
+## Web
+#########################
+
+web: web-lint-fix web-lint web-extract
+
+web-install:
+	cd web && npm ci
+
 web-watch:
 	rm -rf web/dist/
 	mkdir web/dist/
 	touch web/dist/.gitkeep
 	cd web && npm run watch
-
-web: web-lint-fix web-lint web-extract
 
 web-lint-fix:
 	cd web && npm run prettier
@@ -107,6 +123,21 @@ web-lint:
 
 web-extract:
 	cd web && npm run extract
+
+#########################
+## Website
+#########################
+
+website: website-lint-fix
+
+website-install:
+	cd website && npm ci
+
+website-lint-fix:
+	cd website && npm run prettier
+
+website-watch:
+	cd website && npm run watch
 
 # These targets are use by GitHub actions to allow usage of matrix
 # which makes the YAML File a lot smaller
@@ -133,10 +164,8 @@ ci-pyright: ci--meta-debug
 ci-pending-migrations: ci--meta-debug
 	./manage.py makemigrations --check
 
-install:
+install: web-install website-install
 	poetry install
-	cd web && npm ci
-	cd website && npm ci
 
 a: install
 	tmux \

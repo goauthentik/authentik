@@ -26,8 +26,8 @@ It seems that the vCenter still needs to be joined to the Active Directory Domai
 
 The following placeholders will be used:
 
-- `vcenter.company` is the FQDN of the vCenter server.
-- `authentik.company` is the FQDN of the authentik install.
+-   `vcenter.company` is the FQDN of the vCenter server.
+-   `authentik.company` is the FQDN of the authentik install.
 
 Since vCenter only allows OpenID-Connect in combination with Active Directory, it is recommended to have authentik sync with the same Active Directory.
 
@@ -53,11 +53,11 @@ Under _Sources_, click _Edit_ and ensure that "authentik default Active Director
 
 Under _Providers_, create an OAuth2/OpenID provider with these settings:
 
-- Client Type: Confidential
-- JWT Algorithm: RS256
-- Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
-- Sub Mode: If your Email address Schema matches your UPN, select "Based on the User's Email...", otherwise select "Based on the User's UPN...".
-- Scopes: Select the Scope Mapping you've created in Step 1
+-   Client Type: Confidential
+-   JWT Algorithm: RS256
+-   Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
+-   Sub Mode: If your Email address Schema matches your UPN, select "Based on the User's Email...", otherwise select "Based on the User's UPN...".
+-   Scopes: Select the Scope Mapping you've created in Step 1
 
 ![](./authentik_setup.png)
 

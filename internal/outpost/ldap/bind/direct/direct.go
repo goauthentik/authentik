@@ -66,6 +66,10 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 	fe.Answers[flow.StagePassword] = req.BindPW
 
 	passed, err := fe.Execute()
+	flags := flags.UserFlags{
+		Session: fe.GetSession(),
+	}
+	db.si.SetFlags(req.BindDN, flags)
 	if !passed {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": db.si.GetOutpostName(),
@@ -74,6 +78,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"dn":           req.BindDN,
 			"client":       req.RemoteAddr(),
 		}).Inc()
+		req.Log().Info("Invalid credentials")
 		return ldap.LDAPResultInvalidCredentials, nil
 	}
 	if err != nil {
@@ -127,10 +132,8 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 		return ldap.LDAPResultOperationsError, nil
 	}
 	cs := db.SearchAccessCheck(userInfo.User)
-	flags := flags.UserFlags{
-		UserPk:    userInfo.User.Pk,
-		CanSearch: cs != nil,
-	}
+	flags.UserPk = userInfo.User.Pk
+	flags.CanSearch = cs != nil
 	db.si.SetFlags(req.BindDN, flags)
 	if flags.CanSearch {
 		req.Log().WithField("group", cs).Info("Allowed access to search")
@@ -143,6 +146,9 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 func (db *DirectBinder) SearchAccessCheck(user api.UserSelf) *string {
 	for _, group := range user.Groups {
 		for _, allowedGroup := range db.si.GetSearchAllowedGroups() {
+			if allowedGroup == nil {
+				continue
+			}
 			db.log.WithField("userGroup", group.Pk).WithField("allowedGroup", allowedGroup).Trace("Checking search access")
 			if group.Pk == allowedGroup.String() {
 				return &group.Name

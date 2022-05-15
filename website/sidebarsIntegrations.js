@@ -45,6 +45,7 @@ module.exports = {
                 "services/veeam-enterprise-manager/index",
                 "services/vikunja/index",
                 "services/vmware-vcenter/index",
+                "services/weblate/index",
                 "services/wekan/index",
                 "services/wiki-js/index",
                 "services/wordpress/index",

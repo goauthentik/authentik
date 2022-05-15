@@ -17,6 +17,7 @@ from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
     OpenApiParameter,
+    OpenApiResponse,
     extend_schema,
     extend_schema_field,
     inline_serializer,
@@ -31,7 +32,6 @@ from rest_framework.serializers import (
     ListSerializer,
     ModelSerializer,
     PrimaryKeyRelatedField,
-    Serializer,
     ValidationError,
 )
 from rest_framework.viewsets import ModelViewSet
@@ -351,8 +351,8 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             },
         ),
         responses={
-            204: "",
-            400: "",
+            204: OpenApiResponse(description="Successfully changed password"),
+            400: OpenApiResponse(description="Bad request"),
         },
     )
     @action(detail=True, methods=["POST"])
@@ -410,8 +410,8 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             )
         ],
         responses={
-            "204": Serializer(),
-            "404": Serializer(),
+            "204": OpenApiResponse(description="Successfully sent recover email"),
+            "404": OpenApiResponse(description="Bad request"),
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])

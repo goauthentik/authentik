@@ -16,20 +16,20 @@ Zabbix is Open Source and comes at no cost.
 
 The following placeholders will be used:
 
-- `zabbix.company` is the FQDN of the Zabbix install.
-- `authentik.company` is the FQDN of the authentik install.
+-   `zabbix.company` is the FQDN of the Zabbix install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
-- ACS URL: `https://zabbix.company/zabbix/index_sso.php?acs`
-- Issuer: `zabbix`
-- Service Provider Binding: Post
+-   ACS URL: `https://zabbix.company/zabbix/index_sso.php?acs`
+-   Issuer: `zabbix`
+-   Service Provider Binding: Post
 
 You can of course use a custom signing certificate, and adjust durations.
 
 ## Zabbix Configuration
 
-Navigate to `https://zabbix.company/zabbix/zabbix.php?action=authentication.edit` and select SAML settings to configure SAML. 
+Navigate to `https://zabbix.company/zabbix/zabbix.php?action=authentication.edit` and select SAML settings to configure SAML.
 
 Check the box to enable SAML authentication.
 
@@ -61,4 +61,3 @@ For additional security you can enable the Verification Certificate by checking 
 ```
 $SSO['IDP_CERT'] = '<path to the IDP cert file>';
 ```
-

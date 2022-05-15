@@ -59,7 +59,6 @@ export class RouterOutlet extends LitElement {
             AKGlobal,
             css`
                 :host {
-                    height: 100vh;
                     background-color: transparent !important;
                 }
                 *:first-child {

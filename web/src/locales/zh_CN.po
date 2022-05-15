@@ -22,14 +22,14 @@ msgstr ""
 #~ msgid "#/identity/users/{0}"
 #~ msgstr "#/identity/users/{0}"
 
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/proxy/ProxyProviderForm.ts
-#: src/pages/providers/saml/SAMLProviderForm.ts
+#~ msgid "(Format: days=-1;minutes=-2;seconds=-3)."
+#~ msgstr "（格式：days=-1;minutes=-2;seconds=-3）。"
+
+#: src/elements/utils/TimeDeltaHelp.ts
 msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
 msgstr "（格式：hours=-1;minutes=-2;seconds=-3）。"
 
-#: src/pages/stages/user_login/UserLoginStageForm.ts
+#: src/elements/utils/TimeDeltaHelp.ts
 msgid "(Format: hours=1;minutes=2;seconds=3)."
 msgstr "（格式：hours=1;minutes=2;seconds=3）。"
 
@@ -436,11 +436,14 @@ msgstr "您确定要删除 {0} {objName} 吗？"
 msgid "Are you sure you want to update {0} \"{1}\"?"
 msgstr "您确定要更新 {0} \"{1}\" 吗？"
 
+#~ msgid ""
+#~ "Assertion not valid on or after current time + this value (Format: "
+#~ "hours=1;minutes=2;seconds=3)."
+#~ msgstr "从当前时间经过多久时或之后，断言无效（格式：hours=1;minutes=2;seconds=3）。"
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid ""
-"Assertion not valid on or after current time + this value (Format: "
-"hours=1;minutes=2;seconds=3)."
-msgstr "从当前时间经过多久时或之后，断言无效（格式：hours=1;minutes=2;seconds=3）。"
+msgid "Assertion not valid on or after current time + this value."
+msgstr "从当前时间经过多久时或之后，断言无效。"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Assertion valid not before"
@@ -654,6 +657,10 @@ msgstr "Bind 密码"
 msgid "Bind flow"
 msgstr "Bind 流程"
 
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Bind mode"
+msgstr "绑定模式"
+
 #: src/pages/flows/BoundStagesList.ts src/pages/flows/BoundStagesList.ts
 msgid "Bind stage"
 msgstr "绑定阶段"
@@ -700,6 +707,12 @@ msgid ""
 "CA which the endpoint's Certificate is verified against. Can be left empty "
 "for no validation."
 msgstr "验证端点证书所依据的 CA。可以留空，表示不进行验证。"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid ""
+"Cached binding, flow is executed and session is cached in memory. Flow is "
+"executed when session expires."
+msgstr "缓存绑定，流程与会话会在内存中执行与缓存。会话过期时执行流程。"
 
 #: src/pages/admin-overview/charts/FlowStatusChart.ts
 msgid "Cached flows"
@@ -1039,6 +1052,10 @@ msgstr "配置流程执行器应如何处理对质询的无效响应。"
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "配置如何填写 ID 令牌的颁发者字段。"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid "Configure how the outpost authenticates requests."
+msgstr "配置前哨如何验证请求的身份。"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Configure how the outpost queries the core authentik server's users."
@@ -1563,6 +1580,12 @@ msgstr "摘要算法"
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Digits"
 msgstr "数字"
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+msgid ""
+"Direct querying, always execute the configured bind flow to authenticate the"
+" user."
+msgstr "直接查询，总是执行配置的绑定流程，以验证用户的身份。"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid ""
@@ -2476,6 +2499,12 @@ msgstr "标识符"
 #~ msgid "Identity & Cryptography"
 #~ msgstr "身份识别与加密"
 
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid ""
+"If any of the devices user of the types selected above have been used within"
+" this duration, this stage will be skipped."
+msgstr "如果上面所选类型的任意设备在此期限内被使用，此阶段会被跳过。"
+
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
 msgid ""
@@ -2773,6 +2802,10 @@ msgstr "上次出现：{0}"
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Last sync: {0}"
 msgstr "上次同步：{0}"
+
+#: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Last validation threshold"
+msgstr "上次验证阈值"
 
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
@@ -3471,9 +3504,12 @@ msgid "Objects created"
 msgstr "已创建对象"
 
 #: src/pages/stages/consent/ConsentStageForm.ts
-msgid ""
-"Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
-msgstr "经过多少偏移量后同意授权过期。（格式：hours=1;minutes=2;seconds=3）。"
+msgid "Offset after which consent expires."
+msgstr "同意过期后的偏移。"
+
+#~ msgid ""
+#~ "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
+#~ msgstr "经过多少偏移量后同意授权过期。（格式：hours=1;minutes=2;seconds=3）。"
 
 #: src/elements/events/ObjectChangelog.ts src/elements/events/UserEvents.ts
 #: src/pages/events/EventListPage.ts
@@ -4528,11 +4564,14 @@ msgstr "会话 ID"
 msgid "Session duration"
 msgstr "会话持续时间"
 
+#~ msgid ""
+#~ "Session not valid on or after current time + this value (Format: "
+#~ "hours=1;minutes=2;seconds=3)."
+#~ msgstr "从当前时间经过多久时或之后，会话无效（格式：hours=1;minutes=2;seconds=3）。"
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
-msgid ""
-"Session not valid on or after current time + this value (Format: "
-"hours=1;minutes=2;seconds=3)."
-msgstr "从当前时间经过多久时或之后，会话无效（格式：hours=1;minutes=2;seconds=3）。"
+msgid "Session not valid on or after current time + this value."
+msgstr "从当前时间经过多久时或之后，会话无效。"
 
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Session valid not on or after"
@@ -5365,6 +5404,10 @@ msgid ""
 " reachable under this URL."
 msgstr "您将在此外部 URL 进行身份验证。通过此 URL 应该可以访问到 authentik 核心服务器。"
 
+#: src/elements/utils/TimeDeltaHelp.ts
+msgid "The following keywords are supported:"
+msgstr "支持以下关键字："
+
 #~ msgid "The following objects use {0}:"
 #~ msgstr "以下对象使用 {0}："
 
@@ -5499,10 +5542,16 @@ msgstr "发出令牌的有效时间（单位为分钟）。"
 msgid ""
 "Time offset when temporary users should be deleted. This only applies if "
 "your IDP uses the NameID Format 'transient', and the user doesn't log out "
-"manually. (Format: hours=1;minutes=2;seconds=3)."
-msgstr ""
-"删除临时用户的时间偏移。这仅适用于您的 IDP 使用 NameID 格式 'transient' "
-"且用户未手动登出的情况。（格式：hours=1;minutes=2;seconds=3）。"
+"manually."
+msgstr "删除临时用户的时间偏移。这仅适用于您的 IDP 使用 NameID 格式 'transient' 且用户未手动登出的情况。"
+
+#~ msgid ""
+#~ "Time offset when temporary users should be deleted. This only applies if "
+#~ "your IDP uses the NameID Format 'transient', and the user doesn't log out "
+#~ "manually. (Format: hours=1;minutes=2;seconds=3)."
+#~ msgstr ""
+#~ "删除临时用户的时间偏移。这仅适用于您的 IDP 使用 NameID 格式 'transient' "
+#~ "且用户未手动登出的情况。（格式：hours=1;minutes=2;seconds=3）。"
 
 #~ msgid "Time-based One-Time Passwords"
 #~ msgstr "基于时间的一次性密码"

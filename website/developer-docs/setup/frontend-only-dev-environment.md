@@ -6,9 +6,9 @@ If you want to only make changes on the UI, you don't need a backend running fro
 
 ### Prerequisites
 
-- Node (any recent version should work, we use 16.x to build)
-- Make (again, any recent version should work)
-- Docker and docker-compose
+-   Node (any recent version should work, we use 16.x to build)
+-   Make (again, any recent version should work)
+-   Docker and docker-compose
 
 ### Instructions
 
@@ -28,15 +28,15 @@ If you want to only make changes on the UI, you don't need a backend running fro
 4. Add this volume mapping to your compose file
 
     ```yaml
-    version: '3.2'
+    version: "3.2"
 
     services:
-      # [...]
-      server:
         # [...]
-        volumes:
-          - ./web:/web
-          - ./local.env.yml:/local.env.yml
+        server:
+            # [...]
+            volumes:
+                - ./web:/web
+                - ./local.env.yml:/local.env.yml
     ```
 
     This makes the local web files and the config file available to the authentik server.

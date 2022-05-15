@@ -4,6 +4,7 @@ on:
     branches: [ master ]
     paths:
       - 'schema.yml'
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,18 +16,18 @@ jobs:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'
       - name: Generate API Client
-        run: make gen-web
+        run: make gen-client-web
       - name: Publish package
+        working-directory: gen-ts-api/
         run: |
-          cd web-api/
           npm ci
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
       - name: Upgrade /web
+        working-directory: web/
         run: |
-          cd web/
-          export VERSION=`node -e 'console.log(require("../web-api/package.json").version)'`
+          export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
           npm i @goauthentik/api@$VERSION
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4

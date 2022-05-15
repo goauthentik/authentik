@@ -14,22 +14,22 @@ GitLab is a complete DevOps platform, delivered as a single application. This ma
 
 The following placeholders will be used:
 
-- `gitlab.company` is the FQDN of the GitLab Install
-- `authentik.company` is the FQDN of the authentik Install
+-   `gitlab.company` is the FQDN of the GitLab Install
+-   `authentik.company` is the FQDN of the authentik Install
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
-- ACS URL: `https://gitlab.company/users/auth/saml/callback`
-- Audience: `https://gitlab.company`
-- Issuer: `https://gitlab.company`
-- Binding: `Redirect`
+-   ACS URL: `https://gitlab.company/users/auth/saml/callback`
+-   Audience: `https://gitlab.company`
+-   Issuer: `https://gitlab.company`
+-   Binding: `Redirect`
 
-Under *Advanced protocol settings*, set a certificate for *Signing Certificate*.
+Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
 
 ## GitLab Configuration
 
 Paste the following block in your `gitlab.rb` file, after replacing the placeholder values from above. The file is located in `/etc/gitlab`.
-To get the value for `idp_cert_fingerprint`, go to the Certificate list under *Identity & Cryptography*, and expand the selected certificate.
+To get the value for `idp_cert_fingerprint`, go to the Certificate list under _Identity & Cryptography_, and expand the selected certificate.
 
 ```ruby
 gitlab_rails['omniauth_enabled'] = true

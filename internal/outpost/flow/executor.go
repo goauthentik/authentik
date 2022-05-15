@@ -35,11 +35,13 @@ type FlowExecutor struct {
 	Answers map[StageComponent]string
 	Context context.Context
 
-	cip      string
-	api      *api.APIClient
-	flowSlug string
-	log      *log.Entry
-	token    string
+	cip       string
+	api       *api.APIClient
+	flowSlug  string
+	log       *log.Entry
+	token     string
+	session   *http.Cookie
+	transport http.RoundTripper
 
 	sp *sentry.Span
 }
@@ -54,28 +56,41 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 		l.WithError(err).Warning("Failed to create cookiejar")
 		panic(err)
 	}
+	transport := ak.NewUserAgentTransport(constants.OutpostUserAgent(), ak.NewTracingTransport(rsp.Context(), ak.GetTLSTransport()))
+	fe := &FlowExecutor{
+		Params:    url.Values{},
+		Answers:   make(map[StageComponent]string),
+		Context:   rsp.Context(),
+		flowSlug:  flowSlug,
+		log:       l,
+		sp:        rsp,
+		cip:       "",
+		transport: transport,
+	}
 	// Create new http client that also sets the correct ip
 	config := api.NewConfiguration()
 	config.Host = refConfig.Host
 	config.Scheme = refConfig.Scheme
 	config.HTTPClient = &http.Client{
 		Jar:       jar,
-		Transport: ak.NewUserAgentTransport(constants.OutpostUserAgent(), ak.NewTracingTransport(rsp.Context(), ak.GetTLSTransport())),
+		Transport: fe,
 	}
-	token := strings.Split(refConfig.DefaultHeader["Authorization"], " ")[1]
-	config.AddDefaultHeader(HeaderAuthentikOutpostToken, token)
-	apiClient := api.NewAPIClient(config)
-	return &FlowExecutor{
-		Params:   url.Values{},
-		Answers:  make(map[StageComponent]string),
-		Context:  rsp.Context(),
-		api:      apiClient,
-		flowSlug: flowSlug,
-		log:      l,
-		token:    token,
-		sp:       rsp,
-		cip:      "",
+	fe.token = strings.Split(refConfig.DefaultHeader["Authorization"], " ")[1]
+	config.AddDefaultHeader(HeaderAuthentikOutpostToken, fe.token)
+	fe.api = api.NewAPIClient(config)
+	return fe
+}
+
+func (fe *FlowExecutor) RoundTrip(req *http.Request) (*http.Response, error) {
+	res, err := fe.transport.RoundTrip(req)
+	if res != nil {
+		for _, cookie := range res.Cookies() {
+			if cookie.Name == "authentik_session" {
+				fe.session = cookie
+			}
+		}
 	}
+	return res, err
 }
 
 func (fe *FlowExecutor) ApiClient() *api.APIClient {
@@ -113,6 +128,10 @@ func (fe *FlowExecutor) getAnswer(stage StageComponent) string {
 		return v
 	}
 	return ""
+}
+
+func (fe *FlowExecutor) GetSession() *http.Cookie {
+	return fe.session
 }
 
 // WarmUp Ensure authentik's flow cache is warmed up

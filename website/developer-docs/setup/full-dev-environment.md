@@ -8,11 +8,11 @@ To create a local development setup for authentik, you need the following:
 
 ### Requirements
 
-- Python 3.10
-- poetry, which is used to manage dependencies, and can be installed with `pip install poetry`
-- Go 1.16
-- PostgreSQL (any recent version will do)
-- Redis (any recent version will do)
+-   Python 3.10
+-   poetry, which is used to manage dependencies, and can be installed with `pip install poetry`
+-   Go 1.18
+-   PostgreSQL (any recent version will do)
+-   Redis (any recent version will do)
 
 For PostgreSQL and Redis, you can use the docker-compose file in `scripts/`. You can also use a native install, if you prefer.
 
@@ -28,7 +28,7 @@ To configure authentik to use the local databases, create a file in the authenti
 ```yaml
 debug: true
 postgresql:
-  user: postgres
+    user: postgres
 
 log_level: debug
 secret_key: "A long key you can generate with `pwgen 40 1` for example"

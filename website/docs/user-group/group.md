@@ -10,4 +10,4 @@ When you bind a group to an application or flow, any members of any child group 
 
 ## Attributes
 
-Attributes of groups are recursively merged, for all groups the user is a *direct* member of.
+Attributes of groups are recursively merged, for all groups the user is a _direct_ member of.

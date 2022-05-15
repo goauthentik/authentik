@@ -1,16 +1,39 @@
 import { t } from "@lingui/macro";
 
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import { StagePrompt } from "@goauthentik/api";
+import PFCheck from "@patternfly/patternfly/components/Check/check.css";
+
+import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
 
 import "../../../../../elements/forms/HorizontalFormElement";
 import { PromptStage } from "../../../../../flows/stages/prompt/PromptStage";
 
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
+    static get styles(): CSSResult[] {
+        return super.styles.concat([PFCheck]);
+    }
+
+    renderPromptInner(prompt: StagePrompt, placeholderAsValue: boolean): string {
+        switch (prompt.type) {
+            // Checkbox requires slightly different rendering here due to the use of horizontal form elements
+            case PromptTypeEnum.Checkbox:
+                return `<input
+                    type="checkbox"
+                    class="pf-c-check__input"
+                    name="${prompt.fieldKey}"
+                    ?checked=${prompt.placeholder !== ""}
+                    ?required=${prompt.required}
+                    style="vertical-align: bottom"
+                />`;
+            default:
+                return super.renderPromptInner(prompt, placeholderAsValue);
+        }
+    }
+
     renderField(prompt: StagePrompt): TemplateResult {
         const errors = (this.challenge?.responseErrors || {})[prompt.fieldKey];
         return html`
@@ -37,7 +60,7 @@ export class UserSettingsPromptStage extends PromptStage {
                     ${this.host.tenant.flowUnenrollment
                         ? html` <a
                               class="pf-c-button pf-m-danger"
-                              href="/if/flow/${this.host.tenant.flowUnenrollment}"
+                              href="/if/flow/${this.host.tenant.flowUnenrollment}/"
                           >
                               ${t`Delete account`}
                           </a>`

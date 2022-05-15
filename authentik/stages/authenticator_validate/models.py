@@ -7,6 +7,7 @@ from django.views import View
 from rest_framework.serializers import BaseSerializer
 
 from authentik.flows.models import NotConfiguredAction, Stage
+from authentik.lib.utils.time import timedelta_string_validator
 
 
 class DeviceClasses(models.TextChoices):
@@ -55,6 +56,17 @@ class AuthenticatorValidateStage(Stage):
         models.TextField(choices=DeviceClasses.choices),
         help_text=_("Device classes which can be used to authenticate"),
         default=default_device_classes,
+    )
+
+    last_auth_threshold = models.TextField(
+        default="seconds=0",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            (
+                "If any of the user's device has been used within this threshold, this "
+                "stage will be skipped"
+            )
+        ),
     )
 
     @property
