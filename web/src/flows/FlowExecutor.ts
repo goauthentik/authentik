@@ -40,6 +40,14 @@ import "./stages/captcha/CaptchaStage";
 import "./stages/identification/IdentificationStage";
 import "./stages/password/PasswordStage";
 
+export interface FlowWindow extends Window {
+    authentik: {
+        flow: {
+            layout: LayoutEnum;
+        };
+    };
+}
+
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
     flowSlug?: string;
@@ -412,8 +420,16 @@ export class FlowExecutor extends LitElement implements StageHost {
         ></ak-flow-inspector>`;
     }
 
+    getLayout(): string {
+        const prefilledFlow = (window as unknown as FlowWindow).authentik.flow.layout;
+        if (this.challenge) {
+            return this.challenge?.flowInfo?.layout || prefilledFlow;
+        }
+        return prefilledFlow;
+    }
+
     getLayoutClass(): string {
-        const layout = this.challenge?.flowInfo?.layout;
+        const layout = this.getLayout();
         switch (layout) {
             case LayoutEnum.ContentLeft:
                 return "pf-c-login__container";
@@ -462,11 +478,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                     <div class="pf-c-drawer__main">
                         <div class="pf-c-drawer__content">
                             <div class="pf-c-drawer__body">
-                                <div
-                                    class="pf-c-login ${ifDefined(
-                                        this.challenge?.flowInfo?.layout,
-                                    )}"
-                                >
+                                <div class="pf-c-login ${this.getLayout()}">
                                     <div class="${this.getLayoutClass()}">
                                         <header class="pf-c-login__header">
                                             <div class="pf-c-brand ak-brand">

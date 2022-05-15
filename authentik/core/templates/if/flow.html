@@ -8,6 +8,12 @@
 {% if flow.compatibility_mode and not inspector %}
 <script>ShadyDOM = { force: !navigator.webdriver };</script>
 {% endif %}
+<script>
+window.authentik = {};
+window.authentik.flow = {
+    "layout": "{{ flow.layout }}",
+};
+</script>
 {% endblock %}
 
 {% block head %}
