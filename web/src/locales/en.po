@@ -1155,6 +1155,14 @@ msgstr "Consumer key"
 msgid "Consumer secret"
 msgstr "Consumer secret"
 
+#: src/pages/flows/utils.ts
+msgid "Content left"
+msgstr "Content left"
+
+#: src/pages/flows/utils.ts
+msgid "Content right"
+msgstr "Content right"
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
@@ -2842,6 +2850,10 @@ msgstr "Launch"
 #: src/pages/applications/ApplicationForm.ts
 msgid "Launch URL"
 msgstr "Launch URL"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Layout"
+msgstr "Layout"
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Let the user identify themselves with their username or Email address."
@@ -4711,6 +4723,14 @@ msgstr "Show sources' labels"
 msgid "Shown as the Title in Flow pages."
 msgstr "Shown as the Title in Flow pages."
 
+#: src/pages/flows/utils.ts
+msgid "Sidebar left"
+msgstr "Sidebar left"
+
+#: src/pages/flows/utils.ts
+msgid "Sidebar right"
+msgstr "Sidebar right"
+
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Sign up."
 msgstr "Sign up."
@@ -4798,6 +4818,10 @@ msgstr "Spanish"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Specify multiple server URIs by separating them with a comma."
 msgstr "Specify multiple server URIs by separating them with a comma."
+
+#: src/pages/flows/utils.ts
+msgid "Stacked"
+msgstr "Stacked"
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts

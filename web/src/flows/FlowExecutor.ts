@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
@@ -20,6 +21,7 @@ import {
     CurrentTenant,
     FlowChallengeResponseRequest,
     FlowsApi,
+    LayoutEnum,
     RedirectChallenge,
     ShellChallenge,
 } from "@goauthentik/api";
@@ -99,6 +101,44 @@ export class FlowExecutor extends LitElement implements StageHost {
             }
             .pf-c-drawer__content {
                 background-color: transparent;
+            }
+            /* layouts */
+            .pf-c-login__container.content-right {
+                grid-template-areas:
+                    "header main"
+                    "footer main"
+                    ". main";
+            }
+            .pf-c-login.sidebar_left {
+                justify-content: flex-start;
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+            .pf-c-login.sidebar_left .ak-login-container,
+            .pf-c-login.sidebar_right .ak-login-container {
+                height: 100vh;
+                background-color: var(--pf-c-login__main--BackgroundColor);
+                padding-left: var(--pf-global--spacer--lg);
+                padding-right: var(--pf-global--spacer--lg);
+            }
+            .pf-c-login.sidebar_left .pf-c-list,
+            .pf-c-login.sidebar_right .pf-c-list {
+                color: #000;
+            }
+            @media (prefers-color-scheme: dark) {
+                .pf-c-login.sidebar_left .ak-login-container,
+                .pf-c-login.sidebar_right .ak-login-container {
+                    background-color: var(--ak-dark-background);
+                }
+                .pf-c-login.sidebar_left .pf-c-list,
+                .pf-c-login.sidebar_right .pf-c-list {
+                    color: var(--ak-dark-foreground);
+                }
+            }
+            .pf-c-login.sidebar_right {
+                justify-content: flex-end;
+                padding-top: 0;
+                padding-bottom: 0;
             }
         `);
     }
@@ -372,6 +412,19 @@ export class FlowExecutor extends LitElement implements StageHost {
         ></ak-flow-inspector>`;
     }
 
+    getLayoutClass(): string {
+        const layout = this.challenge?.flowInfo?.layout;
+        switch (layout) {
+            case LayoutEnum.ContentLeft:
+                return "pf-c-login__container";
+            case LayoutEnum.ContentRight:
+                return "pf-c-login__container content-right";
+            case LayoutEnum.Stacked:
+            default:
+                return "ak-login-container";
+        }
+    }
+
     render(): TemplateResult {
         return html`<div class="pf-c-background-image">
                 <svg
@@ -409,8 +462,12 @@ export class FlowExecutor extends LitElement implements StageHost {
                     <div class="pf-c-drawer__main">
                         <div class="pf-c-drawer__content">
                             <div class="pf-c-drawer__body">
-                                <div class="pf-c-login">
-                                    <div class="ak-login-container">
+                                <div
+                                    class="pf-c-login ${ifDefined(
+                                        this.challenge?.flowInfo?.layout,
+                                    )}"
+                                >
+                                    <div class="${this.getLayoutClass()}">
                                         <header class="pf-c-login__header">
                                             <div class="pf-c-brand ak-brand">
                                                 <img

@@ -2,6 +2,7 @@
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
+from django.db import models
 from django.http import JsonResponse
 from rest_framework.fields import ChoiceField, DictField
 from rest_framework.serializers import CharField
@@ -15,6 +16,16 @@ if TYPE_CHECKING:
 PLAN_CONTEXT_TITLE = "title"
 PLAN_CONTEXT_URL = "url"
 PLAN_CONTEXT_ATTRS = "attrs"
+
+
+class FlowLayout(models.TextChoices):
+    """Flow layouts"""
+
+    STACKED = "stacked"
+    CONTENT_LEFT = "content_left"
+    CONTENT_RIGHT = "content_right"
+    SIDEBAR_LEFT = "sidebar_left"
+    SIDEBAR_RIGHT = "sidebar_right"
 
 
 class ChallengeTypes(Enum):
@@ -38,6 +49,7 @@ class ContextualFlowInfo(PassiveSerializer):
     title = CharField(required=False, allow_blank=True)
     background = CharField(required=False)
     cancel_url = CharField()
+    layout = ChoiceField(choices=[(x.value, x.name) for x in FlowLayout])
 
 
 class Challenge(PassiveSerializer):

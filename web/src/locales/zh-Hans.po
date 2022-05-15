@@ -1132,6 +1132,14 @@ msgstr "消费者 Key"
 msgid "Consumer secret"
 msgstr "消费者 Secret"
 
+#: src/pages/flows/utils.ts
+msgid "Content left"
+msgstr ""
+
+#: src/pages/flows/utils.ts
+msgid "Content right"
+msgstr ""
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
@@ -2769,6 +2777,10 @@ msgstr "启动"
 #: src/pages/applications/ApplicationForm.ts
 msgid "Launch URL"
 msgstr "启动 URL"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Layout"
+msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Let the user identify themselves with their username or Email address."
@@ -4582,6 +4594,14 @@ msgstr "显示源的标签"
 msgid "Shown as the Title in Flow pages."
 msgstr "显示为流程页面中的标题。"
 
+#: src/pages/flows/utils.ts
+msgid "Sidebar left"
+msgstr ""
+
+#: src/pages/flows/utils.ts
+msgid "Sidebar right"
+msgstr ""
+
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Sign up."
 msgstr "注册。"
@@ -4663,6 +4683,10 @@ msgstr "西班牙语"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Specify multiple server URIs by separating them with a comma."
 msgstr "通过用逗号分隔多个服务器 URI 来指定它们。"
+
+#: src/pages/flows/utils.ts
+msgid "Stacked"
+msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts

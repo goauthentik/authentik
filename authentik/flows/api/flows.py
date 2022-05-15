@@ -72,6 +72,7 @@ class FlowSerializer(ModelSerializer):
             "policy_engine_mode",
             "compatibility_mode",
             "export_url",
+            "layout",
         ]
         extra_kwargs = {
             "background": {"read_only": True},
