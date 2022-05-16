@@ -2073,6 +2073,11 @@ msgstr "No se pudo eliminar la caché de directivas"
 msgid "Failed to delete {0}: {1}"
 msgstr "No se pudo eliminar {0}: {1}"
 
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Failed to disconnected source: {exc}"
+msgstr ""
+
 #: src/pages/users/UserActiveForm.ts
 msgid "Failed to update {0}: {1}"
 msgstr "No se pudo actualizar {0}: {1}"
@@ -5023,6 +5028,11 @@ msgstr "Se creó correctamente el usuario."
 #: src/elements/forms/DeleteForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr "Se eliminó correctamente {0} {1}"
+
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Successfully disconnected source"
+msgstr ""
 
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Successfully generated certificate-key pair."

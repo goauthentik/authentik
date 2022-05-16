@@ -2070,6 +2070,11 @@ msgstr "Nie udało się usunąć pamięci podręcznej zasad"
 msgid "Failed to delete {0}: {1}"
 msgstr "Nie udało się usunąć {0}: {1}"
 
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Failed to disconnected source: {exc}"
+msgstr ""
+
 #: src/pages/users/UserActiveForm.ts
 msgid "Failed to update {0}: {1}"
 msgstr "Nie udało się zaktualizować {0}: {1}"
@@ -5020,6 +5025,11 @@ msgstr "Pomyślnie utworzono użytkownika."
 #: src/elements/forms/DeleteForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr "Pomyślnie usunięto {0} {1}"
+
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Successfully disconnected source"
+msgstr ""
 
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Successfully generated certificate-key pair."

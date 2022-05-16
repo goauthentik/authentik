@@ -2117,6 +2117,11 @@ msgstr "Failed to delete policy cache"
 msgid "Failed to delete {0}: {1}"
 msgstr "Failed to delete {0}: {1}"
 
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Failed to disconnected source: {exc}"
+msgstr "Failed to disconnected source: {exc}"
+
 #: src/pages/users/UserActiveForm.ts
 msgid "Failed to update {0}: {1}"
 msgstr "Failed to update {0}: {1}"
@@ -5135,6 +5140,11 @@ msgstr "Successfully created user."
 #: src/elements/forms/DeleteForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr "Successfully deleted {0} {1}"
+
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Successfully disconnected source"
+msgstr "Successfully disconnected source"
 
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Successfully generated certificate-key pair."

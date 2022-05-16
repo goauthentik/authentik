@@ -9,6 +9,8 @@ import { SourcesApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { PlexAPIClient, popupCenterScreen } from "../../../api/Plex";
 import { EVENT_REFRESH } from "../../../constants";
+import { MessageLevel } from "../../../elements/messages/Message";
+import { showMessage } from "../../../elements/messages/MessageContainer";
 import { BaseUserSettings } from "../BaseUserSettings";
 
 @customElement("ak-user-settings-source-plex")
@@ -47,11 +49,22 @@ export class SourceSettingsPlex extends BaseUserSettings {
                         return html` <button
                             class="pf-c-button pf-m-danger"
                             @click=${() => {
-                                return new SourcesApi(
-                                    DEFAULT_CONFIG,
-                                ).sourcesUserConnectionsPlexDestroy({
-                                    id: connection.results[0].pk || 0,
-                                });
+                                return new SourcesApi(DEFAULT_CONFIG)
+                                    .sourcesUserConnectionsPlexDestroy({
+                                        id: connection.results[0].pk || 0,
+                                    })
+                                    .then(() => {
+                                        showMessage({
+                                            level: MessageLevel.info,
+                                            message: t`Successfully disconnected source`,
+                                        });
+                                    })
+                                    .catch((exc) => {
+                                        showMessage({
+                                            level: MessageLevel.error,
+                                            message: t`Failed to disconnected source: ${exc}`,
+                                        });
+                                    });
                             }}
                         >
                             ${t`Disconnect`}

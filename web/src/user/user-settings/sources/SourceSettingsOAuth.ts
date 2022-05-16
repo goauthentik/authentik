@@ -8,6 +8,8 @@ import { until } from "lit/directives/until.js";
 import { SourcesApi } from "@goauthentik/api";
 
 import { AndNext, DEFAULT_CONFIG } from "../../../api/Config";
+import { MessageLevel } from "../../../elements/messages/Message";
+import { showMessage } from "../../../elements/messages/MessageContainer";
 import { BaseUserSettings } from "../BaseUserSettings";
 
 @customElement("ak-user-settings-source-oauth")
@@ -26,11 +28,22 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                         return html` <button
                             class="pf-c-button pf-m-danger"
                             @click=${() => {
-                                return new SourcesApi(
-                                    DEFAULT_CONFIG,
-                                ).sourcesUserConnectionsOauthDestroy({
-                                    id: connection.results[0].pk || 0,
-                                });
+                                return new SourcesApi(DEFAULT_CONFIG)
+                                    .sourcesUserConnectionsOauthDestroy({
+                                        id: connection.results[0].pk || 0,
+                                    })
+                                    .then(() => {
+                                        showMessage({
+                                            level: MessageLevel.info,
+                                            message: t`Successfully disconnected source`,
+                                        });
+                                    })
+                                    .catch((exc) => {
+                                        showMessage({
+                                            level: MessageLevel.error,
+                                            message: t`Failed to disconnected source: ${exc}`,
+                                        });
+                                    });
                             }}
                         >
                             ${t`Disconnect`}
