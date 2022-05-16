@@ -2069,6 +2069,11 @@ msgstr "删除策略缓存失败"
 msgid "Failed to delete {0}: {1}"
 msgstr "删除 {0} 失败：{1}"
 
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Failed to disconnected source: {exc}"
+msgstr "解绑失败：{exc}"
+
 #: src/pages/users/UserActiveForm.ts
 msgid "Failed to update {0}: {1}"
 msgstr "更新 {0} 失败：{1}"
@@ -5076,6 +5081,11 @@ msgstr "已成功创建用户。"
 #: src/elements/forms/DeleteBulkForm.ts src/elements/forms/DeleteForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr "已成功删除 {0} {1}"
+
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Successfully disconnected source"
+msgstr "解绑成功"
 
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Successfully generated certificate-key pair."
