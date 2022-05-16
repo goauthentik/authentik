@@ -10,6 +10,10 @@ Allows users to authenticate using their Apple ID.
 An Apple developer account is required for this.
 :::
 
+:::warning
+Apple only allows OAuth with public internet facing URIs, this will not work for intranet
+:::
+
 The following placeholders will be used:
 
 -   `authentik.company` is the FQDN of the authentik install.
