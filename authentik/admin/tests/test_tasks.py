@@ -26,7 +26,7 @@ class TestAdminTasks(TestCase):
 
     def test_version_valid_response(self):
         """Test Update checker with valid response"""
-        with Mocker() as mocker:
+        with Mocker() as mocker, CONFIG.patch("disable_update_check", False):
             mocker.get("https://version.goauthentik.io/version.json", json=RESPONSE_VALID)
             update_latest_version.delay().get()
             self.assertEqual(cache.get(VERSION_CACHE_KEY), "99999999.9999999")
