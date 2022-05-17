@@ -30,21 +30,20 @@ The following placeholders will be used:
 
 Here is an example of a completed OAuth2 screen for Discord.
 
-![Example Screen](discord4.png)
+![](discord4.png)
 
 ## authentik
 
-8. Under _Resources -> Sources_ Click **Create Discord OAuth Source**
+8. Under _Directory -> Federation & Social login_ Click **Create Discord OAuth Source**
 
 9. **Name:** Choose a name (For the example I used Discord)
 10. **Slug:** discord (You can choose a different slug, if you do you will need to update the Discord redirect URLand point it to the correct slug.)
 11. **Consumer Key:** Client ID from step 4
 12. **Consumer Secret:** Client Secret from step 5
-13. **Provider type:** Discord
 
 Here is an example of a complete authentik Discord OAuth Source
 
-![Example Screen](discord5.png)
+![](discord5.png)
 
 Save, and you now have Discord as a source.
 

@@ -24,24 +24,23 @@ The following placeholders will be used:
 
 Example screenshot
 
-![Example Screen](githubdeveloperexample.png)
+![](githubdeveloperexample.png)
 
 6. Copy the **Client ID** and _save it for later_
 7. Click **Generate a new client secret** and _save it for later_ You will not be able to see the secret again, so be sure to copy it now.
 
 ## authentik
 
-8. Under _Resources -> Sources_ Click **Create Github OAuth Source**
+8. Under _Directory -> Federation & Social login_ Click **Create Github OAuth Source**
 
 9. **Name**: Choose a name (For the example I use Github)
 10. **Slug**: github (If you choose a different slug the URLs will need to be updated to reflect the change)
 11. **Consumer Key:** Client ID from step 6
 12. **Consumer Secret:** Client Secret from step 7
-13. **Provider Type:** Github
 
 Here is an example of a complete authentik Github OAuth Source
 
-![Example Screen](githubexample2.png)
+![](githubexample2.png)
 
 Save, and you now have Github as a source.
 
