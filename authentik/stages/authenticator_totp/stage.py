@@ -14,13 +14,11 @@ from authentik.flows.challenge import (
     ChallengeTypes,
     WithUserInfoChallenge,
 )
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 from authentik.stages.authenticator_totp.settings import OTP_TOTP_ISSUER
 
 LOGGER = get_logger()
-SESSION_TOTP_DEVICE = "totp_device"
 
 
 class AuthenticatorTOTPChallenge(WithUserInfoChallenge):
@@ -54,7 +52,8 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
     response_class = AuthenticatorTOTPChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
-        device: TOTPDevice = self.request.session[SESSION_TOTP_DEVICE]
+        user = self.get_pending_user()
+        device: TOTPDevice = TOTPDevice.objects.filter(user=user).first()
         return AuthenticatorTOTPChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
@@ -66,34 +65,37 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
 
     def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
         response = super().get_response_instance(data)
-        response.device = self.request.session.get(SESSION_TOTP_DEVICE)
+        user = self.get_pending_user()
+        response.device = TOTPDevice.objects.filter(user=user).first()
         return response
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
-        if not user:
+        user = self.get_pending_user()
+        if not user.is_authenticated:
             LOGGER.debug("No pending user, continuing")
-            return self.executor.stage_ok()
-
-        # Currently, this stage only supports one device per user. If the user already
-        # has a device, just skip to the next stage
-        if TOTPDevice.objects.filter(user=user).exists():
             return self.executor.stage_ok()
 
         stage: AuthenticatorTOTPStage = self.executor.current_stage
 
-        if SESSION_TOTP_DEVICE not in self.request.session:
-            device = TOTPDevice(
-                user=user, confirmed=False, digits=stage.digits, name="TOTP Authenticator"
-            )
+        devices = TOTPDevice.objects.filter(user=user)
+        # Currently, this stage only supports one device per user. If the user already
+        # has a device, just skip to the next stage
+        if devices.exists():
+            if not any(x.confirmed for x in devices):
+                return super().get(request, *args, **kwargs)
+            return self.executor.stage_ok()
 
-            self.request.session[SESSION_TOTP_DEVICE] = device
+        TOTPDevice.objects.create(
+            user=user, confirmed=False, digits=stage.digits, name="TOTP Authenticator"
+        )
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         """TOTP Token is validated by challenge"""
-        device: TOTPDevice = self.request.session[SESSION_TOTP_DEVICE]
+        user = self.get_pending_user()
+        device: TOTPDevice = TOTPDevice.objects.filter(user=user).first()
+        if not device:
+            return self.executor.stage_invalid()
         device.confirmed = True
         device.save()
-        del self.request.session[SESSION_TOTP_DEVICE]
         return self.executor.stage_ok()
