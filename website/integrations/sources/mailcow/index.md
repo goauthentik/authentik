@@ -43,7 +43,7 @@ The following placeholders will be used:
 
 Here is an example of a complete authentik Mailcow OAuth Source
 
-![Example Screen](mailcow5.png)
+![](mailcow5.png)
 
 Save, and you now have Mailcow as a source.
 
