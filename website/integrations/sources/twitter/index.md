@@ -16,22 +16,21 @@ You will need to create a new project, and OAuth credentials in the Twitter Deve
 
 1. Visit https://developer.twitter.com/ to create a new App
 2. Select an environment fitting to your use-case
-3. Give the app a name, for example *authentik*
-4. Finish setting up the app by clicking *App settings*. Any of the API keys on this screen are not used by authentik.
-
-5. Click the *Set up* button
+3. Give the app a name, for example _authentik_
+4. Finish setting up the app by clicking **App settings**. Any of the API keys on this screen are not used by authentik.
+5. Click the **Set up** button
 
 ![](./twitter1.png)
 
-6. Enable *OAuth 2.0*
-7. Set *Type of App* to *Web*
-8. Set *Callback URI / Redirect URL* to `https://authenik.company/source/oauth/callback/twitter/`
-9. Set *Website URL* to `https://authentik.company`
+6. Enable **OAuth 2.0**
+7. Set **Type of App** to _Web_
+8. Set **Callback URI / Redirect URL** to `https://authenik.company/source/oauth/callback/twitter/`
+9. Set **Website URL** to `https://authentik.company`
 
 ![](./twitter2.png)
 
-10. Confirm with *Save*
-11. Copy and store _Client ID_ and _Client Secret_ for later
+10. Confirm with **Save**
+11. Copy and store **Client ID** and **Client Secret** for later
 
 ## authentik
 
