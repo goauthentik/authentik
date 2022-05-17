@@ -54,7 +54,7 @@
     "dependencies": {
         "@babel/core": "^7.17.10",
         "@babel/plugin-proposal-decorators": "^7.17.12",
-        "@babel/plugin-transform-runtime": "^7.17.10",
+        "@babel/plugin-transform-runtime": "^7.17.12",
         "@babel/preset-env": "^7.17.10",
         "@babel/preset-typescript": "^7.16.7",
         "@formatjs/intl-listformat": "^6.5.3",
