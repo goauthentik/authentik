@@ -70,6 +70,7 @@ module.exports = {
                 "sources/oauth/index",
                 "sources/plex/index",
                 "sources/saml/index",
+                "sources/twitter/index",
             ],
         },
     ],
