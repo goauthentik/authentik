@@ -79,7 +79,6 @@ class OAuth2Client(BaseOAuthClient):
             response = self.session.request(
                 "post",
                 access_token_url,
-                auth=(self.source.consumer_key, self.source.consumer_secret),
                 data=args,
                 headers=self._default_headers,
             )
