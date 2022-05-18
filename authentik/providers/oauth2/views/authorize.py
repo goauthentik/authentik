@@ -1,6 +1,7 @@
 """authentik OAuth2 Authorization views"""
 from dataclasses import dataclass, field
 from datetime import timedelta
+from re import fullmatch
 from typing import Optional
 from urllib.parse import parse_qs, urlencode, urlparse, urlsplit, urlunsplit
 from uuid import uuid4
@@ -173,10 +174,7 @@ class OAuthAuthorizationParams:
     def check_redirect_uri(self):
         """Redirect URI validation."""
         allowed_redirect_urls = self.provider.redirect_uris.split()
-        # We don't want to actually lowercase the final URL we redirect to,
-        # we only lowercase it for comparison
-        redirect_uri = self.redirect_uri.lower()
-        if not redirect_uri:
+        if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError("", allowed_redirect_urls)
 
@@ -186,13 +184,7 @@ class OAuthAuthorizationParams:
             self.provider.save()
             allowed_redirect_urls = self.provider.redirect_uris.split()
 
-        if self.provider.redirect_uris == "*":
-            LOGGER.warning(
-                "Provider has wildcard allowed redirect_uri set, allowing all.",
-                allow=self.redirect_uri,
-            )
-            return
-        if redirect_uri not in [x.lower() for x in allowed_redirect_urls]:
+        if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
             LOGGER.warning(
                 "Invalid redirect uri",
                 redirect_uri=self.redirect_uri,

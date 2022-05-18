@@ -2,6 +2,7 @@
 from base64 import urlsafe_b64encode
 from dataclasses import InitVar, dataclass
 from hashlib import sha256
+from re import fullmatch
 from typing import Any, Optional
 
 from django.http import HttpRequest, HttpResponse
@@ -146,18 +147,13 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
         allowed_redirect_urls = self.provider.redirect_uris.split()
-        if self.provider.redirect_uris == "*":
-            LOGGER.warning(
-                "Provider has wildcard allowed redirect_uri set, allowing all.",
-                redirect=self.redirect_uri,
-            )
         # At this point, no provider should have a blank redirect_uri, in case they do
         # this will check an empty array and raise an error
-        elif self.redirect_uri not in [x.lower() for x in allowed_redirect_urls]:
+        if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
             LOGGER.warning(
                 "Invalid redirect uri",
-                redirect=self.redirect_uri,
-                expected=self.provider.redirect_uris.split(),
+                redirect_uri=self.redirect_uri,
+                excepted=allowed_redirect_urls,
             )
             raise TokenError("invalid_client")
 
