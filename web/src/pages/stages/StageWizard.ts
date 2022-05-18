@@ -6,6 +6,7 @@ import { property } from "lit/decorators.js";
 
 import AKGlobal from "../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -42,11 +43,11 @@ export class InitialStageWizardPage extends WizardPage {
     stageTypes: TypeCreate[] = [];
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, AKGlobal, PFRadio];
+        return [PFBase, PFForm, PFButton, AKGlobal, PFRadio];
     }
 
     render(): TemplateResult {
-        return html`
+        return html`<form class="pf-c-form pf-m-horizontal">
             ${this.stageTypes.map((type) => {
                 return html`<div class="pf-c-radio">
                     <input
@@ -68,7 +69,7 @@ export class InitialStageWizardPage extends WizardPage {
                     <span class="pf-c-radio__description">${type.description}</span>
                 </div>`;
             })}
-        `;
+        </form>`;
     }
 }
 
