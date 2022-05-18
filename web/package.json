@@ -96,7 +96,7 @@
         "eslint-plugin-lit": "^1.6.1",
         "flowchart.js": "^1.17.1",
         "fuse.js": "^6.6.2",
-        "lit": "^2.2.3",
+        "lit": "^2.2.4",
         "moment": "^2.29.3",
         "prettier": "^2.6.2",
         "rapidoc": "^9.2.0",
