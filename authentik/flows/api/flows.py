@@ -228,14 +228,18 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
                     DiagramElement(
                         f"stage_{s_index}_policy_{p_index}",
                         "condition",
-                        f"Policy\n{policy_binding.policy.name}",
+                        _("Policy (%(type)s)" % {"type": policy_binding.policy._meta.verbose_name})
+                        + "\n"
+                        + policy_binding.policy.name,
                     )
                 )
             body.append(
                 DiagramElement(
                     f"stage_{s_index}",
                     "operation",
-                    f"Stage\n{stage_binding.stage.name}",
+                    _("Stage (%(type)s)" % {"type": stage_binding.stage._meta.verbose_name})
+                    + "\n"
+                    + stage_binding.stage.name,
                 )
             )
         # If the 2nd last element is a policy, we need to have an item to point to
