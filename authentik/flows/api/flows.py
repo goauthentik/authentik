@@ -212,12 +212,30 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         ]
         body: list[DiagramElement] = []
         footer = []
-        # First, collect all elements we need
+        # Collect all elements we need
+        # First, policies bound to the flow itself
+        for p_index, policy_binding in enumerate(
+            get_objects_for_user(request.user, "authentik_policies.view_policybinding")
+            .filter(target=flow)
+            .exclude(policy__isnull=True)
+            .order_by("order")
+        ):
+            body.append(
+                DiagramElement(
+                    f"flow_policy_{p_index}",
+                    "condition",
+                    _("Policy (%(type)s)" % {"type": policy_binding.policy._meta.verbose_name})
+                    + "\n"
+                    + policy_binding.policy.name,
+                )
+            )
+        # Collect all stages
         for s_index, stage_binding in enumerate(
             get_objects_for_user(request.user, "authentik_flows.view_flowstagebinding")
             .filter(target=flow)
             .order_by("order")
         ):
+            # First all policies bound to stages since they execute before stages
             for p_index, policy_binding in enumerate(
                 get_objects_for_user(request.user, "authentik_policies.view_policybinding")
                 .filter(target=stage_binding)
