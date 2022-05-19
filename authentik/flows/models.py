@@ -13,6 +13,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
+from authentik.flows.challenge import FlowLayout
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.policies.models import PolicyBindingModel
 
@@ -107,6 +108,7 @@ class Flow(SerializerModel, PolicyBindingModel):
     slug = models.SlugField(unique=True, help_text=_("Visible in the URL."))
 
     title = models.TextField(help_text=_("Shown as the Title in Flow pages."))
+    layout = models.TextField(default=FlowLayout.STACKED, choices=FlowLayout.choices)
 
     designation = models.CharField(
         max_length=100,

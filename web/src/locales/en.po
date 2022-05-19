@@ -1196,6 +1196,14 @@ msgstr "Consumer key"
 msgid "Consumer secret"
 msgstr "Consumer secret"
 
+#: src/pages/flows/utils.ts
+msgid "Content left"
+msgstr "Content left"
+
+#: src/pages/flows/utils.ts
+msgid "Content right"
+msgstr "Content right"
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
@@ -2165,6 +2173,11 @@ msgstr "Failed to delete policy cache"
 msgid "Failed to delete {0}: {1}"
 msgstr "Failed to delete {0}: {1}"
 
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Failed to disconnected source: {exc}"
+msgstr "Failed to disconnected source: {exc}"
+
 #: src/pages/users/UserActiveForm.ts
 msgid "Failed to update {0}: {1}"
 msgstr "Failed to update {0}: {1}"
@@ -2828,13 +2841,14 @@ msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
 msgstr "LDAP"
 
 #: src/pages/outposts/OutpostForm.ts
-msgid "LDAP (Technical preview)"
-msgstr "LDAP (Technical preview)"
+#~ msgid "LDAP (Technical preview)"
+#~ msgstr "LDAP (Technical preview)"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "LDAP Attribute mapping"
@@ -2899,9 +2913,9 @@ msgstr "Launch"
 msgid "Launch URL"
 msgstr "Launch URL"
 
-#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-#~ msgid "Legacy applications which don't natively support SSO"
-#~ msgstr "Legacy applications which don't natively support SSO"
+#: src/pages/flows/FlowForm.ts
+msgid "Layout"
+msgstr "Layout"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Legacy applications which don't natively support SSO."
@@ -3234,14 +3248,6 @@ msgstr "Model updated"
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Modern applications, APIs and Single-page applications."
 msgstr "Modern applications, APIs and Single-page applications."
-
-#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-#~ msgid "Modern applications, APIs and Single-page=applications."
-#~ msgstr "Modern applications, APIs and Single-page=applications."
-
-#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-#~ msgid "Modern applications, APIs and Single=page=applications"
-#~ msgstr "Modern applications, APIs and Single=page=applications"
 
 #: 
 #~ msgid "Monitor"
@@ -4099,10 +4105,6 @@ msgstr "Property mappings used to user creation."
 msgid "Protocol Settings"
 msgstr "Protocol Settings"
 
-#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-#~ msgid "Protocol details"
-#~ msgstr "Protocol details"
-
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -4821,6 +4823,14 @@ msgstr "Show sources' labels"
 msgid "Shown as the Title in Flow pages."
 msgstr "Shown as the Title in Flow pages."
 
+#: src/pages/flows/utils.ts
+msgid "Sidebar left"
+msgstr "Sidebar left"
+
+#: src/pages/flows/utils.ts
+msgid "Sidebar right"
+msgstr "Sidebar right"
+
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Sign up."
 msgstr "Sign up."
@@ -4912,6 +4922,10 @@ msgstr "Spanish"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Specify multiple server URIs by separating them with a comma."
 msgstr "Specify multiple server URIs by separating them with a comma."
+
+#: src/pages/flows/utils.ts
+msgid "Stacked"
+msgstr "Stacked"
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
@@ -5225,6 +5239,11 @@ msgstr "Successfully created user."
 #: src/elements/forms/DeleteForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr "Successfully deleted {0} {1}"
+
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Successfully disconnected source"
+msgstr "Successfully disconnected source"
 
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Successfully generated certificate-key pair."

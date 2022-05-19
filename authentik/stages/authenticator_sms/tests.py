@@ -46,6 +46,7 @@ class AuthenticatorSMSStageTests(APITestCase):
                     "background": self.flow.background_url,
                     "cancel_url": reverse("authentik_flows:cancel"),
                     "title": "",
+                    "layout": "stacked",
                 },
                 "pending_user": "foo",
                 "pending_user_avatar": "/static/dist/assets/images/user_default.png",

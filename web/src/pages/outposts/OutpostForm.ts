@@ -129,7 +129,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         value=${OutpostTypeEnum.Ldap}
                         ?selected=${this.instance?.type === OutpostTypeEnum.Ldap}
                     >
-                        ${t`LDAP (Technical preview)`}
+                        ${t`LDAP`}
                     </option>
                 </select>
             </ak-form-element-horizontal>

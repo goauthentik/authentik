@@ -55,6 +55,7 @@ class TestFlowInspector(APITestCase):
                     "background": flow.background_url,
                     "cancel_url": reverse("authentik_flows:cancel"),
                     "title": "",
+                    "layout": "stacked",
                 },
                 "type": ChallengeTypes.NATIVE.value,
                 "password_fields": False,

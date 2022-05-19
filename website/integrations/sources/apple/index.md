@@ -50,7 +50,7 @@ The following placeholders will be used:
 
 ## authentik
 
-20. Under _Resources -> Sources_ Click **Create Apple OAuth Source**
+20. Under _Directory -> Federation & Social login_ Click **Create Apple OAuth Source**
 
 21. **Name**: `Apple`
 22. **Slug**: `apple`

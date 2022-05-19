@@ -1178,6 +1178,14 @@ msgstr "Tüketici anahtarı"
 msgid "Consumer secret"
 msgstr "Tüketici sırrı"
 
+#: src/pages/flows/utils.ts
+msgid "Content left"
+msgstr ""
+
+#: src/pages/flows/utils.ts
+msgid "Content right"
+msgstr ""
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
@@ -2121,6 +2129,11 @@ msgstr "İlke önbelleği silinemedi"
 msgid "Failed to delete {0}: {1}"
 msgstr "{0} silinemedi: {1}"
 
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Failed to disconnected source: {exc}"
+msgstr ""
+
 #: src/pages/users/UserActiveForm.ts
 msgid "Failed to update {0}: {1}"
 msgstr "{0} güncellenemedi: {1}"
@@ -2771,13 +2784,14 @@ msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
 msgstr "LDAP"
 
 #: src/pages/outposts/OutpostForm.ts
-msgid "LDAP (Technical preview)"
-msgstr "LDAP (Teknik önizleme)"
+#~ msgid "LDAP (Technical preview)"
+#~ msgstr "LDAP (Teknik önizleme)"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "LDAP Attribute mapping"
@@ -2842,9 +2856,9 @@ msgstr "Eriş"
 msgid "Launch URL"
 msgstr "URL Başlat"
 
-#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-#~ msgid "Legacy applications which don't natively support SSO"
-#~ msgstr ""
+#: src/pages/flows/FlowForm.ts
+msgid "Layout"
+msgstr ""
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Legacy applications which don't natively support SSO."
@@ -3176,14 +3190,6 @@ msgstr "Model güncellendi"
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Modern applications, APIs and Single-page applications."
 msgstr ""
-
-#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-#~ msgid "Modern applications, APIs and Single-page=applications."
-#~ msgstr ""
-
-#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-#~ msgid "Modern applications, APIs and Single=page=applications"
-#~ msgstr ""
 
 #~ msgid "Monitor"
 #~ msgstr "Monitör"
@@ -4025,10 +4031,6 @@ msgstr "Kullanıcı oluşturma için kullanılan özellik eşlemeleri."
 msgid "Protocol Settings"
 msgstr "Protokol Ayarları"
 
-#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-#~ msgid "Protocol details"
-#~ msgstr ""
-
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -4728,6 +4730,14 @@ msgstr "Kaynakların etiketlerini göster"
 msgid "Shown as the Title in Flow pages."
 msgstr "Akış sayfalarında Başlık olarak gösterilir."
 
+#: src/pages/flows/utils.ts
+msgid "Sidebar left"
+msgstr ""
+
+#: src/pages/flows/utils.ts
+msgid "Sidebar right"
+msgstr ""
+
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Sign up."
 msgstr "Kaydolun."
@@ -4813,6 +4823,10 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Specify multiple server URIs by separating them with a comma."
 msgstr "Birden çok sunucu URI'lerini virgülle ayırarak belirtin."
+
+#: src/pages/flows/utils.ts
+msgid "Stacked"
+msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
@@ -5115,6 +5129,11 @@ msgstr "Kullanıcı başarıyla oluşturuldu."
 #: src/elements/forms/DeleteForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr "{0} {1} başarıyla silindi"
+
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Successfully disconnected source"
+msgstr ""
 
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Successfully generated certificate-key pair."

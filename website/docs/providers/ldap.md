@@ -2,10 +2,6 @@
 title: LDAP Provider
 ---
 
-:::info
-This feature is still in technical preview, so please report any Bugs you run into on [GitHub](https://github.com/goauthentik/authentik/issues)
-:::
-
 You can configure an LDAP Provider for applications that don't support any newer protocols or require LDAP.
 
 :::info

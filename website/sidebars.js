@@ -84,6 +84,7 @@ module.exports = {
             label: "Flows",
             items: [
                 "flow/index",
+                "flow/layouts",
                 "flow/inspector",
                 "flow/examples",
                 {

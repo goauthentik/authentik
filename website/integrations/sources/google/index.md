@@ -17,23 +17,23 @@ You will need to create a new project, and OAuth credentials in the Google Devel
 1. Visit https://console.developers.google.com/ to create a new project
 2. Create a New project.
 
-![Example Screen](googledeveloper1.png)
+![](googledeveloper1.png)
 
 3. **Project Name**: Choose a name
 4. **Organization**: Leave as default if unsure
 5. **Location**: Leave as default if unsure
 
-![Example Screen](googledeveloper2.png)
+![](googledeveloper2.png)
 
 6. Click **Create**
 7. Choose your project from the drop down at the top
 8. Click the **Credentials** menu item on the left. It looks like a key.
 
-![Example Screen](googledeveloper3.png)
+![](googledeveloper3.png)
 
 9. Click on **Configure Consent Screen**
 
-![Example Screen](googledeveloper4.png)
+![](googledeveloper4.png)
 
 10. **User Type:** If you do not have a Google Workspace (GSuite) account choose _External_. If you do have a Google Workspace (Gsuite) account and want to limit access to only users inside of your organization choose _Internal_
 
@@ -50,30 +50,29 @@ _I'm only going to list the mandatory/important fields to complete._
 19. Click **Create Credentials** on the top of the screen
 20. Choose **OAuth Client ID**
 
-![Example Screen](googledeveloper5.png)
+![](googledeveloper5.png)
 
 21. **Application Type:** Web Application
 22. **Name:** Choose a name
 23. **Authorized redirect URIs:** `https://authenik.company/source/oauth/callback/google/`
 
-![Example Screen](googledeveloper6.png)
+![](googledeveloper6.png)
 
 24. Click **Create**
 25. Copy and store _Your Client ID_ and _Your Client Secret_ for later
 
 ## authentik
 
-26. Under _Resources -> Sources_ Click **Create Google OAuth Source**
+26. Under _Directory -> Federation & Social login_ Click **Create Google OAuth Source**
 
 27. **Name**: Choose a name (For the example I use Google)
 28. **Slug**: google (If you choose a different slug the URLs will need to be updated to reflect the change)
 29. **Consumer Key:** Your Client ID from step 25
 30. **Consumer Secret:** Your Client Secret from step 25
-31. **Provider Type:** Google
 
 Here is an example of a complete authentik Google OAuth Source
 
-![Example Screen](authentiksource.png)
+![](authentiksource.png)
 
 Save, and you now have Google as a source.
 

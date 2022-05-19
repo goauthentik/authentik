@@ -30,7 +30,7 @@ from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.managed.manager import ObjectManager
 
-RETRIES = int(environ.get("RETRIES", "5"))
+RETRIES = int(environ.get("RETRIES", "3"))
 
 
 def get_docker_tag() -> str:

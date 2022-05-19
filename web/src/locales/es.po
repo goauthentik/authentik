@@ -1178,6 +1178,14 @@ msgstr "Clave de consumidor"
 msgid "Consumer secret"
 msgstr "Secreto del consumidor"
 
+#: src/pages/flows/utils.ts
+msgid "Content left"
+msgstr ""
+
+#: src/pages/flows/utils.ts
+msgid "Content right"
+msgstr ""
+
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
@@ -2121,6 +2129,11 @@ msgstr "No se pudo eliminar la caché de directivas"
 msgid "Failed to delete {0}: {1}"
 msgstr "No se pudo eliminar {0}: {1}"
 
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Failed to disconnected source: {exc}"
+msgstr ""
+
 #: src/pages/users/UserActiveForm.ts
 msgid "Failed to update {0}: {1}"
 msgstr "No se pudo actualizar {0}: {1}"
@@ -2770,13 +2783,14 @@ msgid "Kubeconfig"
 msgstr "Configuración de Kube"
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
 msgstr "LDAP"
 
 #: src/pages/outposts/OutpostForm.ts
-msgid "LDAP (Technical preview)"
-msgstr "LDAP (vista previa técnica)"
+#~ msgid "LDAP (Technical preview)"
+#~ msgstr "LDAP (vista previa técnica)"
 
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "LDAP Attribute mapping"
@@ -2841,9 +2855,9 @@ msgstr "Lanzamiento"
 msgid "Launch URL"
 msgstr "URL de lanzamiento"
 
-#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-#~ msgid "Legacy applications which don't natively support SSO"
-#~ msgstr ""
+#: src/pages/flows/FlowForm.ts
+msgid "Layout"
+msgstr ""
 
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Legacy applications which don't natively support SSO."
@@ -3175,14 +3189,6 @@ msgstr "Modelo actualizado"
 #: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Modern applications, APIs and Single-page applications."
 msgstr ""
-
-#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-#~ msgid "Modern applications, APIs and Single-page=applications."
-#~ msgstr ""
-
-#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-#~ msgid "Modern applications, APIs and Single=page=applications"
-#~ msgstr ""
 
 #~ msgid "Monitor"
 #~ msgstr "Monitor"
@@ -4023,10 +4029,6 @@ msgstr "Asignaciones de propiedades utilizadas para la creación de usuarios."
 msgid "Protocol Settings"
 msgstr "Configuración de protocolo"
 
-#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
-#~ msgid "Protocol details"
-#~ msgstr ""
-
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -4726,6 +4728,14 @@ msgstr "Mostrar etiquetas de fuentes"
 msgid "Shown as the Title in Flow pages."
 msgstr "Se muestra como título en las páginas de flujo."
 
+#: src/pages/flows/utils.ts
+msgid "Sidebar left"
+msgstr ""
+
+#: src/pages/flows/utils.ts
+msgid "Sidebar right"
+msgstr ""
+
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Sign up."
 msgstr "Inscríbete."
@@ -4811,6 +4821,10 @@ msgstr ""
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Specify multiple server URIs by separating them with a comma."
 msgstr "Especifique los URI de varios servidores separándolos con una coma."
+
+#: src/pages/flows/utils.ts
+msgid "Stacked"
+msgstr ""
 
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
@@ -5113,6 +5127,11 @@ msgstr "Se creó correctamente el usuario."
 #: src/elements/forms/DeleteForm.ts
 msgid "Successfully deleted {0} {1}"
 msgstr "Se eliminó correctamente {0} {1}"
+
+#: src/user/user-settings/sources/SourceSettingsOAuth.ts
+#: src/user/user-settings/sources/SourceSettingsPlex.ts
+msgid "Successfully disconnected source"
+msgstr ""
 
 #: src/pages/crypto/CertificateGenerateForm.ts
 msgid "Successfully generated certificate-key pair."
