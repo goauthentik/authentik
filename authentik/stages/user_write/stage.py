@@ -48,15 +48,8 @@ class UserWriteStageView(StageView):
         """Wrapper for post requests"""
         return self.get(request)
 
-    def get(self, request: HttpRequest) -> HttpResponse:
-        """Save data in the current flow to the currently pending user. If no user is pending,
-        a new user is created."""
-        if PLAN_CONTEXT_PROMPT not in self.executor.plan.context:
-            message = _("No Pending data.")
-            messages.error(request, message)
-            LOGGER.debug(message)
-            return self.executor.stage_invalid()
-        data = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
+    def ensure_user(self) -> tuple[User, bool]:
+        """Ensure a user exists"""
         user_created = False
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
@@ -69,16 +62,13 @@ class UserWriteStageView(StageView):
             )
             user_created = True
         user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-        # Before we change anything, check if the user is the same as in the request
-        # and we're updating a password. In that case we need to update the session hash
-        # Also check that we're not currently impersonating, so we don't update the session
-        should_update_seesion = False
-        if (
-            any("password" in x for x in data.keys())
-            and self.request.user.pk == user.pk
-            and SESSION_IMPERSONATE_USER not in self.request.session
-        ):
-            should_update_seesion = True
+        return user, user_created
+
+    def update_user(self, user: User):
+        """Update `user` with data from plan context
+
+        Only simple attributes are updated, nothing which requires a foreign key or m2m"""
+        data = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
         for key, value in data.items():
             setter_name = f"set_{key}"
             # Check if user has a setter for this key, like set_password
@@ -99,10 +89,6 @@ class UserWriteStageView(StageView):
                     LOGGER.debug("discarding key", key=key)
                     continue
                 UserWriteStageView.write_attribute(user, key, value)
-        # Extra check to prevent flows from saving a user with a blank username
-        if user.username == "":
-            LOGGER.warning("Aborting write to empty username", user=user)
-            return self.executor.stage_invalid()
         # Check if we're writing from a source, and save the source to the attributes
         if PLAN_CONTEXT_SOURCES_CONNECTION in self.executor.plan.context:
             if USER_ATTRIBUTE_SOURCES not in user.attributes or not isinstance(
@@ -113,6 +99,32 @@ class UserWriteStageView(StageView):
                 PLAN_CONTEXT_SOURCES_CONNECTION
             ]
             user.attributes[USER_ATTRIBUTE_SOURCES].append(connection.source.name)
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        """Save data in the current flow to the currently pending user. If no user is pending,
+        a new user is created."""
+        if PLAN_CONTEXT_PROMPT not in self.executor.plan.context:
+            message = _("No Pending data.")
+            messages.error(request, message)
+            LOGGER.debug(message)
+            return self.executor.stage_invalid()
+        data = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
+        user, user_created = self.ensure_user()
+        # Before we change anything, check if the user is the same as in the request
+        # and we're updating a password. In that case we need to update the session hash
+        # Also check that we're not currently impersonating, so we don't update the session
+        should_update_session = False
+        if (
+            any("password" in x for x in data.keys())
+            and self.request.user.pk == user.pk
+            and SESSION_IMPERSONATE_USER not in self.request.session
+        ):
+            should_update_session = True
+        self.update_user(user)
+        # Extra check to prevent flows from saving a user with a blank username
+        if user.username == "":
+            LOGGER.warning("Aborting write to empty username", user=user)
+            return self.executor.stage_invalid()
         try:
             with transaction.atomic():
                 user.save()
@@ -125,7 +137,7 @@ class UserWriteStageView(StageView):
             return self.executor.stage_invalid()
         user_write.send(sender=self, request=request, user=user, data=data, created=user_created)
         # Check if the password has been updated, and update the session auth hash
-        if should_update_seesion:
+        if should_update_session:
             update_session_auth_hash(self.request, user)
             LOGGER.debug("Updated session hash", user=user)
         LOGGER.debug(
