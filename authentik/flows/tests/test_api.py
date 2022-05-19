@@ -10,11 +10,11 @@ from authentik.policies.models import PolicyBinding
 from authentik.stages.dummy.models import DummyStage
 
 DIAGRAM_EXPECTED = """st=>start: Start
-stage_0=>operation: Stage
+stage_0=>operation: Stage (Dummy Stage)
 dummy1
-stage_1_policy_0=>condition: Policy
-None
-stage_1=>operation: Stage
+stage_1_policy_0=>condition: Policy (Dummy Policy)
+test
+stage_1=>operation: Stage (Dummy Stage)
 dummy2
 e=>end: End|future
 st(right)->stage_0
@@ -55,7 +55,7 @@ class TestFlowsAPI(APITestCase):
             slug="test-default-context",
             designation=FlowDesignation.AUTHENTICATION,
         )
-        false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
+        false_policy = DummyPolicy.objects.create(name="test", result=False, wait_min=1, wait_max=2)
 
         FlowStageBinding.objects.create(
             target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
