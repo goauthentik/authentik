@@ -20,6 +20,7 @@ from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.signals import user_write
 
 LOGGER = get_logger()
+PLAN_CONTEXT_GROUPS = "group"
 
 
 class UserWriteStageView(StageView):
@@ -117,7 +118,9 @@ class UserWriteStageView(StageView):
                 user.save()
                 if self.executor.current_stage.create_users_group:
                     user.ak_groups.add(self.executor.current_stage.create_users_group)
-        except IntegrityError as exc:
+                if PLAN_CONTEXT_GROUPS in self.executor.plan.context:
+                    user.ak_groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
+        except (IntegrityError, ValueError, TypeError) as exc:
             LOGGER.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid()
         user_write.send(sender=self, request=request, user=user, data=data, created=user_created)
