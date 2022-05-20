@@ -7,7 +7,6 @@ from typing import Any, Optional
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import HttpResponse
-from django.urls import reverse
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
 from rest_framework.fields import BooleanField, CharField, DictField, ListField
@@ -25,7 +24,8 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
-from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
+from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_GET
+from authentik.lib.utils.urls import reverse_with_qs
 from authentik.sources.oauth.types.apple import AppleLoginChallenge
 from authentik.sources.plex.models import PlexAuthenticationChallenge
 from authentik.stages.identification.models import IdentificationStage
@@ -185,20 +185,24 @@ class IdentificationStageView(ChallengeStageView):
             challenge.initial_data["application_pre"] = self.request.session.get(
                 SESSION_KEY_APPLICATION_PRE, Application()
             ).name
+        get_qs = self.request.session.get(SESSION_KEY_GET, self.request.GET)
         # Check for related enrollment and recovery flow, add URL to view
         if current_stage.enrollment_flow:
-            challenge.initial_data["enroll_url"] = reverse(
+            challenge.initial_data["enroll_url"] = reverse_with_qs(
                 "authentik_core:if-flow",
+                query=get_qs,
                 kwargs={"flow_slug": current_stage.enrollment_flow.slug},
             )
         if current_stage.recovery_flow:
-            challenge.initial_data["recovery_url"] = reverse(
+            challenge.initial_data["recovery_url"] = reverse_with_qs(
                 "authentik_core:if-flow",
+                query=get_qs,
                 kwargs={"flow_slug": current_stage.recovery_flow.slug},
             )
         if current_stage.passwordless_flow:
-            challenge.initial_data["passwordless_url"] = reverse(
+            challenge.initial_data["passwordless_url"] = reverse_with_qs(
                 "authentik_core:if-flow",
+                query=get_qs,
                 kwargs={"flow_slug": current_stage.passwordless_flow.slug},
             )
 
