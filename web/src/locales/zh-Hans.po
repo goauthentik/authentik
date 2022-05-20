@@ -930,6 +930,10 @@ msgstr "清除缓存"
 msgid "Clear icon"
 msgstr "清除图标"
 
+#: src/elements/table/TablePage.ts
+msgid "Clear search"
+msgstr ""
+
 #: src/elements/forms/HorizontalFormElement.ts
 msgid "Click to change value"
 msgstr "点击以更改值"

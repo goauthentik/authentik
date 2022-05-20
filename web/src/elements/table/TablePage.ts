@@ -9,6 +9,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
 
 import "../../elements/PageHeader";
+import { updateURLParams } from "../router/RouteMatch";
 import { Table } from "./Table";
 
 export abstract class TablePage<T> extends Table<T> {
@@ -33,9 +34,31 @@ export abstract class TablePage<T> extends Table<T> {
             ${inner
                 ? inner
                 : html`<ak-empty-state icon=${this.pageIcon()} header="${t`No objects found.`}">
-                      <div slot="body">${this.renderObjectCreate()}</div>
+                      <div slot="body">
+                          ${this.searchEnabled() ? this.renderEmptyClearSearch() : html``}
+                      </div>
+                      <div slot="primary">${this.renderObjectCreate()}</div>
                   </ak-empty-state>`}
         `);
+    }
+
+    renderEmptyClearSearch(): TemplateResult {
+        if (this.search === "") {
+            return html``;
+        }
+        return html`<button
+            @click=${() => {
+                this.search = "";
+                this.requestUpdate();
+                this.fetch();
+                updateURLParams({
+                    search: "",
+                });
+            }}
+            class="pf-c-button pf-m-link"
+        >
+            ${t`Clear search`}
+        </button>`;
     }
 
     renderObjectCreate(): TemplateResult {

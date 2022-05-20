@@ -946,6 +946,10 @@ msgstr "Clear cache"
 msgid "Clear icon"
 msgstr "Clear icon"
 
+#: src/elements/table/TablePage.ts
+msgid "Clear search"
+msgstr "Clear search"
+
 #: src/elements/forms/HorizontalFormElement.ts
 msgid "Click to change value"
 msgstr "Click to change value"
