@@ -931,6 +931,10 @@ msgstr "Wyczyść pamięć podręczną"
 msgid "Clear icon"
 msgstr "Wyczyść ikonę"
 
+#: src/elements/table/TablePage.ts
+msgid "Clear search"
+msgstr ""
+
 #: src/elements/forms/HorizontalFormElement.ts
 msgid "Click to change value"
 msgstr "Kliknij, aby zmienić wartość"

@@ -934,6 +934,10 @@ msgstr "Önbelleği temizle"
 msgid "Clear icon"
 msgstr "Simgeyi temizle"
 
+#: src/elements/table/TablePage.ts
+msgid "Clear search"
+msgstr ""
+
 #: src/elements/forms/HorizontalFormElement.ts
 msgid "Click to change value"
 msgstr "Değeri değiştirmek için tıklayın"
