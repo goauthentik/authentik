@@ -98,7 +98,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	}
 	a.sessions = a.getStore(p, externalHost)
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
-		s, err := a.sessions.Get(r, constants.SeesionName)
+		s, err := a.sessions.Get(r, constants.SessionName)
 		if err != nil {
 			return l
 		}
@@ -199,7 +199,7 @@ func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 	//TODO: Token revocation
-	s, err := a.sessions.Get(r, constants.SeesionName)
+	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
 		http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
 		return

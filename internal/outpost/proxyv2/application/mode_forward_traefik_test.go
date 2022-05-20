@@ -47,7 +47,7 @@ func TestForwardHandleTraefik_Single_Headers(t *testing.T) {
 	loc, _ := rr.Result().Location()
 	assert.Equal(t, loc.String(), "http://test.goauthentik.io/outpost.goauthentik.io/start")
 
-	s, _ := a.sessions.Get(req, constants.SeesionName)
+	s, _ := a.sessions.Get(req, constants.SessionName)
 	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
 }
 
@@ -61,7 +61,7 @@ func TestForwardHandleTraefik_Single_Claims(t *testing.T) {
 	rr := httptest.NewRecorder()
 	a.forwardHandleTraefik(rr, req)
 
-	s, _ := a.sessions.Get(req, constants.SeesionName)
+	s, _ := a.sessions.Get(req, constants.SessionName)
 	s.Values[constants.SessionClaims] = Claims{
 		Sub: "foo",
 		Proxy: &ProxyClaims{
@@ -127,6 +127,6 @@ func TestForwardHandleTraefik_Domain_Header(t *testing.T) {
 	loc, _ := rr.Result().Location()
 	assert.Equal(t, "http://auth.test.goauthentik.io/outpost.goauthentik.io/start", loc.String())
 
-	s, _ := a.sessions.Get(req, constants.SeesionName)
+	s, _ := a.sessions.Get(req, constants.SessionName)
 	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
 }
