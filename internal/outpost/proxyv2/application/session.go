@@ -28,7 +28,6 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		} else {
 			rs.SetMaxAge(0)
 		}
-		rs.Options.Path = externalHost.Path
 		rs.Options.Domain = *p.CookieDomain
 		a.log.Trace("using redis session backend")
 		store = rs
@@ -49,7 +48,6 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		} else {
 			cs.MaxAge(0)
 		}
-		cs.Options.Path = externalHost.Path
 		cs.Options.Domain = *p.CookieDomain
 		a.log.WithField("dir", dir).Trace("using filesystem session backend")
 		store = cs
