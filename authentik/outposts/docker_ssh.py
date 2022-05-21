@@ -16,6 +16,10 @@ def opener(path, flags):
     return os.open(path, flags, 0o700)
 
 
+class SSHManagedExternallyException(DockerException):
+    """Raised when the ssh config file is managed externally."""
+
+
 class DockerInlineSSH:
     """Create paramiko ssh config from CertificateKeyPair"""
 
@@ -29,9 +33,15 @@ class DockerInlineSSH:
     def __init__(self, host: str, keypair: CertificateKeyPair) -> None:
         self.host = host
         self.keypair = keypair
+        self.config_path = Path("~/.ssh/config").expanduser()
+        if self.config_path.exists() and HEADER not in self.config_path.read_text(encoding="utf-8"):
+            # SSH Config file already exists and there's no header from us, meaning that it's
+            # been externally mapped into the container for more complex configs
+            raise SSHManagedExternallyException(
+                "SSH Config exists and does not contain authentik header"
+            )
         if not self.keypair:
             raise DockerException("keypair must be set for SSH connections")
-        self.config_path = Path("~/.ssh/config").expanduser()
         self.header = f"{HEADER} - {self.host}\n"
 
     def write_config(self, key_path: str) -> bool:
