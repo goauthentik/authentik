@@ -6,6 +6,8 @@ import { CoreApi } from "@goauthentik/api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ERROR_CLASS, SECONDARY_CLASS, SUCCESS_CLASS } from "../../constants";
 import { PFSize } from "../Spinner";
+import { MessageLevel } from "../messages/Message";
+import { showMessage } from "../messages/MessageContainer";
 import { ActionButton } from "./ActionButton";
 
 @customElement("ak-token-copy-button")
@@ -90,7 +92,14 @@ export class TokenCopyButton extends ActionButton {
                                 this.setDone(SUCCESS_CLASS);
                             });
                         })
-                        .catch((err: Response | undefined) => {
+                        .catch((err: Response | Error) => {
+                            if (err instanceof Error) {
+                                showMessage({
+                                    level: MessageLevel.error,
+                                    message: err.message,
+                                });
+                                return;
+                            }
                             return err?.json().then((errResp) => {
                                 this.setDone(ERROR_CLASS);
                                 throw new Error(errResp["detail"]);
