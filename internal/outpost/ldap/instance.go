@@ -38,7 +38,7 @@ type ProviderInstance struct {
 	outpostPk           int32
 	searchAllowedGroups []*strfmt.UUID
 	boundUsersMutex     sync.RWMutex
-	boundUsers          map[string]flags.UserFlags
+	boundUsers          map[string]*flags.UserFlags
 
 	uidStartNumber int32
 	gidStartNumber int32
@@ -68,16 +68,19 @@ func (pi *ProviderInstance) GetOutpostName() string {
 	return pi.outpostName
 }
 
-func (pi *ProviderInstance) GetFlags(dn string) (flags.UserFlags, bool) {
+func (pi *ProviderInstance) GetFlags(dn string) *flags.UserFlags {
 	pi.boundUsersMutex.RLock()
+	defer pi.boundUsersMutex.RUnlock()
 	flags, ok := pi.boundUsers[dn]
-	pi.boundUsersMutex.RUnlock()
-	return flags, ok
+	if !ok {
+		return nil
+	}
+	return flags
 }
 
 func (pi *ProviderInstance) SetFlags(dn string, flag flags.UserFlags) {
 	pi.boundUsersMutex.Lock()
-	pi.boundUsers[dn] = flag
+	pi.boundUsers[dn] = &flag
 	pi.boundUsersMutex.Unlock()
 }
 
