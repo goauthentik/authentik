@@ -936,6 +936,10 @@ msgstr "清除缓存"
 msgid "Clear icon"
 msgstr "清除图标"
 
+#: src/elements/table/TablePage.ts
+msgid "Clear search"
+msgstr "清除搜索"
+
 #: src/elements/forms/HorizontalFormElement.ts
 msgid "Click to change value"
 msgstr "点击以更改值"
@@ -3368,7 +3372,7 @@ msgstr "没有日志消息。"
 msgid "No matching events could be found."
 msgstr "未找到匹配的事件"
 
-#: src/elements/table/Table.ts
+#: src/elements/table/Table.ts src/elements/table/TablePage.ts
 msgid "No objects found."
 msgstr "未找到对象。"
 
