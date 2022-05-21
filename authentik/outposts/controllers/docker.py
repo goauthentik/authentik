@@ -49,7 +49,6 @@ class DockerClient(UpstreamDockerClient, BaseClient):
                 except SSHManagedExternallyException as exc:
                     # SSH config is managed externally
                     self.logger.info(f"SSH Managed externally: {exc}")
-                    pass
             else:
                 self.tls = DockerInlineTLS(
                     verification_kp=connection.tls_verification,

@@ -34,7 +34,7 @@ class DockerInlineSSH:
         self.host = host
         self.keypair = keypair
         self.config_path = Path("~/.ssh/config").expanduser()
-        if self.config_path.exists() and HEADER not in self.config_path.read_text():
+        if self.config_path.exists() and HEADER not in self.config_path.read_text(encoding="utf-8"):
             # SSH Config file already exists and there's no header from us, meaning that it's
             # been externally mapped into the container for more complex configs
             raise SSHManagedExternallyException(
