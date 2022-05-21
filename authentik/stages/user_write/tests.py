@@ -16,7 +16,7 @@ from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserWriteStage
-from authentik.stages.user_write.stage import UserWriteStageView
+from authentik.stages.user_write.stage import PLAN_CONTEXT_GROUPS, UserWriteStageView
 
 
 class TestUserWriteStage(FlowTestCase):
@@ -30,6 +30,7 @@ class TestUserWriteStage(FlowTestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.group = Group.objects.create(name="test-group")
+        self.other_group = Group.objects.create(name="other-group")
         self.stage = UserWriteStage.objects.create(
             name="write", create_users_as_inactive=True, create_users_group=self.group
         )
@@ -49,6 +50,7 @@ class TestUserWriteStage(FlowTestCase):
             "email": "test@beryju.org",
             "password": password,
         }
+        plan.context[PLAN_CONTEXT_GROUPS] = [self.other_group]
         plan.context[PLAN_CONTEXT_SOURCES_CONNECTION] = UserSourceConnection(source=self.source)
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -63,7 +65,7 @@ class TestUserWriteStage(FlowTestCase):
         user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(password))
-        self.assertEqual(list(user_qs.first().ak_groups.all()), [self.group])
+        self.assertEqual(list(user_qs.first().ak_groups.all()), [self.group, self.other_group])
         self.assertEqual(user_qs.first().attributes, {USER_ATTRIBUTE_SOURCES: [self.source.name]})
 
     def test_user_update(self):

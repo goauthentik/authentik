@@ -48,8 +48,8 @@ func (sb *SessionBinder) Bind(username string, req *bind.Request) (ldap.LDAPResu
 	result, err := sb.DirectBinder.Bind(username, req)
 	// Only cache the result if there's been an error
 	if err == nil {
-		flags, ok := sb.si.GetFlags(req.BindDN)
-		if !ok {
+		flags := sb.si.GetFlags(req.BindDN)
+		if flags == nil {
 			sb.log.Error("user flags not set after bind")
 			return result, err
 		}

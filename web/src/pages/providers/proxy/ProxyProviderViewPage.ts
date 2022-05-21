@@ -172,7 +172,9 @@ export class ProxyProviderViewPage extends LitElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.externalHost}
+                                        <a target="_blank" href="${this.provider.externalHost}"
+                                            >${this.provider.externalHost}</a
+                                        >
                                     </div>
                                 </dd>
                             </div>

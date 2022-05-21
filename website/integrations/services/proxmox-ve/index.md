@@ -27,7 +27,6 @@ Under _Providers_, create an OAuth2/OpenID provider with these settings:
 
 -   Name: proxmox
 -   Client Type: Confidential
--   JWT Algorithm: RS256
 -   Redirect URI: `https://proxmox.company:8006` (Note the absence of the trailing slash, and the inclusion of the webinterface port)
 
 ### Step 2
@@ -38,7 +37,7 @@ Set the Launch URL to `https://promox.company:8006`.
 
 ## Proxmox VE Setup
 
-Proxmox VE allows configuration of authentication sources using the web interface (under Datacenter -> Permissions -> Authentication).
+Proxmox VE allows configuration of authentication sources using the web interface (under Datacenter -> Permissions -> Realms).
 
 ![](proxmox-source.png)
 

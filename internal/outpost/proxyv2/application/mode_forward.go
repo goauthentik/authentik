@@ -54,7 +54,7 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		return
 	}
 	host := ""
-	s, _ := a.sessions.Get(r, constants.SeesionName)
+	s, _ := a.sessions.Get(r, constants.SessionName)
 	// Optional suffix, which is appended to the URL
 	if *a.proxyConfig.Mode == api.PROXYMODE_FORWARD_SINGLE {
 		host = web.GetHost(r)
@@ -111,7 +111,7 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 		return
 	}
 
-	s, _ := a.sessions.Get(r, constants.SeesionName)
+	s, _ := a.sessions.Get(r, constants.SessionName)
 	s.Values[constants.SessionRedirect] = fwd.String()
 	err = s.Save(r, rw)
 	if err != nil {

@@ -31,7 +31,7 @@ type LDAPServerInstance interface {
 
 	UsersForGroup(api.Group) []string
 
-	GetFlags(dn string) (flags.UserFlags, bool)
+	GetFlags(dn string) *flags.UserFlags
 	SetFlags(dn string, flags flags.UserFlags)
 
 	GetBaseEntry() *ldap.Entry

@@ -43,7 +43,7 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 
 func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
 	newState := base64.RawURLEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
-	s, err := a.sessions.Get(r, constants.SeesionName)
+	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
 		s.Values[constants.SessionOAuthState] = []string{}
 	}
@@ -66,7 +66,7 @@ func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
-	s, err := a.sessions.Get(r, constants.SeesionName)
+	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
 		a.log.WithError(err).Trace("failed to get session")
 	}

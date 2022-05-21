@@ -64,8 +64,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential pkg-config libxmlsec1-dev && \
     # Required for runtime
     apt-get install -y --no-install-recommends libxmlsec1-openssl libmaxminddb0 && \
-    # Required for other things
-    apt-get install -y --no-install-recommends runit && \
+    # Required for bootstrap & healtcheck
+    apt-get install -y --no-install-recommends curl runit && \
     pip install --no-cache-dir -r /requirements.txt && \
     apt-get remove --purge -y build-essential pkg-config libxmlsec1-dev && \
     apt-get autoremove --purge -y && \

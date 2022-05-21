@@ -70,8 +70,8 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: BindDN %s not in our BaseDN %s", req.BindDN, ds.si.GetBaseDN())
 	}
 
-	flags, ok := ds.si.GetFlags(req.BindDN)
-	if !ok {
+	flags := ds.si.GetFlags(req.BindDN)
+	if flags == nil {
 		req.Log().Debug("User info not cached")
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": ds.si.GetOutpostName(),

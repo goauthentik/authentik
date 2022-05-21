@@ -138,6 +138,8 @@ class ChallengeStageView(StageView):
             op="authentik.flow.stage._get_challenge",
             description=self.__class__.__name__,
         ):
+            if not hasattr(challenge, "initial_data"):
+                challenge.initial_data = {}
             if "flow_info" not in challenge.initial_data:
                 flow_info = ContextualFlowInfo(
                     data={

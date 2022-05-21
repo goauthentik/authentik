@@ -985,6 +985,10 @@ msgstr "Cache löschen"
 msgid "Clear icon"
 msgstr "Symbol zurücksetzen"
 
+#: src/elements/table/TablePage.ts
+msgid "Clear search"
+msgstr ""
+
 #: src/elements/forms/HorizontalFormElement.ts
 msgid "Click to change value"
 msgstr "Klicken Sie, um den Wert zu ändern"

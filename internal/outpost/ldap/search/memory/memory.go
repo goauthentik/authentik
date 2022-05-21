@@ -73,8 +73,8 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: BindDN %s not in our BaseDN %s", req.BindDN, ms.si.GetBaseDN())
 	}
 
-	flags, ok := ms.si.GetFlags(req.BindDN)
-	if !ok {
+	flags := ms.si.GetFlags(req.BindDN)
+	if flags == nil {
 		req.Log().Debug("User info not cached")
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": ms.si.GetOutpostName(),

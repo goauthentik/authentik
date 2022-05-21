@@ -15,7 +15,7 @@ from yaml import safe_dump
 
 from authentik import __version__
 from authentik.outposts.controllers.base import BaseClient, BaseController, ControllerException
-from authentik.outposts.docker_ssh import DockerInlineSSH
+from authentik.outposts.docker_ssh import DockerInlineSSH, SSHManagedExternallyException
 from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.outposts.managed import MANAGED_OUTPOST
 from authentik.outposts.models import (
@@ -35,6 +35,7 @@ class DockerClient(UpstreamDockerClient, BaseClient):
     def __init__(self, connection: DockerServiceConnection):
         self.tls = None
         self.ssh = None
+        self.logger = get_logger()
         if connection.local:
             # Same result as DockerClient.from_env
             super().__init__(**kwargs_from_env())
@@ -42,8 +43,12 @@ class DockerClient(UpstreamDockerClient, BaseClient):
             parsed_url = urlparse(connection.url)
             tls_config = False
             if parsed_url.scheme == "ssh":
-                self.ssh = DockerInlineSSH(parsed_url.hostname, connection.tls_authentication)
-                self.ssh.write()
+                try:
+                    self.ssh = DockerInlineSSH(parsed_url.hostname, connection.tls_authentication)
+                    self.ssh.write()
+                except SSHManagedExternallyException as exc:
+                    # SSH config is managed externally
+                    self.logger.info(f"SSH Managed externally: {exc}")
             else:
                 self.tls = DockerInlineTLS(
                     verification_kp=connection.tls_verification,
@@ -57,7 +62,6 @@ class DockerClient(UpstreamDockerClient, BaseClient):
                 )
             except SSHException as exc:
                 raise ServiceConnectionInvalid from exc
-        self.logger = get_logger()
         # Ensure the client actually works
         self.containers.list()
 

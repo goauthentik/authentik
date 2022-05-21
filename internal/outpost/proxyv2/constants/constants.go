@@ -1,6 +1,6 @@
 package constants
 
-const SeesionName = "authentik_proxy"
+const SessionName = "authentik_proxy"
 
 const SessionOAuthState = "oauth_state"
 const SessionClaims = "claims"

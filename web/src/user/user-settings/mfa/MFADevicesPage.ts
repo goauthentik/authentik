@@ -79,7 +79,9 @@ export class MFADevicesPage extends Table<Device> {
                                     return html`<li>
                                         <a
                                             href="${ifDefined(stage.configureUrl)}${AndNext(
-                                                "/if/user/#/settings;page-mfa",
+                                                `/if/user/#/settings;${JSON.stringify({
+                                                    page: "page-mfa",
+                                                })}`,
                                             )}"
                                             class="pf-c-dropdown__menu-item"
                                         >

@@ -34,7 +34,7 @@ func TestProxy_ModifyRequest_Claims(t *testing.T) {
 	}
 	rr := httptest.NewRecorder()
 
-	s, _ := a.sessions.Get(req, constants.SeesionName)
+	s, _ := a.sessions.Get(req, constants.SessionName)
 	s.Values[constants.SessionClaims] = Claims{
 		Sub: "foo",
 		Proxy: &ProxyClaims{
@@ -62,7 +62,7 @@ func TestProxy_ModifyRequest_Claims_Invalid(t *testing.T) {
 	}
 	rr := httptest.NewRecorder()
 
-	s, _ := a.sessions.Get(req, constants.SeesionName)
+	s, _ := a.sessions.Get(req, constants.SessionName)
 	s.Values[constants.SessionClaims] = Claims{
 		Sub: "foo",
 		Proxy: &ProxyClaims{

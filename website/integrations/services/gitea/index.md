@@ -58,8 +58,8 @@ Change the following fields
 
 -   Authentication Name: authentik
 -   OAuth2 Provider: OpenID Connect
--   Client ID (Key): Step 2
--   Client Secret: Step 2
+-   Client ID (Key): Step 1
+-   Client Secret: Step 1
 -   Icon URL: https://raw.githubusercontent.com/goauthentik/authentik/master/web/icons/icon.png
 -   OpenID Connect Auto Discovery URL: https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration
 -   Additional Scopes: `email profile`

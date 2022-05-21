@@ -44,7 +44,7 @@ func (ls *LDAPServer) Refresh() error {
 
 		// Get existing instance so we can transfer boundUsers
 		existing := ls.getCurrentProvider(provider.Pk)
-		users := make(map[string]flags.UserFlags)
+		users := make(map[string]*flags.UserFlags)
 		if existing != nil {
 			existing.boundUsersMutex.RLock()
 			users = existing.boundUsers
