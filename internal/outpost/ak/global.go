@@ -13,6 +13,8 @@ import (
 	"goauthentik.io/internal/constants"
 )
 
+var initialSetup = false
+
 func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
 	l := log.WithField("logger", "authentik.outpost")
 	m := outpost.Managed.Get()
@@ -38,11 +40,12 @@ func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
 	} else {
 		l.Debug("Managed outpost, not setting global log level")
 	}
-	l.WithField("hash", constants.BUILD("tagged")).WithField("version", constants.VERSION).Info("Starting authentik outpost")
 
 	if globalConfig.ErrorReporting.Enabled {
 		dsn := "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
-		l.WithField("env", globalConfig.ErrorReporting.Environment).Debug("Error reporting enabled")
+		if !initialSetup {
+			l.WithField("env", globalConfig.ErrorReporting.Environment).Debug("Error reporting enabled")
+		}
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn:              dsn,
 			Environment:      globalConfig.ErrorReporting.Environment,
@@ -55,6 +58,11 @@ func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
 		if err != nil {
 			l.WithField("env", globalConfig.ErrorReporting.Environment).WithError(err).Warning("Failed to initialise sentry")
 		}
+	}
+
+	if !initialSetup {
+		l.WithField("hash", constants.BUILD("tagged")).WithField("version", constants.VERSION).Info("Starting authentik outpost")
+		initialSetup = true
 	}
 }
 
