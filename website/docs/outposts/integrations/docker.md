@@ -72,3 +72,9 @@ You'll end up with three files:
 Modify/create a new Docker integration, and set your _Docker URL_ to `ssh://hostname`, and select the keypair you created above as _TLS Authentication Certificate/SSH Keypair_.
 
 The _Docker URL_ field include a user, if none is specified authentik connects with the user `authentik`.
+
+#### Advanced SSH config
+
+With the above configuration, authentik will create and manage an `~/.ssh/config` file. If you need advanced configuration, for example SSH Certificates, you can mount a custom SSH Config file.
+
+Mount the config file into `/authentik/.ssh/config`, and mount any other relevant files into a directory under `/opt`. Afterwards, create an integration using `ssh://hostname`, and don't select a keypair.
