@@ -32,7 +32,7 @@ export class UserSettingsPassword extends LitElement {
             <div class="pf-c-card__body">
                 <a
                     href="${ifDefined(this.configureUrl)}${AndNext(
-                        "/if/user/#/settings;page-details",
+                        `/if/user/#/settings;${JSON.stringify({ page: "page-details" })}`,
                     )}"
                     class="pf-c-button pf-m-primary"
                 >

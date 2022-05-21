@@ -52,7 +52,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                     return html` <a
                         class="pf-c-button pf-m-primary"
                         href="${ifDefined(this.configureUrl)}${AndNext(
-                            "/if/user/#/settings;page-sources",
+                            `/if/user/#/settings;${JSON.stringify({ page: "page-sources" })}`,
                         )}"
                     >
                         ${t`Connect`}
