@@ -3,6 +3,7 @@ package application
 import (
 	"fmt"
 	"math"
+	"net/http"
 	"net/url"
 	"os"
 	"strconv"
@@ -30,6 +31,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		}
 		rs.Options.Path = externalHost.Path
 		rs.Options.Domain = *p.CookieDomain
+		rs.Options.SameSite = http.SameSiteNoneMode
 		a.log.Trace("using redis session backend")
 		store = rs
 	} else {
@@ -51,6 +53,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		}
 		cs.Options.Path = externalHost.Path
 		cs.Options.Domain = *p.CookieDomain
+		cs.Options.SameSite = http.SameSiteNoneMode
 		a.log.WithField("dir", dir).Trace("using filesystem session backend")
 		store = cs
 	}
