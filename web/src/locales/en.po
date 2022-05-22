@@ -4693,6 +4693,7 @@ msgstr "Set custom attributes using YAML or JSON. Any attributes set here will b
 
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Set password"
 msgstr "Set password"
 
@@ -6043,6 +6044,8 @@ msgstr "Update details"
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
 #: src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Update password"
 msgstr "Update password"
 
