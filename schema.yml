@@ -22969,7 +22969,6 @@ components:
       - group_obj
       - name
       - pk
-      - transports
     NotificationRuleRequest:
       type: object
       description: NotificationRule Serializer
@@ -22998,7 +22997,6 @@ components:
             and shown to. If left empty, Notification won't ben sent.
       required:
       - name
-      - transports
     NotificationTransport:
       type: object
       description: NotificationTransport Serializer

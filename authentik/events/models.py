@@ -481,6 +481,7 @@ class NotificationRule(PolicyBindingModel):
                 "selected, the notification will only be shown in the authentik UI."
             )
         ),
+        blank=True,
     )
     severity = models.TextField(
         choices=NotificationSeverity.choices,
