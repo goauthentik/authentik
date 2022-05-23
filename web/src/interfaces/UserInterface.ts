@@ -25,7 +25,7 @@ import { WebsocketClient } from "../common/ws";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_REFRESH,
+    EVENT_WS_MESSAGE,
 } from "../constants";
 import "../elements/messages/MessageContainer";
 import "../elements/messages/MessageContainer";
@@ -115,7 +115,7 @@ export class UserInterface extends LitElement {
                 apiDrawerOpen: this.apiDrawerOpen,
             });
         });
-        window.addEventListener(EVENT_REFRESH, () => {
+        window.addEventListener(EVENT_WS_MESSAGE, () => {
             this.firstUpdated();
         });
         tenant().then((tenant) => (this.tenant = tenant));
