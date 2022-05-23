@@ -1,6 +1,7 @@
 """authentik OAuth2 Authorization views"""
 from dataclasses import dataclass, field
 from datetime import timedelta
+from re import error as RegexError
 from re import fullmatch
 from typing import Optional
 from urllib.parse import parse_qs, urlencode, urlparse, urlsplit, urlunsplit
@@ -184,12 +185,16 @@ class OAuthAuthorizationParams:
             self.provider.save()
             allowed_redirect_urls = self.provider.redirect_uris.split()
 
-        if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
-            LOGGER.warning(
-                "Invalid redirect uri",
-                redirect_uri=self.redirect_uri,
-                excepted=allowed_redirect_urls,
-            )
+        try:
+            if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
+                LOGGER.warning(
+                    "Invalid redirect uri",
+                    redirect_uri=self.redirect_uri,
+                    excepted=allowed_redirect_urls,
+                )
+                raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
+        except RegexError as exc:
+            LOGGER.warning("Invalid regular expression configured", exc=exc)
             raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
         if self.request:
             raise AuthorizeError(

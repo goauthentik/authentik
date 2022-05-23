@@ -2,6 +2,7 @@
 from base64 import urlsafe_b64encode
 from dataclasses import InitVar, dataclass
 from hashlib import sha256
+from re import error as RegexError
 from re import fullmatch
 from typing import Any, Optional
 
@@ -149,12 +150,16 @@ class TokenParams:
         allowed_redirect_urls = self.provider.redirect_uris.split()
         # At this point, no provider should have a blank redirect_uri, in case they do
         # this will check an empty array and raise an error
-        if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
-            LOGGER.warning(
-                "Invalid redirect uri",
-                redirect_uri=self.redirect_uri,
-                excepted=allowed_redirect_urls,
-            )
+        try:
+            if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
+                LOGGER.warning(
+                    "Invalid redirect uri",
+                    redirect_uri=self.redirect_uri,
+                    excepted=allowed_redirect_urls,
+                )
+                raise TokenError("invalid_client")
+        except RegexError as exc:
+            LOGGER.warning("Invalid regular expression configured", exc=exc)
             raise TokenError("invalid_client")
 
         try:
