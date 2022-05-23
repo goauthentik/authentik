@@ -20,7 +20,7 @@ from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.signals import user_write
 
 LOGGER = get_logger()
-PLAN_CONTEXT_GROUPS = "group"
+PLAN_CONTEXT_GROUPS = "groups"
 
 
 class UserWriteStageView(StageView):
