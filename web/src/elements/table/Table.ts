@@ -168,25 +168,45 @@ export abstract class Table<T> extends LitElement {
             return;
         }
         this.isLoading = true;
-        return this.apiEndpoint(this.page)
-            .then((r) => {
-                this.data = r;
-                this.page = r.pagination.current;
-                r.results.forEach((res) => {
-                    const selectedIndex = this.selectedElements.indexOf(res);
-                    if (selectedIndex <= -1) {
-                        this.selectedElements.splice(selectedIndex, 1);
-                    }
-                    const expandedIndex = this.expandedElements.indexOf(res);
-                    if (expandedIndex <= -1) {
-                        this.expandedElements.splice(expandedIndex, 1);
-                    }
-                });
-                this.isLoading = false;
-            })
-            .catch(() => {
-                this.isLoading = false;
+        try {
+            this.data = await this.apiEndpoint(this.page);
+            this.page = this.data.pagination.current;
+            const newSelected: T[] = [];
+            const newExpanded: T[] = [];
+            this.data.results.forEach((res) => {
+                const jsonRes = JSON.stringify(res);
+                // So because we're dealing with complex objects here, we can't use indexOf
+                // since it checks strict equality, and we also can't easily check in findIndex()
+                // Instead we default to comparing the JSON of both objects, which is quite slow
+                // Hence we check if the objects have `pk` attributes set (as most models do)
+                // and compare that instead, which will be much faster.
+                let comp = (item: T) => {
+                    return JSON.stringify(item) === jsonRes;
+                };
+                if ("pk" in res) {
+                    comp = (item: T) => {
+                        return (
+                            (item as unknown as { pk: string | number }).pk ===
+                            (res as unknown as { pk: string | number }).pk
+                        );
+                    };
+                }
+
+                const selectedIndex = this.selectedElements.findIndex(comp);
+                if (selectedIndex > -1) {
+                    newSelected.push(res);
+                }
+                const expandedIndex = this.expandedElements.findIndex(comp);
+                if (expandedIndex > -1) {
+                    newExpanded.push(res);
+                }
             });
+            this.isLoading = false;
+            this.selectedElements = newSelected;
+            this.expandedElements = newExpanded;
+        } catch {
+            this.isLoading = false;
+        }
     }
 
     private renderLoading(): TemplateResult {
