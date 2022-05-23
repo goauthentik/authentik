@@ -1602,8 +1602,12 @@ msgid "Digits"
 msgstr "数字"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-msgid "Direct querying, always execute the configured bind flow to authenticate the user."
-msgstr "直接查询，总是执行配置的绑定流程，以验证用户的身份。"
+msgid "Direct binding, always execute the configured bind flow to authenticate the user."
+msgstr ""
+
+#: src/pages/providers/ldap/LDAPProviderForm.ts
+#~ msgid "Direct querying, always execute the configured bind flow to authenticate the user."
+#~ msgstr "直接查询，总是执行配置的绑定流程，以验证用户的身份。"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Direct querying, always returns the latest data, but slower than cached querying."
