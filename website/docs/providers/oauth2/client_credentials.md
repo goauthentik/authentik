@@ -31,6 +31,10 @@ Starting with authentik 2022.4, you can authenticate and get a token using an ex
 
 To configure this, the certificate used to sign the input JWT must be created in authentik. The certificate is enough, a private key is not required. Afterwards, configure the certificate in the OAuth2 provider settings under _Verification certificates_.
 
+:::info
+Starting with authentik 2022.6, you can define a JWKS URL/raw JWKS data in OAuth Sources, and use those to verify the key instead of having to manually create a certificate in authentik for them. This method is still supported but will be removed in a later version.
+:::
+
 With this configure, any JWT issued by the configured certificates can be used to authenticate:
 
 ```

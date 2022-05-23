@@ -23186,8 +23186,16 @@ components:
             format: uuid
             title: Allowed certificates for JWT-based client_credentials
           title: Allowed certificates for JWT-based client_credentials
-          description: JWTs created with the configured certificates can authenticate
-            with this provider.
+          description: DEPRECATED. JWTs created with the configured certificates can
+            authenticate with this provider.
+        jwks_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -23266,8 +23274,16 @@ components:
             format: uuid
             title: Allowed certificates for JWT-based client_credentials
           title: Allowed certificates for JWT-based client_credentials
-          description: JWTs created with the configured certificates can authenticate
-            with this provider.
+          description: DEPRECATED. JWTs created with the configured certificates can
+            authenticate with this provider.
+        jwks_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
       required:
       - authorization_flow
       - name
@@ -27622,8 +27638,16 @@ components:
             format: uuid
             title: Allowed certificates for JWT-based client_credentials
           title: Allowed certificates for JWT-based client_credentials
-          description: JWTs created with the configured certificates can authenticate
-            with this provider.
+          description: DEPRECATED. JWTs created with the configured certificates can
+            authenticate with this provider.
+        jwks_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
     PatchedOAuthSourceRequest:
       type: object
       description: OAuth Source Serializer
