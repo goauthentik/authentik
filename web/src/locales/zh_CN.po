@@ -1595,9 +1595,14 @@ msgstr "数字"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid ""
-"Direct querying, always execute the configured bind flow to authenticate the"
-" user."
-msgstr "直接查询，总是执行配置的绑定流程，以验证用户的身份。"
+"Direct binding, always execute the configured bind flow to authenticate the "
+"user."
+msgstr "直接绑定，总是执行配置的绑定流程，以验证用户的身份。"
+
+#~ msgid ""
+#~ "Direct querying, always execute the configured bind flow to authenticate the"
+#~ " user."
+#~ msgstr "直接查询，总是执行配置的绑定流程，以验证用户的身份。"
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid ""
@@ -4629,6 +4634,7 @@ msgid ""
 msgstr "使用 YAML 或 JSON 格式设置自定义属性。如果请求由此租户处理，则用户会继承此处设置的任何自定义属性。  "
 
 #: src/pages/users/RelatedUserList.ts src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts
 msgid "Set password"
 msgstr "设置密码"
 
@@ -5993,6 +5999,7 @@ msgstr "更新详情"
 
 #: src/pages/users/RelatedUserList.ts src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts src/pages/users/UserListPage.ts
+#: src/pages/users/UserViewPage.ts src/pages/users/UserViewPage.ts
 msgid "Update password"
 msgstr "更新密码"
 
