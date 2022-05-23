@@ -3,6 +3,7 @@ from base64 import b64decode
 from dataclasses import dataclass
 from typing import Optional
 from urllib.parse import quote_plus
+from xml.etree.ElementTree import ParseError  # nosec
 
 import xmlsec
 from defusedxml import ElementTree
@@ -175,7 +176,10 @@ class AuthNRequestParser:
                 )
             except xmlsec.Error as exc:
                 raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
-        return self._parse_xml(decoded_xml, relay_state)
+        try:
+            return self._parse_xml(decoded_xml, relay_state)
+        except ParseError as exc:
+            raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
 
     def idp_initiated(self) -> AuthNRequest:
         """Create IdP Initiated AuthNRequest"""
