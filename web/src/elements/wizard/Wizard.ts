@@ -63,6 +63,13 @@ export class Wizard extends ModalButton {
                     class="pf-c-button pf-m-plain pf-c-wizard__close"
                     type="button"
                     aria-label="${t`Close`}"
+                    @click=${() => {
+                        this.open = false;
+                        const firstPage = this.querySelector<WizardPage>(`[slot=${this.steps[0]}]`);
+                        if (firstPage) {
+                            this.currentStep = firstPage;
+                        }
+                    }}
                 >
                     <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
