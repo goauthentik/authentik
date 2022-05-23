@@ -50,6 +50,10 @@ class OAuthSource(Source):
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
+    oidc_well_known_url = models.TextField(default="", blank=True)
+    oidc_jwks_url = models.TextField(default="", blank=True)
+    oidc_jwks = models.JSONField(default=dict, blank=True)
+
     @property
     def type(self) -> type["SourceType"]:
         """Return the provider instance for this source"""

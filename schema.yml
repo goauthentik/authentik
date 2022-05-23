@@ -23382,6 +23382,13 @@ components:
           allOf:
           - $ref: '#/components/schemas/SourceType'
           readOnly: true
+        oidc_well_known_url:
+          type: string
+        oidc_jwks_url:
+          type: string
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
       required:
       - callback_url
       - component
@@ -23463,6 +23470,13 @@ components:
           minLength: 1
         additional_scopes:
           type: string
+        oidc_well_known_url:
+          type: string
+        oidc_jwks_url:
+          type: string
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
       required:
       - consumer_key
       - consumer_secret
@@ -27679,6 +27693,13 @@ components:
           minLength: 1
         additional_scopes:
           type: string
+        oidc_well_known_url:
+          type: string
+        oidc_jwks_url:
+          type: string
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer

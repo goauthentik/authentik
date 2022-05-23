@@ -2,6 +2,7 @@
 from django.urls.base import reverse_lazy
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_field
+from requests import RequestException
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ChoiceField, SerializerMethodField
 from rest_framework.request import Request
@@ -12,6 +13,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
+from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.manager import MANAGER, SourceType
 
@@ -52,6 +54,32 @@ class OAuthSourceSerializer(SourceSerializer):
         return SourceTypeSerializer(instance.type).data
 
     def validate(self, attrs: dict) -> dict:
+        session = get_http_session()
+        well_known = attrs.get("oidc_well_known_url")
+        jwks_url = attrs.get("oidc_jwks_url")
+        if well_known != "":
+            try:
+                well_known_config = session.get(well_known)
+                well_known_config.raise_for_status()
+            except RequestException:
+                raise ValidationError(well_known_config.text)
+            config = well_known_config.json()
+            try:
+                attrs["authorization_url"] = config["authorization_endpoint"]
+                attrs["access_token_url"] = config["token_endpoint"]
+                attrs["profile_url"] = config["userinfo_endpoint"]
+                attrs["oidc_jwks_url"] = config["jwks_uri"]
+            except (IndexError, KeyError) as exc:
+                raise ValidationError(f"Invalid well-known configuration: {exc}")
+        if jwks_url != "":
+            try:
+                jwks_config = session.get(jwks_url)
+                jwks_config.raise_for_status()
+            except RequestException:
+                raise ValidationError(jwks_config.text)
+            config = jwks_config.json()
+            attrs["oidc_jwks"] = config
+
         provider_type = MANAGER.find_type(attrs.get("provider_type", ""))
         for url in [
             "authorization_url",
@@ -76,6 +104,9 @@ class OAuthSourceSerializer(SourceSerializer):
             "callback_url",
             "additional_scopes",
             "type",
+            "oidc_well_known_url",
+            "oidc_jwks_url",
+            "oidc_jwks",
         ]
         extra_kwargs = {"consumer_secret": {"write_only": True}}
 
