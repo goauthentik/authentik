@@ -292,15 +292,15 @@ class TokenParams:
                 LOGGER.warning("failed to validate jwt", last_exc=last_exc)
         # TODO: End remove block
 
+        source: Optional[OAuthSource] = None
+        parsed_key: Optional[PyJWK] = None
         for source in self.provider.jwks_sources.all():
-            source: OAuthSource
             LOGGER.debug("verifying jwt with source", source=source.name)
             keys = source.oidc_jwks.get("keys", [])
             for key in keys:
                 LOGGER.debug("verifying jwt with key", source=source.name, key=key.get("kid"))
                 try:
                     parsed_key = PyJWK.from_dict(key)
-                    print(parsed_key.key)
                     token = decode(
                         assertion,
                         parsed_key.key,
@@ -341,12 +341,17 @@ class TokenParams:
             },
         )
 
+        method_args = {
+            "jwt": token,
+        }
+        if source:
+            method_args["source"] = source
+        if parsed_key:
+            method_args["jwk_id"] = parsed_key.key_id
         Event.new(
             action=EventAction.LOGIN,
             PLAN_CONTEXT_METHOD="jwt",
-            PLAN_CONTEXT_METHOD_ARGS={
-                "jwt": token,
-            },
+            PLAN_CONTEXT_METHOD_ARGS=method_args,
             PLAN_CONTEXT_APPLICATION=app,
         ).from_http(request, user=self.user)
 
