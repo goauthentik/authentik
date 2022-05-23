@@ -25,10 +25,12 @@ IGNORED_MODELS = [
     AuthenticatedSession,
     StaticToken,
 ]
-if settings.DEBUG:
-    from silk.models import Request, Response
+try:
+    from silk.models import Request, Response, SQLQuery
 
-    IGNORED_MODELS += [Request, Response]
+    IGNORED_MODELS += [Request, Response, SQLQuery]
+except ImportError:
+    pass
 IGNORED_MODELS = tuple(IGNORED_MODELS)
 
 
