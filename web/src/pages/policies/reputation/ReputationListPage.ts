@@ -1,4 +1,4 @@
-import getUnicodeFlagIcon from "country-flag-icons/unicode/index.js";
+import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { t } from "@lingui/macro";
 
