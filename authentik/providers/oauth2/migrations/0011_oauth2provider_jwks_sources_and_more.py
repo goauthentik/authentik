@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(
                 blank=True,
                 default=None,
-                related_name="+",
+                related_name="oauth2_providers",
                 to="authentik_sources_oauth.oauthsource",
                 verbose_name="Any JWT signed by the JWK of the selected source can be used to authenticate.",
             ),
@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=None,
                 help_text="DEPRECATED. JWTs created with the configured certificates can authenticate with this provider.",
-                related_name="+",
+                related_name="oauth2_providers",
                 to="authentik_crypto.certificatekeypair",
                 verbose_name="Allowed certificates for JWT-based client_credentials",
             ),

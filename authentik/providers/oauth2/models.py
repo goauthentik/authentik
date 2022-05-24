@@ -231,7 +231,7 @@ class OAuth2Provider(Provider):
                 "certificates can authenticate with this provider."
             )
         ),
-        related_name="+",
+        related_name="oauth2_providers",
         default=None,
         blank=True,
     )
@@ -240,7 +240,7 @@ class OAuth2Provider(Provider):
         verbose_name=_(
             "Any JWT signed by the JWK of the selected source can be used to authenticate."
         ),
-        related_name="+",
+        related_name="oauth2_providers",
         default=None,
         blank=True,
     )
