@@ -1551,6 +1551,11 @@ msgstr "{0} löschen"
 msgid "Deny the user access"
 msgstr "Dem Benutzer den Zugang verweigern"
 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Deprecated. Instead of using this field, configure the JWKS data/URL in Sources."
+msgstr ""
+
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
@@ -2457,6 +2462,7 @@ msgstr "Interne Konten ausblenden"
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -2719,9 +2725,14 @@ msgstr "Aussteller"
 msgid "Issuer mode"
 msgstr "Ausstellermodus"
 
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+msgid "JSON Web Key URL. Keys from the URL will be used to validate JWTs from this source."
+msgstr ""
+
 #~ msgid "JWT Algorithm"
 #~ msgstr "JWT Algorithmus"
 
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "JWTs signed by certificates configured here can be used to authenticate to the provider."
 msgstr ""
@@ -2904,6 +2915,7 @@ msgstr "Wird geladen"
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -3025,6 +3037,10 @@ msgstr "Langlaufende Operationen, die Authentik im Hintergrund ausführt."
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "MFA Devices"
 msgstr "Multifaktor-Authentifzierungs Geräte"
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Machine-to-Machine authentication settings"
+msgstr ""
 
 #: src/flows/stages/authenticator_static/AuthenticatorStaticStage.ts
 msgid "Make sure to keep these tokens in a safe place."
@@ -3508,6 +3524,22 @@ msgstr "OAuth-Aktualisierungscodes"
 #: src/pages/providers/ProviderWizard.ts
 #~ msgid "OAuth/OIDC"
 #~ msgstr ""
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+msgid "OIDC JWKS"
+msgstr ""
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+msgid "OIDC JWKS URL"
+msgstr ""
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+msgid "OIDC Well-known URL"
+msgstr ""
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+msgid "OIDC well-known configuration URL. Can be used to automatically configure the URLs above."
+msgstr ""
 
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 msgid "OK"
@@ -4064,6 +4096,10 @@ msgstr "RSA-SHA384"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "RSA-SHA512"
 msgstr "RSA-SHA512"
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+msgid "Raw JWKS data."
+msgstr ""
 
 #: src/pages/sources/plex/PlexSourceForm.ts
 msgid "Re-authenticate with plex"
@@ -5645,6 +5681,10 @@ msgstr "Vorübergehend"
 #: src/pages/events/RuleForm.ts
 msgid "Transports"
 msgstr "Zustellungsarten"
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Trusted OIDC Sources"
+msgstr ""
 
 #: src/interfaces/locale.ts
 msgid "Turkish"

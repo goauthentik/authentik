@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -32,6 +32,9 @@ export class DeleteObjectsTable<T> extends Table<T> {
 
     @property({ attribute: false })
     usedBy?: (item: T) => Promise<UsedBy[]>;
+
+    @state()
+    usedByData: Map<T, UsedBy[]> = new Map();
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFList);
@@ -68,15 +71,16 @@ export class DeleteObjectsTable<T> extends Table<T> {
     }
 
     renderExpanded(item: T): TemplateResult {
+        const handler = async () => {
+            if (!this.usedByData.has(item) && this.usedBy) {
+                this.usedByData.set(item, await this.usedBy(item));
+            }
+            return this.renderUsedBy(this.usedByData.get(item) || []);
+        };
         return html`<td role="cell" colspan="2">
             <div class="pf-c-table__expandable-row-content">
                 ${this.usedBy
-                    ? until(
-                          this.usedBy(item).then((usedBy) => {
-                              return this.renderUsedBy(usedBy);
-                          }),
-                          html`<ak-spinner size=${PFSize.XLarge}></ak-spinner>`,
-                      )
+                    ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
                     : html``}
             </div>
         </td>`;
