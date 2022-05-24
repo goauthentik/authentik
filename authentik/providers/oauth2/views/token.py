@@ -263,11 +263,13 @@ class TokenParams:
     def __post_init_client_credentials_jwt(self, request: HttpRequest):
         assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
         if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
+            LOGGER.warning("Invalid assertion type", assertion_type=assertion_type)
             raise TokenError("invalid_grant")
 
         client_secret = request.POST.get("client_secret", None)
         assertion = request.POST.get(CLIENT_ASSERTION, client_secret)
         if not assertion:
+            LOGGER.warning("Missing client assertion")
             raise TokenError("invalid_grant")
 
         token = None
@@ -313,6 +315,7 @@ class TokenParams:
                     LOGGER.warning("failed to validate jwt", last_exc=last_exc)
 
         if not token:
+            LOGGER.warning("No token could be verified")
             raise TokenError("invalid_grant")
 
         if "exp" in token:
