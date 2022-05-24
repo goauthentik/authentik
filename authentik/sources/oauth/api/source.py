@@ -56,13 +56,12 @@ class OAuthSourceSerializer(SourceSerializer):
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()
         well_known = attrs.get("oidc_well_known_url")
-        jwks_url = attrs.get("oidc_jwks_url")
-        if well_known != "":
+        if well_known and well_known != "":
             try:
                 well_known_config = session.get(well_known)
                 well_known_config.raise_for_status()
-            except RequestException:
-                raise ValidationError(well_known_config.text)
+            except RequestException as exc:
+                raise ValidationError(exc.response.text)
             config = well_known_config.json()
             try:
                 attrs["authorization_url"] = config["authorization_endpoint"]
@@ -71,12 +70,14 @@ class OAuthSourceSerializer(SourceSerializer):
                 attrs["oidc_jwks_url"] = config["jwks_uri"]
             except (IndexError, KeyError) as exc:
                 raise ValidationError(f"Invalid well-known configuration: {exc}")
-        if jwks_url != "":
+
+        jwks_url = attrs.get("oidc_jwks_url")
+        if jwks_url and jwks_url != "":
             try:
                 jwks_config = session.get(jwks_url)
                 jwks_config.raise_for_status()
-            except RequestException:
-                raise ValidationError(jwks_config.text)
+            except RequestException as exc:
+                raise ValidationError(exc.response.text)
             config = jwks_config.json()
             attrs["oidc_jwks"] = config
 
@@ -89,6 +90,7 @@ class OAuthSourceSerializer(SourceSerializer):
             if getattr(provider_type, url, None) is None:
                 if url not in attrs:
                     raise ValidationError(f"{url} is required for provider {provider_type.name}")
+        print(attrs)
         return attrs
 
     class Meta:
