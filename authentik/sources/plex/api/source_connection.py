@@ -35,3 +35,4 @@ class PlexSourceConnectionViewSet(UsedByMixin, ModelViewSet):
     permission_classes = [OwnerSuperuserPermissions]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering = ["pk"]
+    search_fields = ["source__slug"]

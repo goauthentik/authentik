@@ -66,6 +66,7 @@ class SourceViewSet(
     queryset = Source.objects.none()
     serializer_class = SourceSerializer
     lookup_field = "slug"
+    search_fields = ["slug", "name"]
 
     def get_queryset(self):  # pragma: no cover
         return Source.objects.select_subclasses()

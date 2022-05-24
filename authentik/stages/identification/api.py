@@ -40,4 +40,5 @@ class IdentificationStageViewSet(UsedByMixin, ModelViewSet):
         "passwordless_flow",
         "show_source_labels",
     ]
+    search_fields = ["name"]
     ordering = ["name"]

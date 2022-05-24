@@ -91,6 +91,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "property_mappings",
         "property_mappings_group",
     ]
+    search_fields = ["name", "slug"]
     ordering = ["name"]
 
     @extend_schema(
@@ -142,4 +143,5 @@ class LDAPPropertyMappingViewSet(UsedByMixin, ModelViewSet):
     queryset = LDAPPropertyMapping.objects.all()
     serializer_class = LDAPPropertyMappingSerializer
     filterset_class = LDAPPropertyMappingFilter
+    search_fields = ["name"]
     ordering = ["name"]

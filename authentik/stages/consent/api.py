@@ -28,6 +28,7 @@ class ConsentStageViewSet(UsedByMixin, ModelViewSet):
     serializer_class = ConsentStageSerializer
     filterset_fields = "__all__"
     ordering = ["name"]
+    search_fields = ["name"]
 
 
 class UserConsentSerializer(StageSerializer):
@@ -60,6 +61,7 @@ class UserConsentViewSet(
         OrderingFilter,
         SearchFilter,
     ]
+    search_fields = ["user__username"]
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()

@@ -26,6 +26,7 @@ class ReputationPolicyViewSet(UsedByMixin, ModelViewSet):
     queryset = ReputationPolicy.objects.all()
     serializer_class = ReputationPolicySerializer
     filterset_fields = "__all__"
+    search_fields = ["name", "threshold"]
     ordering = ["name"]
 
 
