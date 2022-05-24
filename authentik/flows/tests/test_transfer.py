@@ -13,6 +13,25 @@ from authentik.policies.models import PolicyBinding
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.user_login.models import UserLoginStage
 
+STATIC_PROMPT_EXPORT = """{
+    "version": 1,
+    "entries": [
+        {
+            "identifiers": {
+                "pk": "cb954fd4-65a5-4ad9-b1ee-180ee9559cf4"
+            },
+            "model": "authentik_stages_prompt.prompt",
+            "attrs": {
+                "field_key": "username",
+                "label": "Username",
+                "type": "username",
+                "required": true,
+                "placeholder": "Username",
+                "order": 0
+            }
+        }
+    ]
+}"""
 
 class TestFlowTransfer(TransactionTestCase):
     """Test flow transfer"""
@@ -57,6 +76,19 @@ class TestFlowTransfer(TransactionTestCase):
         self.assertTrue(importer.apply())
 
         self.assertTrue(Flow.objects.filter(slug=flow_slug).exists())
+
+    def test_export_validate_import_re_import(self):
+        """Test export and import it twice"""
+        importer = FlowImporter(STATIC_PROMPT_EXPORT)
+        self.assertTrue(importer.validate())
+        self.assertTrue(importer.apply())
+
+        self.assertEqual(Prompt.objects.filter(field_key="username").count(), 1)
+
+        importer = FlowImporter(STATIC_PROMPT_EXPORT)
+        self.assertTrue(importer.apply())
+
+        self.assertEqual(Prompt.objects.filter(field_key="username").count(), 1)
 
     def test_export_validate_import_policies(self):
         """Test export and validate it"""

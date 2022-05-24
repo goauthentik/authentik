@@ -168,11 +168,6 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 continue
             # check if device has been used within threshold and skip this stage if so
             if threshold.total_seconds() > 0:
-                print("yeet")
-                print(get_device_last_usage(device))
-                print(_now - get_device_last_usage(device))
-                print(threshold)
-                print(_now - get_device_last_usage(device) <= threshold)
                 if _now - get_device_last_usage(device) <= threshold:
                     LOGGER.info("Device has been used within threshold", device=device)
                     raise FlowSkipStageException()
