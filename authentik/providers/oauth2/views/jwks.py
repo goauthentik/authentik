@@ -43,7 +43,7 @@ class JWKSView(View):
                 "n": b64_enc(public_numbers.n),
                 "e": b64_enc(public_numbers.e),
             }
-        elif isinstance(private_key, EllipticCurvePrivateKey):
+        if isinstance(private_key, EllipticCurvePrivateKey):
             public_key: EllipticCurvePublicKey = private_key.public_key()
             public_numbers = public_key.public_numbers()
             return {
@@ -54,6 +54,7 @@ class JWKSView(View):
                 "n": b64_enc(public_numbers.n),
                 "e": b64_enc(public_numbers.e),
             }
+        return None
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Show JWK Key data for Provider"""
