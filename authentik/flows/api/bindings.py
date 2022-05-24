@@ -35,3 +35,4 @@ class FlowStageBindingViewSet(UsedByMixin, ModelViewSet):
     queryset = FlowStageBinding.objects.all()
     serializer_class = FlowStageBindingSerializer
     filterset_fields = "__all__"
+    search_fields = ["stage__name"]

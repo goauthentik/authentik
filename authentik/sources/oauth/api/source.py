@@ -90,7 +90,6 @@ class OAuthSourceSerializer(SourceSerializer):
             if getattr(provider_type, url, None) is None:
                 if url not in attrs:
                     raise ValidationError(f"{url} is required for provider {provider_type.name}")
-        print(attrs)
         return attrs
 
     class Meta:
@@ -135,6 +134,7 @@ class OAuthSourceViewSet(UsedByMixin, ModelViewSet):
         "consumer_key",
         "additional_scopes",
     ]
+    search_fields = ["name", "slug"]
     ordering = ["name"]
 
     @extend_schema(

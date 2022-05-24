@@ -118,6 +118,7 @@ class DockerServiceConnectionViewSet(UsedByMixin, ModelViewSet):
     serializer_class = DockerServiceConnectionSerializer
     filterset_fields = ["name", "local", "url", "tls_verification", "tls_authentication"]
     ordering = ["name"]
+    search_fields = ["name"]
 
 
 class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
@@ -152,3 +153,4 @@ class KubernetesServiceConnectionViewSet(UsedByMixin, ModelViewSet):
     serializer_class = KubernetesServiceConnectionSerializer
     filterset_fields = ["name", "local"]
     ordering = ["name"]
+    search_fields = ["name"]

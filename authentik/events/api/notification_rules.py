@@ -32,3 +32,4 @@ class NotificationRuleViewSet(UsedByMixin, ModelViewSet):
     serializer_class = NotificationRuleSerializer
     filterset_fields = ["name", "severity", "group__name"]
     ordering = ["name"]
+    search_fields = ["name", "group__name"]
