@@ -33,6 +33,7 @@ STATIC_PROMPT_EXPORT = """{
     ]
 }"""
 
+
 class TestFlowTransfer(TransactionTestCase):
     """Test flow transfer"""
 
