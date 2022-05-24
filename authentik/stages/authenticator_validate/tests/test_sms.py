@@ -116,3 +116,37 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
         )
         self.assertIn(COOKIE_NAME_MFA, response.cookies)
         self.assertStageResponse(response, component="xak-flow-redirect", to="/")
+
+    def test_sms_hashed(self):
+        """Test hashed SMS device"""
+        ident_stage = IdentificationStage.objects.create(
+            name="conf",
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        SMSDevice.objects.create(
+            user=self.user,
+            confirmed=True,
+            stage=self.stage,
+            phone_number="hash:foo",
+        )
+
+        stage = AuthenticatorValidateStage.objects.create(
+            name="foo",
+            last_auth_threshold="hours=1",
+            not_configured_action=NotConfiguredAction.DENY,
+            device_classes=[DeviceClasses.SMS],
+        )
+        stage.configuration_stages.set([ident_stage])
+        flow = Flow.objects.create(name="test", slug="test", title="test")
+        FlowStageBinding.objects.create(target=flow, stage=ident_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {"uid_field": self.user.username},
+            follow=True,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(response, flow, self.user, component="ak-stage-access-denied")

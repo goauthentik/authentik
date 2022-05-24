@@ -14436,6 +14436,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: verify_only
+        schema:
+          type: boolean
       tags:
       - stages
       security:

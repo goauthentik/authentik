@@ -113,6 +113,10 @@ class AuthenticatorSMSStageView(ChallengeStageView):
         device: SMSDevice = self.request.session[SESSION_KEY_SMS_DEVICE]
         if not device.confirmed:
             return self.challenge_invalid(response)
+        stage: AuthenticatorSMSStage = self.executor.current_stage
+        if stage.verify_only:
+            LOGGER.debug("Hashing number on device")
+            device.set_hashed_number()
         device.save()
         del self.request.session[SESSION_KEY_SMS_DEVICE]
         return self.executor.stage_ok()
