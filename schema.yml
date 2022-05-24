@@ -28395,9 +28395,6 @@ components:
         username:
           type: string
           minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
           maxLength: 150
         name:
           type: string
@@ -30942,9 +30939,6 @@ components:
           title: ID
         username:
           type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
           maxLength: 150
         name:
           type: string
@@ -31254,9 +31248,6 @@ components:
         username:
           type: string
           minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
           maxLength: 150
         name:
           type: string

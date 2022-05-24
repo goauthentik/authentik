@@ -72,6 +72,7 @@ class UserSerializer(ModelSerializer):
     )
     groups_obj = ListSerializer(child=GroupSerializer(), read_only=True, source="ak_groups")
     uid = CharField(read_only=True)
+    username = CharField(max_length=150)
 
     class Meta:
 
