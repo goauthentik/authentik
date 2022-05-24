@@ -370,10 +370,7 @@ ${this.instance?.redirectUris}</textarea
             <ak-form-group>
                 <span slot="header">${t`Machine-to-Machine authentication settings`}</span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${t`Trusted OIDC Sources`}
-                        name="jwksSources"
-                    >
+                    <ak-form-element-horizontal label=${t`Trusted OIDC Sources`} name="jwksSources">
                         <select class="pf-c-form-control" multiple>
                             ${until(
                                 new SourcesApi(DEFAULT_CONFIG)
