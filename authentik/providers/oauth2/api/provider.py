@@ -35,6 +35,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "property_mappings",
             "issuer_mode",
             "verification_keys",
+            "jwks_sources",
         ]
 
 

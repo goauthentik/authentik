@@ -1,5 +1,6 @@
 """authentik OAuth2 JWKS Views"""
 from base64 import urlsafe_b64encode
+from typing import Optional
 
 from cryptography.hazmat.primitives.asymmetric.ec import (
     EllipticCurvePrivateKey,
@@ -26,8 +27,37 @@ def b64_enc(number: int) -> str:
 class JWKSView(View):
     """Show RSA Key data for Provider"""
 
+    def get_jwk_for_key(self, key: CertificateKeyPair) -> Optional[dict]:
+        """Convert a certificate-key pair into JWK"""
+        private_key = key.private_key
+        if not private_key:
+            return None
+        if isinstance(private_key, RSAPrivateKey):
+            public_key: RSAPublicKey = private_key.public_key()
+            public_numbers = public_key.public_numbers()
+            return {
+                "kty": "RSA",
+                "alg": JWTAlgorithms.RS256,
+                "use": "sig",
+                "kid": key.kid,
+                "n": b64_enc(public_numbers.n),
+                "e": b64_enc(public_numbers.e),
+            }
+        if isinstance(private_key, EllipticCurvePrivateKey):
+            public_key: EllipticCurvePublicKey = private_key.public_key()
+            public_numbers = public_key.public_numbers()
+            return {
+                "kty": "EC",
+                "alg": JWTAlgorithms.ES256,
+                "use": "sig",
+                "kid": key.kid,
+                "n": b64_enc(public_numbers.n),
+                "e": b64_enc(public_numbers.e),
+            }
+        return None
+
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
-        """Show RSA Key data for Provider"""
+        """Show JWK Key data for Provider"""
         application = get_object_or_404(Application, slug=application_slug)
         provider: OAuth2Provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
         signing_key: CertificateKeyPair = provider.signing_key
@@ -35,33 +65,9 @@ class JWKSView(View):
         response_data = {}
 
         if signing_key:
-            private_key = signing_key.private_key
-            if isinstance(private_key, RSAPrivateKey):
-                public_key: RSAPublicKey = private_key.public_key()
-                public_numbers = public_key.public_numbers()
-                response_data["keys"] = [
-                    {
-                        "kty": "RSA",
-                        "alg": JWTAlgorithms.RS256,
-                        "use": "sig",
-                        "kid": signing_key.kid,
-                        "n": b64_enc(public_numbers.n),
-                        "e": b64_enc(public_numbers.e),
-                    }
-                ]
-            elif isinstance(private_key, EllipticCurvePrivateKey):
-                public_key: EllipticCurvePublicKey = private_key.public_key()
-                public_numbers = public_key.public_numbers()
-                response_data["keys"] = [
-                    {
-                        "kty": "EC",
-                        "alg": JWTAlgorithms.ES256,
-                        "use": "sig",
-                        "kid": signing_key.kid,
-                        "n": b64_enc(public_numbers.n),
-                        "e": b64_enc(public_numbers.e),
-                    }
-                ]
+            jwk = self.get_jwk_for_key(signing_key)
+            if jwk:
+                response_data["keys"] = [jwk]
 
         response = JsonResponse(response_data)
         response["Access-Control-Allow-Origin"] = "*"

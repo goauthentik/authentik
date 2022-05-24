@@ -27,6 +27,7 @@ from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
 from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT
+from authentik.sources.oauth.models import OAuthSource
 
 
 class ClientTypes(models.TextChoices):
@@ -225,7 +226,19 @@ class OAuth2Provider(Provider):
         CertificateKeyPair,
         verbose_name=_("Allowed certificates for JWT-based client_credentials"),
         help_text=_(
-            "JWTs created with the configured certificates can authenticate with this provider."
+            (
+                "DEPRECATED. JWTs created with the configured "
+                "certificates can authenticate with this provider."
+            )
+        ),
+        related_name="+",
+        default=None,
+        blank=True,
+    )
+    jwks_sources = models.ManyToManyField(
+        OAuthSource,
+        verbose_name=_(
+            "Any JWT signed by the JWK of the selected source can be used to authenticate."
         ),
         related_name="+",
         default=None,

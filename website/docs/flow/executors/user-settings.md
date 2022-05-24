@@ -3,7 +3,7 @@ title: User settings
 ---
 
 :::info
-Requires authentik 2022.3.1
+Requires authentik 2022.3
 :::
 
 The user interface (`/if/user/`) embeds a downsized flow executor to allow the user to configure their profile using custom stages and prompts.

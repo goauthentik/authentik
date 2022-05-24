@@ -9,7 +9,7 @@ from typing import Any, Optional
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import datetime, now
 from django.views import View
-from jwt import InvalidTokenError, decode
+from jwt import InvalidTokenError, PyJWK, decode
 from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
@@ -43,6 +43,7 @@ from authentik.providers.oauth2.models import (
     RefreshToken,
 )
 from authentik.providers.oauth2.utils import TokenResponse, cors_allow, extract_client_auth
+from authentik.sources.oauth.models import OAuthSource
 
 LOGGER = get_logger()
 
@@ -258,17 +259,22 @@ class TokenParams:
         ).from_http(request, user=user)
         return None
 
+    # pylint: disable=too-many-locals
     def __post_init_client_credentials_jwt(self, request: HttpRequest):
         assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
         if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
+            LOGGER.warning("Invalid assertion type", assertion_type=assertion_type)
             raise TokenError("invalid_grant")
 
         client_secret = request.POST.get("client_secret", None)
         assertion = request.POST.get(CLIENT_ASSERTION, client_secret)
         if not assertion:
+            LOGGER.warning("Missing client assertion")
             raise TokenError("invalid_grant")
 
         token = None
+
+        # TODO: Remove in 2022.7, deprecated field `verification_keys``
         for cert in self.provider.verification_keys.all():
             LOGGER.debug("verifying jwt with key", key=cert.name)
             cert: CertificateKeyPair
@@ -286,7 +292,30 @@ class TokenParams:
                 )
             except (InvalidTokenError, ValueError, TypeError) as last_exc:
                 LOGGER.warning("failed to validate jwt", last_exc=last_exc)
+        # TODO: End remove block
+
+        source: Optional[OAuthSource] = None
+        parsed_key: Optional[PyJWK] = None
+        for source in self.provider.jwks_sources.all():
+            LOGGER.debug("verifying jwt with source", source=source.name)
+            keys = source.oidc_jwks.get("keys", [])
+            for key in keys:
+                LOGGER.debug("verifying jwt with key", source=source.name, key=key.get("kid"))
+                try:
+                    parsed_key = PyJWK.from_dict(key)
+                    token = decode(
+                        assertion,
+                        parsed_key.key,
+                        algorithms=[key.get("alg")],
+                        options={
+                            "verify_aud": False,
+                        },
+                    )
+                except (InvalidTokenError, ValueError, TypeError) as last_exc:
+                    LOGGER.warning("failed to validate jwt", last_exc=last_exc)
+
         if not token:
+            LOGGER.warning("No token could be verified")
             raise TokenError("invalid_grant")
 
         if "exp" in token:
@@ -315,12 +344,17 @@ class TokenParams:
             },
         )
 
+        method_args = {
+            "jwt": token,
+        }
+        if source:
+            method_args["source"] = source
+        if parsed_key:
+            method_args["jwk_id"] = parsed_key.key_id
         Event.new(
             action=EventAction.LOGIN,
             PLAN_CONTEXT_METHOD="jwt",
-            PLAN_CONTEXT_METHOD_ARGS={
-                "jwt": token,
-            },
+            PLAN_CONTEXT_METHOD_ARGS=method_args,
             PLAN_CONTEXT_APPLICATION=app,
         ).from_http(request, user=self.user)
 
