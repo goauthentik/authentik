@@ -102,6 +102,7 @@ class OAuthSourceViewSet(UsedByMixin, ModelViewSet):
         "consumer_key",
         "additional_scopes",
     ]
+    search_fields = ["name", "slug"]
     ordering = ["name"]
 
     @extend_schema(

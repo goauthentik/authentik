@@ -41,6 +41,7 @@ class InvitationStageViewSet(UsedByMixin, ModelViewSet):
     serializer_class = InvitationStageSerializer
     filterset_class = InvitationStageFilter
     ordering = ["name"]
+    search_fields = ["name"]
 
 
 class InvitationSerializer(ModelSerializer):

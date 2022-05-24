@@ -29,4 +29,5 @@ class PasswordStageViewSet(UsedByMixin, ModelViewSet):
         "configure_flow",
         "failed_attempts_before_cancel",
     ]
+    search_fields = ["name"]
     ordering = ["name"]

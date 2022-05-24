@@ -68,6 +68,7 @@ class NotificationTransportViewSet(UsedByMixin, ModelViewSet):
     queryset = NotificationTransport.objects.all()
     serializer_class = NotificationTransportSerializer
     filterset_fields = ["name", "mode", "webhook_url", "send_once"]
+    search_fields = ["name", "mode", "webhook_url"]
     ordering = ["name"]
 
     @permission_required("authentik_events.change_notificationtransport")

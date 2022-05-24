@@ -71,6 +71,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         "property_mappings",
         "issuer_mode",
     ]
+    search_fields = ["name"]
     ordering = ["name"]
 
     @extend_schema(

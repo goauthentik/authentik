@@ -1601,6 +1601,10 @@ paths:
       operationId: core_applications_list
       description: Custom list method that checks Policy based access instead of guardian
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -1623,6 +1627,10 @@ paths:
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: slug
         schema:
           type: string
       - in: query
@@ -6114,6 +6122,10 @@ paths:
       operationId: outposts_ldap_list
       description: LDAPProvider Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -6184,6 +6196,10 @@ paths:
       operationId: outposts_proxy_list
       description: ProxyProvider Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query

@@ -51,6 +51,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         "client_id",
         "api_hostname",
     ]
+    search_fields = ["name"]
     ordering = ["name"]
 
     @extend_schema(

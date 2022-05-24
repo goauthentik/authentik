@@ -29,6 +29,7 @@ class PromptStageViewSet(UsedByMixin, ModelViewSet):
     serializer_class = PromptStageSerializer
     filterset_fields = "__all__"
     ordering = ["name"]
+    search_fields = ["name"]
 
 
 class PromptSerializer(ModelSerializer):
@@ -59,3 +60,4 @@ class PromptViewSet(UsedByMixin, ModelViewSet):
     queryset = Prompt.objects.all().prefetch_related("promptstage_set")
     serializer_class = PromptSerializer
     filterset_fields = ["field_key", "label", "type", "placeholder"]
+    search_fields = ["field_key", "label", "type", "placeholder"]

@@ -21,4 +21,5 @@ class DummyStageViewSet(UsedByMixin, ModelViewSet):
     queryset = DummyStage.objects.all()
     serializer_class = DummyStageSerializer
     filterset_fields = "__all__"
+    search_fields = ["name"]
     ordering = ["name"]

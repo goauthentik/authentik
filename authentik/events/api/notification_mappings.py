@@ -26,3 +26,4 @@ class NotificationWebhookMappingViewSet(UsedByMixin, ModelViewSet):
     serializer_class = NotificationWebhookMappingSerializer
     filterset_fields = ["name"]
     ordering = ["name"]
+    search_fields = ["name"]

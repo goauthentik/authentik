@@ -22,3 +22,4 @@ class DenyStageViewSet(UsedByMixin, ModelViewSet):
     serializer_class = DenyStageSerializer
     filterset_fields = "__all__"
     ordering = ["name"]
+    search_fields = ["name"]

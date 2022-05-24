@@ -21,3 +21,4 @@ class PasswordExpiryPolicyViewSet(UsedByMixin, ModelViewSet):
     serializer_class = PasswordExpiryPolicySerializer
     filterset_fields = "__all__"
     ordering = ["name"]
+    search_fields = ["name"]

@@ -47,6 +47,7 @@ class LDAPProviderViewSet(UsedByMixin, ModelViewSet):
         "uid_start_number": ["iexact"],
         "gid_start_number": ["iexact"],
     }
+    search_fields = ["name"]
     ordering = ["name"]
 
 
@@ -81,3 +82,5 @@ class LDAPOutpostConfigViewSet(ReadOnlyModelViewSet):
     queryset = LDAPProvider.objects.filter(application__isnull=False)
     serializer_class = LDAPOutpostConfigSerializer
     ordering = ["name"]
+    search_fields = ["name"]
+    filterset_fields = ["name"]
