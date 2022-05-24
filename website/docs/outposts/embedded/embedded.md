@@ -4,11 +4,11 @@ title: Embedded Outpost
 
 Starting with 2021.8.1, authentik comes with an embedded outpost. This has been added to simplify deployment for users using the Proxy provider.
 
-The embedded outpost is ran in the main `server` container, and is managed by authentik itself. The embedded outpost authenticates itself via the secret key.
+The embedded outpost runs in the main `server` container, and is managed by authentik itself. The embedded outpost authenticates itself via the secret key.
 
 You can access the embedded outpost on the same ports as authentik itself, 9000 and 9443.
 
-The embedded outpost cannot be disabled, if it doesn't make sense to use in your deployment you can simply ignore it.
+The embedded outpost cannot be disabled, if it doesn't make sense to use it in your deployment you can simply ignore it.
 
 ### Configuration
 
