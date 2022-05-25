@@ -311,8 +311,10 @@ class TokenParams:
                             "verify_aud": False,
                         },
                     )
-                except (InvalidTokenError, ValueError, TypeError) as last_exc:
-                    LOGGER.warning("failed to validate jwt", last_exc=last_exc)
+                # AttributeError is raised when the configured JWK is a private key
+                # and not a public key
+                except (InvalidTokenError, ValueError, TypeError, AttributeError) as exc:
+                    LOGGER.warning("failed to validate jwt", exc=exc)
 
         if not token:
             LOGGER.warning("No token could be verified")
