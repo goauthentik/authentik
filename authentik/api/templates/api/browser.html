@@ -8,9 +8,6 @@ API Browser - {{ tenant.branding_title }}
 
 {% block head %}
 <script type="module" src="{% static 'dist/rapidoc-min.js' %}"></script>
-{% endblock %}
-
-{% block body %}
 <script>
 function getCookie(name) {
     let cookieValue = "";
@@ -34,16 +31,58 @@ window.addEventListener('DOMContentLoaded', (event) => {
     });
 });
 </script>
+<style>
+    img.logo {
+        width: 100%;
+        padding: 1rem 0.5rem 1.5rem 0.5rem;
+        min-height: 48px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
 <rapi-doc
     spec-url="{{ path }}"
-    heading-text="authentik"
-    theme="dark"
-    render-style="view"
+    heading-text=""
+    theme="light"
+    render-style="read"
+    default-schema-tab="schema"
     primary-color="#fd4b2d"
+    nav-bg-color="#212427"
+    bg-color="#000000"
+    text-color="#000000"
+    nav-text-color="#ffffff"
+    nav-hover-bg-color="#3c3f42"
+    nav-accent-color="#4f5255"
+    nav-hover-text-color="#ffffff"
+    use-path-in-nav-bar="true"
+    nav-item-spacing="relaxed"
+    allow-server-selection="false"
+    show-header="false"
     allow-spec-url-load="false"
     allow-spec-file-load="false">
-    <div slot="logo">
-        <img src="{% static 'dist/assets/icons/icon.png' %}" style="width:50px; height:50px" />
+    <div slot="nav-logo">
+        <img class="logo" src="{% static 'dist/assets/icons/icon_left_brand.png' %}" />
     </div>
 </rapi-doc>
+<script>
+const rapidoc = document.querySelector("rapi-doc");
+const matcher = window.matchMedia("(prefers-color-scheme: light)");
+const changer = (ev) => {
+    const style = getComputedStyle(document.documentElement);
+    let bg, text = "";
+    if (matcher.matches) {
+        bg = style.getPropertyValue('--pf-global--BackgroundColor--light-300');
+        text = style.getPropertyValue('--pf-global--Color--300');
+    } else {
+        bg = style.getPropertyValue('--ak-dark-background');
+        text = style.getPropertyValue('--ak-dark-foreground');
+    }
+    rapidoc.attributes.getNamedItem("bg-color").value = bg.trim();
+    rapidoc.attributes.getNamedItem("text-color").value = text.trim();
+    rapidoc.requestUpdate();
+};
+matcher.addEventListener("change", changer);
+window.addEventListener("load", changer);
+</script>
 {% endblock %}
