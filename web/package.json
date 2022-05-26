@@ -55,7 +55,7 @@
         "@babel/core": "^7.18.0",
         "@babel/plugin-proposal-decorators": "^7.18.2",
         "@babel/plugin-transform-runtime": "^7.18.0",
-        "@babel/preset-env": "^7.18.0",
+        "@babel/preset-env": "^7.18.2",
         "@babel/preset-typescript": "^7.17.12",
         "@formatjs/intl-listformat": "^7.0.1",
         "@fortawesome/fontawesome-free": "^6.1.1",
