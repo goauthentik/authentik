@@ -107,7 +107,7 @@ func (a *Application) ReportMisconfiguration(r *http.Request, msg string, fields
 		Action:   api.EVENTACTIONS_CONFIGURATION_ERROR,
 		App:      "authentik.providers.proxy", // must match python apps.py name
 		ClientIp: *api.NewNullableString(api.PtrString(r.RemoteAddr)),
-		Context:  &fields,
+		Context:  fields,
 	}
 	_, _, err := a.ak.Client.EventsApi.EventsEventsCreate(context.Background()).EventRequest(req).Execute()
 	if err != nil {

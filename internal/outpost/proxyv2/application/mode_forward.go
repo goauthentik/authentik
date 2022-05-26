@@ -56,9 +56,9 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	host := ""
 	s, _ := a.sessions.Get(r, constants.SessionName)
 	// Optional suffix, which is appended to the URL
-	if *a.proxyConfig.Mode == api.PROXYMODE_FORWARD_SINGLE {
+	if *a.proxyConfig.Mode.Get() == api.PROXYMODE_FORWARD_SINGLE {
 		host = web.GetHost(r)
-	} else if *a.proxyConfig.Mode == api.PROXYMODE_FORWARD_DOMAIN {
+	} else if *a.proxyConfig.Mode.Get() == api.PROXYMODE_FORWARD_DOMAIN {
 		eh, err := url.Parse(a.proxyConfig.ExternalHost)
 		if err != nil {
 			a.log.WithField("host", a.proxyConfig.ExternalHost).WithError(err).Warning("invalid external_host")

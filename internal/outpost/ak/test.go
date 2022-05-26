@@ -50,7 +50,7 @@ func MockAK(outpost api.Outpost, globalConfig api.Config) *APIController {
 
 	ac := &APIController{
 		Client:       apiClient,
-		GlobalConfig: globalConfig,
+		GlobalConfig: &globalConfig,
 
 		token:  token,
 		logger: log,
