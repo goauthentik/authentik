@@ -16,7 +16,7 @@ func (ms *MemorySearcher) FetchUsers() []api.User {
 			return nil, err
 		}
 		ms.log.WithField("page", page).WithField("count", len(users.Results)).Debug("fetched users")
-		return &users, nil
+		return users, nil
 	}
 	page := 1
 	users := make([]api.User, 0)
@@ -43,7 +43,7 @@ func (ms *MemorySearcher) FetchGroups() []api.Group {
 			return nil, err
 		}
 		ms.log.WithField("page", page).WithField("count", len(groups.Results)).Debug("fetched groups")
-		return &groups, nil
+		return groups, nil
 	}
 	page := 1
 	groups := make([]api.Group, 0)

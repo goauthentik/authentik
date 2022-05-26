@@ -141,7 +141,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					if flags.UserPk == u.Pk {
 						//TODO: Is there a better way to clone this object?
 						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.Parent, g.ParentName, []int32{flags.UserPk}, []api.GroupMember{u})
-						fg.SetAttributes(*g.Attributes)
+						fg.SetAttributes(g.Attributes)
 						fg.SetIsSuperuser(*g.IsSuperuser)
 						groups = append(groups, group.FromAPIGroup(*fg, ms.si))
 						break

@@ -15,7 +15,7 @@ import (
 
 var initialSetup = false
 
-func doGlobalSetup(outpost api.Outpost, globalConfig api.Config) {
+func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 	l := log.WithField("logger", "authentik.outpost")
 	m := outpost.Managed.Get()
 	level, ok := outpost.Config[ConfigLogLevel]

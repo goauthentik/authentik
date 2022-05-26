@@ -149,7 +149,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 						return fmt.Errorf("failed to get userinfo")
 					}
 
-					flags.UserInfo = &u
+					flags.UserInfo = u
 				}
 
 				u := make([]api.User, 1)
