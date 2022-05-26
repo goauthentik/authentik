@@ -163,7 +163,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Redirect URIs/Origins`}
+                        label=${t`Redirect URIs/Origins (RegEx)`}
                         name="redirectUris"
                     >
                         <textarea class="pf-c-form-control">
@@ -176,7 +176,7 @@ ${this.instance?.redirectUris}</textarea
                             ${t`If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.`}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`To allow any redirect URI, set this value to "*". Be aware of the possible security implications this can have.`}
+                            ${t`To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Signing Key`} name="signingKey">
