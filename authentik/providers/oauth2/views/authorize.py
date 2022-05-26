@@ -2,7 +2,7 @@
 from dataclasses import dataclass, field
 from datetime import timedelta
 from re import error as RegexError
-from re import fullmatch
+from re import escape, fullmatch
 from typing import Optional
 from urllib.parse import parse_qs, urlencode, urlparse, urlsplit, urlunsplit
 from uuid import uuid4
@@ -181,7 +181,7 @@ class OAuthAuthorizationParams:
 
         if self.provider.redirect_uris == "":
             LOGGER.info("Setting redirect for blank redirect_uris", redirect=self.redirect_uri)
-            self.provider.redirect_uris = self.redirect_uri
+            self.provider.redirect_uris = escape(self.redirect_uri)
             self.provider.save()
             allowed_redirect_urls = self.provider.redirect_uris.split()
 
