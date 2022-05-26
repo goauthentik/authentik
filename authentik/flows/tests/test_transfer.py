@@ -80,16 +80,19 @@ class TestFlowTransfer(TransactionTestCase):
 
     def test_export_validate_import_re_import(self):
         """Test export and import it twice"""
+        count_initial = Prompt.objects.filter(field_key="username").count()
+
         importer = FlowImporter(STATIC_PROMPT_EXPORT)
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
 
-        self.assertEqual(Prompt.objects.filter(field_key="username").count(), 1)
+        count_before = Prompt.objects.filter(field_key="username").count()
+        self.assertEqual(count_initial + 1, count_before)
 
         importer = FlowImporter(STATIC_PROMPT_EXPORT)
         self.assertTrue(importer.apply())
 
-        self.assertEqual(Prompt.objects.filter(field_key="username").count(), 1)
+        self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
 
     def test_export_validate_import_policies(self):
         """Test export and validate it"""
