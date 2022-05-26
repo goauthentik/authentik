@@ -57,6 +57,10 @@ Requires authentik 2021.12.5.
 To check if the user is member of an organisation, you can use the following policy on your flows:
 
 ```python
+# Ensure flow is only run during oauth logins via Github
+if context['source'].provider_type != "github":
+    return True
+
 accepted_org = "foo"
 
 # Get the user-source connection object from the context, and get the access token
