@@ -19,7 +19,7 @@ func urlMustParse(u string) *url.URL {
 
 func TestIsAllowlisted_Proxy_Single(t *testing.T) {
 	a := newTestApplication()
-	a.proxyConfig.Mode = api.PROXYMODE_PROXY.Ptr()
+	a.proxyConfig.Mode = *api.NewNullableProxyMode(api.PROXYMODE_PROXY.Ptr())
 
 	assert.Equal(t, false, a.IsAllowlisted(urlMustParse("")))
 	a.UnauthenticatedRegex = []*regexp.Regexp{
@@ -30,7 +30,7 @@ func TestIsAllowlisted_Proxy_Single(t *testing.T) {
 
 func TestIsAllowlisted_Proxy_Domain(t *testing.T) {
 	a := newTestApplication()
-	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
+	a.proxyConfig.Mode = *api.NewNullableProxyMode(api.PROXYMODE_FORWARD_DOMAIN.Ptr())
 
 	assert.Equal(t, false, a.IsAllowlisted(urlMustParse("")))
 	a.UnauthenticatedRegex = []*regexp.Regexp{
