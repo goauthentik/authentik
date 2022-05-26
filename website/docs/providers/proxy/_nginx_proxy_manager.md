@@ -40,6 +40,10 @@ location /outpost.goauthentik.io {
     proxy_set_header    X-Original-URL $scheme://$http_host$request_uri;
     add_header          Set-Cookie $auth_cookie;
     auth_request_set    $auth_cookie $upstream_http_set_cookie;
+
+    # required for POST requests to work
+    proxy_pass_request_body off;
+    proxy_set_header Content-Length "";
 }
 
 # Special location for when the /auth endpoint returns a 401,
