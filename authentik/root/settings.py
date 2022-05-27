@@ -409,12 +409,12 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "plain": {
+        "json": {
             "()": structlog.stdlib.ProcessorFormatter,
             "processor": structlog.processors.JSONRenderer(sort_keys=True),
             "foreign_pre_chain": LOG_PRE_CHAIN,
         },
-        "colored": {
+        "console": {
             "()": structlog.stdlib.ProcessorFormatter,
             "processor": structlog.dev.ConsoleRenderer(colors=DEBUG),
             "foreign_pre_chain": LOG_PRE_CHAIN,
@@ -424,7 +424,7 @@ LOGGING = {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
-            "formatter": "colored" if DEBUG else "plain",
+            "formatter": "console" if DEBUG else "json",
         },
     },
     "loggers": {},
