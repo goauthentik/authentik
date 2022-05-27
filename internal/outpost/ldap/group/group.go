@@ -16,7 +16,7 @@ type LDAPGroup struct {
 	Member         []string
 	IsSuperuser    bool
 	IsVirtualGroup bool
-	AKAttributes   interface{}
+	AKAttributes   map[string]interface{}
 }
 
 func (lg *LDAPGroup) Entry() *ldap.Entry {
