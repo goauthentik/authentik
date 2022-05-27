@@ -75,8 +75,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "invalid_credentials",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          db.si.GetAppSlug(),
 		}).Inc()
 		req.Log().Info("Invalid credentials")
 		return ldap.LDAPResultInvalidCredentials, nil
@@ -86,8 +85,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "flow_error",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          db.si.GetAppSlug(),
 		}).Inc()
 		req.Log().WithError(err).Warning("failed to execute flow")
 		return ldap.LDAPResultOperationsError, nil
@@ -100,8 +98,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "access_denied",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          db.si.GetAppSlug(),
 		}).Inc()
 		return ldap.LDAPResultInsufficientAccessRights, nil
 	}
@@ -110,8 +107,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "access_check_fail",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          db.si.GetAppSlug(),
 		}).Inc()
 		req.Log().WithError(err).Warning("failed to check access")
 		return ldap.LDAPResultOperationsError, nil
@@ -125,8 +121,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "user_info_fail",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          db.si.GetAppSlug(),
 		}).Inc()
 		req.Log().WithError(err).Warning("failed to get user info")
 		return ldap.LDAPResultOperationsError, nil

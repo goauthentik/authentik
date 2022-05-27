@@ -12,7 +12,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/search"
-	"goauthentik.io/internal/utils"
 )
 
 func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {
@@ -23,9 +22,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 		metrics.Requests.With(prometheus.Labels{
 			"outpost_name": ls.ac.Outpost.Name,
 			"type":         "search",
-			"filter":       req.Filter,
-			"dn":           req.BindDN,
-			"client":       utils.GetIP(conn.RemoteAddr()),
+			"baseDN":       searchReq.BaseDN,
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
 		req.Log().WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Search request")
 	}()

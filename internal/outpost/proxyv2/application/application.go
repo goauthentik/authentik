@@ -134,11 +134,8 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 			metrics.Requests.With(prometheus.Labels{
 				"outpost_name": a.outpostName,
 				"type":         "app",
-				"scheme":       r.URL.Scheme,
 				"method":       r.Method,
-				"path":         r.URL.Path,
 				"host":         web.GetHost(r),
-				"user":         user,
 			}).Observe(float64(after))
 		})
 	})

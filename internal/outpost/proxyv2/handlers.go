@@ -22,11 +22,8 @@ func (ps *ProxyServer) HandlePing(rw http.ResponseWriter, r *http.Request) {
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
 		"method":       r.Method,
-		"scheme":       r.URL.Scheme,
-		"path":         r.URL.Path,
 		"host":         web.GetHost(r),
 		"type":         "ping",
-		"user":         "",
 	}).Observe(float64(after))
 }
 
@@ -37,11 +34,8 @@ func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
 		"method":       r.Method,
-		"scheme":       r.URL.Scheme,
-		"path":         r.URL.Path,
 		"host":         web.GetHost(r),
-		"type":         "ping",
-		"user":         "",
+		"type":         "static",
 	}).Observe(float64(after))
 }
 
