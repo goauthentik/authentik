@@ -84,7 +84,7 @@ class TestAuthorize(OAuthTestCase):
             name="test",
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="*",
+            redirect_uris="+",
         )
         with self.assertRaises(RedirectUriError):
             request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})

@@ -185,6 +185,12 @@ class OAuthAuthorizationParams:
             self.provider.save()
             allowed_redirect_urls = self.provider.redirect_uris.split()
 
+        if self.provider.redirect_uris == "*":
+            LOGGER.info("Converting redirect_uris to regex", redirect=self.redirect_uri)
+            self.provider.redirect_uris = ".*"
+            self.provider.save()
+            allowed_redirect_urls = self.provider.redirect_uris.split()
+
         try:
             if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
                 LOGGER.warning(
