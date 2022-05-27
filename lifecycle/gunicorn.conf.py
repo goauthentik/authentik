@@ -3,7 +3,10 @@ import os
 import pwd
 from hashlib import sha512
 from multiprocessing import cpu_count
+from os import makedirs
+from pathlib import Path
 from tempfile import gettempdir
+from typing import TYPE_CHECKING
 
 import structlog
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
@@ -15,6 +18,9 @@ from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from lifecycle.worker import DjangoUvicornWorker
 
+if TYPE_CHECKING:
+    from gunicorn.arbiter import Arbiter
+
 bind = "127.0.0.1:8000"
 
 try:
@@ -24,11 +30,16 @@ try:
 except KeyError:
     pass
 
+_tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
-worker_tmp_dir = gettempdir()
+worker_tmp_dir = str(_tmp.joinpath("authentik_worker_tmp"))
+prometheus_tmp_dir = str(_tmp.joinpath("authentik_prometheus_tmp"))
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
-os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", worker_tmp_dir)
+os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
+
+makedirs(worker_tmp_dir, exist_ok=True)
+makedirs(prometheus_tmp_dir, exist_ok=True)
 
 max_requests = 1000
 max_requests_jitter = 50
@@ -80,19 +91,19 @@ workers = int(os.environ.get("WORKERS", default_workers))
 threads = int(os.environ.get("THREADS", 4))
 
 # pylint: disable=unused-argument
-def post_fork(server, worker: DjangoUvicornWorker):
+def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):
     """Tell prometheus to use worker number instead of process ID for multiprocess"""
     from prometheus_client import values
 
-    values.ValueClass = MultiProcessValue(lambda: worker.nr)
+    values.ValueClass = MultiProcessValue(lambda: worker.pid)
 
 
 # pylint: disable=unused-argument
-def worker_exit(server, worker: DjangoUvicornWorker):
+def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):
     """Remove pid dbs when worker is shutdown"""
     from prometheus_client import multiprocess
 
-    multiprocess.mark_process_dead(worker.nr)
+    multiprocess.mark_process_dead(worker.pid)
 
 
 if not CONFIG.y_bool("disable_startup_analytics", False):
