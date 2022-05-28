@@ -11,4 +11,4 @@
 
 ## Reporting a Vulnerability
 
-To report a vulnerability, send an email to [security@beryju.org](mailto:security@beryju.org)
+To report a vulnerability, send an email to [security@goauthentik.io](mailto:security@goauthentik.io)

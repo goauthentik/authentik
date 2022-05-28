@@ -94,7 +94,7 @@ addopts = "-p no:celery --junitxml=unittest.xml"
 name = "authentik"
 version = "2022.5.3"
 description = ""
-authors = ["Jens Langhammer <jens.langhammer@beryju.org>"]
+authors = ["authentik Team <hello@goauthentik.io>"]
 
 [tool.poetry.dependencies]
 celery = "*"

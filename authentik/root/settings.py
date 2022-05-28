@@ -147,7 +147,7 @@ SPECTACULAR_SETTINGS = {
         },
     ],
     "CONTACT": {
-        "email": "hello@beryju.org",
+        "email": "hello@goauthentik.io",
     },
     "AUTHENTICATION_WHITELIST": ["authentik.api.authentication.TokenAuthentication"],
     "LICENSE": {

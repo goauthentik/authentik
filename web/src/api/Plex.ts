@@ -20,7 +20,7 @@ export const DEFAULT_HEADERS = {
     "Content-Type": "application/json",
     "X-Plex-Product": "authentik",
     "X-Plex-Version": VERSION,
-    "X-Plex-Device-Vendor": "BeryJu.org",
+    "X-Plex-Device-Vendor": "goauthentik.io",
 };
 
 export function popupCenterScreen(url: string, title: string, w: number, h: number): Window | null {

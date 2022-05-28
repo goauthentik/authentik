@@ -4,7 +4,7 @@ info:
   version: 2022.5.3
   description: Making authentication simple.
   contact:
-    email: hello@beryju.org
+    email: hello@goauthentik.io
   license:
     name: GNU GPLv3
     url: https://github.com/goauthentik/authentik/blob/master/LICENSE
