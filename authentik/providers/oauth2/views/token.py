@@ -128,7 +128,7 @@ class TokenParams:
             with Hub.current.start_span(
                 op="authentik.providers.oauth2.post.parse.code",
             ):
-                self.__post_init_code(raw_code)
+                self.__post_init_code(raw_code, request)
         elif self.grant_type == GRANT_TYPE_REFRESH_TOKEN:
             with Hub.current.start_span(
                 op="authentik.providers.oauth2.post.parse.refresh",
@@ -143,7 +143,7 @@ class TokenParams:
             LOGGER.warning("Invalid grant type", grant_type=self.grant_type)
             raise TokenError("unsupported_grant_type")
 
-    def __post_init_code(self, raw_code: str):
+    def __post_init_code(self, raw_code: str, request: HttpRequest):
         if not raw_code:
             LOGGER.warning("Missing authorization code")
             raise TokenError("invalid_grant")
@@ -156,11 +156,23 @@ class TokenParams:
                 LOGGER.warning(
                     "Invalid redirect uri",
                     redirect_uri=self.redirect_uri,
-                    excepted=allowed_redirect_urls,
+                    expected=allowed_redirect_urls,
                 )
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message="Invalid redirect URI used by provider",
+                    provider=self.provider,
+                    redirect_uri=self.redirect_uri,
+                    expected=allowed_redirect_urls,
+                ).from_http(request)
                 raise TokenError("invalid_client")
         except RegexError as exc:
             LOGGER.warning("Invalid regular expression configured", exc=exc)
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message="Invalid redirect_uri RegEx configured",
+                provider=self.provider,
+            ).from_http(request)
             raise TokenError("invalid_client")
 
         try:

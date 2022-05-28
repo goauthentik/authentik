@@ -196,7 +196,7 @@ class OAuthAuthorizationParams:
                 LOGGER.warning(
                     "Invalid redirect uri",
                     redirect_uri=self.redirect_uri,
-                    excepted=allowed_redirect_urls,
+                    expected=allowed_redirect_urls,
                 )
                 raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
         except RegexError as exc:
