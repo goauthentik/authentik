@@ -133,6 +133,18 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
 
+    shouldRenderInWrapper(prompt: StagePrompt): bool {
+        // Special types that aren't rendered in a wrapper
+        if (
+            prompt.type === PromptTypeEnum.Static ||
+            prompt.type === PromptTypeEnum.Hidden ||
+            prompt.type === PromptTypeEnum.Separator
+        ) {
+            return false;
+        }
+        return true;
+    }
+
     renderField(prompt: StagePrompt): TemplateResult {
         // Checkbox is rendered differently
         if (prompt.type === PromptTypeEnum.Checkbox) {
@@ -151,26 +163,19 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                 <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
         }
-        // Special types that aren't rendered in a wrapper
-        if (
-            prompt.type === PromptTypeEnum.Static ||
-            prompt.type === PromptTypeEnum.Hidden ||
-            prompt.type === PromptTypeEnum.Separator
-        ) {
-            return html`
+        if (this.shouldRenderInWrapper(prompt)) {
+            return html`<ak-form-element
+                label="${prompt.label}"
+                ?required="${prompt.required}"
+                class="pf-c-form__group"
+                .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
+            >
                 ${unsafeHTML(this.renderPromptInner(prompt, false))}
                 ${this.renderPromptHelpText(prompt)}
-            `;
+            </ak-form-element>`;
         }
-        return html`<ak-form-element
-            label="${prompt.label}"
-            ?required="${prompt.required}"
-            class="pf-c-form__group"
-            .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
-        >
-            ${unsafeHTML(this.renderPromptInner(prompt, false))}
-            ${this.renderPromptHelpText(prompt)}
-        </ak-form-element>`;
+        return html` ${unsafeHTML(this.renderPromptInner(prompt, false))}
+        ${this.renderPromptHelpText(prompt)}`;
     }
 
     renderContinue(): TemplateResult {
