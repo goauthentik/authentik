@@ -2911,6 +2911,7 @@ msgstr "加载服务器"
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 #: src/user/user-settings/details/stages/prompt/PromptStage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/sources/SourceSettings.ts src/utils.ts
@@ -4161,9 +4162,12 @@ msgstr "重定向"
 msgid "Redirect URIs"
 msgstr "重定向 URI"
 
+#~ msgid "Redirect URIs/Origins"
+#~ msgstr "重定向 URI/Origin"
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Redirect URIs/Origins"
-msgstr "重定向 URI/Origin"
+msgid "Redirect URIs/Origins (RegEx)"
+msgstr "重定向 URI/Origin（正则）"
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Redirect binding"
@@ -5656,11 +5660,16 @@ msgstr "标题"
 msgid "To"
 msgstr "至"
 
+#~ msgid ""
+#~ "To allow any redirect URI, set this value to \"*\". Be aware of the possible"
+#~ " security implications this can have."
+#~ msgstr "要允许任何重定向 URI，请将此值设置为 \"*\"。请注意这可能带来的安全影响。"
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid ""
-"To allow any redirect URI, set this value to \"*\". Be aware of the possible"
-" security implications this can have."
-msgstr "要允许任何重定向 URI，请将此值设置为 \"*\"。请注意这可能带来的安全影响。"
+"To allow any redirect URI, set this value to \".*\". Be aware of the "
+"possible security implications this can have."
+msgstr "要允许任何重定向 URI，请将此值设置为 \".*\"。请注意这可能带来的安全影响。"
 
 #: src/pages/users/UserViewPage.ts
 msgid ""
