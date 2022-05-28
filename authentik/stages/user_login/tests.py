@@ -4,9 +4,9 @@ from unittest.mock import patch
 
 from django.urls import reverse
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
@@ -19,13 +19,9 @@ class TestUserLoginStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create(username="unittest", email="test@beryju.org")
+        self.user = create_test_admin_user()
 
-        self.flow = Flow.objects.create(
-            name="test-login",
-            slug="test-login",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = UserLoginStage.objects.create(name="login")
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 

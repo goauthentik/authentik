@@ -4,14 +4,13 @@ from unittest.mock import MagicMock, patch
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.generators import generate_key
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
 
@@ -23,16 +22,9 @@ class TestPasswordStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
-        self.password = generate_key()
-        self.user = User.objects.create_user(
-            username="unittest", email="test@beryju.org", password=self.password
-        )
+        self.user = create_test_admin_user()
 
-        self.flow = Flow.objects.create(
-            name="test-password",
-            slug="test-password",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = PasswordStage.objects.create(name="password", backends=[BACKEND_INBUILT])
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
@@ -50,7 +42,7 @@ class TestPasswordStage(FlowTestCase):
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             # Still have to send the password so the form is valid
-            {"password": self.password},
+            {"password": self.user.username},
         )
 
         self.assertStageResponse(
@@ -62,7 +54,7 @@ class TestPasswordStage(FlowTestCase):
 
     def test_recovery_flow_link(self):
         """Test link to the default recovery flow"""
-        flow = Flow.objects.create(designation=FlowDesignation.RECOVERY, slug="qewrqerqr")
+        flow = create_test_flow(designation=FlowDesignation.RECOVERY)
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
@@ -86,7 +78,7 @@ class TestPasswordStage(FlowTestCase):
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             # Form data
-            {"password": self.password},
+            {"password": self.user.username},
         )
 
         self.assertEqual(response.status_code, 200)
@@ -103,7 +95,7 @@ class TestPasswordStage(FlowTestCase):
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             # Form data
-            {"password": self.password + "test"},
+            {"password": self.user.username + "test"},
         )
         self.assertEqual(response.status_code, 200)
 
@@ -122,14 +114,14 @@ class TestPasswordStage(FlowTestCase):
                     kwargs={"flow_slug": self.flow.slug},
                 ),
                 # Form data
-                {"password": self.password + "test"},
+                {"password": self.user.username + "test"},
             )
             self.assertEqual(response.status_code, 200)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             # Form data
-            {"password": self.password + "test"},
+            {"password": self.user.username + "test"},
         )
         self.assertEqual(response.status_code, 200)
         # To ensure the plan has been cancelled, check SESSION_KEY_PLAN
@@ -155,7 +147,7 @@ class TestPasswordStage(FlowTestCase):
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             # Form data
-            {"password": self.password + "test"},
+            {"password": self.user.username + "test"},
         )
 
         self.assertStageResponse(

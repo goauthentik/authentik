@@ -1,8 +1,8 @@
 """Password flow tests"""
 from django.urls.base import reverse
 
-from authentik.core.models import User
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.policies.password.models import PasswordPolicy
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
@@ -12,13 +12,9 @@ class TestPasswordPolicyFlow(FlowTestCase):
     """Test Password Policy"""
 
     def setUp(self) -> None:
-        self.user = User.objects.create(username="unittest", email="test@beryju.org")
+        self.user = create_test_admin_user()
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
 
-        self.flow = Flow.objects.create(
-            name="test-prompt",
-            slug="test-prompt",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
         password_prompt = Prompt.objects.create(
             field_key="password",
             label="PASSWORD_LABEL",

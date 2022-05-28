@@ -4,8 +4,9 @@ from unittest.mock import patch
 from django.urls import reverse
 
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
@@ -18,14 +19,9 @@ class TestUserDeleteStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
-        self.username = "qerqwerqrwqwerwq"
-        self.user = User.objects.create(username=self.username, email="test@beryju.org")
+        self.user = create_test_admin_user()
 
-        self.flow = Flow.objects.create(
-            name="test-delete",
-            slug="test-delete",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = UserDeleteStage.objects.create(name="delete")
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
@@ -59,7 +55,7 @@ class TestUserDeleteStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
-        self.assertFalse(User.objects.filter(username=self.username).exists())
+        self.assertFalse(User.objects.filter(username=self.user.username).exists())
 
     def test_user_delete_post(self):
         """Test Form render"""
@@ -75,4 +71,4 @@ class TestUserDeleteStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
-        self.assertFalse(User.objects.filter(username=self.username).exists())
+        self.assertFalse(User.objects.filter(username=self.user.username).exists())

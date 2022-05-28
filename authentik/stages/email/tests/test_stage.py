@@ -7,9 +7,10 @@ from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.urls import reverse
 from django.utils.http import urlencode
 
-from authentik.core.models import Token, User
+from authentik.core.models import Token
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -22,13 +23,9 @@ class TestEmailStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user(username="unittest", email="test@beryju.org")
+        self.user = create_test_admin_user()
 
-        self.flow = Flow.objects.create(
-            name="test-email",
-            slug="test-email",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = EmailStage.objects.create(
             name="email",
             activate_user_on_success=True,
@@ -75,7 +72,7 @@ class TestEmailStage(FlowTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "authentik")
-            self.assertEqual(mail.outbox[0].to, ["test@beryju.org"])
+            self.assertEqual(mail.outbox[0].to, [self.user.email])
 
     def test_pending_user_override(self):
         """Test with pending user (override to)"""

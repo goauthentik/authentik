@@ -47,7 +47,7 @@ class TestUserWriteStage(FlowTestCase):
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user",
             "name": "name",
-            "email": "test@beryju.org",
+            "email": "test@goauthentik.io",
             "password": password,
         }
         plan.context[PLAN_CONTEXT_GROUPS] = [self.other_group]
@@ -75,7 +75,7 @@ class TestUserWriteStage(FlowTestCase):
         )
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = User.objects.create(
-            username="unittest", email="test@beryju.org"
+            username="unittest", email="test@goauthentik.io"
         )
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user-new",
