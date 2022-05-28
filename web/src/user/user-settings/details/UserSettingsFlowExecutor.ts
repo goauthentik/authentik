@@ -24,7 +24,6 @@ import {
 import { DEFAULT_CONFIG, tenant } from "../../../api/Config";
 import { refreshMe } from "../../../api/Users";
 import { EVENT_REFRESH } from "../../../constants";
-import "../../../elements/LoadingOverlay";
 import { MessageLevel } from "../../../elements/messages/Message";
 import { showMessage } from "../../../elements/messages/MessageContainer";
 import { StageHost } from "../../../flows/stages/base";
@@ -107,23 +106,20 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
         });
     }
 
-    nextChallenge(): void {
+    async nextChallenge(): Promise<void> {
         this.loading = true;
-        new FlowsApi(DEFAULT_CONFIG)
-            .flowsExecutorGet({
+        try {
+            const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
                 flowSlug: this.flowSlug || "",
                 query: window.location.search.substring(1),
-            })
-            .then((challenge) => {
-                this.challenge = challenge;
-            })
-            .catch((e: Error | Response) => {
-                // Catch JSON or Update errors
-                this.errorMessage(e);
-            })
-            .finally(() => {
-                this.loading = false;
             });
+            this.challenge = challenge;
+        } catch (e: unknown) {
+            // Catch JSON or Update errors
+            this.errorMessage(e as Error | Response);
+        } finally {
+            this.loading = false;
+        }
     }
 
     async errorMessage(error: Error | Response): Promise<void> {
@@ -194,7 +190,8 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
                     level: MessageLevel.success,
                     message: t`Successfully updated details`,
                 });
-                return html``;
+                return html`<ak-empty-state ?loading=${true} header=${t`Loading`}>
+                </ak-empty-state>`;
             case ChallengeChoices.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
             case ChallengeChoices.Native:
@@ -225,17 +222,16 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
         if (!this.flowSlug) {
             return html`<p>${t`No settings flow configured.`}</p> `;
         }
-        if (!this.challenge) {
+        if (!this.challenge || this.loading) {
             return html`<ak-empty-state ?loading=${true} header=${t`Loading`}> </ak-empty-state>`;
         }
         return html` ${this.renderChallenge()} `;
     }
 
     render(): TemplateResult {
-        return html`${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : html``}
-            <div class="pf-c-card">
-                <div class="pf-c-card__title">${t`Update details`}</div>
-                <div class="pf-c-card__body">${this.renderChallengeWrapper()}</div>
-            </div>`;
+        return html` <div class="pf-c-card">
+            <div class="pf-c-card__title">${t`Update details`}</div>
+            <div class="pf-c-card__body">${this.renderChallengeWrapper()}</div>
+        </div>`;
     }
 }

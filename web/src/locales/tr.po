@@ -2876,6 +2876,7 @@ msgstr "Sunucuları yükle"
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 #: src/user/user-settings/details/stages/prompt/PromptStage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/sources/SourceSettings.ts
@@ -4143,8 +4144,12 @@ msgid "Redirect URIs"
 msgstr "URI'leri yeniden yönlendirme"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Redirect URIs/Origins"
-msgstr "UR'ları/Kökenleri Yönlendir"
+#~ msgid "Redirect URIs/Origins"
+#~ msgstr "UR'ları/Kökenleri Yönlendir"
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Redirect URIs/Origins (RegEx)"
+msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Redirect binding"
@@ -5569,7 +5574,11 @@ msgid "To"
 msgstr "Kime"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "To allow any redirect URI, set this value to \"*\". Be aware of the possible security implications this can have."
+#~ msgid "To allow any redirect URI, set this value to \"*\". Be aware of the possible security implications this can have."
+#~ msgstr ""
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "To allow any redirect URI, set this value to \".*\". Be aware of the possible security implications this can have."
 msgstr ""
 
 #: src/pages/users/UserViewPage.ts

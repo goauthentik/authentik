@@ -2872,6 +2872,7 @@ msgstr "Załaduj serwery"
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 #: src/user/user-settings/details/stages/prompt/PromptStage.ts
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 #: src/user/user-settings/sources/SourceSettings.ts
@@ -4138,8 +4139,12 @@ msgid "Redirect URIs"
 msgstr "URI przekierowania"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Redirect URIs/Origins"
-msgstr "Identyfikatory URI/pochodzenie przekierowania"
+#~ msgid "Redirect URIs/Origins"
+#~ msgstr "Identyfikatory URI/pochodzenie przekierowania"
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Redirect URIs/Origins (RegEx)"
+msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Redirect binding"
@@ -5564,8 +5569,12 @@ msgid "To"
 msgstr "Do"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "To allow any redirect URI, set this value to \"*\". Be aware of the possible security implications this can have."
-msgstr "Aby zezwolić na dowolny identyfikator URI przekierowania, ustaw tę wartość na „*”. Bądź świadomy możliwych konsekwencji dla bezpieczeństwa, jakie może to mieć."
+#~ msgid "To allow any redirect URI, set this value to \"*\". Be aware of the possible security implications this can have."
+#~ msgstr "Aby zezwolić na dowolny identyfikator URI przekierowania, ustaw tę wartość na „*”. Bądź świadomy możliwych konsekwencji dla bezpieczeństwa, jakie może to mieć."
+
+#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
+msgid "To allow any redirect URI, set this value to \".*\". Be aware of the possible security implications this can have."
+msgstr ""
 
 #: src/pages/users/UserViewPage.ts
 msgid "To create a recovery link, the current tenant needs to have a recovery flow configured."
