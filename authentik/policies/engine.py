@@ -23,7 +23,7 @@ GAUGE_POLICIES_CACHED = Gauge(
 HIST_POLICIES_BUILD_TIME = Histogram(
     "authentik_policies_build_time",
     "Execution times complete policy result to an object",
-    ["object_name", "object_type", "user"],
+    ["object_pk", "object_type"],
 )
 
 
@@ -91,9 +91,8 @@ class PolicyEngine:
             op="authentik.policy.engine.build",
             description=self.__pbm,
         ) as span, HIST_POLICIES_BUILD_TIME.labels(
-            object_name=self.__pbm,
+            object_pk=str(self.__pbm.pk),
             object_type=f"{self.__pbm._meta.app_label}.{self.__pbm._meta.model_name}",
-            user=self.request.user,
         ).time():
             span: Span
             span.set_data("pbm", self.__pbm)

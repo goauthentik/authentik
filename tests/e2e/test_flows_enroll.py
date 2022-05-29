@@ -10,7 +10,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.core.models import User
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.core.tests.utils import create_test_flow
+from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.lib.generators import generate_id
 from authentik.stages.email.models import EmailStage, EmailTemplates
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
@@ -64,21 +66,16 @@ class TestFlowsEnroll(SeleniumTestCase):
         )
 
         # Stages
-        first_stage = PromptStage.objects.create(name="prompt-stage-first")
+        first_stage = PromptStage.objects.create(name=generate_id())
         first_stage.fields.set([username_prompt, password, password_repeat])
         first_stage.save()
-        second_stage = PromptStage.objects.create(name="prompt-stage-second")
+        second_stage = PromptStage.objects.create(name=generate_id())
         second_stage.fields.set([name_field, email])
         second_stage.save()
-        user_write = UserWriteStage.objects.create(name="enroll-user-write")
-        user_login = UserLoginStage.objects.create(name="enroll-user-login")
+        user_write = UserWriteStage.objects.create(name=generate_id())
+        user_login = UserLoginStage.objects.create(name=generate_id())
 
-        flow = Flow.objects.create(
-            name="default-enrollment-flow",
-            slug="default-enrollment-flow",
-            title="default-enrollment-flow",
-            designation=FlowDesignation.ENROLLMENT,
-        )
+        flow = create_test_flow(FlowDesignation.ENROLLMENT)
 
         # Attach enrollment flow to identification stage
         ident_stage: IdentificationStage = IdentificationStage.objects.first()
@@ -133,27 +130,22 @@ class TestFlowsEnroll(SeleniumTestCase):
         )
 
         # Stages
-        first_stage = PromptStage.objects.create(name="prompt-stage-first")
+        first_stage = PromptStage.objects.create(name=generate_id())
         first_stage.fields.set([username_prompt, password, password_repeat])
         first_stage.save()
-        second_stage = PromptStage.objects.create(name="prompt-stage-second")
+        second_stage = PromptStage.objects.create(name=generate_id())
         second_stage.fields.set([name_field, email])
         second_stage.save()
         email_stage = EmailStage.objects.create(
-            name="enroll-email",
+            name=generate_id(),
             host="localhost",
             port=1025,
             template=EmailTemplates.ACCOUNT_CONFIRM,
         )
-        user_write = UserWriteStage.objects.create(name="enroll-user-write")
-        user_login = UserLoginStage.objects.create(name="enroll-user-login")
+        user_write = UserWriteStage.objects.create(name=generate_id())
+        user_login = UserLoginStage.objects.create(name=generate_id())
 
-        flow = Flow.objects.create(
-            name="default-enrollment-flow",
-            slug="default-enrollment-flow",
-            title="default-enrollment-flow",
-            designation=FlowDesignation.ENROLLMENT,
-        )
+        flow = create_test_flow(FlowDesignation.ENROLLMENT)
 
         # Attach enrollment flow to identification stage
         ident_stage: IdentificationStage = IdentificationStage.objects.first()

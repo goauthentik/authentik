@@ -54,18 +54,11 @@ func (a *Application) configureProxy() error {
 		}()
 		after := time.Since(before)
 
-		user := ""
-		if claims != nil {
-			user = claims.Email
-		}
 		metrics.UpstreamTiming.With(prometheus.Labels{
 			"outpost_name":  a.outpostName,
 			"upstream_host": r.URL.Host,
-			"scheme":        r.URL.Scheme,
 			"method":        r.Method,
-			"path":          r.URL.Path,
 			"host":          web.GetHost(r),
-			"user":          user,
 		}).Observe(float64(after))
 	})
 	return nil

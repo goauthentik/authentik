@@ -23,11 +23,11 @@ var (
 	FlowTimingGet = promauto.NewHistogramVec(prometheus.HistogramOpts{
 		Name: "authentik_outpost_flow_timing_get",
 		Help: "Duration it took to get a challenge",
-	}, []string{"stage", "flow", "client", "user"})
+	}, []string{"stage", "flow"})
 	FlowTimingPost = promauto.NewHistogramVec(prometheus.HistogramOpts{
 		Name: "authentik_outpost_flow_timing_post",
 		Help: "Duration it took to send a challenge",
-	}, []string{"stage", "flow", "client", "user"})
+	}, []string{"stage", "flow"})
 )
 
 type FlowExecutor struct {
@@ -163,10 +163,8 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 	gcsp.SetTag("authentik.flow.component", ch.GetComponent())
 	gcsp.Finish()
 	FlowTimingGet.With(prometheus.Labels{
-		"stage":  ch.GetComponent(),
-		"flow":   fe.flowSlug,
-		"client": fe.cip,
-		"user":   fe.Answers[StageIdentification],
+		"stage": ch.GetComponent(),
+		"flow":  fe.flowSlug,
 	}).Observe(float64(gcsp.EndTime.Sub(gcsp.StartTime)))
 
 	// Resole challenge
@@ -230,10 +228,8 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 		}
 	}
 	FlowTimingPost.With(prometheus.Labels{
-		"stage":  ch.GetComponent(),
-		"flow":   fe.flowSlug,
-		"client": fe.cip,
-		"user":   fe.Answers[StageIdentification],
+		"stage": ch.GetComponent(),
+		"flow":  fe.flowSlug,
 	}).Observe(float64(scsp.EndTime.Sub(scsp.StartTime)))
 
 	if depth >= 10 {

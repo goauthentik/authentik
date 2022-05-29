@@ -9,20 +9,17 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	"goauthentik.io/internal/outpost/ldap/metrics"
-	"goauthentik.io/internal/utils"
 )
 
 func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
 	req, span := bind.NewRequest(bindDN, bindPW, conn)
-
+	selectedApp := ""
 	defer func() {
 		span.Finish()
 		metrics.Requests.With(prometheus.Labels{
 			"outpost_name": ls.ac.Outpost.Name,
 			"type":         "bind",
-			"filter":       "",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          selectedApp,
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
 		req.Log().WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Bind request")
 	}()
@@ -39,6 +36,7 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 	for _, instance := range ls.providers {
 		username, err := instance.binder.GetUsername(bindDN)
 		if err == nil {
+			selectedApp = instance.GetAppSlug()
 			return instance.binder.Bind(username, req)
 		} else {
 			req.Log().WithError(err).Debug("Username not for instance")
@@ -49,8 +47,7 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 		"outpost_name": ls.ac.Outpost.Name,
 		"type":         "bind",
 		"reason":       "no_provider",
-		"dn":           bindDN,
-		"client":       utils.GetIP(conn.RemoteAddr()),
+		"app":          "",
 	}).Inc()
 	return ldap.LDAPResultOperationsError, nil
 }
