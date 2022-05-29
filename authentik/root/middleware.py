@@ -1,4 +1,5 @@
 """Dynamically set SameSite depending if the upstream connection is TLS or not"""
+from hashlib import sha512
 from time import time
 from typing import Callable
 
@@ -10,11 +11,14 @@ from django.http.request import HttpRequest
 from django.http.response import HttpResponse
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
+from jwt import PyJWTError, decode, encode
 from structlog.stdlib import get_logger
 
 from authentik.lib.utils.http import get_client_ip
 
 LOGGER = get_logger("authentik.asgi")
+ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
+SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
 
 
 class SessionMiddleware(UpstreamSessionMiddleware):
@@ -34,6 +38,16 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                 return False
             return True
         return False
+
+    def process_request(self, request):
+        session_jwt = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
+        session_key = None
+        try:
+            session_payload = decode(session_jwt, SIGNING_HASH, algorithms=["HS256"])
+            session_key = session_payload["sid"]
+        except (KeyError, PyJWTError):
+            pass
+        request.session = self.SessionStore(session_key)
 
     def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
         """
@@ -82,9 +96,18 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                             "request completed. The user may have logged "
                             "out in a concurrent request, for example."
                         )
+                    payload = {
+                        "sid": request.session.session_key,
+                        "iss": "authentik",
+                        "sub": "anonymous",
+                        "authenticated": request.user.is_authenticated,
+                        "acr": ACR_AUTHENTIK_SESSION,
+                    }
+                    if request.user.is_authenticated:
+                        payload["sub"] = request.user.uid
                     response.set_cookie(
                         settings.SESSION_COOKIE_NAME,
-                        request.session.session_key,
+                        encode(payload=payload, key=SIGNING_HASH),
                         max_age=max_age,
                         expires=expires,
                         domain=settings.SESSION_COOKIE_DOMAIN,
