@@ -91,13 +91,13 @@ def select_challenge_sms(request: HttpRequest, device: SMSDevice):
     device.stage.send(device.token, device)
 
 
-def validate_challenge_code(code: str, request: HttpRequest, user: User) -> str:
+def validate_challenge_code(code: str, request: HttpRequest, user: User) -> Device:
     """Validate code-based challenges. We test against every device, on purpose, as
     the user mustn't choose between totp and static devices."""
     device = match_token(user, code)
     if not device:
         raise ValidationError(_("Invalid Token"))
-    return code
+    return device
 
 
 # pylint: disable=unused-argument
@@ -129,7 +129,7 @@ def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) ->
     return device
 
 
-def validate_challenge_duo(device_pk: int, request: HttpRequest, user: User) -> int:
+def validate_challenge_duo(device_pk: int, request: HttpRequest, user: User) -> Device:
     """Duo authentication"""
     device = get_object_or_404(DuoDevice, pk=device_pk)
     if device.user != user:
@@ -148,4 +148,4 @@ def validate_challenge_duo(device_pk: int, request: HttpRequest, user: User) -> 
     if response["result"] == "deny":
         raise ValidationError("Duo denied access")
     device.save()
-    return device_pk
+    return device

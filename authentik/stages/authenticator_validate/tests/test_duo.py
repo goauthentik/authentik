@@ -45,9 +45,7 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
             "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.client",
             duo_mock,
         ):
-            self.assertEqual(
-                duo_device.pk, validate_challenge_duo(duo_device.pk, request, self.user)
-            )
+            self.assertEqual(duo_device, validate_challenge_duo(duo_device.pk, request, self.user))
         with patch(
             "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.client",
             failed_duo_mock,

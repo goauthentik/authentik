@@ -28,7 +28,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_last_auth_threshold(self):
         """Test last_auth_threshold"""
-        conf_stage = IdentificationStage.objects.create(
+        ident_stage = IdentificationStage.objects.create(
             name="conf",
             user_fields=[
                 UserFields.USERNAME,
@@ -46,9 +46,9 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             device_classes=[DeviceClasses.WEBAUTHN],
         )
         sleep(1)
-        stage.configuration_stages.set([conf_stage])
+        stage.configuration_stages.set([ident_stage])
         flow = Flow.objects.create(name="test", slug="test", title="test")
-        FlowStageBinding.objects.create(target=flow, stage=conf_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=ident_stage, order=0)
         FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
 
         response = self.client.post(
@@ -65,41 +65,6 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             flow,
             component="ak-stage-authenticator-validate",
         )
-
-    def test_last_auth_threshold_valid(self):
-        """Test last_auth_threshold"""
-        conf_stage = IdentificationStage.objects.create(
-            name="conf",
-            user_fields=[
-                UserFields.USERNAME,
-            ],
-        )
-        device: WebAuthnDevice = WebAuthnDevice.objects.create(
-            user=self.user,
-            confirmed=True,
-        )
-        device.set_sign_count(device.sign_count + 1)
-        stage = AuthenticatorValidateStage.objects.create(
-            name="foo",
-            last_auth_threshold="hours=1",
-            not_configured_action=NotConfiguredAction.CONFIGURE,
-            device_classes=[DeviceClasses.WEBAUTHN],
-        )
-        stage.configuration_stages.set([conf_stage])
-        flow = Flow.objects.create(name="test", slug="test", title="test")
-        FlowStageBinding.objects.create(target=flow, stage=conf_stage, order=0)
-        FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
-
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {"uid_field": self.user.username},
-        )
-        self.assertEqual(response.status_code, 302)
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            follow=True,
-        )
-        self.assertStageResponse(response, component="xak-flow-redirect", to="/")
 
     def test_device_challenge_webauthn(self):
         """Test webauthn"""

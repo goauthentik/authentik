@@ -1,10 +1,13 @@
 """Authenticator Validation"""
-from datetime import timezone
+from datetime import datetime
+from hashlib import sha256
+from typing import Optional
 
+from django.conf import settings
 from django.http import HttpRequest, HttpResponse
-from django.utils.timezone import datetime, now
 from django_otp import devices_for_user
 from django_otp.models import Device
+from jwt import PyJWTError, decode, encode
 from rest_framework.fields import CharField, IntegerField, JSONField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
@@ -34,6 +37,7 @@ from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
+COOKIE_NAME_MFA = "authentik_mfa"
 SESSION_STAGES = "goauthentik.io/stages/authenticator_validate/stages"
 SESSION_SELECTED_STAGE = "goauthentik.io/stages/authenticator_validate/selected_stage"
 SESSION_DEVICE_CHALLENGES = "goauthentik.io/stages/authenticator_validate/device_challenges"
@@ -59,6 +63,8 @@ class AuthenticatorValidationChallenge(WithUserInfoChallenge):
 class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     """Challenge used for Code-based and WebAuthn authenticators"""
 
+    device: Optional[Device]
+
     selected_challenge = DeviceChallenge(required=False)
     selected_stage = CharField(required=False)
 
@@ -68,33 +74,40 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     component = CharField(default="ak-stage-authenticator-validate")
 
     def _challenge_allowed(self, classes: list):
-        device_challenges: list[dict] = self.stage.request.session.get(SESSION_DEVICE_CHALLENGES)
+        device_challenges: list[dict] = self.stage.request.session.get(
+            SESSION_DEVICE_CHALLENGES, []
+        )
         if not any(x["device_class"] in classes for x in device_challenges):
             raise ValidationError("No compatible device class allowed")
 
     def validate_code(self, code: str) -> str:
         """Validate code-based response, raise error if code isn't allowed"""
         self._challenge_allowed([DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS])
-        return validate_challenge_code(code, self.stage.request, self.stage.get_pending_user())
+        self.device = validate_challenge_code(
+            code, self.stage.request, self.stage.get_pending_user()
+        )
+        return code
 
     def validate_webauthn(self, webauthn: dict) -> dict:
         """Validate webauthn response, raise error if webauthn wasn't allowed
         or response is invalid"""
         self._challenge_allowed([DeviceClasses.WEBAUTHN])
-        return validate_challenge_webauthn(
+        self.device = validate_challenge_webauthn(
             webauthn, self.stage.request, self.stage.get_pending_user()
         )
+        return webauthn
 
     def validate_duo(self, duo: int) -> int:
         """Initiate Duo authentication"""
         self._challenge_allowed([DeviceClasses.DUO])
-        return validate_challenge_duo(duo, self.stage.request, self.stage.get_pending_user())
+        self.device = validate_challenge_duo(duo, self.stage.request, self.stage.get_pending_user())
+        return duo
 
     def validate_selected_challenge(self, challenge: dict) -> dict:
         """Check which challenge the user has selected. Actual logic only used for SMS stage."""
         # First check if the challenge is valid
         allowed = False
-        for device_challenge in self.stage.request.session.get(SESSION_DEVICE_CHALLENGES):
+        for device_challenge in self.stage.request.session.get(SESSION_DEVICE_CHALLENGES, []):
             if device_challenge.get("device_class", "") == challenge.get(
                 "device_class", ""
             ) and device_challenge.get("device_uid", "") == challenge.get("device_uid", ""):
@@ -127,15 +140,6 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         return attrs
 
 
-def get_device_last_usage(device: Device) -> datetime:
-    """Get a datetime object from last_t"""
-    if not hasattr(device, "last_t"):
-        return datetime.fromtimestamp(0, tz=timezone.utc)
-    if isinstance(device.last_t, datetime):
-        return device.last_t
-    return datetime.fromtimestamp(device.last_t * device.step, tz=timezone.utc)
-
-
 class AuthenticatorValidateStageView(ChallengeStageView):
     """Authenticator Validation"""
 
@@ -154,23 +158,19 @@ class AuthenticatorValidateStageView(ChallengeStageView):
 
         stage: AuthenticatorValidateStage = self.executor.current_stage
 
-        _now = now()
         threshold = timedelta_from_string(stage.last_auth_threshold)
+        allowed_devices = []
 
         for device in user_devices:
             device_class = device.__class__.__name__.lower().replace("device", "")
             if device_class not in stage.device_classes:
                 LOGGER.debug("device class not allowed", device_class=device_class)
                 continue
+            allowed_devices.append(device)
             # Ensure only one challenge per device class
             # WebAuthn does another device loop to find all webuahtn devices
             if device_class in seen_classes:
                 continue
-            # check if device has been used within threshold and skip this stage if so
-            if threshold.total_seconds() > 0:
-                if _now - get_device_last_usage(device) <= threshold:
-                    LOGGER.info("Device has been used within threshold", device=device)
-                    raise FlowSkipStageException()
             if device_class not in seen_classes:
                 seen_classes.append(device_class)
             challenge = DeviceChallenge(
@@ -183,6 +183,9 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             challenge.is_valid()
             challenges.append(challenge.data)
             LOGGER.debug("adding challenge for device", challenge=challenge)
+        # check if we have an MFA cookie and if it's valid
+        if threshold.total_seconds() > 0:
+            self.check_mfa_cookie(allowed_devices)
         return challenges
 
     def get_userless_webauthn_challenge(self) -> list[dict]:
@@ -301,6 +304,68 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             }
         )
 
+    @property
+    def cookie_jwt_key(self) -> str:
+        """Signing key for MFA Cookie for this stage"""
+        return sha256(
+            f"{settings.SECRET_KEY}:{self.executor.current_stage.pk.hex}".encode("ascii")
+        ).hexdigest()
+
+    def check_mfa_cookie(self, allowed_devices: list[Device]):
+        """Check if an MFA cookie has been set, whether it's valid and applies
+        to the current stage and device.
+
+        The list of devices passed to this function must only contain devices for the
+        correct user and with an allowed class"""
+        if COOKIE_NAME_MFA not in self.request.COOKIES:
+            return
+        stage: AuthenticatorValidateStage = self.executor.current_stage
+        threshold = timedelta_from_string(stage.last_auth_threshold)
+        latest_allowed = datetime.now() + threshold
+        try:
+            payload = decode(self.request.COOKIES[COOKIE_NAME_MFA], self.cookie_jwt_key, ["HS256"])
+            if payload["stage"] != stage.pk.hex:
+                LOGGER.warning("Invalid stage PK")
+                return
+            if datetime.fromtimestamp(payload["exp"]) > latest_allowed:
+                LOGGER.warning("Expired MFA cookie")
+                return
+            if not any(device.pk == payload["device"] for device in allowed_devices):
+                LOGGER.warning("Invalid device PK")
+                return
+            LOGGER.info("MFA has been used within threshold")
+            raise FlowSkipStageException()
+        except (PyJWTError, ValueError, TypeError) as exc:
+            LOGGER.info("Invalid mfa cookie for device", exc=exc)
+
+    def set_valid_mfa_cookie(self, device: Device) -> HttpResponse:
+        """Set an MFA cookie to allow users to skip MFA validation in this context (browser)
+
+        The cookie is JWT which is signed with a hash of the secret key and the UID of the stage"""
+        stage: AuthenticatorValidateStage = self.executor.current_stage
+        delta = timedelta_from_string(stage.last_auth_threshold)
+        if delta.total_seconds() < 1:
+            LOGGER.info("Not setting MFA cookie since threshold is not set.")
+            return self.executor.stage_ok()
+        expiry = datetime.now() + delta
+        cookie_payload = {
+            "device": device.pk,
+            "stage": stage.pk.hex,
+            "exp": expiry.timestamp(),
+        }
+        response = self.executor.stage_ok()
+        cookie = encode(cookie_payload, self.cookie_jwt_key)
+        response.set_cookie(
+            COOKIE_NAME_MFA,
+            cookie,
+            expires=expiry,
+            path="/",
+            max_age=delta,
+            domain=settings.SESSION_COOKIE_DOMAIN,
+            samesite="Lax",
+        )
+        return response
+
     # pylint: disable=unused-argument
     def challenge_valid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
         # All validation is done by the serializer
@@ -309,7 +374,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             webauthn_device: WebAuthnDevice = response.data.get("webauthn", None)
             if not webauthn_device:
                 return self.executor.stage_ok()
-            LOGGER.debug("Set user from userless flow", user=webauthn_device.user)
+            LOGGER.debug("Set user from user-less flow", user=webauthn_device.user)
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = webauthn_device.user
             self.executor.plan.context[PLAN_CONTEXT_METHOD] = "auth_webauthn_pwl"
             self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS] = cleanse_dict(
@@ -319,4 +384,4 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                     }
                 )
             )
-        return self.executor.stage_ok()
+        return self.set_valid_mfa_cookie(response.device)
