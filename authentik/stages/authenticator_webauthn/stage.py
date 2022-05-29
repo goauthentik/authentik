@@ -104,6 +104,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         )
 
         self.request.session["challenge"] = registration_options.challenge
+        self.request.session.save()
         return AuthenticatorWebAuthnChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,

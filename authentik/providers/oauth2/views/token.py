@@ -9,7 +9,7 @@ from typing import Any, Optional
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import datetime, now
 from django.views import View
-from jwt import InvalidTokenError, PyJWK, decode
+from jwt import PyJWK, PyJWTError, decode
 from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
@@ -302,8 +302,8 @@ class TokenParams:
                         "verify_aud": False,
                     },
                 )
-            except (InvalidTokenError, ValueError, TypeError) as last_exc:
-                LOGGER.warning("failed to validate jwt", last_exc=last_exc)
+            except (PyJWTError, ValueError, TypeError) as exc:
+                LOGGER.warning("failed to validate jwt", exc=exc)
         # TODO: End remove block
 
         source: Optional[OAuthSource] = None
@@ -325,7 +325,7 @@ class TokenParams:
                     )
                 # AttributeError is raised when the configured JWK is a private key
                 # and not a public key
-                except (InvalidTokenError, ValueError, TypeError, AttributeError) as exc:
+                except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
                     LOGGER.warning("failed to validate jwt", exc=exc)
 
         if not token:

@@ -31,10 +31,11 @@ export function me(): Promise<SessionUser> {
                     avatar: "",
                     uid: "",
                     username: "",
-                    name: ""
+                    name: "",
+                    settings: {},
                 }
             };
-            if (ex.status === 401 || ex.status === 403) {
+            if (ex.response.status === 401 || ex.response.status === 403) {
                 window.location.assign("/");
             }
             return defaultUser;
