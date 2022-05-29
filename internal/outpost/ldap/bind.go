@@ -47,6 +47,7 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 		"outpost_name": ls.ac.Outpost.Name,
 		"type":         "bind",
 		"reason":       "no_provider",
+		"app":          "",
 	}).Inc()
 	return ldap.LDAPResultOperationsError, nil
 }

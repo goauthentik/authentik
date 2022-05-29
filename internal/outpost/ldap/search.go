@@ -16,13 +16,14 @@ import (
 
 func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (ldap.ServerSearchResult, error) {
 	req, span := search.NewRequest(bindDN, searchReq, conn)
-
+	selectedApp := ""
 	defer func() {
 		span.Finish()
 		metrics.Requests.With(prometheus.Labels{
 			"outpost_name": ls.ac.Outpost.Name,
 			"type":         "search",
 			"baseDN":       searchReq.BaseDN,
+			"app":          selectedApp,
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
 		req.Log().WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Search request")
 	}()
@@ -47,6 +48,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 	for _, provider := range ls.providers {
 		providerBase, _ := goldap.ParseDN(strings.ToLower(provider.BaseDN))
 		if providerBase.AncestorOf(bd) || providerBase.Equal(bd) {
+			selectedApp = provider.GetAppSlug()
 			return provider.searcher.Search(req)
 		}
 	}
