@@ -1,11 +1,15 @@
 """Test validator stage"""
+from datetime import datetime, timedelta
+from hashlib import sha256
 from http.cookies import SimpleCookie
 from time import sleep
 
+from django.conf import settings
 from django.test.client import RequestFactory
 from django.urls.base import reverse
 from django_otp.oath import TOTP
 from django_otp.plugins.otp_totp.models import TOTPDevice
+from jwt import encode
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
@@ -111,6 +115,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
         return response.cookies
 
     def test_last_auth_skip(self):
+        """Test valid cookie"""
         cookies = self.test_last_auth_threshold_valid()
         mfa_cookie = cookies[COOKIE_NAME_MFA]
         self.client.logout()
@@ -124,6 +129,123 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
         self.assertStageResponse(response, component="xak-flow-redirect", to="/")
+
+    def test_last_auth_stage_pk(self):
+        """Test MFA cookie with wrong stage PK"""
+        ident_stage = IdentificationStage.objects.create(
+            name="conf",
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        device: TOTPDevice = TOTPDevice.objects.create(
+            user=self.user,
+            confirmed=True,
+        )
+        stage = AuthenticatorValidateStage.objects.create(
+            name="foo",
+            last_auth_threshold="hours=1",
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.TOTP],
+        )
+        stage.configuration_stages.set([ident_stage])
+        FlowStageBinding.objects.create(target=self.flow, stage=ident_stage, order=0)
+        FlowStageBinding.objects.create(target=self.flow, stage=stage, order=1)
+        self.client.cookies[COOKIE_NAME_MFA] = encode(
+            payload={
+                "device": device.pk,
+                "stage": stage.pk.hex + "foo",
+                "exp": (datetime.now() + timedelta(days=3)).timestamp(),
+            },
+            key=sha256(f"{settings.SECRET_KEY}:{stage.pk.hex}".encode("ascii")).hexdigest(),
+        )
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"uid_field": self.user.username},
+        )
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(response, component="ak-stage-authenticator-validate")
+
+    def test_last_auth_stage_device(self):
+        """Test MFA cookie with wrong device PK"""
+        ident_stage = IdentificationStage.objects.create(
+            name="conf",
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        device: TOTPDevice = TOTPDevice.objects.create(
+            user=self.user,
+            confirmed=True,
+        )
+        stage = AuthenticatorValidateStage.objects.create(
+            name="foo",
+            last_auth_threshold="hours=1",
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.TOTP],
+        )
+        stage.configuration_stages.set([ident_stage])
+        FlowStageBinding.objects.create(target=self.flow, stage=ident_stage, order=0)
+        FlowStageBinding.objects.create(target=self.flow, stage=stage, order=1)
+        self.client.cookies[COOKIE_NAME_MFA] = encode(
+            payload={
+                "device": device.pk + 1,
+                "stage": stage.pk.hex,
+                "exp": (datetime.now() + timedelta(days=3)).timestamp(),
+            },
+            key=sha256(f"{settings.SECRET_KEY}:{stage.pk.hex}".encode("ascii")).hexdigest(),
+        )
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"uid_field": self.user.username},
+        )
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(response, component="ak-stage-authenticator-validate")
+
+    def test_last_auth_stage_expired(self):
+        """Test MFA cookie with expired cookie"""
+        ident_stage = IdentificationStage.objects.create(
+            name="conf",
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        device: TOTPDevice = TOTPDevice.objects.create(
+            user=self.user,
+            confirmed=True,
+        )
+        stage = AuthenticatorValidateStage.objects.create(
+            name="foo",
+            last_auth_threshold="hours=1",
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.TOTP],
+        )
+        stage.configuration_stages.set([ident_stage])
+        FlowStageBinding.objects.create(target=self.flow, stage=ident_stage, order=0)
+        FlowStageBinding.objects.create(target=self.flow, stage=stage, order=1)
+        self.client.cookies[COOKIE_NAME_MFA] = encode(
+            payload={
+                "device": device.pk,
+                "stage": stage.pk.hex,
+                "exp": (datetime.now() - timedelta(days=3)).timestamp(),
+            },
+            key=sha256(f"{settings.SECRET_KEY}:{stage.pk.hex}".encode("ascii")).hexdigest(),
+        )
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"uid_field": self.user.username},
+        )
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(response, component="ak-stage-authenticator-validate")
 
     def test_device_challenge_totp(self):
         """Test device challenge"""
