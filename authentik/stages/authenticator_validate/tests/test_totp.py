@@ -1,4 +1,5 @@
 """Test validator stage"""
+from http.cookies import SimpleCookie
 from time import sleep
 
 from django.test.client import RequestFactory
@@ -7,8 +8,8 @@ from django_otp.oath import TOTP
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.exceptions import ValidationError
 
-from authentik.core.tests.utils import create_test_admin_user
-from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests import FlowTestCase
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
@@ -25,6 +26,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
     def setUp(self) -> None:
         self.user = create_test_admin_user()
         self.request_factory = RequestFactory()
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
 
     def test_last_auth_threshold(self):
         """Test last_auth_threshold"""
@@ -49,26 +51,25 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
             device_classes=[DeviceClasses.TOTP],
         )
         stage.configuration_stages.set([ident_stage])
-        flow = Flow.objects.create(name="test", slug="test", title="test")
-        FlowStageBinding.objects.create(target=flow, stage=ident_stage, order=0)
-        FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
+        FlowStageBinding.objects.create(target=self.flow, stage=ident_stage, order=0)
+        FlowStageBinding.objects.create(target=self.flow, stage=stage, order=1)
 
         response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"uid_field": self.user.username},
         )
         self.assertEqual(response.status_code, 302)
         response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             follow=True,
         )
         self.assertStageResponse(
             response,
-            flow,
+            self.flow,
             component="ak-stage-authenticator-validate",
         )
 
-    def test_last_auth_threshold_valid(self):
+    def test_last_auth_threshold_valid(self) -> SimpleCookie:
         """Test last_auth_threshold"""
         ident_stage = IdentificationStage.objects.create(
             name="conf",
@@ -87,26 +88,41 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
             device_classes=[DeviceClasses.TOTP],
         )
         stage.configuration_stages.set([ident_stage])
-        flow = Flow.objects.create(name="test", slug="test", title="test")
-        FlowStageBinding.objects.create(target=flow, stage=ident_stage, order=0)
-        FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
+        FlowStageBinding.objects.create(target=self.flow, stage=ident_stage, order=0)
+        FlowStageBinding.objects.create(target=self.flow, stage=stage, order=1)
 
         response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"uid_field": self.user.username},
         )
         self.assertEqual(response.status_code, 302)
         response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
         # Verify token once here to set last_t etc
         totp = TOTP(device.bin_key)
         sleep(1)
         response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"code": str(totp.token())},
         )
         self.assertIn(COOKIE_NAME_MFA, response.cookies)
+        self.assertStageResponse(response, component="xak-flow-redirect", to="/")
+        return response.cookies
+
+    def test_last_auth_skip(self):
+        cookies = self.test_last_auth_threshold_valid()
+        mfa_cookie = cookies[COOKIE_NAME_MFA]
+        self.client.logout()
+        self.client.cookies[COOKIE_NAME_MFA] = mfa_cookie
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"uid_field": self.user.username},
+        )
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
         self.assertStageResponse(response, component="xak-flow-redirect", to="/")
 
     def test_device_challenge_totp(self):
