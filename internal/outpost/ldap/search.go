@@ -22,7 +22,6 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 		metrics.Requests.With(prometheus.Labels{
 			"outpost_name": ls.ac.Outpost.Name,
 			"type":         "search",
-			"baseDN":       searchReq.BaseDN,
 			"app":          selectedApp,
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
 		req.Log().WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Search request")
