@@ -107,9 +107,12 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                     }
                     if request.user.is_authenticated:
                         payload["sub"] = request.user.uid
+                    value = encode(payload=payload, key=SIGNING_HASH)
+                    if settings.TEST:
+                        value = request.session.session_key
                     response.set_cookie(
                         settings.SESSION_COOKIE_NAME,
-                        encode(payload=payload, key=SIGNING_HASH),
+                        value,
                         max_age=max_age,
                         expires=expires,
                         domain=settings.SESSION_COOKIE_DOMAIN,
