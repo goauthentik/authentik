@@ -301,7 +301,7 @@ class NotificationTransport(models.Model):
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField(unique=True)
-    mode = models.TextField(choices=TransportMode.choices)
+    mode = models.TextField(choices=TransportMode.choices, default=TransportMode.LOCAL)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
     webhook_mapping = models.ForeignKey(

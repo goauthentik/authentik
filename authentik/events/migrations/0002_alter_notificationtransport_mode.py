@@ -42,7 +42,8 @@ class Migration(migrations.Migration):
                     ("webhook", "Generic Webhook"),
                     ("webhook_slack", "Slack Webhook (Slack/Discord)"),
                     ("email", "Email"),
-                ]
+                ],
+                default="local",
             ),
         ),
         migrations.RunPython(notify_local_transport),
