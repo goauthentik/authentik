@@ -110,6 +110,6 @@
         "tslib": "^2.4.0",
         "typescript": "^4.7.2",
         "webcomponent-qr-code": "^1.0.6",
-        "yaml": "^2.1.0"
+        "yaml": "^2.1.1"
     }
 }
