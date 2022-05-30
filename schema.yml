@@ -4490,6 +4490,7 @@ paths:
           type: string
           enum:
           - email
+          - local
           - webhook
           - webhook_slack
       - in: query
@@ -23047,6 +23048,7 @@ components:
       - pk
     NotificationTransportModeEnum:
       enum:
+      - local
       - webhook
       - webhook_slack
       - email

@@ -289,6 +289,7 @@ class Event(ExpiringModel):
 class TransportMode(models.TextChoices):
     """Modes that a notification transport can send a notification"""
 
+    LOCAL = "local", _("authentik inbuilt notifications")
     WEBHOOK = "webhook", _("Generic Webhook")
     WEBHOOK_SLACK = "webhook_slack", _("Slack Webhook (Slack/Discord)")
     EMAIL = "email", _("Email")
@@ -315,6 +316,8 @@ class NotificationTransport(models.Model):
 
     def send(self, notification: "Notification") -> list[str]:
         """Send notification to user, called from async task"""
+        if self.mode == TransportMode.LOCAL:
+            return self.send_local(notification)
         if self.mode == TransportMode.WEBHOOK:
             return self.send_webhook(notification)
         if self.mode == TransportMode.WEBHOOK_SLACK:
@@ -322,6 +325,17 @@ class NotificationTransport(models.Model):
         if self.mode == TransportMode.EMAIL:
             return self.send_email(notification)
         raise ValueError(f"Invalid mode {self.mode} set")
+
+    def send_local(self, notification: "Notification") -> list[str]:
+        """Local notification delivery"""
+        if self.webhook_mapping:
+            self.webhook_mapping.evaluate(
+                user=notification.user,
+                request=None,
+                notification=notification,
+            )
+        notification.save()
+        return []
 
     def send_webhook(self, notification: "Notification") -> list[str]:
         """Send notification to generic webhook"""
