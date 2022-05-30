@@ -2966,6 +2966,10 @@ msgstr "Cargando..."
 msgid "Local"
 msgstr "Local"
 
+#: src/pages/events/TransportForm.ts
+msgid "Local (notifications will be created within authentik)"
+msgstr ""
+
 #: src/user/user-settings/details/UserDetailsForm.ts
 #~ msgid "Locale"
 #~ msgstr "Lugar"

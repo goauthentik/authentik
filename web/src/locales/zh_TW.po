@@ -2953,6 +2953,10 @@ msgstr "载入中……"
 msgid "Local"
 msgstr "本地"
 
+#: src/pages/events/TransportForm.ts
+msgid "Local (notifications will be created within authentik)"
+msgstr ""
+
 #~ msgid "Locale"
 #~ msgstr "区域设置"
 
