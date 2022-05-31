@@ -45,7 +45,7 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
 )
-from authentik.sources.saml.processors.request import SESSION_REQUEST_ID
+from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_login.stage import BACKEND_INBUILT
@@ -119,11 +119,11 @@ class ResponseProcessor:
             seen_ids.append(self._root.attrib["ID"])
             cache.set(CACHE_SEEN_REQUEST_ID % self._source.pk, seen_ids)
             return
-        if SESSION_REQUEST_ID not in request.session or "InResponseTo" not in self._root.attrib:
+        if SESSION_KEY_REQUEST_ID not in request.session or "InResponseTo" not in self._root.attrib:
             raise MismatchedRequestID(
                 "Missing InResponseTo and IdP-initiated Logins are not allowed"
             )
-        if request.session[SESSION_REQUEST_ID] != self._root.attrib["InResponseTo"]:
+        if request.session[SESSION_KEY_REQUEST_ID] != self._root.attrib["InResponseTo"]:
             raise MismatchedRequestID("Mismatched request ID")
 
     def _handle_name_id_transient(self, request: HttpRequest) -> HttpResponse:

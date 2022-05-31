@@ -34,7 +34,7 @@ REQUEST_KEY_SAML_SIG_ALG = "SigAlg"
 REQUEST_KEY_SAML_RESPONSE = "SAMLResponse"
 REQUEST_KEY_RELAY_STATE = "RelayState"
 
-SESSION_KEY_AUTH_N_REQUEST = "authn_request"
+SESSION_KEY_AUTH_N_REQUEST = "authentik/providers/saml/authn_request"
 
 # This View doesn't have a URL on purpose, as its called by the FlowExecutor
 class SAMLFlowFinalView(ChallengeStageView):
@@ -106,3 +106,6 @@ class SAMLFlowFinalView(ChallengeStageView):
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # We'll never get here since the challenge redirects to the SP
         return HttpResponseBadRequest()
+
+    def cleanup(self):
+        self.request.session.pop(SESSION_KEY_AUTH_N_REQUEST, None)

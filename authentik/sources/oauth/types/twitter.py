@@ -2,7 +2,7 @@
 from typing import Any
 
 from authentik.lib.generators import generate_id
-from authentik.sources.oauth.clients.oauth2 import SESSION_OAUTH_PKCE
+from authentik.sources.oauth.clients.oauth2 import SESSION_KEY_OAUTH_PKCE
 from authentik.sources.oauth.types.azure_ad import AzureADClient
 from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
@@ -13,10 +13,10 @@ class TwitterOAuthRedirect(OAuthRedirect):
     """Twitter OAuth2 Redirect"""
 
     def get_additional_parameters(self, source):  # pragma: no cover
-        self.request.session[SESSION_OAUTH_PKCE] = generate_id()
+        self.request.session[SESSION_KEY_OAUTH_PKCE] = generate_id()
         return {
             "scope": ["users.read", "tweet.read"],
-            "code_challenge": self.request.session[SESSION_OAUTH_PKCE],
+            "code_challenge": self.request.session[SESSION_KEY_OAUTH_PKCE],
             "code_challenge_method": "plain",
         }
 

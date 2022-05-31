@@ -13,7 +13,7 @@ from authentik.lib.tests.utils import dummy_get_response
 from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 from authentik.stages.authenticator_validate.stage import (
-    SESSION_DEVICE_CHALLENGES,
+    SESSION_KEY_DEVICE_CHALLENGES,
     AuthenticatorValidationChallengeResponse,
 )
 from authentik.stages.identification.models import IdentificationStage, UserFields
@@ -83,7 +83,7 @@ class AuthenticatorValidateStageTests(FlowTestCase):
 
         middleware = SessionMiddleware(dummy_get_response)
         middleware.process_request(request)
-        request.session[SESSION_DEVICE_CHALLENGES] = [
+        request.session[SESSION_KEY_DEVICE_CHALLENGES] = [
             {
                 "device_class": "static",
                 "device_uid": "1",

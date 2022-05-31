@@ -9,7 +9,7 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core.middleware import SESSION_IMPERSONATE_USER
+from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -117,7 +117,7 @@ class UserWriteStageView(StageView):
         if (
             any("password" in x for x in data.keys())
             and self.request.user.pk == user.pk
-            and SESSION_IMPERSONATE_USER not in self.request.session
+            and SESSION_KEY_IMPERSONATE_USER not in self.request.session
         ):
             should_update_session = True
         self.update_user(user)
