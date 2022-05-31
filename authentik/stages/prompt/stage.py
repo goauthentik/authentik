@@ -119,6 +119,7 @@ class PromptChallengeResponse(ChallengeResponse):
         engine = ListPolicyEngine(self.stage.validation_policies.all(), user, self.request)
         engine.mode = PolicyEngineMode.MODE_ALL
         engine.request.context[PLAN_CONTEXT_PROMPT] = attrs
+        engine.use_cache = False
         engine.build()
         result = engine.result
         if not result.passing:

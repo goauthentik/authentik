@@ -32,7 +32,7 @@ LOGGER = get_logger()
 
 
 class StageView(View):
-    """Abstract Stage, inherits TemplateView but can be combined with FormView"""
+    """Abstract Stage"""
 
     executor: "FlowExecutorView"
 

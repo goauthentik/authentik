@@ -421,6 +421,7 @@ class FlowExecutorView(APIView):
             # It's only deleted on a fresh executions
             # SESSION_KEY_HISTORY,
         ]
+        self._logger.debug("f(exec): cleaning up")
         for key in keys_to_delete:
             if key in self.request.session:
                 del self.request.session[key]

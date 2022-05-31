@@ -341,6 +341,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 instance=request._request.session[SESSION_IMPERSONATE_ORIGINAL_USER],
                 context=context,
             ).data
+        self.request.session.save()
         return Response(serializer.initial_data)
 
     @permission_required("authentik_core.reset_user_password")
