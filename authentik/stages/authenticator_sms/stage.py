@@ -20,7 +20,7 @@ from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMS
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 LOGGER = get_logger()
-SESSION_SMS_DEVICE = "sms_device"
+SESSION_KEY_SMS_DEVICE = "authentik/stages/authenticator_sms/sms_device"
 
 
 class AuthenticatorSMSChallenge(WithUserInfoChallenge):
@@ -66,9 +66,9 @@ class AuthenticatorSMSStageView(ChallengeStageView):
         if "phone" in context.get(PLAN_CONTEXT_PROMPT, {}):
             LOGGER.debug("got phone number from plan context")
             return context.get(PLAN_CONTEXT_PROMPT, {}).get("phone")
-        if SESSION_SMS_DEVICE in self.request.session:
+        if SESSION_KEY_SMS_DEVICE in self.request.session:
             LOGGER.debug("got phone number from device in session")
-            device: SMSDevice = self.request.session[SESSION_SMS_DEVICE]
+            device: SMSDevice = self.request.session[SESSION_KEY_SMS_DEVICE]
             if device.phone_number == "":
                 return None
             return device.phone_number
@@ -84,7 +84,7 @@ class AuthenticatorSMSStageView(ChallengeStageView):
 
     def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
         response = super().get_response_instance(data)
-        response.device = self.request.session[SESSION_SMS_DEVICE]
+        response.device = self.request.session[SESSION_KEY_SMS_DEVICE]
         return response
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -100,19 +100,19 @@ class AuthenticatorSMSStageView(ChallengeStageView):
 
         stage: AuthenticatorSMSStage = self.executor.current_stage
 
-        if SESSION_SMS_DEVICE not in self.request.session:
+        if SESSION_KEY_SMS_DEVICE not in self.request.session:
             device = SMSDevice(user=user, confirmed=False, stage=stage, name="SMS Device")
             device.generate_token(commit=False)
             if phone_number := self._has_phone_number():
                 device.phone_number = phone_number
-            self.request.session[SESSION_SMS_DEVICE] = device
+            self.request.session[SESSION_KEY_SMS_DEVICE] = device
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         """SMS Token is validated by challenge"""
-        device: SMSDevice = self.request.session[SESSION_SMS_DEVICE]
+        device: SMSDevice = self.request.session[SESSION_KEY_SMS_DEVICE]
         if not device.confirmed:
             return self.challenge_invalid(response)
         device.save()
-        del self.request.session[SESSION_SMS_DEVICE]
+        del self.request.session[SESSION_KEY_SMS_DEVICE]
         return self.executor.stage_ok()

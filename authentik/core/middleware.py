@@ -7,8 +7,8 @@ from uuid import uuid4
 from django.http import HttpRequest, HttpResponse
 from sentry_sdk.api import set_tag
 
-SESSION_IMPERSONATE_USER = "authentik_impersonate_user"
-SESSION_IMPERSONATE_ORIGINAL_USER = "authentik_impersonate_original_user"
+SESSION_KEY_IMPERSONATE_USER = "authentik/impersonate/user"
+SESSION_KEY_IMPERSONATE_ORIGINAL_USER = "authentik/impersonate/original_user"
 LOCAL = local()
 RESPONSE_HEADER_ID = "X-authentik-id"
 KEY_AUTH_VIA = "auth_via"
@@ -25,10 +25,10 @@ class ImpersonateMiddleware:
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         # No permission checks are done here, they need to be checked before
-        # SESSION_IMPERSONATE_USER is set.
+        # SESSION_KEY_IMPERSONATE_USER is set.
 
-        if SESSION_IMPERSONATE_USER in request.session:
-            request.user = request.session[SESSION_IMPERSONATE_USER]
+        if SESSION_KEY_IMPERSONATE_USER in request.session:
+            request.user = request.session[SESSION_KEY_IMPERSONATE_USER]
             # Ensure that the user is active, otherwise nothing will work
             request.user.is_active = True
 

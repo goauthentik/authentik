@@ -60,6 +60,9 @@ class StageView(View):
             return self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         return self.request.user
 
+    def cleanup(self):
+        """Cleanup session"""
+
 
 class ChallengeStageView(StageView):
     """Stage view which response with a challenge"""

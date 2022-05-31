@@ -19,7 +19,7 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
-from authentik.sources.saml.processors.request import SESSION_REQUEST_ID, RequestProcessor
+from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 
 POST_REQUEST = (
@@ -142,7 +142,7 @@ class TestAuthNRequest(TestCase):
         request = request_proc.build_auth_n()
 
         # change the request ID
-        http_request.session[SESSION_REQUEST_ID] = "test"
+        http_request.session[SESSION_KEY_REQUEST_ID] = "test"
         http_request.session.save()
 
         # To get an assertion we need a parsed request (parsed by provider)

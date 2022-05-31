@@ -8,7 +8,7 @@ from authentik.core.models import User
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMSProviders
-from authentik.stages.authenticator_sms.stage import SESSION_SMS_DEVICE
+from authentik.stages.authenticator_sms.stage import SESSION_KEY_SMS_DEVICE
 
 
 class AuthenticatorSMSStageTests(APITestCase):
@@ -85,7 +85,7 @@ class AuthenticatorSMSStageTests(APITestCase):
                 data={
                     "component": "ak-stage-authenticator-sms",
                     "phone_number": "foo",
-                    "code": int(self.client.session[SESSION_SMS_DEVICE].token),
+                    "code": int(self.client.session[SESSION_KEY_SMS_DEVICE].token),
                 },
             )
             self.assertEqual(response.status_code, 200)

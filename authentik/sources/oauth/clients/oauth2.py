@@ -11,7 +11,7 @@ from structlog.stdlib import get_logger
 from authentik.sources.oauth.clients.base import BaseOAuthClient
 
 LOGGER = get_logger()
-SESSION_OAUTH_PKCE = "oauth_pkce"
+SESSION_KEY_OAUTH_PKCE = "authentik/sources/oauth/pkce"
 
 
 class OAuth2Client(BaseOAuthClient):
@@ -70,8 +70,8 @@ class OAuth2Client(BaseOAuthClient):
             "code": code,
             "grant_type": "authorization_code",
         }
-        if SESSION_OAUTH_PKCE in self.request.session:
-            args["code_verifier"] = self.request.session[SESSION_OAUTH_PKCE]
+        if SESSION_KEY_OAUTH_PKCE in self.request.session:
+            args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
         try:
             access_token_url = self.source.type.access_token_url or ""
             if self.source.type.urls_customizable and self.source.access_token_url:

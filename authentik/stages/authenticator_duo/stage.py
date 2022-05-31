@@ -18,8 +18,8 @@ from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, Duo
 
 LOGGER = get_logger()
 
-SESSION_KEY_DUO_USER_ID = "authentik_stages_authenticator_duo_user_id"
-SESSION_KEY_DUO_ACTIVATION_CODE = "authentik_stages_authenticator_duo_activation_code"
+SESSION_KEY_DUO_USER_ID = "authentik/stages/authenticator_duo/user_id"
+SESSION_KEY_DUO_ACTIVATION_CODE = "authentik/stages/authenticator_duo/activation_code"
 
 
 class AuthenticatorDuoChallenge(WithUserInfoChallenge):
@@ -95,3 +95,7 @@ class AuthenticatorDuoStageView(ChallengeStageView):
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")
         return self.executor.stage_ok()
+
+    def cleanup(self):
+        self.request.session.pop(SESSION_KEY_DUO_USER_ID)
+        self.request.session.pop(SESSION_KEY_DUO_ACTIVATION_CODE)
