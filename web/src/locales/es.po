@@ -3504,6 +3504,7 @@ msgid "Number"
 msgstr "Número"
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Number the SMS will be sent from."
 msgstr "Número desde el que se enviará el SMS."
 
@@ -6269,6 +6270,10 @@ msgstr "Certificado de verificación"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Verification certificates"
+msgstr ""
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Verify only"
 msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts

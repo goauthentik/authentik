@@ -192,7 +192,7 @@ class User(GuardianUserMixin, AbstractUser):
 
     @property
     def uid(self) -> str:
-        """Generate a globall unique UID, based on the user ID and the hashed secret key"""
+        """Generate a globally unique UID, based on the user ID and the hashed secret key"""
         return sha256(f"{self.id}-{settings.SECRET_KEY}".encode("ascii")).hexdigest()
 
     @property

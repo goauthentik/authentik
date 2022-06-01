@@ -168,6 +168,9 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             if device_class not in stage.device_classes:
                 self.logger.debug("device class not allowed", device_class=device_class)
                 continue
+            if isinstance(device, SMSDevice) and device.is_hashed:
+                LOGGER.debug("Hashed SMS device, skipping")
+                continue
             allowed_devices.append(device)
             # Ensure only one challenge per device class
             # WebAuthn does another device loop to find all WebAuthn devices

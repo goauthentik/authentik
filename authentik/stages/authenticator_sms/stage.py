@@ -1,6 +1,7 @@
 """SMS Setup stage"""
 from typing import Optional
 
+from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
@@ -15,7 +16,11 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMSDevice
+from authentik.stages.authenticator_sms.models import (
+    AuthenticatorSMSStage,
+    SMSDevice,
+    hash_phone_number,
+)
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 SESSION_KEY_SMS_DEVICE = "authentik/stages/authenticator_sms/sms_device"
@@ -45,6 +50,10 @@ class AuthenticatorSMSChallengeResponse(ChallengeResponse):
         stage: AuthenticatorSMSStage = self.device.stage
         if "code" not in attrs:
             self.device.phone_number = attrs["phone_number"]
+            hashed_number = hash_phone_number(self.device.phone_number)
+            query = Q(phone_number=hashed_number) | Q(phone_number=self.device.phone_number)
+            if SMSDevice.objects.filter(query, stage=self.stage.executor.current_stage.pk).exists():
+                raise ValidationError(_("Invalid phone number"))
             # No code yet, but we have a phone number, so send a verification message
             stage.send(self.device.token, self.device)
             return super().validate(attrs)
@@ -111,6 +120,10 @@ class AuthenticatorSMSStageView(ChallengeStageView):
         device: SMSDevice = self.request.session[SESSION_KEY_SMS_DEVICE]
         if not device.confirmed:
             return self.challenge_invalid(response)
+        stage: AuthenticatorSMSStage = self.executor.current_stage
+        if stage.verify_only:
+            self.logger.debug("Hashing number on device")
+            device.set_hashed_number()
         device.save()
         del self.request.session[SESSION_KEY_SMS_DEVICE]
         return self.executor.stage_ok()
