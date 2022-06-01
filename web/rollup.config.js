@@ -87,7 +87,7 @@ export const defaultOptions = {
             "preventAssignment": true,
         }),
         sourcemaps({
-            exclude: [/@sentry/g],
+            exclude: [/@sentry/],
         }),
         isProdBuild && terser(),
     ].filter((p) => p),
