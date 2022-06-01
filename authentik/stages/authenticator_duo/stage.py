@@ -2,7 +2,6 @@
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
 from rest_framework.fields import CharField
-from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
@@ -15,8 +14,6 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import InvalidStageError
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-
-LOGGER = get_logger()
 
 SESSION_KEY_DUO_USER_ID = "authentik/stages/authenticator_duo/user_id"
 SESSION_KEY_DUO_ACTIVATION_CODE = "authentik/stages/authenticator_duo/activation_code"
@@ -69,7 +66,7 @@ class AuthenticatorDuoStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
         if not user:
-            LOGGER.debug("No pending user, continuing")
+            self.logger.debug("No pending user, continuing")
             return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 

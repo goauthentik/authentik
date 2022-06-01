@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
-from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -12,7 +11,6 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
-LOGGER = get_logger()
 USER_LOGIN_AUTHENTICATED = "user_login_authenticated"
 
 
@@ -28,14 +26,14 @@ class UserLoginStageView(StageView):
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             message = _("No Pending user to login.")
             messages.error(request, message)
-            LOGGER.debug(message)
+            self.logger.debug(message)
             return self.executor.stage_invalid()
         backend = self.executor.plan.context.get(
             PLAN_CONTEXT_AUTHENTICATION_BACKEND, BACKEND_INBUILT
         )
         user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         if not user.is_active:
-            LOGGER.warning("User is not active, login will not work.")
+            self.logger.warning("User is not active, login will not work.")
         login(
             self.request,
             user,
@@ -46,7 +44,7 @@ class UserLoginStageView(StageView):
             self.request.session.set_expiry(0)
         else:
             self.request.session.set_expiry(delta)
-        LOGGER.debug(
+        self.logger.debug(
             "Logged in",
             backend=backend,
             user=user,

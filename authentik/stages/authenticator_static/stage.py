@@ -2,13 +2,10 @@
 from django.http import HttpRequest, HttpResponse
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from rest_framework.fields import CharField, ListField
-from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
-
-LOGGER = get_logger()
 
 
 class AuthenticatorStaticChallenge(WithUserInfoChallenge):
@@ -42,7 +39,7 @@ class AuthenticatorStaticStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = self.get_pending_user()
         if not user.is_authenticated:
-            LOGGER.debug("No pending user, continuing")
+            self.logger.debug("No pending user, continuing")
             return self.executor.stage_ok()
 
         stage: AuthenticatorStaticStage = self.executor.current_stage
