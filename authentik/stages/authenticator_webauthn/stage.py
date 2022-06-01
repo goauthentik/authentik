@@ -29,7 +29,6 @@ from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnS
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
 LOGGER = get_logger()
-
 SESSION_KEY_WEBAUTHN_CHALLENGE = "authentik/stages/authenticator_webauthn/challenge"
 
 
@@ -115,7 +114,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
         if not user:
-            LOGGER.debug("No pending user, continuing")
+            self.logger.debug("No pending user, continuing")
             return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 

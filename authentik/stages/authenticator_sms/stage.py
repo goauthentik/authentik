@@ -7,7 +7,6 @@ from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, IntegerField
-from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import (
     Challenge,
@@ -24,7 +23,6 @@ from authentik.stages.authenticator_sms.models import (
 )
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
-LOGGER = get_logger()
 SESSION_KEY_SMS_DEVICE = "authentik/stages/authenticator_sms/sms_device"
 
 
@@ -73,10 +71,10 @@ class AuthenticatorSMSStageView(ChallengeStageView):
     def _has_phone_number(self) -> Optional[str]:
         context = self.executor.plan.context
         if "phone" in context.get(PLAN_CONTEXT_PROMPT, {}):
-            LOGGER.debug("got phone number from plan context")
+            self.logger.debug("got phone number from plan context")
             return context.get(PLAN_CONTEXT_PROMPT, {}).get("phone")
         if SESSION_KEY_SMS_DEVICE in self.request.session:
-            LOGGER.debug("got phone number from device in session")
+            self.logger.debug("got phone number from device in session")
             device: SMSDevice = self.request.session[SESSION_KEY_SMS_DEVICE]
             if device.phone_number == "":
                 return None
@@ -99,7 +97,7 @@ class AuthenticatorSMSStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
         if not user:
-            LOGGER.debug("No pending user, continuing")
+            self.logger.debug("No pending user, continuing")
             return self.executor.stage_ok()
 
         # Currently, this stage only supports one device per user. If the user already
@@ -124,7 +122,7 @@ class AuthenticatorSMSStageView(ChallengeStageView):
             return self.challenge_invalid(response)
         stage: AuthenticatorSMSStage = self.executor.current_stage
         if stage.verify_only:
-            LOGGER.debug("Hashing number on device")
+            self.logger.debug("Hashing number on device")
             device.set_hashed_number()
         device.save()
         del self.request.session[SESSION_KEY_SMS_DEVICE]

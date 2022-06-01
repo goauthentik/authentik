@@ -10,7 +10,6 @@ from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.fields import BooleanField, CharField, ChoiceField, IntegerField, empty
 from rest_framework.serializers import ValidationError
-from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
@@ -22,7 +21,6 @@ from authentik.policies.models import PolicyBinding, PolicyBindingModel, PolicyE
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.prompt.signals import password_validate
 
-LOGGER = get_logger()
 PLAN_CONTEXT_PROMPT = "prompt_data"
 
 
