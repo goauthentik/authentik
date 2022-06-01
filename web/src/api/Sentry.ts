@@ -9,7 +9,7 @@ import { Config } from "@goauthentik/api";
 export const TAG_SENTRY_COMPONENT = "authentik.component";
 export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
 
-export function configureSentry(canDoPpi: boolean = false): Promise<Config> {
+export function configureSentry(canDoPpi = false): Promise<Config> {
     return config().then((config) => {
         if (config.errorReporting.enabled) {
             Sentry.init({
