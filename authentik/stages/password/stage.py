@@ -108,7 +108,7 @@ class PasswordStageView(ChallengeStageView):
             self.request.session[SESSION_KEY_INVALID_TRIES]
             > current_stage.failed_attempts_before_cancel
         ):
-            LOGGER.debug("User has exceeded maximum tries")
+            self.logger.debug("User has exceeded maximum tries")
             del self.request.session[SESSION_KEY_INVALID_TRIES]
             return self.executor.stage_invalid()
         return super().challenge_invalid(response)
@@ -135,18 +135,18 @@ class PasswordStageView(ChallengeStageView):
         except PermissionDenied:
             del auth_kwargs["password"]
             # User was found, but permission was denied (i.e. user is not active)
-            LOGGER.debug("Denied access", **auth_kwargs)
+            self.logger.debug("Denied access", **auth_kwargs)
             return self.executor.stage_invalid()
         except ValidationError as exc:
             del auth_kwargs["password"]
             # User was found, authentication succeeded, but another signal raised an error
             # (most likely LDAP)
-            LOGGER.debug("Validation error from signal", exc=exc, **auth_kwargs)
+            self.logger.debug("Validation error from signal", exc=exc, **auth_kwargs)
             return self.executor.stage_invalid()
         else:
             if not user:
                 # No user was found -> invalid credentials
-                LOGGER.debug("Invalid credentials")
+                self.logger.debug("Invalid credentials")
                 # Manually inject error into form
                 response._errors.setdefault("password", [])
                 response._errors["password"].append(ErrorDetail(_("Invalid password"), "invalid"))

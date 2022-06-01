@@ -6,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.fields import CharField, IntegerField
 from rest_framework.serializers import ValidationError
-from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import (
     Challenge,
@@ -17,8 +16,6 @@ from authentik.flows.challenge import (
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 from authentik.stages.authenticator_totp.settings import OTP_TOTP_ISSUER
-
-LOGGER = get_logger()
 
 
 class AuthenticatorTOTPChallenge(WithUserInfoChallenge):
@@ -72,7 +69,7 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = self.get_pending_user()
         if not user.is_authenticated:
-            LOGGER.debug("No pending user, continuing")
+            self.logger.debug("No pending user, continuing")
             return self.executor.stage_ok()
 
         stage: AuthenticatorTOTPStage = self.executor.current_stage
