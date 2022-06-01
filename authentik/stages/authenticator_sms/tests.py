@@ -2,16 +2,19 @@
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
-from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import FlowStageBinding
-from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMSDevice, SMSProviders
-from authentik.stages.authenticator_sms.stage import SESSION_KEY_SMS_DEVICE
+from authentik.flows.tests import FlowTestCase
+from authentik.stages.authenticator_sms.models import (
+    AuthenticatorSMSStage,
+    SMSDevice,
+    SMSProviders,
+    hash_phone_number,
+)
 
 
-class AuthenticatorSMSStageTests(APITestCase):
+class AuthenticatorSMSStageTests(FlowTestCase):
     """Test SMS API"""
 
     def setUp(self) -> None:
@@ -34,27 +37,29 @@ class AuthenticatorSMSStageTests(APITestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
-        self.assertJSONEqual(
-            response.content,
-            {
-                "component": "ak-stage-authenticator-sms",
-                "flow_info": {
-                    "background": self.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": self.flow.title,
-                    "layout": "stacked",
-                },
-                "pending_user": self.user.username,
-                "pending_user_avatar": "/static/dist/assets/images/user_default.png",
-                "phone_number_required": True,
-                "type": ChallengeTypes.NATIVE.value,
-            },
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-sms",
+            phone_number_required=True,
         )
 
     def test_stage_submit(self):
         """test stage (submit)"""
-        # Prepares session etc
-        self.test_stage_no_prefill()
+        self.client.get(
+            reverse("authentik_flows:configure", kwargs={"stage_uuid": self.stage.stage_uuid}),
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-sms",
+            phone_number_required=True,
+        )
         sms_send_mock = MagicMock()
         with patch(
             "authentik.stages.authenticator_sms.models.AuthenticatorSMSStage.send",
@@ -66,11 +71,30 @@ class AuthenticatorSMSStageTests(APITestCase):
             )
             self.assertEqual(response.status_code, 200)
             sms_send_mock.assert_called_once()
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-sms",
+            response_errors={},
+            phone_number_required=False,
+        )
 
     def test_stage_submit_full(self):
         """test stage (submit)"""
-        # Prepares session etc
-        self.test_stage_submit()
+        self.client.get(
+            reverse("authentik_flows:configure", kwargs={"stage_uuid": self.stage.stage_uuid}),
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-sms",
+            phone_number_required=True,
+        )
         sms_send_mock = MagicMock()
         with patch(
             "authentik.stages.authenticator_sms.models.AuthenticatorSMSStage.send",
@@ -78,21 +102,50 @@ class AuthenticatorSMSStageTests(APITestCase):
         ):
             response = self.client.post(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                data={"component": "ak-stage-authenticator-sms", "phone_number": "foo"},
+            )
+            self.assertEqual(response.status_code, 200)
+            sms_send_mock.assert_called_once()
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-sms",
+            response_errors={},
+            phone_number_required=False,
+        )
+        with patch(
+            "authentik.stages.authenticator_sms.models.SMSDevice.verify_token",
+            MagicMock(return_value=True),
+        ):
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
                 data={
                     "component": "ak-stage-authenticator-sms",
                     "phone_number": "foo",
-                    "code": int(self.client.session[SESSION_KEY_SMS_DEVICE].token),
+                    "code": "123456",
                 },
             )
-            self.assertEqual(response.status_code, 200)
-            sms_send_mock.assert_not_called()
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_stage_hash(self):
-        """test stage (submit)"""
+        """test stage (verify_only)"""
         self.stage.verify_only = True
         self.stage.save()
-        # Prepares session etc
-        self.test_stage_submit()
+        self.client.get(
+            reverse("authentik_flows:configure", kwargs={"stage_uuid": self.stage.stage_uuid}),
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-sms",
+            phone_number_required=True,
+        )
         sms_send_mock = MagicMock()
         with patch(
             "authentik.stages.authenticator_sms.models.AuthenticatorSMSStage.send",
@@ -100,13 +153,74 @@ class AuthenticatorSMSStageTests(APITestCase):
         ):
             response = self.client.post(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                data={"component": "ak-stage-authenticator-sms", "phone_number": "foo"},
+            )
+            self.assertEqual(response.status_code, 200)
+            sms_send_mock.assert_called_once()
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-sms",
+            response_errors={},
+            phone_number_required=False,
+        )
+        with patch(
+            "authentik.stages.authenticator_sms.models.SMSDevice.verify_token",
+            MagicMock(return_value=True),
+        ):
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
                 data={
                     "component": "ak-stage-authenticator-sms",
                     "phone_number": "foo",
-                    "code": int(self.client.session[SESSION_KEY_SMS_DEVICE].token),
+                    "code": "123456",
                 },
             )
-            self.assertEqual(response.status_code, 200)
-            sms_send_mock.assert_not_called()
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         device: SMSDevice = SMSDevice.objects.filter(user=self.user).first()
         self.assertTrue(device.is_hashed)
+
+    def test_stage_hash_twice(self):
+        """test stage (hash + duplicate)"""
+        SMSDevice.objects.create(
+            user=create_test_admin_user(),
+            stage=self.stage,
+            phone_number=hash_phone_number("foo"),
+        )
+        self.stage.verify_only = True
+        self.stage.save()
+        self.client.get(
+            reverse("authentik_flows:configure", kwargs={"stage_uuid": self.stage.stage_uuid}),
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-sms",
+            phone_number_required=True,
+        )
+        sms_send_mock = MagicMock()
+        with patch(
+            "authentik.stages.authenticator_sms.models.AuthenticatorSMSStage.send",
+            sms_send_mock,
+        ):
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                data={"component": "ak-stage-authenticator-sms", "phone_number": "foo"},
+            )
+            self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-sms",
+            response_errors={
+                "non_field_errors": [{"code": "invalid", "string": "Invalid phone number"}]
+            },
+            phone_number_required=False,
+        )

@@ -168,6 +168,11 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
         verbose_name_plural = _("SMS Authenticator Setup Stages")
 
 
+def hash_phone_number(phone_number: str) -> str:
+    """Hash phone number with prefix"""
+    return "hash:" + sha256(phone_number.encode()).hexdigest()
+
+
 class SMSDevice(SideChannelDevice):
     """SMS Device"""
 
@@ -182,7 +187,7 @@ class SMSDevice(SideChannelDevice):
 
     def set_hashed_number(self):
         """Set phone_number to hashed number"""
-        self.phone_number = "hash:" + sha256(self.phone_number.encode()).hexdigest()
+        self.phone_number = hash_phone_number(self.phone_number)
 
     @property
     def is_hashed(self) -> bool:
