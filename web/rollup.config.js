@@ -86,7 +86,9 @@ export const defaultOptions = {
             "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
             "preventAssignment": true,
         }),
-        sourcemaps(),
+        sourcemaps({
+            exclude: [/@sentry/],
+        }),
         isProdBuild && terser(),
     ].filter((p) => p),
     watch: {

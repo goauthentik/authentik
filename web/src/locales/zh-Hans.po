@@ -2951,7 +2951,7 @@ msgstr "本地"
 
 #: src/pages/events/TransportForm.ts
 msgid "Local (notifications will be created within authentik)"
-msgstr ""
+msgstr "本地（通知在 authentik 内创建）"
 
 #~ msgid "Locale"
 #~ msgstr "区域设置"
@@ -3485,6 +3485,7 @@ msgstr "通知"
 msgid "Number"
 msgstr "数字"
 
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Number the SMS will be sent from."
 msgstr "短信的发信人号码。"
@@ -6229,6 +6230,10 @@ msgstr "验证证书"
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Verification certificates"
 msgstr "验证证书"
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Verify only"
+msgstr ""
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."

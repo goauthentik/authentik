@@ -69,7 +69,7 @@ from authentik.stages.user_login.stage import USER_LOGIN_AUTHENTICATED
 LOGGER = get_logger()
 
 PLAN_CONTEXT_PARAMS = "params"
-SESSION_NEEDS_LOGIN = "authentik_oauth2_needs_login"
+SESSION_KEY_NEEDS_LOGIN = "authentik/providers/oauth2/needs_login"
 
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
 
@@ -326,13 +326,13 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # If prompt=login, we need to re-authenticate the user regardless
         if (
             PROMPT_LOGIN in self.params.prompt
-            and SESSION_NEEDS_LOGIN not in self.request.session
+            and SESSION_KEY_NEEDS_LOGIN not in self.request.session
             # To prevent the user from having to double login when prompt is set to login
             # and the user has just signed it. This session variable is set in the UserLoginStage
             # and is (quite hackily) removed from the session in applications's API's List method
             and USER_LOGIN_AUTHENTICATED not in self.request.session
         ):
-            self.request.session[SESSION_NEEDS_LOGIN] = True
+            self.request.session[SESSION_KEY_NEEDS_LOGIN] = True
             return self.handle_no_permission()
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)

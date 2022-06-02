@@ -43,7 +43,10 @@ from authentik.api.decorators import permission_required
 from authentik.core.api.groups import GroupSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
-from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
+from authentik.core.middleware import (
+    SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
+    SESSION_KEY_IMPERSONATE_USER,
+)
 from authentik.core.models import (
     USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
@@ -336,11 +339,12 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         serializer = SessionUserSerializer(
             data={"user": UserSelfSerializer(instance=request.user, context=context).data}
         )
-        if SESSION_IMPERSONATE_USER in request._request.session:
+        if SESSION_KEY_IMPERSONATE_USER in request._request.session:
             serializer.initial_data["original"] = UserSelfSerializer(
-                instance=request._request.session[SESSION_IMPERSONATE_ORIGINAL_USER],
+                instance=request._request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER],
                 context=context,
             ).data
+        self.request.session.save()
         return Response(serializer.initial_data)
 
     @permission_required("authentik_core.reset_user_password")
@@ -367,7 +371,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
             return Response(status=400)
-        if user.pk == request.user.pk and SESSION_IMPERSONATE_USER not in self.request.session:
+        if user.pk == request.user.pk and SESSION_KEY_IMPERSONATE_USER not in self.request.session:
             LOGGER.debug("Updating session hash after password change")
             update_session_auth_hash(self.request, user)
         return Response(status=204)

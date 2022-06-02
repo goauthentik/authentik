@@ -117,7 +117,7 @@ class FlowPlanner:
         self.use_cache = True
         self.allow_empty_flows = False
         self.flow = flow
-        self._logger = get_logger().bind(flow=flow)
+        self._logger = get_logger().bind(flow_slug=flow.slug)
 
     def plan(
         self, request: HttpRequest, default_context: Optional[dict[str, Any]] = None

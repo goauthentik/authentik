@@ -26,6 +26,7 @@ class AuthenticatorSMSStageSerializer(StageSerializer):
             "auth",
             "auth_password",
             "auth_type",
+            "verify_only",
         ]
 
 

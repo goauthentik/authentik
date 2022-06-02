@@ -22,6 +22,7 @@ from authentik.lib.utils.http import get_client_ip
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
 LOGGER = get_logger()
@@ -43,23 +44,23 @@ def get_challenge_for_device(request: HttpRequest, device: Device) -> dict:
     return {}
 
 
-def get_webauthn_challenge_userless(request: HttpRequest) -> dict:
+def get_webauthn_challenge_without_user(request: HttpRequest) -> dict:
     """Same as `get_webauthn_challenge`, but allows any client device. We can then later check
     who the device belongs to."""
-    request.session.pop("challenge", None)
+    request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
     authentication_options = generate_authentication_options(
         rp_id=get_rp_id(request),
         allow_credentials=[],
     )
 
-    request.session["challenge"] = authentication_options.challenge
+    request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
     return loads(options_to_json(authentication_options))
 
 
 def get_webauthn_challenge(request: HttpRequest, device: Optional[WebAuthnDevice] = None) -> dict:
     """Send the client a challenge that we'll check later"""
-    request.session.pop("challenge", None)
+    request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
 
     allowed_credentials = []
 
@@ -74,7 +75,7 @@ def get_webauthn_challenge(request: HttpRequest, device: Optional[WebAuthnDevice
         allow_credentials=allowed_credentials,
     )
 
-    request.session["challenge"] = authentication_options.challenge
+    request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
     return loads(options_to_json(authentication_options))
 
@@ -103,7 +104,7 @@ def validate_challenge_code(code: str, request: HttpRequest, user: User) -> Devi
 # pylint: disable=unused-argument
 def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) -> Device:
     """Validate WebAuthn Challenge"""
-    challenge = request.session.get("challenge")
+    challenge = request.session.get(SESSION_KEY_WEBAUTHN_CHALLENGE)
     credential_id = data.get("id")
 
     device = WebAuthnDevice.objects.filter(credential_id=credential_id).first()

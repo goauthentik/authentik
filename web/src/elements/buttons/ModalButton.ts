@@ -117,7 +117,10 @@ export class ModalButton extends LitElement {
                     aria-modal="true"
                 >
                     <button
-                        @click=${() => (this.open = false)}
+                        @click=${() => {
+                            this.resetForms();
+                            this.open = false;
+                        }}
                         class="pf-c-button pf-m-plain"
                         type="button"
                         aria-label="Close dialog"

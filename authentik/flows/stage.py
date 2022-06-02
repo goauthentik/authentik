@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.views.generic.base import View
 from rest_framework.request import Request
 from sentry_sdk.hub import Hub
-from structlog.stdlib import get_logger
+from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import DEFAULT_AVATAR, User
 from authentik.flows.challenge import (
@@ -28,18 +28,24 @@ if TYPE_CHECKING:
     from authentik.flows.views.executor import FlowExecutorView
 
 PLAN_CONTEXT_PENDING_USER_IDENTIFIER = "pending_user_identifier"
-LOGGER = get_logger()
 
 
 class StageView(View):
-    """Abstract Stage, inherits TemplateView but can be combined with FormView"""
+    """Abstract Stage"""
 
     executor: "FlowExecutorView"
 
     request: HttpRequest = None
 
+    logger: BoundLogger
+
     def __init__(self, executor: "FlowExecutorView", **kwargs):
         self.executor = executor
+        current_stage = getattr(self.executor, "current_stage", None)
+        self.logger = get_logger().bind(
+            stage=getattr(current_stage, "name", None),
+            stage_view=self,
+        )
         super().__init__(**kwargs)
 
     def get_pending_user(self, for_display=False) -> User:
@@ -60,6 +66,9 @@ class StageView(View):
             return self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         return self.request.user
 
+    def cleanup(self):
+        """Cleanup session"""
+
 
 class ChallengeStageView(StageView):
     """Stage view which response with a challenge"""
@@ -74,12 +83,9 @@ class ChallengeStageView(StageView):
         """Return a challenge for the frontend to solve"""
         challenge = self._get_challenge(*args, **kwargs)
         if not challenge.is_valid():
-            LOGGER.warning(
+            self.logger.warning(
                 "f(ch): Invalid challenge",
-                binding=self.executor.current_binding,
                 errors=challenge.errors,
-                stage_view=self,
-                challenge=challenge,
             )
         return HttpChallengeResponse(challenge)
 
@@ -96,10 +102,8 @@ class ChallengeStageView(StageView):
                     self.executor.current_binding.invalid_response_action
                     == InvalidResponseAction.RESTART_WITH_CONTEXT
                 )
-                LOGGER.debug(
+                self.logger.debug(
                     "f(ch): Invalid response, restarting flow",
-                    binding=self.executor.current_binding,
-                    stage_view=self,
                     keep_context=keep_context,
                 )
                 return self.executor.restart_flow(keep_context)
@@ -125,7 +129,7 @@ class ChallengeStageView(StageView):
             }
         # pylint: disable=broad-except
         except Exception as exc:
-            LOGGER.warning("failed to template title", exc=exc)
+            self.logger.warning("failed to template title", exc=exc)
             return self.executor.flow.title
 
     def _get_challenge(self, *args, **kwargs) -> Challenge:
@@ -185,11 +189,9 @@ class ChallengeStageView(StageView):
                 )
         challenge_response.initial_data["response_errors"] = full_errors
         if not challenge_response.is_valid():
-            LOGGER.error(
+            self.logger.error(
                 "f(ch): invalid challenge response",
-                binding=self.executor.current_binding,
                 errors=challenge_response.errors,
-                stage_view=self,
             )
         return HttpChallengeResponse(challenge_response)
 

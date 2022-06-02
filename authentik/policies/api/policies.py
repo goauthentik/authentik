@@ -48,9 +48,7 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
 
     def get_bound_to(self, obj: Policy) -> int:
         """Return objects policy is bound to"""
-        if not obj.bindings.exists() and not obj.promptstage_set.exists():
-            return 0
-        return obj.bindings.count()
+        return obj.bindings.count() + obj.promptstage_set.count()
 
     def to_representation(self, instance: Policy):
         # pyright: reportGeneralTypeIssues=false

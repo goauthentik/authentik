@@ -5,7 +5,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from structlog.stdlib import get_logger
 
-from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
+from authentik.core.middleware import (
+    SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
+    SESSION_KEY_IMPERSONATE_USER,
+)
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
@@ -27,8 +30,8 @@ class ImpersonateInitView(View):
 
         user_to_be = get_object_or_404(User, pk=user_id)
 
-        request.session[SESSION_IMPERSONATE_ORIGINAL_USER] = request.user
-        request.session[SESSION_IMPERSONATE_USER] = user_to_be
+        request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER] = request.user
+        request.session[SESSION_KEY_IMPERSONATE_USER] = user_to_be
 
         Event.new(EventAction.IMPERSONATION_STARTED).from_http(request, user_to_be)
 
@@ -41,16 +44,16 @@ class ImpersonateEndView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         """End Impersonation handler"""
         if (
-            SESSION_IMPERSONATE_USER not in request.session
-            or SESSION_IMPERSONATE_ORIGINAL_USER not in request.session
+            SESSION_KEY_IMPERSONATE_USER not in request.session
+            or SESSION_KEY_IMPERSONATE_ORIGINAL_USER not in request.session
         ):
             LOGGER.debug("Can't end impersonation", user=request.user)
             return redirect("authentik_core:if-user")
 
-        original_user = request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
+        original_user = request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
 
-        del request.session[SESSION_IMPERSONATE_USER]
-        del request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
+        del request.session[SESSION_KEY_IMPERSONATE_USER]
+        del request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
 
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
 

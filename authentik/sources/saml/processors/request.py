@@ -19,7 +19,7 @@ from authentik.sources.saml.processors.constants import (
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
 
-SESSION_REQUEST_ID = "authentik_source_saml_request_id"
+SESSION_KEY_REQUEST_ID = "authentik/sources/saml/request_id"
 
 
 class RequestProcessor:
@@ -38,7 +38,7 @@ class RequestProcessor:
         self.http_request = request
         self.relay_state = relay_state
         self.request_id = get_random_id()
-        self.http_request.session[SESSION_REQUEST_ID] = self.request_id
+        self.http_request.session[SESSION_KEY_REQUEST_ID] = self.request_id
         self.issue_instant = get_time_string()
 
     def get_issuer(self) -> Element:

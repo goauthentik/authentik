@@ -7,9 +7,8 @@ from django.db import transaction
 from django.db.utils import IntegrityError
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
-from structlog.stdlib import get_logger
 
-from authentik.core.middleware import SESSION_IMPERSONATE_USER
+from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -19,7 +18,6 @@ from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.signals import user_write
 
-LOGGER = get_logger()
 PLAN_CONTEXT_GROUPS = "groups"
 
 
@@ -56,7 +54,7 @@ class UserWriteStageView(StageView):
                 is_active=not self.executor.current_stage.create_users_as_inactive
             )
             self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_INBUILT
-            LOGGER.debug(
+            self.logger.debug(
                 "Created new user",
                 flow_slug=self.executor.flow.slug,
             )
@@ -86,7 +84,7 @@ class UserWriteStageView(StageView):
             # `attribute_`, to prevent accidentally saving values
             else:
                 if not key.startswith("attributes.") and not key.startswith("attributes_"):
-                    LOGGER.debug("discarding key", key=key)
+                    self.logger.debug("discarding key", key=key)
                     continue
                 UserWriteStageView.write_attribute(user, key, value)
         # Check if we're writing from a source, and save the source to the attributes
@@ -106,7 +104,7 @@ class UserWriteStageView(StageView):
         if PLAN_CONTEXT_PROMPT not in self.executor.plan.context:
             message = _("No Pending data.")
             messages.error(request, message)
-            LOGGER.debug(message)
+            self.logger.debug(message)
             return self.executor.stage_invalid()
         data = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
         user, user_created = self.ensure_user()
@@ -117,13 +115,13 @@ class UserWriteStageView(StageView):
         if (
             any("password" in x for x in data.keys())
             and self.request.user.pk == user.pk
-            and SESSION_IMPERSONATE_USER not in self.request.session
+            and SESSION_KEY_IMPERSONATE_USER not in self.request.session
         ):
             should_update_session = True
         self.update_user(user)
         # Extra check to prevent flows from saving a user with a blank username
         if user.username == "":
-            LOGGER.warning("Aborting write to empty username", user=user)
+            self.logger.warning("Aborting write to empty username", user=user)
             return self.executor.stage_invalid()
         try:
             with transaction.atomic():
@@ -133,14 +131,14 @@ class UserWriteStageView(StageView):
                 if PLAN_CONTEXT_GROUPS in self.executor.plan.context:
                     user.ak_groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
         except (IntegrityError, ValueError, TypeError) as exc:
-            LOGGER.warning("Failed to save user", exc=exc)
+            self.logger.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid()
         user_write.send(sender=self, request=request, user=user, data=data, created=user_created)
         # Check if the password has been updated, and update the session auth hash
         if should_update_session:
             update_session_auth_hash(self.request, user)
-            LOGGER.debug("Updated session hash", user=user)
-        LOGGER.debug(
+            self.logger.debug("Updated session hash", user=user)
+        self.logger.debug(
             "Updated existing user",
             user=user,
             flow_slug=self.executor.flow.slug,
