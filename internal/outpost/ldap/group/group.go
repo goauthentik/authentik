@@ -22,7 +22,7 @@ type LDAPGroup struct {
 func (lg *LDAPGroup) Entry() *ldap.Entry {
 	attrs := utils.AKAttrsToLDAP(lg.AKAttributes)
 
-	objectClass := []string{constants.OCGroup, constants.OCGroupOfUniqueNames, constants.OCAKGroup}
+	objectClass := []string{constants.OCGroup, constants.OCGroupOfUniqueNames, constants.OCGroupOfNames, constants.OCAKGroup}
 	if lg.IsVirtualGroup {
 		objectClass = append(objectClass, constants.OCAKVirtualGroup)
 	}
