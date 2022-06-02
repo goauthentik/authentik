@@ -168,9 +168,13 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session before redirect")
 	}
-	// We can't rely on X-Forwarded-Proto here since in most cases that will come from the
+	// We mostly can't rely on X-Forwarded-Proto here since in most cases that will come from the
 	// local Envoy sidecar, so we re-used the same proto as the original URL had
-	rdFinal := fmt.Sprintf("%s//%s%s", r.URL.Scheme, host, "/outpost.goauthentik.io/start")
+	scheme := r.Header.Get("X-Forwarded-Proto")
+	if scheme == "" {
+		scheme = "http:"
+	}
+	rdFinal := fmt.Sprintf("%s//%s%s", scheme, host, "/outpost.goauthentik.io/start")
 	a.log.WithField("url", rdFinal).Debug("Redirecting to login")
 	http.Redirect(rw, r, rdFinal, http.StatusTemporaryRedirect)
 }
