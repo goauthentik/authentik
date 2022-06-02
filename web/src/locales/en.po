@@ -2460,6 +2460,10 @@ msgstr "HTTP-Basic Username Key"
 msgid "HTTPS is not detected correctly"
 msgstr "HTTPS is not detected correctly"
 
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Hash phone number"
+msgstr "Hash phone number"
+
 #: src/pages/policies/PolicyWizard.ts
 #~ msgid "Have I been pwned"
 #~ msgstr "Have I been pwned"
@@ -2573,6 +2577,10 @@ msgstr "Identifier"
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "If any of the devices user of the types selected above have been used within this duration, this stage will be skipped."
 msgstr "If any of the devices user of the types selected above have been used within this duration, this stage will be skipped."
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons.Devices created from a stage with this enabled cannot be used with the authenticator validation stage."
+msgstr "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons.Devices created from a stage with this enabled cannot be used with the authenticator validation stage."
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -3568,7 +3576,6 @@ msgstr "Notifications"
 msgid "Number"
 msgstr "Number"
 
-#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Number the SMS will be sent from."
 msgstr "Number the SMS will be sent from."
@@ -6405,8 +6412,8 @@ msgid "Verification certificates"
 msgstr "Verification certificates"
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-msgid "Verify only"
-msgstr "Verify only"
+#~ msgid "Verify only"
+#~ msgstr "Verify only"
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
