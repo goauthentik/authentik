@@ -13,6 +13,7 @@ func EnableDebugServer() {
 	l := log.WithField("logger", "authentik.go_debugger")
 	if deb := os.Getenv("AUTHENTIK_DEBUG"); strings.ToLower(deb) != "true" {
 		l.Info("not enabling debug server, set `AUTHENTIK_DEBUG` to `true` to enable it.")
+		return
 	}
 	h := http.NewServeMux()
 	h.HandleFunc("/debug/pprof/", pprof.Index)
