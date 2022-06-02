@@ -5,6 +5,7 @@
 
 {% block head_before %}
 {{ block.super }}
+<link rel="prefetch" href="{{ flow.background_url }}" />
 {% if flow.compatibility_mode and not inspector %}
 <script>ShadyDOM = { force: !navigator.webdriver };</script>
 {% endif %}
@@ -19,7 +20,7 @@ window.authentik.flow = {
 {% block head %}
 <script src="{% static 'dist/flow/FlowInterface.js' %}" type="module"></script>
 <style>
-.pf-c-background-image::before {
+:root {
     --ak-flow-background: url("{{ flow.background_url }}");
 }
 </style>
