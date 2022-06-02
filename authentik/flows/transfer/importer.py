@@ -28,6 +28,7 @@ ALLOWED_MODELS = (Flow, FlowStageBinding, Stage, Policy, PolicyBinding, Prompt)
 def transaction_rollback():
     """Enters an atomic transaction and always triggers a rollback at the end of the block."""
     atomic = transaction.atomic()
+    # pylint: disable=unnecessary-dunder-call
     atomic.__enter__()
     yield
     atomic.__exit__(IntegrityError, None, None)

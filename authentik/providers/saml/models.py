@@ -52,7 +52,7 @@ class SAMLProvider(Provider):
         default=SAMLBindings.REDIRECT,
         verbose_name=_("Service Provider Binding"),
         help_text=_(
-            ("This determines how authentik sends the " "response back to the Service Provider.")
+            ("This determines how authentik sends the response back to the Service Provider.")
         ),
     )
 

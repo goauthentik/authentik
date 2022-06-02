@@ -94,9 +94,9 @@ class Command(BaseCommand):  # pragma: no cover
 
     def output_overview(self, values):
         """Output results human readable"""
-        total_max: int = max([max(inner) for inner in values])
-        total_min: int = min([min(inner) for inner in values])
-        total_avg = sum([sum(inner) for inner in values]) / sum([len(inner) for inner in values])
+        total_max: int = max(max(inner) for inner in values)
+        total_min: int = min(min(inner) for inner in values)
+        total_avg = sum(sum(inner) for inner in values) / sum(len(inner) for inner in values)
 
         print(f"Version: {__version__}")
         print(f"Processes: {len(values)}")
