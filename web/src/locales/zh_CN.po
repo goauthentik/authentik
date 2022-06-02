@@ -3518,6 +3518,7 @@ msgid "Number"
 msgstr "数字"
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Number the SMS will be sent from."
 msgstr "短信的发信人号码。"
 
@@ -6370,6 +6371,10 @@ msgstr "验证证书"
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Verification certificates"
 msgstr "验证证书"
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Verify only"
+msgstr "仅验证"
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid ""
