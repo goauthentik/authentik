@@ -93,6 +93,11 @@ To start the initial setup, navigate to `https://<your server>/if/flow/initial-s
 
 ## Explanation
 
+:::warning
+The server assumes that it's local timezone is UTC, all internals are handeled in UTC, whenever a time is displayed to the user in UI it is localizied.
+Do not update or mount `/etc/timezone` or  `/etc/localtime` in the authentik containers. This will not give any advantages it  will more cause issues with OAuth or SAML authentication, e.g. [see this GitHub issue](https://github.com/goauthentik/authentik/issues/3005).
+:::
+
 The docker-compose project contains the following containers:
 
 -   server
