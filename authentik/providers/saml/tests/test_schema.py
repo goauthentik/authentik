@@ -6,6 +6,7 @@ from lxml import etree  # nosec
 
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.lib.tests.utils import get_request
+from authentik.lib.xml import lxml_from_string
 from authentik.managed.manager import ObjectManager
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
@@ -44,7 +45,7 @@ class TestSchema(TestCase):
         request_proc = RequestProcessor(self.source, http_request, "test_state")
         request = request_proc.build_auth_n()
 
-        metadata = etree.fromstring(request)  # nosec
+        metadata = lxml_from_string(request)
 
         schema = etree.XMLSchema(etree.parse("xml/saml-schema-protocol-2.0.xsd"))  # nosec
         self.assertTrue(schema.validate(metadata))
@@ -65,7 +66,7 @@ class TestSchema(TestCase):
         response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
         response = response_proc.build_response()
 
-        metadata = etree.fromstring(response)  # nosec
+        metadata = lxml_from_string(response)
 
         schema = etree.XMLSchema(etree.parse("xml/saml-schema-protocol-2.0.xsd"))
         self.assertTrue(schema.validate(metadata))

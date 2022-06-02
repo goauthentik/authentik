@@ -7,9 +7,9 @@ from xml.etree.ElementTree import ParseError  # nosec
 
 import xmlsec
 from defusedxml import ElementTree
-from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 
+from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
@@ -95,7 +95,7 @@ class AuthNRequestParser:
 
         verifier = self.provider.verification_kp
 
-        root = etree.fromstring(decoded_xml)  # nosec
+        root = lxml_from_string(decoded_xml)
         xmlsec.tree.add_ids(root, ["ID"])
         signature_nodes = root.xpath("/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP)
         # No signatures, no verifier configured -> decode xml directly

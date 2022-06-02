@@ -55,13 +55,11 @@ show_missing = true
 [tool.pylint.master]
 disable = [
   "arguments-differ",
-  "no-self-use",
   "fixme",
   "locally-disabled",
   "too-many-ancestors",
   "too-few-public-methods",
   "import-outside-toplevel",
-  "bad-continuation",
   "signature-differs",
   "similarities",
   "cyclic-import",
