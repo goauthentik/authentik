@@ -2426,6 +2426,10 @@ msgstr "HTTP-Basic 用户名键"
 msgid "HTTPS is not detected correctly"
 msgstr "未正确检测到 HTTPS"
 
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Hash phone number"
+msgstr "哈希电话号码"
+
 #~ msgid "Have I been pwned"
 #~ msgstr "Have I been pwned"
 
@@ -2534,6 +2538,13 @@ msgid ""
 "If any of the devices user of the types selected above have been used within"
 " this duration, this stage will be skipped."
 msgstr "如果上面所选类型的任意设备在此期限内被使用，此阶段会被跳过。"
+
+#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid ""
+"If enabled, only a hash of the phone number will be saved. This can be done "
+"for data-protection reasons.Devices created from a stage with this enabled "
+"cannot be used with the authenticator validation stage."
+msgstr "如果启用，仅保存电话号码的哈希。这是出于数据保护的原因。如果设备创建自启用此选项的阶段，则无法在验证阶段使用身份验证器。"
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -3517,7 +3528,6 @@ msgstr "通知"
 msgid "Number"
 msgstr "数字"
 
-#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Number the SMS will be sent from."
 msgstr "短信的发信人号码。"
@@ -6372,9 +6382,8 @@ msgstr "验证证书"
 msgid "Verification certificates"
 msgstr "验证证书"
 
-#: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-msgid "Verify only"
-msgstr "仅验证"
+#~ msgid "Verify only"
+#~ msgstr "仅验证"
 
 #: src/pages/stages/email/EmailStageForm.ts
 msgid ""
