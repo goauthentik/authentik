@@ -2,6 +2,9 @@
 title: Forward auth
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 Using forward auth uses your existing reverse proxy to do the proxying, and only uses the
 authentik outpost to check authentication and authorization.
 
@@ -41,9 +44,6 @@ _outpost.company_ is used as a placeholder for the outpost. When using the embed
 :::
 
 ## Nginx
-
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 
 <Tabs
   defaultValue="standalone-nginx"
@@ -103,6 +103,30 @@ import TraefikCompose from "./_traefik_compose.md";
 import TraefikIngress from "./_traefik_ingress.md";
 
 <TraefikIngress />
+
+  </TabItem>
+</Tabs>
+
+## Enovy (Istio)
+
+:::info
+Requires authentik 2022.6
+:::
+
+:::info
+Support for this is still in preview, please report bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
+:::
+
+<Tabs
+  defaultValue="envoy-istio"
+  values={[
+    {label: 'Envoy (Istio)', value: 'envoy-istio'},
+  ]}>
+  <TabItem value="envoy-istio">
+
+import EnvoyIstio from "./_envoy_istio.md";
+
+<EnvoyIstio />
 
   </TabItem>
 </Tabs>

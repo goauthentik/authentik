@@ -21,6 +21,7 @@ func (a *Application) configureForward() error {
 	})
 	a.mux.HandleFunc("/outpost.goauthentik.io/auth/traefik", a.forwardHandleTraefik)
 	a.mux.HandleFunc("/outpost.goauthentik.io/auth/nginx", a.forwardHandleNginx)
+	a.mux.PathPrefix("/").HandlerFunc(a.forwardHandleEnvoy)
 	return nil
 }
 
@@ -125,4 +126,55 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 		}
 	}
 	http.Error(rw, "unauthorized request", http.StatusUnauthorized)
+}
+
+func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request) {
+	a.log.WithField("header", r.Header).Trace("tracing headers for debug")
+	fwd := r.URL
+
+	claims, err := a.getClaims(r)
+	if claims != nil && err == nil {
+		a.addHeaders(rw.Header(), claims)
+		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
+		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
+		return
+	} else if claims == nil && a.IsAllowlisted(fwd) {
+		a.log.Trace("path can be accessed without authentication")
+		return
+	}
+	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io") {
+		a.log.WithField("url", r.URL.String()).Trace("path begins with /outpost.goauthentik.io, allowing access")
+		return
+	}
+	host := ""
+	s, _ := a.sessions.Get(r, constants.SessionName)
+	// Optional suffix, which is appended to the URL
+	if *a.proxyConfig.Mode.Get() == api.PROXYMODE_FORWARD_SINGLE {
+		host = web.GetHost(r)
+	} else if *a.proxyConfig.Mode.Get() == api.PROXYMODE_FORWARD_DOMAIN {
+		eh, err := url.Parse(a.proxyConfig.ExternalHost)
+		if err != nil {
+			a.log.WithField("host", a.proxyConfig.ExternalHost).WithError(err).Warning("invalid external_host")
+		} else {
+			host = eh.Host
+		}
+	}
+	// set the redirect flag to the current URL we have, since we redirect
+	// to a (possibly) different domain, but we want to be redirected back
+	// to the application
+	// X-Forwarded-Uri is only the path, so we need to build the entire URL
+	s.Values[constants.SessionRedirect] = fwd.String()
+	err = s.Save(r, rw)
+	if err != nil {
+		a.log.WithError(err).Warning("failed to save session before redirect")
+	}
+	// We mostly can't rely on X-Forwarded-Proto here since in most cases that will come from the
+	// local Envoy sidecar, so we re-used the same proto as the original URL had
+	scheme := r.Header.Get("X-Forwarded-Proto")
+	if scheme == "" {
+		scheme = "http:"
+	}
+	rdFinal := fmt.Sprintf("%s//%s%s", scheme, host, "/outpost.goauthentik.io/start")
+	a.log.WithField("url", rdFinal).Debug("Redirecting to login")
+	http.Redirect(rw, r, rdFinal, http.StatusTemporaryRedirect)
 }

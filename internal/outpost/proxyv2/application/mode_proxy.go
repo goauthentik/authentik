@@ -58,6 +58,7 @@ func (a *Application) configureProxy() error {
 			"outpost_name":  a.outpostName,
 			"upstream_host": r.URL.Host,
 			"method":        r.Method,
+			"scheme":        r.URL.Scheme,
 			"host":          web.GetHost(r),
 		}).Observe(float64(after))
 	})

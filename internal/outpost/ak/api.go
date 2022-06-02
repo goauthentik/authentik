@@ -68,8 +68,9 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
 
 	if err != nil {
-		log.WithError(err).Error("Failed to fetch outpost configuration")
-		return nil
+		log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
+		time.Sleep(time.Second * 3)
+		return NewAPIController(akURL, token)
 	}
 	outpost := outposts.Results[0]
 
