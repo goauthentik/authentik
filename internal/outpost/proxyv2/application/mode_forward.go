@@ -21,7 +21,7 @@ func (a *Application) configureForward() error {
 	})
 	a.mux.HandleFunc("/outpost.goauthentik.io/auth/traefik", a.forwardHandleTraefik)
 	a.mux.HandleFunc("/outpost.goauthentik.io/auth/nginx", a.forwardHandleNginx)
-	a.mux.PathPrefix("/").HandlerFunc(a.forwardHandleEnvoy)
+	a.mux.PathPrefix("/outpost.goauthentik.io/auth/envoy").HandlerFunc(a.forwardHandleEnvoy)
 	return nil
 }
 
@@ -130,6 +130,7 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 
 func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request) {
 	a.log.WithField("header", r.Header).Trace("tracing headers for debug")
+	a.log.WithField("url", r.URL.String()).Trace("tracing url for debug")
 	fwd := r.URL
 
 	claims, err := a.getClaims(r)
