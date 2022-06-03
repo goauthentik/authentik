@@ -11,6 +11,10 @@ import (
 	"goauthentik.io/internal/utils/web"
 )
 
+const (
+	envoyPrefix = "/outpost.goauthentik.io/auth/envoy"
+)
+
 func (a *Application) configureForward() error {
 	a.mux.HandleFunc("/outpost.goauthentik.io/auth", func(rw http.ResponseWriter, r *http.Request) {
 		if _, ok := r.URL.Query()["traefik"]; ok {
@@ -21,7 +25,7 @@ func (a *Application) configureForward() error {
 	})
 	a.mux.HandleFunc("/outpost.goauthentik.io/auth/traefik", a.forwardHandleTraefik)
 	a.mux.HandleFunc("/outpost.goauthentik.io/auth/nginx", a.forwardHandleNginx)
-	a.mux.PathPrefix("/outpost.goauthentik.io/auth/envoy").HandlerFunc(a.forwardHandleEnvoy)
+	a.mux.PathPrefix(envoyPrefix).HandlerFunc(a.forwardHandleEnvoy)
 	return nil
 }
 
@@ -130,7 +134,7 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 
 func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request) {
 	a.log.WithField("header", r.Header).Trace("tracing headers for debug")
-	a.log.WithField("url", r.URL.String()).Trace("tracing url for debug")
+	r.URL.Path = strings.TrimPrefix(r.URL.Path, envoyPrefix)
 	fwd := r.URL
 
 	claims, err := a.getClaims(r)
@@ -169,13 +173,7 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session before redirect")
 	}
-	// We mostly can't rely on X-Forwarded-Proto here since in most cases that will come from the
-	// local Envoy sidecar, so we re-used the same proto as the original URL had
-	scheme := r.Header.Get("X-Forwarded-Proto")
-	if scheme == "" {
-		scheme = "http:"
-	}
-	rdFinal := fmt.Sprintf("%s//%s%s", scheme, host, "/outpost.goauthentik.io/start")
+	rdFinal := fmt.Sprintf("//%s%s", host, "/outpost.goauthentik.io/start")
 	a.log.WithField("url", rdFinal).Debug("Redirecting to login")
 	http.Redirect(rw, r, rdFinal, http.StatusTemporaryRedirect)
 }
