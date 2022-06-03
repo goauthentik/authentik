@@ -136,7 +136,6 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 				"type":         "app",
 				"method":       r.Method,
 				"host":         web.GetHost(r),
-				"scheme":       r.URL.Scheme,
 			}).Observe(float64(after))
 		})
 	})

@@ -14,6 +14,7 @@ spec:
                   # Replace with <service-name>.<namespace>.svc.cluster.local
                   service: "ak-outpost-authentik-embedded-outpost.authentik.svc.cluster.local"
                   port: "9000"
+                  pathPrefix: "/outpost.goauthentik.io/auth/envoy"
                   headersToDownstreamOnAllow:
                       - cookie
                   headersToUpstreamOnAllow:

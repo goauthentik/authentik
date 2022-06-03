@@ -29,7 +29,7 @@ func TestForwardHandleEnvoy_Single_Headers(t *testing.T) {
 
 	assert.Equal(t, rr.Code, http.StatusTemporaryRedirect)
 	loc, _ := rr.Result().Location()
-	assert.Equal(t, loc.String(), "http://test.goauthentik.io/outpost.goauthentik.io/start")
+	assert.Equal(t, loc.String(), "//test.goauthentik.io/outpost.goauthentik.io/start")
 
 	s, _ := a.sessions.Get(req, constants.SessionName)
 	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
@@ -91,7 +91,7 @@ func TestForwardHandleEnvoy_Domain_Header(t *testing.T) {
 
 	assert.Equal(t, http.StatusTemporaryRedirect, rr.Code)
 	loc, _ := rr.Result().Location()
-	assert.Equal(t, "http://auth.test.goauthentik.io/outpost.goauthentik.io/start", loc.String())
+	assert.Equal(t, "//auth.test.goauthentik.io/outpost.goauthentik.io/start", loc.String())
 
 	s, _ := a.sessions.Get(req, constants.SessionName)
 	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
