@@ -12,7 +12,4 @@ class AuthentikAdminConfig(AppConfig):
     verbose_name = "authentik Admin"
 
     def ready(self):
-        from authentik.admin.tasks import clear_update_notifications
-
-        clear_update_notifications.delay()
         import_module("authentik.admin.signals")
