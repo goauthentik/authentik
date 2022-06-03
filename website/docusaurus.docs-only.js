@@ -58,7 +58,7 @@ module.exports = {
                     id: "docs",
                     sidebarPath: require.resolve("./sidebars.js"),
                     editUrl:
-                        "https://github.com/goauthentik/authentik/edit/master/website/",
+                        "https://github.com/goauthentik/authentik/edit/main/website/",
                 },
                 pages: false,
                 theme: {
@@ -76,7 +76,7 @@ module.exports = {
                 routeBasePath: "integrations",
                 sidebarPath: require.resolve("./sidebarsIntegrations.js"),
                 editUrl:
-                    "https://github.com/goauthentik/authentik/edit/master/website/",
+                    "https://github.com/goauthentik/authentik/edit/main/website/",
             },
         ],
         [
@@ -87,7 +87,7 @@ module.exports = {
                 routeBasePath: "developer-docs",
                 sidebarPath: require.resolve("./sidebarsDev.js"),
                 editUrl:
-                    "https://github.com/goauthentik/authentik/edit/master/website/",
+                    "https://github.com/goauthentik/authentik/edit/main/website/",
             },
         ],
         [

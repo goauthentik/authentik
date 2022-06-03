@@ -1,7 +1,7 @@
 name: authentik-web-api-publish
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'schema.yml'
   workflow_dispatch:

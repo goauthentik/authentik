@@ -7,7 +7,7 @@ info:
     email: hello@goauthentik.io
   license:
     name: GNU GPLv3
-    url: https://github.com/goauthentik/authentik/blob/master/LICENSE
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
 paths:
   /admin/apps/:
     get:

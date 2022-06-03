@@ -3,14 +3,14 @@ name: authentik-ci-main
 on:
   push:
     branches:
-      - master
+      - main
       - next
       - version-*
     paths-ignore:
       - website
   pull_request:
     branches:
-      - master
+      - main
 
 env:
   POSTGRES_DB: authentik

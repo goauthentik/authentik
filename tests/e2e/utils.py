@@ -37,7 +37,7 @@ def get_docker_tag() -> str:
     """Get docker-tag based off of CI variables"""
     env_pr_branch = "GITHUB_HEAD_REF"
     default_branch = "GITHUB_REF"
-    branch_name = os.environ.get(default_branch, "master")
+    branch_name = os.environ.get(default_branch, "main")
     if os.environ.get(env_pr_branch, "") != "":
         branch_name = os.environ[env_pr_branch]
     branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
@@ -66,9 +66,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             self.container = self._start_container(specs)
 
     def get_container_image(self, base: str) -> str:
-        """Try to pull docker image based on git branch, fallback to master if not found."""
+        """Try to pull docker image based on git branch, fallback to main if not found."""
         client: DockerClient = from_env()
-        image = f"{base}:gh-master"
+        image = f"{base}:gh-main"
         try:
             branch_image = f"{base}:{get_docker_tag()}"
             client.images.pull(branch_image)

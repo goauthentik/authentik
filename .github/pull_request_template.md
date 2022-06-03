@@ -1,7 +1,7 @@
 <!--
 👋 Hello there! Welcome.
 
-Please check the [Contributing guidelines](https://github.com/goauthentik/authentik/blob/master/CONTRIBUTING.md#how-can-i-contribute).
+Please check the [Contributing guidelines](https://github.com/goauthentik/authentik/blob/main/CONTRIBUTING.md#how-can-i-contribute).
 -->
 
 # Details

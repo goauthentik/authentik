@@ -19,4 +19,4 @@ jobs:
           org-name: goauthentik
           untagged-only: false
           token: ${{ secrets.GHCR_CLEANUP_TOKEN }}
-          skip-tags: gh-next,gh-master
+          skip-tags: gh-next,gh-main
