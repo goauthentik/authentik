@@ -168,10 +168,12 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
-	s.Values[constants.SessionRedirect] = fwd.String()
-	err = s.Save(r, rw)
-	if err != nil {
-		a.log.WithError(err).Warning("failed to save session before redirect")
+	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
+		s.Values[constants.SessionRedirect] = fwd.String()
+		err = s.Save(r, rw)
+		if err != nil {
+			a.log.WithError(err).Warning("failed to save session before redirect")
+		}
 	}
 	rdFinal := fmt.Sprintf("//%s%s", host, "/outpost.goauthentik.io/start")
 	a.log.WithField("url", rdFinal).Debug("Redirecting to login")
