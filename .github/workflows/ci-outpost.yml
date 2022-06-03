@@ -3,12 +3,12 @@ name: authentik-ci-outpost
 on:
   push:
     branches:
-      - master
+      - main
       - next
       - version-*
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   lint-golint:
