@@ -2121,6 +2121,10 @@ msgstr ""
 msgid "Failed to disconnected source: {exc}"
 msgstr ""
 
+#: src/elements/table/Table.ts
+msgid "Failed to fetch objects."
+msgstr ""
+
 #: src/pages/users/UserActiveForm.ts
 msgid "Failed to update {0}: {1}"
 msgstr ""

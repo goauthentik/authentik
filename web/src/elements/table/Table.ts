@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import AKGlobal from "../../authentik.css";
@@ -137,6 +137,9 @@ export abstract class Table<T> extends LitElement {
     @property({ attribute: false })
     expandedElements: T[] = [];
 
+    @state()
+    hasError?: Error;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -170,6 +173,7 @@ export abstract class Table<T> extends LitElement {
         this.isLoading = true;
         try {
             this.data = await this.apiEndpoint(this.page);
+            this.hasError = undefined;
             this.page = this.data.pagination.current;
             const newSelected: T[] = [];
             const newExpanded: T[] = [];
@@ -204,8 +208,9 @@ export abstract class Table<T> extends LitElement {
             this.isLoading = false;
             this.selectedElements = newSelected;
             this.expandedElements = newExpanded;
-        } catch {
+        } catch (ex) {
             this.isLoading = false;
+            this.hasError = ex as Error;
         }
     }
 
@@ -235,7 +240,16 @@ export abstract class Table<T> extends LitElement {
         </tbody>`;
     }
 
+    renderError(): TemplateResult {
+        return html`<ak-empty-state header="${t`Failed to fetch objects.`}" icon="fa-times">
+            <div slot="body">${this.hasError?.toString()}</div>
+        </ak-empty-state>`;
+    }
+
     private renderRows(): TemplateResult[] | undefined {
+        if (this.hasError) {
+            return [this.renderEmpty(this.renderError())];
+        }
         if (!this.data) {
             return;
         }
