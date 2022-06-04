@@ -19151,6 +19151,9 @@ components:
           type: string
           nullable: true
           readOnly: true
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
         meta_launch_url:
           type: string
           format: uri
@@ -19190,6 +19193,9 @@ components:
         provider:
           type: integer
           nullable: true
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
         meta_launch_url:
           type: string
           format: uri
@@ -20365,7 +20371,6 @@ components:
       - $ref: '#/components/schemas/AutosubmitChallenge'
       - $ref: '#/components/schemas/CaptchaChallenge'
       - $ref: '#/components/schemas/ConsentChallenge'
-      - $ref: '#/components/schemas/DummyChallenge'
       - $ref: '#/components/schemas/EmailChallenge'
       - $ref: '#/components/schemas/IdentificationChallenge'
       - $ref: '#/components/schemas/PasswordChallenge'
@@ -20387,7 +20392,6 @@ components:
           ak-stage-autosubmit: '#/components/schemas/AutosubmitChallenge'
           ak-stage-captcha: '#/components/schemas/CaptchaChallenge'
           ak-stage-consent: '#/components/schemas/ConsentChallenge'
-          ak-stage-dummy: '#/components/schemas/DummyChallenge'
           ak-stage-email: '#/components/schemas/EmailChallenge'
           ak-stage-identification: '#/components/schemas/IdentificationChallenge'
           ak-stage-password: '#/components/schemas/PasswordChallenge'
@@ -20804,33 +20808,6 @@ components:
       required:
       - name
       - url
-    DummyChallenge:
-      type: object
-      description: Dummy challenge
-      properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
-        flow_info:
-          $ref: '#/components/schemas/ContextualFlowInfo'
-        component:
-          type: string
-          default: ak-stage-dummy
-        response_errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/ErrorDetail'
-      required:
-      - type
-    DummyChallengeResponseRequest:
-      type: object
-      description: Dummy challenge response
-      properties:
-        component:
-          type: string
-          minLength: 1
-          default: ak-stage-dummy
     DummyPolicy:
       type: object
       description: Dummy Policy Serializer
@@ -21533,7 +21510,6 @@ components:
       - $ref: '#/components/schemas/AutoSubmitChallengeResponseRequest'
       - $ref: '#/components/schemas/CaptchaChallengeResponseRequest'
       - $ref: '#/components/schemas/ConsentChallengeResponseRequest'
-      - $ref: '#/components/schemas/DummyChallengeResponseRequest'
       - $ref: '#/components/schemas/EmailChallengeResponseRequest'
       - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
       - $ref: '#/components/schemas/PasswordChallengeResponseRequest'
@@ -21552,7 +21528,6 @@ components:
           ak-stage-autosubmit: '#/components/schemas/AutoSubmitChallengeResponseRequest'
           ak-stage-captcha: '#/components/schemas/CaptchaChallengeResponseRequest'
           ak-stage-consent: '#/components/schemas/ConsentChallengeResponseRequest'
-          ak-stage-dummy: '#/components/schemas/DummyChallengeResponseRequest'
           ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
           ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
@@ -26721,6 +26696,9 @@ components:
         provider:
           type: integer
           nullable: true
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
         meta_launch_url:
           type: string
           format: uri
