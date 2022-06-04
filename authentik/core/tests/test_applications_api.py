@@ -29,6 +29,7 @@ class TestApplicationsAPI(APITestCase):
             name="allowed",
             slug="allowed",
             meta_launch_url="https://goauthentik.io/%(username)s",
+            open_in_new_tab=True,
             provider=self.provider,
         )
         self.denied = Application.objects.create(name="denied", slug="denied")
@@ -100,6 +101,7 @@ class TestApplicationsAPI(APITestCase):
                         },
                         "launch_url": f"https://goauthentik.io/{self.user.username}",
                         "meta_launch_url": "https://goauthentik.io/%(username)s",
+                        "open_in_new_tab": True,
                         "meta_icon": None,
                         "meta_description": "",
                         "meta_publisher": "",
@@ -148,6 +150,7 @@ class TestApplicationsAPI(APITestCase):
                         },
                         "launch_url": f"https://goauthentik.io/{self.user.username}",
                         "meta_launch_url": "https://goauthentik.io/%(username)s",
+                        "open_in_new_tab": True,
                         "meta_icon": None,
                         "meta_description": "",
                         "meta_publisher": "",
@@ -158,6 +161,7 @@ class TestApplicationsAPI(APITestCase):
                         "meta_description": "",
                         "meta_icon": None,
                         "meta_launch_url": "",
+                        "open_in_new_tab": False,
                         "meta_publisher": "",
                         "group": "",
                         "name": "denied",
