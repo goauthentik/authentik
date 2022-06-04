@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ModelSerializer, SerializerMethodField, ReadOnlyField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
@@ -26,6 +26,7 @@ LOGGER = get_logger()
 class SourceSerializer(ModelSerializer, MetaNameSerializer):
     """Source Serializer"""
 
+    managed = ReadOnlyField()
     component = SerializerMethodField()
 
     def get_component(self, obj: Source) -> str:
@@ -51,6 +52,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             "meta_model_name",
             "policy_engine_mode",
             "user_matching_mode",
+            "managed",
         ]
 
 
@@ -67,6 +69,7 @@ class SourceViewSet(
     serializer_class = SourceSerializer
     lookup_field = "slug"
     search_fields = ["slug", "name"]
+    filterset_fields = ["slug", "name", "managed"]
 
     def get_queryset(self):  # pragma: no cover
         return Source.objects.select_subclasses()
