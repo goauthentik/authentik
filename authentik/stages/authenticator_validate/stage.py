@@ -85,9 +85,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     def validate_code(self, code: str) -> str:
         """Validate code-based response, raise error if code isn't allowed"""
         self._challenge_allowed([DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS])
-        self.device = validate_challenge_code(
-            code, self.stage.request, self.stage.get_pending_user()
-        )
+        self.device = validate_challenge_code(code, self.stage, self.stage.get_pending_user())
         return code
 
     def validate_webauthn(self, webauthn: dict) -> dict:
@@ -95,14 +93,14 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         or response is invalid"""
         self._challenge_allowed([DeviceClasses.WEBAUTHN])
         self.device = validate_challenge_webauthn(
-            webauthn, self.stage.request, self.stage.get_pending_user()
+            webauthn, self.stage, self.stage.get_pending_user()
         )
         return webauthn
 
     def validate_duo(self, duo: int) -> int:
         """Initiate Duo authentication"""
         self._challenge_allowed([DeviceClasses.DUO])
-        self.device = validate_challenge_duo(duo, self.stage.request, self.stage.get_pending_user())
+        self.device = validate_challenge_duo(duo, self.stage, self.stage.get_pending_user())
         return duo
 
     def validate_selected_challenge(self, challenge: dict) -> dict:

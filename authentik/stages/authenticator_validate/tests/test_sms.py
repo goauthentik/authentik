@@ -7,6 +7,7 @@ from django.urls.base import reverse
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests import FlowTestCase
+from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMSDevice, SMSProviders
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_validate.stage import COOKIE_NAME_MFA
@@ -28,7 +29,7 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
     def test_last_auth_threshold(self):
         """Test last_auth_threshold"""
         ident_stage = IdentificationStage.objects.create(
-            name="conf",
+            name=generate_id(),
             user_fields=[
                 UserFields.USERNAME,
             ],
@@ -40,7 +41,7 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
         )
 
         stage = AuthenticatorValidateStage.objects.create(
-            name="foo",
+            name=generate_id(),
             last_auth_threshold="milliseconds=0",
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.SMS],
@@ -65,7 +66,7 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
     def test_last_auth_threshold_valid(self):
         """Test last_auth_threshold"""
         ident_stage = IdentificationStage.objects.create(
-            name="conf",
+            name=generate_id(),
             user_fields=[
                 UserFields.USERNAME,
             ],
@@ -77,7 +78,7 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
         )
 
         stage = AuthenticatorValidateStage.objects.create(
-            name="foo",
+            name=generate_id(),
             last_auth_threshold="hours=1",
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.SMS],
@@ -120,7 +121,7 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
     def test_sms_hashed(self):
         """Test hashed SMS device"""
         ident_stage = IdentificationStage.objects.create(
-            name="conf",
+            name=generate_id(),
             user_fields=[
                 UserFields.USERNAME,
             ],
@@ -133,7 +134,7 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
         )
 
         stage = AuthenticatorValidateStage.objects.create(
-            name="foo",
+            name=generate_id(),
             last_auth_threshold="hours=1",
             not_configured_action=NotConfiguredAction.DENY,
             device_classes=[DeviceClasses.SMS],

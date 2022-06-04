@@ -3,7 +3,6 @@ from typing import Any, Optional
 
 from django.contrib.auth import _clean_credentials
 from django.contrib.auth.backends import BaseBackend
-from django.contrib.auth.signals import user_login_failed
 from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
@@ -14,13 +13,14 @@ from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
+from authentik.core.signals import login_failed
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
     WithUserInfoChallenge,
 )
-from authentik.flows.models import Flow, FlowDesignation
+from authentik.flows.models import Flow, FlowDesignation, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.reflection import path_to_class
@@ -33,7 +33,9 @@ PLAN_CONTEXT_METHOD_ARGS = "auth_method_args"
 SESSION_KEY_INVALID_TRIES = "authentik/stages/password/user_invalid_tries"
 
 
-def authenticate(request: HttpRequest, backends: list[str], **credentials: Any) -> Optional[User]:
+def authenticate(
+    request: HttpRequest, backends: list[str], stage: Optional[Stage] = None, **credentials: Any
+) -> Optional[User]:
     """If the given credentials are valid, return a User object.
 
     Customized version of django's authenticate, which accepts a list of backends"""
@@ -58,8 +60,11 @@ def authenticate(request: HttpRequest, backends: list[str], **credentials: Any) 
         return user
 
     # The credentials supplied are invalid to all backends, fire signal
-    user_login_failed.send(
-        sender=__name__, credentials=_clean_credentials(credentials), request=request
+    login_failed.send(
+        sender=__name__,
+        credentials=_clean_credentials(credentials),
+        request=request,
+        stage=stage,
     )
 
 
@@ -130,7 +135,10 @@ class PasswordStageView(ChallengeStageView):
                 description="User authenticate call",
             ):
                 user = authenticate(
-                    self.request, self.executor.current_stage.backends, **auth_kwargs
+                    self.request,
+                    self.executor.current_stage.backends,
+                    self.executor.current_stage,
+                    **auth_kwargs,
                 )
         except PermissionDenied:
             del auth_kwargs["password"]

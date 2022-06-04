@@ -5,7 +5,9 @@ from django.test.client import RequestFactory
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
+from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_validate.challenge import validate_challenge_duo
@@ -22,7 +24,7 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
         """Test duo"""
         request = self.request_factory.get("/")
         stage = AuthenticatorDuoStage.objects.create(
-            name="test",
+            name=generate_id(),
             client_id=generate_id(),
             client_secret=generate_key(),
             api_hostname="",
@@ -45,10 +47,21 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
             "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.client",
             duo_mock,
         ):
-            self.assertEqual(duo_device, validate_challenge_duo(duo_device.pk, request, self.user))
+            self.assertEqual(
+                duo_device,
+                validate_challenge_duo(
+                    duo_device.pk,
+                    StageView(FlowExecutorView(current_stage=stage), request=request),
+                    self.user,
+                ),
+            )
         with patch(
             "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.client",
             failed_duo_mock,
         ):
             with self.assertRaises(ValidationError):
-                validate_challenge_duo(duo_device.pk, request, self.user)
+                validate_challenge_duo(
+                    duo_device.pk,
+                    StageView(FlowExecutorView(current_stage=stage), request=request),
+                    self.user,
+                )

@@ -1,14 +1,17 @@
 """Test validator stage"""
 from time import sleep
 
+from django.http import Http404
 from django.test.client import RequestFactory
 from django.urls.base import reverse
-from rest_framework.exceptions import ValidationError
 from webauthn.helpers import bytes_to_base64url
 
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
+from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
+from authentik.flows.views.executor import FlowExecutorView
+from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import get_request
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
@@ -29,7 +32,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
     def test_last_auth_threshold(self):
         """Test last_auth_threshold"""
         ident_stage = IdentificationStage.objects.create(
-            name="conf",
+            name=generate_id(),
             user_fields=[
                 UserFields.USERNAME,
             ],
@@ -40,7 +43,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         )
         device.set_sign_count(device.sign_count + 1)
         stage = AuthenticatorValidateStage.objects.create(
-            name="foo",
+            name=generate_id(),
             last_auth_threshold="milliseconds=0",
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.WEBAUTHN],
@@ -76,7 +79,13 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             public_key=bytes_to_base64url(b"qwerqwerqre"),
             credential_id=bytes_to_base64url(b"foobarbaz"),
             sign_count=0,
-            rp_id="foo",
+            rp_id=generate_id(),
+        )
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            last_auth_threshold="milliseconds=0",
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.WEBAUTHN],
         )
         challenge = get_challenge_for_device(request, webauthn_device)
         del challenge["challenge"]
@@ -95,5 +104,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             },
         )
 
-        with self.assertRaises(ValidationError):
-            validate_challenge_webauthn({}, request, self.user)
+        with self.assertRaises(Http404):
+            validate_challenge_webauthn(
+                {}, StageView(FlowExecutorView(current_stage=stage), request=request), self.user
+            )
