@@ -12,6 +12,8 @@ from django.http.request import HttpRequest
 
 # Arguments: user: User, password: str
 password_changed = Signal()
+# Arguments: credentials: dict[str, any], request: HttpRequest, stage: Stage
+login_failed = Signal()
 
 if TYPE_CHECKING:
     from authentik.core.models import AuthenticatedSession, User

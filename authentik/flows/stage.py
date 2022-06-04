@@ -23,6 +23,7 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.models import InvalidResponseAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
+from authentik.lib.utils.reflection import class_to_path
 
 if TYPE_CHECKING:
     from authentik.flows.views.executor import FlowExecutorView
@@ -44,7 +45,7 @@ class StageView(View):
         current_stage = getattr(self.executor, "current_stage", None)
         self.logger = get_logger().bind(
             stage=getattr(current_stage, "name", None),
-            stage_view=self,
+            stage_view=class_to_path(type(self)),
         )
         super().__init__(**kwargs)
 

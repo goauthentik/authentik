@@ -127,6 +127,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
                 user = authenticate(
                     self.stage.request,
                     current_stage.password_stage.backends,
+                    current_stage,
                     username=self.pre_user.username,
                     password=password,
                 )
