@@ -23,15 +23,21 @@ type SessionBinder struct {
 	sessions *ttlcache.Cache[Credentials, ldap.LDAPResultCode]
 }
 
-func NewSessionBinder(si server.LDAPServerInstance) *SessionBinder {
+func NewSessionBinder(si server.LDAPServerInstance, oldBinder bind.Binder) *SessionBinder {
 	sb := &SessionBinder{
-		DirectBinder: *direct.NewDirectBinder(si),
-		si:           si,
-		log:          log.WithField("logger", "authentik.outpost.ldap.binder.session"),
-		sessions:     ttlcache.New(ttlcache.WithDisableTouchOnHit[Credentials, ldap.LDAPResultCode]()),
+		si:  si,
+		log: log.WithField("logger", "authentik.outpost.ldap.binder.session"),
 	}
-	go sb.sessions.Start()
-	sb.log.Info("initialised session binder")
+	if oldSb, ok := oldBinder.(*SessionBinder); ok {
+		sb.DirectBinder = oldSb.DirectBinder
+		sb.sessions = oldSb.sessions
+		sb.log.Info("re-initialised session binder")
+	} else {
+		sb.sessions = ttlcache.New(ttlcache.WithDisableTouchOnHit[Credentials, ldap.LDAPResultCode]())
+		sb.DirectBinder = *direct.NewDirectBinder(si)
+		go sb.sessions.Start()
+		sb.log.Info("initialised session binder")
+	}
 	return sb
 }
 

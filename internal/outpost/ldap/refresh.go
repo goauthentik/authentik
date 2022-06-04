@@ -83,7 +83,7 @@ func (ls *LDAPServer) Refresh() error {
 			providers[idx].searcher = directsearch.NewDirectSearcher(providers[idx])
 		}
 		if *provider.BindMode.Ptr() == api.LDAPAPIACCESSMODE_CACHED {
-			providers[idx].binder = memorybind.NewSessionBinder(providers[idx])
+			providers[idx].binder = memorybind.NewSessionBinder(providers[idx], providers[idx].binder)
 		} else if *provider.BindMode.Ptr() == api.LDAPAPIACCESSMODE_DIRECT {
 			providers[idx].binder = directbind.NewDirectBinder(providers[idx])
 		}
