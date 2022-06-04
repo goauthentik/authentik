@@ -36,10 +36,12 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 			redirectUrl = a.proxyConfig.ExternalHost
 		}
 	}
-	s.Values[constants.SessionRedirect] = redirectUrl
-	err = s.Save(r, rw)
-	if err != nil {
-		a.log.WithError(err).Warning("failed to save session before redirect")
+	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
+		s.Values[constants.SessionRedirect] = redirectUrl
+		err = s.Save(r, rw)
+		if err != nil {
+			a.log.WithError(err).Warning("failed to save session before redirect")
+		}
 	}
 
 	urlArgs := url.Values{

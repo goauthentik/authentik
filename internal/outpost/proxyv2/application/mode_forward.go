@@ -12,19 +12,14 @@ import (
 )
 
 const (
-	envoyPrefix = "/outpost.goauthentik.io/auth/envoy"
+	envoyPrefix   = "/outpost.goauthentik.io/auth/envoy"
+	traefikPrefix = "/outpost.goauthentik.io/auth/traefik"
+	nginxPrefix   = "/outpost.goauthentik.io/auth/nginx"
 )
 
 func (a *Application) configureForward() error {
-	a.mux.HandleFunc("/outpost.goauthentik.io/auth", func(rw http.ResponseWriter, r *http.Request) {
-		if _, ok := r.URL.Query()["traefik"]; ok {
-			a.forwardHandleTraefik(rw, r)
-			return
-		}
-		a.forwardHandleNginx(rw, r)
-	})
-	a.mux.HandleFunc("/outpost.goauthentik.io/auth/traefik", a.forwardHandleTraefik)
-	a.mux.HandleFunc("/outpost.goauthentik.io/auth/nginx", a.forwardHandleNginx)
+	a.mux.HandleFunc(traefikPrefix, a.forwardHandleTraefik)
+	a.mux.HandleFunc(nginxPrefix, a.forwardHandleNginx)
 	a.mux.PathPrefix(envoyPrefix).HandlerFunc(a.forwardHandleEnvoy)
 	return nil
 }
@@ -59,7 +54,6 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		return
 	}
 	host := ""
-	s, _ := a.sessions.Get(r, constants.SessionName)
 	// Optional suffix, which is appended to the URL
 	if *a.proxyConfig.Mode.Get() == api.PROXYMODE_FORWARD_SINGLE {
 		host = web.GetHost(r)
@@ -75,10 +69,13 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
-	s.Values[constants.SessionRedirect] = fwd.String()
-	err = s.Save(r, rw)
-	if err != nil {
-		a.log.WithError(err).Warning("failed to save session before redirect")
+	s, _ := a.sessions.Get(r, constants.SessionName)
+	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
+		s.Values[constants.SessionRedirect] = fwd.String()
+		err = s.Save(r, rw)
+		if err != nil {
+			a.log.WithError(err).Warning("failed to save session before redirect")
+		}
 	}
 
 	proto := r.Header.Get("X-Forwarded-Proto")
@@ -117,10 +114,12 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 	}
 
 	s, _ := a.sessions.Get(r, constants.SessionName)
-	s.Values[constants.SessionRedirect] = fwd.String()
-	err = s.Save(r, rw)
-	if err != nil {
-		a.log.WithError(err).Warning("failed to save session before redirect")
+	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
+		s.Values[constants.SessionRedirect] = fwd.String()
+		err = s.Save(r, rw)
+		if err != nil {
+			a.log.WithError(err).Warning("failed to save session before redirect")
+		}
 	}
 
 	if fwd.String() != r.URL.String() {
@@ -152,7 +151,6 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 		return
 	}
 	host := ""
-	s, _ := a.sessions.Get(r, constants.SessionName)
 	// Optional suffix, which is appended to the URL
 	if *a.proxyConfig.Mode.Get() == api.PROXYMODE_FORWARD_SINGLE {
 		host = web.GetHost(r)
@@ -168,6 +166,7 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
+	s, _ := a.sessions.Get(r, constants.SessionName)
 	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
 		s.Values[constants.SessionRedirect] = fwd.String()
 		err = s.Save(r, rw)
