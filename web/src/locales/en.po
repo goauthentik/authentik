@@ -2578,6 +2578,10 @@ msgstr "Identifier"
 msgid "If any of the devices user of the types selected above have been used within this duration, this stage will be skipped."
 msgstr "If any of the devices user of the types selected above have been used within this duration, this stage will be skipped."
 
+#: src/pages/applications/ApplicationForm.ts
+msgid "If checked, the launch URL will open in a new browser tab or window from the user's application library."
+msgstr "If checked, the launch URL will open in a new browser tab or window from the user's application library."
+
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons.Devices created from a stage with this enabled cannot be used with the authenticator validation stage."
 msgstr "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons.Devices created from a stage with this enabled cannot be used with the authenticator validation stage."
@@ -3662,6 +3666,10 @@ msgstr "Open API Browser"
 #: 
 #~ msgid "Open application"
 #~ msgstr "Open application"
+
+#: src/pages/applications/ApplicationForm.ts
+msgid "Open in new tab"
+msgstr "Open in new tab"
 
 #: src/pages/events/EventInfo.ts
 msgid "Open issue on GitHub..."

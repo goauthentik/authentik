@@ -2564,6 +2564,10 @@ msgstr ""
 msgid "If any of the devices user of the types selected above have been used within this duration, this stage will be skipped."
 msgstr ""
 
+#: src/pages/applications/ApplicationForm.ts
+msgid "If checked, the launch URL will open in a new browser tab or window from the user's application library."
+msgstr ""
+
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons.Devices created from a stage with this enabled cannot be used with the authenticator validation stage."
 msgstr ""
@@ -3644,6 +3648,10 @@ msgstr ""
 #: 
 #~ msgid "Open application"
 #~ msgstr ""
+
+#: src/pages/applications/ApplicationForm.ts
+msgid "Open in new tab"
+msgstr ""
 
 #: src/pages/events/EventInfo.ts
 msgid "Open issue on GitHub..."
