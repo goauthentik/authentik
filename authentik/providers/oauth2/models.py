@@ -222,19 +222,6 @@ class OAuth2Provider(Provider):
         ),
     )
 
-    verification_keys = models.ManyToManyField(
-        CertificateKeyPair,
-        verbose_name=_("Allowed certificates for JWT-based client_credentials"),
-        help_text=_(
-            (
-                "DEPRECATED. JWTs created with the configured "
-                "certificates can authenticate with this provider."
-            )
-        ),
-        related_name="oauth2_providers",
-        default=None,
-        blank=True,
-    )
     jwks_sources = models.ManyToManyField(
         OAuthSource,
         verbose_name=_(

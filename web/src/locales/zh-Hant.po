@@ -1541,7 +1541,6 @@ msgid "Deny the user access"
 msgstr "拒绝用户访问"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Deprecated. Instead of using this field, configure the JWKS data/URL in Sources."
 msgstr ""
 
@@ -2451,7 +2450,6 @@ msgstr "隐藏服务账户"
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -2735,7 +2733,6 @@ msgstr ""
 #~ msgstr "JWT 算法"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "JWTs signed by certificates configured here can be used to authenticate to the provider."
 msgstr "此处配置的证书签名的 JWT 可以用于此提供程序的身份验证。"
 
@@ -2913,7 +2910,6 @@ msgstr "正在加载"
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
@@ -6270,8 +6266,8 @@ msgid "Verification Certificate"
 msgstr "验证证书"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Verification certificates"
-msgstr "验证证书"
+#~ msgid "Verification certificates"
+#~ msgstr "验证证书"
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #~ msgid "Verify only"

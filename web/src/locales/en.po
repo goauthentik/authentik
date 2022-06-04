@@ -1571,7 +1571,6 @@ msgid "Deny the user access"
 msgstr "Deny the user access"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Deprecated. Instead of using this field, configure the JWKS data/URL in Sources."
 msgstr "Deprecated. Instead of using this field, configure the JWKS data/URL in Sources."
 
@@ -2510,7 +2509,6 @@ msgstr "Hide service-accounts"
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -2804,7 +2802,6 @@ msgstr "JWKS URL"
 #~ msgstr "JWT Algorithm"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "JWTs signed by certificates configured here can be used to authenticate to the provider."
 msgstr "JWTs signed by certificates configured here can be used to authenticate to the provider."
 
@@ -2985,7 +2982,6 @@ msgstr "Loading"
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
-#: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
@@ -6434,8 +6430,8 @@ msgid "Verification Certificate"
 msgstr "Verification Certificate"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Verification certificates"
-msgstr "Verification certificates"
+#~ msgid "Verification certificates"
+#~ msgstr "Verification certificates"
 
 #: src/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #~ msgid "Verify only"

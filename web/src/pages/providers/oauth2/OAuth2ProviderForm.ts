@@ -405,44 +405,6 @@ ${this.instance?.redirectUris}</textarea
                             ${t`Hold control/command to select multiple items.`}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Verification certificates`}
-                        name="verificationKeys"
-                    >
-                        <select class="pf-c-form-control" multiple>
-                            ${until(
-                                new CryptoApi(DEFAULT_CONFIG)
-                                    .cryptoCertificatekeypairsList({
-                                        ordering: "name",
-                                    })
-                                    .then((keys) => {
-                                        return keys.results.map((key) => {
-                                            const selected = (
-                                                this.instance?.verificationKeys || []
-                                            ).some((su) => {
-                                                return su == key.pk;
-                                            });
-                                            return html`<option
-                                                value=${key.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${key.name} (${key.privateKeyType?.toUpperCase()})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${t`Deprecated. Instead of using this field, configure the JWKS data/URL in Sources.`}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`JWTs signed by certificates configured here can be used to authenticate to the provider.`}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
-                        </p>
-                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
         </form>`;
