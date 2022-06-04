@@ -23,6 +23,7 @@ from authentik.flows.stage import StageView
 from authentik.lib.utils.http import get_client_ip
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
+from authentik.stages.authenticator_validate.models import DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
@@ -104,6 +105,7 @@ def validate_challenge_code(code: str, stage: StageView, user: User) -> Device:
             credentials={"username": user.username},
             request=stage.request,
             stage=stage.executor.current_stage,
+            device_class=DeviceClasses.TOTP.value,
         )
         raise ValidationError(_("Invalid Token"))
     return device
@@ -138,6 +140,7 @@ def validate_challenge_webauthn(data: dict, stage: StageView, user: User) -> Dev
             request=stage.request,
             stage=stage.executor.current_stage,
             device=device,
+            device_class=DeviceClasses.WEBAUTHN.value,
         )
         raise ValidationError("Assertion failed") from exc
 
@@ -167,6 +170,7 @@ def validate_challenge_duo(device_pk: int, stage: StageView, user: User) -> Devi
             credentials={"username": user.username},
             request=stage.request,
             stage=stage.executor.current_stage,
+            device_class=DeviceClasses.DUO.value,
         )
         raise ValidationError("Duo denied access")
     device.save()

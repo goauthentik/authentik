@@ -14,7 +14,7 @@ class DeviceClasses(models.TextChoices):
     """Device classes this stage can validate"""
 
     # device class must match Device's class name so StaticDevice -> static
-    STATIC = "static"
+    STATIC = "static", _("Static")
     TOTP = "totp", _("TOTP")
     WEBAUTHN = "webauthn", _("WebAuthn")
     DUO = "duo", _("Duo")

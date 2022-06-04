@@ -81,10 +81,15 @@ def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any]
 @receiver(login_failed)
 # pylint: disable=unused-argument
 def on_login_failed(
-    sender, credentials: dict[str, str], request: HttpRequest, stage: Optional[Stage] = None, **_
+    signal,
+    sender,
+    credentials: dict[str, str],
+    request: HttpRequest,
+    stage: Optional[Stage] = None,
+    **kwargs,
 ):
     """Failed Login, authentik custom event"""
-    thread = EventNewThread(EventAction.LOGIN_FAILED, request, **credentials, stage=stage)
+    thread = EventNewThread(EventAction.LOGIN_FAILED, request, **credentials, stage=stage, **kwargs)
     thread.run()
 
 
