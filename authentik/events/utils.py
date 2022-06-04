@@ -10,9 +10,11 @@ from django.db import models
 from django.db.models.base import Model
 from django.http.request import HttpRequest
 from django.views.debug import SafeExceptionReporterFilter
+from geoip2.models import City
 from guardian.utils import get_anonymous_user
 
 from authentik.core.models import User
+from authentik.events.geo import GEOIP_READER
 from authentik.policies.types import PolicyRequest
 
 # Special keys which are *not* cleaned, even when the default filter
@@ -93,6 +95,8 @@ def sanitize_dict(source: dict[Any, Any]) -> dict[Any, Any]:
             final_dict[key] = value.hex
         elif isinstance(value, (HttpRequest, WSGIRequest)):
             continue
+        elif isinstance(value, City):
+            final_dict[key] = GEOIP_READER.city_to_dict(value)
         elif isinstance(value, type):
             final_dict[key] = {
                 "type": value.__name__,

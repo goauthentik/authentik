@@ -76,11 +76,8 @@ class GeoIPReader:
             except (GeoIP2Error, ValueError):
                 return None
 
-    def city_dict(self, ip_address: str) -> Optional[GeoIPDict]:
-        """Wrapper for self.city that returns a dict"""
-        city = self.city(ip_address)
-        if not city:
-            return None
+    def city_to_dict(self, city: City) -> GeoIPDict:
+        """Convert City to dict"""
         city_dict: GeoIPDict = {
             "continent": city.continent.code,
             "country": city.country.iso_code,
@@ -91,6 +88,13 @@ class GeoIPReader:
         if city.city.name:
             city_dict["city"] = city.city.name
         return city_dict
+
+    def city_dict(self, ip_address: str) -> Optional[GeoIPDict]:
+        """Wrapper for self.city that returns a dict"""
+        city = self.city(ip_address)
+        if not city:
+            return None
+        return self.city_to_dict(city)
 
 
 GEOIP_READER = GeoIPReader()
