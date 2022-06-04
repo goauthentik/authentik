@@ -14,7 +14,10 @@ from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
+from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
+from authentik.flows.views.executor import FlowExecutorView
+from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
     validate_challenge_code,
@@ -35,7 +38,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
     def test_last_auth_threshold(self):
         """Test last_auth_threshold"""
         ident_stage = IdentificationStage.objects.create(
-            name="conf",
+            name=generate_id(),
             user_fields=[
                 UserFields.USERNAME,
             ],
@@ -49,7 +52,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
         sleep(1)
         self.assertTrue(device.verify_token(totp.token()))
         stage = AuthenticatorValidateStage.objects.create(
-            name="foo",
+            name=generate_id(),
             last_auth_threshold="milliseconds=0",
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.TOTP],
@@ -76,7 +79,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
     def test_last_auth_threshold_valid(self) -> SimpleCookie:
         """Test last_auth_threshold"""
         ident_stage = IdentificationStage.objects.create(
-            name="conf",
+            name=generate_id(),
             user_fields=[
                 UserFields.USERNAME,
             ],
@@ -86,7 +89,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
             confirmed=True,
         )
         stage = AuthenticatorValidateStage.objects.create(
-            name="foo",
+            name=generate_id(),
             last_auth_threshold="hours=1",
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.TOTP],
@@ -133,7 +136,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
     def test_last_auth_stage_pk(self):
         """Test MFA cookie with wrong stage PK"""
         ident_stage = IdentificationStage.objects.create(
-            name="conf",
+            name=generate_id(),
             user_fields=[
                 UserFields.USERNAME,
             ],
@@ -143,7 +146,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
             confirmed=True,
         )
         stage = AuthenticatorValidateStage.objects.create(
-            name="foo",
+            name=generate_id(),
             last_auth_threshold="hours=1",
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.TOTP],
@@ -154,7 +157,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
         self.client.cookies[COOKIE_NAME_MFA] = encode(
             payload={
                 "device": device.pk,
-                "stage": stage.pk.hex + "foo",
+                "stage": stage.pk.hex + generate_id(),
                 "exp": (datetime.now() + timedelta(days=3)).timestamp(),
             },
             key=sha256(f"{settings.SECRET_KEY}:{stage.pk.hex}".encode("ascii")).hexdigest(),
@@ -172,7 +175,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
     def test_last_auth_stage_device(self):
         """Test MFA cookie with wrong device PK"""
         ident_stage = IdentificationStage.objects.create(
-            name="conf",
+            name=generate_id(),
             user_fields=[
                 UserFields.USERNAME,
             ],
@@ -182,7 +185,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
             confirmed=True,
         )
         stage = AuthenticatorValidateStage.objects.create(
-            name="foo",
+            name=generate_id(),
             last_auth_threshold="hours=1",
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.TOTP],
@@ -211,7 +214,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
     def test_last_auth_stage_expired(self):
         """Test MFA cookie with expired cookie"""
         ident_stage = IdentificationStage.objects.create(
-            name="conf",
+            name=generate_id(),
             user_fields=[
                 UserFields.USERNAME,
             ],
@@ -221,7 +224,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
             confirmed=True,
         )
         stage = AuthenticatorValidateStage.objects.create(
-            name="foo",
+            name=generate_id(),
             last_auth_threshold="hours=1",
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.TOTP],
@@ -251,6 +254,14 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
         """Test device challenge"""
         request = self.request_factory.get("/")
         totp_device = TOTPDevice.objects.create(user=self.user, confirmed=True, digits=6)
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            last_auth_threshold="hours=1",
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.TOTP],
+        )
         self.assertEqual(get_challenge_for_device(request, totp_device), {})
         with self.assertRaises(ValidationError):
-            validate_challenge_code("1234", request, self.user)
+            validate_challenge_code(
+                "1234", StageView(FlowExecutorView(current_stage=stage), request=request), self.user
+            )

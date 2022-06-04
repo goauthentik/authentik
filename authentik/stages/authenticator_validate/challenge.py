@@ -95,7 +95,7 @@ def select_challenge_sms(request: HttpRequest, device: SMSDevice):
     device.stage.send(device.token, device)
 
 
-def validate_challenge_code(code: str, stage: StageView, user: User) -> Device:
+def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Device:
     """Validate code-based challenges. We test against every device, on purpose, as
     the user mustn't choose between totp and static devices."""
     device = match_token(user, code)
@@ -103,8 +103,8 @@ def validate_challenge_code(code: str, stage: StageView, user: User) -> Device:
         login_failed.send(
             sender=__name__,
             credentials={"username": user.username},
-            request=stage.request,
-            stage=stage.executor.current_stage,
+            request=stage_view.request,
+            stage=stage_view.executor.current_stage,
             device_class=DeviceClasses.TOTP.value,
         )
         raise ValidationError(_("Invalid Token"))
@@ -112,9 +112,9 @@ def validate_challenge_code(code: str, stage: StageView, user: User) -> Device:
 
 
 # pylint: disable=unused-argument
-def validate_challenge_webauthn(data: dict, stage: StageView, user: User) -> Device:
+def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -> Device:
     """Validate WebAuthn Challenge"""
-    request = stage.request
+    request = stage_view.request
     challenge = request.session.get(SESSION_KEY_WEBAUTHN_CHALLENGE)
     credential_id = data.get("id")
 
@@ -137,8 +137,8 @@ def validate_challenge_webauthn(data: dict, stage: StageView, user: User) -> Dev
         login_failed.send(
             sender=__name__,
             credentials={"username": user.username},
-            request=stage.request,
-            stage=stage.executor.current_stage,
+            request=stage_view.request,
+            stage=stage_view.executor.current_stage,
             device=device,
             device_class=DeviceClasses.WEBAUTHN.value,
         )
@@ -148,7 +148,7 @@ def validate_challenge_webauthn(data: dict, stage: StageView, user: User) -> Dev
     return device
 
 
-def validate_challenge_duo(device_pk: int, stage: StageView, user: User) -> Device:
+def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) -> Device:
     """Duo authentication"""
     device = get_object_or_404(DuoDevice, pk=device_pk)
     if device.user != user:
@@ -158,7 +158,7 @@ def validate_challenge_duo(device_pk: int, stage: StageView, user: User) -> Devi
     response = stage.client.auth(
         "auto",
         user_id=device.duo_user_id,
-        ipaddr=get_client_ip(stage.request),
+        ipaddr=get_client_ip(stage_view.request),
         type="authentik Login request",
         display_username=user.username,
         device="auto",
@@ -168,8 +168,8 @@ def validate_challenge_duo(device_pk: int, stage: StageView, user: User) -> Devi
         login_failed.send(
             sender=__name__,
             credentials={"username": user.username},
-            request=stage.request,
-            stage=stage.executor.current_stage,
+            request=stage_view.request,
+            stage=stage_view.executor.current_stage,
             device_class=DeviceClasses.DUO.value,
         )
         raise ValidationError("Duo denied access")
