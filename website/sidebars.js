@@ -165,9 +165,9 @@ module.exports = {
             type: "category",
             label: "Release Notes",
             items: [
+                "releases/v2022.6",
                 "releases/v2022.5",
                 "releases/v2022.4",
-                "releases/v2022.3",
                 {
                     type: "category",
                     label: "Previous versions",
