@@ -103,8 +103,8 @@ run:
 ## Web
 #########################
 
-web-build:
-	cd web && npm i && npm run build
+web-build: web-install
+    cd web && npm run build
 
 web: web-lint-fix web-lint web-extract
 

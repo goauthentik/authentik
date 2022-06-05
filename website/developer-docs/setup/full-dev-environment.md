@@ -9,7 +9,7 @@ title: Full development environment
 -   Go 1.18
 -   PostgreSQL (any recent version will do)
 -   Redis (any recent version will do)
--   Node 14 (or later)
+-   Node 16 (or later)
 
 ## Services Setup
 
