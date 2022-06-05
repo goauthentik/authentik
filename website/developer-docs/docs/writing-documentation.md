@@ -5,7 +5,23 @@ title: Writing documentation
 Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. Here are a few guidelines to ensure
 the documentation is easy to read and uses similar phrasing.
 
-# General guidelines
+## Setup
+
+Requirements:
+
+-   Node 16 (or greater)
+
+The documentation site is situated in the `/website` folder of the authentik GitHub repository.
+
+The site is built using npm, below are some useful make commands:
+
+-   Install: `make website-install` (Needed for any of the other tasks)
+-   Formatting: `make website-lint-fix` or `make website` (Run this before committing)
+-   Live editing: `make website-watch` (For real time viewing of changes)
+
+Be sure to run the formatter before committing changes.
+
+## General guidelines
 
 -   authentik should always be stylized as `authentik` (with a lower-case a and ending with a k)
 -   Documentation should use American english
