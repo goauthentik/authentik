@@ -9,7 +9,7 @@ the documentation is easy to read and uses similar phrasing.
 
 Requirements:
 
-- Node 16 (or greater)
+-   Node 16 (or greater)
 
 The documentation site is situated in the `/website` folder of the authentik GitHub repository.
 
