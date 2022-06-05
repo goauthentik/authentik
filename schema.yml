@@ -19163,6 +19163,9 @@ components:
           type: string
           nullable: true
           readOnly: true
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
         meta_launch_url:
           type: string
           format: uri
@@ -19202,6 +19205,9 @@ components:
         provider:
           type: integer
           nullable: true
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
         meta_launch_url:
           type: string
           format: uri
@@ -26753,6 +26759,9 @@ components:
         provider:
           type: integer
           nullable: true
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
         meta_launch_url:
           type: string
           format: uri

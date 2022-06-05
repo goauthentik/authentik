@@ -88,7 +88,12 @@ export class LibraryApplication extends LitElement {
             style="background: ${this.background} !important"
         >
             <div class="pf-c-card__header">
-                <a href="${ifDefined(this.application.launchUrl ?? "")}"> ${this.renderIcon()} </a>
+                <a
+                    href="${ifDefined(this.application.launchUrl ?? "")}"
+                    target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
+                >
+                    ${this.renderIcon()}
+                </a>
                 ${until(
                     uiConfig().then((config) => {
                         if (!config.enabledFeatures.applicationEdit) {
@@ -110,7 +115,9 @@ export class LibraryApplication extends LitElement {
             </div>
             <div class="pf-c-card__title">
                 <p>
-                    <a href="${ifDefined(this.application.launchUrl ?? "")}"
+                    <a
+                        href="${ifDefined(this.application.launchUrl ?? "")}"
+                        target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
                         >${this.application.name}</a
                     >
                 </p>

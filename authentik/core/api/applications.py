@@ -63,6 +63,7 @@ class ApplicationSerializer(ModelSerializer):
             "provider",
             "provider_obj",
             "launch_url",
+            "open_in_new_tab",
             "meta_launch_url",
             "meta_icon",
             "meta_description",

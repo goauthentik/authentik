@@ -278,6 +278,11 @@ class Application(PolicyBindingModel):
     meta_launch_url = models.TextField(
         default="", blank=True, validators=[DomainlessURLValidator()]
     )
+
+    open_in_new_tab = models.BooleanField(
+        default=False, help_text=_("Open launch URL in a new browser tab or window.")
+    )
+
     # For template applications, this can be set to /static/authentik/applications/*
     meta_icon = models.FileField(
         upload_to="application-icons/",

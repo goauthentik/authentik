@@ -187,6 +187,12 @@ export class ApplicationForm extends ModelForm<Application, string> {
                             ${t`If left empty, authentik will try to extract the launch URL based on the selected provider.`}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Open in new tab`} name="openInNewTab">
+                        <input type="checkbox" ?checked=${this.instance?.openInNewTab} />
+                        <p class="pf-c-form__helper-text">
+                            ${t`If checked, the launch URL will open in a new browser tab or window from the user's application library.`}
+                        </p>
+                    </ak-form-element-horizontal>
                     ${until(
                         config().then((c) => {
                             if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
