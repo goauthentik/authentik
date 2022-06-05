@@ -9,9 +9,12 @@ title: Full development environment
 -   Go 1.18
 -   PostgreSQL (any recent version will do)
 -   Redis (any recent version will do)
--   Node 14 or later
+-   Node 14 (or later)
 
-For PostgreSQL and Redis, you can use the docker-compose file in `scripts/`. You can also use a native install, if you prefer.
+## Services Setup
+
+For PostgreSQL and Redis, you can use the docker-compose file in `scripts/`.  
+You can also use a native install, if you prefer.
 
 ## Backend Setup
 
@@ -45,19 +48,14 @@ Run `make gen` to generate an updated OpenAPI document for any changes you made.
 
 By default, no compiled bundle of the frontend is included so this step is required even if you're not developing for the UI.
 
-To build the UI once, run these commands:
+To build the UI once, run `make web`.
 
-```
-cd web/
-npm i
-npm run build
-```
-
-If you want to live-edit the UI, you should run `make web-watch` instead. This will immediately update the UI with any changes you make so you can see the results in real time without needing to rebuild.
+If you want to live-edit the UI, you can run `make web-watch` instead.  
+This will immediately update the UI with any changes you make so you can see the results in real time without needing to rebuild.
 
 To format the frontend code, run `npx eslint . --fix` and `npm run lit-analyse`.
 
 ## Running
 
-Now that the backend and frontend have been setup and built, you can start authentik by running `make run`. authentik should now be accessible at `localhost:9000`.
+Now that the backend and frontend have been setup and built, you can start authentik by running `make run`. authentik should now be accessible at `http://localhost:9000`.
 
