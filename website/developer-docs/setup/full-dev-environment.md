@@ -55,7 +55,18 @@ This will immediately update the UI with any changes you make so you can see the
 
 To format the frontend code, run `make web`.
 
+## Documentation Setup (Optional)
+
+If you want to write documentation, you'll want to work in the `website` folder.
+
+The documentation site is built using npm, below are some abstracted make commands:
+
+-   Install: `make website-install` (Needed for any of the other tasks)
+-   Formatting: `make website-lint-fix` or `make website` (Run this before committing)
+-   Live editing: `make website-watch` (For real time viewing of changes)
+
+Again, be sure to run the formatter before committing.
+
 ## Running
 
 Now that the backend and frontend have been setup and built, you can start authentik by running `make run`. authentik should now be accessible at `http://localhost:9000`.
-

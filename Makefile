@@ -104,7 +104,7 @@ run:
 #########################
 
 web-build: web-install
-    cd web && npm run build
+	cd web && npm run build
 
 web: web-lint-fix web-lint web-extract
 
