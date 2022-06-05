@@ -1,5 +1,5 @@
 """Twitter OAuth Views"""
-from typing import Any
+from typing import Any, Optional
 
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.clients.oauth2 import SESSION_KEY_OAUTH_PKCE
@@ -7,6 +7,23 @@ from authentik.sources.oauth.types.azure_ad import AzureADClient
 from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
+
+
+class TwitterClient(AzureADClient):
+    """Twitter has similar quirks to Azure AD, and additionally requires Basic auth on
+    the access token endpoint for some reason."""
+
+    # Twitter has the same quirk as azure and throws an error if the access token
+    # is set via query parameter, so we re-use the azure client
+    # see https://github.com/goauthentik/authentik/issues/1910
+
+    def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
+        return super().get_access_token(
+            auth=(
+                self.source.consumer_key,
+                self.source.consumer_secret,
+            )
+        )
 
 
 class TwitterOAuthRedirect(OAuthRedirect):
@@ -24,10 +41,7 @@ class TwitterOAuthRedirect(OAuthRedirect):
 class TwitterOAuthCallback(OAuthCallback):
     """Twitter OAuth2 Callback"""
 
-    # Twitter has the same quirk as azure and throws an error if the access token
-    # is set via query parameter, so we re-use the azure client
-    # see https://github.com/goauthentik/authentik/issues/1910
-    client_class = AzureADClient
+    client_class = TwitterClient
 
     def get_user_id(self, info: dict[str, str]) -> str:
         return info.get("data", {}).get("id", "")

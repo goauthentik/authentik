@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, SerializerMethodField, ReadOnlyField
+from rest_framework.serializers import ModelSerializer, ReadOnlyField, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
