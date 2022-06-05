@@ -162,10 +162,10 @@ class IdentificationStageView(ChallengeStageView):
         if not query:
             self.logger.debug("Empty user query", query=query)
             return None
-        users = User.objects.filter(query, is_active=True)
-        if users.exists():
-            self.logger.debug("Found user", user=users.first(), query=query)
-            return users.first()
+        user = User.objects.filter(query, is_active=True).first()
+        if user:
+            self.logger.debug("Found user", user=user.username, query=query)
+            return user
         return None
 
     def get_challenge(self) -> Challenge:

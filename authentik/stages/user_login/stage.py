@@ -47,7 +47,7 @@ class UserLoginStageView(StageView):
         self.logger.debug(
             "Logged in",
             backend=backend,
-            user=user,
+            user=user.username,
             flow_slug=self.executor.flow.slug,
             session_duration=self.executor.current_stage.session_duration,
         )

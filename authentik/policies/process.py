@@ -88,7 +88,7 @@ class PolicyProcess(PROCESS_CLASS):
         LOGGER.debug(
             "P_ENG(proc): Running policy",
             policy=self.binding.policy,
-            user=self.request.user,
+            user=self.request.user.username,
             # this is used for filtering in access checking where logs are sent to the admin
             process="PolicyProcess",
         )
@@ -124,7 +124,7 @@ class PolicyProcess(PROCESS_CLASS):
             # this is used for filtering in access checking where logs are sent to the admin
             process="PolicyProcess",
             passing=policy_result.passing,
-            user=self.request.user,
+            user=self.request.user.username,
         )
         return policy_result
 
