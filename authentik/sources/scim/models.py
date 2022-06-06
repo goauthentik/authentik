@@ -1,5 +1,6 @@
 """SCIM Source"""
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import Source, Token
@@ -10,9 +11,10 @@ USER_ATTRIBUTE_SCIM_ENTERPRISE = "goauthentik.io/sources/scim/enterprise"
 
 
 class SCIMSource(Source):
-    """SCIM Source"""
+    """System for Cross-domain Identity Management Source, allows for
+    cross-system user provisioning"""
 
-    token = models.ForeignKey(Token, on_delete=models.CASCADE)
+    token = models.ForeignKey(Token, on_delete=models.CASCADE, null=True, default=None)
 
     @property
     def component(self) -> str:
@@ -24,3 +26,11 @@ class SCIMSource(Source):
         from authentik.sources.scim.api import SCIMSourceSerializer
 
         return SCIMSourceSerializer
+
+    def __str__(self) -> str:
+        return f"SCIM Source {self.name}"
+
+    class Meta:
+
+        verbose_name = _("SCIM Source")
+        verbose_name_plural = _("SCIM Sources")
