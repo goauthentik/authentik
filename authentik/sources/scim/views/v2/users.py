@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.http import Http404, QueryDict
 from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
+from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 from structlog.stdlib import get_logger
@@ -106,6 +107,8 @@ class UsersView(SCIMView):
             user.attributes[USER_ATTRIBUTE_SCIM_ENTERPRISE] = data.get(
                 "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User"
             )
+        if user.username == "":
+            raise ValidationError("Invalid user")
         return user
 
     def post(self, request: Request, **kwargs) -> Response:
