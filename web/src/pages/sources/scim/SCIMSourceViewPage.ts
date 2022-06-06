@@ -8,6 +8,8 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -19,6 +21,7 @@ import { EVENT_REFRESH } from "../../../constants";
 import "../../../elements/CodeMirror";
 import "../../../elements/Tabs";
 import "../../../elements/buttons/SpinnerButton";
+import "../../../elements/buttons/TokenCopyButton";
 import "../../../elements/events/ObjectChangelog";
 import "../../../elements/forms/ModalForm";
 import "../../policies/BoundPoliciesList";
@@ -41,7 +44,18 @@ export class SCIMSourceViewPage extends LitElement {
     source?: SCIMSource;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList, AKGlobal];
+        return [
+            PFBase,
+            PFPage,
+            PFButton,
+            PFForm,
+            PFFormControl,
+            PFGrid,
+            PFContent,
+            PFCard,
+            PFDescriptionList,
+            AKGlobal,
+        ];
     }
 
     constructor() {
@@ -78,12 +92,12 @@ export class SCIMSourceViewPage extends LitElement {
                                 </div>
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${t`Callback URL`}</span
-                                        >
+                                        <span class="pf-c-description-list__text">${t`Slug`}</span>
                                     </dt>
                                     <dd class="pf-c-description-list__description">
-                                        <code class="pf-c-description-list__text"></code>
+                                        <div class="pf-c-description-list__text">
+                                            ${this.source.slug}
+                                        </div>
                                     </dd>
                                 </div>
                             </dl>
@@ -98,6 +112,40 @@ export class SCIMSourceViewPage extends LitElement {
                                     ${t`Edit`}
                                 </button>
                             </ak-forms-modal>
+                        </div>
+                    </div>
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__body">
+                                <form class="pf-c-form">
+                                    <div class="pf-c-form__group">
+                                        <label class="pf-c-form__label">
+                                            <span class="pf-c-form__label-text"
+                                                >${t`SCIM Base URL`}</span
+                                            >
+                                        </label>
+                                        <input
+                                            class="pf-c-form-control"
+                                            readonly
+                                            type="text"
+                                            value="${this.source.rootUrl}"
+                                        />
+                                    </div>
+                                    <div class="pf-c-form__group">
+                                        <label class="pf-c-form__label">
+                                            <span class="pf-c-form__label-text">${t`Token`}</span>
+                                        </label>
+                                        <div>
+                                            <ak-token-copy-button
+                                                class="pf-m-primary"
+                                                identifier="${this.source?.tokenObj.identifier}"
+                                            >
+                                                ${t`Click to copy token`}
+                                            </ak-token-copy-button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
