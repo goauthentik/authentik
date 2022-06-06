@@ -38,4 +38,6 @@ class SCIMTokenAuth(BaseAuthentication):
         if auth_type != "Bearer":
             return self.legacy(key, source_slug)
         token = self.check_token(key, source_slug)
+        if not token:
+            return None
         return (token.user, token)
