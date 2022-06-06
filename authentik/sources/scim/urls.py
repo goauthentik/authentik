@@ -2,6 +2,7 @@
 from django.urls import path
 
 from authentik.sources.scim.views.v2 import (
+    base,
     groups,
     resource_types,
     schemas,
@@ -10,6 +11,11 @@ from authentik.sources.scim.views.v2 import (
 )
 
 urlpatterns = [
+    path(
+        "<slug:source_slug>/v2",
+        base.SCIMRootView.as_view(),
+        name="v2-root",
+    ),
     path(
         "<slug:source_slug>/v2/Users",
         users.UsersView.as_view(),
