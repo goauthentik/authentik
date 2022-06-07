@@ -117,8 +117,8 @@ class PolicyAccessView(AccessMixin, View):
         result = policy_engine.result
         LOGGER.debug(
             "PolicyAccessView user_has_access",
-            user=user,
-            app=self.application,
+            user=user.username,
+            app=self.application.slug,
             result=result,
         )
         if not result.passing:
