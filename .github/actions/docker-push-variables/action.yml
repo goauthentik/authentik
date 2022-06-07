@@ -17,6 +17,12 @@ outputs:
   sha:
     description: "sha"
     value: ${{ steps.ev.outputs.sha }}
+  version:
+    description: "version"
+    value: ${{ steps.ev.outputs.version }}
+  versionFamily:
+    description: "versionFamily"
+    value: ${{ steps.ev.outputs.versionFamily }}
 
 runs:
   using: "composite"
@@ -47,3 +53,11 @@ runs:
         print("##[set-output name=timestamp]%s" % int(time()))
         print("##[set-output name=sha]%s" % os.environ[sha])
         print("##[set-output name=shouldBuild]%s" % should_build)
+
+        import configparser
+        parser = configparser.ConfigParser()
+        parser.read(".bumpversion.cfg")
+        version = parser.get("bumpversion", "current_version")
+        version_family = ".".join(version.split(".")[:-1])
+        print("##[set-output name=version]%s" % version)
+        print("##[set-output name=versionFamily]%s" % version_family)

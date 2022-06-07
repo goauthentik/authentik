@@ -5,7 +5,6 @@ on:
     types: [published, created]
 
 jobs:
-  # Build
   build-server:
     runs-on: ubuntu-latest
     steps:
@@ -14,6 +13,9 @@ jobs:
         uses: docker/setup-qemu-action@v2.0.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+      - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
+        id: ev
       - name: Docker Login Registry
         uses: docker/login-action@v2
         with:
@@ -30,9 +32,11 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik:2022.6.3,
+            beryju/authentik:${{ steps.ev.outputs.version }},
+            beryju/authentik:${{ steps.ev.outputs.versionFamily }},
             beryju/authentik:latest,
-            ghcr.io/goauthentik/server:2022.6.3,
+            ghcr.io/goauthentik/server:${{ steps.ev.outputs.version }},
+            ghcr.io/goauthentik/server:${{ steps.ev.outputs.versionFamily }},
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
           context: .
@@ -53,6 +57,9 @@ jobs:
         uses: docker/setup-qemu-action@v2.0.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+      - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
+        id: ev
       - name: Docker Login Registry
         uses: docker/login-action@v2
         with:
@@ -69,9 +76,11 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-${{ matrix.type }}:2022.6.3,
+            beryju/authentik-${{ matrix.type }}:${{ steps.ev.outputs.version }},
+            beryju/authentik-${{ matrix.type }}:${{ steps.ev.outputs.versionFamily }},
             beryju/authentik-${{ matrix.type }}:latest,
-            ghcr.io/goauthentik/${{ matrix.type }}:2022.6.3,
+            ghcr.io/goauthentik/${{ matrix.type }}:${{ steps.ev.outputs.version }},
+            ghcr.io/goauthentik/${{ matrix.type }}:${{ steps.ev.outputs.versionFamily }},
             ghcr.io/goauthentik/${{ matrix.type }}:latest
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
@@ -138,6 +147,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
+        id: ev
       - name: Get static files from docker image
         run: |
           docker pull ghcr.io/goauthentik/server:latest
@@ -152,7 +164,7 @@ jobs:
           SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
-          version: authentik@2022.6.3
+          version: authentik@${{ steps.ev.outputs.version }}
           environment: beryjuorg-prod
           sourcemaps: './web/dist'
           url_prefix: '~/static/dist'
