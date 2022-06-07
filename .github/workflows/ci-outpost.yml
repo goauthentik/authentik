@@ -110,7 +110,7 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: "^1.17"
-      - uses: actions/setup-node@v3.2.0
+      - uses: actions/setup-node@v3.3.0
         with:
           node-version: '16'
           cache: 'npm'
