@@ -23367,9 +23367,13 @@ components:
         logout:
           type: string
           readOnly: true
+        jwks:
+          type: string
+          readOnly: true
       required:
       - authorize
       - issuer
+      - jwks
       - logout
       - provider_info
       - token

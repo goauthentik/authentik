@@ -46,6 +46,7 @@ msgstr "(Format: hours=1;minutes=2;seconds=3)."
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/pages/stages/invitation/InvitationListPage.ts
 #: src/pages/tokens/TokenListPage.ts
 #: src/pages/users/RelatedUserList.ts
@@ -2793,6 +2794,10 @@ msgstr "Issuer mode"
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "JSON Web Key URL. Keys from the URL will be used to validate JWTs from this source."
 msgstr "JSON Web Key URL. Keys from the URL will be used to validate JWTs from this source."
+
+#: src/pages/providers/oauth2/OAuth2ProviderViewPage.ts
+msgid "JWKS URL"
+msgstr "JWKS URL"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #~ msgid "JWT Algorithm"
