@@ -1322,7 +1322,7 @@ tests = ["pytest (>=6.0.0,<7.0.0)", "coverage[toml] (==5.0.4)"]
 
 [[package]]
 name = "pylint"
-version = "2.14.0"
+version = "2.14.1"
 description = "python code static checker"
 category = "dev"
 optional = false
@@ -3237,8 +3237,8 @@ pyjwt = [
     {file = "PyJWT-2.4.0.tar.gz", hash = "sha256:d42908208c699b3b973cbeb01a969ba6a96c821eefb1c5bfe4c390c01d67abba"},
 ]
 pylint = [
-    {file = "pylint-2.14.0-py3-none-any.whl", hash = "sha256:ef64ce5d4c17b8906caeaf2c2914ef3036a3a1b7f4a86f5fbf6caff9067c5f63"},
-    {file = "pylint-2.14.0.tar.gz", hash = "sha256:10d291ea5133645f73fc1b51ca137ad6531223c1461a5632a1db029a9bc033b5"},
+    {file = "pylint-2.14.1-py3-none-any.whl", hash = "sha256:bb71e6d169506de585edea997e48d9ff20c0dc0e2fbc1d166bad6b640120326b"},
+    {file = "pylint-2.14.1.tar.gz", hash = "sha256:549261e0762c3466cc001024c4419c08252cb8c8d40f5c2c6966fea690e7fe2a"},
 ]
 pylint-django = [
     {file = "pylint-django-2.5.3.tar.gz", hash = "sha256:0ac090d106c62fe33782a1d01bda1610b761bb1c9bf5035ced9d5f23a13d8591"},
