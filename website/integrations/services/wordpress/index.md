@@ -35,7 +35,7 @@ Only settings that have been modified from default have been listed.
 -   Client type: Confidential
 -   Client ID: Copy and Save this for Later
 -   Client Secret: Copy and Save this for later
--   Redirect URIs/Origins: `https://wp.company/wp-admin/admin-ajax.php?action=openid-connect-authorize`
+-   Redirect URIs/Origins: `https://wp.comany/openid-connect-authorize`
 
 ### Step 2 - Wordpress
 
@@ -49,6 +49,8 @@ In Wordpress, under _Settings_, Select _OpenID Connect Client_
 Only settings that have been modified from default have been listed.
 :::
 
+-   IMPORTANT! Under 'Authorization Settings', enable 'Alternate Redirect URI' as Authentik misbehaves with the default value
+-   Flush Permalinks by going to Settings > Permalinks > Save
 -   Login Type: OpenID Connect Button on Login (This option display a button to login using OpenID as well as local WP login)
 -   Client ID: Client ID from step 1
 -   Client Secret: Client Secret from step 1
