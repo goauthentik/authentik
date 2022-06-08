@@ -144,4 +144,4 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         return self.executor.stage_ok()
 
     def cleanup(self):
-        self.request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE)
+        self.request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
