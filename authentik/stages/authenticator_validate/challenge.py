@@ -120,7 +120,7 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
 
     device = WebAuthnDevice.objects.filter(credential_id=credential_id).first()
     if not device:
-        raise Http404()
+        raise ValidationError("Invalid device")
 
     try:
         authentication_verification = verify_authentication_response(
