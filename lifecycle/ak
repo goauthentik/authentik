@@ -38,6 +38,9 @@ if [[ "$1" == "server" ]]; then
     wait_for_db
     echo "server" > $MODE_FILE
     python -m lifecycle.migrate
+    if [[ ! -z "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || ! -z "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
+        python -m manage bootstrap_tasks
+    fi
     /authentik-proxy
 elif [[ "$1" == "worker" ]]; then
     wait_for_db
