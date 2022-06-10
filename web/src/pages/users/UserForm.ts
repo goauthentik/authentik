@@ -66,7 +66,7 @@ export class UserForm extends ModelForm<User, number> {
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.`}
+                    ${t`User's primary identifier. 150 characters or fewer.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Name`} name="name">

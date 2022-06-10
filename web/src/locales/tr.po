@@ -4280,8 +4280,8 @@ msgstr "Zorunlu."
 
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
-msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-msgstr "Gerekli. 150 karakter veya daha az. Harfler, rakamlar ve yalnızca @/./+/-/_."
+#~ msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+#~ msgstr "Gerekli. 150 karakter veya daha az. Harfler, rakamlar ve yalnızca @/./+/-/_."
 
 #: src/pages/users/UserViewPage.ts
 msgid "Reset Password"
@@ -6205,6 +6205,11 @@ msgstr "Kullanıcının avatarı"
 #: src/pages/users/UserForm.ts
 msgid "User's display name."
 msgstr "Kullanıcının görünen adı."
+
+#: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/UserForm.ts
+msgid "User's primary identifier. 150 characters or fewer."
+msgstr ""
 
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
