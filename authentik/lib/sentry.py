@@ -56,7 +56,6 @@ def sentry_init(**sentry_init_kwargs):
     """Configure sentry SDK"""
     sentry_env = CONFIG.y("error_reporting.environment", "customer")
     kwargs = {
-        "traces_sample_rate": float(CONFIG.y("error_reporting.sample_rate", 0.5)),
         "environment": sentry_env,
         "send_default_pii": CONFIG.y_bool("error_reporting.send_pii", False),
     }
@@ -71,6 +70,7 @@ def sentry_init(**sentry_init_kwargs):
             ThreadingIntegration(propagate_hub=True),
         ],
         before_send=before_send,
+        traces_sampler=traces_sampler,
         release=f"authentik@{__version__}",
         **kwargs,
     )
@@ -81,6 +81,14 @@ def sentry_init(**sentry_init_kwargs):
         "Error reporting is enabled",
         env=kwargs["environment"],
     )
+
+
+def traces_sampler(sampling_context: dict) -> float:
+    """Custom sampler to ignore certain routes"""
+    # Ignore all healthcheck routes
+    if sampling_context.get("asgi_scope", {}).get("path", "").startswith("/-/health/"):
+        return 0
+    return float(CONFIG.y("error_reporting.sample_rate", 0.5))
 
 
 def before_send(event: dict, hint: dict) -> Optional[dict]:
