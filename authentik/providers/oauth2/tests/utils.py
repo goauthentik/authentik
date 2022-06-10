@@ -2,12 +2,15 @@
 from django.test import TestCase
 from jwt import decode
 
+from authentik.core.tests.utils import create_test_cert
+from authentik.crypto.models import CertificateKeyPair
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider, RefreshToken
 
 
 class OAuthTestCase(TestCase):
     """OAuth test helpers"""
 
+    keypair: CertificateKeyPair
     required_jwt_keys = [
         "exp",
         "iat",
@@ -16,6 +19,11 @@ class OAuthTestCase(TestCase):
         "sub",
         "iss",
     ]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.keypair = create_test_cert()
+        super().setUpClass()
 
     def validate_jwt(self, token: RefreshToken, provider: OAuth2Provider):
         """Validate that all required fields are set"""
