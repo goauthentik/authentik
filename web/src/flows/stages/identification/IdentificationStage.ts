@@ -240,7 +240,6 @@ export class IdentificationStage extends BaseStage<
                               type="password"
                               name="password"
                               placeholder="${t`Password`}"
-                              autofocus=""
                               autocomplete="current-password"
                               class="pf-c-form-control"
                               required
