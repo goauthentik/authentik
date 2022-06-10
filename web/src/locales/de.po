@@ -4285,8 +4285,8 @@ msgstr "Erforderlich"
 
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
-msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-msgstr "Erforderlich. 150 Zeichen oder weniger. Nur Buchstaben, Zahlen und @/./+/-/_."
+#~ msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+#~ msgstr "Erforderlich. 150 Zeichen oder weniger. Nur Buchstaben, Zahlen und @/./+/-/_."
 
 #: src/pages/users/UserViewPage.ts
 msgid "Reset Password"
@@ -6209,6 +6209,11 @@ msgstr "Avatar des Benutzers"
 #: src/pages/users/UserForm.ts
 msgid "User's display name."
 msgstr "Anzeigename"
+
+#: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/UserForm.ts
+msgid "User's primary identifier. 150 characters or fewer."
+msgstr ""
 
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts

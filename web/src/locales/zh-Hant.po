@@ -4253,8 +4253,8 @@ msgstr "必需。"
 
 #: src/pages/users/ServiceAccountForm.ts
 #: src/pages/users/UserForm.ts
-msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-msgstr "必填。不超过 150 个字符。仅限字母、数字和 @/./+/-/_ 。"
+#~ msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+#~ msgstr "必填。不超过 150 个字符。仅限字母、数字和 @/./+/-/_ 。"
 
 #: src/pages/users/UserViewPage.ts
 msgid "Reset Password"
@@ -6171,6 +6171,11 @@ msgstr "用户的头像"
 #: src/pages/users/UserForm.ts
 msgid "User's display name."
 msgstr "用户的显示名称。"
+
+#: src/pages/users/ServiceAccountForm.ts
+#: src/pages/users/UserForm.ts
+msgid "User's primary identifier. 150 characters or fewer."
+msgstr ""
 
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
