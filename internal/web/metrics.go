@@ -10,6 +10,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/utils/sentry"
 )
 
 var (
@@ -22,6 +23,7 @@ var (
 func RunMetricsServer() {
 	m := mux.NewRouter()
 	l := log.WithField("logger", "authentik.router.metrics")
+	m.Use(sentry.SentryNoSampleMiddleware)
 	m.Path("/metrics").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		promhttp.InstrumentMetricHandler(
 			prometheus.DefaultRegisterer, promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{
@@ -30,7 +32,7 @@ func RunMetricsServer() {
 		).ServeHTTP(rw, r)
 
 		// Get upstream metrics
-		re, err := http.NewRequest("GET", "http://localhost:8000/metrics/", nil)
+		re, err := http.NewRequest("GET", "http://localhost:8000/-/metrics/", nil)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return

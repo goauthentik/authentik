@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/utils/sentry"
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
@@ -25,6 +26,7 @@ var (
 func RunServer() {
 	m := mux.NewRouter()
 	l := log.WithField("logger", "authentik.outpost.metrics")
+	m.Use(sentry.SentryNoSampleMiddleware)
 	m.HandleFunc("/outpost.goauthentik.io/ping", func(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(204)
 	})

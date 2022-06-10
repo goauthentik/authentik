@@ -85,8 +85,9 @@ def sentry_init(**sentry_init_kwargs):
 
 def traces_sampler(sampling_context: dict) -> float:
     """Custom sampler to ignore certain routes"""
+    path = sampling_context.get("asgi_scope", {}).get("path", "")
     # Ignore all healthcheck routes
-    if sampling_context.get("asgi_scope", {}).get("path", "").startswith("/-/health/"):
+    if path.startswith("/-/health") or path.startswith("/-/metrics"):
         return 0
     return float(CONFIG.y("error_reporting.sample_rate", 0.5))
 
