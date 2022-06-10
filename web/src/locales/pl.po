@@ -3670,6 +3670,10 @@ msgstr "Opcjonalnie ustaw wartość „FriendlyName” atrybutu asercji."
 #~ msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
 #~ msgstr "Opcjonalnie ustaw to na swoją domenę nadrzędną, jeśli chcesz, aby uwierzytelnianie i autoryzacja odbywały się na poziomie domeny. Jeśli używasz aplikacji jako app1.domain.tld, app2.domain.tld, ustaw to na „domain.tld”."
 
+#: src/flows/stages/identification/IdentificationStage.ts
+msgid "Or"
+msgstr ""
+
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 #: src/pages/policies/BoundPoliciesList.ts

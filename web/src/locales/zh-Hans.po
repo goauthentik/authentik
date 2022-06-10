@@ -3651,6 +3651,10 @@ msgstr "可选，设置断言属性的 'FriendlyName' 值。"
 #~ msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
 #~ msgstr "如果您希望在域名级别进行身份验证和授权，可以选择将其设置为您的父域名。如果您运行应用 app1.domain.tld、app2.domain.tld，请将其设置为 'domain.tld'。"
 
+#: src/flows/stages/identification/IdentificationStage.ts
+msgid "Or"
+msgstr ""
+
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 #: src/pages/policies/BoundPoliciesList.ts

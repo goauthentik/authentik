@@ -19,6 +19,7 @@ import {
     UserFieldsEnum,
 } from "@goauthentik/api";
 
+import "../../../elements/Divider";
 import "../../../elements/EmptyState";
 import "../../../elements/forms/FormElement";
 import { BaseStage } from "../base";
@@ -257,14 +258,15 @@ export class IdentificationStage extends BaseStage<
                 </button>
             </div>
             ${this.challenge.passwordlessUrl
-                ? html`<div class="pf-c-form__group pf-m-action">
-                      <a
-                          href=${this.challenge.passwordlessUrl}
-                          class="pf-c-button pf-m-secondary pf-m-block"
-                      >
-                          ${t`Use a security key`}
-                      </a>
-                  </div>`
+                ? html`<ak-divider>${t`Or`}</ak-divider>
+                      <div>
+                          <a
+                              href=${this.challenge.passwordlessUrl}
+                              class="pf-c-button pf-m-secondary pf-m-block"
+                          >
+                              ${t`Use a security key`}
+                          </a>
+                      </div>`
                 : html``}`;
     }
 
