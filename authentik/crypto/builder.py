@@ -53,10 +53,7 @@ class CertificateBuilder:
             .subject_name(
                 x509.Name(
                     [
-                        x509.NameAttribute(
-                            NameOID.COMMON_NAME,
-                            self.common_name,
-                        ),
+                        x509.NameAttribute(NameOID.COMMON_NAME, self.common_name),
                         x509.NameAttribute(NameOID.ORGANIZATION_NAME, "authentik"),
                         x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, "Self-signed"),
                     ]
@@ -65,10 +62,7 @@ class CertificateBuilder:
             .issuer_name(
                 x509.Name(
                     [
-                        x509.NameAttribute(
-                            NameOID.COMMON_NAME,
-                            f"authentik {__version__}",
-                        ),
+                        x509.NameAttribute(NameOID.COMMON_NAME, f"authentik {__version__}"),
                     ]
                 )
             )

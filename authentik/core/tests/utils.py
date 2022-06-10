@@ -47,11 +47,11 @@ def create_test_tenant() -> Tenant:
 
 def create_test_cert() -> CertificateKeyPair:
     """Generate a certificate for testing"""
-    CertificateKeyPair.objects.filter(name="goauthentik.io").delete()
     builder = CertificateBuilder()
     builder.common_name = "goauthentik.io"
     builder.build(
         subject_alt_names=["goauthentik.io"],
         validity_days=360,
     )
+    builder.name = generate_id()
     return builder.save()

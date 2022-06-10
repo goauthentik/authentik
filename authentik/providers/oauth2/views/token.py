@@ -154,7 +154,7 @@ class TokenParams:
         try:
             if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
                 LOGGER.warning(
-                    "Invalid redirect uri",
+                    "Invalid redirect uri (regex comparison)",
                     redirect_uri=self.redirect_uri,
                     expected=allowed_redirect_urls,
                 )
@@ -167,13 +167,19 @@ class TokenParams:
                 ).from_http(request)
                 raise TokenError("invalid_client")
         except RegexError as exc:
-            LOGGER.warning("Invalid regular expression configured", exc=exc)
-            Event.new(
-                EventAction.CONFIGURATION_ERROR,
-                message="Invalid redirect_uri RegEx configured",
-                provider=self.provider,
-            ).from_http(request)
-            raise TokenError("invalid_client")
+            LOGGER.info("Failed to parse regular expression, checking directly", exc=exc)
+            if not any(x == self.redirect_uri for x in allowed_redirect_urls):
+                LOGGER.warning(
+                    "Invalid redirect uri (strict comparison)",
+                    redirect_uri=self.redirect_uri,
+                    expected=allowed_redirect_urls,
+                )
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message="Invalid redirect_uri configured",
+                    provider=self.provider,
+                ).from_http(request)
+                raise TokenError("invalid_client")
 
         try:
             self.authorization_code = AuthorizationCode.objects.get(code=raw_code)
