@@ -3722,6 +3722,10 @@ msgstr ""
 #~ msgid "Optionally set this to your parent domain, if you want authentication and authorization to happen on a domain level. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
 #~ msgstr ""
 
+#: src/flows/stages/identification/IdentificationStage.ts
+msgid "Or"
+msgstr ""
+
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/flows/StageBindingForm.ts
 #: src/pages/policies/BoundPoliciesList.ts
