@@ -11,6 +11,7 @@ import (
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/application"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
+	sentryutils "goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
 	staticWeb "goauthentik.io/web"
 )
@@ -89,7 +90,7 @@ func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/ping") {
-		ps.HandlePing(rw, r)
+		sentryutils.SentryNoSample(ps.HandlePing)(rw, r)
 		return
 	}
 	a, host := ps.lookupApp(r)

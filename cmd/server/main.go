@@ -15,6 +15,7 @@ import (
 	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
+	sentryutils "goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/web"
 	"goauthentik.io/internal/web/tenant_tls"
 )
@@ -51,7 +52,7 @@ func main() {
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn:              config.G.ErrorReporting.DSN,
 			AttachStacktrace: true,
-			TracesSampleRate: config.G.ErrorReporting.SampleRate,
+			TracesSampler:    sentryutils.SamplerFunc(config.G.ErrorReporting.SampleRate),
 			Release:          fmt.Sprintf("authentik@%s", constants.VERSION),
 			Environment:      config.G.ErrorReporting.Environment,
 			IgnoreErrors: []string{

@@ -44,7 +44,7 @@ for _authentik_app in get_apps():
         )
 
 urlpatterns += [
-    path("metrics/", MetricsView.as_view(), name="metrics"),
+    path("-/metrics/", MetricsView.as_view(), name="metrics"),
     path("-/health/live/", LiveView.as_view(), name="health-live"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
 ]

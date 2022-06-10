@@ -18,6 +18,7 @@ import (
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/application"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
+	sentryutils "goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
 )
 
@@ -65,7 +66,7 @@ func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
 		defaultCert: defaultCert,
 	}
 	globalMux.PathPrefix("/outpost.goauthentik.io/static").HandlerFunc(s.HandleStatic)
-	globalMux.Path("/outpost.goauthentik.io/ping").HandlerFunc(s.HandlePing)
+	globalMux.Path("/outpost.goauthentik.io/ping").HandlerFunc(sentryutils.SentryNoSample(s.HandlePing))
 	rootMux.PathPrefix("/").HandlerFunc(s.Handle)
 	return s
 }
