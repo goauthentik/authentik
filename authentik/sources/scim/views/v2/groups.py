@@ -2,6 +2,7 @@
 from typing import Optional
 
 from django.core.paginator import Paginator
+from django.db.transaction import atomic
 from django.http import Http404, QueryDict
 from django.urls import reverse
 from rest_framework.request import Request
@@ -9,6 +10,7 @@ from rest_framework.response import Response
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Group
+from authentik.sources.scim.errors import PatchError
 from authentik.sources.scim.views.v2.base import SCIM_CONTENT_TYPE, SCIMView
 
 LOGGER = get_logger()
@@ -77,7 +79,28 @@ class GroupsView(SCIMView):
 
     def patch(self, request: Request, group_id: str, **kwargs) -> Response:
         """Update group handler"""
-        return self.put(request, group_id, **kwargs)
+        group: Optional[Group] = Group.objects.filter(pk=group_id).first()
+        if not group:
+            raise Http404
+        if request.data.get("schemas", []) != ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]:
+            return Response(status=400)
+        try:
+            with atomic():
+                for op in request.data.get("Operations", []):
+                    path = self.patch_parse_path(op["path"])
+                    operation = op["op"]
+                    raw_value = op.get("value", None)
+                    values = []
+                    for value in raw_value:
+                        values.append(self.patch_resolve_value(value))
+                    match operation:
+                        case "add":
+                            group.users.add(*[x.pk for x in values])
+                        case "remove":
+                            pass
+                return Response(self.group_to_scim(group), status=200)
+        except (KeyError, PatchError):
+            return Response(status=400)
 
     def put(self, request: Request, group_id: str, **kwargs) -> Response:
         """Update group handler"""

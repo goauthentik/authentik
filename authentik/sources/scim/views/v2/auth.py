@@ -14,7 +14,7 @@ class SCIMTokenAuth(BaseAuthentication):
 
     def legacy(self, key: str, source_slug: str) -> Optional[Token]:  # pragma: no cover
         """Legacy HTTP-Basic auth for testing"""
-        if not settings.TEST or not settings.DEBUG:
+        if not settings.TEST and not settings.DEBUG:
             return None
         _username, _, password = b64decode(key.encode()).decode().partition(":")
         token = self.check_token(password, source_slug)

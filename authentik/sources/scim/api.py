@@ -57,6 +57,6 @@ class SCIMSourceViewSet(UsedByMixin, ModelViewSet):
     queryset = SCIMSource.objects.all()
     serializer_class = SCIMSourceSerializer
     lookup_field = "slug"
-    filterset_fields = "__all__"
+    filterset_fields = ["name", "slug"]
     search_fields = ["name", "slug", "token__identifier", "token__user__username"]
     ordering = ["name"]

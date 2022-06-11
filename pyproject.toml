@@ -83,6 +83,7 @@ filterwarnings = [
 ]
 
 [tool.poetry.dependencies]
+antlr4-python3-runtime = "*"
 argon2-cffi = "*"
 celery = "*"
 channels = { version = "*", extras = ["daphne"] }
@@ -112,6 +113,7 @@ fido2 = "*"
 flower = "*"
 geoip2 = "*"
 gunicorn = "*"
+jsonpatch = "*"
 kubernetes = "*"
 ldap3 = "*"
 lxml = [
