@@ -23237,15 +23237,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
-        verification_keys:
-          type: array
-          items:
-            type: string
-            format: uuid
-            title: Allowed certificates for JWT-based client_credentials
-          title: Allowed certificates for JWT-based client_credentials
-          description: DEPRECATED. JWTs created with the configured certificates can
-            authenticate with this provider.
         jwks_sources:
           type: array
           items:
@@ -23325,15 +23316,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
-        verification_keys:
-          type: array
-          items:
-            type: string
-            format: uuid
-            title: Allowed certificates for JWT-based client_credentials
-          title: Allowed certificates for JWT-based client_credentials
-          description: DEPRECATED. JWTs created with the configured certificates can
-            authenticate with this provider.
         jwks_sources:
           type: array
           items:
@@ -27711,15 +27693,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
-        verification_keys:
-          type: array
-          items:
-            type: string
-            format: uuid
-            title: Allowed certificates for JWT-based client_credentials
-          title: Allowed certificates for JWT-based client_credentials
-          description: DEPRECATED. JWTs created with the configured certificates can
-            authenticate with this provider.
         jwks_sources:
           type: array
           items:
