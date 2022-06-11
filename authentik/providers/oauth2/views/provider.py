@@ -58,6 +58,9 @@ class ProviderInfoView(View):
             "introspection_endpoint": self.request.build_absolute_uri(
                 reverse("authentik_providers_oauth2:token-introspection")
             ),
+            "revocation_endpoint": self.request.build_absolute_uri(
+                reverse("authentik_providers_oauth2:token-revoke")
+            ),
             "response_types_supported": [
                 ResponseTypes.CODE,
                 ResponseTypes.ID_TOKEN,

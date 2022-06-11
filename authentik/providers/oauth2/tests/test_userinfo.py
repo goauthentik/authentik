@@ -19,9 +19,9 @@ class TestUserinfo(OAuthTestCase):
     def setUp(self) -> None:
         super().setUp()
         ObjectManager().run()
-        self.app = Application.objects.create(name="test", slug="test")
+        self.app = Application.objects.create(name=generate_id(), slug=generate_id())
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
-            name="test",
+            name=generate_id(),
             client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
