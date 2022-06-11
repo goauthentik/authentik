@@ -12,7 +12,7 @@ from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.providers.oauth2.errors import BearerTokenError
-from authentik.providers.oauth2.models import RefreshToken
+from authentik.providers.oauth2.models import OAuth2Provider, RefreshToken
 
 LOGGER = get_logger()
 
@@ -170,6 +170,20 @@ def protected_resource_view(scopes: list[str]):
         return view_wrapper
 
     return wrapper
+
+
+def authenticate_provider(request: HttpRequest) -> Optional[OAuth2Provider]:
+    """Attempt to authenticate via Basic auth of client_id:client_secret"""
+    client_id, client_secret = extract_client_auth(request)
+    if client_id == client_secret == "":
+        return None
+    provider: Optional[OAuth2Provider] = OAuth2Provider.objects.filter(client_id=client_id).first()
+    if not provider:
+        return None
+    if client_id != provider.client_id or client_secret != provider.client_secret:
+        LOGGER.debug("(basic) Provider for basic auth does not exist")
+        return None
+    return provider
 
 
 class HttpResponseRedirectScheme(HttpResponseRedirect):

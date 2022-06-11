@@ -142,6 +142,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.driver.get("http://localhost:9009")
         self.login()
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
+        self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, "pre"), "{"))
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
 
         self.assertEqual(body["IDTokenClaims"]["nickname"], self.user.username)
@@ -206,6 +207,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         ).click()
 
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
+        self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, "pre"), "{"))
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
 
         self.assertEqual(body["IDTokenClaims"]["nickname"], self.user.username)
