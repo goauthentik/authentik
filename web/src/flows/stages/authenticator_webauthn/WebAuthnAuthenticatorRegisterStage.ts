@@ -39,6 +39,8 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     @property()
     registerMessage = "";
 
+    publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
+
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFFormControl, PFForm, PFTitle, PFButton, AKGlobal];
     }
@@ -47,18 +49,11 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         if (!this.challenge) {
             return;
         }
-        // convert certain members of the PublicKeyCredentialCreateOptions into
-        // byte arrays as expected by the spec.
-        const publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
-            this.challenge?.registration as PublicKeyCredentialCreationOptions,
-            this.challenge?.registration.user.id,
-        );
-
         // request the authenticator(s) to create a new credential keypair.
         let credential;
         try {
             credential = (await navigator.credentials.create({
-                publicKey: publicKeyCredentialCreateOptions,
+                publicKey: this.publicKeyCredentialCreateOptions,
             })) as PublicKeyCredential;
             if (!credential) {
                 throw new Error("Credential is empty");
@@ -98,6 +93,12 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     }
 
     firstUpdated(): void {
+        // convert certain members of the PublicKeyCredentialCreateOptions into
+        // byte arrays as expected by the spec.
+        this.publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
+            this.challenge?.registration as PublicKeyCredentialCreationOptions,
+            this.challenge?.registration.user.id,
+        );
         this.registerWrapper();
     }
 
