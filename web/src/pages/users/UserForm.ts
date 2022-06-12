@@ -69,6 +69,14 @@ export class UserForm extends ModelForm<User, number> {
                     ${t`User's primary identifier. 150 characters or fewer.`}
                 </p>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Path`} ?required=${true} name="path">
+                <input
+                    type="text"
+                    value="${first(this.instance?.path, "")}"
+                    class="pf-c-form-control"
+                    required
+                />
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Name`} name="name">
                 <input
                     type="text"

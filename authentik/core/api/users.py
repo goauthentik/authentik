@@ -24,7 +24,7 @@ from drf_spectacular.utils import (
 )
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, JSONField, SerializerMethodField
+from rest_framework.fields import CharField, JSONField, ListField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -93,6 +93,7 @@ class UserSerializer(ModelSerializer):
             "avatar",
             "attributes",
             "uid",
+            "path",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
@@ -207,6 +208,11 @@ class UsersFilter(FilterSet):
 
     is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
     uuid = CharFilter(field_name="uuid")
+
+    path = CharFilter(
+        field_name="path",
+    )
+    path_startswith = CharFilter(field_name="path", lookup_expr="startswith")
 
     groups_by_name = ModelMultipleChoiceFilter(
         field_name="ak_groups__name",
@@ -464,3 +470,25 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         if self.request.user.has_perm("authentik_core.view_user"):
             return self._filter_queryset_for_list(queryset)
         return super().filter_queryset(queryset)
+
+    @extend_schema(
+        responses={
+            200: inline_serializer(
+                "UserPathSerializer", {"paths": ListField(child=CharField(), read_only=True)}
+            )
+        }
+    )
+    @action(detail=False, pagination_class=None, filter_backends=[])
+    def paths(self, request: Request) -> Response:
+        """Get all user paths"""
+        return Response(
+            data={
+                "paths": list(
+                    self.get_queryset()
+                    .values("path")
+                    .distinct()
+                    .order_by("path")
+                    .values_list("path", flat=True)
+                )
+            }
+        )

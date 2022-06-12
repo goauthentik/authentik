@@ -138,6 +138,7 @@ class User(GuardianUserMixin, AbstractUser):
 
     uuid = models.UUIDField(default=uuid4, editable=False)
     name = models.TextField(help_text=_("User's display name."))
+    path = models.TextField(default="users")
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
     ak_groups = models.ManyToManyField("Group", related_name="users")
