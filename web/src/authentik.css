@@ -395,6 +395,14 @@ html > form > input {
     .pf-c-wizard__nav-link::before {
         --pf-c-wizard__nav-link--before--BackgroundColor: transparent;
     }
+    /* tree view */
+    .pf-c-tree-view__node:focus {
+        --pf-c-tree-view__node--focus--BackgroundColor: var(--ak-dark-background-lighter);
+    }
+    .pf-c-tree-view__content:hover,
+    .pf-c-tree-view__content:focus-within {
+        --pf-c-tree-view__node--hover--BackgroundColor: var(--ak-dark-background-lighter);
+    }
 }
 
 .pf-c-data-list__item {
