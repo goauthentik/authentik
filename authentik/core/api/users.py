@@ -50,6 +50,7 @@ from authentik.core.middleware import (
 from authentik.core.models import (
     USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
+    USER_PATH_SERVICE_ACCOUNT,
     Group,
     Token,
     TokenIntents,
@@ -320,6 +321,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     username=username,
                     name=username,
                     attributes={USER_ATTRIBUTE_SA: True, USER_ATTRIBUTE_TOKEN_EXPIRING: False},
+                    path=USER_PATH_SERVICE_ACCOUNT,
                 )
                 if create_group and self.request.user.has_perm("authentik_core.add_group"):
                     group = Group.objects.create(

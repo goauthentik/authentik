@@ -53,7 +53,7 @@ class UserWriteStageView(StageView):
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
                 is_active=not self.executor.current_stage.create_users_as_inactive,
-                path=self.executor.plan.context.get(PLAN_CONTEXT_USER_PATH, User.default_path())
+                path=self.executor.plan.context.get(PLAN_CONTEXT_USER_PATH, User.default_path()),
             )
             self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_INBUILT
             self.logger.debug(

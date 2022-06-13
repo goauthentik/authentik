@@ -46,6 +46,9 @@ USER_ATTRIBUTE_CHANGE_NAME = "goauthentik.io/user/can-change-name"
 USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
 USER_ATTRIBUTE_CAN_OVERRIDE_IP = "goauthentik.io/user/override-ips"
 
+USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
+USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
+
 GRAVATAR_URL = "https://secure.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
 

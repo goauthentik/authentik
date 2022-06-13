@@ -20,6 +20,7 @@ from authentik import __version__, get_build_hash
 from authentik.core.models import (
     USER_ATTRIBUTE_CAN_OVERRIDE_IP,
     USER_ATTRIBUTE_SA,
+    USER_PATH_SYSTEM_PREFIX,
     Provider,
     Token,
     TokenIntents,
@@ -38,6 +39,8 @@ from authentik.tenants.models import Tenant
 OUR_VERSION = parse(__version__)
 OUTPOST_HELLO_INTERVAL = 10
 LOGGER = get_logger()
+
+USER_PATH_OUTPOSTS = USER_PATH_SYSTEM_PREFIX + "/outposts"
 
 
 class ServiceConnectionInvalid(SentryIgnoredException):
@@ -339,6 +342,7 @@ class Outpost(ManagedModel):
         user.attributes[USER_ATTRIBUTE_SA] = True
         user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
         user.name = f"Outpost {self.name} Service-Account"
+        user.path = USER_PATH_OUTPOSTS
         user.save()
         if should_create_user:
             self.build_user_permissions(user)

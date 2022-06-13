@@ -9,6 +9,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     from django.contrib.auth.hashers import make_password
+
     User = apps.get_model("authentik_core", "User")
     db_alias = schema_editor.connection.alias
 
