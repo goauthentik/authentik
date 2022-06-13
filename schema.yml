@@ -3402,6 +3402,11 @@ paths:
     get:
       operationId: core_users_paths_retrieve
       description: Get all user paths
+      parameters:
+      - in: query
+        name: search
+        schema:
+          type: string
       tags:
       - core
       security:

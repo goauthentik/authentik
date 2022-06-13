@@ -325,12 +325,16 @@ export class UserListPage extends TablePage<User> {
                 <div class="pf-c-card__title">${t`User folders`}</div>
                 <div class="pf-c-card__body">
                     ${until(
-                        new CoreApi(DEFAULT_CONFIG).coreUsersPathsRetrieve().then((paths) => {
-                            return html`<ak-treeview
-                                .items=${paths.paths}
-                                path=${this.path}
-                            ></ak-treeview>`;
-                        }),
+                        new CoreApi(DEFAULT_CONFIG)
+                            .coreUsersPathsRetrieve({
+                                search: this.search,
+                            })
+                            .then((paths) => {
+                                return html`<ak-treeview
+                                    .items=${paths.paths}
+                                    path=${this.path}
+                                ></ak-treeview>`;
+                            }),
                     )}
                 </div>
             </div>

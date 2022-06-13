@@ -478,15 +478,22 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             200: inline_serializer(
                 "UserPathSerializer", {"paths": ListField(child=CharField(), read_only=True)}
             )
-        }
+        },
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.STR,
+            )
+        ]
     )
-    @action(detail=False, pagination_class=None, filter_backends=[])
+    @action(detail=False, pagination_class=None)
     def paths(self, request: Request) -> Response:
         """Get all user paths"""
         return Response(
             data={
                 "paths": list(
-                    self.get_queryset()
+                    self.filter_queryset(self.get_queryset())
                     .values("path")
                     .distinct()
                     .order_by("path")
