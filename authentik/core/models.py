@@ -148,6 +148,11 @@ class User(GuardianUserMixin, AbstractUser):
 
     objects = UserManager()
 
+    @staticmethod
+    def default_path() -> str:
+        """Get the default user path"""
+        return User._meta.get_field("path").default
+
     def group_attributes(self, request: Optional[HttpRequest] = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
         including the users attributes"""
@@ -410,6 +415,17 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     )
 
     objects = InheritanceManager()
+
+    def get_user_path(self) -> str:
+        """Get user path, fallback to default for formatting errors"""
+        try:
+            return self.user_path_template % {
+                "slug": self.slug,
+            }
+        # pylint: disable=broad-except
+        except Exception as exc:
+            LOGGER.warning("Failed to template user path", exc=exc, source=self)
+            return User.default_path()
 
     @property
     def component(self) -> str:

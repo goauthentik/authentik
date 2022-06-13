@@ -31,6 +31,7 @@ from authentik.policies.utils import delete_none_keys
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
+from authentik.stages.user_write.stage import PLAN_CONTEXT_USER_PATH
 
 
 class Action(Enum):
@@ -291,5 +292,6 @@ class SourceFlowManager:
             connection,
             **{
                 PLAN_CONTEXT_PROMPT: delete_none_keys(self.enroll_info),
+                PLAN_CONTEXT_USER_PATH: self.source.get_user_path(),
             },
         )
