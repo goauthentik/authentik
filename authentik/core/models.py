@@ -374,6 +374,8 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     name = models.TextField(help_text=_("Source's display Name."))
     slug = models.SlugField(help_text=_("Internal source name, used in URLs."), unique=True)
 
+    user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
+
     enabled = models.BooleanField(default=True)
     property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
 

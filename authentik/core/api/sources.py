@@ -53,6 +53,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             "policy_engine_mode",
             "user_matching_mode",
             "managed",
+            "user_path_template",
         ]
 
 

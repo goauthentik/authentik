@@ -13160,6 +13160,10 @@ paths:
           - username_link
         description: How the source determines if an existing user should be authenticated
           or a new user enrolled.
+      - in: query
+        name: user_path_template
+        schema:
+          type: string
       tags:
       - sources
       security:
@@ -22732,6 +22736,8 @@ components:
             can be overwritten by migrations. You can still modify the objects via
             the API, but expect changes to be overwritten in a later update.
           readOnly: true
+        user_path_template:
+          type: string
         server_uri:
           type: string
           format: uri
@@ -22835,6 +22841,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         server_uri:
           type: string
           minLength: 1
@@ -23444,6 +23453,8 @@ components:
             can be overwritten by migrations. You can still modify the objects via
             the API, but expect changes to be overwritten in a later update.
           readOnly: true
+        user_path_template:
+          type: string
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -23531,6 +23542,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -27527,6 +27541,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         server_uri:
           type: string
           minLength: 1
@@ -27761,6 +27778,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -27965,6 +27985,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -28278,6 +28301,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         pre_authentication_flow:
           type: string
           format: uuid
@@ -28677,6 +28703,8 @@ components:
             can be overwritten by migrations. You can still modify the objects via
             the API, but expect changes to be overwritten in a later update.
           readOnly: true
+        user_path_template:
+          type: string
         client_id:
           type: string
           description: Client identifier used to talk to Plex.
@@ -28773,6 +28801,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -30078,6 +30109,8 @@ components:
             can be overwritten by migrations. You can still modify the objects via
             the API, but expect changes to be overwritten in a later update.
           readOnly: true
+        user_path_template:
+          type: string
         pre_authentication_flow:
           type: string
           format: uuid
@@ -30168,6 +30201,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         pre_authentication_flow:
           type: string
           format: uuid
@@ -30514,6 +30550,8 @@ components:
             can be overwritten by migrations. You can still modify the objects via
             the API, but expect changes to be overwritten in a later update.
           readOnly: true
+        user_path_template:
+          type: string
       required:
       - component
       - managed
@@ -30556,6 +30594,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
       required:
       - name
       - slug
