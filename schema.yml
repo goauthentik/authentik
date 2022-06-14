@@ -18862,6 +18862,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: user_path_template
+        schema:
+          type: string
       tags:
       - stages
       security:
@@ -28599,6 +28603,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_path_template:
+          type: string
     PatchedWebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -31669,6 +31675,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_path_template:
+          type: string
       required:
       - component
       - meta_model_name
@@ -31695,6 +31703,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_path_template:
+          type: string
       required:
       - name
     ValidationError:

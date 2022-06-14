@@ -209,7 +209,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
-                                    ordering: "username",
+                                    ordering: "name",
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
