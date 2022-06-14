@@ -72,7 +72,7 @@ export class UserForm extends ModelForm<User, number> {
             <ak-form-element-horizontal label=${t`Path`} ?required=${true} name="path">
                 <input
                     type="text"
-                    value="${first(this.instance?.path, "")}"
+                    value="${first(this.instance?.path, "users")}"
                     class="pf-c-form-control"
                     required
                 />
