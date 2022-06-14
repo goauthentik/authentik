@@ -78,6 +78,17 @@ class UserSerializer(ModelSerializer):
     uid = CharField(read_only=True)
     username = CharField(max_length=150)
 
+    def validate_path(self, path: str) -> str:
+        """Validate path"""
+        if path == "":
+            return path
+        if path[:1] == "/" or path[-1] == "/":
+            raise ValidationError(_("No leading or trailing slashes allowed."))
+        for segment in path.split("/"):
+            if segment == "":
+                raise ValidationError(_("No empty segments in user path allowed."))
+        return path
+
     class Meta:
 
         model = User
@@ -485,7 +496,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.STR,
             )
-        ]
+        ],
     )
     @action(detail=False, pagination_class=None)
     def paths(self, request: Request) -> Response:
