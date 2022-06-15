@@ -115,9 +115,7 @@ module.exports = {
                         "sources/github/index",
                         "sources/google/index",
                         "sources/mailcow/index",
-                        "sources/oauth/index",
                         "sources/plex/index",
-                        "sources/saml/index",
                         "sources/twitter/index",
                     ],
                 },
@@ -127,7 +125,15 @@ module.exports = {
                     items: [
                         "sources/active-directory/index",
                         "sources/freeipa/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Protocols",
+                    items: [
                         "sources/ldap/index",
+                        "sources/oauth/index",
+                        "sources/saml/index",
                     ],
                 },
             ],
