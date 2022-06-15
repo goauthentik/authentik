@@ -26,6 +26,11 @@ class UserWriteStage(Stage):
         help_text=_("Optionally add newly created users to this group."),
     )
 
+    user_path_template = models.TextField(
+        default="",
+        blank=True,
+    )
+
     @property
     def serializer(self) -> BaseSerializer:
         from authentik.stages.user_write.api import UserWriteStageSerializer

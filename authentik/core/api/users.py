@@ -24,7 +24,7 @@ from drf_spectacular.utils import (
 )
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, JSONField, SerializerMethodField
+from rest_framework.fields import CharField, JSONField, ListField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -50,6 +50,7 @@ from authentik.core.middleware import (
 from authentik.core.models import (
     USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
+    USER_PATH_SERVICE_ACCOUNT,
     Group,
     Token,
     TokenIntents,
@@ -77,6 +78,15 @@ class UserSerializer(ModelSerializer):
     uid = CharField(read_only=True)
     username = CharField(max_length=150)
 
+    def validate_path(self, path: str) -> str:
+        """Validate path"""
+        if path[:1] == "/" or path[-1] == "/":
+            raise ValidationError(_("No leading or trailing slashes allowed."))
+        for segment in path.split("/"):
+            if segment == "":
+                raise ValidationError(_("No empty segments in user path allowed."))
+        return path
+
     class Meta:
 
         model = User
@@ -93,6 +103,7 @@ class UserSerializer(ModelSerializer):
             "avatar",
             "attributes",
             "uid",
+            "path",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
@@ -208,6 +219,11 @@ class UsersFilter(FilterSet):
     is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
     uuid = CharFilter(field_name="uuid")
 
+    path = CharFilter(
+        field_name="path",
+    )
+    path_startswith = CharFilter(field_name="path", lookup_expr="startswith")
+
     groups_by_name = ModelMultipleChoiceFilter(
         field_name="ak_groups__name",
         to_field_name="name",
@@ -314,6 +330,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     username=username,
                     name=username,
                     attributes={USER_ATTRIBUTE_SA: True, USER_ATTRIBUTE_TOKEN_EXPIRING: False},
+                    path=USER_PATH_SERVICE_ACCOUNT,
                 )
                 if create_group and self.request.user.has_perm("authentik_core.add_group"):
                     group = Group.objects.create(
@@ -464,3 +481,32 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         if self.request.user.has_perm("authentik_core.view_user"):
             return self._filter_queryset_for_list(queryset)
         return super().filter_queryset(queryset)
+
+    @extend_schema(
+        responses={
+            200: inline_serializer(
+                "UserPathSerializer", {"paths": ListField(child=CharField(), read_only=True)}
+            )
+        },
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.STR,
+            )
+        ],
+    )
+    @action(detail=False, pagination_class=None)
+    def paths(self, request: Request) -> Response:
+        """Get all user paths"""
+        return Response(
+            data={
+                "paths": list(
+                    self.filter_queryset(self.get_queryset())
+                    .values("path")
+                    .distinct()
+                    .order_by("path")
+                    .values_list("path", flat=True)
+                )
+            }
+        )

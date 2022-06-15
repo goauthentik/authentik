@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
-from authentik.lib.generators import generate_key
+from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.email.models import EmailStage
 from authentik.tenants.models import Tenant
 
@@ -149,3 +149,65 @@ class TestUsersAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_paths(self):
+        """Test path"""
+        self.client.force_login(self.admin)
+        response = self.client.get(
+            reverse("authentik_api:user-paths"),
+        )
+        print(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content.decode(), {"paths": ["users"]})
+
+    def test_path_valid(self):
+        """Test path"""
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"name": generate_id(), "username": generate_id(), "groups": [], "path": "foo"},
+        )
+        self.assertEqual(response.status_code, 201)
+
+    def test_path_invalid(self):
+        """Test path (invalid)"""
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"name": generate_id(), "username": generate_id(), "groups": [], "path": "/foo"},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content.decode(), {"path": ["No leading or trailing slashes allowed."]}
+        )
+
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"name": generate_id(), "username": generate_id(), "groups": [], "path": ""},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content.decode(), {"path": ["This field may not be blank."]})
+
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"name": generate_id(), "username": generate_id(), "groups": [], "path": "foo/"},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content.decode(), {"path": ["No leading or trailing slashes allowed."]}
+        )
+
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={
+                "name": generate_id(),
+                "username": generate_id(),
+                "groups": [],
+                "path": "fos//o",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content.decode(), {"path": ["No empty segments in user path allowed."]}
+        )

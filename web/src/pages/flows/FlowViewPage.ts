@@ -12,7 +12,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Flow, FlowsApi } from "@goauthentik/api";
+import { Flow, FlowsApi, ResponseError } from "@goauthentik/api";
 
 import { AndNext, DEFAULT_CONFIG } from "../../api/Config";
 import "../../elements/PageHeader";
@@ -164,10 +164,13 @@ export class FlowViewPage extends LitElement {
                                                                 )}`;
                                                                 window.open(finalURL, "_blank");
                                                             })
-                                                            .catch((exc: Response) => {
+                                                            .catch((exc: ResponseError) => {
                                                                 // This request can return a HTTP 400 when a flow
                                                                 // is not applicable.
-                                                                window.open(exc.url, "_blank");
+                                                                window.open(
+                                                                    exc.response.url,
+                                                                    "_blank",
+                                                                );
                                                             });
                                                     }}
                                                 >

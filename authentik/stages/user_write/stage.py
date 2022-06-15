@@ -19,6 +19,7 @@ from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.signals import user_write
 
 PLAN_CONTEXT_GROUPS = "groups"
+PLAN_CONTEXT_USER_PATH = "user_path"
 
 
 class UserWriteStageView(StageView):
@@ -49,9 +50,15 @@ class UserWriteStageView(StageView):
     def ensure_user(self) -> tuple[User, bool]:
         """Ensure a user exists"""
         user_created = False
+        path = self.executor.plan.context.get(
+            PLAN_CONTEXT_USER_PATH, self.executor.current_stage.user_path_template
+        )
+        if path == "":
+            path = User.default_path()
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
-                is_active=not self.executor.current_stage.create_users_as_inactive
+                is_active=not self.executor.current_stage.create_users_as_inactive,
+                path=path,
             )
             self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_INBUILT
             self.logger.debug(

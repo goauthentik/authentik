@@ -146,6 +146,7 @@ class ResponseProcessor:
                 USER_ATTRIBUTE_DELETE_ON_LOGOUT: True,
                 USER_ATTRIBUTE_EXPIRES: expiry,
             },
+            path=self._source.get_user_path(),
         )
         LOGGER.debug("Created temporary user for NameID Transient", username=name_id)
         user.set_unusable_password()

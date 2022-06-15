@@ -1,4 +1,4 @@
-import { CoreApi, SessionUser } from "@goauthentik/api";
+import { CoreApi, ResponseError, SessionUser } from "@goauthentik/api";
 import { activateLocale } from "../interfaces/locale";
 import { DEFAULT_CONFIG } from "./Config";
 
@@ -21,7 +21,7 @@ export function me(): Promise<SessionUser> {
                 activateLocale(locale);
             }
             return user;
-        }).catch((ex) => {
+        }).catch((ex: ResponseError) => {
             const defaultUser: SessionUser = {
                 user: {
                     pk: -1,

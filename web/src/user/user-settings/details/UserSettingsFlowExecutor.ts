@@ -18,6 +18,7 @@ import {
     FlowChallengeResponseRequest,
     FlowsApi,
     RedirectChallenge,
+    ResponseError,
     ShellChallenge,
 } from "@goauthentik/api";
 
@@ -80,7 +81,7 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
                 }
                 return true;
             })
-            .catch((e: Error | Response) => {
+            .catch((e: Error | ResponseError) => {
                 this.errorMessage(e);
                 return false;
             })

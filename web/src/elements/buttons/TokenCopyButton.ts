@@ -1,7 +1,7 @@
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { CoreApi } from "@goauthentik/api";
+import { CoreApi, ResponseError } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ERROR_CLASS, SECONDARY_CLASS, SUCCESS_CLASS } from "../../constants";
@@ -37,15 +37,15 @@ export class TokenCopyButton extends ActionButton {
                 this.buttonClass = SUCCESS_CLASS;
                 return token.key;
             })
-            .catch((err: Error | Response | undefined) => {
+            .catch((err: Error | ResponseError | undefined) => {
                 this.buttonClass = ERROR_CLASS;
-                if (err instanceof Error) {
+                if (!(err instanceof ResponseError)) {
                     setTimeout(() => {
                         this.buttonClass = SECONDARY_CLASS;
                     }, 1500);
                     throw err;
                 }
-                return err?.json().then((errResp) => {
+                return err.response.json().then((errResp) => {
                     setTimeout(() => {
                         this.buttonClass = SECONDARY_CLASS;
                     }, 1500);
@@ -92,15 +92,15 @@ export class TokenCopyButton extends ActionButton {
                                 this.setDone(SUCCESS_CLASS);
                             });
                         })
-                        .catch((err: Response | Error) => {
-                            if (err instanceof Error) {
+                        .catch((err: ResponseError | Error) => {
+                            if (!(err instanceof ResponseError)) {
                                 showMessage({
                                     level: MessageLevel.error,
                                     message: err.message,
                                 });
                                 return;
                             }
-                            return err?.json().then((errResp) => {
+                            return err.response.json().then((errResp) => {
                                 this.setDone(ERROR_CLASS);
                                 throw new Error(errResp["detail"]);
                             });

@@ -14,7 +14,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ValidationError } from "@goauthentik/api";
+import { ResponseError, ValidationError } from "@goauthentik/api";
 
 import { EVENT_REFRESH } from "../../constants";
 import { showMessage } from "../../elements/messages/MessageContainer";
@@ -209,13 +209,13 @@ export class Form<T> extends LitElement {
                 );
                 return r;
             })
-            .catch(async (ex: Response | Error) => {
-                if (ex instanceof Error) {
+            .catch(async (ex: Error | ResponseError) => {
+                if (!(ex instanceof ResponseError)) {
                     throw ex;
                 }
-                let msg = ex.statusText;
-                if (ex.status > 399 && ex.status < 500) {
-                    const errorMessage: ValidationError = await ex.json();
+                let msg = ex.response.statusText;
+                if (ex.response.status > 399 && ex.response.status < 500) {
+                    const errorMessage: ValidationError = await ex.response.json();
                     if (!errorMessage) return errorMessage;
                     if (errorMessage instanceof Error) {
                         throw errorMessage;

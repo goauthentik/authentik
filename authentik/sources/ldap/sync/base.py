@@ -64,7 +64,9 @@ class BaseLDAPSynchronizer:
 
     def build_user_properties(self, user_dn: str, **kwargs) -> dict[str, Any]:
         """Build attributes for User object based on property mappings."""
-        return self._build_object_properties(user_dn, self._source.property_mappings, **kwargs)
+        props = self._build_object_properties(user_dn, self._source.property_mappings, **kwargs)
+        props["path"] = self._source.get_user_path()
+        return props
 
     def build_group_properties(self, group_dn: str, **kwargs) -> dict[str, Any]:
         """Build attributes for Group object based on property mappings."""

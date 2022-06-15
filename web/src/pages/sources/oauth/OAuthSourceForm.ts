@@ -268,6 +268,19 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                     </option>
                 </select>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`User path`} name="userPathTemplate">
+                <input
+                    type="text"
+                    value="${first(
+                        this.instance?.userPathTemplate,
+                        "goauthentik.io/sources/%(slug)s",
+                    )}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Path template for users created. Use placeholders like \`%(slug)s\` to insert the source slug.`}
+                </p>
+            </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Protocol settings`} </span>

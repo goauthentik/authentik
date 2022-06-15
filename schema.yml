@@ -3067,6 +3067,14 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: path
+        schema:
+          type: string
+      - in: query
+        name: path_startswith
+        schema:
+          type: string
       - name: search
         required: false
         in: query
@@ -3385,6 +3393,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SessionUser'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /core/users/paths/:
+    get:
+      operationId: core_users_paths_retrieve
+      description: Get all user paths
+      parameters:
+      - in: query
+        name: search
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPath'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -13133,6 +13165,10 @@ paths:
           - username_link
         description: How the source determines if an existing user should be authenticated
           or a new user enrolled.
+      - in: query
+        name: user_path_template
+        schema:
+          type: string
       tags:
       - sources
       security:
@@ -18826,6 +18862,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: user_path_template
+        schema:
+          type: string
       tags:
       - stages
       security:
@@ -22705,6 +22745,8 @@ components:
             can be overwritten by migrations. You can still modify the objects via
             the API, but expect changes to be overwritten in a later update.
           readOnly: true
+        user_path_template:
+          type: string
         server_uri:
           type: string
           format: uri
@@ -22808,6 +22850,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         server_uri:
           type: string
           minLength: 1
@@ -23417,6 +23462,8 @@ components:
             can be overwritten by migrations. You can still modify the objects via
             the API, but expect changes to be overwritten in a later update.
           readOnly: true
+        user_path_template:
+          type: string
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -23504,6 +23551,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -27500,6 +27550,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         server_uri:
           type: string
           minLength: 1
@@ -27734,6 +27787,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -27938,6 +27994,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -28251,6 +28310,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         pre_authentication_flow:
           type: string
           format: uuid
@@ -28519,6 +28581,9 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        path:
+          type: string
+          minLength: 1
     PatchedUserWriteStageRequest:
       type: object
       description: UserWriteStage Serializer
@@ -28538,6 +28603,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_path_template:
+          type: string
     PatchedWebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -28647,6 +28714,8 @@ components:
             can be overwritten by migrations. You can still modify the objects via
             the API, but expect changes to be overwritten in a later update.
           readOnly: true
+        user_path_template:
+          type: string
         client_id:
           type: string
           description: Client identifier used to talk to Plex.
@@ -28743,6 +28812,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -30048,6 +30120,8 @@ components:
             can be overwritten by migrations. You can still modify the objects via
             the API, but expect changes to be overwritten in a later update.
           readOnly: true
+        user_path_template:
+          type: string
         pre_authentication_flow:
           type: string
           format: uuid
@@ -30138,6 +30212,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         pre_authentication_flow:
           type: string
           format: uuid
@@ -30484,6 +30561,8 @@ components:
             can be overwritten by migrations. You can still modify the objects via
             the API, but expect changes to be overwritten in a later update.
           readOnly: true
+        user_path_template:
+          type: string
       required:
       - component
       - managed
@@ -30526,6 +30605,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
       required:
       - name
       - slug
@@ -31107,6 +31189,8 @@ components:
         uid:
           type: string
           readOnly: true
+        path:
+          type: string
       required:
       - avatar
       - groups
@@ -31369,6 +31453,16 @@ components:
           minLength: 1
       required:
       - password
+    UserPath:
+      type: object
+      properties:
+        paths:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - paths
     UserRequest:
       type: object
       description: User Serializer
@@ -31402,6 +31496,9 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        path:
+          type: string
+          minLength: 1
       required:
       - groups
       - name
@@ -31578,6 +31675,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_path_template:
+          type: string
       required:
       - component
       - meta_model_name
@@ -31604,6 +31703,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_path_template:
+          type: string
       required:
       - name
     ValidationError:

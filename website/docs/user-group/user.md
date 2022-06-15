@@ -2,6 +2,14 @@
 title: User
 ---
 
+## Path
+
+:::info
+Requires authentik 2022.7
+:::
+
+Paths can be used to organize users into folders depending on which source created them or organizational structure. Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.
+
 ## Attributes
 
 ### `goauthentik.io/user/token-expires`:
