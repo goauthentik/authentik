@@ -106,7 +106,7 @@ jobs:
         with:
           domain: ${{github.repository_owner}}
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.2.0
+        uses: helm/kind-action@v1.3.0
       - name: run integration
         run: |
           poetry run make test-integration
