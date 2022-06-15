@@ -2,6 +2,8 @@
 title: pfSense
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is pfSense
 
 From https://www.pfsense.org/
@@ -58,7 +60,7 @@ In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` t
 ## pfSense unsecure setup (without SSL)
 
 :::warning
-This setup should only be used for testing purpose, because passwords will be sent in clear text to authentik.  
+This setup should only be used for testing purpose, because passwords will be sent in clear text to authentik.
 :::
 
 Add your authentik LDAP server to pfSense by going to your pfSense Web UI and clicking the `+ Add` under _System/User Manager/Authentication Servers_.

@@ -2,6 +2,8 @@
 title: Vikunja
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Vikunja
 
 From https://vikunja.io/

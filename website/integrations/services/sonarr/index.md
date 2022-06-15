@@ -2,6 +2,8 @@
 title: Sonarr
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 :::note
 These instructions apply to all projects in the \*arr Family. If you use multiple of these projects, you can assign them to the same Outpost.
 :::

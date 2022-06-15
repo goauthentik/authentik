@@ -43,6 +43,8 @@ If you find any documentation that doesn't match these guidelines, feel free to 
 
 These guidelines apply in addition to the ones above.
 
+See the template in `/website/integrations/_template/service.md`.
+
 -   For placeholders, use angle brackets (`<placeholder-name>`).
 
     Make sure to also define if the placeholder is something the user needs to define, something another system defines, or randomly generated.
@@ -52,3 +54,5 @@ These guidelines apply in addition to the ones above.
 
 -   For placeholder domains, use `authentik.company` and `app-name.company`, where `app-name` is the name of the application you are writing documentation for.
 -   Try to order the documentation in the order that makes it easiest for the user to configure.
+
+-   Make sure to add the service to a fitting category in `/website/sidebarsIntegrations.js`

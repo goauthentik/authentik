@@ -2,6 +2,8 @@
 title: Roundcube
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Roundcube
 
 From https://roundcube.net

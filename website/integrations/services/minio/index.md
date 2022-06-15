@@ -2,6 +2,8 @@
 title: MinIO
 ---
 
+<span class="badge badge--primary">Support level: authentik</span>
+
 ## What is MinIO
 
 From https://en.wikipedia.org/wiki/MinIO

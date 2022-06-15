@@ -2,6 +2,8 @@
 title: Rocket.chat
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Rocket.chat
 
 From https://github.com/RocketChat/Rocket.Chat

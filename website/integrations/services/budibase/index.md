@@ -2,6 +2,8 @@
 title: Budibase
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Budibase
 
 From https://github.com/Budibase/budibase

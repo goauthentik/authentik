@@ -2,6 +2,8 @@
 title: Azure AD
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## Preparation
 
 The following placeholders will be used:

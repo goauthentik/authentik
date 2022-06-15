@@ -2,6 +2,8 @@
 title: OPNsense
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is OPNsense
 
 From https://opnsense.org/
