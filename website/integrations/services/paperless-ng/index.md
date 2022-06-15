@@ -2,6 +2,8 @@
 title: Paperless-ng
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Paperless-ng
 
 Modified from https://github.com/jonaswinkler/paperless-ng

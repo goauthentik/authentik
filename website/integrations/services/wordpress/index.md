@@ -2,6 +2,8 @@
 title: Wordpress
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Wordpress
 
 From https://en.wikipedia.org/wiki/WordPress

@@ -2,6 +2,8 @@
 title: Gitea
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Gitea
 
 From https://gitea.io/

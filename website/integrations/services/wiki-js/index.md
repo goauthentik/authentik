@@ -2,6 +2,8 @@
 title: Wiki.js
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Wiki.js
 
 From https://en.wikipedia.org/wiki/Wiki.js

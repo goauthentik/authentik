@@ -2,6 +2,8 @@
 title: Rancher
 ---
 
+<span class="badge badge--primary">Support level: authentik</span>
+
 ## What is Rancher
 
 From https://rancher.com/products/rancher

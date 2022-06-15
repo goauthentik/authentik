@@ -2,6 +2,8 @@
 title: Home-Assistant
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Home-Assistant
 
 From https://www.home-assistant.io/

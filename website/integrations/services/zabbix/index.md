@@ -2,6 +2,8 @@
 title: Zabbix
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Zabbix
 
 From https://www.zabbix.com/features

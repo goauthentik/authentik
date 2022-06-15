@@ -4,10 +4,8 @@ module.exports = {
             type: "category",
             label: "Applications",
             link: {
-                type: "generated-index",
-                title: "Applications",
-                slug: "/",
-                description: "Applications which integrate with authentik",
+                type: "doc",
+                id: "services/index",
             },
             items: [
                 {
@@ -117,9 +115,7 @@ module.exports = {
                         "sources/github/index",
                         "sources/google/index",
                         "sources/mailcow/index",
-                        "sources/oauth/index",
                         "sources/plex/index",
-                        "sources/saml/index",
                         "sources/twitter/index",
                     ],
                 },
@@ -129,7 +125,15 @@ module.exports = {
                     items: [
                         "sources/active-directory/index",
                         "sources/freeipa/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Protocols",
+                    items: [
                         "sources/ldap/index",
+                        "sources/oauth/index",
+                        "sources/saml/index",
                     ],
                 },
             ],

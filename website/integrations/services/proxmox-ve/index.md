@@ -2,6 +2,8 @@
 title: Proxmox VE
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Proxmox VE
 
 From https://pve.proxmox.com/wiki/Main_Page

@@ -2,6 +2,8 @@
 title: HedgeDoc
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is HedgeDoc
 
 From https://github.com/hedgedoc/hedgedoc
