@@ -55,7 +55,7 @@ export class UserListPage extends TablePage<User> {
     order = "last_login";
 
     @property()
-    path = getURLParam<string>("path", "/");
+    activePath = getURLParam<string>("path", "/");
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDescriptionList, PFCard, PFAlert, AKGlobal);
@@ -332,7 +332,7 @@ export class UserListPage extends TablePage<User> {
                             .then((paths) => {
                                 return html`<ak-treeview
                                     .items=${paths.paths}
-                                    path=${this.path}
+                                    activePath=${this.activePath}
                                 ></ak-treeview>`;
                             }),
                     )}

@@ -11,7 +11,7 @@ import { EVENT_REFRESH } from "../constants";
 import { setURLParams } from "./router/RouteMatch";
 
 export interface TreeViewItem {
-    id: string;
+    id?: string;
     label: string;
     childItems: TreeViewItem[];
     parent?: TreeViewItem;
@@ -30,7 +30,7 @@ export class TreeViewNode extends LitElement {
     host?: TreeView;
 
     @property()
-    path = "";
+    activePath = "";
 
     @property()
     separator = "";
@@ -43,7 +43,9 @@ export class TreeViewNode extends LitElement {
         const pathItems = [];
         let item = this.item;
         while (item) {
-            pathItems.push(item.id);
+            if (item.id) {
+                pathItems.push(item.id);
+            }
             item = item.parent;
         }
         return pathItems.reverse().join(this.separator);
@@ -54,14 +56,14 @@ export class TreeViewNode extends LitElement {
     }
 
     firstUpdated(): void {
-        const pathSegments = this.path.split(this.separator);
+        const pathSegments = this.activePath.split(this.separator);
         const level = this.item?.level || 0;
         // Ignore the last item as that shouldn't be expanded
         pathSegments.pop();
         if (pathSegments[level] == this.item?.id) {
             this.open = true;
         }
-        if (this.path === this.fullPath && this.host !== undefined) {
+        if (this.activePath === this.fullPath && this.host !== undefined) {
             this.host.activeNode = this;
         }
     }
@@ -122,7 +124,7 @@ export class TreeViewNode extends LitElement {
                     ${this.item?.childItems.map((item) => {
                         return html`<ak-treeview-node
                             .item=${item}
-                            path=${this.path}
+                            activePath=${this.activePath}
                             separator=${this.separator}
                             .host=${this.host}
                         ></ak-treeview-node>`;
@@ -143,61 +145,61 @@ export class TreeView extends LitElement {
     items: string[] = [];
 
     @property()
-    path = "";
+    activePath = "";
 
     @state()
     activeNode?: TreeViewNode;
 
     separator = "/";
 
-    createNode(path: string[], tree: TreeViewItem[], level: number): TreeViewItem {
+    createNode(path: string[], parentItem: TreeViewItem, level: number): TreeViewItem {
         const id = path.shift();
-        const idx = tree.findIndex((e: TreeViewItem) => {
+        const idx = parentItem.childItems.findIndex((e: TreeViewItem) => {
             return e.id == id;
         });
         if (idx < 0) {
             const item: TreeViewItem = {
-                id: id || "",
+                id: id,
                 label: id || "",
                 childItems: [],
                 level: level,
+                parent: parentItem,
             };
-            tree.push(item);
+            parentItem.childItems.push(item);
             if (path.length !== 0) {
-                const child = this.createNode(path, tree[tree.length - 1].childItems, level + 1);
+                const child = this.createNode(path, item, level + 1);
                 child.parent = item;
             }
             return item;
         } else {
-            const child = this.createNode(path, tree[idx].childItems, level + 1);
-            child.parent = tree[idx];
+            const child = this.createNode(path, parentItem.childItems[idx], level + 1);
             return child;
         }
     }
 
-    parse(data: string[]): TreeViewItem[] {
-        const tree: TreeViewItem[] = [];
+    parse(data: string[]): TreeViewItem {
+        const rootItem: TreeViewItem = {
+            id: undefined,
+            label: t`Root`,
+            childItems: [],
+            level: -1,
+        };
         for (let i = 0; i < data.length; i++) {
             const path: string = data[i];
             const split: string[] = path.split(this.separator);
-            this.createNode(split, tree, 0);
+            this.createNode(split, rootItem, 0);
         }
-        return tree;
+        return rootItem;
     }
 
     render(): TemplateResult {
-        const result = this.parse(this.items);
+        const rootItem = this.parse(this.items);
         return html`<div class="pf-c-tree-view pf-m-guides">
             <ul class="pf-c-tree-view__list" role="tree">
                 <!-- @ts-ignore -->
                 <ak-treeview-node
-                    .item=${{
-                        id: "",
-                        label: t`Root`,
-                        childItems: result,
-                        level: -1,
-                    } as TreeViewItem}
-                    path=${this.path}
+                    .item=${rootItem}
+                    activePath=${this.activePath}
                     ?open=${true}
                     separator=${this.separator}
                     .host=${this}
