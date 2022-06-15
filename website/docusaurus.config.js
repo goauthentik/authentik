@@ -1,3 +1,10 @@
+const sidebar = require("./sidebars.js");
+
+const releases = sidebar.docs
+    .filter((doc) => doc.link?.slug === "releases")[0]
+    .items.filter((release) => typeof release === "string");
+const latestVersion = releases[0].replace("releases/v", "");
+
 module.exports = {
     title: "authentik",
     tagline: "Making authentication simple.",
@@ -38,6 +45,20 @@ module.exports = {
                     activeBasePath: "api",
                     label: "API",
                     position: "left",
+                },
+                {
+                    type: "dropdown",
+                    label: `Version ${latestVersion}`,
+                    position: "right",
+                    items: releases.map((release) => {
+                        const subdomain = release
+                            .replace("releases/v", "")
+                            .replace(".", "-");
+                        return {
+                            label: release.replace("releases/", ""),
+                            href: `https://version-${subdomain}.goauthentik.io`,
+                        };
+                    }),
                 },
                 {
                     href: "https://github.com/goauthentik/authentik",
