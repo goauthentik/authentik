@@ -169,7 +169,9 @@ export class TreeView extends LitElement {
             }
             return item;
         } else {
-            return this.createNode(path, tree[idx].childItems, level + 1);
+            const child = this.createNode(path, tree[idx].childItems, level + 1);
+            child.parent = tree[idx];
+            return child;
         }
     }
 
