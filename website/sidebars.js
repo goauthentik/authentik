@@ -7,8 +7,14 @@ module.exports = {
         {
             type: "category",
             label: "Installation",
+            link: {
+                type: "generated-index",
+                title: "Installation",
+                slug: "installation",
+                description:
+                    "Everything you need to get authentik up and running!",
+            },
             items: [
-                "installation/index",
                 "installation/docker-compose",
                 "installation/kubernetes",
                 "installation/beta",
@@ -36,17 +42,21 @@ module.exports = {
                 {
                     type: "category",
                     label: "OAuth2 Provider",
-                    items: [
-                        "providers/oauth2/index",
-                        "providers/oauth2/client_credentials",
-                    ],
+                    link: {
+                        type: "doc",
+                        id: "providers/oauth2/index",
+                    },
+                    items: ["providers/oauth2/client_credentials"],
                 },
                 "providers/saml",
                 {
                     type: "category",
                     label: "Proxy Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/proxy/index",
+                    },
                     items: [
-                        "providers/proxy/proxy",
                         "providers/proxy/custom_headers",
                         "providers/proxy/forward_auth",
                     ],
@@ -57,8 +67,11 @@ module.exports = {
         {
             type: "category",
             label: "Outposts",
+            link: {
+                type: "doc",
+                id: "outposts/index",
+            },
             items: [
-                "outposts/index",
                 "outposts/embedded/embedded",
                 {
                     type: "category",
@@ -82,8 +95,11 @@ module.exports = {
         {
             type: "category",
             label: "Flows",
+            link: {
+                type: "doc",
+                id: "flow/index",
+            },
             items: [
-                "flow/index",
                 "flow/layouts",
                 "flow/inspector",
                 "flow/examples",
@@ -101,6 +117,12 @@ module.exports = {
         {
             type: "category",
             label: "Stages",
+            link: {
+                type: "generated-index",
+                title: "Stages",
+                slug: "flow/stages",
+                description: "Overview of all available stages",
+            },
             items: [
                 "flow/stages/authenticator_duo/index",
                 "flow/stages/authenticator_sms/index",
@@ -124,21 +146,29 @@ module.exports = {
         {
             type: "category",
             label: "Policies",
-            items: ["policies/index", "policies/expression"],
+            link: {
+                type: "doc",
+                id: "policies/index",
+            },
+            items: ["policies/expression"],
         },
         {
             type: "category",
             label: "Property Mappings",
-            items: ["property-mappings/index", "property-mappings/expression"],
+            link: {
+                type: "doc",
+                id: "property-mappings/index",
+            },
+            items: ["property-mappings/expression"],
         },
         {
             type: "category",
             label: "Events",
-            items: [
-                "events/index",
-                "events/notifications",
-                "events/transports",
-            ],
+            link: {
+                type: "doc",
+                id: "events/index",
+            },
+            items: ["events/notifications", "events/transports"],
         },
         {
             type: "category",
@@ -164,6 +194,12 @@ module.exports = {
         {
             type: "category",
             label: "Release Notes",
+            link: {
+                type: "generated-index",
+                title: "Releases",
+                slug: "releases",
+                description: "Release notes for recent authentik versions",
+            },
             items: [
                 "releases/v2022.6",
                 "releases/v2022.5",
@@ -198,6 +234,12 @@ module.exports = {
         {
             type: "category",
             label: "Troubleshooting",
+            link: {
+                type: "generated-index",
+                title: "Troubleshooting",
+                slug: "troubleshooting",
+                description: "Troubleshooting various issues",
+            },
             items: [
                 "troubleshooting/access",
                 "troubleshooting/emails",
