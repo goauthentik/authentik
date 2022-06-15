@@ -150,6 +150,16 @@ class TestUsersAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_paths(self):
+        """Test path"""
+        self.client.force_login(self.admin)
+        response = self.client.get(
+            reverse("authentik_api:user-paths"),
+        )
+        print(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content.decode(), {"paths": ["users"]})
+
     def test_path_valid(self):
         """Test path"""
         self.client.force_login(self.admin)
@@ -170,6 +180,14 @@ class TestUsersAPI(APITestCase):
         self.assertJSONEqual(
             response.content.decode(), {"path": ["No leading or trailing slashes allowed."]}
         )
+
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"name": generate_id(), "username": generate_id(), "groups": [], "path": ""},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content.decode(), {"path": ["This field may not be blank."]})
 
         response = self.client.post(
             reverse("authentik_api:user-list"),

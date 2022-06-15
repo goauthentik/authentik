@@ -55,10 +55,10 @@ export class TreeViewNode extends LitElement {
 
     firstUpdated(): void {
         const pathSegments = this.path.split(this.separator);
+        const level = this.item?.level || 0;
         // Ignore the last item as that shouldn't be expanded
         pathSegments.pop();
-        if (pathSegments.length < (this.item?.level || 0)) return;
-        if (pathSegments[this.item?.level || 0] == this.item?.id) {
+        if (pathSegments[level] == this.item?.id) {
             this.open = true;
         }
         if (this.path === this.fullPath && this.host !== undefined) {
@@ -178,8 +178,7 @@ export class TreeView extends LitElement {
         for (let i = 0; i < data.length; i++) {
             const path: string = data[i];
             const split: string[] = path.split(this.separator);
-            // Start with level 1 as we have a pseudo-item for level 0
-            this.createNode(split, tree, 1);
+            this.createNode(split, tree, 0);
         }
         return tree;
     }
@@ -194,9 +193,9 @@ export class TreeView extends LitElement {
                         id: "",
                         label: t`Root`,
                         childItems: result,
-                        level: 0,
+                        level: -1,
                     } as TreeViewItem}
-                    path=""
+                    path=${this.path}
                     ?open=${true}
                     separator=${this.separator}
                     .host=${this}

@@ -80,8 +80,6 @@ class UserSerializer(ModelSerializer):
 
     def validate_path(self, path: str) -> str:
         """Validate path"""
-        if path == "":
-            return path
         if path[:1] == "/" or path[-1] == "/":
             raise ValidationError(_("No leading or trailing slashes allowed."))
         for segment in path.split("/"):

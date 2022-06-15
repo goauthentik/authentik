@@ -9,7 +9,7 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CapabilitiesEnum, CoreApi, User } from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, ResponseError, User } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG, config, tenant } from "../../api/Config";
@@ -250,8 +250,8 @@ export class UserListPage extends TablePage<User> {
                                                                     description: rec.link,
                                                                 });
                                                             })
-                                                            .catch((ex: Response) => {
-                                                                ex.json().then(() => {
+                                                            .catch((ex: ResponseError) => {
+                                                                ex.response.json().then(() => {
                                                                     showMessage({
                                                                         level: MessageLevel.error,
                                                                         message: t`No recovery flow is configured.`,
