@@ -2,6 +2,8 @@
 title: Kimai
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Kimai
 
 From https://www.kimai.org/about/

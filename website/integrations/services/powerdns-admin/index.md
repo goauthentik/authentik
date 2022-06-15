@@ -2,6 +2,8 @@
 title: PowerDNS-Admin
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is PowerDNS-Admin
 
 From https://github.com/ngoduykhanh/PowerDNS-Admin

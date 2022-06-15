@@ -2,6 +2,8 @@
 title: NextCloud
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is NextCloud
 
 From https://en.wikipedia.org/wiki/Nextcloud

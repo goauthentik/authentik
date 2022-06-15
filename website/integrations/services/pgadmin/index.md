@@ -2,6 +2,8 @@
 title: pgAdmin
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is pgAdmin
 
 From https://www.pgadmin.org/

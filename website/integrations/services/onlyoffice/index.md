@@ -2,6 +2,8 @@
 title: OnlyOffice
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is OnlyOffice
 
 From https://en.wikipedia.org/wiki/OnlyOffice

@@ -2,6 +2,8 @@
 title: sssd
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is sssd
 
 From https://sssd.io/

@@ -4,10 +4,8 @@ module.exports = {
             type: "category",
             label: "Applications",
             link: {
-                type: "generated-index",
-                title: "Applications",
-                slug: "/",
-                description: "Applications which integrate with authentik",
+                type: "doc",
+                id: "services/index",
             },
             items: [
                 {

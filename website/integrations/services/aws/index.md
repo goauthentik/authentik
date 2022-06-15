@@ -2,6 +2,8 @@
 title: Amazon Web Services
 ---
 
+<span class="badge badge--primary">Support level: authentik</span>
+
 ## What is AWS
 
 :::note

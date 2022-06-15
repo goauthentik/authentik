@@ -2,6 +2,8 @@
 title: Sentry
 ---
 
+<span class="badge badge--primary">Support level: authentik</span>
+
 ## What is Sentry
 
 From https://sentry.io

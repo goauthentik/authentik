@@ -2,6 +2,8 @@
 title: VMware vCenter
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is vCenter
 
 From https://en.wikipedia.org/wiki/VCenter

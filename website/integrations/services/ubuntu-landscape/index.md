@@ -2,6 +2,8 @@
 title: Ubuntu Landscape
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Ubuntu Landscape
 
 From https://en.wikipedia.org/wiki/Landscape_(software)
