@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
 )
 
@@ -30,6 +31,8 @@ func (ws *WebServer) configureProxy() {
 	rp := &httputil.ReverseProxy{Director: director}
 	rp.ErrorHandler = ws.proxyErrorHandler
 	rp.ModifyResponse = ws.proxyModifyResponse
+	proxyMux := ws.m.NewRoute().Subrouter()
+	proxyMux.Use(sentry.SentryNoSampleMiddleware)
 	ws.m.PathPrefix("/outpost.goauthentik.io").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		if ws.ProxyServer != nil {
 			before := time.Now()
@@ -41,10 +44,10 @@ func (ws *WebServer) configureProxy() {
 		}
 		ws.proxyErrorHandler(rw, r, fmt.Errorf("proxy not running"))
 	})
-	ws.m.Path("/-/health/live/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	proxyMux.Path("/-/health/live/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(204)
 	})
-	ws.m.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	proxyMux.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		if !ws.p.IsRunning() {
 			ws.proxyErrorHandler(rw, r, fmt.Errorf("authentik core not running yet"))
 			return
