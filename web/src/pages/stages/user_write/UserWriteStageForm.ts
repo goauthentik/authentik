@@ -74,7 +74,10 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                             ${t`Mark newly created users as inactive.`}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="userPathTemplate">
+                    <ak-form-element-horizontal
+                        label=${t`User path template`}
+                        name="userPathTemplate"
+                    >
                         <input
                             type="text"
                             value="${first(this.instance?.userPathTemplate, "")}"
@@ -82,7 +85,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Path new users will be created under.`}
+                            ${t`Path new users will be created under. If left blank, the default path will be used.fo`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Group`} name="createUsersGroup">
