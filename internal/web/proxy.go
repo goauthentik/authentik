@@ -31,8 +31,6 @@ func (ws *WebServer) configureProxy() {
 	rp := &httputil.ReverseProxy{Director: director}
 	rp.ErrorHandler = ws.proxyErrorHandler
 	rp.ModifyResponse = ws.proxyModifyResponse
-	proxyMux := ws.m.NewRoute().Subrouter()
-	proxyMux.Use(sentry.SentryNoSampleMiddleware)
 	ws.m.PathPrefix("/outpost.goauthentik.io").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		if ws.ProxyServer != nil {
 			before := time.Now()
@@ -44,10 +42,10 @@ func (ws *WebServer) configureProxy() {
 		}
 		ws.proxyErrorHandler(rw, r, fmt.Errorf("proxy not running"))
 	})
-	proxyMux.Path("/-/health/live/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	ws.m.Path("/-/health/live/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(204)
-	})
-	proxyMux.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	}))
+	ws.m.PathPrefix("/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		if !ws.p.IsRunning() {
 			ws.proxyErrorHandler(rw, r, fmt.Errorf("authentik core not running yet"))
 			return
@@ -66,7 +64,7 @@ func (ws *WebServer) configureProxy() {
 		}).Observe(float64(time.Since(before)))
 		ws.log.WithField("host", web.GetHost(r)).Trace("routing to application server")
 		rp.ServeHTTP(rw, r)
-	})
+	}))
 }
 
 func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request, err error) {
