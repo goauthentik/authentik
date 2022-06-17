@@ -36,8 +36,10 @@ def fix_duplicates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 def create_default_user_token(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    # We have to use a direct import here, otherwise we get an object manager error
-    from authentik.core.models import Token, TokenIntents, User
+    from authentik.core.models import TokenIntents
+
+    User = apps.get_model("authentik_core", "User")
+    Token = apps.get_model("authentik_core", "Token")
 
     db_alias = schema_editor.connection.alias
 
