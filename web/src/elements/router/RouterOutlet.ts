@@ -103,12 +103,11 @@ export class RouterOutlet extends LitElement {
         });
         if (!matchedRoute) {
             console.debug(`authentik/router: route "${activeUrl}" not defined`);
-            const route = new Route(
-                RegExp(""),
-                html`<div class="pf-c-page__main">
+            const route = new Route(RegExp(""), async () => {
+                return html`<div class="pf-c-page__main">
                     <ak-router-404 url=${activeUrl}></ak-router-404>
-                </div>`,
-            );
+                </div>`;
+            });
             matchedRoute = new RouteMatch(route);
             matchedRoute.arguments = route.url.exec(activeUrl)?.groups || {};
             matchedRoute.fullUrl = activeUrl;

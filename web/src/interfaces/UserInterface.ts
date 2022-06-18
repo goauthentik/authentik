@@ -53,7 +53,7 @@ export class UserInterface extends LitElement {
     tenant: CurrentTenant = DefaultTenant;
 
     @property({ type: Number })
-    notificationsCount = -1;
+    notificationsCount = 0;
 
     static get styles(): CSSResult[] {
         return [
