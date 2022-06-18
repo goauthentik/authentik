@@ -87,7 +87,7 @@ class TokenParams:
             provider=provider,
             client_id=client_id,
             client_secret=client_secret,
-            redirect_uri=request.POST.get("redirect_uri", "").lower(),
+            redirect_uri=request.POST.get("redirect_uri", ""),
             grant_type=request.POST.get("grant_type", ""),
             state=request.POST.get("state", ""),
             scope=request.POST.get("scope", "").split(),
