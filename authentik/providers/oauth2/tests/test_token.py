@@ -33,7 +33,7 @@ class TestToken(OAuthTestCase):
             client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://testserver",
+            redirect_uris="http://TestServer",
             signing_key=self.keypair,
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
@@ -44,7 +44,7 @@ class TestToken(OAuthTestCase):
             data={
                 "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
                 "code": code.code,
-                "redirect_uri": "http://testserver",
+                "redirect_uri": "http://TestServer",
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
