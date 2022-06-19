@@ -106,7 +106,10 @@ class Group(models.Model):
 
             SELECT authentik_core_group.*, parents.relative_depth - 1
             FROM authentik_core_group,parents
-            WHERE authentik_core_group.parent_id = parents.group_uuid
+            WHERE (
+                authentik_core_group.parent_id = parents.group_uuid and
+                parents.relative_depth > -20
+            )
         )
         SELECT group_uuid
         FROM parents
