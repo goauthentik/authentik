@@ -29,7 +29,7 @@ services:
       retries: 5
       timeout: 3s
   server:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.6.2}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.6.3}
     restart: unless-stopped
     command: server
     environment:
@@ -50,7 +50,7 @@ services:
       - "0.0.0.0:${AUTHENTIK_PORT_HTTP:-9000}:9000"
       - "0.0.0.0:${AUTHENTIK_PORT_HTTPS:-9443}:9443"
   worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.6.2}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.6.3}
     restart: unless-stopped
     command: worker
     environment:

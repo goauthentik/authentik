@@ -30,9 +30,9 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik:2022.6.2,
+            beryju/authentik:2022.6.3,
             beryju/authentik:latest,
-            ghcr.io/goauthentik/server:2022.6.2,
+            ghcr.io/goauthentik/server:2022.6.3,
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
           context: .
@@ -69,9 +69,9 @@ jobs:
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
-            beryju/authentik-${{ matrix.type }}:2022.6.2,
+            beryju/authentik-${{ matrix.type }}:2022.6.3,
             beryju/authentik-${{ matrix.type }}:latest,
-            ghcr.io/goauthentik/${{ matrix.type }}:2022.6.2,
+            ghcr.io/goauthentik/${{ matrix.type }}:2022.6.3,
             ghcr.io/goauthentik/${{ matrix.type }}:latest
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
@@ -152,7 +152,7 @@ jobs:
           SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
-          version: authentik@2022.6.2
+          version: authentik@2022.6.3
           environment: beryjuorg-prod
           sourcemaps: './web/dist'
           url_prefix: '~/static/dist'
