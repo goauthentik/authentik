@@ -78,5 +78,8 @@ func (w *Watcher) GetCertificate(ch *tls.ClientHelloInfo) (*tls.Certificate, err
 		return w.fallback, nil
 	}
 	cert := w.cs.Get(*bestSelection.WebCertificate.Get())
+	if cert == nil {
+		return w.fallback, nil
+	}
 	return cert, nil
 }
