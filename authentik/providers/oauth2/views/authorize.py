@@ -465,7 +465,6 @@ class OAuthFulfillmentStage(StageView):
     def create_response_uri(self) -> str:
         """Create a final Response URI the user is redirected to."""
         uri = urlsplit(self.params.redirect_uri)
-        query_params = parse_qs(uri.query)
 
         try:
             code = None
@@ -478,6 +477,7 @@ class OAuthFulfillmentStage(StageView):
                 code.save(force_insert=True)
 
             if self.params.response_mode == ResponseMode.QUERY:
+                query_params = parse_qs(uri.query)
                 query_params["code"] = code.code
                 query_params["state"] = [str(self.params.state) if self.params.state else ""]
 
@@ -494,7 +494,12 @@ class OAuthFulfillmentStage(StageView):
                 return urlunsplit(uri)
 
             if self.params.response_mode == ResponseMode.FORM_POST:
-                post_params = self.create_implicit_response(code)
+                post_params = {}
+                if self.params.grant_type in [GrantTypes.AUTHORIZATION_CODE]:
+                    post_params["code"] = code.code
+                    post_params["state"] = [str(self.params.state) if self.params.state else ""]
+                else:
+                    post_params = self.create_implicit_response(code)
 
                 uri = uri._replace(query=urlencode(post_params, doseq=True))
 

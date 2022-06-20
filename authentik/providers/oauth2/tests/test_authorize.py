@@ -322,18 +322,18 @@ class TestAuthorize(OAuthTestCase):
         )
         self.validate_jwt(token, provider)
 
-    def test_full_form_post(self):
+    def test_full_form_post_id_token(self):
         """Test full authorization (form_post response)"""
         flow = create_test_flow()
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_id="test",
+            client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=flow,
             redirect_uris="http://localhost",
             signing_key=self.keypair,
         )
-        Application.objects.create(name="app", slug="app", provider=provider)
+        app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
         state = generate_id()
         user = create_test_admin_user()
         self.client.force_login(user)
@@ -343,7 +343,7 @@ class TestAuthorize(OAuthTestCase):
             data={
                 "response_type": "id_token",
                 "response_mode": "form_post",
-                "client_id": "test",
+                "client_id": provider.client_id,
                 "state": state,
                 "scope": "openid",
                 "redirect_uri": "http://localhost",
@@ -359,7 +359,7 @@ class TestAuthorize(OAuthTestCase):
                 "component": "ak-stage-autosubmit",
                 "type": ChallengeTypes.NATIVE.value,
                 "url": "http://localhost",
-                "title": "Redirecting to app...",
+                "title": f"Redirecting to {app.name}...",
                 "attrs": {
                     "access_token": token.access_token,
                     "id_token": provider.encode(token.id_token.to_dict()),
@@ -370,3 +370,48 @@ class TestAuthorize(OAuthTestCase):
             },
         )
         self.validate_jwt(token, provider)
+
+    def test_full_form_post_code(self):
+        """Test full authorization (form_post response, code type)"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_key(),
+            authorization_flow=flow,
+            redirect_uris="http://localhost",
+            signing_key=self.keypair,
+        )
+        app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        state = generate_id()
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        # Step 1, initiate params and get redirect to flow
+        self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "response_mode": "form_post",
+                "client_id": provider.client_id,
+                "state": state,
+                "scope": "openid",
+                "redirect_uri": "http://localhost",
+            },
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
+        self.assertJSONEqual(
+            response.content.decode(),
+            {
+                "component": "ak-stage-autosubmit",
+                "type": ChallengeTypes.NATIVE.value,
+                "url": "http://localhost",
+                "title": f"Redirecting to {app.name}...",
+                "attrs": {
+                    "code": code.code,
+                    "state": state,
+                },
+            },
+        )
