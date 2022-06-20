@@ -17,6 +17,7 @@ import (
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/utils/web"
 )
 
 var (
@@ -56,7 +57,7 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 		l.WithError(err).Warning("Failed to create cookiejar")
 		panic(err)
 	}
-	transport := ak.NewUserAgentTransport(constants.OutpostUserAgent(), ak.NewTracingTransport(rsp.Context(), ak.GetTLSTransport()))
+	transport := web.NewUserAgentTransport(constants.OutpostUserAgent(), web.NewTracingTransport(rsp.Context(), ak.GetTLSTransport()))
 	fe := &FlowExecutor{
 		Params:    url.Values{},
 		Answers:   make(map[StageComponent]string),

@@ -16,6 +16,7 @@ import (
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
 	sentryutils "goauthentik.io/internal/utils/sentry"
+	webutils "goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web"
 	"goauthentik.io/internal/web/tenant_tls"
 )
@@ -55,6 +56,7 @@ func main() {
 			TracesSampler:    sentryutils.SamplerFunc(config.G.ErrorReporting.SampleRate),
 			Release:          fmt.Sprintf("authentik@%s", constants.VERSION),
 			Environment:      config.G.ErrorReporting.Environment,
+			HTTPTransport:    webutils.NewUserAgentTransport(constants.UserAgent(), http.DefaultTransport),
 			IgnoreErrors: []string{
 				http.ErrAbortHandler.Error(),
 			},

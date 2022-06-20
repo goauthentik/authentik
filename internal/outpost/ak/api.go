@@ -17,6 +17,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
+	"goauthentik.io/internal/utils/web"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -54,7 +55,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
-		Transport: NewUserAgentTransport(constants.OutpostUserAgent(), NewTracingTransport(rsp.Context(), GetTLSTransport())),
+		Transport: web.NewUserAgentTransport(constants.OutpostUserAgent(), web.NewTracingTransport(rsp.Context(), GetTLSTransport())),
 	}
 	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 
