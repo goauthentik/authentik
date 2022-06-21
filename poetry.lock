@@ -666,7 +666,7 @@ hiredis = ["redis[hiredis] (>=3,!=4.0.0,!=4.0.1)"]
 
 [[package]]
 name = "django-silk"
-version = "4.3.0"
+version = "4.4.0"
 description = "Silky smooth profiling for the Django Framework"
 category = "dev"
 optional = false
@@ -2506,8 +2506,8 @@ django-redis = [
     {file = "django_redis-5.2.0-py3-none-any.whl", hash = "sha256:1d037dc02b11ad7aa11f655d26dac3fb1af32630f61ef4428860a2e29ff92026"},
 ]
 django-silk = [
-    {file = "django-silk-4.3.0.tar.gz", hash = "sha256:15ce316ac56d202bc7f0edab52d90d9b5282a41cbef9e38faab27e642d8a4e2b"},
-    {file = "django_silk-4.3.0-py3-none-any.whl", hash = "sha256:b010e51d9a2408ca0471bc943941676950f1d2906af3d09f9ffcd56f232688fc"},
+    {file = "django-silk-4.4.0.tar.gz", hash = "sha256:476dac9f573bf206d34ef8a8407b51de28d4b7be8adbddcc3addcd25f2479e9b"},
+    {file = "django_silk-4.4.0-py3-none-any.whl", hash = "sha256:c3f673eef78cecc22c94a3683b0f870e6e8c7a7b79227e5568dca76b8c047278"},
 ]
 djangorestframework = [
     {file = "djangorestframework-3.13.1-py3-none-any.whl", hash = "sha256:24c4bf58ed7e85d1fe4ba250ab2da926d263cd57d64b03e8dcef0ac683f8b1aa"},
