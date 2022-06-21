@@ -241,6 +241,18 @@ module.exports = {
                 description: "Troubleshooting various issues",
             },
             items: [
+                {
+                    type: "category",
+                    label: "Forward auth",
+                    items: ["troubleshooting/forward_auth/general"],
+                    link: {
+                        type: "generated-index",
+                        title: "Forward auth troubleshooting",
+                        slug: "troubleshooting/forward_auth",
+                        description:
+                            "Steps to help debug forward auth setups with various reverse proxies.",
+                    },
+                },
                 "troubleshooting/access",
                 "troubleshooting/emails",
                 "troubleshooting/login",
