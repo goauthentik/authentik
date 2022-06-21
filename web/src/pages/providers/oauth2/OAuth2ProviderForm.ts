@@ -193,7 +193,7 @@ ${this.instance?.redirectUris}</textarea
                                     .then((keys) => {
                                         return keys.results.map((key) => {
                                             let selected = this.instance?.signingKey === key.pk;
-                                            if (keys.results.length === 1) {
+                                            if (!this.instance && keys.results.length === 1) {
                                                 selected = true;
                                             }
                                             return html`<option
