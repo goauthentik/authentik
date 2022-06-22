@@ -776,7 +776,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "geoip2"
-version = "4.5.0"
+version = "4.6.0"
 description = "MaxMind GeoIP2 API"
 category = "main"
 optional = false
@@ -2595,8 +2595,8 @@ frozenlist = [
     {file = "frozenlist-1.3.0.tar.gz", hash = "sha256:ce6f2ba0edb7b0c1d8976565298ad2deba6f8064d2bebb6ffce2ca896eb35b0b"},
 ]
 geoip2 = [
-    {file = "geoip2-4.5.0-py2.py3-none-any.whl", hash = "sha256:2aed03b45f8037b9e16f02567bcf3623801d6d20689c5fc5676d7c08ed067334"},
-    {file = "geoip2-4.5.0.tar.gz", hash = "sha256:b542252e87eb40adc3a2fc0f4e84b514c4c5e04ed46923a3a74d509f25f3103a"},
+    {file = "geoip2-4.6.0-py2.py3-none-any.whl", hash = "sha256:745e2d7a665072690056f9566774727da89216c7858793f89804f6945f969714"},
+    {file = "geoip2-4.6.0.tar.gz", hash = "sha256:f0e80bce80b06bb38bd08bf4877d5a84e354e932095e6ccfb4d27bb598fa4f83"},
 ]
 gitdb = [
     {file = "gitdb-4.0.9-py3-none-any.whl", hash = "sha256:8033ad4e853066ba6ca92050b9df2f89301b8fc8bf7e9324d412a63f8bf1a8fd"},
