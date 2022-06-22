@@ -21,6 +21,12 @@ export const ApplyActionsSlot = "apply-actions";
 
 @customElement("ak-wizard")
 export class Wizard extends ModalButton {
+    @property({ type: Boolean })
+    canCancel = true;
+
+    @property({ type: Boolean })
+    canBack = true;
+
     @property()
     header?: string;
 
@@ -109,26 +115,25 @@ export class Wizard extends ModalButton {
         }
         this.currentStep?.requestUpdate();
         const currentIndex = this.currentStep ? this.steps.indexOf(this.currentStep.slot) : 0;
-        const lastPage = currentIndex === this.steps.length - 1;
+        let lastPage = currentIndex === this.steps.length - 1;
         if (lastPage && !this.steps.includes("ak-wizard-page-action") && this.actions.length > 0) {
             this.steps = this.steps.concat("ak-wizard-page-action");
-            // const applyActionsPage = document.createElement("ak-wizard-page-action");
-            // applyActionsPage.slot = ApplyActionsSlot;
-            //     applyActionsPage.dataset["wizardmanaged"] = "true";
-            // this.appendChild(applyActionsPage);
+            lastPage = currentIndex === this.steps.length - 1;
         }
         return html`<div class="pf-c-wizard">
             <div class="pf-c-wizard__header">
-                <button
-                    class="pf-c-button pf-m-plain pf-c-wizard__close"
-                    type="button"
-                    aria-label="${t`Close`}"
-                    @click=${() => {
-                        this.reset();
-                    }}
-                >
-                    <i class="fas fa-times" aria-hidden="true"></i>
-                </button>
+                ${this.canCancel
+                    ? html`<button
+                          class="pf-c-button pf-m-plain pf-c-wizard__close"
+                          type="button"
+                          aria-label="${t`Close`}"
+                          @click=${() => {
+                              this.reset();
+                          }}
+                      >
+                          <i class="fas fa-times" aria-hidden="true"></i>
+                      </button>`
+                    : html``}
                 <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title">${this.header}</h1>
                 <p class="pf-c-wizard__description">${this.description}</p>
             </div>
@@ -196,7 +201,8 @@ export class Wizard extends ModalButton {
                     >
                         ${lastPage ? t`Finish` : t`Next`}
                     </button>
-                    ${(this.currentStep ? this.steps.indexOf(this.currentStep.slot) : 0) > 0
+                    ${(this.currentStep ? this.steps.indexOf(this.currentStep.slot) : 0) > 0 &&
+                    this.canBack
                         ? html`
                               <button
                                   class="pf-c-button pf-m-secondary"
@@ -214,17 +220,19 @@ export class Wizard extends ModalButton {
                               </button>
                           `
                         : html``}
-                    <div class="pf-c-wizard__footer-cancel">
-                        <button
-                            class="pf-c-button pf-m-link"
-                            type="button"
-                            @click=${() => {
-                                this.reset();
-                            }}
-                        >
-                            ${t`Cancel`}
-                        </button>
-                    </div>
+                    ${this.canCancel
+                        ? html`<div class="pf-c-wizard__footer-cancel">
+                              <button
+                                  class="pf-c-button pf-m-link"
+                                  type="button"
+                                  @click=${() => {
+                                      this.reset();
+                                  }}
+                              >
+                                  ${t`Cancel`}
+                              </button>
+                          </div>`
+                        : html``}
                 </footer>
             </div>
         </div>`;
@@ -239,5 +247,7 @@ export class Wizard extends ModalButton {
         this.actions = [];
         this.state = {};
         this.currentStep = undefined;
+        this.canBack = true;
+        this.canCancel = true;
     }
 }

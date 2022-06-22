@@ -13,9 +13,11 @@ import "../../../elements/wizard/Wizard";
 import "./InitialApplicationWizardPage";
 import "./TypeApplicationWizardPage";
 import "./TypeLinkApplicationWizardPage";
-import "./TypeOAuthApplicationWizardPage";
-import "./TypeOAuthDetailsApplicationWizardPage";
-import "./TypeProxyApplicationWizardPage";
+import "./oauth/TypeOAuthAPIApplicationWizardPage";
+import "./oauth/TypeOAuthApplicationWizardPage";
+import "./oauth/TypeOAuthCodeApplicationWizardPage";
+import "./oauth/TypeOAuthImplicitApplicationWizardPage";
+import "./proxy/TypeProxyApplicationWizardPage";
 
 @customElement("ak-application-wizard")
 export class ApplicationWizard extends LitElement {
@@ -28,6 +30,9 @@ export class ApplicationWizard extends LitElement {
 
     @property()
     createText = t`Create`;
+
+    @property({ type: Boolean })
+    showButton = true;
 
     @property({ attribute: false })
     finalHandler: () => Promise<void> = () => {
@@ -45,7 +50,11 @@ export class ApplicationWizard extends LitElement {
                     return this.finalHandler();
                 }}
             >
-                <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
+                ${this.showButton
+                    ? html`<button slot="trigger" class="pf-c-button pf-m-primary">
+                          ${this.createText}
+                      </button>`
+                    : html``}
             </ak-wizard>
         `;
     }

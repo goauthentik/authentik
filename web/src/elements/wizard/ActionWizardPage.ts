@@ -39,7 +39,8 @@ export class ActionWizardPage extends WizardPage {
     @property({ attribute: false })
     currentStep?: ActionStateBundle;
 
-    firstUpdated(): void {
+    activeCallback = async (): Promise<void> => {
+        this.states = [];
         this.host.actions.map((act, idx) => {
             this.states.push({
                 action: act,
@@ -47,9 +48,8 @@ export class ActionWizardPage extends WizardPage {
                 idx: idx,
             });
         });
-    }
-
-    activeCallback = async (): Promise<void> => {
+        this.host.canBack = false;
+        this.host.canCancel = false;
         await this.run();
     };
 

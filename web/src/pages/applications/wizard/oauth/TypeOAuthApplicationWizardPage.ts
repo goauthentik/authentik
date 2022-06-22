@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "../../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
@@ -11,33 +11,33 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { TypeCreate } from "@goauthentik/api";
 
-import "../../../elements/forms/HorizontalFormElement";
-import { WizardPage } from "../../../elements/wizard/WizardPage";
+import { WizardPage } from "../../../../elements/wizard/WizardPage";
+import "../../../../elements/forms/HorizontalFormElement";
 
 @customElement("ak-application-wizard-type-oauth")
 export class TypeOAuthApplicationWizardPage extends WizardPage {
     applicationTypes: TypeCreate[] = [
         {
-            component: "web-app",
+            component: "ak-application-wizard-type-oauth-code",
             name: t`Web application`,
             description: t`Applications which handle the authentication server-side (for example, Python, Go, Rust, Java, PHP)`,
             modelName: "",
         },
         {
-            component: "spa",
+            component: "ak-application-wizard-type-oauth-implicit",
             name: t`Single-page applications`,
             description:
                 "Single-page applications which handle authentication in the browser (for example, Javascript, Angular, React, Vue)",
             modelName: "",
         },
         {
-            component: "native",
+            component: "ak-application-wizard-type-oauth-implicit",
             name: t`Native application`,
             description: t`Applications which redirect users to a non-web callback (for example, Android, iOS)`,
             modelName: "",
         },
         {
-            component: "api",
+            component: "ak-application-wizard-type-oauth-api",
             name: t`API`,
             description: t`Authentication without user interaction, or machine-to-machine authentication.`,
             modelName: "",
@@ -64,7 +64,7 @@ export class TypeOAuthApplicationWizardPage extends WizardPage {
                                 "ak-application-wizard-initial",
                                 "ak-application-wizard-type",
                                 "ak-application-wizard-type-oauth",
-                                "type-oauth-details",
+                                type.component,
                             ];
                             this.host.state["oauth-type"] = type.component;
                             this._isValid = true;
