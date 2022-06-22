@@ -1,6 +1,7 @@
 """authentik core celery"""
 import os
 from logging.config import dictConfig
+from typing import Callable
 
 from celery import Celery
 from celery.signals import (
@@ -10,8 +11,10 @@ from celery.signals import (
     task_internal_error,
     task_postrun,
     task_prerun,
+    worker_ready,
 )
 from django.conf import settings
+from django.db import ProgrammingError
 from structlog.stdlib import get_logger
 
 from authentik.core.middleware import LOCAL
@@ -72,6 +75,34 @@ def task_error_hook(task_id, exception: Exception, traceback, *args, **kwargs):
     LOGGER.warning("Task failure", exc=exception)
     if before_send({}, {"exc_info": (None, exception, None)}) is not None:
         Event.new(EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception)).save()
+
+
+def _get_startup_tasks() -> list[Callable]:
+    """Get all tasks to be run on startup"""
+    from authentik.admin.tasks import clear_update_notifications
+    from authentik.managed.tasks import managed_reconcile
+    from authentik.outposts.tasks import outpost_controller_all, outpost_local_connection
+    from authentik.providers.proxy.tasks import proxy_set_defaults
+
+    return [
+        clear_update_notifications,
+        outpost_local_connection,
+        outpost_controller_all,
+        proxy_set_defaults,
+        managed_reconcile,
+    ]
+
+
+@worker_ready.connect
+def worker_ready_hook(*args, **kwargs):
+    """Run certain tasks on worker start"""
+
+    LOGGER.info("Dispatching startup tasks...")
+    for task in _get_startup_tasks():
+        try:
+            task.delay()
+        except ProgrammingError as exc:
+            LOGGER.warning("Startup task failed", task=task, exc=exc)
 
 
 # Using a string here means the worker doesn't have to serialize

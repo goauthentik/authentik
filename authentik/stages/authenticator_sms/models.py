@@ -1,4 +1,5 @@
-"""OTP Time-based models"""
+"""SMS Authenticator models"""
+from hashlib import sha256
 from typing import Optional
 
 from django.contrib.auth import get_user_model
@@ -45,6 +46,15 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
     auth = models.TextField()
     auth_password = models.TextField(default="", blank=True)
     auth_type = models.TextField(choices=SMSAuthTypes.choices, default=SMSAuthTypes.BASIC)
+
+    verify_only = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, the Phone number is only used during enrollment to verify the "
+            "users authenticity. Only a hash of the phone number is saved to ensure it is "
+            "not re-used in the future."
+        ),
+    )
 
     def send(self, token: str, device: "SMSDevice"):
         """Send message via selected provider"""
@@ -158,6 +168,11 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
         verbose_name_plural = _("SMS Authenticator Setup Stages")
 
 
+def hash_phone_number(phone_number: str) -> str:
+    """Hash phone number with prefix"""
+    return "hash:" + sha256(phone_number.encode()).hexdigest()
+
+
 class SMSDevice(SideChannelDevice):
     """SMS Device"""
 
@@ -169,6 +184,15 @@ class SMSDevice(SideChannelDevice):
     phone_number = models.TextField()
 
     last_t = models.DateTimeField(auto_now=True)
+
+    def set_hashed_number(self):
+        """Set phone_number to hashed number"""
+        self.phone_number = hash_phone_number(self.phone_number)
+
+    @property
+    def is_hashed(self) -> bool:
+        """Check if the phone number is hashed"""
+        return self.phone_number.startswith("hash:")
 
     def verify_token(self, token):
         valid = super().verify_token(token)
@@ -182,3 +206,4 @@ class SMSDevice(SideChannelDevice):
     class Meta:
         verbose_name = _("SMS Device")
         verbose_name_plural = _("SMS Devices")
+        unique_together = (("stage", "phone_number"),)

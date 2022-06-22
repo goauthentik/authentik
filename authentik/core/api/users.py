@@ -24,7 +24,7 @@ from drf_spectacular.utils import (
 )
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, JSONField, SerializerMethodField
+from rest_framework.fields import CharField, JSONField, ListField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -43,10 +43,14 @@ from authentik.api.decorators import permission_required
 from authentik.core.api.groups import GroupSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
-from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
+from authentik.core.middleware import (
+    SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
+    SESSION_KEY_IMPERSONATE_USER,
+)
 from authentik.core.models import (
     USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
+    USER_PATH_SERVICE_ACCOUNT,
     Group,
     Token,
     TokenIntents,
@@ -72,6 +76,16 @@ class UserSerializer(ModelSerializer):
     )
     groups_obj = ListSerializer(child=GroupSerializer(), read_only=True, source="ak_groups")
     uid = CharField(read_only=True)
+    username = CharField(max_length=150)
+
+    def validate_path(self, path: str) -> str:
+        """Validate path"""
+        if path[:1] == "/" or path[-1] == "/":
+            raise ValidationError(_("No leading or trailing slashes allowed."))
+        for segment in path.split("/"):
+            if segment == "":
+                raise ValidationError(_("No empty segments in user path allowed."))
+        return path
 
     class Meta:
 
@@ -89,6 +103,7 @@ class UserSerializer(ModelSerializer):
             "avatar",
             "attributes",
             "uid",
+            "path",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
@@ -204,6 +219,11 @@ class UsersFilter(FilterSet):
     is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
     uuid = CharFilter(field_name="uuid")
 
+    path = CharFilter(
+        field_name="path",
+    )
+    path_startswith = CharFilter(field_name="path", lookup_expr="startswith")
+
     groups_by_name = ModelMultipleChoiceFilter(
         field_name="ak_groups__name",
         to_field_name="name",
@@ -310,6 +330,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     username=username,
                     name=username,
                     attributes={USER_ATTRIBUTE_SA: True, USER_ATTRIBUTE_TOKEN_EXPIRING: False},
+                    path=USER_PATH_SERVICE_ACCOUNT,
                 )
                 if create_group and self.request.user.has_perm("authentik_core.add_group"):
                     group = Group.objects.create(
@@ -335,11 +356,12 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         serializer = SessionUserSerializer(
             data={"user": UserSelfSerializer(instance=request.user, context=context).data}
         )
-        if SESSION_IMPERSONATE_USER in request._request.session:
+        if SESSION_KEY_IMPERSONATE_USER in request._request.session:
             serializer.initial_data["original"] = UserSelfSerializer(
-                instance=request._request.session[SESSION_IMPERSONATE_ORIGINAL_USER],
+                instance=request._request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER],
                 context=context,
             ).data
+        self.request.session.modified = True
         return Response(serializer.initial_data)
 
     @permission_required("authentik_core.reset_user_password")
@@ -366,7 +388,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
             return Response(status=400)
-        if user.pk == request.user.pk and SESSION_IMPERSONATE_USER not in self.request.session:
+        if user.pk == request.user.pk and SESSION_KEY_IMPERSONATE_USER not in self.request.session:
             LOGGER.debug("Updating session hash after password change")
             update_session_auth_hash(self.request, user)
         return Response(status=204)
@@ -459,3 +481,32 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         if self.request.user.has_perm("authentik_core.view_user"):
             return self._filter_queryset_for_list(queryset)
         return super().filter_queryset(queryset)
+
+    @extend_schema(
+        responses={
+            200: inline_serializer(
+                "UserPathSerializer", {"paths": ListField(child=CharField(), read_only=True)}
+            )
+        },
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.STR,
+            )
+        ],
+    )
+    @action(detail=False, pagination_class=None)
+    def paths(self, request: Request) -> Response:
+        """Get all user paths"""
+        return Response(
+            data={
+                "paths": list(
+                    self.filter_queryset(self.get_queryset())
+                    .values("path")
+                    .distinct()
+                    .order_by("path")
+                    .values_list("path", flat=True)
+                )
+            }
+        )

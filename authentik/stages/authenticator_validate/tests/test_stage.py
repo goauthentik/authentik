@@ -9,11 +9,12 @@ from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
 from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
+from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import dummy_get_response
 from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 from authentik.stages.authenticator_validate.stage import (
-    SESSION_DEVICE_CHALLENGES,
+    SESSION_KEY_DEVICE_CHALLENGES,
     AuthenticatorValidationChallengeResponse,
 )
 from authentik.stages.identification.models import IdentificationStage, UserFields
@@ -29,13 +30,13 @@ class AuthenticatorValidateStageTests(FlowTestCase):
     def test_not_configured_action(self):
         """Test not_configured_action"""
         conf_stage = IdentificationStage.objects.create(
-            name="conf",
+            name=generate_id(),
             user_fields=[
                 UserFields.USERNAME,
             ],
         )
         stage = AuthenticatorValidateStage.objects.create(
-            name="foo",
+            name=generate_id(),
             not_configured_action=NotConfiguredAction.CONFIGURE,
         )
         stage.configuration_stages.set([conf_stage])
@@ -67,12 +68,12 @@ class AuthenticatorValidateStageTests(FlowTestCase):
         """Test serializer validation"""
         self.client.force_login(self.user)
         serializer = AuthenticatorValidateStageSerializer(
-            data={"name": "foo", "not_configured_action": NotConfiguredAction.CONFIGURE}
+            data={"name": generate_id(), "not_configured_action": NotConfiguredAction.CONFIGURE}
         )
         self.assertFalse(serializer.is_valid())
         self.assertIn("not_configured_action", serializer.errors)
         serializer = AuthenticatorValidateStageSerializer(
-            data={"name": "foo", "not_configured_action": NotConfiguredAction.DENY}
+            data={"name": generate_id(), "not_configured_action": NotConfiguredAction.DENY}
         )
         self.assertTrue(serializer.is_valid())
 
@@ -83,7 +84,7 @@ class AuthenticatorValidateStageTests(FlowTestCase):
 
         middleware = SessionMiddleware(dummy_get_response)
         middleware.process_request(request)
-        request.session[SESSION_DEVICE_CHALLENGES] = [
+        request.session[SESSION_KEY_DEVICE_CHALLENGES] = [
             {
                 "device_class": "static",
                 "device_uid": "1",

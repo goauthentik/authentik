@@ -10,6 +10,7 @@ from authentik.providers.oauth2.views.introspection import TokenIntrospectionVie
 from authentik.providers.oauth2.views.jwks import JWKSView
 from authentik.providers.oauth2.views.provider import ProviderInfoView
 from authentik.providers.oauth2.views.token import TokenView
+from authentik.providers.oauth2.views.token_revoke import TokenRevokeView
 from authentik.providers.oauth2.views.userinfo import UserInfoView
 
 urlpatterns = [
@@ -28,6 +29,11 @@ urlpatterns = [
         "introspect/",
         csrf_exempt(TokenIntrospectionView.as_view()),
         name="token-introspection",
+    ),
+    path(
+        "revoke/",
+        csrf_exempt(TokenRevokeView.as_view()),
+        name="token-revoke",
     ),
     path(
         "<slug:application_slug>/end-session/",

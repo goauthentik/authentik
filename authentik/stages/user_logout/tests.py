@@ -1,9 +1,9 @@
 """logout tests"""
 from django.urls import reverse
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -17,13 +17,9 @@ class TestUserLogoutStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create(username="unittest", email="test@beryju.org")
+        self.user = create_test_admin_user()
 
-        self.flow = Flow.objects.create(
-            name="test-logout",
-            slug="test-logout",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = UserLogoutStage.objects.create(name="logout")
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 

@@ -9,6 +9,12 @@
     --ak-dark-background-light: #1c1e21;
     --ak-dark-background-light-ish: #212427;
     --ak-dark-background-lighter: #2b2e33;
+
+    --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
 }
 
 html {
@@ -271,6 +277,12 @@ html > form > input {
     .pf-c-select__menu-item:hover {
         --pf-c-select__menu-item--hover--BackgroundColor: var(--ak-dark-background-lighter);
     }
+    .pf-c-select__menu-wrapper:focus-within,
+    .pf-c-select__menu-wrapper.pf-m-focus,
+    .pf-c-select__menu-item:focus,
+    .pf-c-select__menu-item.pf-m-focus {
+        --pf-c-select__menu-item--focus--BackgroundColor: var(--ak-dark-background-light-ish);
+    }
     .pf-c-button.pf-m-plain:hover {
         color: var(--ak-dark-foreground);
     }
@@ -388,6 +400,14 @@ html > form > input {
     .pf-c-wizard__toggle-num,
     .pf-c-wizard__nav-link::before {
         --pf-c-wizard__nav-link--before--BackgroundColor: transparent;
+    }
+    /* tree view */
+    .pf-c-tree-view__node:focus {
+        --pf-c-tree-view__node--focus--BackgroundColor: var(--ak-dark-background-light-ish);
+    }
+    .pf-c-tree-view__content:hover,
+    .pf-c-tree-view__content:focus-within {
+        --pf-c-tree-view__node--hover--BackgroundColor: var(--ak-dark-background-light-ish);
     }
 }
 

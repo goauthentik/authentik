@@ -41,6 +41,7 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
     serializer_class = SAMLSourceSerializer
     lookup_field = "slug"
     filterset_fields = "__all__"
+    search_fields = ["name", "slug"]
     ordering = ["name"]
 
     @extend_schema(responses={200: SAMLMetadataSerializer(many=False)})

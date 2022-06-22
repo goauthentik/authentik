@@ -129,9 +129,9 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                     </option>
                     <option
                         value="${LDAPAPIAccessMode.Direct}"
-                        ?selected=${this.instance?.searchMode === LDAPAPIAccessMode.Direct}
+                        ?selected=${this.instance?.bindMode === LDAPAPIAccessMode.Direct}
                     >
-                        ${t`Direct querying, always execute the configured bind flow to authenticate the user.`}
+                        ${t`Direct binding, always execute the configured bind flow to authenticate the user.`}
                     </option>
                 </select>
                 <p class="pf-c-form__helper-text">

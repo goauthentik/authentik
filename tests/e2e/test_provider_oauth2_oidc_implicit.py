@@ -140,10 +140,10 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         self.container = self.setup_client()
 
         self.driver.get("http://localhost:9009/implicit/")
-        sleep(2)
+        self.wait.until(ec.title_contains("authentik"))
         self.login()
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
-        sleep(1)
+        self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, "pre"), "{"))
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
         self.assertEqual(body["profile"]["nickname"], self.user.username)
         self.assertEqual(body["profile"]["name"], self.user.name)
@@ -185,7 +185,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         self.container = self.setup_client()
 
         self.driver.get("http://localhost:9009/implicit/")
-        sleep(2)
+        self.wait.until(ec.title_contains("authentik"))
         self.login()
 
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
@@ -203,7 +203,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         ).click()
 
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
-        sleep(1)
+        self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, "pre"), "{"))
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
 
         self.assertEqual(body["profile"]["nickname"], self.user.username)
@@ -250,7 +250,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
 
         self.container = self.setup_client()
         self.driver.get("http://localhost:9009/implicit/")
-        sleep(2)
+        self.wait.until(ec.title_contains("authentik"))
         self.login()
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1")))
         self.assertEqual(

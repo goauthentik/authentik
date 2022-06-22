@@ -17,8 +17,8 @@ import { me } from "../api/Users";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_REFRESH,
     EVENT_SIDEBAR_TOGGLE,
+    EVENT_WS_MESSAGE,
     TITLE_DEFAULT,
 } from "../constants";
 
@@ -97,7 +97,7 @@ export class PageHeader extends LitElement {
 
     constructor() {
         super();
-        window.addEventListener(EVENT_REFRESH, () => {
+        window.addEventListener(EVENT_WS_MESSAGE, () => {
             this.firstUpdated();
         });
     }

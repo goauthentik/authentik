@@ -9,6 +9,7 @@ const (
 const (
 	OCGroup              = "group"
 	OCGroupOfUniqueNames = "groupOfUniqueNames"
+	OCGroupOfNames       = "groupOfNames"
 	OCAKGroup            = "goauthentik.io/ldap/group"
 	OCAKVirtualGroup     = "goauthentik.io/ldap/virtual-group"
 )
@@ -53,6 +54,7 @@ func GetGroupOCs() map[string]bool {
 	return map[string]bool{
 		OCGroup:              true,
 		OCGroupOfUniqueNames: true,
+		OCGroupOfNames:       true,
 		OCAKGroup:            true,
 	}
 }
@@ -61,6 +63,7 @@ func GetVirtualGroupOCs() map[string]bool {
 	return map[string]bool{
 		OCGroup:              true,
 		OCGroupOfUniqueNames: true,
+		OCGroupOfNames:       true,
 		OCAKVirtualGroup:     true,
 	}
 }

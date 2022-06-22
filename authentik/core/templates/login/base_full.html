@@ -4,13 +4,19 @@
 {% load i18n %}
 
 {% block head_before %}
+<link rel="prefetch" href="/static/dist/assets/images/flow_background.jpg" />
 <link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly.min.css' %}">
 {% endblock %}
 
 {% block head %}
 <style>
-.pf-c-background-image::before {
+:root {
     --ak-flow-background: url("/static/dist/assets/images/flow_background.jpg");
+    --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
 }
 /* Form with user */
 .form-control-static {

@@ -67,6 +67,9 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         if (item.user) {
             return html` <a href=${`#/identity/users/${item.user}`}> ${label} </a> `;
         }
+        if (item.group) {
+            return html` <a href=${`#/identity/groups/${item.group}`}> ${label} </a> `;
+        }
         return html`${label}`;
     }
 

@@ -8,6 +8,8 @@ Groups can be children of another group. Members of children groups are effectiv
 
 When you bind a group to an application or flow, any members of any child group of the selected group will have access.
 
+Recursion is limited to 20 levels to prevent deadlocks.
+
 ## Attributes
 
 Attributes of groups are recursively merged, for all groups the user is a _direct_ member of.

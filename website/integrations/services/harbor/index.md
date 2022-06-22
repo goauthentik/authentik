@@ -2,6 +2,8 @@
 title: Harbor
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Harbor
 
 From https://goharbor.io

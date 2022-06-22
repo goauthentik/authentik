@@ -1,10 +1,11 @@
 """authentik reputation request signals"""
-from django.contrib.auth.signals import user_logged_in, user_login_failed
+from django.contrib.auth.signals import user_logged_in
 from django.core.cache import cache
 from django.dispatch import receiver
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.core.signals import login_failed
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.reputation.models import CACHE_KEY_PREFIX
@@ -35,7 +36,7 @@ def update_score(request: HttpRequest, identifier: str, amount: int):
     save_reputation.delay()
 
 
-@receiver(user_login_failed)
+@receiver(login_failed)
 # pylint: disable=unused-argument
 def handle_failed_login(sender, request, credentials, **_):
     """Lower Score for failed login attempts"""

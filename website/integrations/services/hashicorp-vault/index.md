@@ -2,6 +2,8 @@
 title: Hashicorp Vault
 ---
 
+<span class="badge badge--primary">Support level: authentik</span>
+
 ## What is Vault
 
 From https://vaultproject.io

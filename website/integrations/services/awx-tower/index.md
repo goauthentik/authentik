@@ -2,6 +2,8 @@
 title: Ansible Tower / AWX
 ---
 
+<span class="badge badge--secondary"></span>
+
 ## What is Tower
 
 From https://docs.ansible.com/ansible/2.5/reference_appendices/tower.html

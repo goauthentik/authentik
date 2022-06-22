@@ -15,6 +15,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     PlexAuthenticationChallenge,
     PlexAuthenticationChallengeResponseRequest,
+    ResponseError,
 } from "@goauthentik/api";
 import { SourcesApi } from "@goauthentik/api";
 
@@ -48,8 +49,8 @@ export class PlexLoginInit extends BaseStage<
                 .then((r) => {
                     window.location.assign(r.to);
                 })
-                .catch((r: Response) => {
-                    r.json().then((body: { detail: string }) => {
+                .catch((r: ResponseError) => {
+                    r.response.json().then((body: { detail: string }) => {
                         showMessage({
                             level: MessageLevel.error,
                             message: body.detail,

@@ -15,12 +15,12 @@ AAD_USER = {
     "displayName": "foo bar",
     "givenName": "foo",
     "jobTitle": None,
-    "mail": "foo@beryju.org",
+    "mail": "foo@goauthentik.io",
     "mobilePhone": None,
     "officeLocation": None,
     "preferredLanguage": None,
     "surname": "bar",
-    "userPrincipalName": "foo@beryju.org",
+    "userPrincipalName": "foo@goauthentik.io",
     "id": "018b0aff-8aff-473e-bf9c-b50e27f52208",
 }
 

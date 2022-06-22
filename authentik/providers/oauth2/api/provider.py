@@ -34,7 +34,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "sub_mode",
             "property_mappings",
             "issuer_mode",
-            "verification_keys",
+            "jwks_sources",
         ]
 
 
@@ -47,6 +47,7 @@ class OAuth2ProviderSetupURLs(PassiveSerializer):
     user_info = CharField(read_only=True)
     provider_info = CharField(read_only=True)
     logout = CharField(read_only=True)
+    jwks = CharField(read_only=True)
 
 
 class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
@@ -71,6 +72,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         "property_mappings",
         "issuer_mode",
     ]
+    search_fields = ["name"]
     ordering = ["name"]
 
     @extend_schema(
@@ -114,6 +116,12 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
             data["logout"] = request.build_absolute_uri(
                 reverse(
                     "authentik_core:if-session-end",
+                    kwargs={"application_slug": provider.application.slug},
+                )
+            )
+            data["jwks"] = request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_oauth2:jwks",
                     kwargs={"application_slug": provider.application.slug},
                 )
             )

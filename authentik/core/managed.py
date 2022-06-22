@@ -12,5 +12,6 @@ class CoreManager(ObjectManager):
                 Source,
                 "goauthentik.io/sources/inbuilt",
                 name="authentik Built-in",
+                slug="authentik-built-in",
             ),
         ]

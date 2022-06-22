@@ -55,13 +55,11 @@ show_missing = true
 [tool.pylint.master]
 disable = [
   "arguments-differ",
-  "no-self-use",
   "fixme",
   "locally-disabled",
   "too-many-ancestors",
   "too-few-public-methods",
   "import-outside-toplevel",
-  "bad-continuation",
   "signature-differs",
   "similarities",
   "cyclic-import",
@@ -92,9 +90,9 @@ addopts = "-p no:celery --junitxml=unittest.xml"
 
 [tool.poetry]
 name = "authentik"
-version = "2022.5.2"
+version = "2022.6.3"
 description = ""
-authors = ["Jens Langhammer <jens.langhammer@beryju.org>"]
+authors = ["authentik Team <hello@goauthentik.io>"]
 
 [tool.poetry.dependencies]
 celery = "*"
@@ -118,7 +116,6 @@ docker = "*"
 drf-spectacular = "*"
 duo-client = "*"
 facebook-sdk = "*"
-flower = "*"
 geoip2 = "*"
 gunicorn = "*"
 kubernetes = "*"

@@ -1,7 +1,7 @@
 name: authentik-web-api-publish
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'schema.yml'
   workflow_dispatch:
@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       # Setup .npmrc file to publish to npm
-      - uses: actions/setup-node@v3.2.0
+      - uses: actions/setup-node@v3.3.0
         with:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'

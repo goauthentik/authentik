@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/utils/sentry"
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
@@ -15,16 +16,17 @@ var (
 	Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
 		Name: "authentik_outpost_ldap_requests",
 		Help: "The total number of configured providers",
-	}, []string{"outpost_name", "type", "dn", "filter", "client"})
+	}, []string{"outpost_name", "type", "app"})
 	RequestsRejected = promauto.NewCounterVec(prometheus.CounterOpts{
 		Name: "authentik_outpost_ldap_requests_rejected",
 		Help: "Total number of rejected requests",
-	}, []string{"outpost_name", "type", "reason", "dn", "client"})
+	}, []string{"outpost_name", "type", "reason", "app"})
 )
 
 func RunServer() {
 	m := mux.NewRouter()
 	l := log.WithField("logger", "authentik.outpost.metrics")
+	m.Use(sentry.SentryNoSampleMiddleware)
 	m.HandleFunc("/outpost.goauthentik.io/ping", func(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(204)
 	})

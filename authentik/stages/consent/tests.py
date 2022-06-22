@@ -3,10 +3,11 @@ from time import sleep
 
 from django.urls import reverse
 
-from authentik.core.models import Application, User
+from authentik.core.models import Application
 from authentik.core.tasks import clean_expired_models
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -18,7 +19,7 @@ class TestConsentStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user(username="unittest", email="test@beryju.org")
+        self.user = create_test_admin_user()
         self.application = Application.objects.create(
             name="test-application",
             slug="test-application",
@@ -26,11 +27,7 @@ class TestConsentStage(FlowTestCase):
 
     def test_always_required(self):
         """Test always required consent"""
-        flow = Flow.objects.create(
-            name="test-consent",
-            slug="test-consent",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         stage = ConsentStage.objects.create(name="consent", mode=ConsentMode.ALWAYS_REQUIRE)
         binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
 
@@ -50,11 +47,7 @@ class TestConsentStage(FlowTestCase):
     def test_permanent(self):
         """Test permanent consent from user"""
         self.client.force_login(self.user)
-        flow = Flow.objects.create(
-            name="test-consent",
-            slug="test-consent",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         stage = ConsentStage.objects.create(name="consent", mode=ConsentMode.PERMANENT)
         binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
 
@@ -80,11 +73,7 @@ class TestConsentStage(FlowTestCase):
     def test_expire(self):
         """Test expiring consent from user"""
         self.client.force_login(self.user)
-        flow = Flow.objects.create(
-            name="test-consent",
-            slug="test-consent",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         stage = ConsentStage.objects.create(
             name="consent", mode=ConsentMode.EXPIRING, consent_expire_in="seconds=1"
         )

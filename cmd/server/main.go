@@ -15,6 +15,8 @@ import (
 	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
+	sentryutils "goauthentik.io/internal/utils/sentry"
+	webutils "goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web"
 	"goauthentik.io/internal/web/tenant_tls"
 )
@@ -51,9 +53,10 @@ func main() {
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn:              config.G.ErrorReporting.DSN,
 			AttachStacktrace: true,
-			TracesSampleRate: config.G.ErrorReporting.SampleRate,
+			TracesSampler:    sentryutils.SamplerFunc(config.G.ErrorReporting.SampleRate),
 			Release:          fmt.Sprintf("authentik@%s", constants.VERSION),
 			Environment:      config.G.ErrorReporting.Environment,
+			HTTPTransport:    webutils.NewUserAgentTransport(constants.UserAgent(), http.DefaultTransport),
 			IgnoreErrors: []string{
 				http.ErrAbortHandler.Error(),
 			},
@@ -124,7 +127,7 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 		ws.ProxyServer = srv
 		ac.Server = srv
 		l.Debug("attempting to start outpost")
-		err := ac.StartBackgorundTasks()
+		err := ac.StartBackgroundTasks()
 		if err != nil {
 			l.WithError(err).Warning("outpost failed to start")
 			attempt += 1

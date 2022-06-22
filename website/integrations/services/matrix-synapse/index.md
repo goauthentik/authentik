@@ -2,6 +2,8 @@
 title: Matrix Synapse
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Matrix Synapse
 
 From https://matrix.org/

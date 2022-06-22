@@ -10,6 +10,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/outpost/ldap/bind"
 	directbind "goauthentik.io/internal/outpost/ldap/bind/direct"
 	memorybind "goauthentik.io/internal/outpost/ldap/bind/memory"
 	"goauthentik.io/internal/outpost/ldap/constants"
@@ -83,7 +84,11 @@ func (ls *LDAPServer) Refresh() error {
 			providers[idx].searcher = directsearch.NewDirectSearcher(providers[idx])
 		}
 		if *provider.BindMode.Ptr() == api.LDAPAPIACCESSMODE_CACHED {
-			providers[idx].binder = memorybind.NewSessionBinder(providers[idx])
+			var oldBinder bind.Binder
+			if existing != nil {
+				oldBinder = existing.binder
+			}
+			providers[idx].binder = memorybind.NewSessionBinder(providers[idx], oldBinder)
 		} else if *provider.BindMode.Ptr() == api.LDAPAPIACCESSMODE_DIRECT {
 			providers[idx].binder = directbind.NewDirectBinder(providers[idx])
 		}

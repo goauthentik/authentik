@@ -23,7 +23,10 @@ from requests import RequestException
 from structlog.stdlib import get_logger
 
 from authentik import __version__
-from authentik.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER, SESSION_IMPERSONATE_USER
+from authentik.core.middleware import (
+    SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
+    SESSION_KEY_IMPERSONATE_USER,
+)
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
 from authentik.events.geo import GEOIP_READER
 from authentik.events.utils import cleanse_dict, get_user, model_to_dict, sanitize_dict
@@ -233,15 +236,15 @@ class Event(ExpiringModel):
         if hasattr(request, "user"):
             original_user = None
             if hasattr(request, "session"):
-                original_user = request.session.get(SESSION_IMPERSONATE_ORIGINAL_USER, None)
+                original_user = request.session.get(SESSION_KEY_IMPERSONATE_ORIGINAL_USER, None)
             self.user = get_user(request.user, original_user)
         if user:
             self.user = get_user(user)
         # Check if we're currently impersonating, and add that user
         if hasattr(request, "session"):
-            if SESSION_IMPERSONATE_ORIGINAL_USER in request.session:
-                self.user = get_user(request.session[SESSION_IMPERSONATE_ORIGINAL_USER])
-                self.user["on_behalf_of"] = get_user(request.session[SESSION_IMPERSONATE_USER])
+            if SESSION_KEY_IMPERSONATE_ORIGINAL_USER in request.session:
+                self.user = get_user(request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER])
+                self.user["on_behalf_of"] = get_user(request.session[SESSION_KEY_IMPERSONATE_USER])
         # User 255.255.255.255 as fallback if IP cannot be determined
         self.client_ip = get_client_ip(request)
         # Apply GeoIP Data, when enabled
@@ -289,6 +292,7 @@ class Event(ExpiringModel):
 class TransportMode(models.TextChoices):
     """Modes that a notification transport can send a notification"""
 
+    LOCAL = "local", _("authentik inbuilt notifications")
     WEBHOOK = "webhook", _("Generic Webhook")
     WEBHOOK_SLACK = "webhook_slack", _("Slack Webhook (Slack/Discord)")
     EMAIL = "email", _("Email")
@@ -300,7 +304,7 @@ class NotificationTransport(models.Model):
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField(unique=True)
-    mode = models.TextField(choices=TransportMode.choices)
+    mode = models.TextField(choices=TransportMode.choices, default=TransportMode.LOCAL)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
     webhook_mapping = models.ForeignKey(
@@ -315,6 +319,8 @@ class NotificationTransport(models.Model):
 
     def send(self, notification: "Notification") -> list[str]:
         """Send notification to user, called from async task"""
+        if self.mode == TransportMode.LOCAL:
+            return self.send_local(notification)
         if self.mode == TransportMode.WEBHOOK:
             return self.send_webhook(notification)
         if self.mode == TransportMode.WEBHOOK_SLACK:
@@ -322,6 +328,17 @@ class NotificationTransport(models.Model):
         if self.mode == TransportMode.EMAIL:
             return self.send_email(notification)
         raise ValueError(f"Invalid mode {self.mode} set")
+
+    def send_local(self, notification: "Notification") -> list[str]:
+        """Local notification delivery"""
+        if self.webhook_mapping:
+            self.webhook_mapping.evaluate(
+                user=notification.user,
+                request=None,
+                notification=notification,
+            )
+        notification.save()
+        return []
 
     def send_webhook(self, notification: "Notification") -> list[str]:
         """Send notification to generic webhook"""
@@ -481,6 +498,7 @@ class NotificationRule(PolicyBindingModel):
                 "selected, the notification will only be shown in the authentik UI."
             )
         ),
+        blank=True,
     )
     severity = models.TextField(
         choices=NotificationSeverity.choices,

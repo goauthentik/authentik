@@ -5,7 +5,6 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import copy from "rollup-plugin-copy";
 import cssimport from "rollup-plugin-cssimport";
-import sourcemaps from "rollup-plugin-sourcemaps";
 import { terser } from "rollup-plugin-terser";
 
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
@@ -86,7 +85,6 @@ export const defaultOptions = {
             "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
             "preventAssignment": true,
         }),
-        sourcemaps(),
         isProdBuild && terser(),
     ].filter((p) => p),
     watch: {

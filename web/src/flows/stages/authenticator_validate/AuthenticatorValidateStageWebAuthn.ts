@@ -40,6 +40,8 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     @property({ type: Boolean })
     showBackButton = false;
 
+    transformedCredentialRequestOptions?: PublicKeyCredentialRequestOptions;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -55,19 +57,12 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     }
 
     async authenticate(): Promise<void> {
-        // convert certain members of the PublicKeyCredentialRequestOptions into
-        // byte arrays as expected by the spec.
-        const credentialRequestOptions = this.deviceChallenge
-            ?.challenge as PublicKeyCredentialRequestOptions;
-        const transformedCredentialRequestOptions =
-            transformCredentialRequestOptions(credentialRequestOptions);
-
         // request the authenticator to create an assertion signature using the
         // credential private key
         let assertion;
         try {
             assertion = await navigator.credentials.get({
-                publicKey: transformedCredentialRequestOptions,
+                publicKey: this.transformedCredentialRequestOptions,
             });
             if (!assertion) {
                 throw new Error(t`Assertions is empty`);
@@ -93,6 +88,12 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     }
 
     firstUpdated(): void {
+        // convert certain members of the PublicKeyCredentialRequestOptions into
+        // byte arrays as expected by the spec.
+        const credentialRequestOptions = this.deviceChallenge
+            ?.challenge as PublicKeyCredentialRequestOptions;
+        this.transformedCredentialRequestOptions =
+            transformCredentialRequestOptions(credentialRequestOptions);
         this.authenticateWrapper();
     }
 

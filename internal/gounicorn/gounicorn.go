@@ -10,7 +10,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
-	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/utils/web"
 )
 
 type GoUnicorn struct {
@@ -70,7 +70,7 @@ func (g *GoUnicorn) Start() error {
 func (g *GoUnicorn) healthcheck() {
 	g.log.Debug("starting healthcheck")
 	h := &http.Client{
-		Transport: ak.NewUserAgentTransport("goauthentik.io/proxy/healthcheck", http.DefaultTransport),
+		Transport: web.NewUserAgentTransport("goauthentik.io/proxy/healthcheck", http.DefaultTransport),
 	}
 	check := func() bool {
 		res, err := h.Get("http://localhost:8000/-/health/live/")

@@ -6,8 +6,8 @@ from django.test import RequestFactory
 from django.urls import reverse
 from jwt import decode
 
-from authentik.core.models import USER_ATTRIBUTE_SA, Application, Group
-from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.core.models import Application, Group
+from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.managed.manager import ObjectManager
 from authentik.policies.models import PolicyBinding
@@ -19,9 +19,11 @@ from authentik.providers.oauth2.constants import (
 )
 from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
+from authentik.providers.oauth2.views.jwks import JWKSView
+from authentik.sources.oauth.models import OAuthSource
 
 
-class TestTokenClientCredentialsJWT(OAuthTestCase):
+class TestTokenClientCredentialsJWTSource(OAuthTestCase):
     """Test token (client_credentials, with JWT) view"""
 
     def setUp(self) -> None:
@@ -29,6 +31,24 @@ class TestTokenClientCredentialsJWT(OAuthTestCase):
         ObjectManager().run()
         self.factory = RequestFactory()
         self.cert = create_test_cert()
+
+        jwk = JWKSView().get_jwk_for_key(self.cert)
+        self.source: OAuthSource = OAuthSource.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider_type="openidconnect",
+            consumer_key=generate_id(),
+            consumer_secret=generate_key(),
+            authorization_url="http://foo",
+            access_token_url=f"http://{generate_id()}",
+            profile_url="http://foo",
+            oidc_well_known_url="",
+            oidc_jwks_url="",
+            oidc_jwks={
+                "keys": [jwk],
+            },
+        )
+
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name="test",
             client_id=generate_id(),
@@ -37,12 +57,9 @@ class TestTokenClientCredentialsJWT(OAuthTestCase):
             redirect_uris="http://testserver",
             signing_key=self.cert,
         )
-        self.provider.verification_keys.set([self.cert])
+        self.provider.jwks_sources.add(self.source)
         self.provider.property_mappings.set(ScopeMapping.objects.all())
         self.app = Application.objects.create(name="test", slug="test", provider=self.provider)
-        self.user = create_test_admin_user("sa")
-        self.user.attributes[USER_ATTRIBUTE_SA] = True
-        self.user.save()
 
     def test_invalid_type(self):
         """test invalid type"""
@@ -76,7 +93,7 @@ class TestTokenClientCredentialsJWT(OAuthTestCase):
         body = loads(response.content.decode())
         self.assertEqual(body["error"], "invalid_grant")
 
-    def test_invalid_signautre(self):
+    def test_invalid_signature(self):
         """test invalid JWT"""
         token = self.provider.encode(
             {

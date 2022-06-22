@@ -2,13 +2,14 @@
 from base64 import urlsafe_b64encode
 from dataclasses import InitVar, dataclass
 from hashlib import sha256
+from re import error as RegexError
 from re import fullmatch
 from typing import Any, Optional
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import datetime, now
 from django.views import View
-from jwt import InvalidTokenError, decode
+from jwt import PyJWK, PyJWTError, decode
 from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
@@ -20,7 +21,6 @@ from authentik.core.models import (
     TokenIntents,
     User,
 )
-from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
@@ -37,11 +37,11 @@ from authentik.providers.oauth2.errors import TokenError, UserAuthError
 from authentik.providers.oauth2.models import (
     AuthorizationCode,
     ClientTypes,
-    JWTAlgorithms,
     OAuth2Provider,
     RefreshToken,
 )
 from authentik.providers.oauth2.utils import TokenResponse, cors_allow, extract_client_auth
+from authentik.sources.oauth.models import OAuthSource
 
 LOGGER = get_logger()
 
@@ -87,7 +87,7 @@ class TokenParams:
             provider=provider,
             client_id=client_id,
             client_secret=client_secret,
-            redirect_uri=request.POST.get("redirect_uri", "").lower(),
+            redirect_uri=request.POST.get("redirect_uri", ""),
             grant_type=request.POST.get("grant_type", ""),
             state=request.POST.get("state", ""),
             scope=request.POST.get("scope", "").split(),
@@ -126,7 +126,7 @@ class TokenParams:
             with Hub.current.start_span(
                 op="authentik.providers.oauth2.post.parse.code",
             ):
-                self.__post_init_code(raw_code)
+                self.__post_init_code(raw_code, request)
         elif self.grant_type == GRANT_TYPE_REFRESH_TOKEN:
             with Hub.current.start_span(
                 op="authentik.providers.oauth2.post.parse.refresh",
@@ -141,7 +141,7 @@ class TokenParams:
             LOGGER.warning("Invalid grant type", grant_type=self.grant_type)
             raise TokenError("unsupported_grant_type")
 
-    def __post_init_code(self, raw_code: str):
+    def __post_init_code(self, raw_code: str, request: HttpRequest):
         if not raw_code:
             LOGGER.warning("Missing authorization code")
             raise TokenError("invalid_grant")
@@ -149,13 +149,35 @@ class TokenParams:
         allowed_redirect_urls = self.provider.redirect_uris.split()
         # At this point, no provider should have a blank redirect_uri, in case they do
         # this will check an empty array and raise an error
-        if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
-            LOGGER.warning(
-                "Invalid redirect uri",
-                redirect_uri=self.redirect_uri,
-                excepted=allowed_redirect_urls,
-            )
-            raise TokenError("invalid_client")
+        try:
+            if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
+                LOGGER.warning(
+                    "Invalid redirect uri (regex comparison)",
+                    redirect_uri=self.redirect_uri,
+                    expected=allowed_redirect_urls,
+                )
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message="Invalid redirect URI used by provider",
+                    provider=self.provider,
+                    redirect_uri=self.redirect_uri,
+                    expected=allowed_redirect_urls,
+                ).from_http(request)
+                raise TokenError("invalid_client")
+        except RegexError as exc:
+            LOGGER.info("Failed to parse regular expression, checking directly", exc=exc)
+            if not any(x == self.redirect_uri for x in allowed_redirect_urls):
+                LOGGER.warning(
+                    "Invalid redirect uri (strict comparison)",
+                    redirect_uri=self.redirect_uri,
+                    expected=allowed_redirect_urls,
+                )
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message="Invalid redirect_uri configured",
+                    provider=self.provider,
+                ).from_http(request)
+                raise TokenError("invalid_client")
 
         try:
             self.authorization_code = AuthorizationCode.objects.get(code=raw_code)
@@ -253,35 +275,45 @@ class TokenParams:
         ).from_http(request, user=user)
         return None
 
+    # pylint: disable=too-many-locals
     def __post_init_client_credentials_jwt(self, request: HttpRequest):
         assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
         if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
+            LOGGER.warning("Invalid assertion type", assertion_type=assertion_type)
             raise TokenError("invalid_grant")
 
         client_secret = request.POST.get("client_secret", None)
         assertion = request.POST.get(CLIENT_ASSERTION, client_secret)
         if not assertion:
+            LOGGER.warning("Missing client assertion")
             raise TokenError("invalid_grant")
 
         token = None
-        for cert in self.provider.verification_keys.all():
-            LOGGER.debug("verifying jwt with key", key=cert.name)
-            cert: CertificateKeyPair
-            public_key = cert.certificate.public_key()
-            if cert.private_key:
-                public_key = cert.private_key.public_key()
-            try:
-                token = decode(
-                    assertion,
-                    public_key,
-                    algorithms=[JWTAlgorithms.RS256, JWTAlgorithms.ES256],
-                    options={
-                        "verify_aud": False,
-                    },
-                )
-            except (InvalidTokenError, ValueError, TypeError) as last_exc:
-                LOGGER.warning("failed to validate jwt", last_exc=last_exc)
+
+        source: Optional[OAuthSource] = None
+        parsed_key: Optional[PyJWK] = None
+        for source in self.provider.jwks_sources.all():
+            LOGGER.debug("verifying jwt with source", source=source.name)
+            keys = source.oidc_jwks.get("keys", [])
+            for key in keys:
+                LOGGER.debug("verifying jwt with key", source=source.name, key=key.get("kid"))
+                try:
+                    parsed_key = PyJWK.from_dict(key)
+                    token = decode(
+                        assertion,
+                        parsed_key.key,
+                        algorithms=[key.get("alg")],
+                        options={
+                            "verify_aud": False,
+                        },
+                    )
+                # AttributeError is raised when the configured JWK is a private key
+                # and not a public key
+                except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
+                    LOGGER.warning("failed to validate jwt", exc=exc)
+
         if not token:
+            LOGGER.warning("No token could be verified")
             raise TokenError("invalid_grant")
 
         if "exp" in token:
@@ -297,27 +329,39 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
         self.__check_policy_access(app, request, oauth_jwt=token)
+        self.__create_user_from_jwt(token, app, source)
 
-        self.user, _ = User.objects.update_or_create(
+        method_args = {
+            "jwt": token,
+        }
+        if source:
+            method_args["source"] = source
+        if parsed_key:
+            method_args["jwk_id"] = parsed_key.key_id
+        Event.new(
+            action=EventAction.LOGIN,
+            PLAN_CONTEXT_METHOD="jwt",
+            PLAN_CONTEXT_METHOD_ARGS=method_args,
+            PLAN_CONTEXT_APPLICATION=app,
+        ).from_http(request, user=self.user)
+
+    def __create_user_from_jwt(self, token: dict[str, Any], app: Application, source: OAuthSource):
+        """Create user from JWT"""
+        exp = token.get("exp")
+        self.user, created = User.objects.update_or_create(
             username=f"{self.provider.name}-{token.get('sub')}",
             defaults={
                 "attributes": {
                     USER_ATTRIBUTE_GENERATED: True,
-                    USER_ATTRIBUTE_EXPIRES: token.get("exp"),
                 },
                 "last_login": now(),
                 "name": f"Autogenerated user from application {app.name} (client credentials JWT)",
+                "path": source.get_user_path(),
             },
         )
-
-        Event.new(
-            action=EventAction.LOGIN,
-            PLAN_CONTEXT_METHOD="jwt",
-            PLAN_CONTEXT_METHOD_ARGS={
-                "jwt": token,
-            },
-            PLAN_CONTEXT_APPLICATION=app,
-        ).from_http(request, user=self.user)
+        if created and exp:
+            self.user.attributes[USER_ATTRIBUTE_EXPIRES] = exp
+            self.user.save()
 
 
 class TokenView(View):

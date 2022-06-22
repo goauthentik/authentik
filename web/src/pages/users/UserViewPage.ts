@@ -23,6 +23,7 @@ import { EVENT_REFRESH } from "../../constants";
 import "../../elements/CodeMirror";
 import { PFColor } from "../../elements/Label";
 import "../../elements/PageHeader";
+import { PFSize } from "../../elements/Spinner";
 import "../../elements/Tabs";
 import "../../elements/buttons/ActionButton";
 import "../../elements/buttons/SpinnerButton";
@@ -38,6 +39,7 @@ import "../../elements/user/UserConsentList";
 import "../groups/RelatedGroupList";
 import "./UserActiveForm";
 import "./UserForm";
+import "./UserPasswordForm";
 
 @customElement("ak-user-view")
 export class UserViewPage extends LitElement {
@@ -195,6 +197,21 @@ export class UserViewPage extends LitElement {
                                 </button>
                             </ak-forms-modal>
                         </div>
+                        ${until(
+                            config().then((config) => {
+                                if (config.capabilities.includes(CapabilitiesEnum.Impersonate)) {
+                                    return html` <div class="pf-c-card__footer">
+                                        <a
+                                            class="pf-c-button pf-m-tertiary"
+                                            href="${`/-/impersonation/${this.user?.pk}/`}"
+                                        >
+                                            ${t`Impersonate`}
+                                        </a>
+                                    </div>`;
+                                }
+                                return html``;
+                            }),
+                        )}
                         <div class="pf-c-card__footer">
                             <ak-user-active-form
                                 .obj=${this.user}
@@ -240,22 +257,19 @@ export class UserViewPage extends LitElement {
                                 ${t`Reset Password`}
                             </ak-action-button>
                         </div>
-
-                        ${until(
-                            config().then((config) => {
-                                if (config.capabilities.includes(CapabilitiesEnum.Impersonate)) {
-                                    return html` <div class="pf-c-card__footer">
-                                        <a
-                                            class="pf-c-button pf-m-tertiary"
-                                            href="${`/-/impersonation/${this.user?.pk}/`}"
-                                        >
-                                            ${t`Impersonate`}
-                                        </a>
-                                    </div>`;
-                                }
-                                return html``;
-                            }),
-                        )}
+                        <div class="pf-c-card__footer">
+                            <ak-forms-modal size=${PFSize.Medium}>
+                                <span slot="submit">${t`Update password`}</span>
+                                <span slot="header">${t`Update password`}</span>
+                                <ak-user-password-form
+                                    slot="form"
+                                    .instancePk=${this.user?.pk}
+                                ></ak-user-password-form>
+                                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                    ${t`Set password`}
+                                </button>
+                            </ak-forms-modal>
+                        </div>
                     </div>
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"

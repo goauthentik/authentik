@@ -14,6 +14,7 @@ import {
     OAuth2Provider,
     PropertymappingsApi,
     ProvidersApi,
+    SourcesApi,
     SubModeEnum,
 } from "@goauthentik/api";
 
@@ -162,7 +163,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Redirect URIs/Origins`}
+                        label=${t`Redirect URIs/Origins (RegEx)`}
                         name="redirectUris"
                     >
                         <textarea class="pf-c-form-control">
@@ -175,7 +176,7 @@ ${this.instance?.redirectUris}</textarea
                             ${t`If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.`}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`To allow any redirect URI, set this value to "*". Be aware of the possible security implications this can have.`}
+                            ${t`To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Signing Key`} name="signingKey">
@@ -192,7 +193,7 @@ ${this.instance?.redirectUris}</textarea
                                     .then((keys) => {
                                         return keys.results.map((key) => {
                                             let selected = this.instance?.signingKey === key.pk;
-                                            if (keys.results.length === 1) {
+                                            if (!this.instance && keys.results.length === 1) {
                                                 selected = true;
                                             }
                                             return html`<option
@@ -290,41 +291,6 @@ ${this.instance?.redirectUris}</textarea
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Verification certificates`}
-                        name="verificationKeys"
-                    >
-                        <select class="pf-c-form-control" multiple>
-                            ${until(
-                                new CryptoApi(DEFAULT_CONFIG)
-                                    .cryptoCertificatekeypairsList({
-                                        ordering: "name",
-                                    })
-                                    .then((keys) => {
-                                        return keys.results.map((key) => {
-                                            const selected = (
-                                                this.instance?.verificationKeys || []
-                                            ).some((su) => {
-                                                return su == key.pk;
-                                            });
-                                            return html`<option
-                                                value=${key.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${key.name} (${key.privateKeyType?.toUpperCase()})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${t`JWTs signed by certificates configured here can be used to authenticate to the provider.`}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
                         label=${t`Subject mode`}
                         ?required=${true}
                         name="subMode"
@@ -396,6 +362,47 @@ ${this.instance?.redirectUris}</textarea
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Configure how the issuer field of the ID Token should be filled.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+
+            <ak-form-group>
+                <span slot="header">${t`Machine-to-Machine authentication settings`}</span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${t`Trusted OIDC Sources`} name="jwksSources">
+                        <select class="pf-c-form-control" multiple>
+                            ${until(
+                                new SourcesApi(DEFAULT_CONFIG)
+                                    .sourcesOauthList({
+                                        ordering: "name",
+                                    })
+                                    .then((sources) => {
+                                        return sources.results.map((source) => {
+                                            const selected = (
+                                                this.instance?.jwksSources || []
+                                            ).some((su) => {
+                                                return su == source.pk;
+                                            });
+                                            return html`<option
+                                                value=${source.pk}
+                                                ?selected=${selected}
+                                            >
+                                                ${source.name} (${source.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Deprecated. Instead of using this field, configure the JWKS data/URL in Sources.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`JWTs signed by certificates configured here can be used to authenticate to the provider.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Hold control/command to select multiple items.`}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

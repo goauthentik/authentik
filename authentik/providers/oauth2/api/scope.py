@@ -39,3 +39,4 @@ class ScopeMappingViewSet(UsedByMixin, ModelViewSet):
     serializer_class = ScopeMappingSerializer
     filterset_class = ScopeMappingFilter
     ordering = ["scope_name", "name"]
+    search_fields = ["name", "scope_name"]

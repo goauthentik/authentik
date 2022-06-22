@@ -4,22 +4,26 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
+import AKGlobal from "../../authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CapabilitiesEnum, CoreApi, User } from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, ResponseError, User } from "@goauthentik/api";
 
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG, config, tenant } from "../../api/Config";
 import { me } from "../../api/Users";
 import { uiConfig } from "../../common/config";
 import { PFColor } from "../../elements/Label";
+import { PFSize } from "../../elements/Spinner";
+import "../../elements/TreeView";
 import "../../elements/buttons/ActionButton";
 import "../../elements/forms/DeleteBulkForm";
 import "../../elements/forms/ModalForm";
 import { MessageLevel } from "../../elements/messages/Message";
 import { showMessage } from "../../elements/messages/MessageContainer";
-import { getURLParam, updateURLParams } from "../../elements/router/RouteMatch";
+import { getURLParam } from "../../elements/router/RouteMatch";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import { first } from "../../utils";
@@ -50,11 +54,11 @@ export class UserListPage extends TablePage<User> {
     @property()
     order = "last_login";
 
-    @property({ type: Boolean })
-    hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
+    @property()
+    activePath = getURLParam<string>("path", "/");
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFAlert);
+        return super.styles.concat(PFDescriptionList, PFCard, PFAlert, AKGlobal);
     }
 
     async apiEndpoint(page: number): Promise<AKResponse<User>> {
@@ -63,11 +67,7 @@ export class UserListPage extends TablePage<User> {
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
-            attributes: this.hideServiceAccounts
-                ? JSON.stringify({
-                      "goauthentik.io/user/service-account__isnull": true,
-                  })
-                : undefined,
+            pathStartswith: getURLParam("path", ""),
         });
     }
 
@@ -215,7 +215,7 @@ export class UserListPage extends TablePage<User> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    <ak-forms-modal>
+                                    <ak-forms-modal size=${PFSize.Medium}>
                                         <span slot="submit">${t`Update password`}</span>
                                         <span slot="header">${t`Update password`}</span>
                                         <ak-user-password-form
@@ -250,8 +250,8 @@ export class UserListPage extends TablePage<User> {
                                                                     description: rec.link,
                                                                 });
                                                             })
-                                                            .catch((ex: Response) => {
-                                                                ex.json().then(() => {
+                                                            .catch((ex: ResponseError) => {
+                                                                ex.response.json().then(() => {
                                                                     showMessage({
                                                                         level: MessageLevel.error,
                                                                         message: t`No recovery flow is configured.`,
@@ -319,33 +319,25 @@ export class UserListPage extends TablePage<User> {
         `;
     }
 
-    renderToolbarAfter(): TemplateResult {
-        return html`&nbsp;
-            <div class="pf-c-toolbar__group pf-m-filter-group">
-                <div class="pf-c-toolbar__item pf-m-search-filter">
-                    <div class="pf-c-input-group">
-                        <div class="pf-c-check">
-                            <input
-                                class="pf-c-check__input"
-                                type="checkbox"
-                                id="hide-service-accounts"
-                                name="hide-service-accounts"
-                                ?checked=${this.hideServiceAccounts}
-                                @change=${() => {
-                                    this.hideServiceAccounts = !this.hideServiceAccounts;
-                                    this.page = 1;
-                                    this.fetch();
-                                    updateURLParams({
-                                        hideServiceAccounts: this.hideServiceAccounts,
-                                    });
-                                }}
-                            />
-                            <label class="pf-c-check__label" for="hide-service-accounts">
-                                ${t`Hide service-accounts`}
-                            </label>
-                        </div>
-                    </div>
+    renderSidebarBefore(): TemplateResult {
+        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
+            <div class="pf-c-card">
+                <div class="pf-c-card__title">${t`User folders`}</div>
+                <div class="pf-c-card__body">
+                    ${until(
+                        new CoreApi(DEFAULT_CONFIG)
+                            .coreUsersPathsRetrieve({
+                                search: this.search,
+                            })
+                            .then((paths) => {
+                                return html`<ak-treeview
+                                    .items=${paths.paths}
+                                    activePath=${this.activePath}
+                                ></ak-treeview>`;
+                            }),
+                    )}
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 }

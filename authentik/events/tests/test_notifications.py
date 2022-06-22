@@ -11,7 +11,10 @@ from authentik.events.models import (
     Notification,
     NotificationRule,
     NotificationTransport,
+    NotificationWebhookMapping,
+    TransportMode,
 )
+from authentik.lib.generators import generate_id
 from authentik.policies.event_matcher.models import EventMatcherPolicy
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
@@ -105,4 +108,26 @@ class TestEventsNotifications(TestCase):
         execute_mock = MagicMock()
         with patch("authentik.events.models.NotificationTransport.send", execute_mock):
             Event.new(EventAction.CUSTOM_PREFIX).save()
-        self.assertEqual(Notification.objects.count(), 1)
+        self.assertEqual(execute_mock.call_count, 1)
+
+    def test_transport_mapping(self):
+        """Test transport mapping"""
+        mapping = NotificationWebhookMapping.objects.create(
+            name=generate_id(),
+            expression="""notification.body = 'foo'""",
+        )
+
+        transport = NotificationTransport.objects.create(
+            name="transport", webhook_mapping=mapping, mode=TransportMode.LOCAL
+        )
+        NotificationRule.objects.filter(name__startswith="default").delete()
+        trigger = NotificationRule.objects.create(name="trigger", group=self.group)
+        trigger.transports.add(transport)
+        matcher = EventMatcherPolicy.objects.create(
+            name="matcher", action=EventAction.CUSTOM_PREFIX
+        )
+        PolicyBinding.objects.create(target=trigger, policy=matcher, order=0)
+
+        Notification.objects.all().delete()
+        Event.new(EventAction.CUSTOM_PREFIX).save()
+        self.assertEqual(Notification.objects.first().body, "foo")

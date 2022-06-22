@@ -1,8 +1,8 @@
 """dummy tests"""
 from django.urls import reverse
 
-from authentik.core.models import User
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.stages.dummy.models import DummyStage
 
@@ -12,13 +12,8 @@ class TestDummyStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create(username="unittest", email="test@beryju.org")
-
-        self.flow = Flow.objects.create(
-            name="test-dummy",
-            slug="test-dummy",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.user = create_test_admin_user()
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = DummyStage.objects.create(
             name="dummy",
         )

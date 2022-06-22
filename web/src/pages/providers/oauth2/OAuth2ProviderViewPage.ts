@@ -256,6 +256,19 @@ export class OAuth2ProviderViewPage extends LitElement {
                                                 value="${this.providerUrls?.logout || t`-`}"
                                             />
                                         </div>
+                                        <div class="pf-c-form__group">
+                                            <label class="pf-c-form__label">
+                                                <span class="pf-c-form__label-text"
+                                                    >${t`JWKS URL`}</span
+                                                >
+                                            </label>
+                                            <input
+                                                class="pf-c-form-control"
+                                                readonly
+                                                type="text"
+                                                value="${this.providerUrls?.jwks || t`-`}"
+                                            />
+                                        </div>
                                     </form>
                                 </div>
                             </div>

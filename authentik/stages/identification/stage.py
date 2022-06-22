@@ -127,6 +127,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
                 user = authenticate(
                     self.stage.request,
                     current_stage.password_stage.backends,
+                    current_stage,
                     username=self.pre_user.username,
                     password=password,
                 )
@@ -159,12 +160,12 @@ class IdentificationStageView(ChallengeStageView):
                 model_field += "__exact"
             query |= Q(**{model_field: uid_value})
         if not query:
-            LOGGER.debug("Empty user query", query=query)
+            self.logger.debug("Empty user query", query=query)
             return None
-        users = User.objects.filter(query, is_active=True)
-        if users.exists():
-            LOGGER.debug("Found user", user=users.first(), query=query)
-            return users.first()
+        user = User.objects.filter(query, is_active=True).first()
+        if user:
+            self.logger.debug("Found user", user=user.username, query=query)
+            return user
         return None
 
     def get_challenge(self) -> Challenge:

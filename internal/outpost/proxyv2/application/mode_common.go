@@ -13,6 +13,8 @@ import (
 	"goauthentik.io/internal/constants"
 )
 
+var hasReportedMisconfiguration = false
+
 func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	// https://goauthentik.io/docs/providers/proxy/proxy
 
@@ -103,15 +105,20 @@ func (a *Application) getNginxForwardUrl(r *http.Request) (*url.URL, error) {
 func (a *Application) ReportMisconfiguration(r *http.Request, msg string, fields map[string]interface{}) {
 	fields["message"] = msg
 	a.log.WithFields(fields).Error("Reporting configuration error")
+	if hasReportedMisconfiguration {
+		return
+	}
 	req := api.EventRequest{
 		Action:   api.EVENTACTIONS_CONFIGURATION_ERROR,
 		App:      "authentik.providers.proxy", // must match python apps.py name
 		ClientIp: *api.NewNullableString(api.PtrString(r.RemoteAddr)),
-		Context:  &fields,
+		Context:  fields,
 	}
 	_, _, err := a.ak.Client.EventsApi.EventsEventsCreate(context.Background()).EventRequest(req).Execute()
 	if err != nil {
 		a.log.WithError(err).Warning("failed to report configuration error")
+	} else {
+		hasReportedMisconfiguration = true
 	}
 }
 

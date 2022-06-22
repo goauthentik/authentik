@@ -57,6 +57,12 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     renderTransportModes(): TemplateResult {
         return html`
             <option
+                value=${NotificationTransportModeEnum.Local}
+                ?selected=${this.instance?.mode === NotificationTransportModeEnum.Local}
+            >
+                ${t`Local (notifications will be created within authentik)`}
+            </option>
+            <option
                 value=${NotificationTransportModeEnum.Email}
                 ?selected=${this.instance?.mode === NotificationTransportModeEnum.Email}
             >

@@ -2,6 +2,8 @@
 title: Portainer
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Portainer
 
 From https://www.portainer.io/

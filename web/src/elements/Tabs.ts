@@ -8,7 +8,7 @@ import AKGlobal from "../authentik.css";
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 
-import { CURRENT_CLASS, ROUTE_SEPARATOR } from "../constants";
+import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "../constants";
 import { getURLParams, updateURLParams } from "./router/RouteMatch";
 
 @customElement("ak-tabs")
@@ -72,6 +72,14 @@ export class Tabs extends LitElement {
         const params: { [key: string]: string | undefined } = {};
         params[this.pageIdentifier] = slot;
         updateURLParams(params);
+        const page = this.querySelector(`[slot='${this.currentPage}']`);
+        if (!page) return;
+        page.dispatchEvent(
+            new CustomEvent(EVENT_REFRESH, {
+                bubbles: true,
+                composed: true,
+            }),
+        );
     }
 
     renderTab(page: Element): TemplateResult {
@@ -90,7 +98,7 @@ export class Tabs extends LitElement {
             if (this.pageIdentifier in params) {
                 if (this.querySelector(`[slot='${params[this.pageIdentifier]}']`) !== null) {
                     // To update the URL to match with the current slot
-                    this.currentPage = params[this.pageIdentifier];
+                    this.currentPage = params[this.pageIdentifier] as string;
                 }
             }
         }

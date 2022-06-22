@@ -12,8 +12,4 @@ class AuthentikProviderProxyConfig(AppConfig):
     verbose_name = "authentik Providers.Proxy"
 
     def ready(self) -> None:
-        from authentik.providers.proxy.tasks import proxy_set_defaults
-
         import_module("authentik.providers.proxy.managed")
-
-        proxy_set_defaults.delay()

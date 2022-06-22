@@ -26,6 +26,7 @@ class AuthenticatorSMSStageSerializer(StageSerializer):
             "auth",
             "auth_password",
             "auth_type",
+            "verify_only",
         ]
 
 
@@ -36,6 +37,7 @@ class AuthenticatorSMSStageViewSet(UsedByMixin, ModelViewSet):
     serializer_class = AuthenticatorSMSStageSerializer
     filterset_fields = "__all__"
     ordering = ["name"]
+    search_fields = ["name"]
 
 
 class SMSDeviceSerializer(ModelSerializer):

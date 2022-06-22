@@ -10,12 +10,14 @@ import {
     FlowsInstancesListDesignationEnum,
     OAuthSource,
     OAuthSourceRequest,
+    ProviderTypeEnum,
     SourceType,
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
+import "../../../elements/CodeMirror";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
@@ -155,6 +157,42 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                           </p>
                       </ak-form-element-horizontal> `
                     : html``}
+                ${this.providerType.slug === ProviderTypeEnum.Openidconnect
+                    ? html`
+                          <ak-form-element-horizontal
+                              label=${t`OIDC Well-known URL`}
+                              name="oidcWellKnownUrl"
+                          >
+                              <input
+                                  type="text"
+                                  value="${ifDefined(this.instance?.oidcWellKnownUrl)}"
+                                  class="pf-c-form-control"
+                              />
+                              <p class="pf-c-form__helper-text">
+                                  ${t`OIDC well-known configuration URL. Can be used to automatically configure the URLs above.`}
+                              </p>
+                          </ak-form-element-horizontal>
+                          <ak-form-element-horizontal label=${t`OIDC JWKS URL`} name="oidcJwksUrl">
+                              <input
+                                  type="text"
+                                  value="${ifDefined(this.instance?.oidcJwksUrl)}"
+                                  class="pf-c-form-control"
+                              />
+                              <p class="pf-c-form__helper-text">
+                                  ${t`JSON Web Key URL. Keys from the URL will be used to validate JWTs from this source.`}
+                              </p>
+                          </ak-form-element-horizontal>
+
+                          <ak-form-element-horizontal label=${t`OIDC JWKS`} name="oidcJwks">
+                              <ak-codemirror
+                                  mode="javascript"
+                                  value="${JSON.stringify(first(this.instance?.oidcJwks, {}))}"
+                              >
+                              </ak-codemirror>
+                              <p class="pf-c-form__helper-text">${t`Raw JWKS data.`}</p>
+                          </ak-form-element-horizontal>
+                      `
+                    : html``}
             </div>
         </ak-form-group>`;
     }
@@ -229,6 +267,19 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         ${t`Use the user's username, but deny enrollment when the username already exists.`}
                     </option>
                 </select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`User path`} name="userPathTemplate">
+                <input
+                    type="text"
+                    value="${first(
+                        this.instance?.userPathTemplate,
+                        "goauthentik.io/sources/%(slug)s",
+                    )}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Path template for users created. Use placeholders like \`%(slug)s\` to insert the source slug.`}
+                </p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>

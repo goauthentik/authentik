@@ -49,7 +49,7 @@ from authentik.flows.planner import (
     FlowPlan,
     FlowPlanner,
 )
-from authentik.flows.stage import AccessDeniedChallengeView
+from authentik.flows.stage import AccessDeniedChallengeView, StageView
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
@@ -59,11 +59,11 @@ from authentik.tenants.models import Tenant
 LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
-SESSION_KEY_PLAN = "authentik_flows_plan"
-SESSION_KEY_APPLICATION_PRE = "authentik_flows_application_pre"
-SESSION_KEY_GET = "authentik_flows_get"
-SESSION_KEY_POST = "authentik_flows_post"
-SESSION_KEY_HISTORY = "authentik_flows_history"
+SESSION_KEY_PLAN = "authentik/flows/plan"
+SESSION_KEY_APPLICATION_PRE = "authentik/flows/application_pre"
+SESSION_KEY_GET = "authentik/flows/get"
+SESSION_KEY_POST = "authentik/flows/post"
+SESSION_KEY_HISTORY = "authentik/flows/history"
 QS_KEY_TOKEN = "flow_token"  # nosec
 
 
@@ -380,6 +380,8 @@ class FlowExecutorView(APIView):
             "f(exec): Stage ok",
             stage_class=class_to_path(self.current_stage_view.__class__),
         )
+        if isinstance(self.current_stage_view, StageView):
+            self.current_stage_view.cleanup()
         self.request.session.get(SESSION_KEY_HISTORY, []).append(deepcopy(self.plan))
         self.plan.pop()
         self.request.session[SESSION_KEY_PLAN] = self.plan
@@ -416,11 +418,14 @@ class FlowExecutorView(APIView):
             SESSION_KEY_APPLICATION_PRE,
             SESSION_KEY_PLAN,
             SESSION_KEY_GET,
+            # We might need the initial POST payloads for later requests
+            # SESSION_KEY_POST,
             # We don't delete the history on purpose, as a user might
             # still be inspecting it.
             # It's only deleted on a fresh executions
             # SESSION_KEY_HISTORY,
         ]
+        self._logger.debug("f(exec): cleaning up")
         for key in keys_to_delete:
             if key in self.request.session:
                 del self.request.session[key]

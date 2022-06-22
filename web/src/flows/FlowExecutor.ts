@@ -22,6 +22,7 @@ import {
     FlowsApi,
     LayoutEnum,
     RedirectChallenge,
+    ResponseError,
     ShellChallenge,
 } from "@goauthentik/api";
 
@@ -193,7 +194,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                 }
                 return true;
             })
-            .catch((e: Error | Response) => {
+            .catch((e: Error | ResponseError) => {
                 this.errorMessage(e);
                 return false;
             })
@@ -226,7 +227,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                     this.setBackground(this.challenge.flowInfo.background);
                 }
             })
-            .catch((e: Error | Response) => {
+            .catch((e: Error | ResponseError) => {
                 // Catch JSON or Update errors
                 this.errorMessage(e);
             })
@@ -235,9 +236,11 @@ export class FlowExecutor extends LitElement implements StageHost {
             });
     }
 
-    async errorMessage(error: Error | Response): Promise<void> {
+    async errorMessage(error: Error | ResponseError): Promise<void> {
         let body = "";
-        if (error instanceof Error) {
+        if (error instanceof ResponseError) {
+            body = await error.response.text();
+        } else if (error instanceof Error) {
             body = error.message;
         }
         this.challenge = {
@@ -513,7 +516,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                                                     ? html`
                                                           <li>
                                                               <a
-                                                                  href="https://unsplash.com/@joshmillerdp"
+                                                                  href="https://unsplash.com/@jangottweiss"
                                                                   >${t`Background image`}</a
                                                               >
                                                           </li>

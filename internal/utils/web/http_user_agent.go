@@ -1,4 +1,4 @@
-package ak
+package web
 
 import (
 	"net/http"

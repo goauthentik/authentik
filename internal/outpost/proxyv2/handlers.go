@@ -11,6 +11,7 @@ import (
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/application"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
+	sentryutils "goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
 	staticWeb "goauthentik.io/web"
 )
@@ -22,11 +23,8 @@ func (ps *ProxyServer) HandlePing(rw http.ResponseWriter, r *http.Request) {
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
 		"method":       r.Method,
-		"scheme":       r.URL.Scheme,
-		"path":         r.URL.Path,
 		"host":         web.GetHost(r),
 		"type":         "ping",
-		"user":         "",
 	}).Observe(float64(after))
 }
 
@@ -37,11 +35,8 @@ func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
 		"method":       r.Method,
-		"scheme":       r.URL.Scheme,
-		"path":         r.URL.Path,
 		"host":         web.GetHost(r),
-		"type":         "ping",
-		"user":         "",
+		"type":         "static",
 	}).Observe(float64(after))
 }
 
@@ -95,7 +90,7 @@ func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/ping") {
-		ps.HandlePing(rw, r)
+		sentryutils.SentryNoSample(ps.HandlePing)(rw, r)
 		return
 	}
 	a, host := ps.lookupApp(r)

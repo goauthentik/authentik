@@ -28,6 +28,7 @@ ALLOWED_MODELS = (Flow, FlowStageBinding, Stage, Policy, PolicyBinding, Prompt)
 def transaction_rollback():
     """Enters an atomic transaction and always triggers a rollback at the end of the block."""
     atomic = transaction.atomic()
+    # pylint: disable=unnecessary-dunder-call
     atomic.__enter__()
     yield
     atomic.__exit__(IntegrityError, None, None)
@@ -115,6 +116,11 @@ class FlowImporter:
             serializer_kwargs["instance"] = model_instance
         else:
             self.logger.debug("initialise new instance", model=model, **updated_identifiers)
+            model_instance = model()
+            # pk needs to be set on the model instance otherwise a new one will be generated
+            if "pk" in updated_identifiers:
+                model_instance.pk = updated_identifiers["pk"]
+            serializer_kwargs["instance"] = model_instance
         full_data = self.__update_pks_for_attrs(entry.attrs)
         full_data.update(updated_identifiers)
         serializer_kwargs["data"] = full_data
@@ -167,7 +173,7 @@ class FlowImporter:
     def validate(self) -> bool:
         """Validate loaded flow export, ensure all models are allowed
         and serializers have no errors"""
-        self.logger.debug("Starting flow import validaton")
+        self.logger.debug("Starting flow import validation")
         if self.__import.version != 1:
             self.logger.warning("Invalid bundle version")
             return False

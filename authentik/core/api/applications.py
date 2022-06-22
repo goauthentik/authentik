@@ -63,6 +63,7 @@ class ApplicationSerializer(ModelSerializer):
             "provider",
             "provider_obj",
             "launch_url",
+            "open_in_new_tab",
             "meta_launch_url",
             "meta_icon",
             "meta_description",
@@ -97,6 +98,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         "group",
     ]
     lookup_field = "slug"
+    filterset_fields = ["name", "slug"]
     ordering = ["name"]
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:

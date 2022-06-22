@@ -55,7 +55,7 @@ i18n-extract-core:
 	./manage.py makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
 
 gen-build:
-	./manage.py spectacular --file schema.yml
+	AUTHENTIK_DEBUG=true ./manage.py spectacular --file schema.yml
 
 gen-clean:
 	rm -rf web/api/src/
@@ -65,7 +65,7 @@ gen-client-web:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		openapitools/openapi-generator-cli:v6.0.0-beta generate \
+		openapitools/openapi-generator-cli:v6.0.0 generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/gen-ts-api \
@@ -83,7 +83,7 @@ gen-client-go:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		openapitools/openapi-generator-cli:v5.2.1 generate \
+		openapitools/openapi-generator-cli:v6.0.0 generate \
 		-i /local/schema.yml \
 		-g go \
 		-o /local/gen-go-api \
@@ -103,7 +103,10 @@ run:
 ## Web
 #########################
 
-web: web-lint-fix web-lint web-extract
+web-build: web-install
+	cd web && npm run build
+
+web: web-lint-fix web-lint
 
 web-install:
 	cd web && npm ci

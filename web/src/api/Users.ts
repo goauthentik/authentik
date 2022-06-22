@@ -1,4 +1,4 @@
-import { CoreApi, SessionUser } from "@goauthentik/api";
+import { CoreApi, ResponseError, SessionUser } from "@goauthentik/api";
 import { activateLocale } from "../interfaces/locale";
 import { DEFAULT_CONFIG } from "./Config";
 
@@ -21,7 +21,7 @@ export function me(): Promise<SessionUser> {
                 activateLocale(locale);
             }
             return user;
-        }).catch((ex) => {
+        }).catch((ex: ResponseError) => {
             const defaultUser: SessionUser = {
                 user: {
                     pk: -1,
@@ -31,10 +31,11 @@ export function me(): Promise<SessionUser> {
                     avatar: "",
                     uid: "",
                     username: "",
-                    name: ""
+                    name: "",
+                    settings: {},
                 }
             };
-            if (ex.status === 401 || ex.status === 403) {
+            if (ex.response.status === 401 || ex.response.status === 403) {
                 window.location.assign("/");
             }
             return defaultUser;

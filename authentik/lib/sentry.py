@@ -1,5 +1,5 @@
 """authentik sentry integration"""
-from typing import Optional
+from typing import Any, Optional
 
 from aioredis.errors import ConnectionClosedError, ReplyError
 from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
@@ -17,7 +17,7 @@ from ldap3.core.exceptions import LDAPException
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
 from rest_framework.exceptions import APIException
-from sentry_sdk import Hub
+from sentry_sdk import HttpTransport, Hub
 from sentry_sdk import init as sentry_sdk_init
 from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.celery import CeleryIntegration
@@ -30,6 +30,7 @@ from websockets.exceptions import WebSocketException
 
 from authentik import __version__, get_build_hash
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.http import authentik_user_agent
 from authentik.lib.utils.reflection import class_to_path, get_env
 
 LOGGER = get_logger()
@@ -52,11 +53,18 @@ class SentryIgnoredException(Exception):
     """Base Class for all errors that are suppressed, and not sent to sentry."""
 
 
+class SentryTransport(HttpTransport):
+    """Custom sentry transport with custom user-agent"""
+
+    def __init__(self, options: dict[str, Any]) -> None:
+        super().__init__(options)
+        self._auth = self.parsed_dsn.to_auth(authentik_user_agent())
+
+
 def sentry_init(**sentry_init_kwargs):
     """Configure sentry SDK"""
     sentry_env = CONFIG.y("error_reporting.environment", "customer")
     kwargs = {
-        "traces_sample_rate": float(CONFIG.y("error_reporting.sample_rate", 0.5)),
         "environment": sentry_env,
         "send_default_pii": CONFIG.y_bool("error_reporting.send_pii", False),
     }
@@ -71,7 +79,9 @@ def sentry_init(**sentry_init_kwargs):
             ThreadingIntegration(propagate_hub=True),
         ],
         before_send=before_send,
+        traces_sampler=traces_sampler,
         release=f"authentik@{__version__}",
+        transport=SentryTransport,
         **kwargs,
     )
     set_tag("authentik.build_hash", get_build_hash("tagged"))
@@ -81,6 +91,15 @@ def sentry_init(**sentry_init_kwargs):
         "Error reporting is enabled",
         env=kwargs["environment"],
     )
+
+
+def traces_sampler(sampling_context: dict) -> float:
+    """Custom sampler to ignore certain routes"""
+    path = sampling_context.get("asgi_scope", {}).get("path", "")
+    # Ignore all healthcheck routes
+    if path.startswith("/-/health") or path.startswith("/-/metrics"):
+        return 0
+    return float(CONFIG.y("error_reporting.sample_rate", 0.5))
 
 
 def before_send(event: dict, hint: dict) -> Optional[dict]:

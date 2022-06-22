@@ -2,6 +2,8 @@
 title: Veeam Enterprise Manager
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Veeam Enterprise Manager
 
 From https://helpcenter.veeam.com/docs/backup/em/introduction.html?ver=100

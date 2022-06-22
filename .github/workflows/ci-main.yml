@@ -3,14 +3,14 @@ name: authentik-ci-main
 on:
   push:
     branches:
-      - master
+      - main
       - next
       - version-*
     paths-ignore:
       - website
   pull_request:
     branches:
-      - master
+      - main
 
 env:
   POSTGRES_DB: authentik
@@ -106,7 +106,7 @@ jobs:
         with:
           domain: ${{github.repository_owner}}
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.2.0
+        uses: helm/kind-action@v1.3.0
       - name: run integration
         run: |
           poetry run make test-integration
@@ -211,10 +211,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
         id: ev
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        uses: ./.github/actions/docker-setup
       - name: Login to Container Registry
         uses: docker/login-action@v2
         if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
@@ -231,4 +231,5 @@ jobs:
             ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.sha }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
+            VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           platforms: ${{ matrix.arch }}

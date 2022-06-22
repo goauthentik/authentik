@@ -9,9 +9,18 @@
         <link rel="stylesheet" type="text/css" href="/outpost.goauthentik.io/static/dist/patternfly.min.css">
         <link rel="stylesheet" type="text/css" href="/outpost.goauthentik.io/static/dist/authentik.css">
         <link rel="stylesheet" type="text/css" href="/outpost.goauthentik.io/static/dist/custom.css">
+        <link rel="prefetch" href="/outpost.goauthentik.io/static/dist/assets/images/flow_background.jpg" />
         <style>
             .pf-c-background-image::before {
                 --ak-flow-background: url("/outpost.goauthentik.io/static/dist/assets/images/flow_background.jpg");
+            }
+            :root {
+                --ak-flow-background: url("/outpost.goauthentik.io/static/dist/assets/images/flow_background.jpg");
+                --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
+                --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
+                --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
+                --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
+                --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
             }
         </style>
     </head>

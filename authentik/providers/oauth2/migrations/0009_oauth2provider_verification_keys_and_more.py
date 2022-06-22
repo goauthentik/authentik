@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             model_name="oauth2provider",
             name="verification_keys",
             field=models.ManyToManyField(
-                help_text="JWTs created with the configured certificates can authenticate with this provider.",
+                help_text="DEPRECATED. JWTs created with the configured certificates can authenticate with this provider.",
                 related_name="+",
                 to="authentik_crypto.certificatekeypair",
                 verbose_name="Allowed certificates for JWT-based client_credentials",

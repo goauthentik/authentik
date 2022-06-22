@@ -3,11 +3,11 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
-import { CoreApi, StagesApi, UserWriteStage } from "@goauthentik/api";
+import { CoreApi, CoreGroupsListRequest, Group, StagesApi, UserWriteStage } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
+import "../../../elements/SearchSelect";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
@@ -74,29 +74,47 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                             ${t`Mark newly created users as inactive.`}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`User path template`}
+                        name="userPathTemplate"
+                    >
+                        <input
+                            type="text"
+                            value="${first(this.instance?.userPathTemplate, "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Path new users will be created under. If left blank, the default path will be used.fo`}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Group`} name="createUsersGroup">
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.createUsersGroup === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new CoreApi(DEFAULT_CONFIG).coreGroupsList({}).then((groups) => {
-                                    return groups.results.map((group) => {
-                                        return html`<option
-                                            value=${ifDefined(group.pk)}
-                                            ?selected=${this.instance?.createUsersGroup ===
-                                            group.pk}
-                                        >
-                                            ${group.name}
-                                        </option>`;
-                                    });
-                                }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <!-- @ts-ignore -->
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Group[]> => {
+                                const args: CoreGroupsListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
+                                    args,
+                                );
+                                return groups.results;
+                            }}
+                            .renderElement=${(group: Group): string => {
+                                return group.name;
+                            }}
+                            .value=${(group: Group | undefined): string | undefined => {
+                                return group ? group.pk : undefined;
+                            }}
+                            .selected=${(group: Group): boolean => {
+                                return group.pk === this.instance?.createUsersGroup;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`Newly created users are added to this group, if a group is selected.`}
                         </p>

@@ -17,6 +17,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
+	"goauthentik.io/internal/utils/web"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -27,7 +28,7 @@ const ConfigLogLevel = "log_level"
 type APIController struct {
 	Client       *api.APIClient
 	Outpost      api.Outpost
-	GlobalConfig api.Config
+	GlobalConfig *api.Config
 
 	Server Outpost
 
@@ -54,7 +55,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
-		Transport: NewUserAgentTransport(constants.OutpostUserAgent(), NewTracingTransport(rsp.Context(), GetTLSTransport())),
+		Transport: web.NewUserAgentTransport(constants.OutpostUserAgent(), web.NewTracingTransport(rsp.Context(), GetTLSTransport())),
 	}
 	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 
@@ -68,8 +69,9 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
 
 	if err != nil {
-		log.WithError(err).Error("Failed to fetch outpost configuration")
-		return nil
+		log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
+		time.Sleep(time.Second * 3)
+		return NewAPIController(akURL, token)
 	}
 	outpost := outposts.Results[0]
 
@@ -113,7 +115,7 @@ func (a *APIController) Start() error {
 	if err != nil {
 		return err
 	}
-	err = a.StartBackgorundTasks()
+	err = a.StartBackgroundTasks()
 	if err != nil {
 		return err
 	}
@@ -165,7 +167,7 @@ func (a *APIController) OnRefresh() error {
 	return err
 }
 
-func (a *APIController) StartBackgorundTasks() error {
+func (a *APIController) StartBackgroundTasks() error {
 	OutpostInfo.With(prometheus.Labels{
 		"outpost_name": a.Outpost.Name,
 		"outpost_type": a.Server.Type(),

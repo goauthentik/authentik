@@ -26,9 +26,7 @@ class ConsentStage(Stage):
         validators=[timedelta_string_validator],
         default="weeks=4",
         verbose_name="Consent expires in",
-        help_text=_(
-            ("Offset after which consent expires. " "(Format: hours=1;minutes=2;seconds=3).")
-        ),
+        help_text=_(("Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).")),
     )
 
     @property

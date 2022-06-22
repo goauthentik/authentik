@@ -1,10 +1,16 @@
 ---
-version: '3.2'
+version: '3.4'
 
 services:
   postgresql:
     image: postgres:12-alpine
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
     volumes:
       - database:/var/lib/postgresql/data
     environment:
@@ -16,8 +22,14 @@ services:
   redis:
     image: redis:alpine
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
   server:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.5.2}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.6.3}
     restart: unless-stopped
     command: server
     environment:
@@ -38,7 +50,7 @@ services:
       - "0.0.0.0:${AUTHENTIK_PORT_HTTP:-9000}:9000"
       - "0.0.0.0:${AUTHENTIK_PORT_HTTPS:-9443}:9443"
   worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.5.2}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.6.3}
     restart: unless-stopped
     command: worker
     environment:

@@ -1,13 +1,13 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2022.5.2
+  version: 2022.6.3
   description: Making authentication simple.
   contact:
-    email: hello@beryju.org
+    email: hello@goauthentik.io
   license:
     name: GNU GPLv3
-    url: https://github.com/goauthentik/authentik/blob/master/LICENSE
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
 paths:
   /admin/apps/:
     get:
@@ -1602,22 +1602,6 @@ paths:
       description: Custom list method that checks Policy based access instead of guardian
       parameters:
       - in: query
-        name: group
-        schema:
-          type: string
-      - in: query
-        name: meta_description
-        schema:
-          type: string
-      - in: query
-        name: meta_launch_url
-        schema:
-          type: string
-      - in: query
-        name: meta_publisher
-        schema:
-          type: string
-      - in: query
         name: name
         schema:
           type: string
@@ -3083,6 +3067,14 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: path
+        schema:
+          type: string
+      - in: query
+        name: path_startswith
+        schema:
+          type: string
       - name: search
         required: false
         in: query
@@ -3401,6 +3393,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SessionUser'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /core/users/paths/:
+    get:
+      operationId: core_users_paths_retrieve
+      description: Get all user paths
+      parameters:
+      - in: query
+        name: search
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPath'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -4506,6 +4522,7 @@ paths:
           type: string
           enum:
           - email
+          - local
           - webhook
           - webhook_slack
       - in: query
@@ -6138,6 +6155,10 @@ paths:
       operationId: outposts_ldap_list
       description: LDAPProvider Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -6208,6 +6229,10 @@ paths:
       operationId: outposts_proxy_list
       description: ProxyProvider Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -11869,6 +11894,14 @@ paths:
       operationId: sources_all_list
       description: Source Viewset
       parameters:
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -11891,6 +11924,10 @@ paths:
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: slug
         schema:
           type: string
       tags:
@@ -13128,6 +13165,10 @@ paths:
           - username_link
         description: How the source determines if an existing user should be authenticated
           or a new user enrolled.
+      - in: query
+        name: user_path_template
+        schema:
+          type: string
       tags:
       - sources
       security:
@@ -14443,6 +14484,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: verify_only
+        schema:
+          type: boolean
       tags:
       - stages
       security:
@@ -18817,6 +18862,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: user_path_template
+        schema:
+          type: string
       tags:
       - stages
       security:
@@ -19154,6 +19203,9 @@ components:
           type: string
           nullable: true
           readOnly: true
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
         meta_launch_url:
           type: string
           format: uri
@@ -19193,6 +19245,9 @@ components:
         provider:
           type: integer
           nullable: true
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
         meta_launch_url:
           type: string
           format: uri
@@ -19615,6 +19670,11 @@ components:
           type: string
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
+        verify_only:
+          type: boolean
+          description: When enabled, the Phone number is only used during enrollment
+            to verify the users authenticity. Only a hash of the phone number is saved
+            to ensure it is not re-used in the future.
       required:
       - account_sid
       - auth
@@ -19658,6 +19718,11 @@ components:
           type: string
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
+        verify_only:
+          type: boolean
+          description: When enabled, the Phone number is only used during enrollment
+            to verify the users authenticity. Only a hash of the phone number is saved
+            to ensure it is not re-used in the future.
       required:
       - account_sid
       - auth
@@ -22671,6 +22736,17 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
         server_uri:
           type: string
           format: uri
@@ -22733,6 +22809,7 @@ components:
       required:
       - base_dn
       - component
+      - managed
       - meta_model_name
       - name
       - pk
@@ -22773,6 +22850,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         server_uri:
           type: string
           minLength: 1
@@ -22993,7 +23073,6 @@ components:
       - group_obj
       - name
       - pk
-      - transports
     NotificationRuleRequest:
       type: object
       description: NotificationRule Serializer
@@ -23022,7 +23101,6 @@ components:
             and shown to. If left empty, Notification won't ben sent.
       required:
       - name
-      - transports
     NotificationTransport:
       type: object
       description: NotificationTransport Serializer
@@ -23051,12 +23129,12 @@ components:
           description: Only send notification once, for example when sending a webhook
             into a chat channel.
       required:
-      - mode
       - mode_verbose
       - name
       - pk
     NotificationTransportModeEnum:
       enum:
+      - local
       - webhook
       - webhook_slack
       - email
@@ -23082,7 +23160,6 @@ components:
           description: Only send notification once, for example when sending a webhook
             into a chat channel.
       required:
-      - mode
       - name
     NotificationTransportTest:
       type: object
@@ -23205,15 +23282,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
-        verification_keys:
+        jwks_sources:
           type: array
           items:
             type: string
             format: uuid
-            title: Allowed certificates for JWT-based client_credentials
-          title: Allowed certificates for JWT-based client_credentials
-          description: JWTs created with the configured certificates can authenticate
-            with this provider.
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -23285,15 +23361,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
-        verification_keys:
+        jwks_sources:
           type: array
           items:
             type: string
             format: uuid
-            title: Allowed certificates for JWT-based client_credentials
-          title: Allowed certificates for JWT-based client_credentials
-          description: JWTs created with the configured certificates can authenticate
-            with this provider.
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
       required:
       - authorization_flow
       - name
@@ -23319,9 +23394,13 @@ components:
         logout:
           type: string
           readOnly: true
+        jwks:
+          type: string
+          readOnly: true
       required:
       - authorize
       - issuer
+      - jwks
       - logout
       - provider_info
       - token
@@ -23374,6 +23453,17 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -23408,10 +23498,18 @@ components:
           allOf:
           - $ref: '#/components/schemas/SourceType'
           readOnly: true
+        oidc_well_known_url:
+          type: string
+        oidc_jwks_url:
+          type: string
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
       required:
       - callback_url
       - component
       - consumer_key
+      - managed
       - meta_model_name
       - name
       - pk
@@ -23453,6 +23551,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -23489,6 +23590,13 @@ components:
           minLength: 1
         additional_scopes:
           type: string
+        oidc_well_known_url:
+          type: string
+        oidc_jwks_url:
+          type: string
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
       required:
       - consumer_key
       - consumer_secret
@@ -26687,6 +26795,9 @@ components:
         provider:
           type: integer
           nullable: true
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
         meta_launch_url:
           type: string
           format: uri
@@ -26782,6 +26893,11 @@ components:
           type: string
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
+        verify_only:
+          type: boolean
+          description: When enabled, the Phone number is only used during enrollment
+            to verify the users authenticity. Only a hash of the phone number is saved
+            to ensure it is not re-used in the future.
     PatchedAuthenticatorStaticStageRequest:
       type: object
       description: AuthenticatorStaticStage Serializer
@@ -27434,6 +27550,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         server_uri:
           type: string
           minLength: 1
@@ -27627,15 +27746,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
-        verification_keys:
+        jwks_sources:
           type: array
           items:
             type: string
             format: uuid
-            title: Allowed certificates for JWT-based client_credentials
-          title: Allowed certificates for JWT-based client_credentials
-          description: JWTs created with the configured certificates can authenticate
-            with this provider.
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
     PatchedOAuthSourceRequest:
       type: object
       description: OAuth Source Serializer
@@ -27669,6 +27787,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -27705,6 +27826,13 @@ components:
           minLength: 1
         additional_scopes:
           type: string
+        oidc_well_known_url:
+          type: string
+        oidc_jwks_url:
+          type: string
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
@@ -27866,6 +27994,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -28179,6 +28310,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         pre_authentication_flow:
           type: string
           format: uuid
@@ -28421,9 +28555,6 @@ components:
         username:
           type: string
           minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
           maxLength: 150
         name:
           type: string
@@ -28450,6 +28581,9 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        path:
+          type: string
+          minLength: 1
     PatchedUserWriteStageRequest:
       type: object
       description: UserWriteStage Serializer
@@ -28469,6 +28603,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_path_template:
+          type: string
     PatchedWebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -28569,6 +28705,17 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
         client_id:
           type: string
           description: Client identifier used to talk to Plex.
@@ -28586,6 +28733,7 @@ components:
           description: Plex token used to check friends
       required:
       - component
+      - managed
       - meta_model_name
       - name
       - pk
@@ -28664,6 +28812,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -29960,6 +30111,17 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
         pre_authentication_flow:
           type: string
           format: uuid
@@ -30008,6 +30170,7 @@ components:
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
+      - managed
       - meta_model_name
       - name
       - pk
@@ -30049,6 +30212,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         pre_authentication_flow:
           type: string
           format: uuid
@@ -30386,8 +30552,20 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
       required:
       - component
+      - managed
       - meta_model_name
       - name
       - pk
@@ -30427,6 +30605,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
       required:
       - name
       - slug
@@ -30968,9 +31149,6 @@ components:
           title: ID
         username:
           type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
           maxLength: 150
         name:
           type: string
@@ -31011,6 +31189,8 @@ components:
         uid:
           type: string
           readOnly: true
+        path:
+          type: string
       required:
       - avatar
       - groups
@@ -31273,6 +31453,16 @@ components:
           minLength: 1
       required:
       - password
+    UserPath:
+      type: object
+      properties:
+        paths:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - paths
     UserRequest:
       type: object
       description: User Serializer
@@ -31280,9 +31470,6 @@ components:
         username:
           type: string
           minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
           maxLength: 150
         name:
           type: string
@@ -31309,6 +31496,9 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        path:
+          type: string
+          minLength: 1
       required:
       - groups
       - name
@@ -31485,6 +31675,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_path_template:
+          type: string
       required:
       - component
       - meta_model_name
@@ -31511,6 +31703,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_path_template:
+          type: string
       required:
       - name
     ValidationError:

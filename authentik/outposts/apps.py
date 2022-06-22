@@ -2,7 +2,6 @@
 from importlib import import_module
 
 from django.apps import AppConfig
-from django.db import ProgrammingError
 from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
@@ -18,10 +17,3 @@ class AuthentikOutpostConfig(AppConfig):
     def ready(self):
         import_module("authentik.outposts.signals")
         import_module("authentik.outposts.managed")
-        try:
-            from authentik.outposts.tasks import outpost_controller_all, outpost_local_connection
-
-            outpost_local_connection.delay()
-            outpost_controller_all.delay()
-        except ProgrammingError:
-            pass

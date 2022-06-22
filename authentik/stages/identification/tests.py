@@ -1,11 +1,10 @@
 """identification tests"""
 from django.urls import reverse
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
-from authentik.lib.generators import generate_key
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
@@ -17,19 +16,12 @@ class TestIdentificationStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
-        self.password = generate_key()
-        self.user = User.objects.create_user(
-            username="unittest", email="test@beryju.org", password=self.password
-        )
+        self.user = create_test_admin_user()
 
         # OAuthSource for the login view
         source = OAuthSource.objects.create(name="test", slug="test")
 
-        self.flow = Flow.objects.create(
-            name="test-identification",
-            slug="test-identification",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = IdentificationStage.objects.create(
             name="identification",
             user_fields=[UserFields.E_MAIL],
@@ -62,7 +54,7 @@ class TestIdentificationStage(FlowTestCase):
         pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_INBUILT])
         self.stage.password_stage = pw_stage
         self.stage.save()
-        form_data = {"uid_field": self.user.email, "password": self.password}
+        form_data = {"uid_field": self.user.email, "password": self.user.username}
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
@@ -75,7 +67,7 @@ class TestIdentificationStage(FlowTestCase):
         self.stage.save()
         form_data = {
             "uid_field": self.user.email,
-            "password": self.password + "test",
+            "password": self.user.username + "test",
         }
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, form_data)

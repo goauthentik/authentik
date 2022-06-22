@@ -7,22 +7,29 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 
 def create_default_user_token(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    # We have to use a direct import here, otherwise we get an object manager error
-    from authentik.core.models import Token, TokenIntents, User
+    from authentik.core.models import TokenIntents
+
+    User = apps.get_model("authentik_core", "User")
+    Token = apps.get_model("authentik_core", "Token")
 
     db_alias = schema_editor.connection.alias
 
     akadmin = User.objects.using(db_alias).filter(username="akadmin")
     if not akadmin.exists():
         return
-    if "AK_ADMIN_TOKEN" not in environ:
+    key = None
+    if "AK_ADMIN_TOKEN" in environ:
+        key = environ["AK_ADMIN_TOKEN"]
+    if "AUTHENTIK_BOOTSTRAP_TOKEN" in environ:
+        key = environ["AUTHENTIK_BOOTSTRAP_TOKEN"]
+    if not key:
         return
     Token.objects.using(db_alias).create(
-        identifier="authentik-boostrap-token",
+        identifier="authentik-bootstrap-token",
         user=akadmin.first(),
         intent=TokenIntents.INTENT_API,
         expiring=False,
-        key=environ["AK_ADMIN_TOKEN"],
+        key=key,
     )
 
 

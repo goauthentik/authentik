@@ -2,6 +2,8 @@
 title: Zulip
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Zulip
 
 From https://zulip.com

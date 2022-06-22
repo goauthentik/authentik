@@ -33,8 +33,8 @@ class PytestTestRunner:  # pragma: no cover
             "outposts.container_image_base",
             f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
         )
+        CONFIG.y_set("error_reporting.sample_rate", 1.0)
         sentry_init(
-            sample_rate=1.0,
             environment="testing",
             send_default_pii=True,
         )
@@ -43,6 +43,7 @@ class PytestTestRunner:  # pragma: no cover
     def add_arguments(cls, parser: ArgumentParser):
         """Add more pytest-specific arguments"""
         parser.add_argument("--randomly-seed", type=int)
+        parser.add_argument("--keepdb", action="store_true")
 
     def run_tests(self, test_labels):
         """Run pytest and return the exitcode.

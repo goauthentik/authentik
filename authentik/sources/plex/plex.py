@@ -11,8 +11,6 @@ from authentik.lib.utils.http import get_http_session
 from authentik.sources.plex.models import PlexSource, PlexSourceConnection
 
 LOGGER = get_logger()
-SESSION_ID_KEY = "PLEX_ID"
-SESSION_CODE_KEY = "PLEX_CODE"
 
 
 class PlexAuth:

@@ -2,6 +2,8 @@
 title: Weblate
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Weblate
 
 From https://weblate.org/en/

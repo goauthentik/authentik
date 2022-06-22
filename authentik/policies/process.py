@@ -28,9 +28,8 @@ HIST_POLICIES_EXECUTION_TIME = Histogram(
         "binding_order",
         "binding_target_type",
         "binding_target_name",
-        "object_name",
+        "object_pk",
         "object_type",
-        "user",
     ],
 )
 
@@ -89,7 +88,7 @@ class PolicyProcess(PROCESS_CLASS):
         LOGGER.debug(
             "P_ENG(proc): Running policy",
             policy=self.binding.policy,
-            user=self.request.user,
+            user=self.request.user.username,
             # this is used for filtering in access checking where logs are sent to the admin
             process="PolicyProcess",
         )
@@ -125,7 +124,7 @@ class PolicyProcess(PROCESS_CLASS):
             # this is used for filtering in access checking where logs are sent to the admin
             process="PolicyProcess",
             passing=policy_result.passing,
-            user=self.request.user,
+            user=self.request.user.username,
         )
         return policy_result
 
@@ -137,9 +136,8 @@ class PolicyProcess(PROCESS_CLASS):
             binding_order=self.binding.order,
             binding_target_type=self.binding.target_type,
             binding_target_name=self.binding.target_name,
-            object_name=self.request.obj,
+            object_pk=str(self.request.obj.pk),
             object_type=f"{self.request.obj._meta.app_label}.{self.request.obj._meta.model_name}",
-            user=str(self.request.user),
         ).time():
             span: Span
             span.set_data("policy", self.binding.policy)
@@ -151,5 +149,5 @@ class PolicyProcess(PROCESS_CLASS):
         try:
             self.connection.send(self.profiling_wrapper())
         except Exception as exc:  # pylint: disable=broad-except
-            LOGGER.warning(str(exc))
+            LOGGER.warning("Policy failed to run", exc=exc)
             self.connection.send(PolicyResult(False, str(exc)))

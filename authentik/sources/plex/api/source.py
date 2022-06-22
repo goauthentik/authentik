@@ -60,6 +60,7 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         "client_id",
         "allow_friends",
     ]
+    search_fields = ["name", "slug"]
     ordering = ["name"]
 
     @permission_required(None)

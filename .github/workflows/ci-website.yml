@@ -3,19 +3,19 @@ name: authentik-ci-website
 on:
   push:
     branches:
-      - master
+      - main
       - next
       - version-*
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   lint-prettier:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.2.0
+      - uses: actions/setup-node@v3.3.0
         with:
           node-version: '16'
           cache: 'npm'

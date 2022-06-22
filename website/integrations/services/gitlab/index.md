@@ -2,6 +2,8 @@
 title: GitLab
 ---
 
+<span class="badge badge--primary">Support level: authentik</span>
+
 ## What is GitLab
 
 From https://about.gitlab.com/what-is-gitlab/

@@ -3,12 +3,13 @@ from base64 import b64decode
 from dataclasses import dataclass
 from typing import Optional
 from urllib.parse import quote_plus
+from xml.etree.ElementTree import ParseError  # nosec
 
 import xmlsec
 from defusedxml import ElementTree
-from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 
+from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
@@ -94,7 +95,7 @@ class AuthNRequestParser:
 
         verifier = self.provider.verification_kp
 
-        root = etree.fromstring(decoded_xml)  # nosec
+        root = lxml_from_string(decoded_xml)
         xmlsec.tree.add_ids(root, ["ID"])
         signature_nodes = root.xpath("/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP)
         # No signatures, no verifier configured -> decode xml directly
@@ -175,7 +176,10 @@ class AuthNRequestParser:
                 )
             except xmlsec.Error as exc:
                 raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
-        return self._parse_xml(decoded_xml, relay_state)
+        try:
+            return self._parse_xml(decoded_xml, relay_state)
+        except ParseError as exc:
+            raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
 
     def idp_initiated(self) -> AuthNRequest:
         """Create IdP Initiated AuthNRequest"""

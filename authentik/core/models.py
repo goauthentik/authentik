@@ -46,6 +46,9 @@ USER_ATTRIBUTE_CHANGE_NAME = "goauthentik.io/user/can-change-name"
 USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
 USER_ATTRIBUTE_CAN_OVERRIDE_IP = "goauthentik.io/user/override-ips"
 
+USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
+USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
+
 GRAVATAR_URL = "https://secure.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
 
@@ -103,7 +106,10 @@ class Group(models.Model):
 
             SELECT authentik_core_group.*, parents.relative_depth - 1
             FROM authentik_core_group,parents
-            WHERE authentik_core_group.parent_id = parents.group_uuid
+            WHERE (
+                authentik_core_group.parent_id = parents.group_uuid and
+                parents.relative_depth > -20
+            )
         )
         SELECT group_uuid
         FROM parents
@@ -138,6 +144,7 @@ class User(GuardianUserMixin, AbstractUser):
 
     uuid = models.UUIDField(default=uuid4, editable=False)
     name = models.TextField(help_text=_("User's display name."))
+    path = models.TextField(default="users")
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
     ak_groups = models.ManyToManyField("Group", related_name="users")
@@ -146,6 +153,11 @@ class User(GuardianUserMixin, AbstractUser):
     attributes = models.JSONField(default=dict, blank=True)
 
     objects = UserManager()
+
+    @staticmethod
+    def default_path() -> str:
+        """Get the default user path"""
+        return User._meta.get_field("path").default
 
     def group_attributes(self, request: Optional[HttpRequest] = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
@@ -192,7 +204,7 @@ class User(GuardianUserMixin, AbstractUser):
 
     @property
     def uid(self) -> str:
-        """Generate a globall unique UID, based on the user ID and the hashed secret key"""
+        """Generate a globally unique UID, based on the user ID and the hashed secret key"""
         return sha256(f"{self.id}-{settings.SECRET_KEY}".encode("ascii")).hexdigest()
 
     @property
@@ -278,6 +290,11 @@ class Application(PolicyBindingModel):
     meta_launch_url = models.TextField(
         default="", blank=True, validators=[DomainlessURLValidator()]
     )
+
+    open_in_new_tab = models.BooleanField(
+        default=False, help_text=_("Open launch URL in a new browser tab or window.")
+    )
+
     # For template applications, this can be set to /static/authentik/applications/*
     meta_icon = models.FileField(
         upload_to="application-icons/",
@@ -368,6 +385,8 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     name = models.TextField(help_text=_("Source's display Name."))
     slug = models.SlugField(help_text=_("Internal source name, used in URLs."), unique=True)
 
+    user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
+
     enabled = models.BooleanField(default=True)
     property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
 
@@ -402,6 +421,17 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     )
 
     objects = InheritanceManager()
+
+    def get_user_path(self) -> str:
+        """Get user path, fallback to default for formatting errors"""
+        try:
+            return self.user_path_template % {
+                "slug": self.slug,
+            }
+        # pylint: disable=broad-except
+        except Exception as exc:
+            LOGGER.warning("Failed to template user path", exc=exc, source=self)
+            return User.default_path()
 
     @property
     def component(self) -> str:

@@ -1,11 +1,7 @@
 const config = {
     namespace: "goauthentik/",
-    // Settings for GHCR
     registryTokenEndpoint: "https://ghcr.io/token",
     registryService: "ghcr.io",
-    // Settings for Harbor
-    // registryTokenEndpoint: "https://docker.beryju.org/service/token",
-    // registryService: "harbor-registry",
 };
 
 async function getToken(event) {

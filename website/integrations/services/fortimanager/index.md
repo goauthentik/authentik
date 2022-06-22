@@ -2,6 +2,8 @@
 title: FortiManager
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is FortiManager
 
 From https://www.fortinet.com/products/management/fortimanager

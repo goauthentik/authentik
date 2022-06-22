@@ -1,7 +1,7 @@
 name: authentik-backend-translate-compile
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - '/locale/'
   pull_request:

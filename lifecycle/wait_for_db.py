@@ -51,8 +51,7 @@ while True:
     except OperationalError as exc:
         sleep(1)
         j_print(f"PostgreSQL connection failed, retrying... ({exc})")
-    finally:
-        j_print("PostgreSQL connection successful")
+    j_print("PostgreSQL connection successful")
 
 REDIS_PROTOCOL_PREFIX = "redis://"
 if CONFIG.y_bool("redis.tls", False):
@@ -70,7 +69,6 @@ while True:
     except RedisError as exc:
         sleep(1)
         j_print(f"Redis Connection failed, retrying... ({exc})", redis_url=REDIS_URL)
-    finally:
-        j_print("Redis Connection successful")
+    j_print("Redis Connection successful")
 
 j_print("Finished authentik bootstrap")

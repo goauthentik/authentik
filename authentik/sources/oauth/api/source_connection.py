@@ -26,6 +26,7 @@ class UserOAuthSourceConnectionViewSet(UsedByMixin, ModelViewSet):
     queryset = UserOAuthSourceConnection.objects.all()
     serializer_class = UserOAuthSourceConnectionSerializer
     filterset_fields = ["source__slug"]
+    search_fields = ["source__slug"]
     permission_classes = [OwnerSuperuserPermissions]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering = ["source__slug"]

@@ -2,6 +2,8 @@
 title: Gitea
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Gitea
 
 From https://gitea.io/
@@ -60,7 +62,7 @@ Change the following fields
 -   OAuth2 Provider: OpenID Connect
 -   Client ID (Key): Step 1
 -   Client Secret: Step 1
--   Icon URL: https://raw.githubusercontent.com/goauthentik/authentik/master/web/icons/icon.png
+-   Icon URL: https://goauthentik.io/img/icon.png
 -   OpenID Connect Auto Discovery URL: https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration
 -   Additional Scopes: `email profile`
 

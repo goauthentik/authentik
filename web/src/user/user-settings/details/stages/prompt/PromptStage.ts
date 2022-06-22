@@ -36,19 +36,24 @@ export class UserSettingsPromptStage extends PromptStage {
 
     renderField(prompt: StagePrompt): TemplateResult {
         const errors = (this.challenge?.responseErrors || {})[prompt.fieldKey];
+        if (this.shouldRenderInWrapper(prompt)) {
+            return html`
+                <ak-form-element-horizontal
+                    label=${t`${prompt.label}`}
+                    ?required=${prompt.required}
+                    name=${prompt.fieldKey}
+                    ?invalid=${errors !== undefined}
+                    .errorMessages=${(errors || []).map((error) => {
+                        return error.string;
+                    })}
+                >
+                    ${unsafeHTML(this.renderPromptInner(prompt, true))}
+                    ${this.renderPromptHelpText(prompt)}
+                </ak-form-element-horizontal>
+            `;
+        }
         return html`
-            <ak-form-element-horizontal
-                label=${t`${prompt.label}`}
-                ?required=${prompt.required}
-                name=${prompt.fieldKey}
-                ?invalid=${errors !== undefined}
-                .errorMessages=${(errors || []).map((error) => {
-                    return error.string;
-                })}
-            >
-                ${unsafeHTML(this.renderPromptInner(prompt, true))}
-                ${this.renderPromptHelpText(prompt)}
-            </ak-form-element-horizontal>
+            ${unsafeHTML(this.renderPromptInner(prompt, true))} ${this.renderPromptHelpText(prompt)}
         `;
     }
 

@@ -7,7 +7,9 @@ import { until } from "lit/directives/until.js";
 
 import {
     CoreApi,
+    CoreGroupsListRequest,
     CryptoApi,
+    Group,
     LDAPSource,
     LDAPSourceRequest,
     PropertymappingsApi,
@@ -15,6 +17,7 @@ import {
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../api/Config";
+import "../../../elements/SearchSelect";
 import "../../../elements/forms/FormGroup";
 import "../../../elements/forms/HorizontalFormElement";
 import { ModelForm } from "../../../elements/forms/ModelForm";
@@ -301,29 +304,47 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                 <span slot="header"> ${t`Additional settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${t`Group`} name="syncParentGroup">
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.syncParentGroup === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new CoreApi(DEFAULT_CONFIG).coreGroupsList({}).then((groups) => {
-                                    return groups.results.map((group) => {
-                                        return html`<option
-                                            value=${ifDefined(group.pk)}
-                                            ?selected=${this.instance?.syncParentGroup === group.pk}
-                                        >
-                                            ${group.name}
-                                        </option>`;
-                                    });
-                                }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <!-- @ts-ignore -->
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Group[]> => {
+                                const args: CoreGroupsListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
+                                    args,
+                                );
+                                return groups.results;
+                            }}
+                            .renderElement=${(group: Group): string => {
+                                return group.name;
+                            }}
+                            .value=${(group: Group | undefined): string | undefined => {
+                                return group ? group.pk : undefined;
+                            }}
+                            .selected=${(group: Group): boolean => {
+                                return group.pk === this.instance?.syncParentGroup;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`Parent group for all the groups imported from LDAP.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`User path`} name="userPathTemplate">
+                        <input
+                            type="text"
+                            value="${first(
+                                this.instance?.userPathTemplate,
+                                "goauthentik.io/sources/%(slug)s",
+                            )}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Path template for users created. Use placeholders like \`%(slug)s\` to insert the source slug.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal

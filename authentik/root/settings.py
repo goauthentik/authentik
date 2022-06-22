@@ -147,12 +147,12 @@ SPECTACULAR_SETTINGS = {
         },
     ],
     "CONTACT": {
-        "email": "hello@beryju.org",
+        "email": "hello@goauthentik.io",
     },
     "AUTHENTICATION_WHITELIST": ["authentik.api.authentication.TokenAuthentication"],
     "LICENSE": {
         "name": "GNU GPLv3",
-        "url": "https://github.com/goauthentik/authentik/blob/master/LICENSE",
+        "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
         "EventActions": "authentik.events.models.EventAction",
@@ -217,12 +217,12 @@ DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_SERIALIZER = "django.contrib.sessions.serializers.PickleSerializer"
 SESSION_CACHE_ALIAS = "default"
 # Configured via custom SessionMiddleware
 # SESSION_COOKIE_SAMESITE = "None"
 # SESSION_COOKIE_SECURE = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_SAVE_EVERY_REQUEST = True
 
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
 
@@ -408,12 +408,12 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "plain": {
+        "json": {
             "()": structlog.stdlib.ProcessorFormatter,
             "processor": structlog.processors.JSONRenderer(sort_keys=True),
             "foreign_pre_chain": LOG_PRE_CHAIN,
         },
-        "colored": {
+        "console": {
             "()": structlog.stdlib.ProcessorFormatter,
             "processor": structlog.dev.ConsoleRenderer(colors=DEBUG),
             "foreign_pre_chain": LOG_PRE_CHAIN,
@@ -423,7 +423,7 @@ LOGGING = {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
-            "formatter": "colored" if DEBUG else "plain",
+            "formatter": "console" if DEBUG else "json",
         },
     },
     "loggers": {},

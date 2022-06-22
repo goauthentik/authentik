@@ -68,6 +68,7 @@ class EmailStageViewSet(UsedByMixin, ModelViewSet):
         "template",
         "activate_user_on_success",
     ]
+    search_fields = ["name"]
     ordering = ["name"]
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})

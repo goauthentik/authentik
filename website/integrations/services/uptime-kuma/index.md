@@ -2,6 +2,8 @@
 title: Uptime Kuma
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Uptime Kuma
 
 From https://github.com/louislam/uptime-kuma
@@ -29,7 +31,7 @@ Create an application in authentik. Create a Proxy provider with the following p
 
 -   External host
 
-    `https://uptime-kuma.company`  
+    `https://uptime-kuma.company`
     Set this to the external URL you will be accessing Uptime Kuma from.
 
 -   Skip path regex

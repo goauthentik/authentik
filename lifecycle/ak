@@ -37,20 +37,15 @@ MODE_FILE="/tmp/authentik-mode"
 if [[ "$1" == "server" ]]; then
     wait_for_db
     echo "server" > $MODE_FILE
-    # We only set PROMETHEUS_MULTIPROC_DIR for serer, as with the worker it just fills up the disk
-    # as one file is created per process
-    #
-    # Set to TMPDIR instead hardcoded path so this can be used outside docker too
-    export PROMETHEUS_MULTIPROC_DIR=$TMPDIR
     python -m lifecycle.migrate
+    if [[ ! -z "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || ! -z "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
+        python -m manage bootstrap_tasks
+    fi
     /authentik-proxy
 elif [[ "$1" == "worker" ]]; then
     wait_for_db
     echo "worker" > $MODE_FILE
     check_if_root "celery -A authentik.root.celery worker -Ofair --max-tasks-per-child=1 --autoscale 3,1 -E -B -s /tmp/celerybeat-schedule -Q authentik,authentik_scheduled,authentik_events"
-elif [[ "$1" == "flower" ]]; then
-    echo "flower" > $MODE_FILE
-    celery -A authentik.root.celery flower
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test" ]]; then
@@ -64,8 +59,6 @@ elif [[ "$1" == "healthcheck" ]]; then
         curl --user-agent "goauthentik.io lifecycle Healthcheck" -I http://localhost:9000/-/health/ready/
     elif [[ $mode == "worker" ]]; then
         celery -A authentik.root.celery inspect ping -d celery@$HOSTNAME --timeout 5 -j
-    elif [[ $mode == "flower" ]]; then
-        curl http://localhost:5555/metrics
     fi
 elif [[ "$1" == "dump_config" ]]; then
     python -m authentik.lib.config

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
 )
 
@@ -41,10 +42,10 @@ func (ws *WebServer) configureProxy() {
 		}
 		ws.proxyErrorHandler(rw, r, fmt.Errorf("proxy not running"))
 	})
-	ws.m.Path("/-/health/live/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	ws.m.Path("/-/health/live/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(204)
-	})
-	ws.m.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	}))
+	ws.m.PathPrefix("/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		if !ws.p.IsRunning() {
 			ws.proxyErrorHandler(rw, r, fmt.Errorf("authentik core not running yet"))
 			return
@@ -63,7 +64,7 @@ func (ws *WebServer) configureProxy() {
 		}).Observe(float64(time.Since(before)))
 		ws.log.WithField("host", web.GetHost(r)).Trace("routing to application server")
 		rp.ServeHTTP(rw, r)
-	})
+	}))
 }
 
 func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request, err error) {

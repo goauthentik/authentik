@@ -3,6 +3,7 @@ from functools import partial
 from typing import Callable
 
 from django.conf import settings
+from django.contrib.sessions.models import Session
 from django.core.exceptions import SuspiciousOperation
 from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete
@@ -24,11 +25,12 @@ IGNORED_MODELS = [
     UserObjectPermission,
     AuthenticatedSession,
     StaticToken,
+    Session,
 ]
 if settings.DEBUG:
-    from silk.models import Request, Response
+    from silk.models import Request, Response, SQLQuery
 
-    IGNORED_MODELS += [Request, Response]
+    IGNORED_MODELS += [Request, Response, SQLQuery]
 IGNORED_MODELS = tuple(IGNORED_MODELS)
 
 

@@ -383,6 +383,7 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(
                         help_text="Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.",
                         to="authentik_events.NotificationTransport",
+                        blank=True,
                     ),
                 ),
             ],
