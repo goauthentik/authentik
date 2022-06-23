@@ -34,6 +34,11 @@ import "../elements/LoadingOverlay";
 import { first } from "../utils";
 import "./stages/RedirectStage";
 import "./stages/access_denied/AccessDeniedStage";
+// Import webauthn-related stages to prevent issues on safari
+// Which is overly sensitive to allowing things only in the context of a
+// user interaction
+import "./stages/authenticator_validate/AuthenticatorValidateStage";
+import "./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import "./stages/autosubmit/AutosubmitStage";
 import { StageHost } from "./stages/base";
 import "./stages/captcha/CaptchaStage";
@@ -341,7 +346,6 @@ export class FlowExecutor extends LitElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-static>`;
             case "ak-stage-authenticator-webauthn":
-                await import("./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage");
                 return html`<ak-stage-authenticator-webauthn
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -353,7 +357,6 @@ export class FlowExecutor extends LitElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-sms>`;
             case "ak-stage-authenticator-validate":
-                await import("./stages/authenticator_validate/AuthenticatorValidateStage");
                 return html`<ak-stage-authenticator-validate
                     .host=${this as StageHost}
                     .challenge=${this.challenge}

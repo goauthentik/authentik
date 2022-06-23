@@ -15,6 +15,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
+    CurrentTenant,
     DeviceChallenge,
     DeviceClassesEnum,
     FlowsApi,
@@ -44,6 +45,10 @@ export class AuthenticatorValidateStage
         return this.host.loading;
     }
 
+    get tenant(): CurrentTenant {
+        return this.host.tenant;
+    }
+
     @state()
     _selectedDeviceChallenge?: DeviceChallenge;
 
@@ -53,7 +58,7 @@ export class AuthenticatorValidateStage
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
         new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
-            flowSlug: this.host.flowSlug,
+            flowSlug: this.host.flowSlug || "",
             query: window.location.search.substring(1),
             flowChallengeResponseRequest: {
                 // @ts-ignore
