@@ -63,7 +63,7 @@
         "@jackfranklin/rollup-plugin-markdown": "^0.3.0",
         "@lingui/cli": "^3.13.3",
         "@lingui/core": "^3.13.3",
-        "@lingui/detect-locale": "^3.13.3",
+        "@lingui/detect-locale": "^3.14.0",
         "@lingui/macro": "^3.13.3",
         "@patternfly/patternfly": "^4.196.7",
         "@polymer/iron-form": "^3.0.1",
