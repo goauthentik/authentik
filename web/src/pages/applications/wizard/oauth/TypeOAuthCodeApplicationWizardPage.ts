@@ -15,8 +15,8 @@ import {
 
 import { DEFAULT_CONFIG } from "../../../../api/Config";
 import { KeyUnknown } from "../../../../elements/forms/Form";
-import { WizardFormPage } from "../../../../elements/wizard/WizardFormPage";
 import "../../../../elements/forms/HorizontalFormElement";
+import { WizardFormPage } from "../../../../elements/wizard/WizardFormPage";
 import "../../../../elements/wizard/WizardFormPage";
 
 @customElement("ak-application-wizard-type-oauth-code")

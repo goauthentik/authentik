@@ -13,11 +13,15 @@ import "../../../elements/wizard/Wizard";
 import "./InitialApplicationWizardPage";
 import "./TypeApplicationWizardPage";
 import "./TypeLinkApplicationWizardPage";
+import "./ldap/TypeLDAPApplicationWizardPage";
 import "./oauth/TypeOAuthAPIApplicationWizardPage";
 import "./oauth/TypeOAuthApplicationWizardPage";
 import "./oauth/TypeOAuthCodeApplicationWizardPage";
 import "./oauth/TypeOAuthImplicitApplicationWizardPage";
 import "./proxy/TypeProxyApplicationWizardPage";
+import "./saml/TypeSAMLApplicationWizardPage";
+import "./saml/TypeSAMLConfigApplicationWizardPage";
+import "./saml/TypeSAMLImportApplicationWizardPage";
 
 @customElement("ak-application-wizard")
 export class ApplicationWizard extends LitElement {

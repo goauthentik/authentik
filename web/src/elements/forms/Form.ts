@@ -105,15 +105,11 @@ export class Form<T> extends LitElement {
         ironForm?.reset();
     }
 
-    /**
-     * If this form contains a file input, and the input as been filled, this function returns
-     * said file.
-     * @returns File object or undefined
-     */
-    getFormFile(): File | undefined {
+    getFormFiles(): { [key: string]: File } {
         const ironForm = this.shadowRoot?.querySelector("iron-form");
+        const files: { [key: string]: File } = {};
         if (!ironForm) {
-            return;
+            return files;
         }
         const elements = ironForm._getSubmittableElements();
         for (let i = 0; i < elements.length; i++) {
@@ -122,10 +118,10 @@ export class Form<T> extends LitElement {
                 if ((element.files || []).length < 1) {
                     continue;
                 }
-                // We already checked the length
-                return (element.files || [])[0];
+                files[element.name] = (element.files || [])[0];
             }
         }
+        return files;
     }
 
     serializeForm(): T | undefined {

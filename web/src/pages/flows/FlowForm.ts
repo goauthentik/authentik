@@ -53,7 +53,7 @@ export class FlowForm extends ModelForm<Flow, string> {
         }
         const c = await config();
         if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
-            const icon = this.getFormFile();
+            const icon = this.getFormFiles()["background"];
             if (icon || this.clearBackground) {
                 await new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
                     slug: flow.slug,

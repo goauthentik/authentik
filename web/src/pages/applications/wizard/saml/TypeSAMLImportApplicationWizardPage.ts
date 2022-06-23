@@ -7,7 +7,7 @@ import {
     FlowDesignationEnum,
     FlowsApi,
     ProvidersApi,
-    ProxyProviderRequest,
+    ProvidersSamlImportMetadataCreateRequest,
 } from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../../api/Config";
@@ -15,9 +15,9 @@ import { KeyUnknown } from "../../../../elements/forms/Form";
 import "../../../../elements/forms/HorizontalFormElement";
 import { WizardFormPage } from "../../../../elements/wizard/WizardFormPage";
 
-@customElement("ak-application-wizard-type-proxy")
-export class TypeProxyApplicationWizardPage extends WizardFormPage {
-    sidebarLabel = () => t`Proxy details`;
+@customElement("ak-application-wizard-type-saml-import")
+export class TypeSAMLImportApplicationWizardPage extends WizardFormPage {
+    sidebarLabel = () => t`Import SAML metadata`;
 
     nextDataCallback = async (data: KeyUnknown): Promise<boolean> => {
         let name = this.host.state["name"] as string;
@@ -34,14 +34,14 @@ export class TypeProxyApplicationWizardPage extends WizardFormPage {
                 designation: FlowDesignationEnum.Authorization,
                 ordering: "slug",
             });
-            const req: ProxyProviderRequest = {
+            const req: ProvidersSamlImportMetadataCreateRequest = {
                 name: name,
                 authorizationFlow: flows.results[0].pk,
-                externalHost: data.externalHost as string,
+                file: data["metadata"] as Blob,
             };
-            const provider = await new ProvidersApi(DEFAULT_CONFIG).providersProxyCreate({
-                proxyProviderRequest: req,
-            });
+            const provider = await new ProvidersApi(
+                DEFAULT_CONFIG,
+            ).providersSamlImportMetadataCreate(req);
             this.host.state["provider"] = provider;
             return true;
         });
@@ -50,11 +50,8 @@ export class TypeProxyApplicationWizardPage extends WizardFormPage {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`External domain`} name="externalHost" ?required=${true}>
-                <input type="text" value="" class="pf-c-form-control" required />
-                <p class="pf-c-form__helper-text">
-                    ${t`External domain you will be accessing the domain from.`}
-                </p>
+            <ak-form-element-horizontal label=${t`Metadata`} name="metadata">
+                <input type="file" value="" class="pf-c-form-control" />
             </ak-form-element-horizontal>
         </form> `;
     }

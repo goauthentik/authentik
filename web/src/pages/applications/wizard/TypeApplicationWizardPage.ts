@@ -23,9 +23,9 @@ export class TypeApplicationWizardPage extends WizardPage {
             modelName: "",
         },
         {
-            component: "saml",
+            component: "ak-application-wizard-type-saml",
             name: t`SAML`,
-            description: "XML-based SSO standard. Use this if your application only supports SAML.",
+            description: t`XML-based SSO standard. Use this if your application only supports SAML.`,
             modelName: "",
         },
         {
@@ -35,7 +35,7 @@ export class TypeApplicationWizardPage extends WizardPage {
             modelName: "",
         },
         {
-            component: "ldap",
+            component: "ak-application-wizard-type-ldap",
             name: t`LDAP`,
             description: t`Provide an LDAP interface for applications and users to authenticate against.`,
             modelName: "",

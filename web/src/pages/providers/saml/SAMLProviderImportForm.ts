@@ -24,7 +24,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
 
     // eslint-disable-next-line
     send = (data: SAMLProvider): Promise<void> => {
-        const file = this.getFormFile();
+        const file = this.getFormFiles()["metadata"];
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
@@ -67,7 +67,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-element-horizontal label=${t`Metadata`} name="flow">
+            <ak-form-element-horizontal label=${t`Metadata`} name="metadata">
                 <input type="file" value="" class="pf-c-form-control" />
             </ak-form-element-horizontal>
         </form>`;

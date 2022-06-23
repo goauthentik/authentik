@@ -18,7 +18,7 @@ export class FlowImportForm extends Form<Flow> {
 
     // eslint-disable-next-line
     send = (data: Flow): Promise<void> => {
-        const file = this.getFormFile();
+        const file = this.getFormFiles()["flow"];
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }

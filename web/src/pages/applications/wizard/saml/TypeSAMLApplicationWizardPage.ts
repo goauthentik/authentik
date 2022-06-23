@@ -14,31 +14,19 @@ import { TypeCreate } from "@goauthentik/api";
 import "../../../../elements/forms/HorizontalFormElement";
 import { WizardPage } from "../../../../elements/wizard/WizardPage";
 
-@customElement("ak-application-wizard-type-oauth")
+@customElement("ak-application-wizard-type-saml")
 export class TypeOAuthApplicationWizardPage extends WizardPage {
     applicationTypes: TypeCreate[] = [
         {
-            component: "ak-application-wizard-type-oauth-code",
-            name: t`Web application`,
-            description: t`Applications which handle the authentication server-side (for example, Python, Go, Rust, Java, PHP)`,
+            component: "ak-application-wizard-type-saml-import",
+            name: t`Import SAML Metadata`,
+            description: t`Import the metadata document of the applicaation you want to configure.`,
             modelName: "",
         },
         {
-            component: "ak-application-wizard-type-oauth-implicit",
-            name: t`Single-page applications`,
-            description: t`Single-page applications which handle authentication in the browser (for example, Javascript, Angular, React, Vue)`,
-            modelName: "",
-        },
-        {
-            component: "ak-application-wizard-type-oauth-implicit",
-            name: t`Native application`,
-            description: t`Applications which redirect users to a non-web callback (for example, Android, iOS)`,
-            modelName: "",
-        },
-        {
-            component: "ak-application-wizard-type-oauth-api",
-            name: t`API`,
-            description: t`Authentication without user interaction, or machine-to-machine authentication.`,
+            component: "ak-application-wizard-type-saml-config",
+            name: t`Manual configuration`,
+            description: t`Manually configure SAML`,
             modelName: "",
         },
     ];
@@ -62,10 +50,10 @@ export class TypeOAuthApplicationWizardPage extends WizardPage {
                             this.host.steps = [
                                 "ak-application-wizard-initial",
                                 "ak-application-wizard-type",
-                                "ak-application-wizard-type-oauth",
+                                "ak-application-wizard-type-saml",
                                 type.component,
                             ];
-                            this.host.state["oauth-type"] = type.component;
+                            this.host.state["saml-type"] = type.component;
                             this._isValid = true;
                         }}
                     />
