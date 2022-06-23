@@ -62,7 +62,7 @@
         "@goauthentik/api": "^2022.6.3-1655714155",
         "@jackfranklin/rollup-plugin-markdown": "^0.3.0",
         "@lingui/cli": "^3.14.0",
-        "@lingui/core": "^3.13.3",
+        "@lingui/core": "^3.14.0",
         "@lingui/detect-locale": "^3.14.0",
         "@lingui/macro": "^3.14.0",
         "@patternfly/patternfly": "^4.196.7",
