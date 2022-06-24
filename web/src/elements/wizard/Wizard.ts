@@ -94,6 +94,9 @@ export class Wizard extends ModalButton {
         this._initialSteps = this._steps;
     }
 
+    /**
+     * Add action to the beginning of the list
+     */
     addActionBefore(displayName: string, run: () => Promise<boolean>): void {
         this.actions.unshift({
             displayName,
@@ -101,6 +104,9 @@ export class Wizard extends ModalButton {
         });
     }
 
+    /**
+     * Add action at the end of the list
+     */
     addActionAfter(displayName: string, run: () => Promise<boolean>): void {
         this.actions.push({
             displayName,

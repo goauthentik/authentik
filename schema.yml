@@ -31589,8 +31589,16 @@ components:
           type: string
         token:
           type: string
+        user_uid:
+          type: string
+        user_pk:
+          type: integer
+        group_pk:
+          type: string
       required:
       - token
+      - user_pk
+      - user_uid
       - username
     UserSetting:
       type: object

@@ -24,7 +24,7 @@ from drf_spectacular.utils import (
 )
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, JSONField, ListField, SerializerMethodField
+from rest_framework.fields import CharField, JSONField, ListField, SerializerMethodField, IntegerField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -315,6 +315,9 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 {
                     "username": CharField(required=True),
                     "token": CharField(required=True),
+                    "user_uid": CharField(required=True),
+                    "user_pk": IntegerField(required=True),
+                    "group_pk": CharField(required=False),
                 },
             )
         },
@@ -332,18 +335,25 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     attributes={USER_ATTRIBUTE_SA: True, USER_ATTRIBUTE_TOKEN_EXPIRING: False},
                     path=USER_PATH_SERVICE_ACCOUNT,
                 )
+                response = {
+                    "username": user.username,
+                    "user_uid": user.uid,
+                    "user_pk": user.pk,
+                }
                 if create_group and self.request.user.has_perm("authentik_core.add_group"):
                     group = Group.objects.create(
                         name=username,
                     )
                     group.users.add(user)
+                    response["group_pk"] = str(group.pk)
                 token = Token.objects.create(
                     identifier=slugify(f"service-account-{username}-password"),
                     intent=TokenIntents.INTENT_APP_PASSWORD,
                     user=user,
                     expires=now() + timedelta(days=360),
                 )
-                return Response({"username": user.username, "token": token.key})
+                response["token"]  = token.key
+                return Response(response)
             except (IntegrityError) as exc:
                 return Response(data={"non_field_errors": [str(exc)]}, status=400)
 

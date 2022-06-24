@@ -50,7 +50,11 @@ export class TypeProxyApplicationWizardPage extends WizardFormPage {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`External domain`} name="externalHost" ?required=${true}>
+            <ak-form-element-horizontal
+                label=${t`External domain`}
+                name="externalHost"
+                ?required=${true}
+            >
                 <input type="text" value="" class="pf-c-form-control" required />
                 <p class="pf-c-form__helper-text">
                     ${t`External domain you will be accessing the domain from.`}

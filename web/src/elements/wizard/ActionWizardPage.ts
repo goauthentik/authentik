@@ -10,6 +10,8 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import { ResponseError } from "@goauthentik/api";
+
 import { EVENT_REFRESH } from "../../constants";
 import { WizardAction } from "./Wizard";
 import { WizardPage } from "./WizardPage";
@@ -71,9 +73,8 @@ export class ActionWizardPage extends WizardPage {
                 this.currentStep.state = ActionState.done;
                 this.requestUpdate();
             } catch (exc) {
-                if (exc instanceof Response) {
-                    // TODO: Better error message
-                    this.currentStep.action.subText = exc.statusText;
+                if (exc instanceof ResponseError) {
+                    this.currentStep.action.subText = await exc.response.text();
                 } else {
                     this.currentStep.action.subText = (exc as Error).toString();
                 }
