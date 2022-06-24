@@ -36,7 +36,7 @@ export class TypeSAMLImportApplicationWizardPage extends WizardFormPage {
             });
             const req: ProvidersSamlImportMetadataCreateRequest = {
                 name: name,
-                authorizationFlow: flows.results[0].pk,
+                authorizationFlow: flows.results[0].slug,
                 file: data["metadata"] as Blob,
             };
             const provider = await new ProvidersApi(

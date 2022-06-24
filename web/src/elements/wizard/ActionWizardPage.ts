@@ -51,6 +51,9 @@ export class ActionWizardPage extends WizardPage {
         this.host.canBack = false;
         this.host.canCancel = false;
         await this.run();
+        // Ensure wizard is closable, even when run() failed
+        this._isValid = true;
+        this.host.requestUpdate();
     };
 
     sidebarLabel = () => t`Apply changes`;
