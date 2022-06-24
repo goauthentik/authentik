@@ -22,7 +22,12 @@ def get_cookie_secret():
 
 
 def _get_callback_url(uri: str) -> str:
-    return urljoin(uri, "outpost.goauthentik.io/callback")
+    return "\n".join(
+        [
+            urljoin(uri, "outpost.goauthentik.io/callback"),
+            uri + "\?X-authentik-oauth-callback=true",
+        ]
+    )
 
 
 class ProxyMode(models.TextChoices):

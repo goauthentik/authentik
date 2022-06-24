@@ -72,12 +72,17 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		SupportedSigningAlgs: []string{"RS256", "HS256"},
 	})
 
+	redirectUri, _ := url.Parse(p.ExternalHost)
+	redirectUri.RawQuery = url.Values{
+		callbackSignature: []string{"true"},
+	}.Encode()
+
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(p, ak.Outpost.Config["authentik_host"].(string))
 	oauth2Config := oauth2.Config{
 		ClientID:     *p.ClientId,
 		ClientSecret: *p.ClientSecret,
-		RedirectURL:  urlJoin(p.ExternalHost, "/outpost.goauthentik.io/callback"),
+		RedirectURL:  redirectUri.String(),
 		Endpoint:     endpoint.Endpoint,
 		Scopes:       p.ScopesToRequest,
 	}
@@ -139,10 +144,17 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		})
 	})
 	mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
+	mux.Use(func(inner http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if _, set := r.URL.Query()[callbackSignature]; set {
+				a.handleCallback(w, r)
+			} else {
+				inner.ServeHTTP(w, r)
+			}
+		})
+	})
 
-	// Support /start and /sign_in for backwards compatibility
 	mux.HandleFunc("/outpost.goauthentik.io/start", a.handleRedirect)
-	mux.HandleFunc("/outpost.goauthentik.io/sign_in", a.handleRedirect)
 	mux.HandleFunc("/outpost.goauthentik.io/callback", a.handleCallback)
 	mux.HandleFunc("/outpost.goauthentik.io/sign_out", a.handleSignOut)
 	switch *p.Mode.Get() {

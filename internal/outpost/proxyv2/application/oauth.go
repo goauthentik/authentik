@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	redirectParam = "rd"
+	redirectParam     = "rd"
+	callbackSignature = "X-authentik-oauth-callback"
 )
 
 func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
