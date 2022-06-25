@@ -1,22 +1,22 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/PageHeader";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/pages/providers/ldap/LDAPProviderViewPage";
+import "@goauthentik/web/pages/providers/oauth2/OAuth2ProviderViewPage";
+import "@goauthentik/web/pages/providers/proxy/ProxyProviderViewPage";
+import "@goauthentik/web/pages/providers/saml/SAMLProviderViewPage";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/EmptyState";
-import "../../elements/PageHeader";
-import "../../elements/buttons/SpinnerButton";
-import "./ldap/LDAPProviderViewPage";
-import "./oauth2/OAuth2ProviderViewPage";
-import "./proxy/ProxyProviderViewPage";
-import "./saml/SAMLProviderViewPage";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends LitElement {

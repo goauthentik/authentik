@@ -1,24 +1,24 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/providers/ProviderWizard";
+import "@goauthentik/web/pages/providers/ldap/LDAPProviderForm";
+import "@goauthentik/web/pages/providers/oauth2/OAuth2ProviderForm";
+import "@goauthentik/web/pages/providers/proxy/ProxyProviderForm";
+import "@goauthentik/web/pages/providers/saml/SAMLProviderForm";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/ProxyForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import "./ProviderWizard";
-import "./ldap/LDAPProviderForm";
-import "./oauth2/OAuth2ProviderForm";
-import "./proxy/ProxyProviderForm";
-import "./saml/SAMLProviderForm";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {

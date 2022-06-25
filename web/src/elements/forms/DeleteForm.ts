@@ -1,3 +1,9 @@
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -7,12 +13,6 @@ import { until } from "lit/directives/until.js";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
-
-import { EVENT_REFRESH } from "../../constants";
-import { ModalButton } from "../buttons/ModalButton";
-import "../buttons/SpinnerButton";
-import { MessageLevel } from "../messages/Message";
-import { showMessage } from "../messages/MessageContainer";
 
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {

@@ -1,9 +1,28 @@
+import MDNginxIngress from "@goauthentik/docs/providers/proxy/_nginx_ingress.md";
+import MDNginxPM from "@goauthentik/docs/providers/proxy/_nginx_proxy_manager.md";
+import MDNginxStandalone from "@goauthentik/docs/providers/proxy/_nginx_standalone.md";
+import MDTraefikCompose from "@goauthentik/docs/providers/proxy/_traefik_compose.md";
+import MDTraefikIngres from "@goauthentik/docs/providers/proxy/_traefik_ingress.md";
+import MDTraefikStandalone from "@goauthentik/docs/providers/proxy/_traefik_standalone.md";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/CodeMirror";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import { MarkdownDocument } from "@goauthentik/web/elements/Markdown";
+import "@goauthentik/web/elements/Markdown";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/events/ObjectChangelog";
+import "@goauthentik/web/pages/providers/RelatedApplicationButton";
+import "@goauthentik/web/pages/providers/proxy/ProxyProviderForm";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -16,25 +35,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ProvidersApi, ProxyMode, ProxyProvider } from "@goauthentik/api";
-
-import MDNginxIngress from "../../../../../website/docs/providers/proxy/_nginx_ingress.md";
-import MDNginxPM from "../../../../../website/docs/providers/proxy/_nginx_proxy_manager.md";
-import MDNginxStandalone from "../../../../../website/docs/providers/proxy/_nginx_standalone.md";
-import MDTraefikCompose from "../../../../../website/docs/providers/proxy/_traefik_compose.md";
-import MDTraefikIngres from "../../../../../website/docs/providers/proxy/_traefik_ingress.md";
-import MDTraefikStandalone from "../../../../../website/docs/providers/proxy/_traefik_standalone.md";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { EVENT_REFRESH } from "../../../constants";
-import "../../../elements/CodeMirror";
-import { PFColor } from "../../../elements/Label";
-import "../../../elements/Markdown";
-import { MarkdownDocument } from "../../../elements/Markdown";
-import "../../../elements/Tabs";
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/events/ObjectChangelog";
-import "../RelatedApplicationButton";
-import "./ProxyProviderForm";
 
 export function ModeToLabel(action?: ProxyMode): string {
     if (!action) return "";

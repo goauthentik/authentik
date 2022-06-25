@@ -1,3 +1,14 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { me } from "@goauthentik/web/api/Users";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/CodeMirror";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/events/ObjectChangelog";
+import "@goauthentik/web/pages/providers/RelatedApplicationButton";
+import "@goauthentik/web/pages/providers/ldap/LDAPProviderForm";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
@@ -5,7 +16,7 @@ import { until } from "lit-html/directives/until.js";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -19,17 +30,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { LDAPProvider, ProvidersApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { me } from "../../../api/Users";
-import { EVENT_REFRESH } from "../../../constants";
-import "../../../elements/CodeMirror";
-import "../../../elements/Tabs";
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/events/ObjectChangelog";
-import "../RelatedApplicationButton";
-import "./LDAPProviderForm";
 
 @customElement("ak-provider-ldap-view")
 export class LDAPProviderViewPage extends LitElement {

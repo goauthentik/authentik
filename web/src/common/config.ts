@@ -1,6 +1,6 @@
-import { UserSelf } from "@goauthentik/api";
+import { me } from "@goauthentik/web/api/Users";
 
-import { me } from "../api/Users";
+import { UserSelf } from "@goauthentik/api";
 
 export enum UserDisplay {
     username = "username",

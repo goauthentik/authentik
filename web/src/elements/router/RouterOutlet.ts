@@ -1,12 +1,13 @@
+import { ROUTE_SEPARATOR } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/router/Router404";
+
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 
-import { ROUTE_SEPARATOR } from "../../constants";
 import { Route } from "./Route";
 import { RouteMatch } from "./RouteMatch";
-import "./Router404";
 
 // Poliyfill for hashchange.newURL,
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange

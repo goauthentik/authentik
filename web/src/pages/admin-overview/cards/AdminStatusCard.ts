@@ -1,9 +1,9 @@
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import { AggregateCard } from "@goauthentik/web/elements/cards/AggregateCard";
+
 import { TemplateResult, html } from "lit";
 import { until } from "lit/directives/until.js";
-
-import { EVENT_REFRESH } from "../../../constants";
-import { PFSize } from "../../../elements/Spinner";
-import { AggregateCard } from "../../../elements/cards/AggregateCard";
 
 export interface AdminStatus {
     icon: string;

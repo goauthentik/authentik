@@ -1,14 +1,14 @@
+import { SentryIgnoredError } from "@goauthentik/web/common/errors";
+import { WSMessage } from "@goauthentik/web/common/ws";
+import { EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/messages/Message";
+import { APIMessage } from "@goauthentik/web/elements/messages/Message";
+
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { SentryIgnoredError } from "../../common/errors";
-import { WSMessage } from "../../common/ws";
-import { EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "../../constants";
-import "./Message";
-import { APIMessage } from "./Message";
 
 export function showMessage(message: APIMessage, unique = false): void {
     const container = document.querySelector<MessageContainer>("ak-message-container");

@@ -1,7 +1,7 @@
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 

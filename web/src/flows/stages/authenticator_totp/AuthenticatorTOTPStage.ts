@@ -1,3 +1,9 @@
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/forms/FormElement";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import "@goauthentik/web/flows/FormStatic";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
 import "webcomponent-qr-code";
 
 import { t } from "@lingui/macro";
@@ -6,7 +12,7 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -18,13 +24,6 @@ import {
     AuthenticatorTOTPChallenge,
     AuthenticatorTOTPChallengeResponseRequest,
 } from "@goauthentik/api";
-
-import "../../../elements/EmptyState";
-import "../../../elements/forms/FormElement";
-import { MessageLevel } from "../../../elements/messages/Message";
-import { showMessage } from "../../../elements/messages/MessageContainer";
-import "../../FormStatic";
-import { BaseStage } from "../base";
 
 @customElement("ak-stage-authenticator-totp")
 export class AuthenticatorTOTPStage extends BaseStage<

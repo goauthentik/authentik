@@ -1,12 +1,12 @@
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { DeleteForm } from "@goauthentik/web/elements/forms/DeleteForm";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import "../../elements/buttons/SpinnerButton";
-import { DeleteForm } from "../../elements/forms/DeleteForm";
-import { MessageLevel } from "../../elements/messages/Message";
-import { showMessage } from "../../elements/messages/MessageContainer";
 
 @customElement("ak-user-active-form")
 export class UserActiveForm extends DeleteForm {

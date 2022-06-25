@@ -1,18 +1,18 @@
+import { tenant } from "@goauthentik/web/api/Config";
+import { configureSentry } from "@goauthentik/web/api/Sentry";
+import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/web/constants";
+import { first } from "@goauthentik/web/utils";
+
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { CurrentTenant } from "@goauthentik/api";
-
-import { tenant } from "../../api/Config";
-import { configureSentry } from "../../api/Sentry";
-import { EVENT_SIDEBAR_TOGGLE } from "../../constants";
-import { first } from "../../utils";
 
 // If the viewport is wider than MIN_WIDTH, the sidebar
 // is shown besides the content, and not overlaid.

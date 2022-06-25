@@ -1,3 +1,7 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { Form } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -5,10 +9,6 @@ import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
 import { CoreApi, CoreUsersRecoveryEmailRetrieveRequest, StagesApi, User } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { Form } from "../../elements/forms/Form";
-import "../../elements/forms/HorizontalFormElement";
 
 @customElement("ak-user-reset-email-form")
 export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailRetrieveRequest> {

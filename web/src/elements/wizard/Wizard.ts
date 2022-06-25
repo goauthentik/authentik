@@ -1,3 +1,5 @@
+import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
+
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
@@ -7,7 +9,6 @@ import { state } from "lit/decorators.js";
 
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
-import { ModalButton } from "../buttons/ModalButton";
 import { WizardPage } from "./WizardPage";
 
 @customElement("ak-wizard")

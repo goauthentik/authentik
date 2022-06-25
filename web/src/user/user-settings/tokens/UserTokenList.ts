@@ -1,3 +1,16 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/buttons/Dropdown";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/TokenCopyButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+import { IntentToLabel } from "@goauthentik/web/pages/tokens/TokenListPage";
+import "@goauthentik/web/user/user-settings/tokens/UserTokenForm";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -6,19 +19,6 @@ import { customElement, property } from "lit/decorators.js";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
-
-import { AKResponse } from "../../../api/Client";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { uiConfig } from "../../../common/config";
-import { PFColor } from "../../../elements/Label";
-import "../../../elements/buttons/Dropdown";
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/TokenCopyButton";
-import "../../../elements/forms/DeleteBulkForm";
-import "../../../elements/forms/ModalForm";
-import { Table, TableColumn } from "../../../elements/table/Table";
-import { IntentToLabel } from "../../../pages/tokens/TokenListPage";
-import "./UserTokenForm";
 
 @customElement("ak-user-token-list")
 export class UserTokenList extends Table<Token> {

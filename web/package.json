@@ -84,6 +84,7 @@
         "@typescript-eslint/parser": "^5.29.0",
         "@webcomponents/webcomponentsjs": "^2.6.0",
         "babel-plugin-macros": "^3.1.0",
+        "babel-plugin-tsconfig-paths": "^1.0.3",
         "base64-js": "^1.5.1",
         "chart.js": "^3.8.0",
         "chartjs-adapter-moment": "^1.0.0",

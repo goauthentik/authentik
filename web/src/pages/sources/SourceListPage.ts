@@ -1,3 +1,17 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/sources/SourceWizard";
+import "@goauthentik/web/pages/sources/ldap/LDAPSourceForm";
+import "@goauthentik/web/pages/sources/oauth/OAuthSourceForm";
+import "@goauthentik/web/pages/sources/plex/PlexSourceForm";
+import "@goauthentik/web/pages/sources/saml/SAMLSourceForm";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -5,20 +19,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { Source, SourcesApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/ProxyForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import "./SourceWizard";
-import "./ldap/LDAPSourceForm";
-import "./oauth/OAuthSourceForm";
-import "./plex/PlexSourceForm";
-import "./saml/SAMLSourceForm";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {

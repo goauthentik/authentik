@@ -1,7 +1,7 @@
-import { TemplateResult } from "lit";
+import { ROUTE_SEPARATOR } from "@goauthentik/web/constants";
+import { Route } from "@goauthentik/web/elements/router/Route";
 
-import { ROUTE_SEPARATOR } from "../../constants";
-import { Route } from "./Route";
+import { TemplateResult } from "lit";
 
 export class RouteMatch {
     route: Route;

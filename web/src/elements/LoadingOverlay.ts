@@ -1,9 +1,9 @@
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { PFSize } from "./Spinner";
 
 @customElement("ak-loading-overlay")
 export class LoadingOverlay extends LitElement {

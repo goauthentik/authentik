@@ -1,31 +1,31 @@
+import { me } from "@goauthentik/web/api/Users";
+import "@goauthentik/web/elements/PageHeader";
+import "@goauthentik/web/elements/cards/AggregatePromiseCard";
+import "@goauthentik/web/elements/charts/AdminLoginsChart";
+import { paramURL } from "@goauthentik/web/elements/router/RouterOutlet";
+import "@goauthentik/web/pages/admin-overview/TopApplicationsTable";
+import "@goauthentik/web/pages/admin-overview/cards/AdminStatusCard";
+import "@goauthentik/web/pages/admin-overview/cards/SystemStatusCard";
+import "@goauthentik/web/pages/admin-overview/cards/VersionStatusCard";
+import "@goauthentik/web/pages/admin-overview/cards/WorkerStatusCard";
+import "@goauthentik/web/pages/admin-overview/charts/FlowStatusChart";
+import "@goauthentik/web/pages/admin-overview/charts/GroupCountStatusChart";
+import "@goauthentik/web/pages/admin-overview/charts/LDAPSyncStatusChart";
+import "@goauthentik/web/pages/admin-overview/charts/OutpostStatusChart";
+import "@goauthentik/web/pages/admin-overview/charts/PolicyStatusChart";
+import "@goauthentik/web/pages/admin-overview/charts/UserCountStatusChart";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
-import { me } from "../../api/Users";
-import "../../elements/PageHeader";
-import "../../elements/cards/AggregatePromiseCard";
-import "../../elements/charts/AdminLoginsChart";
-import { paramURL } from "../../elements/router/RouterOutlet";
-import "./TopApplicationsTable";
-import "./cards/AdminStatusCard";
-import "./cards/SystemStatusCard";
-import "./cards/VersionStatusCard";
-import "./cards/WorkerStatusCard";
-import "./charts/FlowStatusChart";
-import "./charts/GroupCountStatusChart";
-import "./charts/LDAPSyncStatusChart";
-import "./charts/OutpostStatusChart";
-import "./charts/PolicyStatusChart";
-import "./charts/UserCountStatusChart";
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends LitElement {

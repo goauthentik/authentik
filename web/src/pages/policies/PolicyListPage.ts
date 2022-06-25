@@ -1,3 +1,23 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/forms/ConfirmationForm";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/policies/PolicyTestForm";
+import "@goauthentik/web/pages/policies/PolicyWizard";
+import "@goauthentik/web/pages/policies/dummy/DummyPolicyForm";
+import "@goauthentik/web/pages/policies/event_matcher/EventMatcherPolicyForm";
+import "@goauthentik/web/pages/policies/expiry/ExpiryPolicyForm";
+import "@goauthentik/web/pages/policies/expression/ExpressionPolicyForm";
+import "@goauthentik/web/pages/policies/hibp/HaveIBeenPwnedPolicyForm";
+import "@goauthentik/web/pages/policies/password/PasswordPolicyForm";
+import "@goauthentik/web/pages/policies/reputation/ReputationPolicyForm";
+import { groupBy } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -5,26 +25,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { PoliciesApi, Policy } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/forms/ConfirmationForm";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/ProxyForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import { groupBy } from "../../utils";
-import "./PolicyTestForm";
-import "./PolicyWizard";
-import "./dummy/DummyPolicyForm";
-import "./event_matcher/EventMatcherPolicyForm";
-import "./expiry/ExpiryPolicyForm";
-import "./expression/ExpressionPolicyForm";
-import "./hibp/HaveIBeenPwnedPolicyForm";
-import "./password/PasswordPolicyForm";
-import "./reputation/ReputationPolicyForm";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {

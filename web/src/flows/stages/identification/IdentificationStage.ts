@@ -1,9 +1,14 @@
+import "@goauthentik/web/elements/Divider";
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/forms/FormElement";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -18,11 +23,6 @@ import {
     LoginSource,
     UserFieldsEnum,
 } from "@goauthentik/api";
-
-import "../../../elements/Divider";
-import "../../../elements/EmptyState";
-import "../../../elements/forms/FormElement";
-import { BaseStage } from "../base";
 
 export const PasswordManagerPrefill: {
     password: string | undefined;

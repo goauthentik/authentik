@@ -1,7 +1,7 @@
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+
 import { LitElement, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-dropdown")
 export class DropdownButton extends LitElement {

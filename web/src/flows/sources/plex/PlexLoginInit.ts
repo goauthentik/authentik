@@ -1,10 +1,16 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { PlexAPIClient, popupCenterScreen } from "@goauthentik/web/api/Plex";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -18,12 +24,6 @@ import {
     ResponseError,
 } from "@goauthentik/api";
 import { SourcesApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { PlexAPIClient, popupCenterScreen } from "../../../api/Plex";
-import { MessageLevel } from "../../../elements/messages/Message";
-import { showMessage } from "../../../elements/messages/MessageContainer";
-import { BaseStage } from "../../stages/base";
 
 @customElement("ak-flow-sources-plex")
 export class PlexLoginInit extends BaseStage<

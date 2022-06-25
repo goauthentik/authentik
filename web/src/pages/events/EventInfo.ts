@@ -1,3 +1,10 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { EventContext, EventModel, EventWithContext } from "@goauthentik/web/api/Events";
+import { VERSION } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/Expand";
+import "@goauthentik/web/elements/Spinner";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
@@ -11,13 +18,6 @@ import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventActions, FlowsApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { EventContext, EventModel, EventWithContext } from "../../api/Events";
-import { VERSION } from "../../constants";
-import "../../elements/Expand";
-import "../../elements/Spinner";
-import { PFSize } from "../../elements/Spinner";
 
 @customElement("ak-event-info")
 export class EventInfo extends LitElement {
@@ -387,7 +387,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                 return html` <h3>${t`Attempted to log in as ${this.event.context.username}`}</h3>
                     <ak-expand>${this.defaultResponse()}</ak-expand>`;
             case EventActions.Logout:
-                if (this.event.context === {}) {
+                if (Object.keys(this.event.context).length === 0) {
                     return html`<span>${t`No additional data available.`}</span>`;
                 }
                 return this.defaultResponse();
