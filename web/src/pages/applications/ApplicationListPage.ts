@@ -85,7 +85,7 @@ export class ApplicationListPage extends TablePage<Application> {
         // Rendering the wizard with .open here, as if we set the attribute in
         // renderObjectCreate() it'll open two wizards, since that function gets called twice
         return html`<ak-application-wizard
-                .open=${getURLParam("createForm", false)}
+                .open=${getURLParam("createWizard", false)}
                 .showButton=${false}
             ></ak-application-wizard>
             <div class="pf-c-sidebar__panel pf-m-width-25">
@@ -167,6 +167,11 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     renderObjectCreate(): TemplateResult {
-        return html` <ak-application-wizard></ak-application-wizard> `;
+        return html`<ak-forms-modal .open=${getURLParam("createForm", false)}>
+            <span slot="submit"> ${t`Create`} </span>
+            <span slot="header"> ${t`Create Application`} </span>
+            <ak-application-form slot="form"> </ak-application-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+        </ak-forms-modal>`;
     }
 }
