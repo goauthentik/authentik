@@ -4,7 +4,7 @@ import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
 import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
 import { StageHost } from "@goauthentik/web/flows/stages/base";
-import "@goauthentik/web/flows/stages/prompt/PromptStage";
+import "@goauthentik/web/user/user-settings/details/stages/prompt/PromptStage";
 
 import { t } from "@lingui/macro";
 

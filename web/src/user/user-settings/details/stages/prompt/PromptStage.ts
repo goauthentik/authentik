@@ -1,4 +1,4 @@
-import "@goauthentik/web/../../elements/forms/HorizontalFormElement";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
 import { PromptStage } from "@goauthentik/web/flows/stages/prompt/PromptStage";
 
 import { t } from "@lingui/macro";
