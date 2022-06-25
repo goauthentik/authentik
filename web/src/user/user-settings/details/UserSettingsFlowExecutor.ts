@@ -203,7 +203,7 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
                             .challenge=${this.challenge}
                         ></ak-user-stage-prompt>`;
                     default:
-                        console.log(
+                        console.debug(
                             `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
                         );
                         return html`

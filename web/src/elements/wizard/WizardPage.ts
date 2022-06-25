@@ -1,28 +1,31 @@
-import { LitElement, PropertyDeclaration, TemplateResult, html } from "lit";
+import { CSSResult, LitElement, PropertyDeclaration, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+import AKGlobal from "../../authentik.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Wizard } from "./Wizard";
 
 @customElement("ak-wizard-page")
 export class WizardPage extends LitElement {
+    static get styles(): CSSResult[] {
+        return [PFBase, AKGlobal];
+    }
+
     @property()
     sidebarLabel: () => string = () => {
         return "UNNAMED";
     };
 
-    isValid(): boolean {
-        return this._isValid;
-    }
-
     get host(): Wizard {
         return this.parentElement as Wizard;
     }
 
-    _isValid = false;
-
     activeCallback: () => Promise<void> = () => {
+        this.host.isValid = false;
         return Promise.resolve();
     };
+
     nextCallback: () => Promise<boolean> = async () => {
         return true;
     };

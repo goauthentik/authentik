@@ -112,6 +112,9 @@ web-install:
 	cd web && npm ci
 
 web-watch:
+	rm -rf web/dist/
+	mkdir web/dist/
+	touch web/dist/.gitkeep
 	cd web && npm run watch
 
 web-lint-fix:

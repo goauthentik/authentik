@@ -28,6 +28,7 @@ export class InitialServiceConnectionWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFButton, AKGlobal, PFRadio];
     }
+    sidebarLabel = () => t`Select type`;
 
     render(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
@@ -39,10 +40,10 @@ export class InitialServiceConnectionWizardPage extends WizardPage {
                         name="type"
                         id=${`${type.component}-${type.modelName}`}
                         @change=${() => {
-                            this.host.setSteps(
+                            this.host.steps = [
                                 "initial",
                                 `type-${type.component}-${type.modelName}`,
-                            );
+                            ];
                             this._isValid = true;
                         }}
                     />
@@ -83,7 +84,6 @@ export class ServiceConnectionWizard extends LitElement {
             >
                 <ak-service-connection-wizard-initial
                     slot="initial"
-                    .sidebarLabel=${() => t`Select type`}
                     .connectionTypes=${this.connectionTypes}
                 >
                 </ak-service-connection-wizard-initial>

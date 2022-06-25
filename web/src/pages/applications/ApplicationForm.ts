@@ -59,7 +59,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
         }
         const c = await config();
         if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
-            const icon = this.getFormFile();
+            const icon = this.getFormFiles()["metaIcon"];
             if (icon || this.clearIcon) {
                 await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
                     slug: app.slug,

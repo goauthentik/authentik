@@ -42,6 +42,7 @@ import "./user_write/UserWriteStageForm.ts";
 export class InitialStageWizardPage extends WizardPage {
     @property({ attribute: false })
     stageTypes: TypeCreate[] = [];
+    sidebarLabel = () => t`Select type`;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFButton, AKGlobal, PFRadio];
@@ -57,10 +58,10 @@ export class InitialStageWizardPage extends WizardPage {
                         name="type"
                         id=${`${type.component}-${type.modelName}`}
                         @change=${() => {
-                            this.host.setSteps(
+                            this.host.steps = [
                                 "initial",
                                 `type-${type.component}-${type.modelName}`,
-                            );
+                            ];
                             this._isValid = true;
                         }}
                     />
@@ -99,11 +100,7 @@ export class StageWizard extends LitElement {
                 header=${t`New stage`}
                 description=${t`Create a new stage.`}
             >
-                <ak-stage-wizard-initial
-                    slot="initial"
-                    .sidebarLabel=${() => t`Select type`}
-                    .stageTypes=${this.stageTypes}
-                >
+                <ak-stage-wizard-initial slot="initial" .stageTypes=${this.stageTypes}>
                 </ak-stage-wizard-initial>
                 ${this.stageTypes.map((type) => {
                     return html`

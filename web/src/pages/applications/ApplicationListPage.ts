@@ -10,6 +10,7 @@ import { getURLParam } from "@goauthentik/web/elements/router/RouteMatch";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 import "@goauthentik/web/pages/applications/ApplicationForm";
+import "@goauthentik/web/pages/applications/wizard/ApplicationWizard";
 
 import { t } from "@lingui/macro";
 
@@ -81,14 +82,20 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     renderSidebarAfter(): TemplateResult {
-        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
-            <div class="pf-c-card">
-                <div class="pf-c-card__title">${t`About applications`}</div>
-                <div class="pf-c-card__body">
-                    <ak-markdown .md=${MDApplication}></ak-markdown>
+        // Rendering the wizard with .open here, as if we set the attribute in
+        // renderObjectCreate() it'll open two wizards, since that function gets called twice
+        return html`<ak-application-wizard
+                .open=${getURLParam("createWizard", false)}
+                .showButton=${false}
+            ></ak-application-wizard>
+            <div class="pf-c-sidebar__panel pf-m-width-25">
+                <div class="pf-c-card">
+                    <div class="pf-c-card__title">${t`About applications`}</div>
+                    <div class="pf-c-card__body">
+                        <ak-markdown .md=${MDApplication}></ak-markdown>
+                    </div>
                 </div>
-            </div>
-        </div>`;
+            </div>`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -142,7 +149,7 @@ export class ApplicationListPage extends TablePage<Application> {
                   </a>`
                 : html`-`,
             html`${item.providerObj?.verboseName || t`-`}`,
-            html` <ak-forms-modal>
+            html`<ak-forms-modal>
                     <span slot="submit"> ${t`Update`} </span>
                     <span slot="header"> ${t`Update Application`} </span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
@@ -160,13 +167,11 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal .open=${getURLParam("createForm", false)}>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Application`} </span>
-                <ak-application-form slot="form"> </ak-application-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
-            </ak-forms-modal>
-        `;
+        return html`<ak-forms-modal .open=${getURLParam("createForm", false)}>
+            <span slot="submit"> ${t`Create`} </span>
+            <span slot="header"> ${t`Create Application`} </span>
+            <ak-application-form slot="form"> </ak-application-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+        </ak-forms-modal>`;
     }
 }

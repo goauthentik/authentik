@@ -31,6 +31,7 @@ export class InitialPropertyMappingWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFButton, AKGlobal, PFRadio];
     }
+    sidebarLabel = () => t`Select type`;
 
     render(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
@@ -42,10 +43,10 @@ export class InitialPropertyMappingWizardPage extends WizardPage {
                         name="type"
                         id=${`${type.component}-${type.modelName}`}
                         @change=${() => {
-                            this.host.setSteps(
+                            this.host.steps = [
                                 "initial",
                                 `type-${type.component}-${type.modelName}`,
-                            );
+                            ];
                             this._isValid = true;
                         }}
                     />
@@ -83,7 +84,6 @@ export class PropertyMappingWizard extends LitElement {
             >
                 <ak-property-mapping-wizard-initial
                     slot="initial"
-                    .sidebarLabel=${() => t`Select type`}
                     .mappingTypes=${this.mappingTypes}
                 >
                 </ak-property-mapping-wizard-initial>
