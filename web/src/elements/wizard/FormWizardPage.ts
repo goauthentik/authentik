@@ -7,12 +7,6 @@ import { WizardPage } from "./WizardPage";
 
 @customElement("ak-wizard-page-form")
 export class FormWizardPage extends WizardPage {
-    _isValid = true;
-
-    isValid(): boolean {
-        return this._isValid;
-    }
-
     nextCallback = async () => {
         const form = this.querySelector<Form<unknown>>("*");
         if (!form) {

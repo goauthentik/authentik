@@ -33,6 +33,9 @@ export class Wizard extends ModalButton {
     @property()
     description?: string;
 
+    @property({ type: Boolean })
+    isValid = false;
+
     static get styles(): CSSResult[] {
         return super.styles.concat(PFWizard);
     }
@@ -119,7 +122,6 @@ export class Wizard extends ModalButton {
         if (!this.currentStep && firstPage) {
             this.currentStep = firstPage;
         }
-        this.currentStep?.requestUpdate();
         const currentIndex = this.currentStep ? this.steps.indexOf(this.currentStep.slot) : 0;
         let lastPage = currentIndex === this.steps.length - 1;
         if (lastPage && !this.steps.includes("ak-wizard-page-action") && this.actions.length > 0) {
@@ -186,7 +188,7 @@ export class Wizard extends ModalButton {
                     <button
                         class="pf-c-button pf-m-primary"
                         type="submit"
-                        ?disabled=${!this._currentStep?.isValid()}
+                        ?disabled=${!this.isValid}
                         @click=${async () => {
                             const cb = await this.currentStep?.nextCallback();
                             if (!cb) {

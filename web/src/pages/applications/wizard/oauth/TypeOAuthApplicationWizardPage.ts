@@ -66,7 +66,7 @@ export class TypeOAuthApplicationWizardPage extends WizardPage {
                                 type.component,
                             ];
                             this.host.state["oauth-type"] = type.component;
-                            this._isValid = true;
+                            this.host.isValid = true;
                         }}
                     />
                     <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>

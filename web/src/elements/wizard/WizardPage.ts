@@ -17,19 +17,15 @@ export class WizardPage extends LitElement {
         return "UNNAMED";
     };
 
-    isValid(): boolean {
-        return this._isValid;
-    }
-
     get host(): Wizard {
         return this.parentElement as Wizard;
     }
 
-    _isValid = false;
-
     activeCallback: () => Promise<void> = () => {
+        this.host.isValid = false;
         return Promise.resolve();
     };
+
     nextCallback: () => Promise<boolean> = async () => {
         return true;
     };

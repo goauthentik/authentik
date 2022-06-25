@@ -32,8 +32,6 @@ export class WizardForm extends Form<KeyUnknown> {
 }
 
 export class WizardFormPage extends WizardPage {
-    _isValid = false;
-
     static get styles(): CSSResult[] {
         return [PFBase, PFCard, PFButton, PFForm, PFAlert, PFInputGroup, PFFormControl, AKGlobal];
     }
@@ -44,8 +42,7 @@ export class WizardFormPage extends WizardPage {
             return;
         }
         const state = form.checkValidity();
-        this._isValid = state;
-        this.host.requestUpdate();
+        this.host.isValid = state;
     }
 
     nextCallback = async (): Promise<boolean> => {
@@ -72,6 +69,7 @@ export class WizardFormPage extends WizardPage {
 
     firstUpdated(): void {
         this.inputCallback();
+        this.host.isValid = false;
     }
 
     render(): TemplateResult {

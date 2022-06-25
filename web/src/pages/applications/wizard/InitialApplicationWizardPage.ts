@@ -56,14 +56,14 @@ export class InitialApplicationWizardPage extends WizardFormPage {
                     <input type="text" value="" class="pf-c-form-control" required />
                     <p class="pf-c-form__helper-text">${t`Application's display Name.`}</p>
                 </ak-form-element-horizontal>
-                <ak-form-group>
+                <ak-form-group ?expanded=${true}>
                     <span slot="header"> ${t`Additional UI settings`} </span>
                     <div slot="body" class="pf-c-form">
-                        <ak-form-element-horizontal label=${t`Publisher`} name="metaPublisher">
-                            <input type="text" value="" class="pf-c-form-control" />
-                        </ak-form-element-horizontal>
                         <ak-form-element-horizontal label=${t`Description`} name="metaDescription">
                             <textarea class="pf-c-form-control"></textarea>
+                        </ak-form-element-horizontal>
+                        <ak-form-element-horizontal label=${t`Publisher`} name="metaPublisher">
+                            <input type="text" value="" class="pf-c-form-control" />
                         </ak-form-element-horizontal>
                     </div>
                 </ak-form-group>

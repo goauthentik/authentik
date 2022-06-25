@@ -3,7 +3,14 @@ import { t } from "@lingui/macro";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { TemplateResult, html } from "lit";
 
-import { CoreApi, FlowDesignationEnum, FlowsApi, LDAPProviderRequest, ProvidersApi, UserServiceAccountResponse } from "@goauthentik/api";
+import {
+    CoreApi,
+    FlowDesignationEnum,
+    FlowsApi,
+    LDAPProviderRequest,
+    ProvidersApi,
+    UserServiceAccountResponse,
+} from "@goauthentik/api";
 
 import { DEFAULT_CONFIG } from "../../../../api/Config";
 import { KeyUnknown } from "../../../../elements/forms/Form";
@@ -28,7 +35,7 @@ export class TypeLDAPApplicationWizardPage extends WizardFormPage {
                 userServiceAccountRequest: {
                     name: name,
                     createGroup: true,
-                }
+                },
             });
             this.host.state["serviceAccount"] = serviceAccount;
             return true;

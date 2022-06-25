@@ -54,8 +54,7 @@ export class ActionWizardPage extends WizardPage {
         this.host.canCancel = false;
         await this.run();
         // Ensure wizard is closable, even when run() failed
-        this._isValid = true;
-        this.host.requestUpdate();
+        this.host.isValid = true;
     };
 
     sidebarLabel = () => t`Apply changes`;
@@ -83,8 +82,7 @@ export class ActionWizardPage extends WizardPage {
                 return;
             }
         }
-        this._isValid = true;
-        this.host.requestUpdate();
+        this.host.isValid = true;
         this.dispatchEvent(
             new CustomEvent(EVENT_REFRESH, {
                 bubbles: true,

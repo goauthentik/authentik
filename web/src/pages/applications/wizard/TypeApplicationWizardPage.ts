@@ -69,7 +69,7 @@ export class TypeApplicationWizardPage extends WizardPage {
                                 "ak-application-wizard-type",
                                 type.component,
                             ];
-                            this._isValid = true;
+                            this.host.isValid = true;
                         }}
                     />
                     <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
