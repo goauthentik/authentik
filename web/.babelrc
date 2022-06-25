@@ -2,6 +2,7 @@
     "presets": ["@babel/env", "@babel/typescript"],
     "plugins": [
         ["@babel/plugin-proposal-private-methods", { "loose": true }],
+        ["babel-plugin-tsconfig-paths", {}],
         [
             "@babel/plugin-proposal-decorators",
             {

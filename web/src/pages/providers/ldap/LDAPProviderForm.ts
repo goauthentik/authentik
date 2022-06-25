@@ -1,3 +1,9 @@
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -14,12 +20,6 @@ import {
     LDAPProvider,
     ProvidersApi,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG, tenant } from "../../../api/Config";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { first } from "../../../utils";
 
 @customElement("ak-provider-ldap-form")
 export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {

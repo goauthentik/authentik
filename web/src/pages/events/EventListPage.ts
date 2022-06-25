@@ -1,18 +1,18 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { EventWithContext } from "@goauthentik/web/api/Events";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/events/EventInfo";
+import { ActionToLabel } from "@goauthentik/web/pages/events/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { Event, EventsApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { EventWithContext } from "../../api/Events";
-import { uiConfig } from "../../common/config";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import "./EventInfo";
-import { ActionToLabel } from "./utils";
 
 @customElement("ak-event-list")
 export class EventListPage extends TablePage<Event> {

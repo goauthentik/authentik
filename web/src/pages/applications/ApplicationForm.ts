@@ -1,3 +1,12 @@
+import { DEFAULT_CONFIG, config } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import "@goauthentik/web/pages/providers/ProviderWizard";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -13,15 +22,6 @@ import {
     Provider,
     ProvidersApi,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG, config } from "../../api/Config";
-import "../../elements/forms/FormGroup";
-import "../../elements/forms/HorizontalFormElement";
-import "../../elements/forms/ModalForm";
-import { ModelForm } from "../../elements/forms/ModelForm";
-import "../../elements/forms/ProxyForm";
-import { first } from "../../utils";
-import "../providers/ProviderWizard";
 
 @customElement("ak-application-form")
 export class ApplicationForm extends ModelForm<Application, string> {

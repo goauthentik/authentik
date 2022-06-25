@@ -1,3 +1,8 @@
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { BaseUserSettings } from "@goauthentik/web/user/user-settings/BaseUserSettings";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -6,11 +11,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import { SourcesApi } from "@goauthentik/api";
-
-import { AndNext, DEFAULT_CONFIG } from "../../../api/Config";
-import { MessageLevel } from "../../../elements/messages/Message";
-import { showMessage } from "../../../elements/messages/MessageContainer";
-import { BaseUserSettings } from "../BaseUserSettings";
 
 @customElement("ak-user-settings-source-oauth")
 export class SourceSettingsOAuth extends BaseUserSettings {

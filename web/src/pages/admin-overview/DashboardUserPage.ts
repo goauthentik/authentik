@@ -1,19 +1,19 @@
+import "@goauthentik/web/elements/PageHeader";
+import "@goauthentik/web/elements/cards/AggregatePromiseCard";
+import "@goauthentik/web/elements/charts/AdminModelPerDay";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { EventActions } from "@goauthentik/api";
-
-import "../../elements/PageHeader";
-import "../../elements/cards/AggregatePromiseCard";
-import "../../elements/charts/AdminModelPerDay";
 
 @customElement("ak-admin-dashboard-users")
 export class DashboardUserPage extends LitElement {

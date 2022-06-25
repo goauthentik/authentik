@@ -1,10 +1,16 @@
+import "@goauthentik/web/elements/Divider";
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/forms/FormElement";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
+import { LOCALES } from "@goauthentik/web/interfaces/locale";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -19,12 +25,6 @@ import {
     PromptTypeEnum,
     StagePrompt,
 } from "@goauthentik/api";
-
-import "../../../elements/Divider";
-import "../../../elements/EmptyState";
-import "../../../elements/forms/FormElement";
-import { LOCALES } from "../../../interfaces/locale";
-import { BaseStage } from "../base";
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {

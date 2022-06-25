@@ -1,3 +1,9 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import "@goauthentik/web/elements/utils/TimeDeltaHelp";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -11,12 +17,6 @@ import {
     NotConfiguredActionEnum,
     StagesApi,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import "../../../elements/utils/TimeDeltaHelp";
 
 @customElement("ak-stage-authenticator-validate-form")
 export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValidateStage, string> {

@@ -1,37 +1,37 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG, config, tenant } from "@goauthentik/web/api/Config";
+import { me } from "@goauthentik/web/api/Users";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import "@goauthentik/web/elements/TreeView";
+import "@goauthentik/web/elements/buttons/ActionButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { getURLParam } from "@goauthentik/web/elements/router/RouteMatch";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/users/ServiceAccountForm";
+import "@goauthentik/web/pages/users/UserActiveForm";
+import "@goauthentik/web/pages/users/UserForm";
+import "@goauthentik/web/pages/users/UserPasswordForm";
+import "@goauthentik/web/pages/users/UserResetEmailForm";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { CapabilitiesEnum, CoreApi, ResponseError, User } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG, config, tenant } from "../../api/Config";
-import { me } from "../../api/Users";
-import { uiConfig } from "../../common/config";
-import { PFColor } from "../../elements/Label";
-import { PFSize } from "../../elements/Spinner";
-import "../../elements/TreeView";
-import "../../elements/buttons/ActionButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import { MessageLevel } from "../../elements/messages/Message";
-import { showMessage } from "../../elements/messages/MessageContainer";
-import { getURLParam } from "../../elements/router/RouteMatch";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import { first } from "../../utils";
-import "./ServiceAccountForm";
-import "./UserActiveForm";
-import "./UserForm";
-import "./UserPasswordForm";
-import "./UserResetEmailForm";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {

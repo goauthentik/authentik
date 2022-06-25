@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";

@@ -1,3 +1,8 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -11,11 +16,6 @@ import {
     NotificationTransportModeEnum,
     PropertymappingsApi,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../elements/forms/ModelForm";
-import { first } from "../../utils";
 
 @customElement("ak-event-transport-form")
 export class TransportForm extends ModelForm<NotificationTransport, string> {
@@ -83,7 +83,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
         `;
     }
 
-    onModeChange(mode: string): void {
+    onModeChange(mode: string | undefined): void {
         if (
             mode === NotificationTransportModeEnum.Webhook ||
             mode === NotificationTransportModeEnum.WebhookSlack

@@ -1,3 +1,20 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/property-mappings/PropertyMappingLDAPForm";
+import "@goauthentik/web/pages/property-mappings/PropertyMappingNotification";
+import "@goauthentik/web/pages/property-mappings/PropertyMappingSAMLForm";
+import "@goauthentik/web/pages/property-mappings/PropertyMappingScopeForm";
+import "@goauthentik/web/pages/property-mappings/PropertyMappingTestForm";
+import "@goauthentik/web/pages/property-mappings/PropertyMappingWizard";
+import { groupBy } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -5,23 +22,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/ProxyForm";
-import { getURLParam, updateURLParams } from "../../elements/router/RouteMatch";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import { groupBy } from "../../utils";
-import "./PropertyMappingLDAPForm";
-import "./PropertyMappingNotification";
-import "./PropertyMappingSAMLForm";
-import "./PropertyMappingScopeForm";
-import "./PropertyMappingTestForm";
-import "./PropertyMappingWizard";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {

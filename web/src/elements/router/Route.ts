@@ -1,7 +1,7 @@
+import "@goauthentik/web/elements/EmptyState";
+
 import { TemplateResult, html } from "lit";
 import { until } from "lit/directives/until.js";
-
-import "../EmptyState";
 
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
 export const ID_REGEX = "\\d+";

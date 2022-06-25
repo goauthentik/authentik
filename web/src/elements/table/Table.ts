@@ -1,10 +1,21 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/chips/Chip";
+import "@goauthentik/web/elements/chips/ChipGroup";
+import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import "@goauthentik/web/elements/table/TablePagination";
+import "@goauthentik/web/elements/table/TableSearch";
+import { groupBy } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
@@ -12,17 +23,6 @@ import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { AKResponse } from "../../api/Client";
-import { EVENT_REFRESH } from "../../constants";
-import { groupBy } from "../../utils";
-import "../EmptyState";
-import "../buttons/SpinnerButton";
-import "../chips/Chip";
-import "../chips/ChipGroup";
-import { getURLParam, updateURLParams } from "../router/RouteMatch";
-import "./TablePagination";
-import "./TableSearch";
 
 export class TableColumn {
     title: string;

@@ -1,9 +1,17 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { me } from "@goauthentik/web/api/Users";
+import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/web/constants";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { ActionToLabel } from "@goauthentik/web/pages/events/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -11,14 +19,6 @@ import PFNotificationDrawer from "@patternfly/patternfly/components/Notification
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventsApi, Notification } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { me } from "../../api/Users";
-import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "../../constants";
-import { ActionToLabel } from "../../pages/events/utils";
-import { MessageLevel } from "../messages/Message";
-import { showMessage } from "../messages/MessageContainer";
 
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends LitElement {

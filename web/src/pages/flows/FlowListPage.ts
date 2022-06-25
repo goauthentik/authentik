@@ -1,3 +1,16 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/ConfirmationForm";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/flows/FlowForm";
+import "@goauthentik/web/pages/flows/FlowImportForm";
+import { groupBy } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -5,18 +18,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import { Flow, FlowsApi } from "@goauthentik/api";
 
-import { AKResponse } from "../../api/Client";
-import { AndNext, DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/ConfirmationForm";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import { groupBy } from "../../utils";
-import "./FlowForm";
-import "./FlowImportForm";
 import { DesignationToLabel } from "./utils";
 
 @customElement("ak-flow-list")

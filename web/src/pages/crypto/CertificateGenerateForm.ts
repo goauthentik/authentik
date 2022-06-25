@@ -1,13 +1,13 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { Form } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { CertificateGenerationRequest, CertificateKeyPair, CryptoApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { Form } from "../../elements/forms/Form";
-import "../../elements/forms/HorizontalFormElement";
 
 @customElement("ak-crypto-certificate-generate-form")
 export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {

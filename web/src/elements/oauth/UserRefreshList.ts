@@ -1,3 +1,10 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -6,13 +13,6 @@ import { customElement, property } from "lit/decorators.js";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 import { ExpiringBaseGrantModel, Oauth2Api, RefreshTokenModel } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import { PFColor } from "../Label";
-import "../forms/DeleteBulkForm";
-import { Table, TableColumn } from "../table/Table";
 
 @customElement("ak-user-oauth-refresh-list")
 export class UserOAuthRefreshList extends Table<RefreshTokenModel> {

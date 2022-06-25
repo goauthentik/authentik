@@ -1,3 +1,9 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/CodeMirror";
+import { Form } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { UserOption } from "@goauthentik/web/elements/user/utils";
+import { first } from "@goauthentik/web/utils";
 import YAML from "yaml";
 
 import { t } from "@lingui/macro";
@@ -14,13 +20,6 @@ import {
     PropertyMappingTestResult,
     PropertymappingsApi,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/CodeMirror";
-import { Form } from "../../elements/forms/Form";
-import "../../elements/forms/HorizontalFormElement";
-import { UserOption } from "../../elements/user/utils";
-import { first } from "../../utils";
 
 @customElement("ak-property-mapping-test-form")
 export class PolicyTestForm extends Form<PolicyTestRequest> {

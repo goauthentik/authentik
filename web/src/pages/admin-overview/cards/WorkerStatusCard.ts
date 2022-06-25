@@ -1,3 +1,5 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+
 import { t } from "@lingui/macro";
 
 import { html } from "lit";
@@ -5,7 +7,6 @@ import { customElement } from "lit/decorators.js";
 
 import { AdminApi } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-card-workers")

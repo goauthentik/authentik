@@ -1,13 +1,13 @@
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { EVENT_REFRESH } from "../../constants";
-import { ModalButton } from "../buttons/ModalButton";
-import "../buttons/SpinnerButton";
-import { MessageLevel } from "../messages/Message";
-import { showMessage } from "../messages/MessageContainer";
 
 @customElement("ak-forms-confirm")
 export class ConfirmationForm extends ModalButton {
