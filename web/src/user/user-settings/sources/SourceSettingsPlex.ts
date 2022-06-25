@@ -1,3 +1,10 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { PlexAPIClient, popupCenterScreen } from "@goauthentik/web/api/Plex";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { BaseUserSettings } from "@goauthentik/web/user/user-settings/BaseUserSettings";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -5,13 +12,6 @@ import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
 import { SourcesApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { PlexAPIClient, popupCenterScreen } from "../../../api/Plex";
-import { EVENT_REFRESH } from "../../../constants";
-import { MessageLevel } from "../../../elements/messages/Message";
-import { showMessage } from "../../../elements/messages/MessageContainer";
-import { BaseUserSettings } from "../BaseUserSettings";
 
 @customElement("ak-user-settings-source-plex")
 export class SourceSettingsPlex extends BaseUserSettings {

@@ -1,3 +1,4 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { ChartData } from "chart.js";
 
 import { t } from "@lingui/macro";
@@ -6,7 +7,6 @@ import { customElement } from "lit/decorators.js";
 
 import { AdminApi, LoginMetrics } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../api/Config";
 import { AKChart } from "./Chart";
 
 @customElement("ak-charts-admin-login")

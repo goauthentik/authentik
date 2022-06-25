@@ -1,9 +1,19 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/CodeMirror";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/events/ObjectChangelog";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/pages/policies/BoundPoliciesList";
+import "@goauthentik/web/pages/sources/plex/PlexSourceForm";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -13,16 +23,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { PlexSource, SourcesApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { EVENT_REFRESH } from "../../../constants";
-import "../../../elements/CodeMirror";
-import "../../../elements/Tabs";
-import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/events/ObjectChangelog";
-import "../../../elements/forms/ModalForm";
-import "../../policies/BoundPoliciesList";
-import "./PlexSourceForm";
 
 @customElement("ak-source-plex-view")
 export class PlexSourceViewPage extends LitElement {

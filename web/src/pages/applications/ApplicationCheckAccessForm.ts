@@ -1,3 +1,9 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import { Form } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { UserOption } from "@goauthentik/web/elements/user/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -7,12 +13,6 @@ import { until } from "lit/directives/until.js";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { Application, CoreApi, PolicyTestResult } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { PFColor } from "../../elements/Label";
-import { Form } from "../../elements/forms/Form";
-import "../../elements/forms/HorizontalFormElement";
-import { UserOption } from "../../elements/user/utils";
 
 @customElement("ak-application-check-access-form")
 export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {

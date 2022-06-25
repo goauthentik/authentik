@@ -1,3 +1,9 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/user/user-settings/sources/SourceSettingsOAuth";
+import "@goauthentik/web/user/user-settings/sources/SourceSettingsPlex";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
@@ -5,17 +11,11 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
 import { SourcesApi, UserSetting } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { EVENT_REFRESH } from "../../../constants";
-import "../../../elements/EmptyState";
-import "./SourceSettingsOAuth";
-import "./SourceSettingsPlex";
 
 @customElement("ak-user-settings-source")
 export class UserSourceSettingsPage extends LitElement {

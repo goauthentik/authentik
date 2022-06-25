@@ -2,7 +2,7 @@ import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";

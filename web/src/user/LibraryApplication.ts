@@ -1,3 +1,7 @@
+import { me } from "@goauthentik/web/api/Users";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { truncate } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
@@ -5,17 +9,13 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Application } from "@goauthentik/api";
-
-import { me } from "../api/Users";
-import { uiConfig } from "../common/config";
-import { truncate } from "../utils";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends LitElement {

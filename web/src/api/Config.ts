@@ -1,8 +1,8 @@
 import { Config, Configuration, CoreApi, CurrentTenant, FetchParams, Middleware, RequestContext, ResponseContext, RootApi } from "@goauthentik/api";
-import { getCookie } from "../utils";
-import { APIMiddleware } from "../elements/notifications/APIDrawer";
-import { MessageMiddleware } from "../elements/messages/Middleware";
-import { VERSION } from "../constants";
+import { getCookie } from "@goauthentik/web/utils";
+import { APIMiddleware } from "@goauthentik/web/elements/notifications/APIDrawer";
+import { MessageMiddleware } from "@goauthentik/web/elements/messages/Middleware";
+import { VERSION } from "@goauthentik/web/constants";
 
 export class LoggingMiddleware implements Middleware {
 

@@ -1,3 +1,6 @@
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { PromptStage } from "@goauthentik/web/flows/stages/prompt/PromptStage";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -7,9 +10,6 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import PFCheck from "@patternfly/patternfly/components/Check/check.css";
 
 import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
-
-import "../../../../../elements/forms/HorizontalFormElement";
-import { PromptStage } from "../../../../../flows/stages/prompt/PromptStage";
 
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {

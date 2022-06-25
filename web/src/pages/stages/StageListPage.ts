@@ -1,3 +1,33 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/stages/StageWizard";
+import "@goauthentik/web/pages/stages/authenticator_duo/AuthenticatorDuoStageForm";
+import "@goauthentik/web/pages/stages/authenticator_sms/AuthenticatorSMSStageForm";
+import "@goauthentik/web/pages/stages/authenticator_static/AuthenticatorStaticStageForm";
+import "@goauthentik/web/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm";
+import "@goauthentik/web/pages/stages/authenticator_validate/AuthenticatorValidateStageForm";
+import "@goauthentik/web/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm";
+import "@goauthentik/web/pages/stages/captcha/CaptchaStageForm";
+import "@goauthentik/web/pages/stages/consent/ConsentStageForm";
+import "@goauthentik/web/pages/stages/deny/DenyStageForm";
+import "@goauthentik/web/pages/stages/dummy/DummyStageForm";
+import "@goauthentik/web/pages/stages/email/EmailStageForm";
+import "@goauthentik/web/pages/stages/identification/IdentificationStageForm";
+import "@goauthentik/web/pages/stages/invitation/InvitationStageForm";
+import "@goauthentik/web/pages/stages/password/PasswordStageForm";
+import "@goauthentik/web/pages/stages/prompt/PromptStageForm";
+import "@goauthentik/web/pages/stages/user_delete/UserDeleteStageForm";
+import "@goauthentik/web/pages/stages/user_login/UserLoginStageForm";
+import "@goauthentik/web/pages/stages/user_logout/UserLogoutStageForm";
+import "@goauthentik/web/pages/stages/user_write/UserWriteStageForm";
+import { groupBy } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -5,36 +35,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { Stage, StagesApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/ProxyForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import { groupBy } from "../../utils";
-import "./StageWizard";
-import "./authenticator_duo/AuthenticatorDuoStageForm.ts";
-import "./authenticator_sms/AuthenticatorSMSStageForm.ts";
-import "./authenticator_static/AuthenticatorStaticStageForm.ts";
-import "./authenticator_totp/AuthenticatorTOTPStageForm.ts";
-import "./authenticator_validate/AuthenticatorValidateStageForm.ts";
-import "./authenticator_webauthn/AuthenticateWebAuthnStageForm.ts";
-import "./captcha/CaptchaStageForm.ts";
-import "./consent/ConsentStageForm.ts";
-import "./deny/DenyStageForm.ts";
-import "./dummy/DummyStageForm.ts";
-import "./email/EmailStageForm.ts";
-import "./identification/IdentificationStageForm.ts";
-import "./invitation/InvitationStageForm.ts";
-import "./password/PasswordStageForm.ts";
-import "./prompt/PromptStageForm.ts";
-import "./user_delete/UserDeleteStageForm.ts";
-import "./user_login/UserLoginStageForm.ts";
-import "./user_logout/UserLogoutStageForm.ts";
-import "./user_write/UserWriteStageForm.ts";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {

@@ -1,29 +1,29 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import "@goauthentik/web/elements/wizard/FormWizardPage";
+import "@goauthentik/web/elements/wizard/Wizard";
+import { WizardPage } from "@goauthentik/web/elements/wizard/WizardPage";
+import "@goauthentik/web/pages/policies/dummy/DummyPolicyForm";
+import "@goauthentik/web/pages/policies/event_matcher/EventMatcherPolicyForm";
+import "@goauthentik/web/pages/policies/expiry/ExpiryPolicyForm";
+import "@goauthentik/web/pages/policies/expression/ExpressionPolicyForm";
+import "@goauthentik/web/pages/policies/hibp/HaveIBeenPwnedPolicyForm";
+import "@goauthentik/web/pages/policies/password/PasswordPolicyForm";
+import "@goauthentik/web/pages/policies/reputation/ReputationPolicyForm";
+
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { PoliciesApi, TypeCreate } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/forms/ProxyForm";
-import "../../elements/wizard/FormWizardPage";
-import "../../elements/wizard/Wizard";
-import { WizardPage } from "../../elements/wizard/WizardPage";
-import "./dummy/DummyPolicyForm";
-import "./event_matcher/EventMatcherPolicyForm";
-import "./expiry/ExpiryPolicyForm";
-import "./expression/ExpressionPolicyForm";
-import "./hibp/HaveIBeenPwnedPolicyForm";
-import "./password/PasswordPolicyForm";
-import "./reputation/ReputationPolicyForm";
 
 @customElement("ak-policy-wizard-initial")
 export class InitialPolicyWizardPage extends WizardPage {

@@ -1,3 +1,21 @@
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/api/Config";
+import { configureSentry } from "@goauthentik/web/api/Sentry";
+import { WebsocketClient } from "@goauthentik/web/common/ws";
+import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/LoadingOverlay";
+import "@goauthentik/web/flows/stages/RedirectStage";
+import "@goauthentik/web/flows/stages/access_denied/AccessDeniedStage";
+// Import webauthn-related stages to prevent issues on safari
+// Which is overly sensitive to allowing things only in the context of a
+// user interaction
+import "@goauthentik/web/flows/stages/authenticator_validate/AuthenticatorValidateStage";
+import "@goauthentik/web/flows/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
+import "@goauthentik/web/flows/stages/autosubmit/AutosubmitStage";
+import "@goauthentik/web/flows/stages/captcha/CaptchaStage";
+import "@goauthentik/web/flows/stages/identification/IdentificationStage";
+import "@goauthentik/web/flows/stages/password/PasswordStage";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
@@ -5,7 +23,7 @@ import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -26,19 +44,7 @@ import {
     ShellChallenge,
 } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG, tenant } from "../api/Config";
-import { configureSentry } from "../api/Sentry";
-import { WebsocketClient } from "../common/ws";
-import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "../constants";
-import "../elements/LoadingOverlay";
-import { first } from "../utils";
-import "./stages/RedirectStage";
-import "./stages/access_denied/AccessDeniedStage";
-import "./stages/autosubmit/AutosubmitStage";
 import { StageHost } from "./stages/base";
-import "./stages/captcha/CaptchaStage";
-import "./stages/identification/IdentificationStage";
-import "./stages/password/PasswordStage";
 
 export interface FlowWindow extends Window {
     authentik: {
@@ -341,7 +347,6 @@ export class FlowExecutor extends LitElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-static>`;
             case "ak-stage-authenticator-webauthn":
-                await import("./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage");
                 return html`<ak-stage-authenticator-webauthn
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -353,7 +358,6 @@ export class FlowExecutor extends LitElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-sms>`;
             case "ak-stage-authenticator-validate":
-                await import("./stages/authenticator_validate/AuthenticatorValidateStage");
                 return html`<ak-stage-authenticator-validate
                     .host=${this as StageHost}
                     .challenge=${this.challenge}

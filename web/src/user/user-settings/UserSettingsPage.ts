@@ -1,3 +1,7 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { me } from "@goauthentik/web/api/Users";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
@@ -5,7 +9,7 @@ import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -21,9 +25,6 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { me } from "../../api/Users";
-import { EVENT_REFRESH } from "../../constants";
 import "../../elements/Tabs";
 import "../../elements/user/SessionList";
 import "../../elements/user/UserConsentList";

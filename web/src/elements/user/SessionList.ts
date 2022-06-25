@@ -1,15 +1,15 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { AuthenticatedSession, CoreApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../forms/DeleteBulkForm";
-import { Table, TableColumn } from "../table/Table";
 
 @customElement("ak-user-session-list")
 export class AuthenticatedSessionList extends Table<AuthenticatedSession> {

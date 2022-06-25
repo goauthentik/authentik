@@ -1,13 +1,12 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/EmptyState";
 import FlowChart from "flowchart.js";
 
 import { LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { FlowsApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { EVENT_REFRESH } from "../../constants";
-import "../../elements/EmptyState";
 
 export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";

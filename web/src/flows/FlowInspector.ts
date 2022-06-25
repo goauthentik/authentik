@@ -1,9 +1,13 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { EVENT_FLOW_ADVANCE } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/Expand";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
@@ -12,10 +16,6 @@ import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../api/Config";
-import { EVENT_FLOW_ADVANCE } from "../constants";
-import "../elements/Expand";
 
 @customElement("ak-flow-inspector")
 export class FlowInspector extends LitElement {

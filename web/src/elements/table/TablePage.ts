@@ -1,3 +1,6 @@
+import "@goauthentik/web/elements/../elements/PageHeader";
+import { updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult } from "lit";
@@ -8,8 +11,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
 
-import "../../elements/PageHeader";
-import { updateURLParams } from "../router/RouteMatch";
 import { Table } from "./Table";
 
 export abstract class TablePage<T> extends Table<T> {

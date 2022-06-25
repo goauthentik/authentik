@@ -1,7 +1,9 @@
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -13,8 +15,6 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { PFSize } from "../Spinner";
 
 export const MODAL_BUTTON_STYLES = css`
     :host {

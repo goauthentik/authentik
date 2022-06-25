@@ -48,7 +48,7 @@ export class TypeSAMLApplicationWizardPage extends WizardFormPage {
             <ak-form-element-horizontal label=${t`ACS URL`} name="acsUrl" ?required=${true}>
                 <input type="text" value="" class="pf-c-form-control" required />
                 <p class="pf-c-form__helper-text">
-                    ${t`URL that authentik will redirect back to after successful authenticaiton.`}
+                    ${t`URL that authentik will redirect back to after successful authentication.`}
                 </p>
             </ak-form-element-horizontal>
         </form> `;

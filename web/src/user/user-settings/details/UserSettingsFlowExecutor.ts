@@ -1,10 +1,18 @@
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/api/Config";
+import { refreshMe } from "@goauthentik/web/api/Users";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { StageHost } from "@goauthentik/web/flows/stages/base";
+import "@goauthentik/web/user/user-settings/details/stages/prompt/PromptStage";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -21,14 +29,6 @@ import {
     ResponseError,
     ShellChallenge,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG, tenant } from "../../../api/Config";
-import { refreshMe } from "../../../api/Users";
-import { EVENT_REFRESH } from "../../../constants";
-import { MessageLevel } from "../../../elements/messages/Message";
-import { showMessage } from "../../../elements/messages/MessageContainer";
-import { StageHost } from "../../../flows/stages/base";
-import "./stages/prompt/PromptStage";
 
 @customElement("ak-user-settings-flow-executor")
 export class UserSettingsFlowExecutor extends LitElement implements StageHost {

@@ -1,9 +1,15 @@
+import {
+    transformAssertionForServer,
+    transformCredentialRequestOptions,
+} from "@goauthentik/web/flows/stages/authenticator_webauthn/utils";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -19,11 +25,6 @@ import {
     DeviceChallenge,
 } from "@goauthentik/api";
 
-import {
-    transformAssertionForServer,
-    transformCredentialRequestOptions,
-} from "../authenticator_webauthn/utils";
-import { BaseStage } from "../base";
 import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
 
 @customElement("ak-stage-authenticator-validate-webauthn")

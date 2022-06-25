@@ -53,7 +53,12 @@ jobs:
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
-        run: npm ci
+        run: |
+          npm ci
+          # lit-analyse doesn't understand path rewrites, so make it
+          # belive it's an actual module
+          cd node_modules/@goauthentik
+          ln -s ../../src/ web
       - name: Generate API
         run: make gen-client-web
       - name: lit-analyse

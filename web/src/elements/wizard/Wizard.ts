@@ -1,3 +1,7 @@
+import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/wizard/ActionWizardPage";
+import { WizardPage } from "@goauthentik/web/elements/wizard/WizardPage";
+
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
@@ -6,10 +10,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { state } from "lit/decorators.js";
 
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
-
-import { ModalButton } from "../buttons/ModalButton";
-import "./ActionWizardPage";
-import { WizardPage } from "./WizardPage";
 
 export interface WizardAction {
     displayName: string;

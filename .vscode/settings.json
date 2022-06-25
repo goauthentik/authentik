@@ -22,5 +22,9 @@
     "python.formatting.provider": "black",
     "files.associations": {
         "*.akflow": "json"
-    }
+    },
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "typescript.preferences.importModuleSpecifierEnding": "js",
+    "typescript.tsdk": "./web/node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true
 }

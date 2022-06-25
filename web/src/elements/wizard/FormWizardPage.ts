@@ -1,8 +1,9 @@
+import { Form } from "@goauthentik/web/elements/forms/Form";
+
 import { t } from "@lingui/macro";
 
 import { customElement } from "lit/decorators.js";
 
-import { Form } from "../forms/Form";
 import { WizardPage } from "./WizardPage";
 
 @customElement("ak-wizard-page-form")

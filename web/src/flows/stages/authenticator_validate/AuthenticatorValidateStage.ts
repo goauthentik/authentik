@@ -1,10 +1,17 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/flows/stages/authenticator_validate/AuthenticatorValidateStageCode";
+import "@goauthentik/web/flows/stages/authenticator_validate/AuthenticatorValidateStageDuo";
+import "@goauthentik/web/flows/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
+import { BaseStage, StageHost } from "@goauthentik/web/flows/stages/base";
+import { PasswordManagerPrefill } from "@goauthentik/web/flows/stages/identification/IdentificationStage";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -15,17 +22,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
+    CurrentTenant,
     DeviceChallenge,
     DeviceClassesEnum,
     FlowsApi,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { BaseStage, StageHost } from "../base";
-import { PasswordManagerPrefill } from "../identification/IdentificationStage";
-import "./AuthenticatorValidateStageCode";
-import "./AuthenticatorValidateStageDuo";
-import "./AuthenticatorValidateStageWebAuthn";
 
 @customElement("ak-stage-authenticator-validate")
 export class AuthenticatorValidateStage
@@ -44,6 +45,10 @@ export class AuthenticatorValidateStage
         return this.host.loading;
     }
 
+    get tenant(): CurrentTenant {
+        return this.host.tenant;
+    }
+
     @state()
     _selectedDeviceChallenge?: DeviceChallenge;
 
@@ -53,7 +58,7 @@ export class AuthenticatorValidateStage
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
         new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
-            flowSlug: this.host.flowSlug,
+            flowSlug: this.host.flowSlug || "",
             query: window.location.search.substring(1),
             flowChallengeResponseRequest: {
                 // @ts-ignore

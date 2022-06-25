@@ -1,3 +1,22 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG, config, tenant } from "@goauthentik/web/api/Config";
+import { me } from "@goauthentik/web/api/Users";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/buttons/ActionButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+import "@goauthentik/web/pages/users/ServiceAccountForm";
+import "@goauthentik/web/pages/users/UserActiveForm";
+import "@goauthentik/web/pages/users/UserForm";
+import "@goauthentik/web/pages/users/UserPasswordForm";
+import "@goauthentik/web/pages/users/UserResetEmailForm";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -8,25 +27,6 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { CapabilitiesEnum, CoreApi, ResponseError, User } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG, config, tenant } from "../../api/Config";
-import { me } from "../../api/Users";
-import { uiConfig } from "../../common/config";
-import { PFColor } from "../../elements/Label";
-import "../../elements/buttons/ActionButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import { MessageLevel } from "../../elements/messages/Message";
-import { showMessage } from "../../elements/messages/MessageContainer";
-import { getURLParam, updateURLParams } from "../../elements/router/RouteMatch";
-import { Table, TableColumn } from "../../elements/table/Table";
-import { first } from "../../utils";
-import "./ServiceAccountForm";
-import "./UserActiveForm";
-import "./UserForm";
-import "./UserPasswordForm";
-import "./UserResetEmailForm";
 
 @customElement("ak-user-related-list")
 export class RelatedUserList extends Table<User> {

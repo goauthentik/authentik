@@ -1,3 +1,12 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/buttons/Dropdown";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/TokenCopyButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -7,14 +16,6 @@ import { until } from "lit/directives/until.js";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
-import { AKResponse } from "../../../api/Client";
-import { AndNext, DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/buttons/Dropdown";
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/TokenCopyButton";
-import "../../../elements/forms/DeleteBulkForm";
-import "../../../elements/forms/ModalForm";
-import { Table, TableColumn } from "../../../elements/table/Table";
 import "./MFADeviceForm";
 
 export function stageToAuthenticatorName(stage: UserSetting): string {

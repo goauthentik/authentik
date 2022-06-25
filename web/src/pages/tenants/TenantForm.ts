@@ -1,3 +1,10 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/CodeMirror";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { DefaultTenant } from "@goauthentik/web/elements/sidebar/SidebarBrand";
+import { first } from "@goauthentik/web/utils";
 import YAML from "yaml";
 
 import { t } from "@lingui/macro";
@@ -14,14 +21,6 @@ import {
     FlowsInstancesListDesignationEnum,
     Tenant,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/CodeMirror";
-import "../../elements/forms/FormGroup";
-import "../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../elements/forms/ModelForm";
-import { DefaultTenant } from "../../elements/sidebar/SidebarBrand";
-import { first } from "../../utils";
 
 @customElement("ak-tenant-form")
 export class TenantForm extends ModelForm<Tenant, string> {

@@ -1,13 +1,14 @@
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import AKGlobal from "../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { EVENT_REFRESH } from "../constants";
 import { setURLParams } from "./router/RouteMatch";
 
 export interface TreeViewItem {

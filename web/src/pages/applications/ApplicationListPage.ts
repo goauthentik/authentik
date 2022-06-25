@@ -1,28 +1,28 @@
+import MDApplication from "@goauthentik/docs/core/applications.md";
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/Markdown";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { getURLParam } from "@goauthentik/web/elements/router/RouteMatch";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/applications/ApplicationForm";
+import "@goauthentik/web/pages/applications/wizard/ApplicationWizard";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
-
-import MDApplication from "../../../../website/docs/core/applications.md";
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/Markdown";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import { getURLParam } from "../../elements/router/RouteMatch";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import "./ApplicationForm";
-import "./wizard/ApplicationWizard";
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends TablePage<Application> {

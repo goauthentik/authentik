@@ -1,3 +1,6 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { AKChart } from "@goauthentik/web/elements/charts/Chart";
+import "@goauthentik/web/elements/forms/ConfirmationForm";
 import { ChartData, ChartOptions } from "chart.js";
 
 import { t } from "@lingui/macro";
@@ -5,10 +8,6 @@ import { t } from "@lingui/macro";
 import { customElement } from "lit/decorators.js";
 
 import { FlowsApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { AKChart } from "../../../elements/charts/Chart";
-import "../../../elements/forms/ConfirmationForm";
 
 interface FlowMetrics {
     count: number;

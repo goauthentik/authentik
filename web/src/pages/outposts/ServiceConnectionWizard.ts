@@ -1,24 +1,24 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import "@goauthentik/web/elements/wizard/FormWizardPage";
+import "@goauthentik/web/elements/wizard/Wizard";
+import { WizardPage } from "@goauthentik/web/elements/wizard/WizardPage";
+import "@goauthentik/web/pages/outposts/ServiceConnectionDockerForm";
+import "@goauthentik/web/pages/outposts/ServiceConnectionKubernetesForm";
+
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { OutpostsApi, TypeCreate } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/forms/ProxyForm";
-import "../../elements/wizard/FormWizardPage";
-import "../../elements/wizard/Wizard";
-import { WizardPage } from "../../elements/wizard/WizardPage";
-import "./ServiceConnectionDockerForm";
-import "./ServiceConnectionKubernetesForm";
 
 @customElement("ak-service-connection-wizard-initial")
 export class InitialServiceConnectionWizardPage extends WizardPage {

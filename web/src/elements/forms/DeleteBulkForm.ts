@@ -1,3 +1,12 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -7,15 +16,6 @@ import { until } from "lit/directives/until.js";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { EVENT_REFRESH } from "../../constants";
-import { PFSize } from "../Spinner";
-import { ModalButton } from "../buttons/ModalButton";
-import "../buttons/SpinnerButton";
-import { MessageLevel } from "../messages/Message";
-import { showMessage } from "../messages/MessageContainer";
-import { Table, TableColumn } from "../table/Table";
 
 type BulkDeleteMetadata = { key: string; value: string }[];
 

@@ -1,21 +1,21 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/stages/prompt/PromptForm";
+import { truncate } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { Prompt, StagesApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../../api/Client";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { uiConfig } from "../../../common/config";
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/forms/DeleteBulkForm";
-import "../../../elements/forms/ModalForm";
-import { TableColumn } from "../../../elements/table/Table";
-import { TablePage } from "../../../elements/table/TablePage";
-import { truncate } from "../../../utils";
-import "./PromptForm";
 
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {

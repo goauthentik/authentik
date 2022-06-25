@@ -1,3 +1,8 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { LayoutType, UIConfig, uiConfig } from "@goauthentik/web/common/config";
+import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import { groupBy, loading } from "@goauthentik/web/utils";
 import Fuse from "fuse.js";
 
 import { t } from "@lingui/macro";
@@ -6,7 +11,7 @@ import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -17,11 +22,6 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
 
-import { AKResponse } from "../api/Client";
-import { DEFAULT_CONFIG } from "../api/Config";
-import { LayoutType, UIConfig, uiConfig } from "../common/config";
-import { getURLParam, updateURLParams } from "../elements/router/RouteMatch";
-import { groupBy, loading } from "../utils";
 import "./LibraryApplication";
 
 @customElement("ak-library")

@@ -1,9 +1,11 @@
+import { EVENT_API_DRAWER_REFRESH, EVENT_API_DRAWER_TOGGLE } from "@goauthentik/web/constants";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -11,8 +13,6 @@ import PFNotificationDrawer from "@patternfly/patternfly/components/Notification
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Middleware, ResponseContext } from "@goauthentik/api";
-
-import { EVENT_API_DRAWER_REFRESH, EVENT_API_DRAWER_TOGGLE } from "../../constants";
 
 export interface RequestInfo {
     method: string;

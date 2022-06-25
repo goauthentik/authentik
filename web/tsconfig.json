@@ -1,6 +1,11 @@
 {
     "compilerOptions": {
         "strict": true,
+        "paths": {
+            "@goauthentik/web/*": ["src/*"],
+            "@goauthentik/docs/*": ["../website/docs/*"]
+        },
+        "baseUrl": ".",
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,

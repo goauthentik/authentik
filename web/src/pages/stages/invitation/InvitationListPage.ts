@@ -1,3 +1,15 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/stages/invitation/InvitationForm";
+import "@goauthentik/web/pages/stages/invitation/InvitationListLink";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -7,18 +19,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { Invitation, StagesApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../../api/Client";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { uiConfig } from "../../../common/config";
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/forms/DeleteBulkForm";
-import "../../../elements/forms/ModalForm";
-import { TableColumn } from "../../../elements/table/Table";
-import { TablePage } from "../../../elements/table/TablePage";
-import "./InvitationForm";
-import "./InvitationListLink";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {

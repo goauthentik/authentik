@@ -1,3 +1,9 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -13,12 +19,6 @@ import {
     StagesApi,
     UserFieldsEnum,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { first } from "../../../utils";
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends ModelForm<IdentificationStage, string> {

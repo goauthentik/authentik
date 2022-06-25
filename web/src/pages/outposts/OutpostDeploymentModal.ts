@@ -1,3 +1,6 @@
+import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/TokenCopyButton";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -5,9 +8,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { Outpost, OutpostTypeEnum } from "@goauthentik/api";
-
-import { ModalButton } from "../../elements/buttons/ModalButton";
-import "../../elements/buttons/TokenCopyButton";
 
 @customElement("ak-outpost-deployment-modal")
 export class OutpostDeploymentModal extends ModalButton {

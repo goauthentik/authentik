@@ -1,13 +1,13 @@
+import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "@goauthentik/web/constants";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "../../constants";
-import { PFSize } from "../Spinner";
 
 @customElement("ak-spinner-button")
 export class SpinnerButton extends LitElement {

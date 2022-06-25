@@ -1,17 +1,17 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TableModal } from "@goauthentik/web/elements/table/TableModal";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { CoreApi, Group } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import { PFColor } from "../../elements/Label";
-import "../../elements/buttons/SpinnerButton";
-import { TableColumn } from "../../elements/table/Table";
-import { TableModal } from "../../elements/table/TableModal";
 
 @customElement("ak-user-group-select-table")
 export class GroupSelectModal extends TableModal<Group> {

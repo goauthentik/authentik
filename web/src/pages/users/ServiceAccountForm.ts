@@ -1,3 +1,8 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { Form } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModalForm } from "@goauthentik/web/elements/forms/ModalForm";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -5,11 +10,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { CoreApi, UserServiceAccountRequest, UserServiceAccountResponse } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { Form } from "../../elements/forms/Form";
-import "../../elements/forms/HorizontalFormElement";
-import { ModalForm } from "../../elements/forms/ModalForm";
 
 @customElement("ak-user-service-account")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {

@@ -1,10 +1,33 @@
+import { DEFAULT_CONFIG, config } from "@goauthentik/web/api/Config";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/CodeMirror";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/PageHeader";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/ActionButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/charts/UserChart";
+import "@goauthentik/web/elements/events/ObjectChangelog";
+import "@goauthentik/web/elements/events/UserEvents";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import "@goauthentik/web/elements/oauth/UserRefreshList";
+import "@goauthentik/web/elements/user/SessionList";
+import "@goauthentik/web/elements/user/UserConsentList";
+import "@goauthentik/web/pages/groups/RelatedGroupList";
+import "@goauthentik/web/pages/users/UserActiveForm";
+import "@goauthentik/web/pages/users/UserForm";
+import "@goauthentik/web/pages/users/UserPasswordForm";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -17,29 +40,6 @@ import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { CapabilitiesEnum, CoreApi, User } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG, config } from "../../api/Config";
-import { EVENT_REFRESH } from "../../constants";
-import "../../elements/CodeMirror";
-import { PFColor } from "../../elements/Label";
-import "../../elements/PageHeader";
-import { PFSize } from "../../elements/Spinner";
-import "../../elements/Tabs";
-import "../../elements/buttons/ActionButton";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/charts/UserChart";
-import "../../elements/events/ObjectChangelog";
-import "../../elements/events/UserEvents";
-import "../../elements/forms/ModalForm";
-import { MessageLevel } from "../../elements/messages/Message";
-import { showMessage } from "../../elements/messages/MessageContainer";
-import "../../elements/oauth/UserRefreshList";
-import "../../elements/user/SessionList";
-import "../../elements/user/UserConsentList";
-import "../groups/RelatedGroupList";
-import "./UserActiveForm";
-import "./UserForm";
-import "./UserPasswordForm";
 
 @customElement("ak-user-view")
 export class UserViewPage extends LitElement {

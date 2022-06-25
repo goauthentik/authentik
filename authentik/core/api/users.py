@@ -24,7 +24,13 @@ from drf_spectacular.utils import (
 )
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, JSONField, ListField, SerializerMethodField, IntegerField
+from rest_framework.fields import (
+    CharField,
+    IntegerField,
+    JSONField,
+    ListField,
+    SerializerMethodField,
+)
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -352,7 +358,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     user=user,
                     expires=now() + timedelta(days=360),
                 )
-                response["token"]  = token.key
+                response["token"] = token.key
                 return Response(response)
             except (IntegrityError) as exc:
                 return Response(data={"non_field_errors": [str(exc)]}, status=400)
