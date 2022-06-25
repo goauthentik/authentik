@@ -14,7 +14,7 @@ import (
 
 const (
 	redirectParam     = "rd"
-	callbackSignature = "X-authentik-oauth-callback"
+	callbackSignature = "X-authentik-auth-callback"
 )
 
 func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
@@ -42,7 +42,7 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 	return u.String(), true
 }
 
-func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
+func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request) {
 	newState := base64.RawURLEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
 	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
@@ -66,7 +66,7 @@ func (a *Application) handleRedirect(rw http.ResponseWriter, r *http.Request) {
 	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(newState), http.StatusFound)
 }
 
-func (a *Application) handleCallback(rw http.ResponseWriter, r *http.Request) {
+func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request) {
 	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
 		a.log.WithError(err).Trace("failed to get session")

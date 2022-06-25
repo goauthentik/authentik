@@ -51,9 +51,9 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	tr := r.Clone(r.Context())
 	tr.URL = fwd
 	if _, callbackSet := fwd.Query()[callbackSignature]; callbackSet {
-		a.handleCallback(rw, tr)
+		a.handleAuthCallback(rw, tr)
 	}
-	a.handleRedirect(rw, r)
+	a.handleAuthStart(rw, r)
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
@@ -191,9 +191,9 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 		return
 	}
 	if _, callbackSet := fwd.Query()[callbackSignature]; callbackSet {
-		a.handleCallback(rw, r)
+		a.handleAuthCallback(rw, r)
 	}
-	a.handleRedirect(rw, r)
+	a.handleAuthStart(rw, r)
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application

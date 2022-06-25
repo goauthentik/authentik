@@ -147,15 +147,15 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if _, set := r.URL.Query()[callbackSignature]; set {
-				a.handleCallback(w, r)
+				a.handleAuthCallback(w, r)
 			} else {
 				inner.ServeHTTP(w, r)
 			}
 		})
 	})
 
-	mux.HandleFunc("/outpost.goauthentik.io/start", a.handleRedirect)
-	mux.HandleFunc("/outpost.goauthentik.io/callback", a.handleCallback)
+	mux.HandleFunc("/outpost.goauthentik.io/start", a.handleAuthStart)
+	mux.HandleFunc("/outpost.goauthentik.io/callback", a.handleAuthCallback)
 	mux.HandleFunc("/outpost.goauthentik.io/sign_out", a.handleSignOut)
 	switch *p.Mode.Get() {
 	case api.PROXYMODE_PROXY:

@@ -25,7 +25,7 @@ def _get_callback_url(uri: str) -> str:
     return "\n".join(
         [
             urljoin(uri, "outpost.goauthentik.io/callback"),
-            uri + "\?X-authentik-oauth-callback=true",
+            uri + "\?X-authentik-auth-callback=true",
         ]
     )
 
