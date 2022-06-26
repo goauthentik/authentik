@@ -26,7 +26,7 @@ def validate_auth(header: bytes) -> str:
     if auth_type.lower() != "bearer":
         LOGGER.debug("Unsupported authentication type, denying", type=auth_type.lower())
         raise AuthenticationFailed("Unsupported authentication type")
-    if auth_credentials == "":  # nosec
+    if auth_credentials == "":  # nosec # noqa
         raise AuthenticationFailed("Malformed header")
     return auth_credentials
 

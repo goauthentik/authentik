@@ -121,12 +121,9 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                             >
                         </div>
                     </ak-form-static>
-                    <div class="pf-c-form__group">
-                        <p id="header-text" class="pf-u-mb-xl">${t`Application`}</p>
-                        ${this.challenge.additionalPermissions.length > 0
-                            ? this.renderAdditional()
-                            : this.renderNoPrevious()}
-                    </div>
+                    ${this.challenge.additionalPermissions.length > 0
+                        ? this.renderAdditional()
+                        : this.renderNoPrevious()}
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
