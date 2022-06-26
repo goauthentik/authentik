@@ -4,6 +4,7 @@ from typing import Any, Optional
 from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from structlog.stdlib import get_logger
 
@@ -39,15 +40,17 @@ class UserInfoView(View):
         # GitHub Compatibility Scopes are handled differently, since they required custom paths
         # Hence they don't exist as Scope objects
         special_scope_map = {
-            SCOPE_GITHUB_USER: ("GitHub Compatibility: Access your User Information"),
-            SCOPE_GITHUB_USER_READ: ("GitHub Compatibility: Access your User Information"),
-            SCOPE_GITHUB_USER_EMAIL: ("GitHub Compatibility: Access you Email addresses"),
-            SCOPE_GITHUB_ORG_READ: ("GitHub Compatibility: Access your Groups"),
-            SCOPE_AUTHENTIK_API: ("authentik API Access on behalf of your user"),
+            SCOPE_GITHUB_USER: _("GitHub Compatibility: Access your User Information"),
+            SCOPE_GITHUB_USER_READ: _("GitHub Compatibility: Access your User Information"),
+            SCOPE_GITHUB_USER_EMAIL: _("GitHub Compatibility: Access you Email addresses"),
+            SCOPE_GITHUB_ORG_READ: _("GitHub Compatibility: Access your Groups"),
+            SCOPE_AUTHENTIK_API: _("authentik API Access on behalf of your user"),
         }
         for scope in scopes:
             if scope in special_scope_map:
-                scope_descriptions.append(PermissionDict(id=scope, name=special_scope_map[scope]))
+                scope_descriptions.append(
+                    PermissionDict(id=scope, name=str(special_scope_map[scope]))
+                )
         return scope_descriptions
 
     def get_claims(self, token: RefreshToken) -> dict[str, Any]:
