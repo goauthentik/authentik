@@ -56,12 +56,13 @@ class UserConsent(ExpiringModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     application = models.ForeignKey(Application, on_delete=models.CASCADE)
+    permissions = models.TextField(default="")
 
     def __str__(self):
         return f"User Consent {self.application} by {self.user}"
 
     class Meta:
 
-        unique_together = (("user", "application"),)
+        unique_together = (("user", "application", "permissions"),)
         verbose_name = _("User Consent")
         verbose_name_plural = _("User Consents")

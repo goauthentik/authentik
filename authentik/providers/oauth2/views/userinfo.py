@@ -9,6 +9,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
+from authentik.flows.challenge import PermissionDict
 from authentik.providers.oauth2.constants import (
     SCOPE_AUTHENTIK_API,
     SCOPE_GITHUB_ORG_READ,
@@ -28,12 +29,13 @@ class UserInfoView(View):
 
     token: Optional[RefreshToken]
 
-    def get_scope_descriptions(self, scopes: list[str]) -> list[dict[str, str]]:
+    def get_scope_descriptions(self, scopes: list[str]) -> list[PermissionDict]:
         """Get a list of all Scopes's descriptions"""
         scope_descriptions = []
         for scope in ScopeMapping.objects.filter(scope_name__in=scopes).order_by("scope_name"):
-            if scope.description != "":
-                scope_descriptions.append({"id": scope.scope_name, "name": scope.description})
+            if scope.description == "":
+                continue
+            scope_descriptions.append(PermissionDict(id=scope.scope_name, name=scope.description))
         # GitHub Compatibility Scopes are handled differently, since they required custom paths
         # Hence they don't exist as Scope objects
         special_scope_map = {
@@ -45,7 +47,7 @@ class UserInfoView(View):
         }
         for scope in scopes:
             if scope in special_scope_map:
-                scope_descriptions.append({"id": scope, "name": special_scope_map[scope]})
+                scope_descriptions.append(PermissionDict(id=scope, name=special_scope_map[scope]))
         return scope_descriptions
 
     def get_claims(self, token: RefreshToken) -> dict[str, Any]:

@@ -20510,8 +20510,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Permission'
+        additional_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
       required:
-      - header_text
+      - additional_permissions
       - pending_user
       - pending_user_avatar
       - permissions
@@ -31215,6 +31219,9 @@ components:
           $ref: '#/components/schemas/User'
         application:
           $ref: '#/components/schemas/Application'
+        permissions:
+          type: string
+          default: ''
       required:
       - application
       - pk

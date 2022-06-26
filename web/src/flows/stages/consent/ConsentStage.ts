@@ -36,6 +36,66 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
         ];
     }
 
+    renderNoPrevious(): TemplateResult {
+        return html`
+            <div class="pf-c-form__group">
+                <p id="header-text" class="pf-u-mb-xl">${this.challenge.headerText}</p>
+                ${this.challenge.permissions.length > 0
+                    ? html`
+                          <p class="pf-u-mb-sm">
+                              ${t`Application requires following permissions:`}
+                          </p>
+                          <ul class="pf-c-list" id="permmissions">
+                              ${this.challenge.permissions.map((permission) => {
+                                  return html`<li data-permission-code="${permission.id}">
+                                      ${permission.name}
+                                  </li>`;
+                              })}
+                          </ul>
+                      `
+                    : html``}
+            </div>
+        `;
+    }
+
+    renderAdditional(): TemplateResult {
+        return html`
+            <div class="pf-c-form__group">
+                <p id="header-text" class="pf-u-mb-xl">${this.challenge.headerText}</p>
+                ${this.challenge.permissions.length > 0
+                    ? html`
+                          <p class="pf-u-mb-sm">
+                              ${t`Application already has access to the following permissions:`}
+                          </p>
+                          <ul class="pf-c-list" id="permmissions">
+                              ${this.challenge.permissions.map((permission) => {
+                                  return html`<li data-permission-code="${permission.id}">
+                                      ${permission.name}
+                                  </li>`;
+                              })}
+                          </ul>
+                      `
+                    : html``}
+            </div>
+            <div class="pf-c-form__group pf-u-mt-md">
+                ${this.challenge.additionalPermissions.length > 0
+                    ? html`
+                          <strong class="pf-u-mb-md">
+                              ${t`Application requires following new permissions:`}
+                          </strong>
+                          <ul class="pf-c-list" id="permmissions">
+                              ${this.challenge.additionalPermissions.map((permission) => {
+                                  return html`<li data-permission-code="${permission.id}">
+                                      ${permission.name}
+                                  </li>`;
+                              })}
+                          </ul>
+                      `
+                    : html``}
+            </div>
+        `;
+    }
+
     render(): TemplateResult {
         if (!this.challenge) {
             return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
@@ -62,21 +122,10 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                         </div>
                     </ak-form-static>
                     <div class="pf-c-form__group">
-                        <p id="header-text" class="pf-u-mb-xl">${this.challenge.headerText}</p>
-                        ${this.challenge.permissions.length > 0
-                            ? html`
-                                  <p class="pf-u-mb-sm">
-                                      ${t`Application requires following permissions:`}
-                                  </p>
-                                  <ul class="pf-c-list" id="permmissions">
-                                      ${this.challenge.permissions.map((permission) => {
-                                          return html`<li data-permission-code="${permission.id}">
-                                              ${permission.name}
-                                          </li>`;
-                                      })}
-                                  </ul>
-                              `
-                            : html``}
+                        <p id="header-text" class="pf-u-mb-xl">${t`Application`}</p>
+                        ${this.challenge.additionalPermissions.length > 0
+                            ? this.renderAdditional()
+                            : this.renderNoPrevious()}
                     </div>
 
                     <div class="pf-c-form__group pf-m-action">
