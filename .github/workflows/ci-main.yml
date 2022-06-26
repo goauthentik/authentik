@@ -133,7 +133,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**') }}
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
         working-directory: web
@@ -167,7 +167,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**') }}
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
         working-directory: web/
