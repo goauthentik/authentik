@@ -1,6 +1,6 @@
 """Challenge helpers"""
 from enum import Enum
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, TypedDict
 
 from django.db import models
 from django.http import JsonResponse
@@ -93,6 +93,13 @@ class AccessDeniedChallenge(WithUserInfoChallenge):
 
     error_message = CharField(required=False)
     component = CharField(default="ak-stage-access-denied")
+
+
+class PermissionDict(TypedDict):
+    """Consent Permission"""
+
+    id: str
+    name: str
 
 
 class PermissionSerializer(PassiveSerializer):

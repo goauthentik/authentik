@@ -71,9 +71,9 @@ gen-client-web:
 		-o /local/gen-ts-api \
 		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${NPM_VERSION}
 	mkdir -p web/node_modules/@goauthentik/api
-	\cp -fv scripts/web_api_readme.md gen-ts-api/README.md
+	ln -fs scripts/web_api_readme.md gen-ts-api/README.md
 	cd gen-ts-api && npm i
-	\cp -rfv gen-ts-api/* web/node_modules/@goauthentik/api
+	ln -fs gen-ts-api web/node_modules/@goauthentik/api
 
 gen-client-go:
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O config.yaml
@@ -169,8 +169,3 @@ ci-pending-migrations: ci--meta-debug
 
 install: web-install website-install
 	poetry install
-
-a: install
-	tmux \
-		new-session 'make run' \; \
-		split-window 'make web-watch'

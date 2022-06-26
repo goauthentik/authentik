@@ -91,6 +91,7 @@ msgstr "不可移除的身份验证器，例如 TouchID 或 Windows Hello"
 msgid "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
 msgstr "用于测试的策略。等待随机时长后，始终返回下面指定的结果。"
 
+#: src/pages/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "ACS URL"
@@ -113,6 +114,10 @@ msgstr "ANY，必须匹配任意策略才能授予访问权限。"
 #: src/pages/flows/StageBindingForm.ts
 msgid "ANY, any policy must match to include this stage access."
 msgstr "ANY，必须匹配任意策略才能包含此阶段访问权限。"
+
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "API"
+msgstr ""
 
 #: src/pages/tokens/TokenListPage.ts
 msgid "API Access"
@@ -257,6 +262,10 @@ msgstr "额外的用户 DN"
 msgid "Additional Scope"
 msgstr "额外的作用域"
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Additional UI settings"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional group DN, prepended to the Base DN."
 msgstr "额外的组 DN，添加到 Base DN 起始处。"
@@ -377,6 +386,7 @@ msgid "App password (can be used to login using a flow executor)"
 msgstr "应用密码（可用于使用流程执行器登录）"
 
 #: src/elements/user/UserConsentList.ts
+#: src/flows/stages/consent/ConsentStage.ts
 #: src/pages/admin-overview/TopApplicationsTable.ts
 #: src/pages/providers/ProviderListPage.ts
 msgid "Application"
@@ -387,6 +397,14 @@ msgstr "应用程序"
 msgid "Application Icon"
 msgstr "应用程序图标"
 
+#: src/pages/applications/wizard/link/TypeLinkApplicationWizardPage.ts
+msgid "Application Link"
+msgstr ""
+
+#: src/flows/stages/consent/ConsentStage.ts
+msgid "Application already has access to the following permissions:"
+msgstr ""
+
 #: src/elements/charts/UserChart.ts
 msgid "Application authorizations"
 msgstr "应用程序授权"
@@ -395,11 +413,25 @@ msgstr "应用程序授权"
 msgid "Application authorized"
 msgstr "应用程序已授权"
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Application details"
+msgstr ""
+
+#: src/flows/stages/consent/ConsentStage.ts
+msgid "Application requires following new permissions:"
+msgstr ""
+
 #: src/flows/stages/consent/ConsentStage.ts
 msgid "Application requires following permissions:"
 msgstr "应用程序需要以下权限："
 
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+#: src/pages/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
+msgid "Application type"
+msgstr ""
+
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Application's display Name."
 msgstr "应用的显示名称。"
 
@@ -413,6 +445,18 @@ msgstr "应用程序"
 #: src/pages/outposts/OutpostForm.ts
 msgid "Applications"
 msgstr "应用程序"
+
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Applications which handle the authentication server-side (for example, Python, Go, Rust, Java, PHP)"
+msgstr ""
+
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Applications which redirect users to a non-web callback (for example, Android, iOS)"
+msgstr ""
+
+#: src/elements/wizard/ActionWizardPage.ts
+msgid "Apply changes"
+msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Apps with most usage"
@@ -530,6 +574,14 @@ msgstr "身份验证 URL"
 msgid "Authentication flow"
 msgstr "身份验证流程"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Authentication method"
+msgstr ""
+
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Authentication without user interaction, or machine-to-machine authentication."
+msgstr ""
+
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Authenticator"
 msgstr "身份验证器"
@@ -553,6 +605,7 @@ msgstr "授权"
 msgid "Authorization URL"
 msgstr "授权 URL"
 
+#: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -611,6 +664,7 @@ msgstr "执行过程中显示的背景。"
 #~ msgid "Backup status"
 #~ msgstr "备份状态"
 
+#: src/pages/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -704,6 +758,10 @@ msgstr "构建哈希："
 #: src/pages/sources/SourceListPage.ts
 msgid "Built-in"
 msgstr "内置"
+
+#: src/pages/applications/wizard/oauth/TypeOAuthAPIApplicationWizardPage.ts
+msgid "By default, all service accounts can authenticate as this application, as long as they have a valid token of the type app-password."
+msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "By default, only icons are shown for sources. Enable this to show their full names."
@@ -1198,6 +1256,7 @@ msgstr "复制恢复链接"
 
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/wizard/ApplicationWizard.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -1336,6 +1395,10 @@ msgstr "创建用户"
 msgid "Create a new application"
 msgstr "创建新应用程序"
 
+#: src/pages/applications/wizard/ApplicationWizard.ts
+msgid "Create a new application."
+msgstr ""
+
 #: src/pages/outposts/ServiceConnectionWizard.ts
 msgid "Create a new outpost integration."
 msgstr "创建一个新前哨集成。"
@@ -1360,13 +1423,26 @@ msgstr "创建一个新身份来源。"
 msgid "Create a new stage."
 msgstr "创建一个新阶段。"
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Create application"
+msgstr ""
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "创建组"
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
+#: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
+#: src/pages/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
+#: src/pages/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
+#: src/pages/applications/wizard/saml/TypeSAMLImportApplicationWizardPage.ts
 msgid "Create provider"
 msgstr "创建提供程序"
+
+#: src/pages/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
+msgid "Create service account"
+msgstr ""
 
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Create users as inactive"
@@ -1543,6 +1619,7 @@ msgid "Deprecated. Instead of using this field, configure the JWKS data/URL in S
 msgstr "已弃用。请在身份来源中配置 JWKS 数据 / URL 代替此字段。"
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tokens/TokenForm.ts
@@ -2035,6 +2112,14 @@ msgstr "利用 OAuth2 和 SAML 等协议，使用 authentik 作为身份提供�
 msgid "External Host"
 msgstr "外部主机"
 
+#: src/pages/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
+msgid "External domain"
+msgstr ""
+
+#: src/pages/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
+msgid "External domain you will be accessing the domain from."
+msgstr ""
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "External host"
@@ -2206,6 +2291,10 @@ msgstr "用于登出的流程。如果留空，则使用按 Slug 排序的第一
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 msgid "Flow used when authorizing this provider."
 msgstr "授权此提供程序时使用的流程。"
+
+#: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
+msgid "Flow used when users access this application."
+msgstr ""
 
 #: src/pages/flows/FlowListPage.ts
 msgid "Flow(s)"
@@ -2439,7 +2528,6 @@ msgid "Hide managed mappings"
 msgstr "隐藏管理映射"
 
 #: src/pages/users/RelatedUserList.ts
-#: src/pages/users/UserListPage.ts
 msgid "Hide service-accounts"
 msgstr "隐藏服务账户"
 
@@ -2600,9 +2688,21 @@ msgstr "导入"
 msgid "Import Flow"
 msgstr "导入流程"
 
+#: src/pages/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
+msgid "Import SAML Metadata"
+msgstr ""
+
+#: src/pages/applications/wizard/saml/TypeSAMLImportApplicationWizardPage.ts
+msgid "Import SAML metadata"
+msgstr ""
+
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Import certificates of external providers or create certificates to sign requests with."
 msgstr "导入外部提供商的证书或创建用于签名请求的证书。"
+
+#: src/pages/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
+msgid "Import the metadata document of the applicaation you want to configure."
+msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "In case you can't access any other method."
@@ -2748,6 +2848,7 @@ msgstr "用于签名传出请求的密钥对。留空则禁用签名。"
 msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
@@ -2768,8 +2869,9 @@ msgstr "可以发出绑定请求和搜索请求的 LDAP DN。"
 msgid "LDAP Sync status"
 msgstr "LDAP 同步状态"
 
-#~ msgid "LDAP details"
-#~ msgstr "LDAP 详情"
+#: src/pages/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
+msgid "LDAP details"
+msgstr "LDAP 详情"
 
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -2822,12 +2924,21 @@ msgstr "启动 URL"
 msgid "Layout"
 msgstr "布局"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Legacy applications which don't natively support SSO."
+msgstr ""
+
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Let the user identify themselves with their username or Email address."
 msgstr "让用户使用用户名或电子邮件地址来标识自己。"
 
 #~ msgid "Library"
 #~ msgstr "Library"
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#: src/pages/applications/wizard/link/TypeLinkApplicationWizardPage.ts
+msgid "Link"
+msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -2887,6 +2998,7 @@ msgstr "正在加载"
 #: src/elements/Spinner.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/TransportForm.ts
@@ -2922,7 +3034,6 @@ msgstr "正在加载"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
-#: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -2947,7 +3058,6 @@ msgstr "正在加载"
 #: src/pages/stages/password/PasswordStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
-#: src/pages/stages/user_write/UserWriteStageForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
@@ -3051,6 +3161,14 @@ msgstr "由 authentik 管理"
 msgid "Managed by authentik (Discovered)"
 msgstr "由 authentik 管理（已发现）"
 
+#: src/pages/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
+msgid "Manual configuration"
+msgstr ""
+
+#: src/pages/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
+msgid "Manually configure SAML"
+msgstr ""
+
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Mark newly created users as inactive."
 msgstr "将新创建的用户标记为未激活。"
@@ -3096,10 +3214,17 @@ msgstr "消息"
 msgid "Messages"
 msgstr "消息"
 
+#: src/pages/applications/wizard/saml/TypeSAMLImportApplicationWizardPage.ts
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Metadata"
 msgstr "元数据"
+
+#: src/pages/applications/wizard/oauth/TypeOAuthAPIApplicationWizardPage.ts
+#: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
+#: src/pages/applications/wizard/oauth/TypeOAuthImplicitApplicationWizardPage.ts
+msgid "Method details"
+msgstr ""
 
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Minimum amount of Digits"
@@ -3144,6 +3269,10 @@ msgstr "模型已删除"
 msgid "Model updated"
 msgstr "模型已更新"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Modern applications, APIs and Single-page applications."
+msgstr ""
+
 #~ msgid "Monitor"
 #~ msgstr "监控"
 
@@ -3158,6 +3287,7 @@ msgstr "我的应用"
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -3255,6 +3385,10 @@ msgstr "NameID 策略"
 msgid "NameID Property Mapping"
 msgstr "NameID 属性映射"
 
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Native application"
+msgstr ""
+
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Need an account?"
 msgstr "需要一个账户？"
@@ -3266,6 +3400,10 @@ msgstr "反转结果"
 #: src/pages/policies/PolicyBindingForm.ts
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "反转绑定的结果。消息不受影响。"
+
+#: src/pages/applications/wizard/ApplicationWizard.ts
+msgid "New application"
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionWizard.ts
 msgid "New outpost integration"
@@ -3518,6 +3656,10 @@ msgstr "OAuth 刷新代码"
 
 #~ msgid "OAuth/OIDC"
 #~ msgstr "OAuth/OIDC"
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "OAuth2/OIDC"
+msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "OIDC JWKS"
@@ -3787,6 +3929,21 @@ msgstr "密码：屏蔽输入内容，密码根据来源进行验证。策略仍
 msgid "Passwordless flow"
 msgstr "无密码流程"
 
+#: src/pages/users/UserForm.ts
+msgid "Path"
+msgstr ""
+
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+msgid "Path new users will be created under. If left blank, the default path will be used.fo"
+msgstr ""
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+msgid "Path template for users created. Use placeholders like `%(slug)s` to insert the source slug."
+msgstr ""
+
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Persistent"
 msgstr "持久的"
@@ -3993,6 +4150,11 @@ msgstr "协议设置"
 msgid "Protocol settings"
 msgstr "协议设置"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Provide an LDAP interface for applications and users to authenticate against."
+msgstr ""
+
 #: src/pages/providers/ProviderListPage.ts
 msgid "Provide support for protocols like SAML and OAuth to assigned applications."
 msgstr "为分配的应用程序提供对 SAML 和 OAuth 等协议的支持。"
@@ -4023,6 +4185,7 @@ msgstr "提供程序"
 msgid "Providers"
 msgstr "提供程序"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -4030,8 +4193,9 @@ msgstr "提供程序"
 msgid "Proxy"
 msgstr "代理"
 
-#~ msgid "Proxy details"
-#~ msgstr "代理详情"
+#: src/pages/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
+msgid "Proxy details"
+msgstr "代理详情"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
@@ -4046,6 +4210,7 @@ msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.
 msgstr "公钥，从 https://www.google.com/recaptcha/intro/v3.html 获取。"
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Publisher"
 msgstr "发布者"
 
@@ -4295,12 +4460,17 @@ msgstr "返回设备选择器"
 msgid "Revoked?"
 msgstr "已吊销？"
 
+#: src/elements/TreeView.ts
+msgid "Root"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Run sync again"
 msgstr "再次运行同步"
 
-#~ msgid "SAML"
-#~ msgstr "SAML"
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "SAML"
+msgstr "SAML"
 
 #~ msgid "SAML (metadata import)"
 #~ msgstr "SAML（元数据导入）"
@@ -4313,8 +4483,9 @@ msgstr "SAML 属性名称"
 msgid "SAML Metadata"
 msgstr "SAML 元数据"
 
-#~ msgid "SAML details"
-#~ msgstr "SAML 详情"
+#: src/pages/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
+msgid "SAML details"
+msgstr "SAML 详情"
 
 #~ msgid "SAML details (import from metadata)"
 #~ msgstr "SAML 详情（从元数据导入）"
@@ -4712,6 +4883,14 @@ msgstr "可用于输入阶段的单个输入项。"
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Single use"
 msgstr "一次性使用"
+
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Single-page applications"
+msgstr ""
+
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Single-page applications which handle authentication in the browser (for example, Javascript, Angular, React, Vue)"
+msgstr ""
 
 #~ msgid "Skip path regex"
 #~ msgstr "跳过路径正则表达式"
@@ -5434,6 +5613,10 @@ msgstr "支持以下关键字："
 msgid "The following objects use {objName}"
 msgstr "以下对象使用 {objName}"
 
+#: src/pages/providers/ProviderWizard.ts
+msgid "The new application wizard greatly simplifies the steps required to create applications and providers."
+msgstr ""
+
 #~ msgid ""
 #~ "The policy passes when the reputation score is above the threshold, and\n"
 #~ "doesn't pass when either or both of the selected options are equal or less than the\n"
@@ -5494,6 +5677,10 @@ msgstr ""
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "These policies control which users can access this application."
 msgstr "这些策略控制哪些用户可以访问此应用程序。"
+
+#: src/pages/applications/wizard/oauth/TypeOAuthAPIApplicationWizardPage.ts
+msgid "This configuration can be used to authenticate to authentik with other APIs other otherwise programmatically."
+msgstr ""
 
 #: src/flows/FlowInspector.ts
 msgid "This flow is completed."
@@ -5677,6 +5864,14 @@ msgstr "传输"
 msgid "Trusted OIDC Sources"
 msgstr "信任的 OIDC 来源"
 
+#: src/pages/providers/ProviderWizard.ts
+msgid "Try it now"
+msgstr ""
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "Try the new application wizard"
+msgstr ""
+
 #: src/interfaces/locale.ts
 msgid "Turkish"
 msgstr "土耳其语"
@@ -5730,6 +5925,10 @@ msgstr "UPN"
 msgid "URL settings"
 msgstr "URL 设置"
 
+#: src/pages/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
+msgid "URL that authentik will redirect back to after successful authentication."
+msgstr ""
+
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "URL that the initial Login request is sent to."
 msgstr "初始登录请求发送到的 URL。"
@@ -5749,6 +5948,10 @@ msgstr "authentik 用来获取令牌的 URL。"
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr "用于请求初始令牌的 URL。只有 OAuth 1 才需要此网址。"
+
+#: src/pages/applications/wizard/link/TypeLinkApplicationWizardPage.ts
+msgid "URL which will be opened when a user clicks on the application."
+msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Unauthenticated Paths"
@@ -6089,6 +6292,10 @@ msgstr "用户事件"
 msgid "User fields"
 msgstr "用户字段"
 
+#: src/pages/users/UserListPage.ts
+msgid "User folders"
+msgstr ""
+
 #: src/interfaces/AdminInterface.ts
 msgid "User interface"
 msgstr "用户界面"
@@ -6112,6 +6319,17 @@ msgstr "用户对象筛选器"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User password writeback"
 msgstr "用户密码写回"
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+msgid "User path"
+msgstr ""
+
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+msgid "User path template"
+msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
 msgid "User settings flow"
@@ -6347,6 +6565,10 @@ msgstr "警告：未配置 authentik 域名，身份验证将不起作用。"
 msgid "Web Certificate"
 msgstr "Web 证书"
 
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Web application"
+msgstr ""
+
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "WebAuthn Authenticators"
 msgstr "WebAuthn 身份验证器"
@@ -6468,6 +6690,10 @@ msgstr ""
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "X509 Subject"
 msgstr "X509 主题"
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "XML-based SSO standard. Use this if your application only supports SAML."
+msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts

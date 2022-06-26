@@ -10,6 +10,8 @@ from structlog.stdlib import get_logger
 from authentik.core.middleware import KEY_AUTH_VIA, LOCAL
 from authentik.core.models import Token, TokenIntents, User
 from authentik.outposts.models import Outpost
+from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
+from authentik.providers.oauth2.models import RefreshToken
 
 LOGGER = get_logger()
 
@@ -24,7 +26,7 @@ def validate_auth(header: bytes) -> str:
     if auth_type.lower() != "bearer":
         LOGGER.debug("Unsupported authentication type, denying", type=auth_type.lower())
         raise AuthenticationFailed("Unsupported authentication type")
-    if auth_credentials == "":  # nosec
+    if auth_credentials == "":  # nosec # noqa
         raise AuthenticationFailed("Malformed header")
     return auth_credentials
 
@@ -34,14 +36,30 @@ def bearer_auth(raw_header: bytes) -> Optional[User]:
     auth_credentials = validate_auth(raw_header)
     if not auth_credentials:
         return None
+    if not hasattr(LOCAL, "authentik"):
+        LOCAL.authentik = {}
     # first, check traditional tokens
-    token = Token.filter_not_expired(key=auth_credentials, intent=TokenIntents.INTENT_API).first()
-    if hasattr(LOCAL, "authentik"):
+    key_token = Token.filter_not_expired(
+        key=auth_credentials, intent=TokenIntents.INTENT_API
+    ).first()
+    if key_token:
         LOCAL.authentik[KEY_AUTH_VIA] = "api_token"
-    if token:
-        return token.user
+        return key_token.user
+    # then try to auth via JWT
+    jwt_token = RefreshToken.filter_not_expired(
+        refresh_token=auth_credentials, _scope__icontains=SCOPE_AUTHENTIK_API
+    ).first()
+    if jwt_token:
+        # Double-check scopes, since they are saved in a single string
+        # we want to check the parsed version too
+        if SCOPE_AUTHENTIK_API not in jwt_token.scope:
+            raise AuthenticationFailed("Token invalid/expired")
+        LOCAL.authentik[KEY_AUTH_VIA] = "jwt"
+        return jwt_token.user
+    # then try to auth via secret key (for embedded outpost/etc)
     user = token_secret_key(auth_credentials)
     if user:
+        LOCAL.authentik[KEY_AUTH_VIA] = "secret_key"
         return user
     raise AuthenticationFailed("Token invalid/expired")
 
@@ -56,8 +74,6 @@ def token_secret_key(value: str) -> Optional[User]:
     outposts = Outpost.objects.filter(managed=MANAGED_OUTPOST)
     if not outposts:
         return None
-    if hasattr(LOCAL, "authentik"):
-        LOCAL.authentik[KEY_AUTH_VIA] = "secret_key"
     outpost = outposts.first()
     return outpost.user
 

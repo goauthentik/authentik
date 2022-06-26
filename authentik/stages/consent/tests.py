@@ -6,12 +6,15 @@ from django.urls import reverse
 from authentik.core.models import Application
 from authentik.core.tasks import clean_expired_models
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.flows.challenge import PermissionDict
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.generators import generate_id
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
+from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_PERMISSIONS
 
 
 class TestConsentStage(FlowTestCase):
@@ -21,14 +24,14 @@ class TestConsentStage(FlowTestCase):
         super().setUp()
         self.user = create_test_admin_user()
         self.application = Application.objects.create(
-            name="test-application",
-            slug="test-application",
+            name=generate_id(),
+            slug=generate_id(),
         )
 
     def test_always_required(self):
         """Test always required consent"""
         flow = create_test_flow(FlowDesignation.AUTHENTICATION)
-        stage = ConsentStage.objects.create(name="consent", mode=ConsentMode.ALWAYS_REQUIRE)
+        stage = ConsentStage.objects.create(name=generate_id(), mode=ConsentMode.ALWAYS_REQUIRE)
         binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
 
         plan = FlowPlan(flow_pk=flow.pk.hex, bindings=[binding], markers=[StageMarker()])
@@ -48,7 +51,7 @@ class TestConsentStage(FlowTestCase):
         """Test permanent consent from user"""
         self.client.force_login(self.user)
         flow = create_test_flow(FlowDesignation.AUTHENTICATION)
-        stage = ConsentStage.objects.create(name="consent", mode=ConsentMode.PERMANENT)
+        stage = ConsentStage.objects.create(name=generate_id(), mode=ConsentMode.PERMANENT)
         binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
 
         plan = FlowPlan(
@@ -75,7 +78,7 @@ class TestConsentStage(FlowTestCase):
         self.client.force_login(self.user)
         flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         stage = ConsentStage.objects.create(
-            name="consent", mode=ConsentMode.EXPIRING, consent_expire_in="seconds=1"
+            name=generate_id(), mode=ConsentMode.EXPIRING, consent_expire_in="seconds=1"
         )
         binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
 
@@ -88,6 +91,18 @@ class TestConsentStage(FlowTestCase):
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow,
+            self.user,
+            permissions=[],
+            additional_permissions=[],
+        )
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {},
@@ -101,4 +116,96 @@ class TestConsentStage(FlowTestCase):
         clean_expired_models.delay().get()
         self.assertFalse(
             UserConsent.objects.filter(user=self.user, application=self.application).exists()
+        )
+
+    def test_permanent_more_perms(self):
+        """Test permanent consent from user"""
+        self.client.force_login(self.user)
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage = ConsentStage.objects.create(name=generate_id(), mode=ConsentMode.PERMANENT)
+        binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
+
+        plan = FlowPlan(
+            flow_pk=flow.pk.hex,
+            bindings=[binding],
+            markers=[StageMarker()],
+            context={
+                PLAN_CONTEXT_APPLICATION: self.application,
+                PLAN_CONTEXT_CONSENT_PERMISSIONS: [PermissionDict(id="foo", name="foo-desc")],
+            },
+        )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        # First, consent with a single permission
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow,
+            self.user,
+            permissions=[
+                {"id": "foo", "name": "foo-desc"},
+            ],
+            additional_permissions=[],
+        )
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.assertTrue(
+            UserConsent.objects.filter(
+                user=self.user, application=self.application, permissions="foo"
+            ).exists()
+        )
+
+        # Request again with more perms
+        plan = FlowPlan(
+            flow_pk=flow.pk.hex,
+            bindings=[binding],
+            markers=[StageMarker()],
+            context={
+                PLAN_CONTEXT_APPLICATION: self.application,
+                PLAN_CONTEXT_CONSENT_PERMISSIONS: [
+                    PermissionDict(id="foo", name="foo-desc"),
+                    PermissionDict(id="bar", name="bar-desc"),
+                ],
+            },
+        )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow,
+            self.user,
+            permissions=[
+                {"id": "foo", "name": "foo-desc"},
+            ],
+            additional_permissions=[
+                {"id": "bar", "name": "bar-desc"},
+            ],
+        )
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.assertTrue(
+            UserConsent.objects.filter(
+                user=self.user, application=self.application, permissions="foo bar"
+            ).exists()
         )
