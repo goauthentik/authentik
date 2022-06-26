@@ -90,6 +90,7 @@ msgstr "Nieusuwalny token uwierzytelniający, taki jak TouchID lub Windows Hello
 msgid "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
 msgstr "Zasada używana do testowania. Zawsze zwraca ten sam wynik, jak określono poniżej, po odczekaniu losowego czasu trwania."
 
+#: src/pages/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "ACS URL"
@@ -112,6 +113,10 @@ msgstr "ANY, dowolna zasada musi być zgodna, aby przyznać dostęp."
 #: src/pages/flows/StageBindingForm.ts
 msgid "ANY, any policy must match to include this stage access."
 msgstr "ANY, każda zasada musi być zgodna, aby uwzględnić dostęp do tego etapu."
+
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "API"
+msgstr ""
 
 #: src/pages/tokens/TokenListPage.ts
 msgid "API Access"
@@ -257,6 +262,10 @@ msgstr "Dodatkowa nazwa wyróżniająca użytkownika"
 msgid "Additional Scope"
 msgstr "Dodatkowy zakres"
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Additional UI settings"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional group DN, prepended to the Base DN."
 msgstr "Dodatkowa DN grupy, poprzedzona podstawową DN."
@@ -377,6 +386,7 @@ msgid "App password (can be used to login using a flow executor)"
 msgstr "Hasło aplikacji (może być użyte do zalogowania się za pomocą executora przepływu)"
 
 #: src/elements/user/UserConsentList.ts
+#: src/flows/stages/consent/ConsentStage.ts
 #: src/pages/admin-overview/TopApplicationsTable.ts
 #: src/pages/providers/ProviderListPage.ts
 msgid "Application"
@@ -387,6 +397,14 @@ msgstr "Aplikacja"
 msgid "Application Icon"
 msgstr "Ikona aplikacji"
 
+#: src/pages/applications/wizard/link/TypeLinkApplicationWizardPage.ts
+msgid "Application Link"
+msgstr ""
+
+#: src/flows/stages/consent/ConsentStage.ts
+msgid "Application already has access to the following permissions:"
+msgstr ""
+
 #: src/elements/charts/UserChart.ts
 msgid "Application authorizations"
 msgstr "Autoryzacje aplikacji"
@@ -395,11 +413,25 @@ msgstr "Autoryzacje aplikacji"
 msgid "Application authorized"
 msgstr "Aplikacja autoryzowana"
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Application details"
+msgstr ""
+
+#: src/flows/stages/consent/ConsentStage.ts
+msgid "Application requires following new permissions:"
+msgstr ""
+
 #: src/flows/stages/consent/ConsentStage.ts
 msgid "Application requires following permissions:"
 msgstr "Aplikacja wymaga następujących uprawnień:"
 
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+#: src/pages/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
+msgid "Application type"
+msgstr ""
+
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Application's display Name."
 msgstr "Wyświetlana nazwa aplikacji."
 
@@ -413,6 +445,18 @@ msgstr "Aplikacja(e)"
 #: src/pages/outposts/OutpostForm.ts
 msgid "Applications"
 msgstr "Aplikacje"
+
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Applications which handle the authentication server-side (for example, Python, Go, Rust, Java, PHP)"
+msgstr ""
+
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Applications which redirect users to a non-web callback (for example, Android, iOS)"
+msgstr ""
+
+#: src/elements/wizard/ActionWizardPage.ts
+msgid "Apply changes"
+msgstr ""
 
 #: src/pages/admin-overview/AdminOverviewPage.ts
 msgid "Apps with most usage"
@@ -531,6 +575,14 @@ msgstr "URL uwierzytelniania"
 msgid "Authentication flow"
 msgstr "Przepływ uwierzytelniania"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Authentication method"
+msgstr ""
+
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Authentication without user interaction, or machine-to-machine authentication."
+msgstr ""
+
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Authenticator"
 msgstr "Uwierzytelniacz"
@@ -555,6 +607,7 @@ msgstr "Autoryzacja"
 msgid "Authorization URL"
 msgstr "URL autoryzacji"
 
+#: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/saml/SAMLProviderForm.ts
@@ -613,6 +666,7 @@ msgstr "Tło pokazywane podczas wykonywania."
 #~ msgid "Backup status"
 #~ msgstr "Stan kopii zapasowej"
 
+#: src/pages/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 #: src/pages/providers/ldap/LDAPProviderViewPage.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -706,6 +760,10 @@ msgstr "Hash kompilacji:"
 #: src/pages/sources/SourceListPage.ts
 msgid "Built-in"
 msgstr "Wbudowany"
+
+#: src/pages/applications/wizard/oauth/TypeOAuthAPIApplicationWizardPage.ts
+msgid "By default, all service accounts can authenticate as this application, as long as they have a valid token of the type app-password."
+msgstr ""
 
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "By default, only icons are shown for sources. Enable this to show their full names."
@@ -1200,6 +1258,7 @@ msgstr "Skopiuj link odzyskiwania"
 
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/wizard/ApplicationWizard.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -1338,6 +1397,10 @@ msgstr "Utwórz użytkownika"
 msgid "Create a new application"
 msgstr "Utwórz nową aplikację"
 
+#: src/pages/applications/wizard/ApplicationWizard.ts
+msgid "Create a new application."
+msgstr ""
+
 #: src/pages/outposts/ServiceConnectionWizard.ts
 msgid "Create a new outpost integration."
 msgstr ""
@@ -1362,13 +1425,26 @@ msgstr ""
 msgid "Create a new stage."
 msgstr ""
 
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Create application"
+msgstr ""
+
 #: src/pages/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "Utwórz grupę"
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
+#: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
+#: src/pages/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
+#: src/pages/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
+#: src/pages/applications/wizard/saml/TypeSAMLImportApplicationWizardPage.ts
 msgid "Create provider"
 msgstr "Utwórz dostawcę"
+
+#: src/pages/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
+msgid "Create service account"
+msgstr ""
 
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Create users as inactive"
@@ -1545,6 +1621,7 @@ msgid "Deprecated. Instead of using this field, configure the JWKS data/URL in S
 msgstr ""
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/property-mappings/PropertyMappingScopeForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 #: src/pages/tokens/TokenForm.ts
@@ -2044,6 +2121,14 @@ msgstr "Aplikacje zewnętrzne, które używają authentik jako dostawcy tożsamo
 msgid "External Host"
 msgstr "Zewnętrzny host"
 
+#: src/pages/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
+msgid "External domain"
+msgstr ""
+
+#: src/pages/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
+msgid "External domain you will be accessing the domain from."
+msgstr ""
+
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "External host"
@@ -2215,6 +2300,10 @@ msgstr "Przepływ używany do wylogowania. Jeśli pozostanie pusty, używany jes
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 msgid "Flow used when authorizing this provider."
 msgstr "Przepływ używany podczas autoryzacji tego dostawcy."
+
+#: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
+msgid "Flow used when users access this application."
+msgstr ""
 
 #: src/pages/flows/FlowListPage.ts
 msgid "Flow(s)"
@@ -2450,7 +2539,6 @@ msgid "Hide managed mappings"
 msgstr "Ukryj zarządzane mapowania"
 
 #: src/pages/users/RelatedUserList.ts
-#: src/pages/users/UserListPage.ts
 msgid "Hide service-accounts"
 msgstr "Ukryj konta serwisowe"
 
@@ -2612,9 +2700,21 @@ msgstr "Importuj"
 msgid "Import Flow"
 msgstr "Importuj przepływ"
 
+#: src/pages/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
+msgid "Import SAML Metadata"
+msgstr ""
+
+#: src/pages/applications/wizard/saml/TypeSAMLImportApplicationWizardPage.ts
+msgid "Import SAML metadata"
+msgstr ""
+
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Import certificates of external providers or create certificates to sign requests with."
 msgstr "Importuj certyfikaty zewnętrznych dostawców lub twórz certyfikaty do podpisywania żądań."
+
+#: src/pages/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
+msgid "Import the metadata document of the applicaation you want to configure."
+msgstr ""
 
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "In case you can't access any other method."
@@ -2760,6 +2860,7 @@ msgstr "Para kluczy służąca do podpisywania żądań wychodzących. Pozostaw 
 msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 msgid "LDAP"
@@ -2781,9 +2882,9 @@ msgstr "LDAP DN, w ramach którego można tworzyć żądania powiązania i żąd
 msgid "LDAP Sync status"
 msgstr "Stan synchronizacji LDAP"
 
-#: src/pages/providers/ProviderWizard.ts
-#~ msgid "LDAP details"
-#~ msgstr ""
+#: src/pages/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
+msgid "LDAP details"
+msgstr ""
 
 #: src/pages/stages/prompt/PromptForm.ts
 #: src/pages/stages/prompt/PromptListPage.ts
@@ -2836,12 +2937,21 @@ msgstr "URL uruchamiania"
 msgid "Layout"
 msgstr ""
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Legacy applications which don't natively support SSO."
+msgstr ""
+
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Let the user identify themselves with their username or Email address."
 msgstr "Pozwól użytkownikowi identyfikować się za pomocą swojej nazwy użytkownika lub adresu e-mail."
 
 #~ msgid "Library"
 #~ msgstr "Biblioteka"
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#: src/pages/applications/wizard/link/TypeLinkApplicationWizardPage.ts
+msgid "Link"
+msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -2901,6 +3011,7 @@ msgstr "Ładowanie"
 #: src/elements/Spinner.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/TransportForm.ts
@@ -2936,7 +3047,6 @@ msgstr "Ładowanie"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
-#: src/pages/sources/ldap/LDAPSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #: src/pages/sources/plex/PlexSourceForm.ts
@@ -2961,7 +3071,6 @@ msgstr "Ładowanie"
 #: src/pages/stages/password/PasswordStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
 #: src/pages/stages/prompt/PromptStageForm.ts
-#: src/pages/stages/user_write/UserWriteStageForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
 #: src/pages/tenants/TenantForm.ts
@@ -3066,6 +3175,14 @@ msgstr "Zarządzane przez authentik"
 msgid "Managed by authentik (Discovered)"
 msgstr "Zarządzane przez authentik (odkryte)"
 
+#: src/pages/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
+msgid "Manual configuration"
+msgstr ""
+
+#: src/pages/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
+msgid "Manually configure SAML"
+msgstr ""
+
 #: src/pages/stages/user_write/UserWriteStageForm.ts
 msgid "Mark newly created users as inactive."
 msgstr "Oznacz nowo utworzonych użytkowników jako nieaktywnych."
@@ -3111,10 +3228,17 @@ msgstr "Wiadomość"
 msgid "Messages"
 msgstr "Wiadomości"
 
+#: src/pages/applications/wizard/saml/TypeSAMLImportApplicationWizardPage.ts
 #: src/pages/providers/saml/SAMLProviderImportForm.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Metadata"
 msgstr "Metadane"
+
+#: src/pages/applications/wizard/oauth/TypeOAuthAPIApplicationWizardPage.ts
+#: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
+#: src/pages/applications/wizard/oauth/TypeOAuthImplicitApplicationWizardPage.ts
+msgid "Method details"
+msgstr ""
 
 #: src/pages/policies/password/PasswordPolicyForm.ts
 msgid "Minimum amount of Digits"
@@ -3159,6 +3283,10 @@ msgstr "Model usunięty"
 msgid "Model updated"
 msgstr "Zaktualizowano model"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Modern applications, APIs and Single-page applications."
+msgstr ""
+
 #~ msgid "Monitor"
 #~ msgstr "Monitor"
 
@@ -3173,6 +3301,7 @@ msgstr "Moje aplikacje"
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -3270,6 +3399,10 @@ msgstr "Zasada NameID"
 msgid "NameID Property Mapping"
 msgstr "Mapowanie właściwości NameID"
 
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Native application"
+msgstr ""
+
 #: src/flows/stages/identification/IdentificationStage.ts
 msgid "Need an account?"
 msgstr "Potrzebujesz konta?"
@@ -3281,6 +3414,10 @@ msgstr "Neguj wynik"
 #: src/pages/policies/PolicyBindingForm.ts
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "Neguje wynik wiązania. Wiadomości pozostają nienaruszone."
+
+#: src/pages/applications/wizard/ApplicationWizard.ts
+msgid "New application"
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionWizard.ts
 msgid "New outpost integration"
@@ -3536,6 +3673,10 @@ msgstr "Kody odświeżania OAuth"
 #: src/pages/providers/ProviderWizard.ts
 #~ msgid "OAuth/OIDC"
 #~ msgstr ""
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "OAuth2/OIDC"
+msgstr ""
 
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "OIDC JWKS"
@@ -3810,6 +3951,21 @@ msgstr "Hasło: wejście zamaskowane, hasło jest sprawdzane w oparciu o źród�
 msgid "Passwordless flow"
 msgstr "Przepływ bezhasłowy"
 
+#: src/pages/users/UserForm.ts
+msgid "Path"
+msgstr ""
+
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+msgid "Path new users will be created under. If left blank, the default path will be used.fo"
+msgstr ""
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+msgid "Path template for users created. Use placeholders like `%(slug)s` to insert the source slug."
+msgstr ""
+
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Persistent"
 msgstr "Trwały"
@@ -4018,6 +4174,11 @@ msgstr "Ustawienia protokołu"
 msgid "Protocol settings"
 msgstr "Ustawienia protokołu"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "Provide an LDAP interface for applications and users to authenticate against."
+msgstr ""
+
 #: src/pages/providers/ProviderListPage.ts
 msgid "Provide support for protocols like SAML and OAuth to assigned applications."
 msgstr "Zapewniają obsługę protokołów takich jak SAML i OAuth przypisanym aplikacjom."
@@ -4048,6 +4209,7 @@ msgstr "Dostawca(y)"
 msgid "Providers"
 msgstr "Dostawcy"
 
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
 #: src/pages/providers/proxy/ProxyProviderForm.ts
@@ -4055,9 +4217,9 @@ msgstr "Dostawcy"
 msgid "Proxy"
 msgstr "Proxy"
 
-#: src/pages/providers/ProviderWizard.ts
-#~ msgid "Proxy details"
-#~ msgstr ""
+#: src/pages/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
+msgid "Proxy details"
+msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
@@ -4072,6 +4234,7 @@ msgid "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.
 msgstr "Klucz publiczny uzyskany z https://www.google.com/recaptcha/intro/v3.html."
 
 #: src/pages/applications/ApplicationForm.ts
+#: src/pages/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Publisher"
 msgstr "Wydawca"
 
@@ -4324,13 +4487,17 @@ msgstr "Wróć do wyboru urządzeń"
 msgid "Revoked?"
 msgstr "Unieważniono?"
 
+#: src/elements/TreeView.ts
+msgid "Root"
+msgstr ""
+
 #: src/pages/sources/ldap/LDAPSourceViewPage.ts
 msgid "Run sync again"
 msgstr "Uruchom ponownie synchronizację"
 
-#: src/pages/providers/ProviderWizard.ts
-#~ msgid "SAML"
-#~ msgstr ""
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "SAML"
+msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
 #~ msgid "SAML (metadata import)"
@@ -4344,9 +4511,9 @@ msgstr "Nazwa atrybutu SAML"
 msgid "SAML Metadata"
 msgstr "Metadane SAML"
 
-#: src/pages/providers/ProviderWizard.ts
-#~ msgid "SAML details"
-#~ msgstr ""
+#: src/pages/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
+msgid "SAML details"
+msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
 #~ msgid "SAML details (import from metadata)"
@@ -4746,6 +4913,14 @@ msgstr "Pojedyncze monity, których można używać dla etapów monitów."
 #: src/pages/stages/invitation/InvitationForm.ts
 msgid "Single use"
 msgstr "Jednorazowego użytku"
+
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Single-page applications"
+msgstr ""
+
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Single-page applications which handle authentication in the browser (for example, Javascript, Angular, React, Vue)"
+msgstr ""
 
 #~ msgid "Skip path regex"
 #~ msgstr "Pomiń path regex"
@@ -5470,6 +5645,10 @@ msgstr ""
 msgid "The following objects use {objName}"
 msgstr "Następujące obiekty używają {objName}"
 
+#: src/pages/providers/ProviderWizard.ts
+msgid "The new application wizard greatly simplifies the steps required to create applications and providers."
+msgstr ""
+
 #~ msgid ""
 #~ "The policy passes when the reputation score is above the threshold, and\n"
 #~ "doesn't pass when either or both of the selected options are equal or less than the\n"
@@ -5530,6 +5709,10 @@ msgstr ""
 #: src/pages/applications/ApplicationViewPage.ts
 msgid "These policies control which users can access this application."
 msgstr "Te zasady kontrolują, którzy użytkownicy mogą uzyskać dostęp do tej aplikacji."
+
+#: src/pages/applications/wizard/oauth/TypeOAuthAPIApplicationWizardPage.ts
+msgid "This configuration can be used to authenticate to authentik with other APIs other otherwise programmatically."
+msgstr ""
 
 #: src/flows/FlowInspector.ts
 msgid "This flow is completed."
@@ -5715,6 +5898,14 @@ msgstr "Transporty"
 msgid "Trusted OIDC Sources"
 msgstr ""
 
+#: src/pages/providers/ProviderWizard.ts
+msgid "Try it now"
+msgstr ""
+
+#: src/pages/providers/ProviderWizard.ts
+msgid "Try the new application wizard"
+msgstr ""
+
 #: src/interfaces/locale.ts
 msgid "Turkish"
 msgstr "Turecki"
@@ -5768,6 +5959,10 @@ msgstr "UPN"
 msgid "URL settings"
 msgstr "Ustawienia URL"
 
+#: src/pages/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
+msgid "URL that authentik will redirect back to after successful authentication."
+msgstr ""
+
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "URL that the initial Login request is sent to."
 msgstr "URL, do którego wysyłane jest początkowe żądanie logowania."
@@ -5787,6 +5982,10 @@ msgstr "URL używany przez authentik do pobierania tokenów."
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr "URL używany do żądania początkowego tokena. Ten adres URL jest wymagany tylko w przypadku protokołu OAuth 1."
+
+#: src/pages/applications/wizard/link/TypeLinkApplicationWizardPage.ts
+msgid "URL which will be opened when a user clicks on the application."
+msgstr ""
 
 #: src/pages/providers/proxy/ProxyProviderForm.ts
 msgid "Unauthenticated Paths"
@@ -6127,6 +6326,10 @@ msgstr "Zdarzenia użytkownika"
 msgid "User fields"
 msgstr "Pola użytkownika"
 
+#: src/pages/users/UserListPage.ts
+msgid "User folders"
+msgstr ""
+
 #: src/interfaces/AdminInterface.ts
 msgid "User interface"
 msgstr "Interfejs użytkownika"
@@ -6150,6 +6353,17 @@ msgstr "Filtr obiektów użytkownika"
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "User password writeback"
 msgstr "Zapis zwrotny hasła użytkownika"
+
+#: src/pages/sources/ldap/LDAPSourceForm.ts
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#: src/pages/sources/plex/PlexSourceForm.ts
+#: src/pages/sources/saml/SAMLSourceForm.ts
+msgid "User path"
+msgstr ""
+
+#: src/pages/stages/user_write/UserWriteStageForm.ts
+msgid "User path template"
+msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
 msgid "User settings flow"
@@ -6386,6 +6600,10 @@ msgstr "Ostrzeżenie: domena authentik nie jest skonfigurowana, uwierzytelnianie
 msgid "Web Certificate"
 msgstr "Certyfikat sieciowy"
 
+#: src/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Web application"
+msgstr ""
+
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "WebAuthn Authenticators"
 msgstr "Uwierzytelniacze WebAuthn"
@@ -6505,6 +6723,10 @@ msgstr ""
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "X509 Subject"
 msgstr "Temat X509"
+
+#: src/pages/applications/wizard/TypeApplicationWizardPage.ts
+msgid "XML-based SSO standard. Use this if your application only supports SAML."
+msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
