@@ -17733,6 +17733,7 @@ paths:
           - date
           - date-time
           - email
+          - file
           - hidden
           - number
           - password
@@ -29212,6 +29213,7 @@ components:
       - checkbox
       - date
       - date-time
+      - file
       - separator
       - hidden
       - static

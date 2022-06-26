@@ -96,6 +96,13 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
+            case PromptTypeEnum.File:
+                return `<input
+                    type="file"
+                    name="${prompt.fieldKey}"
+                    placeholder="${prompt.placeholder}"
+                    class="pf-c-form-control"
+                    ?required=${prompt.required}>`;
             case PromptTypeEnum.Separator:
                 return `<ak-divider>${prompt.placeholder}</ak-divider>`;
             case PromptTypeEnum.Hidden:
@@ -133,7 +140,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
 
-    shouldRenderInWrapper(prompt: StagePrompt): bool {
+    shouldRenderInWrapper(prompt: StagePrompt): boolean {
         // Special types that aren't rendered in a wrapper
         if (
             prompt.type === PromptTypeEnum.Static ||

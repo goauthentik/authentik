@@ -1,11 +1,14 @@
 """prompt models"""
+from base64 import b64decode
 from typing import Any, Optional
+from urllib.parse import urlparse
 from uuid import uuid4
 
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     BooleanField,
     CharField,
@@ -32,7 +35,7 @@ LOGGER = get_logger()
 class FieldTypes(models.TextChoices):
     """Field types an Prompt can be"""
 
-    # update website/docs/flow/stages/prompt.index.md
+    # update website/docs/flow/stages/prompt/index.md
 
     # Simple text field
     TEXT = "text", _("Text: Simple Text input")
@@ -61,11 +64,34 @@ class FieldTypes(models.TextChoices):
     DATE = "date"
     DATE_TIME = "date-time"
 
+    FILE = (
+        "file",
+        _(
+            "File: File upload for arbitrary files. File content will be available in flow "
+            "context as data-URI"
+        ),
+    )
+
     SEPARATOR = "separator", _("Separator: Static Separator Line")
     HIDDEN = "hidden", _("Hidden: Hidden field, can be used to insert data into form.")
     STATIC = "static", _("Static: Static value, displayed as-is.")
 
     AK_LOCALE = "ak-locale", _("authentik: Selection of locales authentik supports")
+
+
+class InlineFileField(CharField):
+    """Field for inline data-URI base64 encoded files"""
+
+    def to_internal_value(self, data: str):
+        uri = urlparse(data)
+        if uri.scheme != "data":
+            raise ValidationError("Invalid scheme")
+        header, encoded = uri.path.split(",", 1)
+        _mime, _, enc = header.partition(";")
+        if enc != "base64":
+            raise ValidationError("Invalid encoding")
+        data = b64decode(encoded.encode()).decode()
+        return super().to_internal_value(data)
 
 
 class Prompt(SerializerModel):
@@ -134,6 +160,8 @@ class Prompt(SerializerModel):
             field_class = DateField
         if self.type == FieldTypes.DATE_TIME:
             field_class = DateTimeField
+        if self.type == FieldTypes.FILE:
+            field_class = InlineFileField
 
         if self.type == FieldTypes.SEPARATOR:
             kwargs["required"] = False

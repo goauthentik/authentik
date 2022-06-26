@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 from django.test import RequestFactory
 from django.urls import reverse
-from rest_framework.exceptions import ErrorDetail
+from rest_framework.exceptions import ErrorDetail, ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.markers import StageMarker
@@ -13,7 +13,7 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
-from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
+from authentik.stages.prompt.models import FieldTypes, InlineFileField, Prompt, PromptStage
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptChallengeResponse
 
 
@@ -109,6 +109,17 @@ class TestPromptStage(FlowTestCase):
         }
 
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+
+    def test_inline_file_field(self):
+        """test InlineFileField"""
+        with self.assertRaises(ValidationError):
+            InlineFileField().to_internal_value("foo")
+        with self.assertRaises(ValidationError):
+            InlineFileField().to_internal_value("data:foo/bar;foo,qwer")
+        self.assertEqual(
+            InlineFileField().to_internal_value("data:mine/type;base64,Zm9v"),
+            "foo",
+        )
 
     def test_render(self):
         """Test render of form, check if all prompts are rendered correctly"""
