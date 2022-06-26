@@ -169,8 +169,3 @@ ci-pending-migrations: ci--meta-debug
 
 install: web-install website-install
 	poetry install
-
-a: install
-	tmux \
-		new-session 'make run' \; \
-		split-window 'make web-watch'

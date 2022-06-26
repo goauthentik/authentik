@@ -80,7 +80,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
             <div class="pf-c-form__group pf-u-mt-md">
                 ${this.challenge.additionalPermissions.length > 0
                     ? html`
-                          <strong class="pf-u-mb-md">
+                          <strong class="pf-u-mb-sm">
                               ${t`Application requires following new permissions:`}
                           </strong>
                           <ul class="pf-c-list" id="permmissions">
