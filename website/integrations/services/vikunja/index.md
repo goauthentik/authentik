@@ -40,8 +40,7 @@ Only settings that have been modified from default have been listed.
 -   Redirect URIs/Origins:
 
 ```
-https://vik.company/auth/openid
-https://vik.company/auth/openid/Vikunja
+https://vik.company/auth/openid/authentik
 ```
 
 ![](./vikunja1.png)
@@ -66,17 +65,14 @@ auth:
   # **Note 2:** The frontend expects to be redirected after authentication by the third party
   # to <frontend-url>/auth/openid/<auth key>. Please make sure to configure the redirect url with your third party
   # auth service accordingly if you're using the default Vikunja frontend.
-  # Take a look at the [default config file](https://kolaente.dev/vikunja/api/src/branch/main/config.yml.sample) for more information about how to configure openid authentication.
+  # Take a look at the [default config file](https://github.com/go-vikunja/api/blob/main/config.yml.sample) for more information about how to configure openid authentication.
   openid:
     # Enable or disable OpenID Connect authentication
-    enabled: true
-    # The url to redirect clients to. Defaults to the configured frontend url. If you're using Vikunja with the official
-    # frontend, you don't need to change this value.
-    redirecturl: https://vik.company/auth/openid/
+    enabled: truefo
     # A list of enabled providers
     providers:
       # The name of the provider as it will appear in the frontend.
-      - name: vikunja
+      - name: authentik
         # The auth url to send users to if they want to authenticate using OpenID Connect.
         authurl: https://authentik.company/application/o/vikunja/
         # The client ID used to authenticate Vikunja at the OpenID Connect provider.
