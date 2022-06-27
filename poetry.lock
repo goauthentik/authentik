@@ -353,14 +353,14 @@ pycparser = "*"
 
 [[package]]
 name = "channels"
-version = "3.0.4"
+version = "3.0.5"
 description = "Brings async, event-driven capabilities to Django. Django 2.2 and up only."
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
-asgiref = ">=3.3.1,<4"
+asgiref = ">=3.5.0,<4"
 daphne = ">=3.0,<4"
 Django = ">=2.2"
 
@@ -2346,8 +2346,8 @@ cffi = [
     {file = "cffi-1.15.0.tar.gz", hash = "sha256:920f0d66a896c2d99f0adbb391f990a84091179542c205fa53ce5787aff87954"},
 ]
 channels = [
-    {file = "channels-3.0.4-py3-none-any.whl", hash = "sha256:0ff0422b4224d10efac76e451575517f155fe7c97d369b5973b116f22eeaf86c"},
-    {file = "channels-3.0.4.tar.gz", hash = "sha256:fdd9a94987a23d8d7ebd97498ed8b8cc83163f37e53fc6c85098aba7a3bb8b75"},
+    {file = "channels-3.0.5-py3-none-any.whl", hash = "sha256:3813b8025bf85509769793aca720e6c3b1c5bde1cb253a961252bf0242b60a26"},
+    {file = "channels-3.0.5.tar.gz", hash = "sha256:a3dc3339cc033e7c2afe083fb3dedf74fc5009815967e317e080e7bfdc92ea26"},
 ]
 channels-redis = [
     {file = "channels_redis-3.4.0-py3-none-any.whl", hash = "sha256:6e4565b7c11c6bcde5d48556cb83bd043779697ff03811867d2f895aa6170d56"},
