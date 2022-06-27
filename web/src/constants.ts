@@ -1,9 +1,11 @@
+// Placeholder, replaced by rollup;
+export const VERSION = process.env.AK_VERSION;
+
 export const SECONDARY_CLASS = "pf-m-secondary";
 export const SUCCESS_CLASS = "pf-m-success";
 export const ERROR_CLASS = "pf-m-danger";
 export const PROGRESS_CLASS = "pf-m-in-progress";
 export const CURRENT_CLASS = "pf-m-current";
-export const VERSION = "2022.6.3";
 export const TITLE_DEFAULT = "authentik";
 export const ROUTE_SEPARATOR = ";";
 

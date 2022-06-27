@@ -1,20 +1,29 @@
-import { Config, Configuration, CoreApi, CurrentTenant, FetchParams, Middleware, RequestContext, ResponseContext, RootApi } from "@goauthentik/api";
-import { getCookie } from "@goauthentik/web/utils";
-import { APIMiddleware } from "@goauthentik/web/elements/notifications/APIDrawer";
-import { MessageMiddleware } from "@goauthentik/web/elements/messages/Middleware";
 import { VERSION } from "@goauthentik/web/constants";
+import { MessageMiddleware } from "@goauthentik/web/elements/messages/Middleware";
+import { APIMiddleware } from "@goauthentik/web/elements/notifications/APIDrawer";
+import { getCookie } from "@goauthentik/web/utils";
+
+import {
+    Config,
+    Configuration,
+    CoreApi,
+    CurrentTenant,
+    FetchParams,
+    Middleware,
+    RequestContext,
+    ResponseContext,
+    RootApi,
+} from "@goauthentik/api";
 
 export class LoggingMiddleware implements Middleware {
-
     post(context: ResponseContext): Promise<Response | void> {
-        tenant().then(tenant => {
+        tenant().then((tenant) => {
             let msg = `authentik/api[${tenant.matchedDomain}]: `;
             msg += `${context.response.status} ${context.init.method} ${context.url}`;
             console.debug(msg);
         });
         return Promise.resolve(context.response);
     }
-
 }
 
 let globalConfigPromise: Promise<Config>;
@@ -28,23 +37,27 @@ export function config(): Promise<Config> {
 let globalTenantPromise: Promise<CurrentTenant>;
 export function tenant(): Promise<CurrentTenant> {
     if (!globalTenantPromise) {
-        globalTenantPromise = new CoreApi(DEFAULT_CONFIG).coreTenantsCurrentRetrieve().then(tenant => {
-            /**
-             *  <link rel="icon" href="/static/dist/assets/icons/icon.png">
-             *  <link rel="shortcut icon" href="/static/dist/assets/icons/icon.png">
-             */
-            const rels = ["icon", "shortcut icon"];
-            rels.forEach(rel => {
-                let relIcon = document.head.querySelector<HTMLLinkElement>(`link[rel='${rel}']`);
-                if (!relIcon) {
-                    relIcon = document.createElement('link');
-                    relIcon.rel = rel;
-                    document.getElementsByTagName('head')[0].appendChild(relIcon);
-                }
-                relIcon.href = tenant.brandingFavicon;
-            })
-            return tenant;
-        });
+        globalTenantPromise = new CoreApi(DEFAULT_CONFIG)
+            .coreTenantsCurrentRetrieve()
+            .then((tenant) => {
+                /**
+                 *  <link rel="icon" href="/static/dist/assets/icons/icon.png">
+                 *  <link rel="shortcut icon" href="/static/dist/assets/icons/icon.png">
+                 */
+                const rels = ["icon", "shortcut icon"];
+                rels.forEach((rel) => {
+                    let relIcon = document.head.querySelector<HTMLLinkElement>(
+                        `link[rel='${rel}']`,
+                    );
+                    if (!relIcon) {
+                        relIcon = document.createElement("link");
+                        relIcon.rel = rel;
+                        document.getElementsByTagName("head")[0].appendChild(relIcon);
+                    }
+                    relIcon.href = tenant.brandingFavicon;
+                });
+                return tenant;
+            });
     }
     return globalTenantPromise;
 }

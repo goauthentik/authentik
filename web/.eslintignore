@@ -4,5 +4,3 @@ node_modules
 dist
 # don't lint nyc coverage output
 coverage
-# don't lint generated code
-api/
