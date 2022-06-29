@@ -120,19 +120,27 @@ export const LOCALES: {
 const DEFAULT_FALLBACK = () => "en";
 
 export function autoDetectLanguage() {
-    let detected =
+    const detected =
         detect(fromUrl("locale"), fromNavigator(), DEFAULT_FALLBACK) || DEFAULT_FALLBACK();
+    const locales = [detected];
     // For now we only care about the first locale part
     if (detected.includes("_")) {
-        detected = detected.split("_")[0];
+        locales.push(detected.split("_")[0]);
     }
-    if (detected in i18n._messages) {
-        console.debug(`authentik/locale: Activating detected locale '${detected}'`);
-        activateLocale(detected);
-    } else {
-        console.debug(`authentik/locale: No locale for '${detected}', falling back to en`);
-        activateLocale(DEFAULT_FALLBACK());
+    if (detected.includes("-")) {
+        locales.push(detected.split("-")[0]);
     }
+    for (const tryLocale of locales) {
+        if (LOCALES.find((locale) => locale.code === tryLocale)) {
+            console.debug(`authentik/locale: Activating detected locale '${tryLocale}'`);
+            activateLocale(tryLocale);
+            return;
+        } else {
+            console.debug(`authentik/locale: No matching locale for ${tryLocale}`);
+        }
+    }
+    console.debug(`authentik/locale: No locale for '${locales}', falling back to en`);
+    activateLocale(DEFAULT_FALLBACK());
 }
 export function activateLocale(code: string) {
     const urlLocale = fromUrl("locale");
