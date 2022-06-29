@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import "@goauthentik/web/elements/forms/ProxyForm";
+import { paramURL } from "@goauthentik/web/elements/router/RouterOutlet";
 import "@goauthentik/web/elements/wizard/FormWizardPage";
 import "@goauthentik/web/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/web/elements/wizard/WizardPage";
@@ -34,8 +35,8 @@ export class InitialProviderWizardPage extends WizardPage {
     }
     sidebarLabel = () => t`Select type`;
 
-    render(): TemplateResult {
-        return html` <div class="pf-c-hint">
+    renderHint(): TemplateResult {
+        return html`<div class="pf-c-hint">
                 <div class="pf-c-hint__title">${t`Try the new application wizard`}</div>
                 <div class="pf-c-hint__body">
                     ${t`The new application wizard greatly simplifies the steps required to create applications and providers.`}
@@ -50,25 +51,28 @@ export class InitialProviderWizardPage extends WizardPage {
                     >
                 </div>
             </div>
-            <br />
-            <form class="pf-c-form pf-m-horizontal">
-                ${this.providerTypes.map((type) => {
-                    return html`<div class="pf-c-radio">
-                        <input
-                            class="pf-c-radio__input"
-                            type="radio"
-                            name="type"
-                            id=${type.component}
-                            @change=${() => {
-                                this.host.steps = ["initial", `type-${type.component}`];
-                                this._isValid = true;
-                            }}
-                        />
-                        <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
-                        <span class="pf-c-radio__description">${type.description}</span>
-                    </div>`;
-                })}
-            </form>`;
+            <br />`;
+    }
+
+    render(): TemplateResult {
+        return html` <form class="pf-c-form pf-m-horizontal">
+            ${this.providerTypes.map((type) => {
+                return html`<div class="pf-c-radio">
+                    <input
+                        class="pf-c-radio__input"
+                        type="radio"
+                        name="type"
+                        id=${type.component}
+                        @change=${() => {
+                            this.host.steps = ["initial", `type-${type.component}`];
+                            this.host.isValid = true;
+                        }}
+                    />
+                    <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
+                    <span class="pf-c-radio__description">${type.description}</span>
+                </div>`;
+            })}
+        </form>`;
     }
 }
 

@@ -49,7 +49,7 @@ export class InitialPolicyWizardPage extends WizardPage {
                                 "initial",
                                 `type-${type.component}-${type.modelName}`,
                             ];
-                            this._isValid = true;
+                            this.host.isValid = true;
                         }}
                     />
                     <label class="pf-c-radio__label" for=${`${type.component}-${type.modelName}`}
