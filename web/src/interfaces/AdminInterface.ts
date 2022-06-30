@@ -100,6 +100,11 @@ export class AdminInterface extends LitElement {
             });
         });
         this.version = new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
+        me().then((u) => {
+            if (!u.user.isSuperuser && u.user.pk > 0) {
+                window.location.assign("/if/user");
+            }
+        });
     }
 
     render(): TemplateResult {
@@ -150,11 +155,6 @@ export class AdminInterface extends LitElement {
     }
 
     renderSidebarItems(): TemplateResult {
-        me().then((u) => {
-            if (!u.user.isSuperuser) {
-                window.location.assign("/if/user");
-            }
-        });
         return html`
             ${until(
                 this.version.then((version) => {

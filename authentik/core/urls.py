@@ -14,7 +14,9 @@ from authentik.core.views.session import EndSessionView
 urlpatterns = [
     path(
         "",
-        login_required(RedirectView.as_view(pattern_name="authentik_core:if-user")),
+        login_required(
+            RedirectView.as_view(pattern_name="authentik_core:if-user", query_string=True)
+        ),
         name="root-redirect",
     ),
     path(

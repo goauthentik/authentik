@@ -37,7 +37,7 @@ urlpatterns = [
     ),
     path(
         "<slug:application_slug>/end-session/",
-        RedirectView.as_view(pattern_name="authentik_core:if-session-end"),
+        RedirectView.as_view(pattern_name="authentik_core:if-session-end", query_string=True),
         name="end-session",
     ),
     path("<slug:application_slug>/jwks/", JWKSView.as_view(), name="jwks"),
