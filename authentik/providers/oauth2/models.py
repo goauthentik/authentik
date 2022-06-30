@@ -239,7 +239,7 @@ class OAuth2Provider(Provider):
         token = RefreshToken(
             user=user,
             provider=self,
-            refresh_token=generate_key(),
+            refresh_token=base64.urlsafe_b64encode(generate_key().encode()).decode(),
             expires=timezone.now() + timedelta_from_string(self.token_validity),
             scope=scope,
         )
