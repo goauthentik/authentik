@@ -6,8 +6,15 @@ import { customElement } from "lit/decorators.js";
 
 import { WizardPage } from "./WizardPage";
 
+/**
+ * This Wizard page is used for proxy forms with the older-style
+ * wizards
+ */
 @customElement("ak-wizard-page-form")
 export class FormWizardPage extends WizardPage {
+    activeCallback = async () => {
+        this.host.isValid = true;
+    };
     nextCallback = async () => {
         const form = this.querySelector<Form<unknown>>("*");
         if (!form) {
