@@ -48,6 +48,16 @@ export function ModeToLabel(action?: ProxyMode): string {
     }
 }
 
+export function isForward(mode: ProxyMode): boolean {
+    switch (mode) {
+        case ProxyMode.Proxy:
+            return false;
+        case ProxyMode.ForwardSingle:
+        case ProxyMode.ForwardDomain:
+            return true;
+    }
+}
+
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends LitElement {
     @property()
@@ -246,9 +256,7 @@ export class ProxyProviderViewPage extends LitElement {
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__title">${t`Setup`}</div>
                     <div class="pf-c-card__body">
-                        ${[ProxyMode.ForwardSingle, ProxyMode.ForwardDomain].includes(
-                            this.provider?.mode || ProxyMode.Proxy,
-                        )
+                        ${isForward(this.provider?.mode || ProxyMode.Proxy)
                             ? html`
                                   <ak-tabs pageIdentifier="proxy-setup">
                                       <section

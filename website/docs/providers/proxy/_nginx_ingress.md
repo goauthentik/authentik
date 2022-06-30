@@ -25,8 +25,10 @@ Add these annotations to the ingress you want to protect
 ```yaml
 metadata:
     annotations:
+        # This should be the in-cluster DNS name for the authentik outpost service
+        # as when the external URL is specified here, nginx will overwrite some crucial headers
         nginx.ingress.kubernetes.io/auth-url: |-
-            http://outpost.company:9000/outpost.goauthentik.io/auth/nginx
+            http://ak-outpost-example.authentik.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
         # If you're using domain-level auth, use the authentication URL instead of the application URL
         nginx.ingress.kubernetes.io/auth-signin: |-
             https://app.company/outpost.goauthentik.io/start?rd=$escaped_request_uri
