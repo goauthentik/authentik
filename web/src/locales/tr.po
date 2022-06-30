@@ -356,6 +356,10 @@ msgstr "Kullanıcıların ve/veya IP'lerin itibarına göre isteklere izin ver/r
 msgid "Also known as Entity ID. Defaults the Metadata URL."
 msgstr "Entity ID olarak da bilinir. Metadata URL'sine varsayılan olarak ayarlanır."
 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+msgid "Also known as EntityID."
+msgstr ""
+
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Alternatively, if your current device has Duo installed, click on this link:"
 msgstr "Alternatif olarak, mevcut cihazınızda Duo yüklüyse, şu bağlantıya tıklayın:"
@@ -386,7 +390,6 @@ msgid "App password (can be used to login using a flow executor)"
 msgstr "Uygulama parolası (bir akış yürütücüyle giriş yapmak için kullanılabilir)"
 
 #: src/elements/user/UserConsentList.ts
-#: src/flows/stages/consent/ConsentStage.ts
 #: src/pages/admin-overview/TopApplicationsTable.ts
 #: src/pages/providers/ProviderListPage.ts
 msgid "Application"
@@ -1741,6 +1744,7 @@ msgstr "Alan Adı"
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Download"
 msgstr "Indir"
@@ -1753,6 +1757,7 @@ msgstr "Sertifikayı İndirin"
 msgid "Download Private key"
 msgstr "Indir Özel anahtar"
 
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Download signing certificate"
 msgstr "İmzalama sertifikasını indirme"
@@ -1933,6 +1938,10 @@ msgstr "Kayıt"
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Enrollment flow"
 msgstr "Kayıt akışı"
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "EntityID/Issuer"
+msgstr ""
 
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Error"
@@ -4380,6 +4389,7 @@ msgid "Related"
 msgstr "İlgili"
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Related objects"
 msgstr "İlgili nesneler"
 
@@ -4513,6 +4523,10 @@ msgid "SAML Attribute Name"
 msgstr "SAML Öznitelik Adı"
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SAML Configuration"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "SAML Metadata"
 msgstr "SAML Meta Verileri"
 
@@ -4581,6 +4595,18 @@ msgstr "SMTP Kullanıcı Adı"
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "SSO URL"
 msgstr "SSO URL"
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (IdP-initiated Login)"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (Post)"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (Redirect)"
+msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Same identifier is used for all providers"

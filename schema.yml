@@ -29957,7 +29957,16 @@ components:
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
-        metadata_download_url:
+        url_download_metadata:
+          type: string
+          readOnly: true
+        url_sso_post:
+          type: string
+          readOnly: true
+        url_sso_redirect:
+          type: string
+          readOnly: true
+        url_sso_init:
           type: string
           readOnly: true
       required:
@@ -29967,9 +29976,12 @@ components:
       - authorization_flow
       - component
       - meta_model_name
-      - metadata_download_url
       - name
       - pk
+      - url_download_metadata
+      - url_sso_init
+      - url_sso_post
+      - url_sso_redirect
       - verbose_name
       - verbose_name_plural
     SAMLProviderImportRequest:

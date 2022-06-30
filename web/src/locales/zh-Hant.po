@@ -357,6 +357,10 @@ msgstr "根据用户和/或 IP 信誉允许/拒绝请求。"
 msgid "Also known as Entity ID. Defaults the Metadata URL."
 msgstr "也称为实体 ID。 默认为 Metadata URL。"
 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+msgid "Also known as EntityID."
+msgstr ""
+
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Alternatively, if your current device has Duo installed, click on this link:"
 msgstr "或者，如果您当前的设备已安装 Duo，请单击此链接："
@@ -387,7 +391,6 @@ msgid "App password (can be used to login using a flow executor)"
 msgstr "应用程序密码（可用于使用流程执行器登录）"
 
 #: src/elements/user/UserConsentList.ts
-#: src/flows/stages/consent/ConsentStage.ts
 #: src/pages/admin-overview/TopApplicationsTable.ts
 #: src/pages/providers/ProviderListPage.ts
 msgid "Application"
@@ -1738,6 +1741,7 @@ msgstr "域"
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Download"
 msgstr "下載"
@@ -1750,6 +1754,7 @@ msgstr "下载证书"
 msgid "Download Private key"
 msgstr "下载私钥"
 
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Download signing certificate"
 msgstr "下载签名证书"
@@ -1929,6 +1934,10 @@ msgstr "注册"
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Enrollment flow"
 msgstr "注册流程"
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "EntityID/Issuer"
+msgstr ""
 
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Error"
@@ -4356,6 +4365,7 @@ msgid "Related"
 msgstr "相关"
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Related objects"
 msgstr "相关对象"
 
@@ -4486,6 +4496,10 @@ msgid "SAML Attribute Name"
 msgstr "SAML 属性名称"
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SAML Configuration"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "SAML Metadata"
 msgstr "SAML 元数据"
 
@@ -4553,6 +4567,18 @@ msgstr "SMTP 用户名"
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "SSO URL"
 msgstr "SSO 网址"
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (IdP-initiated Login)"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (Post)"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (Redirect)"
+msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Same identifier is used for all providers"

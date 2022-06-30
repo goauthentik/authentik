@@ -355,6 +355,10 @@ msgstr ""
 msgid "Also known as Entity ID. Defaults the Metadata URL."
 msgstr ""
 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+msgid "Also known as EntityID."
+msgstr ""
+
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Alternatively, if your current device has Duo installed, click on this link:"
 msgstr ""
@@ -385,7 +389,6 @@ msgid "App password (can be used to login using a flow executor)"
 msgstr ""
 
 #: src/elements/user/UserConsentList.ts
-#: src/flows/stages/consent/ConsentStage.ts
 #: src/pages/admin-overview/TopApplicationsTable.ts
 #: src/pages/providers/ProviderListPage.ts
 msgid "Application"
@@ -1761,6 +1764,7 @@ msgstr ""
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Download"
 msgstr ""
@@ -1773,6 +1777,7 @@ msgstr ""
 msgid "Download Private key"
 msgstr ""
 
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Download signing certificate"
 msgstr ""
@@ -1959,6 +1964,10 @@ msgstr ""
 #: src/pages/sources/saml/SAMLSourceForm.ts
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Enrollment flow"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "EntityID/Issuer"
 msgstr ""
 
 #: src/pages/system-tasks/SystemTaskListPage.ts
@@ -4439,6 +4448,7 @@ msgid "Related"
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Related objects"
 msgstr ""
 
@@ -4578,6 +4588,10 @@ msgid "SAML Attribute Name"
 msgstr ""
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SAML Configuration"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "SAML Metadata"
 msgstr ""
 
@@ -4645,6 +4659,18 @@ msgstr ""
 #: src/pages/sources/saml/SAMLSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "SSO URL"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (IdP-initiated Login)"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (Post)"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (Redirect)"
 msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts

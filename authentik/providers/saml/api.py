@@ -2,6 +2,7 @@
 from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml.ElementTree import fromstring
+from django.http import HttpRequest
 from django.http.response import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -44,13 +45,57 @@ LOGGER = get_logger()
 class SAMLProviderSerializer(ProviderSerializer):
     """SAMLProvider Serializer"""
 
-    metadata_download_url = SerializerMethodField()
+    url_download_metadata = SerializerMethodField()
 
-    def get_metadata_download_url(self, instance: SAMLProvider) -> str:
+    url_sso_post = SerializerMethodField()
+    url_sso_redirect = SerializerMethodField()
+    url_sso_init = SerializerMethodField()
+
+    def get_url_download_metadata(self, instance: SAMLProvider) -> str:
         """Get metadata download URL"""
-        return (
+        request: HttpRequest = self._context["request"]._request
+        return request.build_absolute_uri(
             reverse("authentik_api:samlprovider-metadata", kwargs={"pk": instance.pk}) + "?download"
         )
+
+    def get_url_sso_post(self, instance: SAMLProvider) -> str:
+        """Get SSO Post URL"""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:sso-post",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+            return "-"
+
+    def get_url_sso_redirect(self, instance: SAMLProvider) -> str:
+        """Get SSO Redirect URL"""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:sso-redirect",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+            return "-"
+
+    def get_url_sso_init(self, instance: SAMLProvider) -> str:
+        """Get SSO IDP-Initiated URL"""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:sso-init",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+            return "-"
 
     class Meta:
 
@@ -69,7 +114,10 @@ class SAMLProviderSerializer(ProviderSerializer):
             "signing_kp",
             "verification_kp",
             "sp_binding",
-            "metadata_download_url",
+            "url_download_metadata",
+            "url_sso_post",
+            "url_sso_redirect",
+            "url_sso_init",
         ]
 
 

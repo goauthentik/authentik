@@ -110,6 +110,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             class="pf-c-form-control"
                             required
                         />
+                        <p class="pf-c-form__helper-text">${t`Also known as EntityID.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Service Provider Binding`}

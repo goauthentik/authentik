@@ -356,6 +356,10 @@ msgstr "Permitir/denegar solicitudes en función de los usuarios y/o la reputaci
 msgid "Also known as Entity ID. Defaults the Metadata URL."
 msgstr "También se conoce como ID de entidad. Default la URL de metadatos."
 
+#: src/pages/providers/saml/SAMLProviderForm.ts
+msgid "Also known as EntityID."
+msgstr ""
+
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Alternatively, if your current device has Duo installed, click on this link:"
 msgstr "Como alternativa, si su dispositivo actual tiene instalado Duo, haga clic en este enlace:"
@@ -386,7 +390,6 @@ msgid "App password (can be used to login using a flow executor)"
 msgstr "Contraseña de la aplicación (se puede usar para iniciar sesión con un ejecutor de flujo)"
 
 #: src/elements/user/UserConsentList.ts
-#: src/flows/stages/consent/ConsentStage.ts
 #: src/pages/admin-overview/TopApplicationsTable.ts
 #: src/pages/providers/ProviderListPage.ts
 msgid "Application"
@@ -1741,6 +1744,7 @@ msgstr "Dominio"
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "Download"
 msgstr "Descargar"
@@ -1753,6 +1757,7 @@ msgstr "Descargar certificado"
 msgid "Download Private key"
 msgstr "Descargar clave privada"
 
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Download signing certificate"
 msgstr "Descargar certificado de firma"
@@ -1933,6 +1938,10 @@ msgstr "Inscripción"
 #: src/pages/stages/identification/IdentificationStageForm.ts
 msgid "Enrollment flow"
 msgstr "Flujo de inscripción"
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "EntityID/Issuer"
+msgstr ""
 
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Error"
@@ -4378,6 +4387,7 @@ msgid "Related"
 msgstr "Relacionado"
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "Related objects"
 msgstr "Objetos relacionados"
 
@@ -4511,6 +4521,10 @@ msgid "SAML Attribute Name"
 msgstr "Nombre de atributo SAML"
 
 #: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SAML Configuration"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
 msgid "SAML Metadata"
 msgstr "Metadatos SAML"
 
@@ -4579,6 +4593,18 @@ msgstr "Nombre de usuario SMTP"
 #: src/pages/sources/saml/SAMLSourceViewPage.ts
 msgid "SSO URL"
 msgstr "URL SSO"
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (IdP-initiated Login)"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (Post)"
+msgstr ""
+
+#: src/pages/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (Redirect)"
+msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Same identifier is used for all providers"
