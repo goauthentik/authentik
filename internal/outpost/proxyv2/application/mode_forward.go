@@ -50,9 +50,6 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	}
 	tr := r.Clone(r.Context())
 	tr.URL = fwd
-	if _, callbackSet := fwd.Query()[callbackSignature]; callbackSet {
-		a.handleAuthCallback(rw, tr)
-	}
 	a.handleAuthStart(rw, r)
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
@@ -189,9 +186,6 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 	} else if claims == nil && a.IsAllowlisted(fwd) {
 		a.log.Trace("path can be accessed without authentication")
 		return
-	}
-	if _, callbackSet := fwd.Query()[callbackSignature]; callbackSet {
-		a.handleAuthCallback(rw, r)
 	}
 	a.handleAuthStart(rw, r)
 	// set the redirect flag to the current URL we have, since we redirect
