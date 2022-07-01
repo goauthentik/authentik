@@ -46,7 +46,9 @@ export function me(): Promise<SessionUser> {
                     const relativeUrl = window.location
                         .toString()
                         .substring(window.location.origin.length);
-                    window.location.assign(`/flows/-/default/authentication/?next=${encodeURIComponent(relativeUrl)}`);
+                    window.location.assign(
+                        `/flows/-/default/authentication/?next=${encodeURIComponent(relativeUrl)}`,
+                    );
                 }
                 return defaultUser;
             });
