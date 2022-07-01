@@ -55,6 +55,7 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     ResponseMode,
     ResponseTypes,
+    ScopeMapping,
 )
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 from authentik.providers.oauth2.views.userinfo import UserInfoView
@@ -215,6 +216,16 @@ class OAuthAuthorizationParams:
 
     def check_scope(self):
         """Ensure openid scope is set in Hybrid flows, or when requesting an id_token"""
+        if len(self.scope) == 0:
+            default_scope_names = set(
+                ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
+                    "scope_name", flat=True
+                )
+            )
+            self.scope = default_scope_names
+            LOGGER.info(
+                "No scopes requested, defaulting to all configured scopes", scopes=self.scope
+            )
         if SCOPE_OPENID not in self.scope and (
             self.grant_type == GrantTypes.HYBRID
             or self.response_type in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
@@ -240,11 +251,8 @@ class OAuthAuthorizationParams:
 
     def check_code_challenge(self):
         """PKCE validation of the transformation method."""
-        if self.code_challenge:
-            if not (self.code_challenge_method in ["plain", "S256"]):
-                raise AuthorizeError(
-                    self.redirect_uri, "invalid_request", self.grant_type, self.state
-                )
+        if self.code_challenge and self.code_challenge_method not in ["plain", "S256"]:
+            raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type, self.state)
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
         """Create an AuthorizationCode object for the request"""

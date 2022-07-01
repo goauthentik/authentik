@@ -55,3 +55,26 @@ if "my-admin-scope" in request.context["oauth_scopes"]:
     return ak_is_group_member(request.user, name="my-admin-group")
 return True
 ```
+
+## Special scopes
+
+#### GitHub compatibility
+
+-   `user`: No-op, is accepted for compatibility but does not give access to any resources
+-   `read:user`: Same as above
+-   `user:email`: Allows read-only access to `/user`, including email address
+-   `read:org`: Allows read-only access to `/user/teams`, listing all the user's groups as teams.
+
+#### authentik
+
+-   `goauthentik.io/api`: This scope grants the refresh token access to the authentik API on behalf of the user
+
+## Default scopes
+
+:::info
+Requires authentik 2022.7
+:::
+
+When a client does not request any scopes, authentik will treat the request as if all configured scopes were requrested. Depending on the configured authorization flow, consent still needs to be given, and all scopes are listed there.
+
+This does _not_ apply to special scopes, as those are not configurable in the provider.
