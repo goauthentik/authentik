@@ -11,11 +11,6 @@ from rest_framework.serializers import Serializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.models import DomainlessURLValidator
 from authentik.outposts.models import OutpostModel
-from authentik.providers.oauth2.constants import (
-    SCOPE_OPENID,
-    SCOPE_OPENID_EMAIL,
-    SCOPE_OPENID_PROFILE,
-)
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
 
 SCOPE_AK_PROXY = "ak_proxy"
@@ -125,11 +120,11 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         self.client_type = ClientTypes.CONFIDENTIAL
         self.signing_key = None
         scopes = ScopeMapping.objects.filter(
-            scope_name__in=[
-                SCOPE_OPENID,
-                SCOPE_OPENID_PROFILE,
-                SCOPE_OPENID_EMAIL,
-                SCOPE_AK_PROXY,
+            managed__in=[
+                "goauthentik.io/providers/oauth2/scope-openid",
+                "goauthentik.io/providers/oauth2/scope-profile",
+                "goauthentik.io/providers/oauth2/scope-email",
+                "goauthentik.io/providers/proxy/scope-proxy",
             ]
         )
         self.property_mappings.add(*list(scopes))
