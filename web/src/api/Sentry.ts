@@ -3,7 +3,7 @@ import { VERSION } from "@goauthentik/web/constants";
 import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
 
-import { Config } from "@goauthentik/api";
+import { Config, ResponseError } from "@goauthentik/api";
 
 import { config } from "./Config";
 import { me } from "./Users";
@@ -11,66 +11,66 @@ import { me } from "./Users";
 export const TAG_SENTRY_COMPONENT = "authentik.component";
 export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
 
-export function configureSentry(canDoPpi = false): Promise<Config> {
-    return config().then((config) => {
-        if (config.errorReporting.enabled) {
-            Sentry.init({
-                dsn: "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
-                ignoreErrors: [
-                    /network/gi,
-                    /fetch/gi,
-                    // Error on edge on ios,
-                    // https://stackoverflow.com/questions/69261499/what-is-instantsearchsdkjsbridgeclearhighlight
-                    /instantSearchSDKJSBridgeClearHighlight/gi,
-                    // Seems to be an issue in Safari and Firefox
-                    /MutationObserver.observe/gi,
-                ],
-                release: `authentik@${VERSION}`,
-                tunnel: "/api/v3/sentry/",
-                integrations: [
-                    new Integrations.BrowserTracing({
-                        tracingOrigins: [window.location.host, "localhost"],
-                    }),
-                ],
-                tracesSampleRate: config.errorReporting.tracesSampleRate,
-                environment: config.errorReporting.environment,
-                beforeSend: async (
-                    event: Sentry.Event,
-                    hint: Sentry.EventHint | undefined,
-                ): Promise<Sentry.Event | null> => {
-                    if (!hint) {
-                        return event;
-                    }
-                    if (hint.originalException instanceof SentryIgnoredError) {
-                        return null;
-                    }
-                    if (
-                        hint.originalException instanceof Response ||
-                        hint.originalException instanceof DOMException
-                    ) {
-                        return null;
-                    }
+export async function configureSentry(canDoPpi = false): Promise<Config> {
+    const cfg = await config();
+    if (cfg.errorReporting.enabled) {
+        Sentry.init({
+            dsn: "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
+            ignoreErrors: [
+                /network/gi,
+                /fetch/gi,
+                /module/gi,
+                // Error on edge on ios,
+                // https://stackoverflow.com/questions/69261499/what-is-instantsearchsdkjsbridgeclearhighlight
+                /instantSearchSDKJSBridgeClearHighlight/gi,
+                // Seems to be an issue in Safari and Firefox
+                /MutationObserver.observe/gi,
+            ],
+            release: `authentik@${VERSION}`,
+            tunnel: "/api/v3/sentry/",
+            integrations: [
+                new Integrations.BrowserTracing({
+                    tracingOrigins: [window.location.host, "localhost"],
+                }),
+            ],
+            tracesSampleRate: cfg.errorReporting.tracesSampleRate,
+            environment: cfg.errorReporting.environment,
+            beforeSend: async (
+                event: Sentry.Event,
+                hint: Sentry.EventHint | undefined,
+            ): Promise<Sentry.Event | null> => {
+                if (!hint) {
                     return event;
-                },
-            });
-            Sentry.setTag(TAG_SENTRY_CAPABILITIES, config.capabilities.join(","));
-            if (window.location.pathname.includes("if/")) {
-                Sentry.setTag(TAG_SENTRY_COMPONENT, `web/${currentInterface()}`);
-                Sentry.configureScope((scope) =>
-                    scope.setTransactionName(`authentik.web.if.${currentInterface()}`),
-                );
-            }
-            if (config.errorReporting.sendPii && canDoPpi) {
-                me().then((user) => {
-                    Sentry.setUser({ email: user.user.email });
-                    console.debug("authentik/config: Sentry with PII enabled.");
-                });
-            } else {
-                console.debug("authentik/config: Sentry enabled.");
-            }
+                }
+                if (hint.originalException instanceof SentryIgnoredError) {
+                    return null;
+                }
+                if (
+                    hint.originalException instanceof ResponseError ||
+                    hint.originalException instanceof DOMException
+                ) {
+                    return null;
+                }
+                return event;
+            },
+        });
+        Sentry.setTag(TAG_SENTRY_CAPABILITIES, cfg.capabilities.join(","));
+        if (window.location.pathname.includes("if/")) {
+            Sentry.setTag(TAG_SENTRY_COMPONENT, `web/${currentInterface()}`);
+            Sentry.configureScope((scope) =>
+                scope.setTransactionName(`authentik.web.if.${currentInterface()}`),
+            );
         }
-        return config;
-    });
+        if (cfg.errorReporting.sendPii && canDoPpi) {
+            me().then((user) => {
+                Sentry.setUser({ email: user.user.email });
+                console.debug("authentik/config: Sentry with PII enabled.");
+            });
+        } else {
+            console.debug("authentik/config: Sentry enabled.");
+        }
+    }
+    return cfg;
 }
 
 // Get the interface name from URL
