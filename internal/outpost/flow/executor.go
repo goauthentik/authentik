@@ -113,12 +113,12 @@ func (fe *FlowExecutor) CheckApplicationAccess(appSlug string) (bool, error) {
 	acsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.check_access")
 	defer acsp.Finish()
 	p, _, err := fe.api.CoreApi.CoreApplicationsCheckAccessRetrieve(acsp.Context(), appSlug).Execute()
+	if err != nil {
+		return false, fmt.Errorf("failed to check access: %w", err)
+	}
 	if !p.Passing {
 		fe.log.Info("Access denied for user")
 		return false, nil
-	}
-	if err != nil {
-		return false, fmt.Errorf("failed to check access: %w", err)
 	}
 	fe.log.Debug("User has access")
 	return true, nil

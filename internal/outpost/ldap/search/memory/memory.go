@@ -103,6 +103,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		if flags.CanSearch {
 			users = &ms.users
 		} else {
+			u := make([]api.User, 1)
 			if flags.UserInfo == nil {
 				for i, u := range ms.users {
 					if u.Pk == flags.UserPk {
@@ -114,11 +115,9 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					req.Log().WithField("pk", flags.UserPk).Warning("User with pk is not in local cache")
 					err = fmt.Errorf("failed to get userinfo")
 				}
+			} else {
+				u[0] = *flags.UserInfo
 			}
-
-			u := make([]api.User, 1)
-			u[0] = *flags.UserInfo
-
 			users = &u
 		}
 	}
