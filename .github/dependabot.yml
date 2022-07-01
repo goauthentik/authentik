@@ -8,6 +8,8 @@ updates:
   open-pull-requests-limit: 10
   assignees:
   - BeryJu
+  commit-message:
+    prefix: "ci:"
 - package-ecosystem: gomod
   directory: "/"
   schedule:
@@ -16,6 +18,8 @@ updates:
   open-pull-requests-limit: 10
   assignees:
   - BeryJu
+  commit-message:
+    prefix: "core:"
 - package-ecosystem: npm
   directory: "/web"
   schedule:
@@ -24,6 +28,8 @@ updates:
   open-pull-requests-limit: 10
   assignees:
   - BeryJu
+  commit-message:
+    prefix: "web:"
 - package-ecosystem: npm
   directory: "/website"
   schedule:
@@ -32,6 +38,8 @@ updates:
   open-pull-requests-limit: 10
   assignees:
   - BeryJu
+  commit-message:
+    prefix: "website:"
 - package-ecosystem: pip
   directory: "/"
   schedule:
@@ -40,6 +48,8 @@ updates:
   open-pull-requests-limit: 10
   assignees:
   - BeryJu
+  commit-message:
+    prefix: "core:"
 - package-ecosystem: docker
   directory: "/"
   schedule:
@@ -48,3 +58,5 @@ updates:
   open-pull-requests-limit: 10
   assignees:
   - BeryJu
+  commit-message:
+    prefix: "core:"
