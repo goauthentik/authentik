@@ -211,6 +211,16 @@ The setting can be used as follows:
 AUTHENTIK_FOOTER_LINKS='[{"name": "Link Name","href":"https://goauthentik.io"}]'
 ```
 
+### AUTHENTIK_LDAP**TLS**CIPHERS:
+
+:::info
+Requires authentik 2022.7
+:::
+
+Allows configuration of TLS Cliphers for LDAP connections used by LDAP sources. Setting applies to all sources.
+
+Defaults to `null`.
+
 ## Debugging
 
 To check if your config has been applied correctly, you can run the following command to output the full config:

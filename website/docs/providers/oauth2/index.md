@@ -75,6 +75,6 @@ return True
 Requires authentik 2022.7
 :::
 
-When a client does not request any scopes, authentik will treat the request as if all configured scopes were requrested. Depending on the configured authorization flow, consent still needs to be given, and all scopes are listed there.
+When a client does not request any scopes, authentik will treat the request as if all configured scopes were requested. Depending on the configured authorization flow, consent still needs to be given, and all scopes are listed there.
 
 This does _not_ apply to special scopes, as those are not configurable in the provider.

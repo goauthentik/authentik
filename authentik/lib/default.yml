@@ -1,3 +1,4 @@
+# update website/docs/installation/configuration.md
 # This is the default configuration file
 postgresql:
   host: localhost
@@ -56,6 +57,10 @@ outposts:
   # %(build_hash)s: Build hash if you're running a beta version
   container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
   discover: true
+
+ldap:
+  tls:
+    ciphers: null
 
 cookie_domain: null
 disable_update_check: false

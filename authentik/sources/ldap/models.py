@@ -8,6 +8,7 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.config import CONFIG
 from authentik.lib.models import DomainlessURLValidator
 
 LDAP_TIMEOUT = 15
@@ -109,13 +110,16 @@ class LDAPSource(Source):
     def server(self) -> Server:
         """Get LDAP Server/ServerPool"""
         servers = []
-        tls = Tls()
+        tls_kwargs = {}
         if self.peer_certificate:
-            tls = Tls(ca_certs_data=self.peer_certificate.certificate_data, validate=CERT_REQUIRED)
+            tls_kwargs["ca_certs_data"] = self.peer_certificate.certificate_data
+            tls_kwargs["validate"] = CERT_REQUIRED
+        if ciphers := CONFIG.y("ldap.tls.ciphers", None):
+            tls_kwargs["ciphers"] = ciphers.strip()
         kwargs = {
             "get_info": ALL,
             "connect_timeout": LDAP_TIMEOUT,
-            "tls": tls,
+            "tls": Tls(**tls_kwargs),
         }
         if "," in self.server_uri:
             for server in self.server_uri.split(","):
