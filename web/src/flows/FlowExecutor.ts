@@ -299,19 +299,19 @@ export class FlowExecutor extends LitElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-captcha>`;
             case "ak-stage-consent":
-                await import("./stages/consent/ConsentStage");
+                await import("@goauthentik/web/flows/stages/consent/ConsentStage");
                 return html`<ak-stage-consent
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-consent>`;
             case "ak-stage-dummy":
-                await import("./stages/dummy/DummyStage");
+                await import("@goauthentik/web/flows/stages/dummy/DummyStage");
                 return html`<ak-stage-dummy
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-dummy>`;
             case "ak-stage-email":
-                await import("./stages/email/EmailStage");
+                await import("@goauthentik/web/flows/stages/email/EmailStage");
                 return html`<ak-stage-email
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -323,25 +323,31 @@ export class FlowExecutor extends LitElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-autosubmit>`;
             case "ak-stage-prompt":
-                await import("./stages/prompt/PromptStage");
+                await import("@goauthentik/web/flows/stages/prompt/PromptStage");
                 return html`<ak-stage-prompt
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-prompt>`;
             case "ak-stage-authenticator-totp":
-                await import("./stages/authenticator_totp/AuthenticatorTOTPStage");
+                await import(
+                    "@goauthentik/web/flows/stages/authenticator_totp/AuthenticatorTOTPStage"
+                );
                 return html`<ak-stage-authenticator-totp
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-totp>`;
             case "ak-stage-authenticator-duo":
-                await import("./stages/authenticator_duo/AuthenticatorDuoStage");
+                await import(
+                    "@goauthentik/web/flows/stages/authenticator_duo/AuthenticatorDuoStage"
+                );
                 return html`<ak-stage-authenticator-duo
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-duo>`;
             case "ak-stage-authenticator-static":
-                await import("./stages/authenticator_static/AuthenticatorStaticStage");
+                await import(
+                    "@goauthentik/web/flows/stages/authenticator_static/AuthenticatorStaticStage"
+                );
                 return html`<ak-stage-authenticator-static
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -352,7 +358,9 @@ export class FlowExecutor extends LitElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-webauthn>`;
             case "ak-stage-authenticator-sms":
-                await import("./stages/authenticator_sms/AuthenticatorSMSStage");
+                await import(
+                    "@goauthentik/web/flows/stages/authenticator_sms/AuthenticatorSMSStage"
+                );
                 return html`<ak-stage-authenticator-sms
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -363,13 +371,13 @@ export class FlowExecutor extends LitElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-validate>`;
             case "ak-flow-sources-plex":
-                await import("./sources/plex/PlexLoginInit");
+                await import("@goauthentik/web/flows/sources/plex/PlexLoginInit");
                 return html`<ak-flow-sources-plex
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-flow-sources-plex>`;
             case "ak-flow-sources-oauth-apple":
-                await import("./sources/apple/AppleLoginInit");
+                await import("@goauthentik/web/flows/sources/apple/AppleLoginInit");
                 return html`<ak-flow-sources-oauth-apple
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -420,7 +428,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         if (!this.inspectorOpen) {
             return html``;
         }
-        await import("./FlowInspector");
+        await import("@goauthentik/web/flows/FlowInspector");
         return html`<ak-flow-inspector
             class="pf-c-drawer__panel pf-m-width-33"
         ></ak-flow-inspector>`;
