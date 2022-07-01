@@ -87,13 +87,15 @@ class Stage(SerializerModel):
         return f"Stage {self.name}"
 
 
-def in_memory_stage(view: type["StageView"]) -> Stage:
+def in_memory_stage(view: type["StageView"], **kwargs) -> Stage:
     """Creates an in-memory stage instance, based on a `view` as view."""
     stage = Stage()
     # Because we can't pickle a locally generated function,
     # we set the view as a separate property and reference a generic function
     # that returns that member
     setattr(stage, "__in_memory_type", view)
+    for key, value in kwargs.items():
+        setattr(stage, key, value)
     return stage
 
 

@@ -19,6 +19,7 @@ from authentik.flows.challenge import (
     ChallengeTypes,
     ContextualFlowInfo,
     HttpChallengeResponse,
+    RedirectChallenge,
     WithUserInfoChallenge,
 )
 from authentik.flows.models import InvalidResponseAction
@@ -219,3 +220,21 @@ class AccessDeniedChallengeView(ChallengeStageView):
     # .get() method is called
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:  # pragma: no cover
         return self.executor.cancel()
+
+
+class RedirectStage(ChallengeStageView):
+    """Redirect to any URL"""
+
+    def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
+        destination = getattr(
+            self.executor.current_stage, "destination", reverse("authentik_core:root-redirect")
+        )
+        return RedirectChallenge(
+            data={
+                "type": ChallengeTypes.REDIRECT.value,
+                "to": destination,
+            }
+        )
+
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
+        return HttpChallengeResponse(self.get_challenge())

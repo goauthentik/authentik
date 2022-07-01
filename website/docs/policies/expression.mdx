@@ -94,6 +94,7 @@ Additionally, when the policy is executed from a flow, every variable from the f
 
 This includes the following:
 
+-   `context['flow_plan']`: The actual flow plan itself, can be used to inject stages.
 -   `context['prompt_data']`: Data which has been saved from a prompt stage or an external source.
 -   `context['application']`: The application the user is in the process of authorizing.
 -   `context['pending_user']`: The currently pending user, see [User](../user-group/user.md#object-attributes)

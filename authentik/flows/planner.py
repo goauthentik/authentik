@@ -13,7 +13,7 @@ from authentik.events.models import cleanse_dict
 from authentik.flows.apps import HIST_FLOWS_PLAN_TIME
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage
+from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage, in_memory_stage
 from authentik.lib.config import CONFIG
 from authentik.policies.engine import PolicyEngine
 
@@ -61,6 +61,12 @@ class FlowPlan:
         """Insert stage into plan, as immediate next stage"""
         self.bindings.insert(1, FlowStageBinding(stage=stage, order=0))
         self.markers.insert(1, marker or StageMarker())
+
+    def redirect(self, destination: str):
+        """Insert a redirect stage as next stage"""
+        from authentik.flows.stage import RedirectStage
+
+        self.insert_stage(in_memory_stage(RedirectStage, destination=destination))
 
     def next(self, http_request: Optional[HttpRequest]) -> Optional[FlowStageBinding]:
         """Return next pending stage from the bottom of the list"""
@@ -137,7 +143,7 @@ class FlowPlanner:
             engine = PolicyEngine(self.flow, user, request)
             if default_context:
                 span.set_data("default_context", cleanse_dict(default_context))
-                engine.request.context = default_context
+                engine.request.context.update(default_context)
             engine.build()
             result = engine.result
             if not result.passing:
@@ -198,7 +204,8 @@ class FlowPlanner:
                         stage=binding.stage,
                     )
                     engine = PolicyEngine(binding, user, request)
-                    engine.request.context = plan.context
+                    engine.request.context["flow_plan"] = plan
+                    engine.request.context.update(plan.context)
                     engine.build()
                     if engine.passing:
                         self._logger.debug(
