@@ -102,7 +102,11 @@ module.exports = {
             items: [
                 "flow/layouts",
                 "flow/inspector",
-                "flow/examples",
+                {
+                    type: "category",
+                    label: "Examples",
+                    items: ["flow/examples/flows", "flow/examples/snippets"],
+                },
                 {
                     type: "category",
                     label: "Executors",

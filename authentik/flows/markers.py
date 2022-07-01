@@ -47,7 +47,8 @@ class ReevaluateMarker(StageMarker):
         from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 
         LOGGER.debug(
-            "f(plan_inst)[re-eval marker]: running re-evaluation",
+            "f(plan_inst): running re-evaluation",
+            marker="ReevaluateMarker",
             binding=binding,
             policy_binding=self.binding,
         )
@@ -56,13 +57,15 @@ class ReevaluateMarker(StageMarker):
         )
         engine.use_cache = False
         engine.request.set_http_request(http_request)
-        engine.request.context = plan.context
+        engine.request.context["flow_plan"] = plan
+        engine.request.context.update(plan.context)
         engine.build()
         result = engine.result
         if result.passing:
             return binding
         LOGGER.warning(
-            "f(plan_inst)[re-eval marker]: binding failed re-evaluation",
+            "f(plan_inst): binding failed re-evaluation",
+            marker="ReevaluateMarker",
             binding=binding,
             messages=result.messages,
         )
