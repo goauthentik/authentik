@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
 from authentik.core.api.applications import user_app_cache_key
-from authentik.policies.engine import GAUGE_POLICIES_CACHED
+from authentik.policies.apps import GAUGE_POLICIES_CACHED
 from authentik.root.monitoring import monitoring_set
 
 LOGGER = get_logger()

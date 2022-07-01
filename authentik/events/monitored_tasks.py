@@ -8,17 +8,11 @@ from typing import Any, Optional
 from celery import Task
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
-from prometheus_client import Gauge
 from structlog.stdlib import get_logger
 
+from authentik.events.apps import GAUGE_TASKS
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
-
-GAUGE_TASKS = Gauge(
-    "authentik_system_tasks",
-    "System tasks and their status",
-    ["task_name", "task_uid", "status"],
-)
 
 LOGGER = get_logger()
 

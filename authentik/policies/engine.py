@@ -5,26 +5,17 @@ from typing import Iterator, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
-from prometheus_client import Gauge, Histogram
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
+from authentik.policies.apps import HIST_POLICIES_BUILD_TIME
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel, PolicyEngineMode
 from authentik.policies.process import PolicyProcess, cache_key
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 CURRENT_PROCESS = current_process()
-GAUGE_POLICIES_CACHED = Gauge(
-    "authentik_policies_cached",
-    "Cached Policies",
-)
-HIST_POLICIES_BUILD_TIME = Histogram(
-    "authentik_policies_build_time",
-    "Execution times complete policy result to an object",
-    ["object_pk", "object_type"],
-)
 
 
 class PolicyProcessInfo:

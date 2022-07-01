@@ -2,7 +2,7 @@
 from django.dispatch import receiver
 
 from authentik.admin.api.tasks import TaskInfo
-from authentik.admin.api.workers import GAUGE_WORKERS
+from authentik.admin.apps import GAUGE_WORKERS
 from authentik.root.celery import CELERY_APP
 from authentik.root.monitoring import monitoring_set
 

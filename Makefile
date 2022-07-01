@@ -45,8 +45,8 @@ lint-fix:
 		website/developer-docs
 
 lint:
-	bandit -r authentik tests lifecycle -x node_modules
 	pylint authentik tests lifecycle
+	bandit -r authentik tests lifecycle -x node_modules
 	golangci-lint run -v
 
 i18n-extract: i18n-extract-core web-extract

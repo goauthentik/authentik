@@ -2,6 +2,10 @@
 from importlib import import_module
 
 from django.apps import AppConfig
+from prometheus_client import Gauge, Info
+
+PROM_INFO = Info("authentik_version", "Currently running authentik version")
+GAUGE_WORKERS = Gauge("authentik_admin_workers", "Currently connected workers")
 
 
 class AuthentikAdminConfig(AppConfig):

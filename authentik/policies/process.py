@@ -4,7 +4,6 @@ from multiprocessing.connection import Connection
 from typing import Optional
 
 from django.core.cache import cache
-from prometheus_client import Histogram
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
@@ -12,6 +11,7 @@ from structlog.stdlib import get_logger
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.errors import exception_to_string
+from authentik.policies.apps import HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -21,17 +21,6 @@ LOGGER = get_logger()
 FORK_CTX = get_context("fork")
 CACHE_TIMEOUT = int(CONFIG.y("redis.cache_timeout_policies"))
 PROCESS_CLASS = FORK_CTX.Process
-HIST_POLICIES_EXECUTION_TIME = Histogram(
-    "authentik_policies_execution_time",
-    "Execution times for single policies",
-    [
-        "binding_order",
-        "binding_target_type",
-        "binding_target_name",
-        "object_pk",
-        "object_type",
-    ],
-)
 
 
 def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:

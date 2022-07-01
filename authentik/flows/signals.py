@@ -4,7 +4,7 @@ from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
-from authentik.flows.planner import GAUGE_FLOWS_CACHED
+from authentik.flows.apps import GAUGE_FLOWS_CACHED
 from authentik.root.monitoring import monitoring_set
 
 LOGGER = get_logger()

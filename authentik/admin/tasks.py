@@ -4,11 +4,11 @@ import re
 from django.core.cache import cache
 from django.core.validators import URLValidator
 from packaging.version import parse
-from prometheus_client import Info
 from requests import RequestException
 from structlog.stdlib import get_logger
 
 from authentik import __version__, get_build_hash
+from authentik.admin.apps import PROM_INFO
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.monitored_tasks import (
     MonitoredTask,
@@ -25,7 +25,6 @@ VERSION_CACHE_KEY = "authentik_latest_version"
 VERSION_CACHE_TIMEOUT = 8 * 60 * 60  # 8 hours
 # Chop of the first ^ because we want to search the entire string
 URL_FINDER = URLValidator.regex.pattern[1:]
-PROM_INFO = Info("authentik_version", "Currently running authentik version")
 LOCAL_VERSION = parse(__version__)
 
 

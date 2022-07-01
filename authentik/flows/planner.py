@@ -4,13 +4,13 @@ from typing import Any, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
-from prometheus_client import Gauge, Histogram
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
 from authentik.events.models import cleanse_dict
+from authentik.flows.apps import HIST_FLOWS_PLAN_TIME
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage
@@ -26,15 +26,6 @@ PLAN_CONTEXT_SOURCE = "source"
 # Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan
 # was restored.
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
-GAUGE_FLOWS_CACHED = Gauge(
-    "authentik_flows_cached",
-    "Cached flows",
-)
-HIST_FLOWS_PLAN_TIME = Histogram(
-    "authentik_flows_plan_time",
-    "Duration to build a plan for a flow",
-    ["flow_slug"],
-)
 CACHE_TIMEOUT = int(CONFIG.y("redis.cache_timeout_flows"))
 
 
