@@ -123,7 +123,8 @@ export class SidebarItem extends LitElement {
             return false;
         }
         if (this.path) {
-            if (new RegExp(`^${this.path}$`).exec(path)) {
+            const ourPath = this.path.split(";")[0];
+            if (new RegExp(`^${ourPath}$`).exec(path)) {
                 return true;
             }
         }

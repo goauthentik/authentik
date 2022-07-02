@@ -267,7 +267,11 @@ export class AdminInterface extends LitElement {
             <ak-sidebar-item>
                 <span slot="label">${t`Directory`}</span>
                 <ak-sidebar-item
-                    path="/identity/users"
+                    path=${`/identity/users;${encodeURIComponent(
+                        JSON.stringify({
+                            path: "users",
+                        }),
+                    )}`}
                     .activeWhen=${[`^/identity/users/(?<id>${ID_REGEX})$`]}
                 >
                     <span slot="label">${t`Users`}</span>
