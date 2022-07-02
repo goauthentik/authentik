@@ -39,11 +39,11 @@ All of these variables can be set to values, but you can also use a URI-like for
 
 ## authentik Settings
 
-### AUTHENTIK_SECRET_KEY
+### `AUTHENTIK_SECRET_KEY`
 
 Secret key used for cookie signing and unique user IDs, don't change this after the first install.
 
-### AUTHENTIK_LOG_LEVEL
+### `AUTHENTIK_LOG_LEVEL`
 
 Log level for the server and worker containers. Possible values: debug, info, warning, error
 
@@ -51,15 +51,15 @@ Starting with 2021.12.3, you can also set the log level to _trace_. This has no 
 
 Defaults to `info`.
 
-### AUTHENTIK_COOKIE_DOMAIN
+### `AUTHENTIK_COOKIE_DOMAIN`
 
 Which domain the session cookie should be set to. By default, the cookie is set to the domain authentik is accessed under.
 
-### AUTHENTIK_DISABLE_UPDATE_CHECK
+### `AUTHENTIK_DISABLE_UPDATE_CHECK`
 
 Disable the inbuilt update-checker. Defaults to `false`.
 
-### AUTHENTIK_ERROR_REPORTING
+### `AUTHENTIK_ERROR_REPORTING`
 
 -   `AUTHENTIK_ERROR_REPORTING__ENABLED`
 
@@ -75,7 +75,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
     Whether or not to send personal data, like usernames. Defaults to `false`.
 
-### AUTHENTIK_EMAIL
+### `AUTHENTIK_EMAIL`
 
 -   `AUTHENTIK_EMAIL__HOST`
 
@@ -113,7 +113,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
     To change the sender's display name, use a format like `Name <account@domain>`.
 
-### AUTHENTIK_OUTPOSTS
+### `AUTHENTIK_OUTPOSTS`
 
 -   `AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE`
 
@@ -135,7 +135,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
     -   Kubeconfig
     -   Existence of a docker socket
 
-### AUTHENTIK_AVATARS
+### `AUTHENTIK_AVATARS`
 
 Configure how authentik should show avatars for users. Following values can be set:
 
@@ -149,7 +149,7 @@ Configure how authentik should show avatars for users. Following values can be s
     -   `%(mail_hash)s`: The email address, md5 hashed
     -   `%(upn)s`: The user's UPN, if set (otherwise an empty string)
 
-### AUTHENTIK_DEFAULT_USER_CHANGE_NAME
+### `AUTHENTIK_DEFAULT_USER_CHANGE_NAME`
 
 :::info
 Requires authentik 2021.12.5
@@ -157,7 +157,7 @@ Requires authentik 2021.12.5
 
 Enable the ability for users to change their name, defaults to `true`.
 
-### AUTHENTIK_DEFAULT_USER_CHANGE_EMAIL
+### `AUTHENTIK_DEFAULT_USER_CHANGE_EMAIL`
 
 :::info
 Requires authentik 2021.12.1
@@ -165,7 +165,7 @@ Requires authentik 2021.12.1
 
 Enable the ability for users to change their Email address, defaults to `true`.
 
-### AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME
+### `AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME`
 
 :::info
 Requires authentik 2021.12.1
@@ -173,7 +173,7 @@ Requires authentik 2021.12.1
 
 Enable the ability for users to change their Usernames, defaults to `true`.
 
-### AUTHENTIK_GDPR_COMPLIANCE
+### `AUTHENTIK_GDPR_COMPLIANCE`
 
 :::info
 Requires authentik 2021.12.1
@@ -181,7 +181,7 @@ Requires authentik 2021.12.1
 
 When enabled, all the events caused by a user will be deleted upon the user's deletion. Defaults to `true`.
 
-### AUTHENTIK_DEFAULT_TOKEN_LENGTH
+### `AUTHENTIK_DEFAULT_TOKEN_LENGTH`
 
 :::info
 Requires authentik 2022.4.1
@@ -189,7 +189,7 @@ Requires authentik 2022.4.1
 
 Configure the length of generated tokens. Defaults to 128.
 
-### AUTHENTIK_IMPERSONATION
+### `AUTHENTIK_IMPERSONATION`
 
 :::info
 Requires authentik 2022.4.2
@@ -197,7 +197,7 @@ Requires authentik 2022.4.2
 
 Globally enable/disable impersonation. Defaults to `true`.
 
-### AUTHENTIK_FOOTER_LINKS
+### `AUTHENTIK_FOOTER_LINKS`
 
 :::info
 Requires authentik 2021.12.1
@@ -211,7 +211,7 @@ The setting can be used as follows:
 AUTHENTIK_FOOTER_LINKS='[{"name": "Link Name","href":"https://goauthentik.io"}]'
 ```
 
-### AUTHENTIK_LDAP**TLS**CIPHERS:
+### `AUTHENTIK_LDAP__TLS__CIPHERS`
 
 :::info
 Requires authentik 2022.7
