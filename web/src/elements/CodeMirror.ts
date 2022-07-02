@@ -10,7 +10,7 @@ import {
     syntaxHighlighting,
 } from "@codemirror/language";
 import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
-import { EditorState, Extension } from "@codemirror/state";
+import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { EditorView, keymap, lineNumbers } from "@codemirror/view";
 import YAML from "yaml";
 
@@ -31,6 +31,11 @@ export class CodeMirrorTextarea extends LitElement {
     editor?: EditorView;
 
     _value?: string;
+
+    theme: Compartment;
+
+    themeLight: Extension;
+    themeDark: Extension;
 
     @property()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
@@ -77,6 +82,13 @@ export class CodeMirrorTextarea extends LitElement {
         }
     }
 
+    constructor() {
+        super();
+        this.theme = new Compartment();
+        this.themeLight = EditorView.theme({}, { dark: false });
+        this.themeDark = EditorView.theme({}, { dark: true });
+    }
+
     private getInnerValue(): string {
         if (!this.editor) {
             return "";
@@ -101,6 +113,18 @@ export class CodeMirrorTextarea extends LitElement {
     }
 
     firstUpdated(): void {
+        const matcher = window.matchMedia("(prefers-color-scheme: light)");
+        const handler = (ev?: MediaQueryListEvent) => {
+            let theme;
+            if (ev?.matches || matcher.matches) {
+                theme = this.themeLight;
+            } else {
+                theme = this.themeDark;
+            }
+            this.editor?.dispatch({
+                effects: this.theme.reconfigure(theme),
+            });
+        };
         const extensions = [
             history(),
             keymap.of([...defaultKeymap, ...historyKeymap]),
@@ -110,7 +134,7 @@ export class CodeMirrorTextarea extends LitElement {
             EditorView.lineWrapping,
             EditorState.readOnly.of(this.readOnly),
             EditorState.tabSize.of(2),
-            // scrollPastEnd(),
+            this.theme.of(this.themeLight),
         ];
         this.editor = new EditorView({
             extensions: extensions.filter((p) => p) as Extension[],
@@ -118,5 +142,7 @@ export class CodeMirrorTextarea extends LitElement {
             doc: this._value,
         });
         this.shadowRoot?.appendChild(this.editor.dom);
+        matcher.addEventListener("change", handler);
+        handler();
     }
 }
