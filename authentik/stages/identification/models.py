@@ -87,7 +87,7 @@ class IdentificationStage(Stage):
     )
 
     sources = models.ManyToManyField(
-        Source, default=list, help_text=_("Specify which sources should be shown.")
+        Source, default=list, help_text=_("Specify which sources should be shown."), blank=True
     )
     show_source_labels = models.BooleanField(default=False)
 

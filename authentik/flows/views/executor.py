@@ -138,12 +138,11 @@ class FlowExecutorView(APIView):
         message = exc.__doc__ if exc.__doc__ else str(exc)
         return self.stage_invalid(error_message=message)
 
-    def _check_flow_token(self, get_params: QueryDict):
+    def _check_flow_token(self, key: str) -> Optional[FlowPlan]:
         """Check if the user is using a flow token to restore a plan"""
-        tokens = FlowToken.filter_not_expired(key=get_params[QS_KEY_TOKEN])
-        if not tokens.exists():
-            return False
-        token: FlowToken = tokens.first()
+        token: Optional[FlowToken] = FlowToken.filter_not_expired(key=key).first()
+        if not token:
+            return None
         try:
             plan = token.plan
         except (AttributeError, EOFError, ImportError, IndexError) as exc:
@@ -164,7 +163,7 @@ class FlowExecutorView(APIView):
             span.set_data("authentik Flow", self.flow.slug)
             get_params = QueryDict(request.GET.get("query", ""))
             if QS_KEY_TOKEN in get_params:
-                plan = self._check_flow_token(get_params)
+                plan = self._check_flow_token(get_params[QS_KEY_TOKEN])
                 if plan:
                     self.request.session[SESSION_KEY_PLAN] = plan
             # Early check if there's an active Plan for the current session
