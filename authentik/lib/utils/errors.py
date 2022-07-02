@@ -1,10 +1,18 @@
 """error utils"""
-from traceback import format_tb
+from traceback import extract_tb
 
-TRACEBACK_HEADER = "Traceback (most recent call last):\n"
+from authentik.lib.utils.reflection import class_to_path
+
+TRACEBACK_HEADER = "Traceback (most recent call last):"
 
 
 def exception_to_string(exc: Exception) -> str:
     """Convert exception to string stackrace"""
     # Either use passed original exception or whatever we have
-    return TRACEBACK_HEADER + "".join(format_tb(exc.__traceback__)) + str(exc)
+    return "\n".join(
+        [
+            TRACEBACK_HEADER,
+            *[x.rstrip() for x in extract_tb(exc.__traceback__).format()],
+            f"{class_to_path(exc.__class__)}: {str(exc)}",
+        ]
+    )
