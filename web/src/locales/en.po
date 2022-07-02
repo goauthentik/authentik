@@ -786,6 +786,10 @@ msgstr "By default, only icons are shown for sources. Enable this to show their 
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 
+#: src/pages/flows/FlowForm.ts
+msgid "CONTINUE will either follow the ?next parameter or redirect to the default interface."
+msgstr "CONTINUE will either follow the ?next parameter or redirect to the default interface."
+
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
 msgstr "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
@@ -1543,6 +1547,10 @@ msgid "Debug"
 msgstr "Debug"
 
 #: src/pages/flows/FlowForm.ts
+msgid "Decides the response when a policy denies access to this flow for a user."
+msgstr "Decides the response when a policy denies access to this flow for a user."
+
+#: src/pages/flows/FlowForm.ts
 msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 
@@ -1644,6 +1652,10 @@ msgstr ""
 #: src/elements/forms/DeleteForm.ts
 msgid "Delete {0}"
 msgstr "Delete {0}"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Denied action"
+msgstr "Denied action"
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Deny the user access"
@@ -3226,6 +3238,14 @@ msgstr "Logs"
 msgid "Long-running operations which authentik executes in the background."
 msgstr "Long-running operations which authentik executes in the background."
 
+#: src/pages/flows/FlowForm.ts
+msgid "MESSAGE will notify the user the flow isn't applicable."
+msgstr "MESSAGE will notify the user the flow isn't applicable."
+
+#: src/pages/flows/FlowForm.ts
+msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
+msgstr "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
+
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "MFA Devices"
 msgstr "MFA Devices"
@@ -4332,12 +4352,16 @@ msgid "Quick actions"
 msgstr "Quick actions"
 
 #: src/pages/flows/StageBindingForm.ts
-msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
-msgstr "RESTART restarts the flow from the beginning, while keeping the flow context."
+#~ msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
+#~ msgstr "RESTART restarts the flow from the beginning, while keeping the flow context."
 
 #: src/pages/flows/StageBindingForm.ts
 msgid "RESTART restarts the flow from the beginning."
 msgstr "RESTART restarts the flow from the beginning."
+
+#: src/pages/flows/StageBindingForm.ts
+msgid "RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context."
+msgstr "RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context."
 
 #: src/pages/flows/StageBindingForm.ts
 msgid "RETRY returns the error message and a similar challenge to the executor."

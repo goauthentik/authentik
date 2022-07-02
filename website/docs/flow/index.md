@@ -20,6 +20,14 @@ Flows can have policies assigned to them. These policies determine if the curren
 
 Keep in mind that in certain circumstances, policies cannot match against users and groups as there is no authenticated user yet.
 
+### Denied action
+
+Configure what happens when access to a flow is denied by a policy. By default, authentik will redirect to a `?next` parameter if set, and otherwise show an error message.
+
+-   `MESSAGE_CONTINUE`: Show a message if no `?next` parameter is set, otherwise redirect.
+-   `MESSAGE`: Always show error message.
+-   `CONTINUE`: Always redirect, either to `?next` if set, otherwise to the default interface.
+
 ## Designation
 
 Flows are designated for a single purpose. This designation changes when a flow is used. The following designations are available:

@@ -774,6 +774,10 @@ msgstr "默认情况下，只为源显示图标。启用此选项可显示它们
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "验证端点证书所依据的 CA。可以留空，表示不进行验证。"
 
+#: src/pages/flows/FlowForm.ts
+msgid "CONTINUE will either follow the ?next parameter or redirect to the default interface."
+msgstr ""
+
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
 msgstr "缓存绑定，流程与会话会在内存中执行与缓存。会话过期时执行流程。"
@@ -1517,6 +1521,10 @@ msgid "Debug"
 msgstr "调试"
 
 #: src/pages/flows/FlowForm.ts
+msgid "Decides the response when a policy denies access to this flow for a user."
+msgstr ""
+
+#: src/pages/flows/FlowForm.ts
 msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr "决定此流程的用途。例如，当未经身份验证的用户访问 authentik 时，会重定向到身份验证流程。"
 
@@ -1612,6 +1620,10 @@ msgstr ""
 #: src/elements/forms/DeleteForm.ts
 msgid "Delete {0}"
 msgstr "删除 {0}"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Denied action"
+msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Deny the user access"
@@ -3150,6 +3162,14 @@ msgstr "日志"
 msgid "Long-running operations which authentik executes in the background."
 msgstr "authentik 在后台执行的长时间运行的操作。"
 
+#: src/pages/flows/FlowForm.ts
+msgid "MESSAGE will notify the user the flow isn't applicable."
+msgstr ""
+
+#: src/pages/flows/FlowForm.ts
+msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
+msgstr ""
+
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "MFA Devices"
 msgstr "MFA 设备"
@@ -4228,12 +4248,16 @@ msgid "Quick actions"
 msgstr "快速操作"
 
 #: src/pages/flows/StageBindingForm.ts
-msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
-msgstr "RESTART 从头开始重新启动流程，同时保留流程上下文。"
+#~ msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
+#~ msgstr "RESTART 从头开始重新启动流程，同时保留流程上下文。"
 
 #: src/pages/flows/StageBindingForm.ts
 msgid "RESTART restarts the flow from the beginning."
 msgstr "RESTART 从头开始重新启动流程。"
+
+#: src/pages/flows/StageBindingForm.ts
+msgid "RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context."
+msgstr ""
 
 #: src/pages/flows/StageBindingForm.ts
 msgid "RETRY returns the error message and a similar challenge to the executor."
