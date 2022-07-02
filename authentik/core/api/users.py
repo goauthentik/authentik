@@ -63,6 +63,9 @@ from authentik.core.models import (
     User,
 )
 from authentik.events.models import EventAction
+from authentik.flows.models import FlowToken
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
+from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -294,12 +297,23 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             LOGGER.debug("No recovery flow set")
             return None, None
         user: User = self.get_object()
-        token, __ = Token.objects.get_or_create(
-            identifier=f"{user.uid}-password-reset",
-            user=user,
-            intent=TokenIntents.INTENT_RECOVERY,
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        plan = planner.plan(
+            self.request._request,
+            {
+                PLAN_CONTEXT_PENDING_USER: user,
+            },
         )
-        querystring = urlencode({"token": token.key})
+        token, __ = FlowToken.objects.update_or_create(
+            identifier=f"{user.uid}-password-reset",
+            defaults={
+                "user": user,
+                "flow": flow,
+                "_plan": FlowToken.pickle(plan),
+            },
+        )
+        querystring = urlencode({QS_KEY_TOKEN: token.key})
         link = self.request.build_absolute_uri(
             reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
             + f"?{querystring}"

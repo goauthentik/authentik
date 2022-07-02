@@ -16,6 +16,7 @@ from authentik.core.models import AuthenticatedSession, User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.signals import EventNewThread
 from authentik.events.utils import model_to_dict
+from authentik.flows.models import FlowToken
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 
@@ -26,6 +27,7 @@ IGNORED_MODELS = [
     AuthenticatedSession,
     StaticToken,
     Session,
+    FlowToken,
 ]
 if settings.DEBUG:
     from silk.models import Request, Response, SQLQuery

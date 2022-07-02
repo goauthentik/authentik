@@ -10,21 +10,11 @@
             "attrs": {
                 "name": "Default recovery flow",
                 "title": "Reset your password",
-                "designation": "recovery"
-            }
-        },
-        {
-            "identifiers": {
-                "pk": "1ff91927-e33d-4615-95b0-c258e5f0df62"
-            },
-            "model": "authentik_stages_prompt.prompt",
-            "attrs": {
-                "field_key": "email",
-                "label": "Email",
-                "type": "email",
-                "required": true,
-                "placeholder": "Email",
-                "order": 1
+                "designation": "recovery",
+                "cache_count": 0,
+                "policy_engine_mode": "any",
+                "compatibility_mode": false,
+                "layout": "stacked"
             }
         },
         {
@@ -38,7 +28,9 @@
                 "type": "password",
                 "required": true,
                 "placeholder": "Password",
-                "order": 0
+                "order": 0,
+                "sub_text": "",
+                "placeholder_expression": false
             }
         },
         {
@@ -52,33 +44,38 @@
                 "type": "password",
                 "required": true,
                 "placeholder": "Password (repeat)",
-                "order": 1
+                "order": 1,
+                "sub_text": "",
+                "placeholder_expression": false
             }
         },
         {
             "identifiers": {
-                "pk": "e54045a7-6ecb-4ad9-ad37-28e72d8e565e",
-                "name": "default-recovery-identification"
+                "pk": "1c5709ae-1b3e-413a-a117-260ab509bf5c"
             },
-            "model": "authentik_stages_identification.identificationstage",
+            "model": "authentik_policies_expression.expressionpolicy",
             "attrs": {
-                "user_fields": ["email", "username"],
-                "template": "stages/identification/recovery.html",
-                "enrollment_flow": null,
-                "recovery_flow": null
+                "name": "default-recovery-skip-if-restored",
+                "execution_logging": false,
+                "bound_to": 2,
+                "expression": "return request.context.get('is_restored', False)"
             }
         },
         {
             "identifiers": {
-                "pk": "3909fd60-b013-4668-8806-12e9507dab97",
-                "name": "default-recovery-user-write"
+                "pk": "1c5709ae-1b3e-413a-a117-260ab509bf5c"
             },
-            "model": "authentik_stages_user_write.userwritestage",
-            "attrs": {}
+            "model": "authentik_policies_expression.expressionpolicy",
+            "attrs": {
+                "name": "default-recovery-skip-if-restored",
+                "execution_logging": false,
+                "bound_to": 2,
+                "expression": "return request.context.get('is_restored', False)"
+            }
         },
         {
             "identifiers": {
-                "pk": "66f948dc-3f74-42b2-b26b-b8b9df109efb",
+                "pk": "4ac5719f-32c0-441c-8a7e-33c5ea0db7da",
                 "name": "default-recovery-email"
             },
             "model": "authentik_stages_email.emailstage",
@@ -99,20 +96,40 @@
         },
         {
             "identifiers": {
-                "pk": "975d5502-1e22-4d10-b560-fbc5bd70ff4d",
-                "name": "Change your password"
+                "pk": "68b25ad5-318a-496e-95a7-cf4d94247f0d",
+                "name": "default-recovery-user-write"
             },
-            "model": "authentik_stages_prompt.promptstage",
+            "model": "authentik_stages_user_write.userwritestage",
             "attrs": {
-                "fields": [
-                    "7db91ee8-4290-4e08-8d39-63f132402515",
-                    "d30b5eb4-7787-4072-b1ba-65b46e928920"
-                ]
+                "create_users_as_inactive": false,
+                "create_users_group": null,
+                "user_path_template": ""
             }
         },
         {
             "identifiers": {
-                "pk": "fcdd4206-0d35-4ad2-a59f-5a72422936bb",
+                "pk": "94843ef6-28fe-4939-bd61-cd46bb34f1de",
+                "name": "default-recovery-identification"
+            },
+            "model": "authentik_stages_identification.identificationstage",
+            "attrs": {
+                "user_fields": [
+                    "email",
+                    "username"
+                ],
+                "password_stage": null,
+                "case_insensitive_matching": true,
+                "show_matched_user": true,
+                "enrollment_flow": null,
+                "recovery_flow": null,
+                "passwordless_flow": null,
+                "sources": [],
+                "show_source_labels": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "e74230b2-82bc-4843-8b18-2c3a66a62d57",
                 "name": "default-recovery-user-login"
             },
             "model": "authentik_stages_user_login.userloginstage",
@@ -122,62 +139,119 @@
         },
         {
             "identifiers": {
+                "pk": "fa2d8d65-1809-4dcc-bdc0-56266e0f7971",
+                "name": "Change your password"
+            },
+            "model": "authentik_stages_prompt.promptstage",
+            "attrs": {
+                "fields": [
+                    "7db91ee8-4290-4e08-8d39-63f132402515",
+                    "d30b5eb4-7787-4072-b1ba-65b46e928920"
+                ],
+                "validation_policies": []
+            }
+        },
+        {
+            "identifiers": {
                 "pk": "7af7558e-2196-4b9f-a08e-d38420b7cfbb",
                 "target": "a5993183-89c0-43d2-a7f4-ddffb17baba7",
-                "stage": "e54045a7-6ecb-4ad9-ad37-28e72d8e565e",
+                "stage": "94843ef6-28fe-4939-bd61-cd46bb34f1de",
                 "order": 10
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
-                "re_evaluate_policies": false
+                "evaluate_on_plan": true,
+                "re_evaluate_policies": true,
+                "policy_engine_mode": "any",
+                "invalid_response_action": "retry"
             }
         },
         {
             "identifiers": {
                 "pk": "29446fd6-dd93-4e92-9830-2d81debad5ae",
                 "target": "a5993183-89c0-43d2-a7f4-ddffb17baba7",
-                "stage": "66f948dc-3f74-42b2-b26b-b8b9df109efb",
+                "stage": "4ac5719f-32c0-441c-8a7e-33c5ea0db7da",
                 "order": 20
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
-                "re_evaluate_policies": false
+                "evaluate_on_plan": true,
+                "re_evaluate_policies": true,
+                "policy_engine_mode": "any",
+                "invalid_response_action": "retry"
             }
         },
         {
             "identifiers": {
                 "pk": "1219d06e-2c06-4c5b-a162-78e3959c6cf0",
                 "target": "a5993183-89c0-43d2-a7f4-ddffb17baba7",
-                "stage": "975d5502-1e22-4d10-b560-fbc5bd70ff4d",
+                "stage": "fa2d8d65-1809-4dcc-bdc0-56266e0f7971",
                 "order": 30
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
-                "re_evaluate_policies": false
+                "evaluate_on_plan": true,
+                "re_evaluate_policies": false,
+                "policy_engine_mode": "any",
+                "invalid_response_action": "retry"
             }
         },
         {
             "identifiers": {
                 "pk": "66de86ba-0707-46a0-8475-ff2e260d6935",
                 "target": "a5993183-89c0-43d2-a7f4-ddffb17baba7",
-                "stage": "3909fd60-b013-4668-8806-12e9507dab97",
+                "stage": "68b25ad5-318a-496e-95a7-cf4d94247f0d",
                 "order": 40
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
-                "re_evaluate_policies": false
+                "evaluate_on_plan": true,
+                "re_evaluate_policies": false,
+                "policy_engine_mode": "any",
+                "invalid_response_action": "retry"
             }
         },
         {
             "identifiers": {
                 "pk": "9cec2334-d4a2-4895-a2b2-bc5ae4e9639a",
                 "target": "a5993183-89c0-43d2-a7f4-ddffb17baba7",
-                "stage": "fcdd4206-0d35-4ad2-a59f-5a72422936bb",
+                "stage": "e74230b2-82bc-4843-8b18-2c3a66a62d57",
                 "order": 100
             },
             "model": "authentik_flows.flowstagebinding",
             "attrs": {
-                "re_evaluate_policies": false
+                "evaluate_on_plan": true,
+                "re_evaluate_policies": false,
+                "policy_engine_mode": "any",
+                "invalid_response_action": "retry"
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "95aad215-8729-4177-953d-41ffbe86239e",
+                "policy": "1c5709ae-1b3e-413a-a117-260ab509bf5c",
+                "target": "7af7558e-2196-4b9f-a08e-d38420b7cfbb",
+                "order": 0
+            },
+            "model": "authentik_policies.policybinding",
+            "attrs": {
+                "negate": false,
+                "enabled": true,
+                "timeout": 30
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "a5454cbc-d2e4-403a-84af-6af999990b12",
+                "policy": "1c5709ae-1b3e-413a-a117-260ab509bf5c",
+                "target": "29446fd6-dd93-4e92-9830-2d81debad5ae",
+                "order": 0
+            },
+            "model": "authentik_policies.policybinding",
+            "attrs": {
+                "negate": false,
+                "enabled": true,
+                "timeout": 30
             }
         }
     ]
