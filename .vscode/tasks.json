@@ -47,6 +47,16 @@
             "group": "build",
         },
         {
+            "label": "authentik: i18n-extract",
+            "command": "poetry",
+            "args": [
+                "run",
+                "make",
+                "i18n-extract"
+            ],
+            "group": "build",
+        },
+        {
             "label": "authentik[website]: format",
             "command": "make",
             "args": ["website"],

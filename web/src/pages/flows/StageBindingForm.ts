@@ -193,7 +193,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                         ?selected=${this.instance?.invalidResponseAction ===
                         InvalidResponseActionEnum.RestartWithContext}
                     >
-                        ${t`RESTART restarts the flow from the beginning, while keeping the flow context.`}
+                        ${t`RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context.`}
                     </option>
                 </select>
                 <p class="pf-c-form__helper-text">

@@ -789,6 +789,10 @@ msgstr "Standardmäßig werden für Quellen nur Symbole angezeigt. Aktiviere die
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "CA, anhand derer das Zertifikat des Endpunkts überprüft wird. Kann leer gelassen werden, um keine Validierung durchzuführen."
 
+#: src/pages/flows/FlowForm.ts
+msgid "CONTINUE will either follow the ?next parameter or redirect to the default interface."
+msgstr ""
+
 #: src/pages/providers/ldap/LDAPProviderForm.ts
 msgid "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
 msgstr ""
@@ -1531,6 +1535,10 @@ msgid "Debug"
 msgstr "Debuggen"
 
 #: src/pages/flows/FlowForm.ts
+msgid "Decides the response when a policy denies access to this flow for a user."
+msgstr ""
+
+#: src/pages/flows/FlowForm.ts
 msgid "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
 msgstr "Entscheidet, wofür dieser Flow verwendet wird. Beispielsweise wird der Authentifizierungsablauf umgeleitet, wenn ein nicht authentifizierter Benutzer authentik besucht."
 
@@ -1626,6 +1634,10 @@ msgstr ""
 #: src/elements/forms/DeleteForm.ts
 msgid "Delete {0}"
 msgstr "{0} löschen"
+
+#: src/pages/flows/FlowForm.ts
+msgid "Denied action"
+msgstr ""
 
 #: src/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Deny the user access"
@@ -3174,6 +3186,14 @@ msgstr "Logs"
 msgid "Long-running operations which authentik executes in the background."
 msgstr "Langlaufende Operationen, die Authentik im Hintergrund ausführt."
 
+#: src/pages/flows/FlowForm.ts
+msgid "MESSAGE will notify the user the flow isn't applicable."
+msgstr ""
+
+#: src/pages/flows/FlowForm.ts
+msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
+msgstr ""
+
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "MFA Devices"
 msgstr "Multifaktor-Authentifzierungs Geräte"
@@ -4262,12 +4282,16 @@ msgid "Quick actions"
 msgstr "Schnellaktionen"
 
 #: src/pages/flows/StageBindingForm.ts
-msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
-msgstr "RESTART startet den Flow von Anfang an neu, während der Flow-Kontext beibehalten wird."
+#~ msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
+#~ msgstr "RESTART startet den Flow von Anfang an neu, während der Flow-Kontext beibehalten wird."
 
 #: src/pages/flows/StageBindingForm.ts
 msgid "RESTART restarts the flow from the beginning."
 msgstr "RESTART startet den Flow von Anfang an neu."
+
+#: src/pages/flows/StageBindingForm.ts
+msgid "RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context."
+msgstr ""
 
 #: src/pages/flows/StageBindingForm.ts
 msgid "RETRY returns the error message and a similar challenge to the executor."

@@ -11,14 +11,13 @@ from authentik.lib.generators import generate_id
 from authentik.tenants.models import Tenant
 
 
-def create_test_flow(designation: FlowDesignation = FlowDesignation.STAGE_CONFIGURATION) -> Flow:
+def create_test_flow(
+    designation: FlowDesignation = FlowDesignation.STAGE_CONFIGURATION, **kwargs
+) -> Flow:
     """Generate a flow that can be used for testing"""
     uid = generate_id(10)
     return Flow.objects.create(
-        name=uid,
-        title=uid,
-        slug=slugify(uid),
-        designation=designation,
+        name=uid, title=uid, slug=slugify(uid), designation=designation, **kwargs
     )
 
 

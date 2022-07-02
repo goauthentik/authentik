@@ -6,14 +6,21 @@ from django.test.client import RequestFactory
 from django.urls import reverse
 
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_flow
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, InvalidResponseAction
+from authentik.flows.models import (
+    FlowDeniedAction,
+    FlowDesignation,
+    FlowStageBinding,
+    InvalidResponseAction,
+)
 from authentik.flows.planner import FlowPlan, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
+from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.policies.reputation.models import ReputationPolicy
@@ -47,12 +54,10 @@ class TestFlowExecutor(FlowTestCase):
     )
     def test_existing_plan_diff_flow(self):
         """Check that a plan for a different flow cancels the current plan"""
-        flow = Flow.objects.create(
-            name="test-existing-plan-diff",
-            slug="test-existing-plan-diff",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
-        stage = DummyStage.objects.create(name="dummy")
+        stage = DummyStage.objects.create(name=generate_id())
         binding = FlowStageBinding(target=flow, stage=stage, order=0)
         plan = FlowPlan(flow_pk=flow.pk.hex + "a", bindings=[binding], markers=[StageMarker()])
         session = self.client.session
@@ -77,10 +82,8 @@ class TestFlowExecutor(FlowTestCase):
     )
     def test_invalid_non_applicable_flow(self):
         """Tests that a non-applicable flow returns the correct error message"""
-        flow = Flow.objects.create(
-            name="test-non-applicable",
-            slug="test-non-applicable",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
 
         CONFIG.update_from_dict({"domain": "testserver"})
@@ -98,12 +101,15 @@ class TestFlowExecutor(FlowTestCase):
         "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
-    def test_invalid_empty_flow(self):
-        """Tests that an empty flow returns the correct error message"""
-        flow = Flow.objects.create(
-            name="test-empty",
-            slug="test-empty",
-            designation=FlowDesignation.AUTHENTICATION,
+    @patch(
+        "authentik.policies.engine.PolicyEngine.result",
+        POLICY_RETURN_FALSE,
+    )
+    def test_invalid_non_applicable_flow_continue(self):
+        """Tests that a non-applicable flow that should redirect"""
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
+            denied_action=FlowDeniedAction.CONTINUE,
         )
 
         CONFIG.update_from_dict({"domain": "testserver"})
@@ -119,10 +125,8 @@ class TestFlowExecutor(FlowTestCase):
     )
     def test_invalid_flow_redirect(self):
         """Tests that an invalid flow still redirects"""
-        flow = Flow.objects.create(
-            name="test-empty",
-            slug="test-empty",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
 
         CONFIG.update_from_dict({"domain": "testserver"})
@@ -132,18 +136,33 @@ class TestFlowExecutor(FlowTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
+    @patch(
+        "authentik.flows.views.executor.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_invalid_empty_flow(self):
+        """Tests that an empty flow returns the correct error message"""
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
+        )
+
+        CONFIG.update_from_dict({"domain": "testserver"})
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
+
     def test_multi_stage_flow(self):
         """Test a full flow with multiple stages"""
-        flow = Flow.objects.create(
-            name="test-full",
-            slug="test-full",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
         FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy2"), order=1
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=1
         )
 
         exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
@@ -170,19 +189,19 @@ class TestFlowExecutor(FlowTestCase):
     )
     def test_reevaluate_remove_last(self):
         """Test planner with re-evaluate (last stage is removed)"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
-        false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
+        false_policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=1, wait_max=2
+        )
 
         binding = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
-            stage=DummyStage.objects.create(name="dummy2"),
+            stage=DummyStage.objects.create(name=generate_id()),
             order=1,
             re_evaluate_policies=True,
         )
@@ -217,24 +236,24 @@ class TestFlowExecutor(FlowTestCase):
 
     def test_reevaluate_remove_middle(self):
         """Test planner with re-evaluate (middle stage is removed)"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
-        false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
+        false_policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=1, wait_max=2
+        )
 
         binding = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
-            stage=DummyStage.objects.create(name="dummy2"),
+            stage=DummyStage.objects.create(name=generate_id()),
             order=1,
             re_evaluate_policies=True,
         )
         binding3 = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy3"), order=2
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=2
         )
 
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)
@@ -277,24 +296,24 @@ class TestFlowExecutor(FlowTestCase):
 
     def test_reevaluate_keep(self):
         """Test planner with re-evaluate (everything is kept)"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
-        true_policy = DummyPolicy.objects.create(result=True, wait_min=1, wait_max=2)
+        true_policy = DummyPolicy.objects.create(
+            name=generate_id(), result=True, wait_min=1, wait_max=2
+        )
 
         binding = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
-            stage=DummyStage.objects.create(name="dummy2"),
+            stage=DummyStage.objects.create(name=generate_id()),
             order=1,
             re_evaluate_policies=True,
         )
         binding3 = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy3"), order=2
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=2
         )
 
         PolicyBinding.objects.create(policy=true_policy, target=binding2, order=0)
@@ -347,30 +366,30 @@ class TestFlowExecutor(FlowTestCase):
 
     def test_reevaluate_remove_consecutive(self):
         """Test planner with re-evaluate (consecutive stages are removed)"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
-        false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
+        false_policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=1, wait_max=2
+        )
 
         binding = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
-            stage=DummyStage.objects.create(name="dummy2"),
+            stage=DummyStage.objects.create(name=generate_id()),
             order=1,
             re_evaluate_policies=True,
         )
         binding3 = FlowStageBinding.objects.create(
             target=flow,
-            stage=DummyStage.objects.create(name="dummy3"),
+            stage=DummyStage.objects.create(name=generate_id()),
             order=2,
             re_evaluate_policies=True,
         )
         binding4 = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy4"), order=2
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=2
         )
 
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)
@@ -415,13 +434,11 @@ class TestFlowExecutor(FlowTestCase):
 
     def test_stageview_user_identifier(self):
         """Test PLAN_CONTEXT_PENDING_USER_IDENTIFIER"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
         FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
 
         ident = "test-identifier"
@@ -443,10 +460,8 @@ class TestFlowExecutor(FlowTestCase):
 
     def test_invalid_restart(self):
         """Test flow that restarts on invalid entry"""
-        flow = Flow.objects.create(
-            name="restart-on-invalid",
-            slug="restart-on-invalid",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
         # Stage 0 is a deny stage that is added dynamically
         # when the reputation policy says so

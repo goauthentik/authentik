@@ -5141,6 +5141,15 @@ paths:
       description: Flow Viewset
       parameters:
       - in: query
+        name: denied_action
+        schema:
+          type: string
+          enum:
+          - continue
+          - message
+          - message_continue
+        description: Configure what should happen when a flow denies access to a user.
+      - in: query
         name: designation
         schema:
           type: string
@@ -20656,6 +20665,12 @@ components:
       - branding_title
       - matched_domain
       - ui_footer_links
+    DeniedActionEnum:
+      enum:
+      - message_continue
+      - message
+      - continue
+      type: string
     DenyStage:
       type: object
       description: DenyStage Serializer
@@ -21571,6 +21586,11 @@ components:
           readOnly: true
         layout:
           $ref: '#/components/schemas/LayoutEnum'
+        denied_action:
+          allOf:
+          - $ref: '#/components/schemas/DeniedActionEnum'
+          description: Configure what should happen when a flow denies access to a
+            user.
       required:
       - background
       - cache_count
@@ -21708,6 +21728,11 @@ components:
             managers on mobile devices.
         layout:
           $ref: '#/components/schemas/LayoutEnum'
+        denied_action:
+          allOf:
+          - $ref: '#/components/schemas/DeniedActionEnum'
+          description: Configure what should happen when a flow denies access to a
+            user.
       required:
       - designation
       - name
@@ -27269,6 +27294,11 @@ components:
             managers on mobile devices.
         layout:
           $ref: '#/components/schemas/LayoutEnum'
+        denied_action:
+          allOf:
+          - $ref: '#/components/schemas/DeniedActionEnum'
+          description: Configure what should happen when a flow denies access to a
+            user.
     PatchedFlowStageBindingRequest:
       type: object
       description: FlowStageBinding Serializer

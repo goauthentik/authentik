@@ -73,6 +73,7 @@ class FlowSerializer(ModelSerializer):
             "compatibility_mode",
             "export_url",
             "layout",
+            "denied_action",
         ]
         extra_kwargs = {
             "background": {"read_only": True},
@@ -110,8 +111,8 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     serializer_class = FlowSerializer
     lookup_field = "slug"
     ordering = ["slug", "name"]
-    search_fields = ["name", "slug", "designation", "title"]
-    filterset_fields = ["flow_uuid", "name", "slug", "designation"]
+    search_fields = ["name", "slug", "designation", "title", "denied_action"]
+    filterset_fields = ["flow_uuid", "name", "slug", "designation", "denied_action"]
 
     @permission_required(None, ["authentik_flows.view_flow_cache"])
     @extend_schema(responses={200: CacheSerializer(many=False)})

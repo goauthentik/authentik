@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-30 20:17+0000\n"
+"POT-Creation-Date: 2022-07-02 15:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -217,7 +217,7 @@ msgid "Powered by authentik"
 msgstr ""
 
 #: authentik/core/views/apps.py:48
-#: authentik/providers/oauth2/views/authorize.py:356
+#: authentik/providers/oauth2/views/authorize.py:364
 #: authentik/providers/saml/views/sso.py:69
 #, python-format
 msgid "You're about to sign into %(application)s."
@@ -336,56 +336,60 @@ msgstr ""
 msgid "Notification Webhook Mappings"
 msgstr ""
 
-#: authentik/events/monitored_tasks.py:197
+#: authentik/events/monitored_tasks.py:191
 msgid "Task has not been run yet."
 msgstr ""
 
-#: authentik/flows/api/flows.py:227 authentik/flows/api/flows.py:249
+#: authentik/flows/api/flows.py:228 authentik/flows/api/flows.py:250
 #, python-format
 msgid "Policy (%(type)s)"
 msgstr ""
 
-#: authentik/flows/api/flows.py:258
+#: authentik/flows/api/flows.py:259
 #, python-format
 msgid "Stage (%(type)s)"
 msgstr ""
 
-#: authentik/flows/api/flows.py:373
+#: authentik/flows/api/flows.py:374
 #, python-format
 msgid "Flow not applicable to current user/request: %(messages)s"
 msgstr ""
 
-#: authentik/flows/models.py:108
+#: authentik/flows/models.py:117
 msgid "Visible in the URL."
 msgstr ""
 
-#: authentik/flows/models.py:110
+#: authentik/flows/models.py:119
 msgid "Shown as the Title in Flow pages."
 msgstr ""
 
-#: authentik/flows/models.py:128
+#: authentik/flows/models.py:137
 msgid "Background shown during execution"
 msgstr ""
 
-#: authentik/flows/models.py:135
+#: authentik/flows/models.py:144
 msgid ""
 "Enable compatibility mode, increases compatibility with password managers on "
 "mobile devices."
 msgstr ""
 
-#: authentik/flows/models.py:180
+#: authentik/flows/models.py:152
+msgid "Configure what should happen when a flow denies access to a user."
+msgstr ""
+
+#: authentik/flows/models.py:178
 msgid "Flow"
 msgstr ""
 
-#: authentik/flows/models.py:181
+#: authentik/flows/models.py:179
 msgid "Flows"
 msgstr ""
 
-#: authentik/flows/models.py:211
+#: authentik/flows/models.py:209
 msgid "Evaluate policies when the Stage is present to the user."
 msgstr ""
 
-#: authentik/flows/models.py:218
+#: authentik/flows/models.py:216
 msgid ""
 "Configure how the flow executor should handle an invalid response to a "
 "challenge. RETRY returns the error message and a similar challenge to the "
@@ -393,19 +397,19 @@ msgid ""
 "RESTART_WITH_CONTEXT restarts the flow while keeping the current context."
 msgstr ""
 
-#: authentik/flows/models.py:242
+#: authentik/flows/models.py:240
 msgid "Flow Stage Binding"
 msgstr ""
 
-#: authentik/flows/models.py:243
+#: authentik/flows/models.py:241
 msgid "Flow Stage Bindings"
 msgstr ""
 
-#: authentik/flows/models.py:293
+#: authentik/flows/models.py:291
 msgid "Flow Token"
 msgstr ""
 
-#: authentik/flows/models.py:294
+#: authentik/flows/models.py:292
 msgid "Flow Tokens"
 msgstr ""
 
@@ -833,7 +837,7 @@ msgstr ""
 msgid "OAuth2 Tokens"
 msgstr ""
 
-#: authentik/providers/oauth2/views/authorize.py:410
+#: authentik/providers/oauth2/views/authorize.py:418
 #: authentik/providers/saml/views/flows.py:86
 #, python-format
 msgid "Redirecting to %(app)s..."
@@ -856,42 +860,42 @@ msgstr ""
 msgid "authentik API Access on behalf of your user"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:52
+#: authentik/providers/proxy/models.py:47
 msgid "Validate SSL Certificates of upstream servers"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:53
+#: authentik/providers/proxy/models.py:48
 msgid "Internal host SSL Validation"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:59
+#: authentik/providers/proxy/models.py:54
 msgid ""
 "Enable support for forwardAuth in traefik and nginx auth_request. Exclusive "
 "with internal_host."
 msgstr ""
 
-#: authentik/providers/proxy/models.py:77
+#: authentik/providers/proxy/models.py:72
 msgid "Set HTTP-Basic Authentication"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:79
+#: authentik/providers/proxy/models.py:74
 msgid ""
 "Set a custom HTTP-Basic Authentication header based on values from authentik."
 msgstr ""
 
-#: authentik/providers/proxy/models.py:84
+#: authentik/providers/proxy/models.py:79
 msgid "HTTP-Basic Username Key"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:94
+#: authentik/providers/proxy/models.py:89
 msgid "HTTP-Basic Password Key"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:149
+#: authentik/providers/proxy/models.py:144
 msgid "Proxy Provider"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:150
+#: authentik/providers/proxy/models.py:145
 msgid "Proxy Providers"
 msgstr ""
 
@@ -996,77 +1000,77 @@ msgstr ""
 msgid "Used recovery-link to authenticate."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:32
+#: authentik/sources/ldap/models.py:33
 msgid "Server URI"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:40
+#: authentik/sources/ldap/models.py:41
 msgid ""
 "Optionally verify the LDAP Server's Certificate against the CA Chain in this "
 "keypair."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:45
+#: authentik/sources/ldap/models.py:46
 msgid "Bind CN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:47
+#: authentik/sources/ldap/models.py:48
 msgid "Enable Start TLS"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:49
+#: authentik/sources/ldap/models.py:50
 msgid "Base DN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:51
+#: authentik/sources/ldap/models.py:52
 msgid "Prepended to Base DN for User-queries."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:52
+#: authentik/sources/ldap/models.py:53
 msgid "Addition User DN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:56
+#: authentik/sources/ldap/models.py:57
 msgid "Prepended to Base DN for Group-queries."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:57
+#: authentik/sources/ldap/models.py:58
 msgid "Addition Group DN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:63
+#: authentik/sources/ldap/models.py:64
 msgid "Consider Objects matching this filter to be Users."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:66
+#: authentik/sources/ldap/models.py:67
 msgid "Field which contains members of a group."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:70
+#: authentik/sources/ldap/models.py:71
 msgid "Consider Objects matching this filter to be Groups."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:73
+#: authentik/sources/ldap/models.py:74
 msgid "Field which contains a unique Identifier."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:80
+#: authentik/sources/ldap/models.py:81
 msgid "Property mappings used for group creation/updating."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:145
+#: authentik/sources/ldap/models.py:149
 msgid "LDAP Source"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:146
+#: authentik/sources/ldap/models.py:150
 msgid "LDAP Sources"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:169
+#: authentik/sources/ldap/models.py:173
 msgid "LDAP Property Mapping"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:170
+#: authentik/sources/ldap/models.py:174
 msgid "LDAP Property Mappings"
 msgstr ""
 
