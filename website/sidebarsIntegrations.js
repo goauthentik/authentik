@@ -10,7 +10,7 @@ module.exports = {
             items: [
                 {
                     type: "category",
-                    label: "Monitoring & Infarstructure",
+                    label: "Monitoring & Infrastructure",
                     items: [
                         {
                             type: "category",
