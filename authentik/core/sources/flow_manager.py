@@ -26,7 +26,6 @@ from authentik.flows.planner import (
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.denied import AccessDeniedResponse
-from authentik.policies.types import PolicyResult
 from authentik.policies.utils import delete_none_keys
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
@@ -165,8 +164,8 @@ class SourceFlowManager:
                     self._logger.debug("Handling enrollment of new user")
                     return self.handle_enroll(connection)
         except FlowNonApplicableException as exc:
-            self._logger.warning("Flow non applicable", exc=exc, result=exc.policy_result)
-            return self.error_handler(exc, exc.policy_result)
+            self._logger.warning("Flow non applicable", exc=exc)
+            return self.error_handler(exc)
         # Default case, assume deny
         error = (
             _(
@@ -179,14 +178,13 @@ class SourceFlowManager:
         )
         return self.error_handler(error)
 
-    def error_handler(
-        self, error: Exception, policy_result: Optional[PolicyResult] = None
-    ) -> HttpResponse:
+    def error_handler(self, error: Exception) -> HttpResponse:
         """Handle any errors by returning an access denied stage"""
         response = AccessDeniedResponse(self.request)
         response.error_message = str(error)
-        if policy_result:
-            response.policy_result = policy_result
+        if isinstance(error, FlowNonApplicableException):
+            response.policy_result = error.policy_result
+            response.error_message = error.messages
         return response
 
     # pylint: disable=unused-argument
