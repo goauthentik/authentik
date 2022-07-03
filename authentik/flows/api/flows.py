@@ -372,7 +372,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
                 request,
                 _(
                     "Flow not applicable to current user/request: %(messages)s"
-                    % {"messages": str(exc)}
+                    % {"messages": exc.messages}
                 ),
             )
         return Response(

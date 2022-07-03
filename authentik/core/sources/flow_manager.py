@@ -165,7 +165,7 @@ class SourceFlowManager:
                     self._logger.debug("Handling enrollment of new user")
                     return self.handle_enroll(connection)
         except FlowNonApplicableException as exc:
-            self._logger.warning("Flow non applicable", exc=exc)
+            self._logger.warning("Flow non applicable", exc=exc, result=exc.policy_result)
             return self.error_handler(exc, exc.policy_result)
         # Default case, assume deny
         error = (

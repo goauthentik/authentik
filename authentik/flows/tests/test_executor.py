@@ -7,7 +7,6 @@ from django.urls import reverse
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_flow
-from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import (
     FlowDeniedAction,
@@ -29,7 +28,7 @@ from authentik.stages.deny.models import DenyStage
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
-POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False))
+POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False, "foo"))
 POLICY_RETURN_TRUE = MagicMock(return_value=PolicyResult(True))
 
 
@@ -93,7 +92,7 @@ class TestFlowExecutor(FlowTestCase):
         self.assertStageResponse(
             response,
             flow=flow,
-            error_message=FlowNonApplicableException.__doc__,
+            error_message="foo",
             component="ak-stage-access-denied",
         )
 

@@ -147,7 +147,7 @@ class FlowPlanner:
             engine.build()
             result = engine.result
             if not result.passing:
-                exc = FlowNonApplicableException(",".join(result.messages))
+                exc = FlowNonApplicableException()
                 exc.policy_result = result
                 raise exc
             # User is passing so far, check if we have a cached plan

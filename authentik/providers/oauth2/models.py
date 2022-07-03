@@ -143,7 +143,10 @@ class OAuth2Provider(Provider):
         choices=ClientTypes.choices,
         default=ClientTypes.CONFIDENTIAL,
         verbose_name=_("Client Type"),
-        help_text=_(ClientTypes.__doc__),
+        help_text=_(
+            "Confidential clients are capable of maintaining the confidentiality "
+            "of their credentials. Public clients are incapable"
+        ),
     )
     client_id = models.CharField(
         max_length=255,

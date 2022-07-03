@@ -132,7 +132,7 @@ class FlowExecutorView(APIView):
         self._logger = get_logger().bind(flow_slug=flow_slug)
         set_tag("authentik.flow", self.flow.slug)
 
-    def handle_invalid_flow(self, exc: BaseException) -> HttpResponse:
+    def handle_invalid_flow(self, exc: FlowNonApplicableException) -> HttpResponse:
         """When a flow is non-applicable check if user is on the correct domain"""
         if self.flow.denied_action in [
             FlowDeniedAction.CONTINUE,
@@ -146,8 +146,7 @@ class FlowExecutorView(APIView):
             return to_stage_response(
                 self.request, redirect(reverse("authentik_core:root-redirect"))
             )
-        message = exc.__doc__ if exc.__doc__ else str(exc)
-        return to_stage_response(self.request, self.stage_invalid(error_message=message))
+        return to_stage_response(self.request, self.stage_invalid(error_message=exc.messages))
 
     def _check_flow_token(self, key: str) -> Optional[FlowPlan]:
         """Check if the user is using a flow token to restore a plan"""
