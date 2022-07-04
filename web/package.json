@@ -1,6 +1,6 @@
 {
-    "name": "@goauthentik/web",
-    "version": "2022.6.3",
+    "name": "authentik-web",
+    "version": "0.0.0",
     "private": true,
     "license": "GNU GPLv3",
     "scripts": {

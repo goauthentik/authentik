@@ -7,8 +7,6 @@ import copy from "rollup-plugin-copy";
 import cssimport from "rollup-plugin-cssimport";
 import { terser } from "rollup-plugin-terser";
 
-import pkg from "./package.json";
-
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
 export const resources = [
@@ -75,18 +73,17 @@ export const defaultOptions = {
     plugins: [
         cssimport(),
         markdown(),
-        replace({
-            "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
-            "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-            "process.env.AK_VERSION": JSON.stringify(pkg.version),
-            "preventAssignment": true,
-        }),
         nodeResolve({ extensions, browser: true }),
         commonjs(),
         babel({
             extensions,
             babelHelpers: "runtime",
             include: ["src/**/*"],
+        }),
+        replace({
+            "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
+            "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
+            "preventAssignment": true,
         }),
         isProdBuild && terser(),
     ].filter((p) => p),
