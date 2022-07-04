@@ -65,7 +65,7 @@
         "@formatjs/intl-listformat": "^7.0.2",
         "@fortawesome/fontawesome-free": "^6.1.1",
         "@goauthentik/api": "^2022.7.1-1656964151",
-        "@jackfranklin/rollup-plugin-markdown": "^0.3.0",
+        "@jackfranklin/rollup-plugin-markdown": "^0.4.0",
         "@lingui/cli": "^3.14.0",
         "@lingui/core": "^3.14.0",
         "@lingui/detect-locale": "^3.14.0",
