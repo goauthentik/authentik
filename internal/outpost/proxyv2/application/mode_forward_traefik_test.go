@@ -1,8 +1,10 @@
 package application
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -43,11 +45,16 @@ func TestForwardHandleTraefik_Single_Headers(t *testing.T) {
 	rr := httptest.NewRecorder()
 	a.forwardHandleTraefik(rr, req)
 
-	assert.Equal(t, rr.Code, http.StatusTemporaryRedirect)
+	assert.Equal(t, http.StatusFound, rr.Code)
 	loc, _ := rr.Result().Location()
-	assert.Equal(t, loc.String(), "http://test.goauthentik.io/outpost.goauthentik.io/start")
-
 	s, _ := a.sessions.Get(req, constants.SessionName)
+	shouldUrl := url.Values{
+		"client_id":     []string{*a.proxyConfig.ClientId},
+		"redirect_uri":  []string{"https://ext.t.goauthentik.io/outpost.goauthentik.io/callback?X-authentik-auth-callback=true"},
+		"response_type": []string{"code"},
+		"state":         []string{s.Values[constants.SessionOAuthState].([]string)[0]},
+	}
+	assert.Equal(t, fmt.Sprintf("http://fake-auth.t.goauthentik.io/auth?%s", shouldUrl.Encode()), loc.String())
 	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
 }
 
@@ -123,10 +130,15 @@ func TestForwardHandleTraefik_Domain_Header(t *testing.T) {
 	rr := httptest.NewRecorder()
 	a.forwardHandleTraefik(rr, req)
 
-	assert.Equal(t, http.StatusTemporaryRedirect, rr.Code)
+	assert.Equal(t, http.StatusFound, rr.Code)
 	loc, _ := rr.Result().Location()
-	assert.Equal(t, "http://auth.test.goauthentik.io/outpost.goauthentik.io/start", loc.String())
-
 	s, _ := a.sessions.Get(req, constants.SessionName)
+	shouldUrl := url.Values{
+		"client_id":     []string{*a.proxyConfig.ClientId},
+		"redirect_uri":  []string{"https://ext.t.goauthentik.io/outpost.goauthentik.io/callback?X-authentik-auth-callback=true"},
+		"response_type": []string{"code"},
+		"state":         []string{s.Values[constants.SessionOAuthState].([]string)[0]},
+	}
+	assert.Equal(t, fmt.Sprintf("http://fake-auth.t.goauthentik.io/auth?%s", shouldUrl.Encode()), loc.String())
 	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
 }

@@ -35,7 +35,7 @@ type Application struct {
 	Cert                 *tls.Certificate
 	UnauthenticatedRegex []*regexp.Regexp
 
-	endpint       OIDCEndpoint
+	endpoint      OIDCEndpoint
 	oauthConfig   oauth2.Config
 	tokenVerifier *oidc.IDTokenVerifier
 	outpostName   string
@@ -93,7 +93,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		Host:           externalHost.Host,
 		log:            muxLogger,
 		outpostName:    ak.Outpost.Name,
-		endpint:        endpoint,
+		endpoint:       endpoint,
 		oauthConfig:    oauth2Config,
 		tokenVerifier:  verifier,
 		proxyConfig:    p,
@@ -211,14 +211,14 @@ func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 	//TODO: Token revocation
 	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
-		http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
+		http.Redirect(rw, r, a.endpoint.EndSessionEndpoint, http.StatusFound)
 		return
 	}
 	s.Options.MaxAge = -1
 	err = s.Save(r, rw)
 	if err != nil {
-		http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
+		http.Redirect(rw, r, a.endpoint.EndSessionEndpoint, http.StatusFound)
 		return
 	}
-	http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
+	http.Redirect(rw, r, a.endpoint.EndSessionEndpoint, http.StatusFound)
 }

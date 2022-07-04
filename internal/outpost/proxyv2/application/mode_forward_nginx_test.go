@@ -39,7 +39,7 @@ func TestForwardHandleNginx_Single_Headers(t *testing.T) {
 	rr := httptest.NewRecorder()
 	a.forwardHandleNginx(rr, req)
 
-	assert.Equal(t, rr.Code, http.StatusUnauthorized)
+	assert.Equal(t, http.StatusUnauthorized, rr.Code)
 
 	s, _ := a.sessions.Get(req, constants.SessionName)
 	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
@@ -53,7 +53,7 @@ func TestForwardHandleNginx_Single_URI(t *testing.T) {
 	rr := httptest.NewRecorder()
 	a.forwardHandleNginx(rr, req)
 
-	assert.Equal(t, rr.Code, http.StatusUnauthorized)
+	assert.Equal(t, http.StatusUnauthorized, rr.Code)
 
 	s, _ := a.sessions.Get(req, constants.SessionName)
 	assert.Equal(t, "/app", s.Values[constants.SessionRedirect])
