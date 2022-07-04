@@ -105,7 +105,7 @@
         "lit": "^2.2.7",
         "moment": "^2.29.3",
         "prettier": "^2.7.1",
-        "rapidoc": "^9.3.2",
+        "rapidoc": "^9.3.3",
         "rollup": "^2.75.7",
         "rollup-plugin-copy": "^3.4.0",
         "rollup-plugin-cssimport": "^1.0.2",
