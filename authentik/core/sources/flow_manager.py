@@ -167,7 +167,7 @@ class SourceFlowManager:
             self._logger.warning("Flow non applicable", exc=exc)
             return self.error_handler(exc)
         # Default case, assume deny
-        error = (
+        error = Exception(
             _(
                 (
                     "Request to authenticate with %(source)s has been denied. Please authenticate "

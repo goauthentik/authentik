@@ -10826,9 +10826,8 @@ paths:
           enum:
           - confidential
           - public
-        description: |-
-          Confidential clients are capable of maintaining the confidentiality
-              of their credentials. Public clients are incapable.
+        description: Confidential clients are capable of maintaining the confidentiality
+          of their credentials. Public clients are incapable
       - in: query
         name: include_claims_in_id_token
         schema:
@@ -23272,9 +23271,8 @@ components:
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
-          description: |-
-            Confidential clients are capable of maintaining the confidentiality
-                of their credentials. Public clients are incapable.
+          description: Confidential clients are capable of maintaining the confidentiality
+            of their credentials. Public clients are incapable
         client_id:
           type: string
           maxLength: 255
@@ -23348,9 +23346,8 @@ components:
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
-          description: |-
-            Confidential clients are capable of maintaining the confidentiality
-                of their credentials. Public clients are incapable.
+          description: Confidential clients are capable of maintaining the confidentiality
+            of their credentials. Public clients are incapable
         client_id:
           type: string
           minLength: 1
@@ -27738,9 +27735,8 @@ components:
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
-          description: |-
-            Confidential clients are capable of maintaining the confidentiality
-                of their credentials. Public clients are incapable.
+          description: Confidential clients are capable of maintaining the confidentiality
+            of their credentials. Public clients are incapable
         client_id:
           type: string
           minLength: 1
