@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"net/http"
 	"net/url"
+	"path"
 	"regexp"
 	"strings"
 	"time"
@@ -73,6 +74,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	})
 
 	redirectUri, _ := url.Parse(p.ExternalHost)
+	redirectUri.Path = path.Join(redirectUri.Path, "/outpost.goauthentik.io/callback")
 	redirectUri.RawQuery = url.Values{
 		callbackSignature: []string{"true"},
 	}.Encode()
