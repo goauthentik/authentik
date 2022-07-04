@@ -17,7 +17,7 @@
         "@docusaurus/plugin-client-redirects": "2.0.0-beta.21",
         "@docusaurus/preset-classic": "2.0.0-beta.21",
         "@mdx-js/react": "^1.6.22",
-        "clsx": "^1.1.1",
+        "clsx": "^1.2.0",
         "postcss": "^8.4.14",
         "rapidoc": "^9.3.2",
         "react": "^17.0.2",
