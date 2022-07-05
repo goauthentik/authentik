@@ -76,7 +76,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	redirectUri, _ := url.Parse(p.ExternalHost)
 	redirectUri.Path = path.Join(redirectUri.Path, "/outpost.goauthentik.io/callback")
 	redirectUri.RawQuery = url.Values{
-		callbackSignature: []string{"true"},
+		CallbackSignature: []string{"true"},
 	}.Encode()
 
 	// Configure an OpenID Connect aware OAuth2 client.
@@ -148,7 +148,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if _, set := r.URL.Query()[callbackSignature]; set {
+			if _, set := r.URL.Query()[CallbackSignature]; set {
 				a.handleAuthCallback(w, r)
 			} else {
 				inner.ServeHTTP(w, r)

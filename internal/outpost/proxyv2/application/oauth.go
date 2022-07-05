@@ -14,7 +14,7 @@ import (
 
 const (
 	redirectParam     = "rd"
-	callbackSignature = "X-authentik-auth-callback"
+	CallbackSignature = "X-authentik-auth-callback"
 )
 
 func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
