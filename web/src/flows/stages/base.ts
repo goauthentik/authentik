@@ -12,6 +12,17 @@ export interface StageHost {
     readonly tenant: CurrentTenant;
 }
 
+export function readFileAsync(file: Blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            resolve(reader.result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
 export class BaseStage<Tin, Tout> extends LitElement {
     host!: StageHost;
 
@@ -24,7 +35,14 @@ export class BaseStage<Tin, Tout> extends LitElement {
             [key: string]: unknown;
         } = {};
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
-        form.forEach((value, key) => (object[key] = value));
+
+        for await (const [key, value] of form.entries()) {
+            if (value instanceof Blob) {
+                object[key] = await readFileAsync(value);
+            } else {
+                object[key] = value;
+            }
+        }
         return this.host?.submit(object as unknown as Tout).then((successful) => {
             if (successful) {
                 this.cleanup();

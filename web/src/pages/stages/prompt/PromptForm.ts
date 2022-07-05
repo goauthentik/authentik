@@ -98,6 +98,12 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 ${t`Date Time`}
             </option>
             <option
+                value=${PromptTypeEnum.File}
+                ?selected=${this.instance?.type === PromptTypeEnum.File}
+            >
+                ${t`File`}
+            </option>
+            <option
                 value=${PromptTypeEnum.Separator}
                 ?selected=${this.instance?.type === PromptTypeEnum.Separator}
             >

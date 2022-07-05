@@ -24,6 +24,7 @@
             "ES2020",
             "ESNext",
             "DOM",
+            "DOM.Iterable",
             "WebWorker"
         ],
         "plugins": [
