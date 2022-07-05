@@ -158,7 +158,7 @@ class PolicyViewSet(
             pk=test_params.validated_data["user"].pk
         )
         if not users.exists():
-            raise PermissionDenied()
+            return Response(status=400)
 
         p_request = PolicyRequest(users.first())
         p_request.debug = True
