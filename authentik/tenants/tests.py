@@ -24,6 +24,7 @@ class TestTenants(APITestCase):
                 "branding_title": "authentik",
                 "matched_domain": tenant.domain,
                 "ui_footer_links": CONFIG.y("footer_links"),
+                "default_locale": "",
             },
         )
 
@@ -41,6 +42,7 @@ class TestTenants(APITestCase):
                 "branding_title": "custom",
                 "matched_domain": "bar.baz",
                 "ui_footer_links": CONFIG.y("footer_links"),
+                "default_locale": "",
             },
         )
 
@@ -55,6 +57,7 @@ class TestTenants(APITestCase):
                 "branding_title": "authentik",
                 "matched_domain": "fallback",
                 "ui_footer_links": CONFIG.y("footer_links"),
+                "default_locale": "",
             },
         )
 
