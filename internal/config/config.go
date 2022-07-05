@@ -1,12 +1,12 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 	"strings"
 
 	env "github.com/Netflix/go-env"
 	"github.com/imdario/mergo"
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
@@ -35,15 +35,15 @@ func DefaultConfig() {
 func LoadConfig(path string) error {
 	raw, err := ioutil.ReadFile(path)
 	if err != nil {
-		return errors.Wrap(err, "Failed to load config file")
+		return fmt.Errorf("Failed to load config file: %w", err)
 	}
 	nc := Config{}
 	err = yaml.Unmarshal(raw, &nc)
 	if err != nil {
-		return errors.Wrap(err, "Failed to parse YAML")
+		return fmt.Errorf("Failed to parse YAML: %w", err)
 	}
 	if err := mergo.Merge(&G, nc, mergo.WithOverride); err != nil {
-		return errors.Wrap(err, "failed to overlay config")
+		return fmt.Errorf("failed to overlay config: %w", err)
 	}
 	log.WithField("path", path).Debug("Loaded config")
 	return nil
@@ -53,10 +53,10 @@ func FromEnv() error {
 	nc := Config{}
 	_, err := env.UnmarshalFromEnviron(&nc)
 	if err != nil {
-		return errors.Wrap(err, "failed to load environment variables")
+		return fmt.Errorf("failed to load environment variables: %w", err)
 	}
 	if err := mergo.Merge(&G, nc, mergo.WithOverride); err != nil {
-		return errors.Wrap(err, "failed to overlay config")
+		return fmt.Errorf("failed to overlay config: %w", err)
 	}
 	log.Debug("Loaded config from environment")
 	return nil

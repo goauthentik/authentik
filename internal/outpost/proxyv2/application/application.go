@@ -17,7 +17,6 @@ import (
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
-	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
@@ -155,13 +154,13 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		err = a.configureForward()
 	}
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to configure application mode")
+		return nil, fmt.Errorf("failed to configure application mode: %w", err)
 	}
 
 	if kp := p.Certificate.Get(); kp != nil {
 		err := cs.AddKeypair(*kp)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to initially fetch certificate")
+			return nil, fmt.Errorf("failed to initially fetch certificate: %w", err)
 		}
 		a.Cert = cs.Get(*kp)
 	}
