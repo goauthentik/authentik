@@ -1,3 +1,5 @@
+import { globalAK } from "@goauthentik/web/api/Global";
+
 import { Messages, i18n } from "@lingui/core";
 import { detect, fromNavigator, fromUrl } from "@lingui/detect-locale";
 import { t } from "@lingui/macro";
@@ -121,7 +123,14 @@ const DEFAULT_FALLBACK = () => "en";
 
 export function autoDetectLanguage() {
     const detected =
-        detect(fromUrl("locale"), fromNavigator(), DEFAULT_FALLBACK) || DEFAULT_FALLBACK();
+        detect(
+            () => {
+                return globalAK().locale;
+            },
+            fromUrl("locale"),
+            fromNavigator(),
+            DEFAULT_FALLBACK,
+        ) || DEFAULT_FALLBACK();
     const locales = [detected];
     // For now we only care about the first locale part
     if (detected.includes("_")) {

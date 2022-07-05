@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/api/Config";
+import { globalAK } from "@goauthentik/web/api/Global";
 import { configureSentry } from "@goauthentik/web/api/Sentry";
 import { WebsocketClient } from "@goauthentik/web/common/ws";
 import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "@goauthentik/web/constants";
@@ -45,14 +46,6 @@ import {
 } from "@goauthentik/api";
 
 import { StageHost } from "./stages/base";
-
-export interface FlowWindow extends Window {
-    authentik: {
-        flow: {
-            layout: LayoutEnum;
-        };
-    };
-}
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -435,7 +428,7 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     getLayout(): string {
-        const prefilledFlow = (window as unknown as FlowWindow).authentik.flow.layout;
+        const prefilledFlow = globalAK().flow?.layout || LayoutEnum.Stacked;
         if (this.challenge) {
             return this.challenge?.flowInfo?.layout || prefilledFlow;
         }

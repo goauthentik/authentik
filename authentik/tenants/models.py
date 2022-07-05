@@ -65,6 +65,11 @@ class Tenant(models.Model):
 
     attributes = models.JSONField(default=dict, blank=True)
 
+    @property
+    def default_locale(self) -> str:
+        """Get default locale"""
+        return self.attributes.get("settings", {}).get("locale", "")
+
     def __str__(self) -> str:
         if self.default:
             return "Default tenant"

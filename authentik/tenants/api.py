@@ -4,7 +4,7 @@ from typing import Any
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ListField
+from rest_framework.fields import CharField, ListField, ReadOnlyField
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -75,6 +75,8 @@ class CurrentTenantSerializer(PassiveSerializer):
     flow_recovery = CharField(source="flow_recovery.slug", required=False)
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
     flow_user_settings = CharField(source="flow_user_settings.slug", required=False)
+
+    default_locale = ReadOnlyField()
 
 
 class TenantViewSet(UsedByMixin, ModelViewSet):
