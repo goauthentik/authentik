@@ -331,20 +331,18 @@ class Outpost(ManagedModel):
     @property
     def user(self) -> User:
         """Get/create user with access to all required objects"""
-        users = User.objects.filter(username=self.user_identifier)
-        should_create_user = not users.exists()
-        if should_create_user:
+        user = User.objects.filter(username=self.user_identifier).first()
+        user_created = False
+        if not user:
             user: User = User.objects.create(username=self.user_identifier)
             user.set_unusable_password()
-            user.save()
-        else:
-            user = users.first()
+            user_created = True
         user.attributes[USER_ATTRIBUTE_SA] = True
         user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
         user.name = f"Outpost {self.name} Service-Account"
         user.path = USER_PATH_OUTPOSTS
         user.save()
-        if should_create_user:
+        if user_created:
             self.build_user_permissions(user)
         return user
 
