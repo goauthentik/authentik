@@ -13,11 +13,11 @@ By default, the email is sent to the currently pending user. To override this, y
 For example, create this expression policy and bind it to the email stage:
 
 ```python
-request.context["email"] = "foo@bar.baz"
+request.context["flow_plan"].context["email"] = "foo@bar.baz"
 # Or get it from a prompt
-# request.context["email"] = request.context["prompt_data"]["email"]
+# request.context["flow_plan"].context["email"] = request.context["prompt_data"]["email"]
 # Or another user attribute
-# request.context["email"] = request.context["pending_user"].attributes.get("otherEmail")
+# request.context["flow_plan"].context["email"] = request.context["pending_user"].attributes.get("otherEmail")
 return True
 ```
 

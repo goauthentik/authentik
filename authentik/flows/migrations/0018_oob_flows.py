@@ -14,7 +14,7 @@ return not akadmin.has_usable_password()"""
 PREFILL_POLICY_EXPRESSION = """# This policy sets the user for the currently running flow
 # by injecting "pending_user"
 akadmin = ak_user_by(username="akadmin")
-context["pending_user"] = akadmin
+context["flow_plan"].context["pending_user"] = akadmin
 return True"""
 
 

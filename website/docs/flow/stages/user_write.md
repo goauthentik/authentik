@@ -14,6 +14,6 @@ Starting with authentik 2022.5, users can be added to dynamic groups. To do so, 
 from authentik.core.models import Group
 group, _ = Group.objects.get_or_create(name="some-group")
 # ["groups"] *must* be set to an array of Group objects, names alone are not enough.
-request.context["groups"] = [group]
+request.context["flow_plan"].context["groups"] = [group]
 return True
 ```
