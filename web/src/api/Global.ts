@@ -6,9 +6,9 @@ export interface GlobalAuthentik {
 }
 
 export interface AuthentikWindow {
-    authentik: GlobalAuthentik;
+    authentik?: GlobalAuthentik;
 }
 
-export function globalAK(): GlobalAuthentik {
+export function globalAK(): GlobalAuthentik | undefined {
     return (window as unknown as AuthentikWindow).authentik;
 }

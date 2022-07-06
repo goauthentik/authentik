@@ -125,7 +125,7 @@ export function autoDetectLanguage() {
     const detected =
         detect(
             () => {
-                return globalAK().locale;
+                return globalAK()?.locale;
             },
             fromUrl("locale"),
             fromNavigator(),
