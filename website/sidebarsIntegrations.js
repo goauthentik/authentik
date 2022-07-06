@@ -88,6 +88,7 @@ module.exports = {
                     ],
                 },
                 "services/home-assistant/index",
+                "services/node-red/index",
                 "services/kimai/index",
                 "services/sonarr/index",
                 "services/tautulli/index",
