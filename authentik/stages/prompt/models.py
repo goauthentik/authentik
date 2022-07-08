@@ -1,5 +1,6 @@
 """prompt models"""
 from base64 import b64decode
+from binascii import Error
 from typing import Any, Optional
 from urllib.parse import urlparse
 from uuid import uuid4
@@ -90,7 +91,11 @@ class InlineFileField(CharField):
         _mime, _, enc = header.partition(";")
         if enc != "base64":
             raise ValidationError("Invalid encoding")
-        data = b64decode(encoded.encode()).decode()
+        try:
+            data = b64decode(encoded.encode()).decode()
+        except (UnicodeDecodeError, UnicodeEncodeError, ValueError, Error):
+            LOGGER.info("failed to decode base64 of file field, keeping base64")
+            data = encoded
         return super().to_internal_value(data)
 
 

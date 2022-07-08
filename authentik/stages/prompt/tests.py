@@ -120,6 +120,10 @@ class TestPromptStage(FlowTestCase):
             InlineFileField().to_internal_value("data:mine/type;base64,Zm9v"),
             "foo",
         )
+        self.assertEqual(
+            InlineFileField().to_internal_value("data:mine/type;base64,Zm9vqwer"),
+            "Zm9vqwer",
+        )
 
     def test_render(self):
         """Test render of form, check if all prompts are rendered correctly"""
