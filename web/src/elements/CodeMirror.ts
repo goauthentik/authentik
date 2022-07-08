@@ -85,8 +85,22 @@ export class CodeMirrorTextarea extends LitElement {
     constructor() {
         super();
         this.theme = new Compartment();
-        this.themeLight = EditorView.theme({}, { dark: false });
-        this.themeDark = EditorView.theme({}, { dark: true });
+        this.themeLight = EditorView.theme(
+            {
+                "&": {
+                    backgroundColor: "var(--pf-global--BackgroundColor--light-300)",
+                },
+            },
+            { dark: false },
+        );
+        this.themeDark = EditorView.theme(
+            {
+                "&": {
+                    backgroundColor: "var(--ak-dark-background-light)",
+                },
+            },
+            { dark: true },
+        );
     }
 
     private getInnerValue(): string {
