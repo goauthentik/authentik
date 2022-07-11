@@ -23,41 +23,43 @@ This requires modification of the Node-RED settings.js and installing additional
 The following placeholders will be used:
 
 -   `authentik.company` is the FQDN of authentik.
--   `nodered.company` is the FQDN of nodered.
+-   `nodred.company` is the FQDN of Node-RED.
 
 ### Step 1
 
-In authentik, create an OAuth2/OpenID Provider (under Resources/Providers) with these settings:
+In authentik, create an _OAuth2/OpenID Provider_ (under _Resources/Providers_) with these settings:
 
 :::note
 Only settings that have been modified from default have been listed.
 :::
 
 -   Name: Node-RED
--   Slug: node-red
--   Provider: Node-RED
 
 **Protocol Settings**
-```
-Name: nodered
-Signing Key: Select any available key
-```
+
+-   Redirect URIs/Origins (RegEx): https://nodred.company/auth/strategy/callback/
+-   Signing Key: Select any available key
 
 :::note
-Take note of the Client ID and Client Secret, you'll need to give them to nodered in Step 3.
+Take note of the `Client ID` and `Client Secret`, you'll need to give them to Node-RED in _Step 3_.
 :::
 
 ### Step 2
 
-In authentik, create an application (under Resources/Applications) which uses this provider. Optionally apply access restrictions to the application using policy bindings.
-note
+In authentik, create an application (under _Resources/Applications_) which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 
+:::note
 Only settings that have been modified from default have been listed.
-```
-Name: Node-RED
-Slug: nodered-slug
-Provider: Node-RED
-```
+:::
+
+-   Name: Node-RED
+-   Slug: nodered-slug
+-   Provider: Node-RED
+
+Optionally you can link directly to the authentication strategy
+
+-   Launch URL: https://nodred.company/auth/strategy/
+
 ### Step 3
 
 :::note
