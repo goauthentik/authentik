@@ -26,7 +26,9 @@ Under _Property Mappings_, create a _SAML Property Mapping_. Give it a name like
 return f"{user.pk}-{user.username}"
 ```
 
-Create an application in authentik. Create a SAML provider with the following parameters:
+Create an application in authentik. Set the Launch URL to `https://rancher.company`, as Rancher does not currently support IdP-initiated logins.
+
+Create a SAML provider with the following parameters:
 
 -   ACS URL: `https://rancher.company/v1-saml/adfs/saml/acs`
 -   Audience: `https://rancher.company/v1-saml/adfs/saml/metadata`
