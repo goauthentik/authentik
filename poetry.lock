@@ -1965,7 +1965,7 @@ python-versions = "*"
 
 [[package]]
 name = "webauthn"
-version = "1.5.2"
+version = "1.6.0"
 description = "Pythonic WebAuthn"
 category = "main"
 optional = false
@@ -3545,8 +3545,8 @@ wcwidth = [
     {file = "wcwidth-0.2.5.tar.gz", hash = "sha256:c4d647b99872929fdb7bdcaa4fbe7f01413ed3d98077df798530e5b04f116c83"},
 ]
 webauthn = [
-    {file = "webauthn-1.5.2-py3-none-any.whl", hash = "sha256:85b0780329755d3bb0cf9bf456002cddddf8718daa42293316d26c09c1eceec4"},
-    {file = "webauthn-1.5.2.tar.gz", hash = "sha256:44d57d953d712ac3db543b77ad69f176dc7ec531bd677e779951e3380ee6f5e6"},
+    {file = "webauthn-1.6.0-py3-none-any.whl", hash = "sha256:6811b3f1b5ff627dadfe9685a1eaf80cbb5689c35f9ae00d4ee63681c0dd64b2"},
+    {file = "webauthn-1.6.0.tar.gz", hash = "sha256:9c74b0e4aea4579fbf0ecb77a72d0b1cb7d7dcab7ca2d105474925b731178686"},
 ]
 websocket-client = [
     {file = "websocket-client-1.3.2.tar.gz", hash = "sha256:50b21db0058f7a953d67cc0445be4b948d7fc196ecbeb8083d68d94628e4abf6"},
