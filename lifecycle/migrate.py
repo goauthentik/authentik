@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """System Migration handler"""
 import os
+import sys
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isclass
 from pathlib import Path
@@ -50,7 +51,16 @@ def release_lock():
     curr.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
 
 
+def is_locked():
+    """Check if lock is currently active (used by worker to wait for migrations)"""
+    curr.executor("SELECT count(*) FROM pg_locks WHERE objid = %s", (ADV_LOCK_UID,))
+    return curr.rowcount
+
+
 if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "check_lock":
+            sys.exit(is_locked())
 
     conn = connect(
         dbname=CONFIG.y("postgresql.name"),
