@@ -11,7 +11,11 @@ from authentik.events.monitored_tasks import (
 from authentik.managed.manager import ObjectManager
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(
+    bind=True,
+    base=MonitoredTask,
+    retry_backoff=True,
+)
 @prefill_task
 def managed_reconcile(self: MonitoredTask):
     """Run ObjectManager to ensure objects are up-to-date"""
@@ -22,3 +26,4 @@ def managed_reconcile(self: MonitoredTask):
         )
     except DatabaseError as exc:  # pragma: no cover
         self.set_status(TaskResult(TaskResultStatus.WARNING, [str(exc)]))
+        self.retry()
