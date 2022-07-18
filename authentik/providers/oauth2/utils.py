@@ -10,6 +10,7 @@ from django.http.response import HttpResponseRedirect
 from django.utils.cache import patch_vary_headers
 from structlog.stdlib import get_logger
 
+from authentik.core.middleware import KEY_USER
 from authentik.events.models import Event, EventAction
 from authentik.providers.oauth2.errors import BearerTokenError
 from authentik.providers.oauth2.models import OAuth2Provider, RefreshToken
@@ -165,7 +166,10 @@ def protected_resource_view(scopes: list[str]):
                 ] = f'error="{error.code}", error_description="{error.description}"'
                 return response
             kwargs["token"] = token
-            return view(request, *args, **kwargs)
+            response = view(request, *args, **kwargs)
+            setattr(response, "ak_context", {})
+            response.ak_context[KEY_USER] = token.user.username
+            return response
 
         return view_wrapper
 
