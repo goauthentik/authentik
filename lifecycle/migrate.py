@@ -53,15 +53,11 @@ def release_lock():
 
 def is_locked():
     """Check if lock is currently active (used by worker to wait for migrations)"""
-    curr.executor("SELECT count(*) FROM pg_locks WHERE objid = %s", (ADV_LOCK_UID,))
-    return curr.rowcount
+    curr.execute("SELECT count(*) FROM pg_locks WHERE objid = %s", (ADV_LOCK_UID,))
+    return curr.fetchall()[0][0]
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        if sys.argv[1] == "check_lock":
-            sys.exit(is_locked())
-
     conn = connect(
         dbname=CONFIG.y("postgresql.name"),
         user=CONFIG.y("postgresql.user"),
@@ -70,6 +66,10 @@ if __name__ == "__main__":
         port=int(CONFIG.y("postgresql.port")),
     )
     curr = conn.cursor()
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "check_lock":
+            sys.exit(is_locked())
+
     try:
         for migration in Path(__file__).parent.absolute().glob("system_migrations/*.py"):
             spec = spec_from_file_location("lifecycle.system_migrations", migration)
