@@ -44,11 +44,6 @@ if [[ "$1" == "server" ]]; then
     /authentik-proxy
 elif [[ "$1" == "worker" ]]; then
     wait_for_db
-    # Check if the migration lock is set, and exit if so
-    # the orchestrator should restart this container, and this prevents
-    # errors when startup tasks are attempted to be run without
-    # migrations in place
-    python -m lifecycle.migrate check_lock
     echo "worker" > $MODE_FILE
     check_if_root "celery -A authentik.root.celery worker -Ofair --max-tasks-per-child=1 --autoscale 3,1 -E -B -s /tmp/celerybeat-schedule -Q authentik,authentik_scheduled,authentik_events"
 elif [[ "$1" == "bash" ]]; then
