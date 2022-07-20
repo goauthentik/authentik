@@ -27,7 +27,7 @@ class OpenIDConnectOAuth2Callback(OAuthCallback):
         info: dict[str, Any],
     ) -> dict[str, Any]:
         return {
-            "username": info.get("nickname", info.get("prefered_username")),
+            "username": info.get("nickname", info.get("preferred_username")),
             "email": info.get("email"),
             "name": info.get("name"),
         }
