@@ -11,7 +11,6 @@ from django.http import HttpRequest, HttpResponse
 from django_otp.plugins.otp_static.models import StaticToken
 from guardian.models import UserObjectPermission
 
-from authentik.core.middleware import LOCAL
 from authentik.core.models import AuthenticatedSession, User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.signals import EventNewThread
@@ -45,36 +44,46 @@ class AuditMiddleware:
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         self.get_response = get_response
 
+    def connect(self, request: HttpRequest):
+        """Connect signal for automatic logging"""
+        if not hasattr(request, "user"):
+            return
+        if not getattr(request.user, "is_authenticated", False):
+            return
+        if not hasattr(request, "request_id"):
+            return
+        post_save_handler = partial(self.post_save_handler, user=request.user, request=request)
+        pre_delete_handler = partial(self.pre_delete_handler, user=request.user, request=request)
+        post_save.connect(
+            post_save_handler,
+            dispatch_uid=request.request_id,
+            weak=False,
+        )
+        pre_delete.connect(
+            pre_delete_handler,
+            dispatch_uid=request.request_id,
+            weak=False,
+        )
+
+    def disconnect(self, request: HttpRequest):
+        """Disconnect signals"""
+        if not hasattr(request, "request_id"):
+            return
+        post_save.disconnect(dispatch_uid=request.request_id)
+        pre_delete.disconnect(dispatch_uid=request.request_id)
+
     def __call__(self, request: HttpRequest) -> HttpResponse:
-        # Connect signal for automatic logging
-        if hasattr(request, "user") and getattr(request.user, "is_authenticated", False):
-            post_save_handler = partial(self.post_save_handler, user=request.user, request=request)
-            pre_delete_handler = partial(
-                self.pre_delete_handler, user=request.user, request=request
-            )
-            post_save.connect(
-                post_save_handler,
-                dispatch_uid=LOCAL.authentik["request_id"],
-                weak=False,
-            )
-            pre_delete.connect(
-                pre_delete_handler,
-                dispatch_uid=LOCAL.authentik["request_id"],
-                weak=False,
-            )
+        self.connect(request)
 
         response = self.get_response(request)
 
-        post_save.disconnect(dispatch_uid=LOCAL.authentik["request_id"])
-        pre_delete.disconnect(dispatch_uid=LOCAL.authentik["request_id"])
-
+        self.disconnect(request)
         return response
 
     # pylint: disable=unused-argument
     def process_exception(self, request: HttpRequest, exception: Exception):
         """Disconnect handlers in case of exception"""
-        post_save.disconnect(dispatch_uid=LOCAL.authentik["request_id"])
-        pre_delete.disconnect(dispatch_uid=LOCAL.authentik["request_id"])
+        self.disconnect(request)
 
         if settings.DEBUG:
             return

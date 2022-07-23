@@ -7,7 +7,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
-from authentik.core.middleware import KEY_AUTH_VIA, LOCAL
+from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import Token, TokenIntents, User
 from authentik.outposts.models import Outpost
 from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
@@ -36,14 +36,12 @@ def bearer_auth(raw_header: bytes) -> Optional[User]:
     auth_credentials = validate_auth(raw_header)
     if not auth_credentials:
         return None
-    if not hasattr(LOCAL, "authentik"):
-        LOCAL.authentik = {}
     # first, check traditional tokens
     key_token = Token.filter_not_expired(
         key=auth_credentials, intent=TokenIntents.INTENT_API
     ).first()
     if key_token:
-        LOCAL.authentik[KEY_AUTH_VIA] = "api_token"
+        CTX_AUTH_VIA.set("api_token")
         return key_token.user
     # then try to auth via JWT
     jwt_token = RefreshToken.filter_not_expired(
@@ -54,12 +52,12 @@ def bearer_auth(raw_header: bytes) -> Optional[User]:
         # we want to check the parsed version too
         if SCOPE_AUTHENTIK_API not in jwt_token.scope:
             raise AuthenticationFailed("Token invalid/expired")
-        LOCAL.authentik[KEY_AUTH_VIA] = "jwt"
+        CTX_AUTH_VIA.set("jwt")
         return jwt_token.user
     # then try to auth via secret key (for embedded outpost/etc)
     user = token_secret_key(auth_credentials)
     if user:
-        LOCAL.authentik[KEY_AUTH_VIA] = "secret_key"
+        CTX_AUTH_VIA.set("secret_key")
         return user
     raise AuthenticationFailed("Token invalid/expired")
 
