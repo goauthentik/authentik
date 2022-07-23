@@ -17,7 +17,7 @@ from django.conf import settings
 from django.db import ProgrammingError
 from structlog.stdlib import get_logger
 
-from authentik.core.middleware import LOCAL
+from authentik.core.middleware import CTX_AUTH_VIA, CTX_HOST, CTX_REQUEST_ID
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 
@@ -48,9 +48,9 @@ def after_task_publish_hook(sender=None, headers=None, body=None, **kwargs):
 def task_prerun_hook(task_id: str, task, *args, **kwargs):
     """Log task_id on worker"""
     request_id = "task-" + task_id.replace("-", "")
-    LOCAL.authentik_task = {
-        "request_id": request_id,
-    }
+    CTX_REQUEST_ID.set(request_id)
+    CTX_AUTH_VIA.set(Ellipsis)
+    CTX_HOST.set(Ellipsis)
     LOGGER.info("Task started", task_id=task_id, task_name=task.__name__)
 
 
@@ -59,10 +59,6 @@ def task_prerun_hook(task_id: str, task, *args, **kwargs):
 def task_postrun_hook(task_id, task, *args, retval=None, state=None, **kwargs):
     """Log task_id on worker"""
     LOGGER.info("Task finished", task_id=task_id, task_name=task.__name__, state=state)
-    if not hasattr(LOCAL, "authentik_task"):
-        return
-    for key in list(LOCAL.authentik_task.keys()):
-        del LOCAL.authentik_task[key]
 
 
 # pylint: disable=unused-argument

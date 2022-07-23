@@ -14,7 +14,6 @@ from celery.schedules import crontab
 from sentry_sdk import set_tag
 
 from authentik import ENV_GIT_HASH_KEY, __version__
-from authentik.core.middleware import structlog_add_request_id
 from authentik.lib.config import CONFIG
 from authentik.lib.logging import add_process_id
 from authentik.lib.sentry import sentry_init
@@ -380,12 +379,12 @@ structlog.configure_once(
     processors=[
         structlog.stdlib.add_log_level,
         structlog.stdlib.add_logger_name,
-        structlog.threadlocal.merge_threadlocal_context,
+        structlog.contextvars.merge_contextvars,
         add_process_id,
-        structlog_add_request_id,
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.TimeStamper(fmt="iso", utc=False),
         structlog.processors.StackInfoRenderer(),
+        structlog.processors.dict_tracebacks,
         structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
     ],
     logger_factory=structlog.stdlib.LoggerFactory(),
@@ -400,6 +399,7 @@ LOG_PRE_CHAIN = [
     # is not from structlog.
     structlog.stdlib.add_log_level,
     structlog.stdlib.add_logger_name,
+    structlog.processors.dict_tracebacks,
     structlog.processors.TimeStamper(),
     structlog.processors.StackInfoRenderer(),
 ]
