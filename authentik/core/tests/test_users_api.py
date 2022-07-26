@@ -1,10 +1,13 @@
 """Test Users API"""
+from json import loads
+
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
+from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.email.models import EmailStage
 from authentik.tenants.models import Tenant
@@ -211,3 +214,47 @@ class TestUsersAPI(APITestCase):
         self.assertJSONEqual(
             response.content.decode(), {"path": ["No empty segments in user path allowed."]}
         )
+
+    def test_me(self):
+        """Test user's me endpoint"""
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+
+    @CONFIG.patch("avatars", "none")
+    def test_avatars_none(self):
+        """Test avatars none"""
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["user"]["avatar"], "/static/dist/assets/images/user_default.png")
+
+    @CONFIG.patch("avatars", "gravatar")
+    def test_avatars_gravatar(self):
+        """Test avatars gravatar"""
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertIn("gravatar", body["user"]["avatar"])
+
+    @CONFIG.patch("avatars", "foo-%(username)s")
+    def test_avatars_custom(self):
+        """Test avatars custom"""
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["user"]["avatar"], f"foo-{self.admin.username}")
+
+    @CONFIG.patch("avatars", "attributes.foo.avatar")
+    def test_avatars_attributes(self):
+        """Test avatars attributes"""
+        self.admin.attributes = {"foo": {"avatar": "bar"}}
+        self.admin.save()
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["user"]["avatar"], "bar")

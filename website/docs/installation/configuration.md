@@ -149,6 +149,9 @@ Configure how authentik should show avatars for users. Following values can be s
     -   `%(mail_hash)s`: The email address, md5 hashed
     -   `%(upn)s`: The user's UPN, if set (otherwise an empty string)
 
+Starting with authentik 2022.8, you can also use an attribute path like `attributes.something.avatar`,
+which can be used in combination with the file field to allow users to upload custom avatars for themselves.
+
 ### `AUTHENTIK_DEFAULT_USER_CHANGE_NAME`
 
 :::info

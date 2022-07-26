@@ -26,7 +26,7 @@ from structlog.stdlib import get_logger
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton, UserSettingSerializer
-from authentik.lib.config import CONFIG
+from authentik.lib.config import CONFIG, get_path_from_dict
 from authentik.lib.generators import generate_id
 from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator, SerializerModel
 from authentik.lib.utils.http import get_client_ip
@@ -213,9 +213,11 @@ class User(GuardianUserMixin, AbstractUser):
         mode: str = CONFIG.y("avatars", "none")
         if mode == "none":
             return DEFAULT_AVATAR
-        # gravatar uses md5 for their URLs, so md5 can't be avoided
+        if mode.startswith("attributes."):
+            return get_path_from_dict(self.attributes, mode[11:], default=DEFAULT_AVATAR)
         mail_hash = md5(self.email.lower().encode("utf-8")).hexdigest()  # nosec
         if mode == "gravatar":
+            # gravatar uses md5 for their URLs, so md5 can't be avoided
             parameters = [
                 ("s", "158"),
                 ("r", "g"),
