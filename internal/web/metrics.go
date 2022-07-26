@@ -37,7 +37,7 @@ func RunMetricsServer() {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
-		re.SetBasicAuth("monitor", config.G.SecretKey)
+		re.SetBasicAuth("monitor", config.Get().SecretKey)
 		res, err := http.DefaultClient.Do(re)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
@@ -54,10 +54,10 @@ func RunMetricsServer() {
 			return
 		}
 	})
-	l.WithField("listen", config.G.Web.ListenMetrics).Info("Starting Metrics server")
-	err := http.ListenAndServe(config.G.Web.ListenMetrics, m)
+	l.WithField("listen", config.Get().Web.ListenMetrics).Info("Starting Metrics server")
+	err := http.ListenAndServe(config.Get().Web.ListenMetrics, m)
 	if err != nil {
 		l.WithError(err).Warning("Failed to start metrics server")
 	}
-	l.WithField("listen", config.G.Web.ListenMetrics).Info("Stopping Metrics server")
+	l.WithField("listen", config.Get().Web.ListenMetrics).Info("Stopping Metrics server")
 }

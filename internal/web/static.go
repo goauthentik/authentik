@@ -17,7 +17,7 @@ func (ws *WebServer) configureStatic() {
 	indexLessRouter := statRouter.NewRoute().Subrouter()
 	indexLessRouter.Use(web.DisableIndex)
 	// Media files, always local
-	fs := http.FileServer(http.Dir(config.G.Paths.Media))
+	fs := http.FileServer(http.Dir(config.Get().Paths.Media))
 	distFs := http.FileServer(http.Dir("./web/dist"))
 	distHandler := http.StripPrefix("/static/dist/", distFs)
 	authentikHandler := http.StripPrefix("/static/authentik/", http.FileServer(http.Dir("./web/authentik")))

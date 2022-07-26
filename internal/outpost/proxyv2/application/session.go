@@ -15,8 +15,8 @@ import (
 
 func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) sessions.Store {
 	var store sessions.Store
-	if config.G.Redis.Host != "" {
-		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.G.Redis.Host, config.G.Redis.Port), config.G.Redis.Password, strconv.Itoa(config.G.Redis.OutpostSessionDB), []byte(*p.CookieSecret))
+	if config.Get().Redis.Host != "" {
+		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port), config.Get().Redis.Password, strconv.Itoa(config.Get().Redis.OutpostSessionDB), []byte(*p.CookieSecret))
 		if err != nil {
 			panic(err)
 		}

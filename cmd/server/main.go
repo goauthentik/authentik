@@ -34,28 +34,15 @@ func main() {
 	})
 	go debug.EnableDebugServer()
 	l := log.WithField("logger", "authentik.root")
-	config.DefaultConfig()
-	err := config.LoadConfig("./authentik/lib/default.yml")
-	if err != nil {
-		l.WithError(err).Warning("failed to load default config")
-	}
-	err = config.LoadConfig("./local.env.yml")
-	if err != nil {
-		l.WithError(err).Debug("no local config to load")
-	}
-	err = config.FromEnv()
-	if err != nil {
-		l.WithError(err).Debug("failed to environment variables")
-	}
-	config.ConfigureLogger()
+	config.Get().Setup("./authentik/lib/default.yml", "./local.env.yml")
 
-	if config.G.ErrorReporting.Enabled {
+	if config.Get().ErrorReporting.Enabled {
 		err := sentry.Init(sentry.ClientOptions{
-			Dsn:              config.G.ErrorReporting.DSN,
+			Dsn:              config.Get().ErrorReporting.DSN,
 			AttachStacktrace: true,
-			TracesSampler:    sentryutils.SamplerFunc(config.G.ErrorReporting.SampleRate),
+			TracesSampler:    sentryutils.SamplerFunc(config.Get().ErrorReporting.SampleRate),
 			Release:          fmt.Sprintf("authentik@%s", constants.VERSION),
-			Environment:      config.G.ErrorReporting.Environment,
+			Environment:      config.Get().ErrorReporting.Environment,
 			HTTPTransport:    webutils.NewUserAgentTransport(constants.UserAgent(), http.DefaultTransport),
 			IgnoreErrors: []string{
 				http.ErrAbortHandler.Error(),
@@ -74,7 +61,7 @@ func main() {
 	g := gounicorn.NewGoUnicorn()
 	ws := web.NewWebServer(g)
 	g.HealthyCallback = func() {
-		if !config.G.Web.DisableEmbeddedOutpost {
+		if !config.Get().Web.DisableEmbeddedOutpost {
 			go attemptProxyStart(ws, u)
 		}
 	}
@@ -105,7 +92,7 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 	l := log.WithField("logger", "authentik.server")
 	for {
 		l.Debug("attempting to init outpost")
-		ac := ak.NewAPIController(*u, config.G.SecretKey)
+		ac := ak.NewAPIController(*u, config.Get().SecretKey)
 		if ac == nil {
 			attempt += 1
 			time.Sleep(1 * time.Second)
