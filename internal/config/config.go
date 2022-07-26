@@ -49,7 +49,10 @@ func (c *Config) Setup(paths ...string) {
 			log.WithError(err).Info("failed to load config, skipping")
 		}
 	}
-	c.fromEnv()
+	err := c.fromEnv()
+	if err != nil {
+		log.WithError(err).Info("failed to load env vars")
+	}
 	c.configureLogger()
 }
 

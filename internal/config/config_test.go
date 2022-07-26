@@ -12,7 +12,9 @@ import (
 func TestConfigEnv(t *testing.T) {
 	os.Setenv("AUTHENTIK_SECRET_KEY", "bar")
 	cfg = nil
-	Get().fromEnv()
+	if err := Get().fromEnv(); err != nil {
+		panic(err)
+	}
 	assert.Equal(t, "bar", Get().SecretKey)
 }
 
@@ -20,7 +22,9 @@ func TestConfigEnv_Scheme(t *testing.T) {
 	os.Setenv("foo", "bar")
 	os.Setenv("AUTHENTIK_SECRET_KEY", "env://foo")
 	cfg = nil
-	Get().fromEnv()
+	if err := Get().fromEnv(); err != nil {
+		panic(err)
+	}
 	assert.Equal(t, "bar", Get().SecretKey)
 }
 
@@ -30,10 +34,15 @@ func TestConfigEnv_File(t *testing.T) {
 		log.Fatal(err)
 	}
 	defer os.Remove(file.Name())
-	file.Write([]byte("bar"))
+	_, err = file.Write([]byte("bar"))
+	if err != nil {
+		panic(err)
+	}
 
 	os.Setenv("AUTHENTIK_SECRET_KEY", fmt.Sprintf("file://%s", file.Name()))
 	cfg = nil
-	Get().fromEnv()
+	if err := Get().fromEnv(); err != nil {
+		panic(err)
+	}
 	assert.Equal(t, "bar", Get().SecretKey)
 }
