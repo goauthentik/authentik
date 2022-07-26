@@ -87,6 +87,7 @@ table.comparison thead.group tr {
 }
 
 table.comparison thead.group th:first-child {
+    border-left: 10px solid transparent;
     text-align: left;
     font-weight: 800;
 }
