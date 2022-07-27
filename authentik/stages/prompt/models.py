@@ -1,6 +1,6 @@
 """prompt models"""
 from typing import Any, Optional
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 from uuid import uuid4
 
 from django.db import models
@@ -89,7 +89,7 @@ class InlineFileField(CharField):
         _mime, _, enc = header.partition(";")
         if enc != "base64":
             raise ValidationError("Invalid encoding")
-        return super().to_internal_value(uri)
+        return super().to_internal_value(urlunparse(uri))
 
 
 class Prompt(SerializerModel):
