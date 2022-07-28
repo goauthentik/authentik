@@ -3993,6 +3993,10 @@ msgstr "占位符"
 msgid "Plan history"
 msgstr "规划历史记录"
 
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
+msgid "Please enter the code you received via SMS"
+msgstr ""
+
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Please enter your Code"
 msgstr "请输入您的验证码"
@@ -4001,7 +4005,6 @@ msgstr "请输入您的验证码"
 msgid "Please enter your Phone number."
 msgstr "请输入您的电话号码。"
 
-#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Please enter your TOTP Code"
 msgstr "请输入您的 TOTP 代码"

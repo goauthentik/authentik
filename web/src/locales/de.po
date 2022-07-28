@@ -4025,6 +4025,10 @@ msgstr "Platzhalter"
 msgid "Plan history"
 msgstr "History"
 
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
+msgid "Please enter the code you received via SMS"
+msgstr ""
+
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Please enter your Code"
 msgstr "Bitte geben Sie Ihren Code ein "
@@ -4033,7 +4037,6 @@ msgstr "Bitte geben Sie Ihren Code ein "
 msgid "Please enter your Phone number."
 msgstr "Bitte geben Sie Ihre Telefonnummer ein."
 
-#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Please enter your TOTP Code"
 msgstr "Bitte geben Sie Ihren TOTP-Code ein."

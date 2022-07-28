@@ -20,9 +20,7 @@ In the next step, add an address from your Sender Pool. Instructions on how to c
 
 The other two steps can be skipped using the _Skip setup_ button.
 
-Afterwards, copy the value of **Messaging Service SID**. This is the value for the _Twilio Account SID_ field in authentik.
-
-Navigate back to the root of your Twilio console, and copy the Auth token. This is the value for the _Twilio Auth Token_ field in authentik.
+Navigate back to the root of your Twilio console, and copy the Auth token. This is the value for the _Twilio Auth Token_ field in authentik. Copy the value of **Account SID**. This is the value for the _Twilio Account SID_ field in authentik.
 
 #### Generic
 

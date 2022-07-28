@@ -4020,6 +4020,10 @@ msgstr "Yer tutucu"
 msgid "Plan history"
 msgstr "Plan geçmişi"
 
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
+msgid "Please enter the code you received via SMS"
+msgstr ""
+
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Please enter your Code"
 msgstr "Lütfen Kodunuzu girin"
@@ -4028,7 +4032,6 @@ msgstr "Lütfen Kodunuzu girin"
 msgid "Please enter your Phone number."
 msgstr "Lütfen Telefon numaranızı girin."
 
-#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Please enter your TOTP Code"
 msgstr "Lütfen TOTP Kodunuzu girin"

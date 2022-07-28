@@ -122,7 +122,7 @@ export class AuthenticatorSMSStage extends BaseStage<
                             name="code"
                             inputmode="numeric"
                             pattern="[0-9]*"
-                            placeholder="${t`Please enter your TOTP Code`}"
+                            placeholder="${t`Please enter the code you received via SMS`}"
                             autofocus=""
                             autocomplete="one-time-code"
                             class="pf-c-form-control"
