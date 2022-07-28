@@ -1,6 +1,6 @@
 """Interface views"""
-from typing import Any
 from json import dumps
+from typing import Any
 
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
