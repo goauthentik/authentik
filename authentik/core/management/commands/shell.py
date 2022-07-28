@@ -40,9 +40,6 @@ class Command(BaseCommand):  # pragma: no cover
 
         # Gather Django models and constants from each app
         for app in apps.get_app_configs():
-            if not app.name.startswith("authentik"):
-                continue
-
             # Load models from each app
             for model in app.get_models():
                 namespace[model.__name__] = model
