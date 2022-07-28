@@ -74,14 +74,6 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
 
         stage: AuthenticatorTOTPStage = self.executor.current_stage
 
-        devices = TOTPDevice.objects.filter(user=user)
-        # Currently, this stage only supports one device per user. If the user already
-        # has a device, just skip to the next stage
-        if devices.exists():
-            if not any(x.confirmed for x in devices):
-                return super().get(request, *args, **kwargs)
-            return self.executor.stage_ok()
-
         TOTPDevice.objects.create(
             user=user, confirmed=False, digits=stage.digits, name="TOTP Authenticator"
         )
