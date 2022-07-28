@@ -799,6 +799,10 @@ msgstr "Önbelleğe alınan ilkeler"
 msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
 msgstr "Önbelleğe alınmış sorgulama, üs tüm kullanıcıları ve grupları bellek içinde tutar ve her 5 Dakikada yenileyecektir."
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Caddy (Standalone)"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr "Geri arama URL'si"
@@ -4398,6 +4402,7 @@ msgid "Redirect binding"
 msgstr "Yeniden yönlendirme bağlama"
 
 #: src/elements/table/Table.ts
+#: src/elements/user/UserDevicesList.ts
 msgid "Refresh"
 msgstr "Yenile"
 
