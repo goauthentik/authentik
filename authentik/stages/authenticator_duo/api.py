@@ -111,7 +111,10 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         if device:
             return Response(data={"non_field_errors": ["device exists already"]}, status=400)
         DuoDevice.objects.create(
-            duo_user_id=request.query_params.get("duo_user_id"), user=user, stage=stage
+            duo_user_id=request.query_params.get("duo_user_id"),
+            user=user,
+            stage=stage,
+            name="Imported Duo Authenticator",
         )
         return Response(status=204)
 
