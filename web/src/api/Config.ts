@@ -1,4 +1,5 @@
-import { VERSION } from "@goauthentik/web/constants";
+import { globalAK } from "@goauthentik/web/api/Global";
+import { EVENT_REFRESH, VERSION } from "@goauthentik/web/constants";
 import { MessageMiddleware } from "@goauthentik/web/elements/messages/Middleware";
 import { APIMiddleware } from "@goauthentik/web/elements/notifications/APIDrawer";
 import { activateLocale } from "@goauthentik/web/interfaces/locale";
@@ -6,9 +7,11 @@ import { getCookie } from "@goauthentik/web/utils";
 
 import {
     Config,
+    ConfigFromJSON,
     Configuration,
     CoreApi,
     CurrentTenant,
+    CurrentTenantFromJSON,
     FetchParams,
     Middleware,
     RequestContext,
@@ -27,7 +30,9 @@ export class LoggingMiddleware implements Middleware {
     }
 }
 
-let globalConfigPromise: Promise<Config>;
+let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(
+    ConfigFromJSON(globalAK()?.config),
+);
 export function config(): Promise<Config> {
     if (!globalConfigPromise) {
         globalConfigPromise = new RootApi(DEFAULT_CONFIG).rootConfigRetrieve();
@@ -60,7 +65,9 @@ export function tenantSetLocale(tenant: CurrentTenant) {
     activateLocale(tenant.defaultLocale);
 }
 
-let globalTenantPromise: Promise<CurrentTenant>;
+let globalTenantPromise: Promise<CurrentTenant> | undefined = Promise.resolve(
+    CurrentTenantFromJSON(globalAK()?.tenant),
+);
 export function tenant(): Promise<CurrentTenant> {
     if (!globalTenantPromise) {
         globalTenantPromise = new CoreApi(DEFAULT_CONFIG)
@@ -107,5 +114,14 @@ export const DEFAULT_CONFIG = new Configuration({
 export function AndNext(url: string): string {
     return `?next=${encodeURIComponent(url)}`;
 }
+
+window.addEventListener(EVENT_REFRESH, () => {
+    // Upon global refresh, disregard whatever was pre-hydrated and
+    // actually load info from API
+    globalConfigPromise = undefined;
+    globalTenantPromise = undefined;
+    config();
+    tenant();
+});
 
 console.debug(`authentik(early): version ${VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`);

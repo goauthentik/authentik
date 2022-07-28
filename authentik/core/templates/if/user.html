@@ -7,6 +7,12 @@
 <script src="{% static 'dist/user/UserInterface.js' %}" type="module"></script>
 <meta name="theme-color" content="#151515" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151515" media="(prefers-color-scheme: dark)">
+<script>
+window.authentik = {};
+window.authentik.locale = "{{ tenant.default_locale }}";
+window.authentik.config = JSON.parse('{{ config_json|safe }}');
+window.authentik.tenant = JSON.parse('{{ tenant_json|safe }}');
+</script>
 {% endblock %}
 
 {% block body %}

@@ -7,6 +7,12 @@
 <script src="{% static 'dist/admin/AdminInterface.js' %}" type="module"></script>
 <meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<script>
+window.authentik = {};
+window.authentik.locale = "{{ tenant.default_locale }}";
+window.authentik.config = JSON.parse('{{ config_json|safe }}');
+window.authentik.tenant = JSON.parse('{{ tenant_json|safe }}');
+</script>
 {% endblock %}
 
 {% block body %}
