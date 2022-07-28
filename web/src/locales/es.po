@@ -2250,6 +2250,10 @@ msgstr "Campos"
 msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr "Campos con los que un usuario puede identificarse. Si no se seleccionan campos, el usuario solo podrá usar fuentes."
 
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "File"
+msgstr ""
+
 #: src/elements/wizard/Wizard.ts
 msgid "Finish"
 msgstr ""

@@ -2247,6 +2247,10 @@ msgstr "Pola"
 msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr "Pola, z którymi użytkownik może się identyfikować. Jeśli żadne pola nie zostaną wybrane, użytkownik będzie mógł korzystać tylko ze źródeł."
 
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "File"
+msgstr ""
+
 #: src/elements/wizard/Wizard.ts
 msgid "Finish"
 msgstr ""

@@ -2238,6 +2238,10 @@ msgstr "字段"
 msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr "用户可以用来标识自己的字段。如果未选择任何字段，则用户将只能使用源。"
 
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "File"
+msgstr ""
+
 #: src/elements/wizard/Wizard.ts
 msgid "Finish"
 msgstr "完成"

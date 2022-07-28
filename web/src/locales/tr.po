@@ -2250,6 +2250,10 @@ msgstr "Alanlar"
 msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr "Kullanıcının kendilerini tanımlayabileceği alanlar. Herhangi bir alan seçilmezse, kullanıcı yalnızca kaynakları kullanabilir."
 
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "File"
+msgstr ""
+
 #: src/elements/wizard/Wizard.ts
 msgid "Finish"
 msgstr ""

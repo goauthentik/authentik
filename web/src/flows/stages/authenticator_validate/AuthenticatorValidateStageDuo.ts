@@ -50,6 +50,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
         if (!this.challenge) {
             return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
+        const errors = this.challenge.responseErrors?.duo || [];
         return html`<div class="pf-c-login__main-body">
                 <form
                     class="pf-c-form"
@@ -68,6 +69,10 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
+
+                    ${errors.map((err) => {
+                        return html`<p>${err.string}</p>`;
+                    })}
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
