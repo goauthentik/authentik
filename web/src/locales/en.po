@@ -1158,6 +1158,10 @@ msgstr "Configure visual settings and defaults for different domains."
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 
+#: src/elements/user/UserDevicesList.ts
+msgid "Confirmed"
+msgstr "Confirmed"
+
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
 msgid "Connect"
@@ -3250,6 +3254,10 @@ msgstr "MESSAGE will notify the user the flow isn't applicable."
 msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
 msgstr "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
 
+#: src/pages/users/UserViewPage.ts
+msgid "MFA Authenticators"
+msgstr "MFA Authenticators"
+
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "MFA Devices"
 msgstr "MFA Devices"
@@ -3395,6 +3403,7 @@ msgid "My applications"
 msgstr "My applications"
 
 #: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
@@ -3568,6 +3577,7 @@ msgid "Nginx (standalone)"
 msgstr "Nginx (standalone)"
 
 #: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
@@ -6108,6 +6118,7 @@ msgstr "Twilio Account SID"
 msgid "Twilio Auth Token"
 msgstr "Twilio Auth Token"
 
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
@@ -6925,6 +6936,7 @@ msgid "XML-based SSO standard. Use this if your application only supports SAML."
 msgstr "XML-based SSO standard. Use this if your application only supports SAML."
 
 #: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts

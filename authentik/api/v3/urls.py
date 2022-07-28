@@ -14,7 +14,7 @@ from authentik.api.v3.config import ConfigView
 from authentik.api.views import APIBrowserView
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
-from authentik.core.api.devices import DeviceViewSet
+from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.propertymappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
@@ -171,6 +171,11 @@ router.register("authenticators/sms", SMSDeviceViewSet)
 router.register("authenticators/static", StaticDeviceViewSet)
 router.register("authenticators/totp", TOTPDeviceViewSet)
 router.register("authenticators/webauthn", WebAuthnDeviceViewSet)
+router.register(
+    "authenticators/admin/all",
+    AdminDeviceViewSet,
+    basename="admin-device",
+)
 router.register(
     "authenticators/admin/duo",
     DuoAdminDeviceViewSet,

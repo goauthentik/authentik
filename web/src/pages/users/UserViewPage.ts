@@ -16,6 +16,7 @@ import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer
 import "@goauthentik/web/elements/oauth/UserRefreshList";
 import "@goauthentik/web/elements/user/SessionList";
 import "@goauthentik/web/elements/user/UserConsentList";
+import "@goauthentik/web/elements/user/UserDevicesList";
 import "@goauthentik/web/pages/groups/RelatedGroupList";
 import "@goauthentik/web/pages/users/UserActiveForm";
 import "@goauthentik/web/pages/users/UserForm";
@@ -348,6 +349,17 @@ export class UserViewPage extends LitElement {
                     <div class="pf-c-card__body">
                         <ak-user-oauth-refresh-list userId=${this.user.pk}>
                         </ak-user-oauth-refresh-list>
+                    </div>
+                </div>
+            </section>
+            <section
+                slot="page-mfa-authenticators"
+                data-tab-title="${t`MFA Authenticators`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-user-device-list userId=${this.user.pk}> </ak-user-device-list>
                     </div>
                 </div>
             </section>
