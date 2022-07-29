@@ -799,6 +799,10 @@ msgstr "Políticas almacenadas en caché"
 msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
 msgstr "Al realizar consultas en caché, el puesto de avanzada mantiene a todos los usuarios y grupos en memoria y se actualizará cada 5 minutos."
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Caddy (Standalone)"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr "URL de devolución de llamada"
@@ -4396,6 +4400,7 @@ msgid "Redirect binding"
 msgstr "Enlace de redirección"
 
 #: src/elements/table/Table.ts
+#: src/elements/user/UserDevicesList.ts
 msgid "Refresh"
 msgstr "Actualizar"
 

@@ -809,6 +809,10 @@ msgstr "Gecachte Richtlinien"
 msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
 msgstr "Gecachte Abfrage, der Oupost hält alle Benutzer und Gruppen im Speicher und aktualisiert sich alle 5 Minuten."
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Caddy (Standalone)"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr "Callback URL"
@@ -4403,6 +4407,7 @@ msgid "Redirect binding"
 msgstr "Bindings umleiten"
 
 #: src/elements/table/Table.ts
+#: src/elements/user/UserDevicesList.ts
 msgid "Refresh"
 msgstr "Aktualisieren"
 

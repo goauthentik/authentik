@@ -794,6 +794,10 @@ msgstr "缓存策略"
 msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
 msgstr "缓存查询，前哨将所有用户和组保存在内存中，并每 5 分钟刷新一次。"
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Caddy (Standalone)"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr "回调 URL"
@@ -4368,6 +4372,7 @@ msgid "Redirect binding"
 msgstr "重定向绑定"
 
 #: src/elements/table/Table.ts
+#: src/elements/user/UserDevicesList.ts
 msgid "Refresh"
 msgstr "刷新"
 
