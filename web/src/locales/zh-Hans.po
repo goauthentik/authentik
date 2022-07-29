@@ -794,6 +794,10 @@ msgstr "缓存策略"
 msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
 msgstr "缓存查询，前哨将所有用户和组保存在内存中，并每 5 分钟刷新一次。"
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Caddy (Standalone)"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr "回调 URL"
@@ -1136,6 +1140,10 @@ msgstr "配置不同域名的可视化设置和默认值。"
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr "配置应将哪些数据用作唯一用户标识符。在大多数情况下保持默认值即可。"
+
+#: src/elements/user/UserDevicesList.ts
+msgid "Confirmed"
+msgstr ""
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
@@ -2238,6 +2246,10 @@ msgstr "字段"
 msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr "用户可以用来标识自己的字段。如果未选择任何字段，则用户将只能使用源。"
 
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "File"
+msgstr ""
+
 #: src/elements/wizard/Wizard.ts
 msgid "Finish"
 msgstr "完成"
@@ -3170,6 +3182,10 @@ msgstr ""
 msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
 msgstr ""
 
+#: src/pages/users/UserViewPage.ts
+msgid "MFA Authenticators"
+msgstr ""
+
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "MFA Devices"
 msgstr "MFA 设备"
@@ -3314,6 +3330,7 @@ msgid "My applications"
 msgstr "我的应用"
 
 #: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
@@ -3487,6 +3504,7 @@ msgid "Nginx (standalone)"
 msgstr "Nginx（独立）"
 
 #: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
@@ -3989,6 +4007,10 @@ msgstr "占位符"
 msgid "Plan history"
 msgstr "规划历史记录"
 
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
+msgid "Please enter the code you received via SMS"
+msgstr ""
+
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Please enter your Code"
 msgstr "请输入您的验证码"
@@ -3997,7 +4019,6 @@ msgstr "请输入您的验证码"
 msgid "Please enter your Phone number."
 msgstr "请输入您的电话号码。"
 
-#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Please enter your TOTP Code"
 msgstr "请输入您的 TOTP 代码"
@@ -4351,6 +4372,7 @@ msgid "Redirect binding"
 msgstr "重定向绑定"
 
 #: src/elements/table/Table.ts
+#: src/elements/user/UserDevicesList.ts
 msgid "Refresh"
 msgstr "刷新"
 
@@ -5938,6 +5960,7 @@ msgstr "Twilio 账户 SID"
 msgid "Twilio Auth Token"
 msgstr "Twilio 身份验证令牌"
 
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
@@ -6746,6 +6769,7 @@ msgid "XML-based SSO standard. Use this if your application only supports SAML."
 msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts

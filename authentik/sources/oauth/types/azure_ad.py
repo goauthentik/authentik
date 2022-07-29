@@ -1,10 +1,9 @@
 """AzureAD OAuth2 Views"""
-from typing import Any, Optional
+from typing import Any
 
-from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
-from authentik.sources.oauth.clients.oauth2 import OAuth2Client
+from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
 from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -21,32 +20,10 @@ class AzureADOAuthRedirect(OAuthRedirect):
         }
 
 
-class AzureADClient(OAuth2Client):
-    """Azure AD Oauth client, azure ad doesn't like the ?access_token that is sent by default"""
-
-    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
-        "Fetch user profile information."
-        profile_url = self.source.type.profile_url or ""
-        if self.source.type.urls_customizable and self.source.profile_url:
-            profile_url = self.source.profile_url
-        try:
-            response = self.session.request(
-                "get",
-                profile_url,
-                headers={"Authorization": f"{token['token_type']} {token['access_token']}"},
-            )
-            response.raise_for_status()
-        except RequestException as exc:
-            LOGGER.warning("Unable to fetch user profile", exc=exc, body=response.text)
-            return None
-        else:
-            return response.json()
-
-
 class AzureADOAuthCallback(OAuthCallback):
     """AzureAD OAuth2 Callback"""
 
-    client_class = AzureADClient
+    client_class = UserprofileHeaderAuthClient
 
     def get_user_enroll_context(
         self,

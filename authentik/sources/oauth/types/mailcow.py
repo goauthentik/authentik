@@ -52,6 +52,7 @@ class MailcowOAuth2Callback(OAuthCallback):
         info: dict[str, Any],
     ) -> dict[str, Any]:
         return {
+            "username": info.get("full_name"),
             "email": info.get("email"),
             "name": info.get("full_name"),
         }

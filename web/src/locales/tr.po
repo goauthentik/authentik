@@ -799,6 +799,10 @@ msgstr "Önbelleğe alınan ilkeler"
 msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
 msgstr "Önbelleğe alınmış sorgulama, üs tüm kullanıcıları ve grupları bellek içinde tutar ve her 5 Dakikada yenileyecektir."
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Caddy (Standalone)"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr "Geri arama URL'si"
@@ -1141,6 +1145,10 @@ msgstr "Farklı etki alanları için görsel ayarları ve varsayılanları yapı
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr "Hangi verilerin benzersiz Kullanıcı Tanımlayıcısı olarak kullanılması gerektiğini yapılandırın. Çoğu durumda, varsayılan seçim yeterlidir."
+
+#: src/elements/user/UserDevicesList.ts
+msgid "Confirmed"
+msgstr ""
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
@@ -2250,6 +2258,10 @@ msgstr "Alanlar"
 msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr "Kullanıcının kendilerini tanımlayabileceği alanlar. Herhangi bir alan seçilmezse, kullanıcı yalnızca kaynakları kullanabilir."
 
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "File"
+msgstr ""
+
 #: src/elements/wizard/Wizard.ts
 msgid "Finish"
 msgstr ""
@@ -3188,6 +3200,10 @@ msgstr ""
 msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
 msgstr ""
 
+#: src/pages/users/UserViewPage.ts
+msgid "MFA Authenticators"
+msgstr ""
+
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "MFA Devices"
 msgstr "MFA Cihazları"
@@ -3332,6 +3348,7 @@ msgid "My applications"
 msgstr "Uygulamalarım"
 
 #: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
@@ -3505,6 +3522,7 @@ msgid "Nginx (standalone)"
 msgstr "Nginx (bağımsız)"
 
 #: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
@@ -4016,6 +4034,10 @@ msgstr "Yer tutucu"
 msgid "Plan history"
 msgstr "Plan geçmişi"
 
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
+msgid "Please enter the code you received via SMS"
+msgstr ""
+
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Please enter your Code"
 msgstr "Lütfen Kodunuzu girin"
@@ -4024,7 +4046,6 @@ msgstr "Lütfen Kodunuzu girin"
 msgid "Please enter your Phone number."
 msgstr "Lütfen Telefon numaranızı girin."
 
-#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Please enter your TOTP Code"
 msgstr "Lütfen TOTP Kodunuzu girin"
@@ -4381,6 +4402,7 @@ msgid "Redirect binding"
 msgstr "Yeniden yönlendirme bağlama"
 
 #: src/elements/table/Table.ts
+#: src/elements/user/UserDevicesList.ts
 msgid "Refresh"
 msgstr "Yenile"
 
@@ -5977,6 +5999,7 @@ msgstr "Twilio Hesabı SID"
 msgid "Twilio Auth Token"
 msgstr "Twilio Auth Belirteci"
 
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
@@ -6784,6 +6807,7 @@ msgid "XML-based SSO standard. Use this if your application only supports SAML."
 msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts

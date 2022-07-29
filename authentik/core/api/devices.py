@@ -1,9 +1,10 @@
 """Authenticator Devices API Views"""
-from django_otp import devices_for_user
+from django_otp import device_classes, devices_for_user
 from django_otp.models import Device
-from drf_spectacular.utils import extend_schema
-from rest_framework.fields import CharField, IntegerField, SerializerMethodField
-from rest_framework.permissions import IsAuthenticated
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework.fields import BooleanField, CharField, IntegerField, SerializerMethodField
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -17,6 +18,7 @@ class DeviceSerializer(MetaNameSerializer):
     pk = IntegerField()
     name = CharField()
     type = SerializerMethodField()
+    confirmed = BooleanField()
 
     def get_type(self, instance: Device) -> str:
         """Get type of device"""
@@ -34,3 +36,33 @@ class DeviceViewSet(ViewSet):
         """Get all devices for current user"""
         devices = devices_for_user(request.user)
         return Response(DeviceSerializer(devices, many=True).data)
+
+
+class AdminDeviceViewSet(ViewSet):
+    """Viewset for authenticator devices"""
+
+    serializer_class = DeviceSerializer
+    permission_classes = [IsAdminUser]
+
+    def get_devices(self, **kwargs):
+        """Get all devices in all child classes"""
+        for model in device_classes():
+            device_set = model.objects.filter(**kwargs)
+            yield from device_set
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="user",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.INT,
+            )
+        ],
+        responses={200: DeviceSerializer(many=True)},
+    )
+    def list(self, request: Request) -> Response:
+        """Get all devices for current user"""
+        kwargs = {}
+        if "user" in request.query_params:
+            kwargs = {"user": request.query_params["user"]}
+        return Response(DeviceSerializer(self.get_devices(**kwargs), many=True).data)

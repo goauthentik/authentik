@@ -128,3 +128,25 @@ class OAuth2Client(BaseOAuthClient):
     @property
     def session_key(self):
         return f"oauth-client-{self.source.name}-request-state"
+
+
+class UserprofileHeaderAuthClient(OAuth2Client):
+    """OAuth client which only sends authentication via header, not querystring"""
+
+    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
+        "Fetch user profile information."
+        profile_url = self.source.type.profile_url or ""
+        if self.source.type.urls_customizable and self.source.profile_url:
+            profile_url = self.source.profile_url
+        try:
+            response = self.session.request(
+                "get",
+                profile_url,
+                headers={"Authorization": f"{token['token_type']} {token['access_token']}"},
+            )
+            response.raise_for_status()
+        except RequestException as exc:
+            LOGGER.warning("Unable to fetch user profile", exc=exc, body=response.text)
+            return None
+        else:
+            return response.json()

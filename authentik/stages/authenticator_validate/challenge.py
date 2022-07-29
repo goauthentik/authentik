@@ -1,10 +1,12 @@
 """Validation stage challenge checking"""
 from json import dumps, loads
 from typing import Optional
+from urllib.parse import urlencode
 
 from django.http import HttpRequest
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from django_otp import match_token
 from django_otp.models import Device
@@ -17,9 +19,11 @@ from webauthn.helpers.exceptions import InvalidAuthenticationResponse
 from webauthn.helpers.structs import AuthenticationCredential
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import User
+from authentik.core.models import Application, User
 from authentik.core.signals import login_failed
+from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
+from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
 from authentik.lib.utils.http import get_client_ip
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
@@ -27,6 +31,7 @@ from authentik.stages.authenticator_validate.models import DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_TITLE
 
 LOGGER = get_logger()
 
@@ -155,23 +160,49 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
         LOGGER.warning("device mismatch")
         raise Http404
     stage: AuthenticatorDuoStage = device.stage
-    response = stage.client.auth(
-        "auto",
-        user_id=device.duo_user_id,
-        ipaddr=get_client_ip(stage_view.request),
-        type="authentik Login request",
-        display_username=user.username,
-        device="auto",
-    )
-    # {'result': 'allow', 'status': 'allow', 'status_msg': 'Success. Logging you in...'}
-    if response["result"] == "deny":
-        login_failed.send(
-            sender=__name__,
-            credentials={"username": user.username},
-            request=stage_view.request,
-            stage=stage_view.executor.current_stage,
-            device_class=DeviceClasses.DUO.value,
+
+    # Get additional context for push
+    pushinfo = {
+        __("Domain"): stage_view.request.get_host(),
+    }
+    if PLAN_CONTEXT_CONSENT_TITLE in stage_view.executor.plan.context:
+        pushinfo[__("Title")] = stage_view.executor.plan.context[PLAN_CONTEXT_CONSENT_TITLE]
+    if SESSION_KEY_APPLICATION_PRE in stage_view.request.session:
+        pushinfo[__("Application")] = stage_view.request.session.get(
+            SESSION_KEY_APPLICATION_PRE, Application()
+        ).name
+
+    try:
+        response = stage.client.auth(
+            "auto",
+            user_id=device.duo_user_id,
+            ipaddr=get_client_ip(stage_view.request),
+            type=__(
+                "%(brand_name)s Login request"
+                % {
+                    "brand_name": stage_view.request.tenant.branding_title,
+                }
+            ),
+            display_username=user.username,
+            device="auto",
+            pushinfo=urlencode(pushinfo),
         )
+        # {'result': 'allow', 'status': 'allow', 'status_msg': 'Success. Logging you in...'}
+        if response["result"] == "deny":
+            login_failed.send(
+                sender=__name__,
+                credentials={"username": user.username},
+                request=stage_view.request,
+                stage=stage_view.executor.current_stage,
+                device_class=DeviceClasses.DUO.value,
+            )
+            raise ValidationError("Duo denied access")
+        device.save()
+        return device
+    except RuntimeError as exc:
+        Event.new(
+            EventAction.CONFIGURATION_ERROR,
+            message=f"Failed to DUO authenticate user: {str(exc)}",
+            user=user,
+        ).from_http(stage_view.request, user)
         raise ValidationError("Duo denied access")
-    device.save()
-    return device

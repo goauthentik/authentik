@@ -118,11 +118,11 @@ class TestPromptStage(FlowTestCase):
             InlineFileField().to_internal_value("data:foo/bar;foo,qwer")
         self.assertEqual(
             InlineFileField().to_internal_value("data:mine/type;base64,Zm9v"),
-            "foo",
+            "data:mine/type;base64,Zm9v",
         )
         self.assertEqual(
             InlineFileField().to_internal_value("data:mine/type;base64,Zm9vqwer"),
-            "Zm9vqwer",
+            "data:mine/type;base64,Zm9vqwer",
         )
 
     def test_render(self):

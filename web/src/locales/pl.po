@@ -796,6 +796,10 @@ msgstr "Zasady w pamięci podręcznej"
 msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
 msgstr "Zbuforowane zapytania, placówka przechowuje w pamięci wszystkich użytkowników i grupy i odświeża się co 5 minut."
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Caddy (Standalone)"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr "URL wywołania zwrotnego"
@@ -1138,6 +1142,10 @@ msgstr "Skonfiguruj ustawienia wizualne i domyślne dla różnych domen."
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr "Skonfiguruj, jakie dane mają być używane jako unikalny identyfikator użytkownika. W większości przypadków wartość domyślna powinna być w porządku."
+
+#: src/elements/user/UserDevicesList.ts
+msgid "Confirmed"
+msgstr ""
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
@@ -2247,6 +2255,10 @@ msgstr "Pola"
 msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr "Pola, z którymi użytkownik może się identyfikować. Jeśli żadne pola nie zostaną wybrane, użytkownik będzie mógł korzystać tylko ze źródeł."
 
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "File"
+msgstr ""
+
 #: src/elements/wizard/Wizard.ts
 msgid "Finish"
 msgstr ""
@@ -3184,6 +3196,10 @@ msgstr ""
 msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
 msgstr ""
 
+#: src/pages/users/UserViewPage.ts
+msgid "MFA Authenticators"
+msgstr ""
+
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "MFA Devices"
 msgstr "Urządzenia MFA"
@@ -3328,6 +3344,7 @@ msgid "My applications"
 msgstr "Moje aplikacje"
 
 #: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
@@ -3501,6 +3518,7 @@ msgid "Nginx (standalone)"
 msgstr "Nginx (standalone)"
 
 #: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
@@ -4011,6 +4029,10 @@ msgstr "Symbol zastępczy"
 msgid "Plan history"
 msgstr "Historia planu"
 
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
+msgid "Please enter the code you received via SMS"
+msgstr ""
+
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Please enter your Code"
 msgstr "Wprowadź swój kod"
@@ -4019,7 +4041,6 @@ msgstr "Wprowadź swój kod"
 msgid "Please enter your Phone number."
 msgstr "Podaj swój numer telefonu."
 
-#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Please enter your TOTP Code"
 msgstr "Wprowadź swój kod TOTP"
@@ -4376,6 +4397,7 @@ msgid "Redirect binding"
 msgstr "Wiązanie przekierowania"
 
 #: src/elements/table/Table.ts
+#: src/elements/user/UserDevicesList.ts
 msgid "Refresh"
 msgstr "Odśwież"
 
@@ -5972,6 +5994,7 @@ msgstr "Twilio Account SID"
 msgid "Twilio Auth Token"
 msgstr "Twilio Auth Token"
 
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
@@ -6779,6 +6802,7 @@ msgid "XML-based SSO standard. Use this if your application only supports SAML."
 msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts

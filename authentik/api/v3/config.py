@@ -68,10 +68,9 @@ class ConfigView(APIView):
             caps.append(Capabilities.CAN_IMPERSONATE)
         return caps
 
-    @extend_schema(responses={200: ConfigSerializer(many=False)})
-    def get(self, request: Request) -> Response:
-        """Retrieve public configuration options"""
-        config = ConfigSerializer(
+    def get_config(self) -> ConfigSerializer:
+        """Get Config"""
+        return ConfigSerializer(
             {
                 "error_reporting": {
                     "enabled": CONFIG.y("error_reporting.enabled"),
@@ -86,4 +85,8 @@ class ConfigView(APIView):
                 "cache_timeout_reputation": int(CONFIG.y("redis.cache_timeout_reputation")),
             }
         )
-        return Response(config.data)
+
+    @extend_schema(responses={200: ConfigSerializer(many=False)})
+    def get(self, request: Request) -> Response:
+        """Retrieve public configuration options"""
+        return Response(self.get_config().data)

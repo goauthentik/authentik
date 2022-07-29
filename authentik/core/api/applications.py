@@ -98,7 +98,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         "group",
     ]
     lookup_field = "slug"
-    filterset_fields = ["name", "slug"]
     ordering = ["name"]
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:

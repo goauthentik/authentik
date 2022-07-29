@@ -34,6 +34,17 @@ export function stageToAuthenticatorName(stage: UserSetting): string {
     return `Invalid stage component ${stage.component}`;
 }
 
+export function deviceTypeName(device: Device): string {
+    switch (device.type) {
+        case "otp_static.StaticDevice":
+            return t`Static tokens`;
+        case "otp_totp.TOTPDevice":
+            return t`TOTP Device`;
+        default:
+            return device.verboseName;
+    }
+}
+
 @customElement("ak-user-settings-mfa")
 export class MFADevicesPage extends Table<Device> {
     @property({ attribute: false })
@@ -143,21 +154,10 @@ export class MFADevicesPage extends Table<Device> {
         </ak-forms-delete-bulk>`;
     }
 
-    deviceTypeName(device: Device): string {
-        switch (device.type) {
-            case "otp_static.StaticDevice":
-                return t`Static tokens`;
-            case "otp_totp.TOTPDevice":
-                return t`TOTP Device`;
-            default:
-                return device.verboseName;
-        }
-    }
-
     row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${this.deviceTypeName(item)}`,
+            html`${deviceTypeName(item)}`,
             html`
                 <ak-forms-modal>
                     <span slot="submit">${t`Update`}</span>

@@ -1,5 +1,6 @@
 """authentik core celery"""
 import os
+from contextvars import ContextVar
 from logging.config import dictConfig
 from typing import Callable
 
@@ -15,9 +16,9 @@ from celery.signals import (
 )
 from django.conf import settings
 from django.db import ProgrammingError
+from structlog.contextvars import STRUCTLOG_KEY_PREFIX
 from structlog.stdlib import get_logger
 
-from authentik.core.middleware import CTX_AUTH_VIA, CTX_HOST, CTX_REQUEST_ID
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 
@@ -26,6 +27,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 
 LOGGER = get_logger()
 CELERY_APP = Celery("authentik")
+CTX_TASK_ID = ContextVar(STRUCTLOG_KEY_PREFIX + "task_id", default=Ellipsis)
 
 
 # pylint: disable=unused-argument
@@ -48,9 +50,7 @@ def after_task_publish_hook(sender=None, headers=None, body=None, **kwargs):
 def task_prerun_hook(task_id: str, task, *args, **kwargs):
     """Log task_id on worker"""
     request_id = "task-" + task_id.replace("-", "")
-    CTX_REQUEST_ID.set(request_id)
-    CTX_AUTH_VIA.set(Ellipsis)
-    CTX_HOST.set(Ellipsis)
+    CTX_TASK_ID.set(request_id)
     LOGGER.info("Task started", task_id=task_id, task_name=task.__name__)
 
 

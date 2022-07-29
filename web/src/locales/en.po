@@ -806,6 +806,10 @@ msgstr "Cached policies"
 msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
 msgstr "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
 
+#: src/pages/providers/proxy/ProxyProviderViewPage.ts
+msgid "Caddy (Standalone)"
+msgstr "Caddy (Standalone)"
+
 #: src/pages/sources/oauth/OAuthSourceViewPage.ts
 msgid "Callback URL"
 msgstr "Callback URL"
@@ -1157,6 +1161,10 @@ msgstr "Configure visual settings and defaults for different domains."
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
 msgstr "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
+
+#: src/elements/user/UserDevicesList.ts
+msgid "Confirmed"
+msgstr "Confirmed"
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
@@ -2295,6 +2303,10 @@ msgstr "Fields"
 msgid "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 msgstr "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources."
 
+#: src/pages/stages/prompt/PromptForm.ts
+msgid "File"
+msgstr "File"
+
 #: src/elements/wizard/Wizard.ts
 msgid "Finish"
 msgstr "Finish"
@@ -3246,6 +3258,10 @@ msgstr "MESSAGE will notify the user the flow isn't applicable."
 msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
 msgstr "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
 
+#: src/pages/users/UserViewPage.ts
+msgid "MFA Authenticators"
+msgstr "MFA Authenticators"
+
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "MFA Devices"
 msgstr "MFA Devices"
@@ -3391,6 +3407,7 @@ msgid "My applications"
 msgstr "My applications"
 
 #: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
@@ -3564,6 +3581,7 @@ msgid "Nginx (standalone)"
 msgstr "Nginx (standalone)"
 
 #: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
@@ -4085,6 +4103,10 @@ msgstr "Placeholder"
 msgid "Plan history"
 msgstr "Plan history"
 
+#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
+msgid "Please enter the code you received via SMS"
+msgstr "Please enter the code you received via SMS"
+
 #: src/flows/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Please enter your Code"
 msgstr "Please enter your Code"
@@ -4093,7 +4115,6 @@ msgstr "Please enter your Code"
 msgid "Please enter your Phone number."
 msgstr "Please enter your Phone number."
 
-#: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flows/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Please enter your TOTP Code"
 msgstr "Please enter your TOTP Code"
@@ -4458,6 +4479,7 @@ msgid "Redirect binding"
 msgstr "Redirect binding"
 
 #: src/elements/table/Table.ts
+#: src/elements/user/UserDevicesList.ts
 msgid "Refresh"
 msgstr "Refresh"
 
@@ -6101,6 +6123,7 @@ msgstr "Twilio Account SID"
 msgid "Twilio Auth Token"
 msgstr "Twilio Auth Token"
 
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/flows/BoundStagesList.ts
 #: src/pages/outposts/OutpostForm.ts
 #: src/pages/outposts/OutpostListPage.ts
@@ -6918,6 +6941,7 @@ msgid "XML-based SSO standard. Use this if your application only supports SAML."
 msgstr "XML-based SSO standard. Use this if your application only supports SAML."
 
 #: src/elements/oauth/UserRefreshList.ts
+#: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts

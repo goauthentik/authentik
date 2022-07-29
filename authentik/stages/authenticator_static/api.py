@@ -5,7 +5,7 @@ from rest_framework import mixins
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.serializers import ModelSerializer
-from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
@@ -71,7 +71,7 @@ class StaticDeviceViewSet(
     ordering = ["name"]
 
 
-class StaticAdminDeviceViewSet(ReadOnlyModelViewSet):
+class StaticAdminDeviceViewSet(ModelViewSet):
     """Viewset for static authenticator devices (for admins)"""
 
     permission_classes = [IsAdminUser]

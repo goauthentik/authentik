@@ -10,9 +10,10 @@
 <script>ShadyDOM = { force: !navigator.webdriver };</script>
 {% endif %}
 <script>
-window.authentik = {
-    "locale": "{{ tenant.default_locale }}",
-};
+window.authentik = {};
+window.authentik.locale = "{{ tenant.default_locale }}";
+window.authentik.config = JSON.parse( '{{ config_json|safe }}');
+window.authentik.tenant = JSON.parse('{{ tenant_json|safe }}');
 window.authentik.flow = {
     "layout": "{{ flow.layout }}",
 };

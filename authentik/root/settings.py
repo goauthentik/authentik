@@ -399,7 +399,6 @@ LOG_PRE_CHAIN = [
     # is not from structlog.
     structlog.stdlib.add_log_level,
     structlog.stdlib.add_logger_name,
-    structlog.processors.dict_tracebacks,
     structlog.processors.TimeStamper(),
     structlog.processors.StackInfoRenderer(),
 ]

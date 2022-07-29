@@ -1,8 +1,8 @@
 """Okta OAuth Views"""
 from typing import Any
 
+from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.azure_ad import AzureADClient
 from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -23,7 +23,7 @@ class OktaOAuth2Callback(OAuthCallback):
     # Okta has the same quirk as azure and throws an error if the access token
     # is set via query parameter, so we re-use the azure client
     # see https://github.com/goauthentik/authentik/issues/1910
-    client_class = AzureADClient
+    client_class = UserprofileHeaderAuthClient
 
     def get_user_id(self, info: dict[str, str]) -> str:
         return info.get("sub", "")
