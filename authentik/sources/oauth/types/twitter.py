@@ -2,14 +2,16 @@
 from typing import Any, Optional
 
 from authentik.lib.generators import generate_id
-from authentik.sources.oauth.clients.oauth2 import SESSION_KEY_OAUTH_PKCE
-from authentik.sources.oauth.types.azure_ad import AzureADClient
+from authentik.sources.oauth.clients.oauth2 import (
+    SESSION_KEY_OAUTH_PKCE,
+    UserprofileHeaderAuthClient,
+)
 from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-class TwitterClient(AzureADClient):
+class TwitterClient(UserprofileHeaderAuthClient):
     """Twitter has similar quirks to Azure AD, and additionally requires Basic auth on
     the access token endpoint for some reason."""
 
