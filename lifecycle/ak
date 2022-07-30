@@ -29,7 +29,7 @@ function check_if_root {
     fi
     # Fix permissions of backups and media
     chown -R authentik:authentik /media /certs
-    chpst -u authentik:$GROUP env HOME=/authentik exec $1
+    exec chpst -u authentik:$GROUP env HOME=/authentik $1
 }
 
 MODE_FILE="/tmp/authentik-mode"
@@ -62,6 +62,8 @@ elif [[ "$1" == "healthcheck" ]]; then
     fi
 elif [[ "$1" == "dump_config" ]]; then
     exec python -m authentik.lib.config
+elif [[ "$1" == "debug" ]]; then
+    exec sleep infinity
 else
     exec python -m manage "$@"
 fi
