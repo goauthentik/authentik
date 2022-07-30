@@ -20,8 +20,10 @@ func (a *Application) ErrorPage(rw http.ResponseWriter, r *http.Request, err str
 		Message:     "Error proxying to upstream server",
 		ProxyPrefix: "/outpost.goauthentik.io",
 	}
-	if claims != nil && len(err) > 0 {
+	if claims != nil && claims.Proxy.IsSuperuser {
 		data.Message = err
+	} else {
+		data.Message = "Failed to connect to backend."
 	}
 	er := a.errorTemplates.Execute(rw, data)
 	if er != nil {
@@ -34,6 +36,6 @@ func (a *Application) newProxyErrorHandler() func(http.ResponseWriter, *http.Req
 	return func(rw http.ResponseWriter, req *http.Request, proxyErr error) {
 		log.WithError(proxyErr).Warning("Error proxying to upstream server")
 		rw.WriteHeader(http.StatusBadGateway)
-		a.ErrorPage(rw, req, fmt.Sprintf("Error proxying to upstream server: %s", proxyErr.Error()))
+		a.ErrorPage(rw, req, fmt.Sprintf("Error proxying to upstream server: %v", proxyErr))
 	}
 }
