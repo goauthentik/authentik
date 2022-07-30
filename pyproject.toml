@@ -141,6 +141,7 @@ webauthn = "*"
 wsproto = "*"
 xmlsec = "*"
 twilio = "*"
+dumb-init = "*"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"

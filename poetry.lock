@@ -745,6 +745,14 @@ offline = ["drf-spectacular-sidecar"]
 sidecar = ["drf-spectacular-sidecar"]
 
 [[package]]
+name = "dumb-init"
+version = "1.2.5.post1"
+description = "Simple wrapper script which proxies signals to a child"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "duo-client"
 version = "4.4.0"
 description = "Reference client for Duo Security APIs"
@@ -2085,7 +2093,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "e2096a66167fa7ab127faa9de091b18519491c23a736b33961b2259fe85d4185"
+content-hash = "acbd25177fb5880a50d29da1b0cab9ab09b67078beea12495527695c55ef2ea8"
 
 [metadata.files]
 aiohttp = [
@@ -2552,6 +2560,13 @@ docker = [
 drf-spectacular = [
     {file = "drf-spectacular-0.23.1.tar.gz", hash = "sha256:d1724da1fd4ae99d66333b1c8530f3c51788d87b380f5951830bf8405f234120"},
     {file = "drf_spectacular-0.23.1-py3-none-any.whl", hash = "sha256:2e42ae16717a5c3b2ae8632ac2b92f7eeb7b4fb9a941bc7879a92343e50ddeb6"},
+]
+dumb-init = [
+    {file = "dumb-init-1.2.5.post1.tar.gz", hash = "sha256:6510538a975e0de10658b0210ec2ad62dc3617543af5c6fbd29a3af111eae981"},
+    {file = "dumb_init-1.2.5.post1-py2.py3-none-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5d6b1fe9b8efcdbbdcb670efe7a55f9117251ee9648d35ffd0c487fd79515ea5"},
+    {file = "dumb_init-1.2.5.post1-py2.py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a516a16a7dfed012de2524eb449e31f7f583b11b938eebb3ec09fd194497293d"},
+    {file = "dumb_init-1.2.5.post1-py2.py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:c52a20fe73a6f56501079f969775098ab83bd9c73648b9e4eb68fa1b02a9b98e"},
+    {file = "dumb_init-1.2.5.post1-py2.py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:fc1e309f52c898ee00df056189f46ca3f6055a72b77015f4eefbd7c58c45290f"},
 ]
 duo-client = [
     {file = "duo_client-4.4.0-py2.py3-none-any.whl", hash = "sha256:927b7e838433b20debc8d07c2c418c2e1b650735acb9fcf214eaa3a2caf00358"},

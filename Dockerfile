@@ -87,7 +87,7 @@ COPY --from=web-builder /work/web/dist/ /web/dist/
 COPY --from=web-builder /work/web/authentik/ /web/authentik/
 COPY --from=website-builder /work/website/help/ /website/help/
 
-USER authentik
+USER 1000
 
 ENV TMPDIR /dev/shm/
 ENV PYTHONUNBUFFERED 1
@@ -95,4 +95,4 @@ ENV PATH "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "/lifecycle/ak", "healthcheck" ]
 
-ENTRYPOINT [ "/lifecycle/ak" ]
+ENTRYPOINT [ "/usr/local/bin/dumb-init", "--", "/lifecycle/ak" ]
