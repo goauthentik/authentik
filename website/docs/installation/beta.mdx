@@ -19,7 +19,7 @@ Add the following block to your `.env` file:
 ```shell
 AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server
 AUTHENTIK_TAG=gh-next
-AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-next
+AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
 ```
 
 Afterwards, run the upgrade commands from the latest release notes.
