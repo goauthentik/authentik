@@ -4,7 +4,7 @@ import (
 	goldap "github.com/go-ldap/ldap/v3"
 	ber "github.com/nmcclain/asn1-ber"
 	"github.com/nmcclain/ldap"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 )
 
@@ -66,7 +66,7 @@ func parseFilterForUserSingle(req api.ApiCoreUsersListRequest, f *ber.Packet) (a
 			}
 			return req.GroupsByName([]string{name}), false
 		}
-	// TODO: Support int
+	//TODO: Support int
 	default:
 		return req, false
 	}

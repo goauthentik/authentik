@@ -2,11 +2,9 @@ package ldap
 
 import (
 	"fmt"
-	"math/big"
 	"strconv"
-	"strings"
 
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 )
 
 func (pi *ProviderInstance) GroupsForUser(user api.User) []string {
@@ -54,20 +52,5 @@ func (pi *ProviderInstance) GetGidNumber(group api.Group) string {
 		return gidNumber
 	}
 
-	return strconv.FormatInt(int64(pi.gidStartNumber+pi.GetRIDForGroup(group.Pk)), 10)
-}
-
-func (pi *ProviderInstance) GetRIDForGroup(uid string) int32 {
-	var i big.Int
-	i.SetString(strings.Replace(uid, "-", "", -1), 16)
-	intStr := i.String()
-
-	// Get the last 5 characters/digits of the int-version of the UUID
-	gid, err := strconv.Atoi(intStr[len(intStr)-5:])
-
-	if err != nil {
-		panic(err)
-	}
-
-	return int32(gid)
+	return strconv.FormatInt(int64(pi.gidStartNumber+group.NumPk), 10)
 }

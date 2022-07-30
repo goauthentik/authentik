@@ -1,26 +1,19 @@
 """dummy tests"""
 from django.urls import reverse
-from django.utils.encoding import force_str
-from rest_framework.test import APITestCase
 
-from authentik.core.models import User
-from authentik.flows.challenge import ChallengeTypes
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.tests import FlowTestCase
 from authentik.stages.dummy.models import DummyStage
 
 
-class TestDummyStage(APITestCase):
+class TestDummyStage(FlowTestCase):
     """Dummy tests"""
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create(username="unittest", email="test@beryju.org")
-
-        self.flow = Flow.objects.create(
-            name="test-dummy",
-            slug="test-dummy",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.user = create_test_admin_user()
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = DummyStage.objects.create(
             name="dummy",
         )
@@ -42,11 +35,4 @@ class TestDummyStage(APITestCase):
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, {})
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))

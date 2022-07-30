@@ -4,7 +4,6 @@ from multiprocessing.connection import Connection
 from typing import Optional
 
 from django.core.cache import cache
-from prometheus_client import Histogram
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
@@ -12,6 +11,7 @@ from structlog.stdlib import get_logger
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.errors import exception_to_string
+from authentik.policies.apps import HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -21,18 +21,6 @@ LOGGER = get_logger()
 FORK_CTX = get_context("fork")
 CACHE_TIMEOUT = int(CONFIG.y("redis.cache_timeout_policies"))
 PROCESS_CLASS = FORK_CTX.Process
-HIST_POLICIES_EXECUTION_TIME = Histogram(
-    "authentik_policies_execution_time",
-    "Execution times for single policies",
-    [
-        "binding_order",
-        "binding_target_type",
-        "binding_target_name",
-        "object_name",
-        "object_type",
-        "user",
-    ],
-)
 
 
 def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
@@ -89,7 +77,8 @@ class PolicyProcess(PROCESS_CLASS):
         LOGGER.debug(
             "P_ENG(proc): Running policy",
             policy=self.binding.policy,
-            user=self.request.user,
+            user=self.request.user.username,
+            # this is used for filtering in access checking where logs are sent to the admin
             process="PolicyProcess",
         )
         try:
@@ -121,9 +110,10 @@ class PolicyProcess(PROCESS_CLASS):
             "P_ENG(proc): finished and cached ",
             policy=self.binding.policy,
             result=policy_result,
+            # this is used for filtering in access checking where logs are sent to the admin
             process="PolicyProcess",
             passing=policy_result.passing,
-            user=self.request.user,
+            user=self.request.user.username,
         )
         return policy_result
 
@@ -135,9 +125,8 @@ class PolicyProcess(PROCESS_CLASS):
             binding_order=self.binding.order,
             binding_target_type=self.binding.target_type,
             binding_target_name=self.binding.target_name,
-            object_name=self.request.obj,
+            object_pk=str(self.request.obj.pk),
             object_type=f"{self.request.obj._meta.app_label}.{self.request.obj._meta.model_name}",
-            user=str(self.request.user),
         ).time():
             span: Span
             span.set_data("policy", self.binding.policy)
@@ -149,5 +138,5 @@ class PolicyProcess(PROCESS_CLASS):
         try:
             self.connection.send(self.profiling_wrapper())
         except Exception as exc:  # pylint: disable=broad-except
-            LOGGER.warning(str(exc))
+            LOGGER.warning("Policy failed to run", exc=exc)
             self.connection.send(PolicyResult(False, str(exc)))

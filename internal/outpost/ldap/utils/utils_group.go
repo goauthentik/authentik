@@ -1,10 +1,12 @@
 package utils
 
 import (
+	"strings"
+
 	goldap "github.com/go-ldap/ldap/v3"
 	ber "github.com/nmcclain/asn1-ber"
 	"github.com/nmcclain/ldap"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 )
 
@@ -41,7 +43,7 @@ func parseFilterForGroupSingle(req api.ApiCoreGroupsListRequest, f *ber.Packet) 
 	// Switch on type of the value, then check the key
 	switch vv := v.(type) {
 	case string:
-		switch k {
+		switch strings.ToLower(k.(string)) {
 		case "cn":
 			return req.Name(vv), false
 		case "member":
@@ -54,14 +56,14 @@ func parseFilterForGroupSingle(req api.ApiCoreGroupsListRequest, f *ber.Packet) 
 			username := userDN.RDNs[0].Attributes[0].Value
 			// If the DN's first ou is virtual-groups, ignore this filter
 			if len(userDN.RDNs) > 1 {
-				if userDN.RDNs[1].Attributes[0].Value == constants.OUVirtualGroups || userDN.RDNs[1].Attributes[0].Value == constants.OUGroups {
+				if strings.EqualFold(userDN.RDNs[1].Attributes[0].Value, constants.OUVirtualGroups) || strings.EqualFold(userDN.RDNs[1].Attributes[0].Value, constants.OUGroups) {
 					// Since we know we're not filtering anything, skip this request
 					return req, true
 				}
 			}
 			return req.MembersByUsername([]string{username}), false
 		}
-	// TODO: Support int
+	//TODO: Support int
 	default:
 		return req, false
 	}

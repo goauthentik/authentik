@@ -1,10 +1,32 @@
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/api/Config";
+import { configureSentry } from "@goauthentik/web/api/Sentry";
+import { me } from "@goauthentik/web/api/Users";
+import { UserDisplay, uiConfig } from "@goauthentik/web/common/config";
+import { WebsocketClient } from "@goauthentik/web/common/ws";
+import {
+    EVENT_API_DRAWER_TOGGLE,
+    EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_WS_MESSAGE,
+} from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/messages/MessageContainer";
+import "@goauthentik/web/elements/messages/MessageContainer";
+import "@goauthentik/web/elements/notifications/NotificationDrawer";
+import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import "@goauthentik/web/elements/router/RouterOutlet";
+import "@goauthentik/web/elements/sidebar/Sidebar";
+import { DefaultTenant } from "@goauthentik/web/elements/sidebar/SidebarBrand";
+import "@goauthentik/web/elements/sidebar/SidebarItem";
+import "@goauthentik/web/interfaces/locale";
+import { ROUTES } from "@goauthentik/web/routesUser";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -16,28 +38,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { CurrentTenant, EventsApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG, tenant } from "../api/Config";
-import { configureSentry } from "../api/Sentry";
-import { me } from "../api/Users";
-import { UserDisplay, uiConfig } from "../common/config";
-import { WebsocketClient } from "../common/ws";
-import {
-    EVENT_API_DRAWER_TOGGLE,
-    EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_REFRESH,
-} from "../constants";
-import "../elements/messages/MessageContainer";
-import "../elements/messages/MessageContainer";
-import "../elements/notifications/NotificationDrawer";
-import { getURLParam, updateURLParams } from "../elements/router/RouteMatch";
-import "../elements/router/RouterOutlet";
-import "../elements/sidebar/Sidebar";
-import { DefaultTenant } from "../elements/sidebar/SidebarBrand";
-import "../elements/sidebar/SidebarItem";
-import { ROUTES } from "../routesUser";
-import { first } from "../utils";
-import "./locale";
 
 @customElement("ak-interface-user")
 export class UserInterface extends LitElement {
@@ -53,7 +53,7 @@ export class UserInterface extends LitElement {
     tenant: CurrentTenant = DefaultTenant;
 
     @property({ type: Number })
-    notificationsCount = -1;
+    notificationsCount = 0;
 
     static get styles(): CSSResult[] {
         return [
@@ -75,6 +75,9 @@ export class UserInterface extends LitElement {
                     background-color: transparent !important;
                 }
                 .pf-c-page {
+                    background-color: transparent;
+                }
+                .background-wrapper {
                     background-color: var(--pf-c-page--BackgroundColor) !important;
                 }
                 .display-none {
@@ -86,6 +89,12 @@ export class UserInterface extends LitElement {
                 }
                 .has-notifications {
                     color: #2b9af3;
+                }
+                .background-wrapper {
+                    height: 100vh;
+                    width: 100vw;
+                    position: absolute;
+                    z-index: -1;
                 }
             `,
         ];
@@ -106,7 +115,7 @@ export class UserInterface extends LitElement {
                 apiDrawerOpen: this.apiDrawerOpen,
             });
         });
-        window.addEventListener(EVENT_REFRESH, () => {
+        window.addEventListener(EVENT_WS_MESSAGE, () => {
             this.firstUpdated();
         });
         tenant().then((tenant) => (this.tenant = tenant));
@@ -114,24 +123,25 @@ export class UserInterface extends LitElement {
     }
 
     firstUpdated(): void {
-        new EventsApi(DEFAULT_CONFIG)
-            .eventsNotificationsList({
-                seen: false,
-                ordering: "-created",
-                pageSize: 1,
-            })
-            .then((r) => {
-                this.notificationsCount = r.pagination.count;
-            });
+        me().then((user) => {
+            new EventsApi(DEFAULT_CONFIG)
+                .eventsNotificationsList({
+                    seen: false,
+                    ordering: "-created",
+                    pageSize: 1,
+                    user: user.user.pk,
+                })
+                .then((r) => {
+                    this.notificationsCount = r.pagination.count;
+                });
+        });
     }
 
     render(): TemplateResult {
         return html`${until(
             uiConfig().then((config) => {
-                return html`<div
-                    class="pf-c-page"
-                    style="background: ${config.color.background} !important"
-                >
+                return html`<div class="pf-c-page">
+                    <div class="background-wrapper" style="${config.theme.background}"></div>
                     <header class="pf-c-page__header">
                         <div class="pf-c-page__header-brand">
                             <a href="#/" class="pf-c-page__header-brand-link">

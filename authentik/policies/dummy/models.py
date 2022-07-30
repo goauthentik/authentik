@@ -36,7 +36,7 @@ class DummyPolicy(Policy):
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Wait random time then return result"""
         wait = SystemRandom().randrange(self.wait_min, self.wait_max)
-        LOGGER.debug("Policy waiting", policy=self, delay=wait)
+        LOGGER.info("Policy waiting", policy=self, delay=wait)
         sleep(wait)
         return PolicyResult(self.result, "dummy")
 

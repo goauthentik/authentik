@@ -1,3 +1,9 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import "@goauthentik/web/elements/utils/TimeDeltaHelp";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -5,11 +11,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { ConsentStage, ConsentStageModeEnum, StagesApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-stage-consent-form")
 export class ConsentStageForm extends ModelForm<ConsentStage, string> {
@@ -113,8 +114,9 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).`}
+                            ${t`Offset after which consent expires.`}
                         </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

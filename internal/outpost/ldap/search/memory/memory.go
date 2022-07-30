@@ -9,7 +9,7 @@ import (
 	"github.com/nmcclain/ldap"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/group"
 	"goauthentik.io/internal/outpost/ldap/metrics"
@@ -39,7 +39,7 @@ func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
 
 func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, error) {
 	accsp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.check_access")
-	baseDN := strings.ToLower(ms.si.GetBaseDN())
+	baseDN := ms.si.GetBaseDN()
 
 	filterOC, err := ldap.GetFilterObjectClass(req.Filter)
 	if err != nil {
@@ -47,8 +47,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			"outpost_name": ms.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "filter_parse_fail",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          ms.si.GetAppSlug(),
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
@@ -57,31 +56,28 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			"outpost_name": ms.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "empty_bind_dn",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          ms.si.GetAppSlug(),
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", req.BindDN)
 	}
-	if !strings.HasSuffix(req.BindDN, ","+baseDN) {
+	if !utils.HasSuffixNoCase(req.BindDN, ","+baseDN) {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": ms.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "invalid_bind_dn",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          ms.si.GetAppSlug(),
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: BindDN %s not in our BaseDN %s", req.BindDN, ms.si.GetBaseDN())
 	}
 
-	flags, ok := ms.si.GetFlags(req.BindDN)
-	if !ok {
+	flags := ms.si.GetFlags(req.BindDN)
+	if flags == nil {
 		req.Log().Debug("User info not cached")
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": ms.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "user_info_not_cached",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          ms.si.GetAppSlug(),
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
@@ -92,7 +88,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	scope := req.SearchRequest.Scope
 	needUsers, needGroups := ms.si.GetNeededObjects(scope, req.BaseDN, filterOC)
 
-	if scope >= 0 && req.BaseDN == baseDN {
+	if scope >= 0 && strings.EqualFold(req.BaseDN, baseDN) {
 		if utils.IncludeObjectClass(filterOC, constants.GetDomainOCs()) {
 			entries = append(entries, ms.si.GetBaseEntry())
 		}
@@ -107,6 +103,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		if flags.CanSearch {
 			users = &ms.users
 		} else {
+			u := make([]api.User, 1)
 			if flags.UserInfo == nil {
 				for i, u := range ms.users {
 					if u.Pk == flags.UserPk {
@@ -118,11 +115,9 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					req.Log().WithField("pk", flags.UserPk).Warning("User with pk is not in local cache")
 					err = fmt.Errorf("failed to get userinfo")
 				}
+			} else {
+				u[0] = *flags.UserInfo
 			}
-
-			u := make([]api.User, 1)
-			u[0] = *flags.UserInfo
-
 			users = &u
 		}
 	}
@@ -139,9 +134,9 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				// as a member.
 				for _, u := range g.UsersObj {
 					if flags.UserPk == u.Pk {
-						// TODO: Is there a better way to clone this object?
-						fg := api.NewGroup(g.Pk, g.Name, g.Parent, g.ParentName, []int32{flags.UserPk}, []api.GroupMember{u})
-						fg.SetAttributes(*g.Attributes)
+						//TODO: Is there a better way to clone this object?
+						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.Parent, g.ParentName, []int32{flags.UserPk}, []api.GroupMember{u})
+						fg.SetAttributes(g.Attributes)
 						fg.SetIsSuperuser(*g.IsSuperuser)
 						groups = append(groups, group.FromAPIGroup(*fg, ms.si))
 						break
@@ -155,8 +150,8 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, err
 	}
 
-	if scope >= 0 && (req.BaseDN == ms.si.GetBaseDN() || strings.HasSuffix(req.BaseDN, ms.si.GetBaseUserDN())) {
-		singleu := strings.HasSuffix(req.BaseDN, ","+ms.si.GetBaseUserDN())
+	if scope >= 0 && (strings.EqualFold(req.BaseDN, ms.si.GetBaseDN()) || utils.HasSuffixNoCase(req.BaseDN, ms.si.GetBaseUserDN())) {
+		singleu := utils.HasSuffixNoCase(req.BaseDN, ","+ms.si.GetBaseUserDN())
 
 		if !singleu && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
 			entries = append(entries, utils.GetContainerEntry(filterOC, ms.si.GetBaseUserDN(), constants.OUUsers))
@@ -166,7 +161,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		if scope >= 0 && users != nil && utils.IncludeObjectClass(filterOC, constants.GetUserOCs()) {
 			for _, u := range *users {
 				entry := ms.si.UserEntry(u)
-				if req.BaseDN == entry.DN || !singleu {
+				if strings.EqualFold(req.BaseDN, entry.DN) || !singleu {
 					entries = append(entries, entry)
 				}
 			}
@@ -175,8 +170,8 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		scope += 1 // Return the scope to what it was before we descended
 	}
 
-	if scope >= 0 && (req.BaseDN == ms.si.GetBaseDN() || strings.HasSuffix(req.BaseDN, ms.si.GetBaseGroupDN())) {
-		singleg := strings.HasSuffix(req.BaseDN, ","+ms.si.GetBaseGroupDN())
+	if scope >= 0 && (strings.EqualFold(req.BaseDN, ms.si.GetBaseDN()) || utils.HasSuffixNoCase(req.BaseDN, ms.si.GetBaseGroupDN())) {
+		singleg := utils.HasSuffixNoCase(req.BaseDN, ","+ms.si.GetBaseGroupDN())
 
 		if !singleg && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
 			entries = append(entries, utils.GetContainerEntry(filterOC, ms.si.GetBaseGroupDN(), constants.OUGroups))
@@ -185,7 +180,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 		if scope >= 0 && groups != nil && utils.IncludeObjectClass(filterOC, constants.GetGroupOCs()) {
 			for _, g := range groups {
-				if req.BaseDN == g.DN || !singleg {
+				if strings.EqualFold(req.BaseDN, g.DN) || !singleg {
 					entries = append(entries, g.Entry())
 				}
 			}
@@ -194,8 +189,8 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		scope += 1 // Return the scope to what it was before we descended
 	}
 
-	if scope >= 0 && (req.BaseDN == ms.si.GetBaseDN() || strings.HasSuffix(req.BaseDN, ms.si.GetBaseVirtualGroupDN())) {
-		singlevg := strings.HasSuffix(req.BaseDN, ","+ms.si.GetBaseVirtualGroupDN())
+	if scope >= 0 && (strings.EqualFold(req.BaseDN, ms.si.GetBaseDN()) || utils.HasSuffixNoCase(req.BaseDN, ms.si.GetBaseVirtualGroupDN())) {
+		singlevg := utils.HasSuffixNoCase(req.BaseDN, ","+ms.si.GetBaseVirtualGroupDN())
 
 		if !singlevg && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
 			entries = append(entries, utils.GetContainerEntry(filterOC, ms.si.GetBaseVirtualGroupDN(), constants.OUVirtualGroups))
@@ -205,7 +200,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		if scope >= 0 && users != nil && utils.IncludeObjectClass(filterOC, constants.GetVirtualGroupOCs()) {
 			for _, u := range *users {
 				entry := group.FromAPIUser(u, ms.si).Entry()
-				if req.BaseDN == entry.DN || !singlevg {
+				if strings.EqualFold(req.BaseDN, entry.DN) || !singlevg {
 					entries = append(entries, entry)
 				}
 			}

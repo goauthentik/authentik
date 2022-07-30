@@ -1,6 +1,6 @@
 """Source decision helper"""
 from enum import Enum
-from typing import Any, Optional, Type
+from typing import Any, Optional
 
 from django.contrib import messages
 from django.db import IntegrityError
@@ -14,6 +14,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Source, SourceUserMatchingModes, User, UserSourceConnection
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION, PostUserEnrollmentStage
 from authentik.events.models import Event, EventAction
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, Stage, in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
@@ -24,10 +25,12 @@ from authentik.flows.planner import (
 )
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
+from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.utils import delete_none_keys
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
+from authentik.stages.user_write.stage import PLAN_CONTEXT_USER_PATH
 
 
 class Action(Enum):
@@ -50,7 +53,10 @@ class SourceFlowManager:
 
     identifier: str
 
-    connection_type: Type[UserSourceConnection] = UserSourceConnection
+    connection_type: type[UserSourceConnection] = UserSourceConnection
+
+    enroll_info: dict[str, Any]
+    policy_context: dict[str, Any]
 
     def __init__(
         self,
@@ -64,6 +70,7 @@ class SourceFlowManager:
         self.identifier = identifier
         self.enroll_info = enroll_info
         self._logger = get_logger().bind(source=source, identifier=identifier)
+        self.policy_context = {}
 
     # pylint: disable=too-many-return-statements
     def get_action(self, **kwargs) -> tuple[Action, Optional[UserSourceConnection]]:
@@ -144,20 +151,23 @@ class SourceFlowManager:
         except IntegrityError as exc:
             self._logger.warning("failed to get action", exc=exc)
             return redirect("/")
-        self._logger.debug("get_action() says", action=action, connection=connection)
-        if connection:
-            if action == Action.LINK:
-                self._logger.debug("Linking existing user")
-                return self.handle_existing_user_link(connection)
-            if action == Action.AUTH:
-                self._logger.debug("Handling auth user")
-                return self.handle_auth_user(connection)
-            if action == Action.ENROLL:
-                self._logger.debug("Handling enrollment of new user")
-                return self.handle_enroll(connection)
+        self._logger.debug("get_action", action=action, connection=connection)
+        try:
+            if connection:
+                if action == Action.LINK:
+                    self._logger.debug("Linking existing user")
+                    return self.handle_existing_user_link(connection)
+                if action == Action.AUTH:
+                    self._logger.debug("Handling auth user")
+                    return self.handle_auth_user(connection)
+                if action == Action.ENROLL:
+                    self._logger.debug("Handling enrollment of new user")
+                    return self.handle_enroll(connection)
+        except FlowNonApplicableException as exc:
+            self._logger.warning("Flow non applicable", exc=exc)
+            return self.error_handler(exc)
         # Default case, assume deny
-        messages.error(
-            self.request,
+        error = Exception(
             _(
                 (
                     "Request to authenticate with %(source)s has been denied. Please authenticate "
@@ -166,7 +176,16 @@ class SourceFlowManager:
                 % {"source": self.source.name}
             ),
         )
-        return redirect(reverse("authentik_core:root-redirect"))
+        return self.error_handler(error)
+
+    def error_handler(self, error: Exception) -> HttpResponse:
+        """Handle any errors by returning an access denied stage"""
+        response = AccessDeniedResponse(self.request)
+        response.error_message = str(error)
+        if isinstance(error, FlowNonApplicableException):
+            response.policy_result = error.policy_result
+            response.error_message = error.messages
+        return response
 
     # pylint: disable=unused-argument
     def get_stages_to_append(self, flow: Flow) -> list[Stage]:
@@ -179,7 +198,9 @@ class SourceFlowManager:
             ]
         return []
 
-    def _handle_login_flow(self, flow: Flow, **kwargs) -> HttpResponse:
+    def _handle_login_flow(
+        self, flow: Flow, connection: UserSourceConnection, **kwargs
+    ) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
         # Ensure redirect is carried through when user was trying to
         # authorize application
@@ -193,8 +214,10 @@ class SourceFlowManager:
                 PLAN_CONTEXT_SSO: True,
                 PLAN_CONTEXT_SOURCE: self.source,
                 PLAN_CONTEXT_REDIRECT: final_redirect,
+                PLAN_CONTEXT_SOURCES_CONNECTION: connection,
             }
         )
+        kwargs.update(self.policy_context)
         if not flow:
             return HttpResponseBadRequest()
         # We run the Flow planner here so we can pass the Pending user in the context
@@ -220,7 +243,7 @@ class SourceFlowManager:
             _("Successfully authenticated with %(source)s!" % {"source": self.source.name}),
         )
         flow_kwargs = {PLAN_CONTEXT_PENDING_USER: connection.user}
-        return self._handle_login_flow(self.source.authentication_flow, **flow_kwargs)
+        return self._handle_login_flow(self.source.authentication_flow, connection, **flow_kwargs)
 
     def handle_existing_user_link(
         self,
@@ -264,8 +287,9 @@ class SourceFlowManager:
             return HttpResponseBadRequest()
         return self._handle_login_flow(
             self.source.enrollment_flow,
+            connection,
             **{
                 PLAN_CONTEXT_PROMPT: delete_none_keys(self.enroll_info),
-                PLAN_CONTEXT_SOURCES_CONNECTION: connection,
+                PLAN_CONTEXT_USER_PATH: self.source.get_user_path(),
             },
         )

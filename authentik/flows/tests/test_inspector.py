@@ -9,6 +9,7 @@ from rest_framework.test import APITestCase
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, InvalidResponseAction
+from authentik.lib.generators import generate_id
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
@@ -24,8 +25,8 @@ class TestFlowInspector(APITestCase):
     def test(self):
         """test inspector"""
         flow = Flow.objects.create(
-            name="test-full",
-            slug="test-full",
+            name=generate_id(),
+            slug=generate_id(),
             designation=FlowDesignation.AUTHENTICATION,
         )
 
@@ -55,6 +56,7 @@ class TestFlowInspector(APITestCase):
                     "background": flow.background_url,
                     "cancel_url": reverse("authentik_flows:cancel"),
                     "title": "",
+                    "layout": "stacked",
                 },
                 "type": ChallengeTypes.NATIVE.value,
                 "password_fields": False,

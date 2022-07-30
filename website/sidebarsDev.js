@@ -26,5 +26,9 @@ module.exports = {
             type: "doc",
             id: "translation",
         },
+        {
+            type: "doc",
+            id: "docs/writing-documentation",
+        },
     ],
 };

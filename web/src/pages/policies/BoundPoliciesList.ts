@@ -1,27 +1,25 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+import "@goauthentik/web/pages/groups/GroupForm";
+import "@goauthentik/web/pages/policies/PolicyBindingForm";
+import "@goauthentik/web/pages/policies/PolicyWizard";
+import "@goauthentik/web/pages/users/UserForm";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import { PFColor } from "../../elements/Label";
-import { PFSize } from "../../elements/Spinner";
-import "../../elements/Tabs";
-import "../../elements/buttons/Dropdown";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/ProxyForm";
-import { Table, TableColumn } from "../../elements/table/Table";
-import "../groups/GroupForm";
-import "../users/UserForm";
-import "./PolicyBindingForm";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
@@ -68,6 +66,9 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         const label = this.getPolicyUserGroupRowLabel(item);
         if (item.user) {
             return html` <a href=${`#/identity/users/${item.user}`}> ${label} </a> `;
+        }
+        if (item.group) {
+            return html` <a href=${`#/identity/groups/${item.group}`}> ${label} </a> `;
         }
         return html`${label}`;
     }
@@ -185,7 +186,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     }
 
     renderToolbar(): TemplateResult {
-        return html` <ak-forms-modal size=${PFSize.Medium}>
+        return html`<ak-forms-modal size=${PFSize.Medium}>
                 <span slot="submit"> ${t`Create`} </span>
                 <span slot="header"> ${t`Create Binding`} </span>
                 <ak-policy-binding-form
@@ -198,33 +199,6 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     ${t`Create Binding`}
                 </button>
             </ak-forms-modal>
-            <ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-secondary pf-c-button pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${t`Create Policy`}</span>
-                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-                </button>
-                <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(
-                        new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
-                            return types.map((type) => {
-                                return html`<li>
-                                    <ak-forms-modal>
-                                        <span slot="submit"> ${t`Create`} </span>
-                                        <span slot="header"> ${t`Create ${type.name}`} </span>
-                                        <ak-proxy-form slot="form" type=${type.component}>
-                                        </ak-proxy-form>
-                                        <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                            ${type.name}<br />
-                                            <small>${type.description}</small>
-                                        </button>
-                                    </ak-forms-modal>
-                                </li>`;
-                            });
-                        }),
-                        html`<ak-spinner></ak-spinner>`,
-                    )}
-                </ul>
-            </ak-dropdown>
-            ${super.renderToolbar()}`;
+            <ak-policy-wizard createText=${t`Create Policy`}></ak-policy-wizard> `;
     }
 }

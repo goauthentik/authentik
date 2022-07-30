@@ -29,3 +29,4 @@ class UserSettingSerializer(PassiveSerializer):
     component = CharField()
     title = CharField()
     configure_url = CharField(required=False)
+    icon_url = CharField(required=False)

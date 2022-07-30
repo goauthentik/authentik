@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"net/http"
 	"net/url"
+	"path"
 	"regexp"
 	"strings"
 	"time"
@@ -17,10 +18,9 @@ import (
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
-	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/hs256"
@@ -35,7 +35,7 @@ type Application struct {
 	Cert                 *tls.Certificate
 	UnauthenticatedRegex []*regexp.Regexp
 
-	endpint       OIDCEndpoint
+	endpoint      OIDCEndpoint
 	oauthConfig   oauth2.Config
 	tokenVerifier *oidc.IDTokenVerifier
 	outpostName   string
@@ -46,6 +46,7 @@ type Application struct {
 
 	log *log.Entry
 	mux *mux.Router
+	ak  *ak.APIController
 
 	errorTemplates *template.Template
 }
@@ -72,31 +73,38 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		SupportedSigningAlgs: []string{"RS256", "HS256"},
 	})
 
+	redirectUri, _ := url.Parse(p.ExternalHost)
+	redirectUri.Path = path.Join(redirectUri.Path, "/outpost.goauthentik.io/callback")
+	redirectUri.RawQuery = url.Values{
+		CallbackSignature: []string{"true"},
+	}.Encode()
+
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(p, ak.Outpost.Config["authentik_host"].(string))
 	oauth2Config := oauth2.Config{
 		ClientID:     *p.ClientId,
 		ClientSecret: *p.ClientSecret,
-		RedirectURL:  urlJoin(p.ExternalHost, "/akprox/callback"),
+		RedirectURL:  redirectUri.String(),
 		Endpoint:     endpoint.Endpoint,
 		Scopes:       p.ScopesToRequest,
 	}
 	mux := mux.NewRouter()
 	a := &Application{
 		Host:           externalHost.Host,
-		log:            log.WithField("logger", "authentik.outpost.proxy.bundle").WithField("provider", p.Name),
+		log:            muxLogger,
 		outpostName:    ak.Outpost.Name,
-		endpint:        endpoint,
+		endpoint:       endpoint,
 		oauthConfig:    oauth2Config,
 		tokenVerifier:  verifier,
 		proxyConfig:    p,
 		httpClient:     c,
 		mux:            mux,
 		errorTemplates: templates.GetTemplates(),
+		ak:             ak,
 	}
-	a.sessions = a.getStore(p)
+	a.sessions = a.getStore(p, externalHost)
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
-		s, err := a.sessions.Get(r, constants.SeesionName)
+		s, err := a.sessions.Get(r, constants.SessionName)
 		if err != nil {
 			return l
 		}
@@ -132,22 +140,26 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 			metrics.Requests.With(prometheus.Labels{
 				"outpost_name": a.outpostName,
 				"type":         "app",
-				"scheme":       r.URL.Scheme,
 				"method":       r.Method,
-				"path":         r.URL.Path,
 				"host":         web.GetHost(r),
-				"user":         user,
 			}).Observe(float64(after))
 		})
 	})
 	mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
+	mux.Use(func(inner http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if _, set := r.URL.Query()[CallbackSignature]; set {
+				a.handleAuthCallback(w, r)
+			} else {
+				inner.ServeHTTP(w, r)
+			}
+		})
+	})
 
-	// Support /start and /sign_in for backwards compatibility
-	mux.HandleFunc("/akprox/start", a.handleRedirect)
-	mux.HandleFunc("/akprox/sign_in", a.handleRedirect)
-	mux.HandleFunc("/akprox/callback", a.handleCallback)
-	mux.HandleFunc("/akprox/sign_out", a.handleSignOut)
-	switch *p.Mode {
+	mux.HandleFunc("/outpost.goauthentik.io/start", a.handleAuthStart)
+	mux.HandleFunc("/outpost.goauthentik.io/callback", a.handleAuthCallback)
+	mux.HandleFunc("/outpost.goauthentik.io/sign_out", a.handleSignOut)
+	switch *p.Mode.Get() {
 	case api.PROXYMODE_PROXY:
 		err = a.configureProxy()
 	case api.PROXYMODE_FORWARD_SINGLE:
@@ -156,13 +168,13 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		err = a.configureForward()
 	}
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to configure application mode")
+		return nil, fmt.Errorf("failed to configure application mode: %w", err)
 	}
 
 	if kp := p.Certificate.Get(); kp != nil {
 		err := cs.AddKeypair(*kp)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to initially fetch certificate")
+			return nil, fmt.Errorf("failed to initially fetch certificate: %w", err)
 		}
 		a.Cert = cs.Get(*kp)
 	}
@@ -172,7 +184,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		for _, regex := range strings.Split(*p.SkipPathRegex, "\n") {
 			re, err := regexp.Compile(regex)
 			if err != nil {
-				// TODO: maybe create event for this?
+				//TODO: maybe create event for this?
 				a.log.WithError(err).Warning("failed to compile SkipPathRegex")
 				continue
 			} else {
@@ -184,7 +196,11 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 }
 
 func (a *Application) Mode() api.ProxyMode {
-	return *a.proxyConfig.Mode
+	return *a.proxyConfig.Mode.Get()
+}
+
+func (a *Application) ProxyConfig() api.ProxyOutpostConfig {
+	return a.proxyConfig
 }
 
 func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
@@ -192,17 +208,17 @@ func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
-	// TODO: Token revocation
-	s, err := a.sessions.Get(r, constants.SeesionName)
+	//TODO: Token revocation
+	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
-		http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
+		http.Redirect(rw, r, a.endpoint.EndSessionEndpoint, http.StatusFound)
 		return
 	}
 	s.Options.MaxAge = -1
 	err = s.Save(r, rw)
 	if err != nil {
-		http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
+		http.Redirect(rw, r, a.endpoint.EndSessionEndpoint, http.StatusFound)
 		return
 	}
-	http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
+	http.Redirect(rw, r, a.endpoint.EndSessionEndpoint, http.StatusFound)
 }

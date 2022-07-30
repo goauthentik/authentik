@@ -64,6 +64,7 @@ class OAuthCallback(OAuthClientMixin, View):
             identifier=identifier,
             enroll_info=enroll_info,
         )
+        sfm.policy_context = {"oauth_userinfo": raw_info}
         return sfm.get_flow(
             access_token=token.get("access_token"),
         )

@@ -4,18 +4,22 @@ from unittest.mock import MagicMock, PropertyMock, patch
 from django.http import HttpRequest, HttpResponse
 from django.test.client import RequestFactory
 from django.urls import reverse
-from django.utils.encoding import force_str
-from rest_framework.test import APITestCase
 
 from authentik.core.models import User
-from authentik.flows.challenge import ChallengeTypes
-from authentik.flows.exceptions import FlowNonApplicableException
+from authentik.core.tests.utils import create_test_flow
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, InvalidResponseAction
+from authentik.flows.models import (
+    FlowDeniedAction,
+    FlowDesignation,
+    FlowStageBinding,
+    InvalidResponseAction,
+)
 from authentik.flows.planner import FlowPlan, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
+from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
+from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.policies.reputation.models import ReputationPolicy
@@ -24,7 +28,7 @@ from authentik.stages.deny.models import DenyStage
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
-POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False))
+POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False, "foo"))
 POLICY_RETURN_TRUE = MagicMock(return_value=PolicyResult(True))
 
 
@@ -37,7 +41,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse):
 TO_STAGE_RESPONSE_MOCK = MagicMock(side_effect=to_stage_response)
 
 
-class TestFlowExecutor(APITestCase):
+class TestFlowExecutor(FlowTestCase):
     """Test executor"""
 
     def setUp(self):
@@ -49,12 +53,10 @@ class TestFlowExecutor(APITestCase):
     )
     def test_existing_plan_diff_flow(self):
         """Check that a plan for a different flow cancels the current plan"""
-        flow = Flow.objects.create(
-            name="test-existing-plan-diff",
-            slug="test-existing-plan-diff",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
-        stage = DummyStage.objects.create(name="dummy")
+        stage = DummyStage.objects.create(name=generate_id())
         binding = FlowStageBinding(target=flow, stage=stage, order=0)
         plan = FlowPlan(flow_pk=flow.pk.hex + "a", bindings=[binding], markers=[StageMarker()])
         session = self.client.session
@@ -79,41 +81,34 @@ class TestFlowExecutor(APITestCase):
     )
     def test_invalid_non_applicable_flow(self):
         """Tests that a non-applicable flow returns the correct error message"""
-        flow = Flow.objects.create(
-            name="test-non-applicable",
-            slug="test-non-applicable",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
 
         CONFIG.update_from_dict({"domain": "testserver"})
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-access-denied",
-                "error_message": FlowNonApplicableException.__doc__,
-                "flow_info": {
-                    "background": flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-                "type": ChallengeTypes.NATIVE.value,
-            },
+        self.assertStageResponse(
+            response,
+            flow=flow,
+            error_message="foo",
+            component="ak-stage-access-denied",
         )
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
     )
-    def test_invalid_empty_flow(self):
-        """Tests that an empty flow returns the correct error message"""
-        flow = Flow.objects.create(
-            name="test-empty",
-            slug="test-empty",
-            designation=FlowDesignation.AUTHENTICATION,
+    @patch(
+        "authentik.policies.engine.PolicyEngine.result",
+        POLICY_RETURN_FALSE,
+    )
+    def test_invalid_non_applicable_flow_continue(self):
+        """Tests that a non-applicable flow that should redirect"""
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
+            denied_action=FlowDeniedAction.CONTINUE,
         )
 
         CONFIG.update_from_dict({"domain": "testserver"})
@@ -129,10 +124,8 @@ class TestFlowExecutor(APITestCase):
     )
     def test_invalid_flow_redirect(self):
         """Tests that an invalid flow still redirects"""
-        flow = Flow.objects.create(
-            name="test-empty",
-            slug="test-empty",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
 
         CONFIG.update_from_dict({"domain": "testserver"})
@@ -142,18 +135,33 @@ class TestFlowExecutor(APITestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
+    @patch(
+        "authentik.flows.views.executor.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_invalid_empty_flow(self):
+        """Tests that an empty flow returns the correct error message"""
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
+        )
+
+        CONFIG.update_from_dict({"domain": "testserver"})
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
+
     def test_multi_stage_flow(self):
         """Test a full flow with multiple stages"""
-        flow = Flow.objects.create(
-            name="test-full",
-            slug="test-full",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
         FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy2"), order=1
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=1
         )
 
         exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
@@ -180,19 +188,19 @@ class TestFlowExecutor(APITestCase):
     )
     def test_reevaluate_remove_last(self):
         """Test planner with re-evaluate (last stage is removed)"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
-        false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
+        false_policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=1, wait_max=2
+        )
 
         binding = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
-            stage=DummyStage.objects.create(name="dummy2"),
+            stage=DummyStage.objects.create(name=generate_id()),
             order=1,
             re_evaluate_policies=True,
         )
@@ -227,24 +235,24 @@ class TestFlowExecutor(APITestCase):
 
     def test_reevaluate_remove_middle(self):
         """Test planner with re-evaluate (middle stage is removed)"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
-        false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
+        false_policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=1, wait_max=2
+        )
 
         binding = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
-            stage=DummyStage.objects.create(name="dummy2"),
+            stage=DummyStage.objects.create(name=generate_id()),
             order=1,
             re_evaluate_policies=True,
         )
         binding3 = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy3"), order=2
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=2
         )
 
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)
@@ -283,35 +291,28 @@ class TestFlowExecutor(APITestCase):
         # We do this request without the patch, so the policy results in false
         response = self.client.post(exec_url)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_reevaluate_keep(self):
         """Test planner with re-evaluate (everything is kept)"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
-        true_policy = DummyPolicy.objects.create(result=True, wait_min=1, wait_max=2)
+        true_policy = DummyPolicy.objects.create(
+            name=generate_id(), result=True, wait_min=1, wait_max=2
+        )
 
         binding = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
-            stage=DummyStage.objects.create(name="dummy2"),
+            stage=DummyStage.objects.create(name=generate_id()),
             order=1,
             re_evaluate_policies=True,
         )
         binding3 = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy3"), order=2
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=2
         )
 
         PolicyBinding.objects.create(policy=true_policy, target=binding2, order=0)
@@ -360,41 +361,34 @@ class TestFlowExecutor(APITestCase):
         # We do this request without the patch, so the policy results in false
         response = self.client.post(exec_url)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_reevaluate_remove_consecutive(self):
         """Test planner with re-evaluate (consecutive stages are removed)"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
-        false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
+        false_policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=1, wait_max=2
+        )
 
         binding = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
-            stage=DummyStage.objects.create(name="dummy2"),
+            stage=DummyStage.objects.create(name=generate_id()),
             order=1,
             re_evaluate_policies=True,
         )
         binding3 = FlowStageBinding.objects.create(
             target=flow,
-            stage=DummyStage.objects.create(name="dummy3"),
+            stage=DummyStage.objects.create(name=generate_id()),
             order=2,
             re_evaluate_policies=True,
         )
         binding4 = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy4"), order=2
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=2
         )
 
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)
@@ -407,18 +401,7 @@ class TestFlowExecutor(APITestCase):
             # First request, run the planner
             response = self.client.get(exec_url)
             self.assertEqual(response.status_code, 200)
-            self.assertJSONEqual(
-                force_str(response.content),
-                {
-                    "type": ChallengeTypes.NATIVE.value,
-                    "component": "ak-stage-dummy",
-                    "flow_info": {
-                        "background": flow.background_url,
-                        "cancel_url": reverse("authentik_flows:cancel"),
-                        "title": "",
-                    },
-                },
-            )
+            self.assertStageResponse(response, flow, component="ak-stage-dummy")
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
@@ -440,42 +423,21 @@ class TestFlowExecutor(APITestCase):
         # A get request will evaluate the policies and this will return stage 4
         # but it won't save it, hence we can't check the plan
         response = self.client.get(exec_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-dummy",
-                "flow_info": {
-                    "background": flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-            },
-        )
+        self.assertStageResponse(response, flow, component="ak-stage-dummy")
 
         # fourth request, this confirms the last stage (dummy4)
         # We do this request without the patch, so the policy results in false
         response = self.client.post(exec_url)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_stageview_user_identifier(self):
         """Test PLAN_CONTEXT_PENDING_USER_IDENTIFIER"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
         FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
 
         ident = "test-identifier"
@@ -497,10 +459,8 @@ class TestFlowExecutor(APITestCase):
 
     def test_invalid_restart(self):
         """Test flow that restarts on invalid entry"""
-        flow = Flow.objects.create(
-            name="restart-on-invalid",
-            slug="restart-on-invalid",
-            designation=FlowDesignation.AUTHENTICATION,
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
         )
         # Stage 0 is a deny stage that is added dynamically
         # when the reputation policy says so
@@ -531,36 +491,15 @@ class TestFlowExecutor(APITestCase):
         exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
         # First request, run the planner
         response = self.client.get(exec_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "type": ChallengeTypes.NATIVE.value,
-                "component": "ak-stage-identification",
-                "flow_info": {
-                    "background": flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-                "password_fields": False,
-                "primary_action": "Log in",
-                "sources": [],
-                "show_source_labels": False,
-                "user_fields": [UserFields.E_MAIL],
-            },
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-identification",
+            password_fields=False,
+            primary_action="Log in",
+            sources=[],
+            show_source_labels=False,
+            user_fields=[UserFields.E_MAIL],
         )
         response = self.client.post(exec_url, {"uid_field": "invalid-string"}, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-access-denied",
-                "error_message": None,
-                "flow_info": {
-                    "background": flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-                "type": ChallengeTypes.NATIVE.value,
-            },
-        )
+        self.assertStageResponse(response, flow, component="ak-stage-access-denied")

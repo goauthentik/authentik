@@ -1,16 +1,23 @@
-import { UserVerificationEnum } from "@goauthentik/api/dist/models/UserVerificationEnum";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
 
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
-import { AuthenticateWebAuthnStage, StagesApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
+import {
+    AuthenticateWebAuthnStage,
+    AuthenticatorAttachmentEnum,
+    FlowsApi,
+    FlowsInstancesListDesignationEnum,
+    ResidentKeyRequirementEnum,
+    StagesApi,
+    UserVerificationEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-webauthn-form")
 export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuthnStage, string> {
@@ -29,6 +36,9 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
     }
 
     send = (data: AuthenticateWebAuthnStage): Promise<AuthenticateWebAuthnStage> => {
+        if (data.authenticatorAttachment?.toString() === "") {
+            data.authenticatorAttachment = null;
+        }
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnUpdate({
                 stageUuid: this.instance.pk || "",
@@ -62,7 +72,7 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                         ?required=${true}
                         name="userVerification"
                     >
-                        <select name="users" class="pf-c-form-control">
+                        <select class="pf-c-form-control">
                             <option
                                 value="${UserVerificationEnum.Required}"
                                 ?selected=${this.instance?.userVerification ===
@@ -85,6 +95,103 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                                 ${t`User verification should not occur.`}
                             </option>
                         </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Resident key requirement`}
+                        ?required=${true}
+                        name="residentKeyRequirement"
+                    >
+                        <select class="pf-c-form-control">
+                            <option
+                                value="${ResidentKeyRequirementEnum.Discouraged}"
+                                ?selected=${this.instance?.residentKeyRequirement ===
+                                ResidentKeyRequirementEnum.Discouraged}
+                            >
+                                ${t`The authenticator should not create a dedicated credential`}
+                            </option>
+                            <option
+                                value="${ResidentKeyRequirementEnum.Preferred}"
+                                ?selected=${this.instance?.residentKeyRequirement ===
+                                ResidentKeyRequirementEnum.Preferred}
+                            >
+                                ${t`The authenticator can create and store a dedicated credential, but if it doesn't that's alright too`}
+                            </option>
+                            <option
+                                value="${ResidentKeyRequirementEnum.Required}"
+                                ?selected=${this.instance?.residentKeyRequirement ===
+                                ResidentKeyRequirementEnum.Required}
+                            >
+                                ${t`The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur`}
+                            </option>
+                        </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Authenticator Attachment`}
+                        ?required=${true}
+                        name="authenticatorAttachment"
+                    >
+                        <select class="pf-c-form-control">
+                            <option
+                                value=""
+                                ?selected=${this.instance?.authenticatorAttachment === null}
+                            >
+                                ${t`No preference is sent`}
+                            </option>
+                            <option
+                                value="${AuthenticatorAttachmentEnum.Platform}"
+                                ?selected=${this.instance?.authenticatorAttachment ===
+                                AuthenticatorAttachmentEnum.Platform}
+                            >
+                                ${t`A non-removable authenticator, like TouchID or Windows Hello`}
+                            </option>
+                            <option
+                                value="${AuthenticatorAttachmentEnum.CrossPlatform}"
+                                ?selected=${this.instance?.authenticatorAttachment ===
+                                AuthenticatorAttachmentEnum.CrossPlatform}
+                            >
+                                ${t`A "roaming" authenticator, like a YubiKey`}
+                            </option>
+                        </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
+                        <select class="pf-c-form-control">
+                            <option
+                                value=""
+                                ?selected=${this.instance?.configureFlow === undefined}
+                            >
+                                ---------
+                            </option>
+                            ${until(
+                                new FlowsApi(DEFAULT_CONFIG)
+                                    .flowsInstancesList({
+                                        ordering: "slug",
+                                        designation:
+                                            FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    })
+                                    .then((flows) => {
+                                        return flows.results.map((flow) => {
+                                            let selected = this.instance?.configureFlow === flow.pk;
+                                            if (
+                                                !this.instance?.pk &&
+                                                !this.instance?.configureFlow &&
+                                                flow.slug === "default-otp-time-configure"
+                                            ) {
+                                                selected = true;
+                                            }
+                                            return html`<option
+                                                value=${ifDefined(flow.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${flow.name} (${flow.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

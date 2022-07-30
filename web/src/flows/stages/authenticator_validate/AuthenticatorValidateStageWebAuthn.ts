@@ -1,9 +1,15 @@
+import {
+    transformAssertionForServer,
+    transformCredentialRequestOptions,
+} from "@goauthentik/web/flows/stages/authenticator_webauthn/utils";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -19,11 +25,6 @@ import {
     DeviceChallenge,
 } from "@goauthentik/api";
 
-import {
-    transformAssertionForServer,
-    transformCredentialRequestOptions,
-} from "../authenticator_webauthn/utils";
-import { BaseStage } from "../base";
 import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
 
 @customElement("ak-stage-authenticator-validate-webauthn")
@@ -40,6 +41,8 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     @property({ type: Boolean })
     showBackButton = false;
 
+    transformedCredentialRequestOptions?: PublicKeyCredentialRequestOptions;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -55,19 +58,12 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     }
 
     async authenticate(): Promise<void> {
-        // convert certain members of the PublicKeyCredentialRequestOptions into
-        // byte arrays as expected by the spec.
-        const credentialRequestOptions = this.deviceChallenge
-            ?.challenge as PublicKeyCredentialRequestOptions;
-        const transformedCredentialRequestOptions =
-            transformCredentialRequestOptions(credentialRequestOptions);
-
         // request the authenticator to create an assertion signature using the
         // credential private key
         let assertion;
         try {
             assertion = await navigator.credentials.get({
-                publicKey: transformedCredentialRequestOptions,
+                publicKey: this.transformedCredentialRequestOptions,
             });
             if (!assertion) {
                 throw new Error(t`Assertions is empty`);
@@ -93,6 +89,12 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     }
 
     firstUpdated(): void {
+        // convert certain members of the PublicKeyCredentialRequestOptions into
+        // byte arrays as expected by the spec.
+        const credentialRequestOptions = this.deviceChallenge
+            ?.challenge as PublicKeyCredentialRequestOptions;
+        this.transformedCredentialRequestOptions =
+            transformCredentialRequestOptions(credentialRequestOptions);
         this.authenticateWrapper();
     }
 

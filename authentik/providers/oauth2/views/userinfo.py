@@ -4,12 +4,15 @@ from typing import Any, Optional
 from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
+from authentik.flows.challenge import PermissionDict
 from authentik.providers.oauth2.constants import (
+    SCOPE_AUTHENTIK_API,
     SCOPE_GITHUB_ORG_READ,
     SCOPE_GITHUB_USER,
     SCOPE_GITHUB_USER_EMAIL,
@@ -27,23 +30,27 @@ class UserInfoView(View):
 
     token: Optional[RefreshToken]
 
-    def get_scope_descriptions(self, scopes: list[str]) -> list[dict[str, str]]:
+    def get_scope_descriptions(self, scopes: list[str]) -> list[PermissionDict]:
         """Get a list of all Scopes's descriptions"""
         scope_descriptions = []
         for scope in ScopeMapping.objects.filter(scope_name__in=scopes).order_by("scope_name"):
-            if scope.description != "":
-                scope_descriptions.append({"id": scope.scope_name, "name": scope.description})
+            if scope.description == "":
+                continue
+            scope_descriptions.append(PermissionDict(id=scope.scope_name, name=scope.description))
         # GitHub Compatibility Scopes are handled differently, since they required custom paths
         # Hence they don't exist as Scope objects
-        github_scope_map = {
-            SCOPE_GITHUB_USER: ("GitHub Compatibility: Access your User Information"),
-            SCOPE_GITHUB_USER_READ: ("GitHub Compatibility: Access your User Information"),
-            SCOPE_GITHUB_USER_EMAIL: ("GitHub Compatibility: Access you Email addresses"),
-            SCOPE_GITHUB_ORG_READ: ("GitHub Compatibility: Access your Groups"),
+        special_scope_map = {
+            SCOPE_GITHUB_USER: _("GitHub Compatibility: Access your User Information"),
+            SCOPE_GITHUB_USER_READ: _("GitHub Compatibility: Access your User Information"),
+            SCOPE_GITHUB_USER_EMAIL: _("GitHub Compatibility: Access you Email addresses"),
+            SCOPE_GITHUB_ORG_READ: _("GitHub Compatibility: Access your Groups"),
+            SCOPE_AUTHENTIK_API: _("authentik API Access on behalf of your user"),
         }
         for scope in scopes:
-            if scope in github_scope_map:
-                scope_descriptions.append({"id": scope, "name": github_scope_map[scope]})
+            if scope in special_scope_map:
+                scope_descriptions.append(
+                    PermissionDict(id=scope, name=str(special_scope_map[scope]))
+                )
         return scope_descriptions
 
     def get_claims(self, token: RefreshToken) -> dict[str, Any]:

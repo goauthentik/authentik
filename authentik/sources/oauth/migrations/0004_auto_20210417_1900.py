@@ -11,7 +11,7 @@ def update_empty_urls(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
     for source in OAuthSource.objects.using(db_alias).all():
         changed = False
-        if source.access_token_url == "":
+        if source.access_token_url == "":  # nosec
             source.access_token_url = None
             changed = True
         if source.authorization_url == "":
@@ -20,7 +20,7 @@ def update_empty_urls(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         if source.profile_url == "":
             source.profile_url = None
             changed = True
-        if source.request_token_url == "":
+        if source.request_token_url == "":  # nosec
             source.request_token_url = None
             changed = True
 

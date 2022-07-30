@@ -1,3 +1,8 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { SentryIgnoredError } from "@goauthentik/web/common/errors";
+import { Form } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -11,11 +16,6 @@ import {
     SAMLProvider,
 } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { SentryIgnoredError } from "../../../common/errors";
-import { Form } from "../../../elements/forms/Form";
-import "../../../elements/forms/HorizontalFormElement";
-
 @customElement("ak-provider-saml-import-form")
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
     getSuccessMessage(): string {
@@ -24,7 +24,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
 
     // eslint-disable-next-line
     send = (data: SAMLProvider): Promise<void> => {
-        const file = this.getFormFile();
+        const file = this.getFormFiles()["metadata"];
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
@@ -67,7 +67,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-element-horizontal label=${t`Metadata`} name="flow">
+            <ak-form-element-horizontal label=${t`Metadata`} name="metadata">
                 <input type="file" value="" class="pf-c-form-control" />
             </ak-form-element-horizontal>
         </form>`;

@@ -122,6 +122,7 @@ class Migration(migrations.Migration):
                 default=list,
                 help_text="Specify which sources should be shown.",
                 to="authentik_core.Source",
+                blank=True,
             ),
         ),
         migrations.RunPython(

@@ -42,6 +42,9 @@ class Tenant(SerializerModel):
     flow_unenrollment = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_unenrollment"
     )
+    flow_user_settings = models.ForeignKey(
+        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_user_settings"
+    )
 
     event_retention = models.TextField(
         default="days=365",
@@ -61,12 +64,18 @@ class Tenant(SerializerModel):
         on_delete=models.SET_DEFAULT,
         help_text=_(("Web Certificate used by the authentik Core webserver.")),
     )
+    attributes = models.JSONField(default=dict, blank=True)
 
     @property
     def serializer(self) -> Serializer:
         from authentik.tenants.api import TenantSerializer
 
         return TenantSerializer
+
+    @property
+    def default_locale(self) -> str:
+        """Get default locale"""
+        return self.attributes.get("settings", {}).get("locale", "")
 
     def __str__(self) -> str:
         if self.default:

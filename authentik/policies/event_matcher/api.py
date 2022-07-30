@@ -25,3 +25,4 @@ class EventMatcherPolicyViewSet(UsedByMixin, ModelViewSet):
     serializer_class = EventMatcherPolicySerializer
     filterset_fields = "__all__"
     ordering = ["name"]
+    search_fields = ["name"]

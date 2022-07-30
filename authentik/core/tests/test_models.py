@@ -1,6 +1,6 @@
 """authentik core models tests"""
 from time import sleep
-from typing import Callable, Type
+from typing import Callable
 
 from django.test import RequestFactory, TestCase
 from django.utils.timezone import now
@@ -27,7 +27,7 @@ class TestModels(TestCase):
         self.assertFalse(token.is_expired)
 
 
-def source_tester_factory(test_model: Type[Stage]) -> Callable:
+def source_tester_factory(test_model: type[Stage]) -> Callable:
     """Test source"""
 
     factory = RequestFactory()
@@ -47,7 +47,7 @@ def source_tester_factory(test_model: Type[Stage]) -> Callable:
     return tester
 
 
-def provider_tester_factory(test_model: Type[Stage]) -> Callable:
+def provider_tester_factory(test_model: type[Stage]) -> Callable:
     """Test provider"""
 
     def tester(self: TestModels):

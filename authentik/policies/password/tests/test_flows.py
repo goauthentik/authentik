@@ -1,26 +1,20 @@
 """Password flow tests"""
 from django.urls.base import reverse
-from django.utils.encoding import force_str
-from rest_framework.test import APITestCase
 
-from authentik.core.models import User
-from authentik.flows.challenge import ChallengeTypes
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.tests import FlowTestCase
 from authentik.policies.password.models import PasswordPolicy
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 
 
-class TestPasswordPolicyFlow(APITestCase):
+class TestPasswordPolicyFlow(FlowTestCase):
     """Test Password Policy"""
 
     def setUp(self) -> None:
-        self.user = User.objects.create(username="unittest", email="test@beryju.org")
+        self.user = create_test_admin_user()
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
 
-        self.flow = Flow.objects.create(
-            name="test-prompt",
-            slug="test-prompt",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
         password_prompt = Prompt.objects.create(
             field_key="password",
             label="PASSWORD_LABEL",
@@ -52,30 +46,22 @@ class TestPasswordPolicyFlow(APITestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"password": "akadmin"},
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-prompt",
-                "fields": [
-                    {
-                        "field_key": "password",
-                        "label": "PASSWORD_LABEL",
-                        "order": 0,
-                        "placeholder": "PASSWORD_PLACEHOLDER",
-                        "required": True,
-                        "type": "password",
-                        "sub_text": "",
-                    }
-                ],
-                "flow_info": {
-                    "background": self.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-                "response_errors": {
-                    "non_field_errors": [{"code": "invalid", "string": self.policy.error_message}]
-                },
-                "type": ChallengeTypes.NATIVE.value,
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-prompt",
+            fields=[
+                {
+                    "field_key": "password",
+                    "label": "PASSWORD_LABEL",
+                    "order": 0,
+                    "placeholder": "PASSWORD_PLACEHOLDER",
+                    "required": True,
+                    "type": "password",
+                    "sub_text": "",
+                }
+            ],
+            response_errors={
+                "non_field_errors": [{"code": "invalid", "string": self.policy.error_message}]
             },
         )

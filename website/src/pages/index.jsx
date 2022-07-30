@@ -7,7 +7,7 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
 import Comparison from "../comparison";
-import 'react-before-after-slider-component/dist/build.css';
+import "react-before-after-slider-component/dist/build.css";
 
 const features = [
     {
@@ -87,7 +87,10 @@ function Home() {
                             </div>
                         </div>
                         <div className="col text--center hero_image">
-                            <img alt="authentik logo" src={useBaseUrl("img/icon_top_brand.svg")} />
+                            <img
+                                alt="authentik logo"
+                                src={useBaseUrl("img/icon_top_brand.svg")}
+                            />
                         </div>
                     </div>
                 </div>
@@ -105,17 +108,23 @@ function Home() {
                                 <div>
                                     <BrowserOnly>
                                         {() => {
-                                            const ReactBeforeSliderComponent = require('react-before-after-slider-component');
-                                            return <ReactBeforeSliderComponent
-                                                firstImage={{
-                                                    id: 1,
-                                                    imageUrl: useBaseUrl("img/screen_apps_light.jpg"),
-                                                }}
-                                                secondImage={{
-                                                    id: 2,
-                                                    imageUrl: useBaseUrl("img/screen_apps_dark.jpg"),
-                                                }}
-                                            />
+                                            const ReactBeforeSliderComponent = require("react-before-after-slider-component");
+                                            return (
+                                                <ReactBeforeSliderComponent
+                                                    firstImage={{
+                                                        id: 1,
+                                                        imageUrl: useBaseUrl(
+                                                            "img/screen_apps_light.jpg"
+                                                        ),
+                                                    }}
+                                                    secondImage={{
+                                                        id: 2,
+                                                        imageUrl: useBaseUrl(
+                                                            "img/screen_apps_dark.jpg"
+                                                        ),
+                                                    }}
+                                                />
+                                            );
                                         }}
                                     </BrowserOnly>
                                 </div>
@@ -123,13 +132,13 @@ function Home() {
                             <div className="col col--5 col--offset-2 padding-vert--xl">
                                 <h2>What is authentik?</h2>
                                 <p>
-                                    authentik is an open-source Identity Provider
-                                    focused on flexibility and versatility. You
-                                    can use authentik in an existing environment
-                                    to add support for new protocols, implement
-                                    sign-up/recovery/etc. in your application so
-                                    you don't have to deal with it, and many other
-                                    things.
+                                    authentik is an open-source Identity
+                                    Provider focused on flexibility and
+                                    versatility. You can use authentik in an
+                                    existing environment to add support for new
+                                    protocols, implement sign-up/recovery/etc.
+                                    in your application so you don't have to
+                                    deal with it, and many other things.
                                 </p>
                             </div>
                         </div>
@@ -138,11 +147,12 @@ function Home() {
                                 <h2>Utmost flexibility</h2>
                                 <p>
                                     You can adopt authentik to your environment,
-                                    regardless of your requirements. Need an Active-Directory
-                                    integrated SSO Provider? Do you want
-                                    to implement a custom enrollment process for your
-                                    customers? Are you developing an application and
-                                    don't want to deal with User verification and recovery?
+                                    regardless of your requirements. Need an
+                                    Active-Directory integrated SSO Provider? Do
+                                    you want to implement a custom enrollment
+                                    process for your customers? Are you
+                                    developing an application and don't want to
+                                    deal with User verification and recovery?
                                     authentik can do all of that, and more!
                                 </p>
                             </div>
@@ -150,17 +160,23 @@ function Home() {
                                 <div>
                                     <BrowserOnly>
                                         {() => {
-                                            const ReactBeforeSliderComponent = require('react-before-after-slider-component');
-                                            return <ReactBeforeSliderComponent
-                                                firstImage={{
-                                                    id: 1,
-                                                    imageUrl: useBaseUrl("img/screen_admin_light.jpg"),
-                                                }}
-                                                secondImage={{
-                                                    id: 2,
-                                                    imageUrl: useBaseUrl("img/screen_admin_dark.jpg"),
-                                                }}
-                                            />
+                                            const ReactBeforeSliderComponent = require("react-before-after-slider-component");
+                                            return (
+                                                <ReactBeforeSliderComponent
+                                                    firstImage={{
+                                                        id: 1,
+                                                        imageUrl: useBaseUrl(
+                                                            "img/screen_admin_light.jpg"
+                                                        ),
+                                                    }}
+                                                    secondImage={{
+                                                        id: 2,
+                                                        imageUrl: useBaseUrl(
+                                                            "img/screen_admin_dark.jpg"
+                                                        ),
+                                                    }}
+                                                />
+                                            );
                                         }}
                                     </BrowserOnly>
                                 </div>

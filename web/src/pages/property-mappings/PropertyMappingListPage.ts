@@ -1,29 +1,27 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/property-mappings/PropertyMappingLDAPForm";
+import "@goauthentik/web/pages/property-mappings/PropertyMappingNotification";
+import "@goauthentik/web/pages/property-mappings/PropertyMappingSAMLForm";
+import "@goauthentik/web/pages/property-mappings/PropertyMappingScopeForm";
+import "@goauthentik/web/pages/property-mappings/PropertyMappingTestForm";
+import "@goauthentik/web/pages/property-mappings/PropertyMappingWizard";
+import { groupBy } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import { PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/buttons/Dropdown";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/ProxyForm";
-import { getURLParam, updateURLParams } from "../../elements/router/RouteMatch";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import { groupBy } from "../../utils";
-import "./PropertyMappingLDAPForm";
-import "./PropertyMappingNotification";
-import "./PropertyMappingSAMLForm";
-import "./PropertyMappingScopeForm";
-import "./PropertyMappingTestForm";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
@@ -123,37 +121,8 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
-        return html` <ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
-                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-                </button>
-                <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(
-                        new PropertymappingsApi(DEFAULT_CONFIG)
-                            .propertymappingsAllTypesList()
-                            .then((types) => {
-                                return types.map((type) => {
-                                    return html`<li>
-                                        <ak-forms-modal>
-                                            <span slot="submit"> ${t`Create`} </span>
-                                            <span slot="header"> ${t`Create ${type.name}`} </span>
-                                            <ak-proxy-form slot="form" type=${type.component}>
-                                            </ak-proxy-form>
-                                            <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                                ${type.name}<br />
-                                                <small>${type.description}</small>
-                                            </button>
-                                        </ak-forms-modal>
-                                    </li>`;
-                                });
-                            }),
-                        html`<ak-spinner></ak-spinner>`,
-                    )}
-                </ul>
-            </ak-dropdown>
-            ${super.renderToolbar()}`;
+    renderObjectCreate(): TemplateResult {
+        return html`<ak-property-mapping-wizard></ak-property-mapping-wizard> `;
     }
 
     renderToolbarAfter(): TemplateResult {

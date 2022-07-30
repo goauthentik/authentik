@@ -28,32 +28,8 @@ function check_if_root {
         GROUP="authentik:${GROUP_NAME}"
     fi
     # Fix permissions of backups and media
-    chown -R authentik:authentik /media /backups /certs
-    chpst -u authentik:$GROUP env HOME=/authentik $1
-}
-
-function prefixwith {
-    local prefix="$1"
-    shift
-    "$@" > >(sed "s/^/$prefix: /") 2> >(sed "s/^/$prefix (err): /" >&2)
-}
-
-function restore {
-    PG_HOST=$(python -m authentik.lib.config postgresql.host 2> /dev/null)
-    PG_NAME=$(python -m authentik.lib.config postgresql.name 2> /dev/null)
-    PG_USER=$(python -m authentik.lib.config postgresql.user 2> /dev/null)
-    PG_PORT=$(python -m authentik.lib.config postgresql.port 2> /dev/null)
-    export PGPASSWORD=$(python -m authentik.lib.config postgresql.password 2> /dev/null)
-    log "Ensuring no one can connect to the database"
-    prefixwith "psql" psql -h"${PG_HOST}" -U"${PG_USER}" -c"UPDATE pg_database SET datallowconn = 'false' WHERE datname = '${PG_NAME}';" "postgres"
-    prefixwith "psql" psql -h"${PG_HOST}" -U"${PG_USER}" -c"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${PG_NAME}';" "postgres"
-    log "deleting and re-creating database"
-    prefixwith "psql" dropdb -h"${PG_HOST}" -U"${PG_USER}" "${PG_NAME}" || trueacku
-    prefixwith "psql" createdb -h"${PG_HOST}" -U"${PG_USER}" "${PG_NAME}"
-    log "running initial migrations"
-    prefixwith "migrate" python -m lifecycle.migrate 2> /dev/null
-    log "restoring database"
-    prefixwith "restore" python -m manage dbrestore -i ${@:2}
+    chown -R authentik:authentik /media /certs
+    exec chpst -u authentik:$GROUP env HOME=/authentik $1
 }
 
 MODE_FILE="/tmp/authentik-mode"
@@ -61,40 +37,33 @@ MODE_FILE="/tmp/authentik-mode"
 if [[ "$1" == "server" ]]; then
     wait_for_db
     echo "server" > $MODE_FILE
-    # We only set prometheus_multiproc_dir for serer, as with the worker it just fills up the disk
-    export prometheus_multiproc_dir=/dev/shm/
     python -m lifecycle.migrate
-    /authentik-proxy
+    if [[ ! -z "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || ! -z "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
+        python -m manage bootstrap_tasks
+    fi
+    exec /authentik-proxy
 elif [[ "$1" == "worker" ]]; then
+    wait_for_db
     echo "worker" > $MODE_FILE
     check_if_root "celery -A authentik.root.celery worker -Ofair --max-tasks-per-child=1 --autoscale 3,1 -E -B -s /tmp/celerybeat-schedule -Q authentik,authentik_scheduled,authentik_events"
-elif [[ "$1" == "flower" ]]; then
-    echo "flower" > $MODE_FILE
-    celery -A authentik.root.celery flower
-elif [[ "$1" == "backup" ]]; then
-    wait_for_db
-    python -m manage dbbackup --clean
-elif [[ "$1" == "restore" ]]; then
-    wait_for_db
-    restore $@
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test" ]]; then
-    poetry install
+    pip install --no-cache-dir -r /requirements-dev.txt
     touch /unittest.xml
     chown authentik:authentik /unittest.xml
     check_if_root "python -m manage test authentik"
 elif [[ "$1" == "healthcheck" ]]; then
     mode=$(cat $MODE_FILE)
     if [[ $mode == "server" ]]; then
-        curl --user-agent "goauthentik.io lifecycle Healthcheck" -I http://localhost:9000/-/health/ready/
+        exec curl --user-agent "goauthentik.io lifecycle Healthcheck" -I http://localhost:9000/-/health/ready/
     elif [[ $mode == "worker" ]]; then
-        celery -A authentik.root.celery inspect ping -d celery@$HOSTNAME --timeout 5 -j
-    elif [[ $mode == "flower" ]]; then
-        curl http://localhost:5555/metrics
+        exec celery -A authentik.root.celery inspect ping -d celery@$HOSTNAME --timeout 5 -j
     fi
 elif [[ "$1" == "dump_config" ]]; then
-    python -m authentik.lib.config
+    exec python -m authentik.lib.config
+elif [[ "$1" == "debug" ]]; then
+    exec sleep infinity
 else
-    python -m manage "$@"
+    exec python -m manage "$@"
 fi

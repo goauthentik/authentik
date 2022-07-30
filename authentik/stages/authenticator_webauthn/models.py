@@ -1,5 +1,5 @@
 """WebAuthn stage"""
-from typing import Optional, Type
+from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -32,12 +32,53 @@ class UserVerification(models.TextChoices):
     DISCOURAGED = "discouraged"
 
 
+class ResidentKeyRequirement(models.TextChoices):
+    """The Relying Party's preference for the authenticator to create a dedicated "client-side"
+    credential for it. Requiring an authenticator to store a dedicated credential should not be
+    done lightly due to the limited storage capacity of some types of authenticators.
+
+    Members:
+        `DISCOURAGED`: The authenticator should not create a dedicated credential
+        `PREFERRED`: The authenticator can create and store a dedicated credential, but if it
+            doesn't that's alright too
+        `REQUIRED`: The authenticator MUST create a dedicated credential. If it cannot, the RP
+            is prepared for an error to occur.
+
+    https://www.w3.org/TR/webauthn-2/#enum-residentKeyRequirement
+    """
+
+    DISCOURAGED = "discouraged"
+    PREFERRED = "preferred"
+    REQUIRED = "required"
+
+
+class AuthenticatorAttachment(models.TextChoices):
+    """How an authenticator is connected to the client/browser.
+
+    Members:
+        `PLATFORM`: A non-removable authenticator, like TouchID or Windows Hello
+        `CROSS_PLATFORM`: A "roaming" authenticator, like a YubiKey
+
+    https://www.w3.org/TR/webauthn-2/#enumdef-authenticatorattachment
+    """
+
+    PLATFORM = "platform"
+    CROSS_PLATFORM = "cross-platform"
+
+
 class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
     """WebAuthn stage"""
 
     user_verification = models.TextField(
         choices=UserVerification.choices,
         default=UserVerification.PREFERRED,
+    )
+    resident_key_requirement = models.TextField(
+        choices=ResidentKeyRequirement.choices,
+        default=ResidentKeyRequirement.PREFERRED,
+    )
+    authenticator_attachment = models.TextField(
+        choices=AuthenticatorAttachment.choices, default=None, null=True
     )
 
     @property
@@ -47,7 +88,7 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
         return AuthenticateWebAuthnStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.authenticator_webauthn.stage import AuthenticatorWebAuthnStageView
 
         return AuthenticatorWebAuthnStageView
@@ -85,7 +126,7 @@ class WebAuthnDevice(SerializerModel, Device):
     rp_id = models.CharField(max_length=253)
 
     created_on = models.DateTimeField(auto_now_add=True)
-    last_used_on = models.DateTimeField(default=now)
+    last_t = models.DateTimeField(default=now)
 
     @property
     def descriptor(self) -> PublicKeyCredentialDescriptor:
@@ -93,9 +134,9 @@ class WebAuthnDevice(SerializerModel, Device):
         return PublicKeyCredentialDescriptor(id=base64url_to_bytes(self.credential_id))
 
     def set_sign_count(self, sign_count: int) -> None:
-        """Set the sign_count and update the last_used_on datetime."""
+        """Set the sign_count and update the last_t datetime."""
         self.sign_count = sign_count
-        self.last_used_on = now()
+        self.last_t = now()
         self.save()
 
     @property

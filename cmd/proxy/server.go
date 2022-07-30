@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"goauthentik.io/internal/common"
+	"goauthentik.io/internal/debug"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
 )
@@ -31,7 +32,9 @@ func main() {
 			log.FieldKeyMsg:  "event",
 			log.FieldKeyTime: "timestamp",
 		},
+		DisableHTMLEscape: true,
 	})
+	go debug.EnableDebugServer()
 	akURL, found := os.LookupEnv("AUTHENTIK_HOST")
 	if !found {
 		fmt.Println("env AUTHENTIK_HOST not set!")

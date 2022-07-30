@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { FlowDesignationEnum } from "@goauthentik/api";
+import { FlowDesignationEnum, LayoutEnum } from "@goauthentik/api";
 
 export function DesignationToLabel(designation: FlowDesignationEnum): string {
     switch (designation) {
@@ -18,5 +18,20 @@ export function DesignationToLabel(designation: FlowDesignationEnum): string {
             return t`Stage Configuration`;
         case FlowDesignationEnum.Unenrollment:
             return t`Unenrollment`;
+    }
+}
+
+export function LayoutToLabel(layout: LayoutEnum): string {
+    switch (layout) {
+        case LayoutEnum.Stacked:
+            return t`Stacked`;
+        case LayoutEnum.ContentLeft:
+            return t`Content left`;
+        case LayoutEnum.ContentRight:
+            return t`Content right`;
+        case LayoutEnum.SidebarLeft:
+            return t`Sidebar left`;
+        case LayoutEnum.SidebarRight:
+            return t`Sidebar right`;
     }
 }

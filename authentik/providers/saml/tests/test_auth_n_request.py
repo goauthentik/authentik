@@ -15,10 +15,11 @@ from authentik.providers.saml.processors.request_parser import AuthNRequestParse
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.constants import (
+    SAML_BINDING_REDIRECT,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
-from authentik.sources.saml.processors.request import SESSION_REQUEST_ID, RequestProcessor
+from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 
 POST_REQUEST = (
@@ -98,6 +99,9 @@ class TestAuthNRequest(TestCase):
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
+        auth_n = request_proc.get_auth_n()
+        self.assertEqual(auth_n.attrib["ProtocolBinding"], SAML_BINDING_REDIRECT)
+
         request = request_proc.build_auth_n()
         # Now we check the ID and signature
         parsed_request = AuthNRequestParser(self.provider).parse(
@@ -138,7 +142,7 @@ class TestAuthNRequest(TestCase):
         request = request_proc.build_auth_n()
 
         # change the request ID
-        http_request.session[SESSION_REQUEST_ID] = "test"
+        http_request.session[SESSION_KEY_REQUEST_ID] = "test"
         http_request.session.save()
 
         # To get an assertion we need a parsed request (parsed by provider)

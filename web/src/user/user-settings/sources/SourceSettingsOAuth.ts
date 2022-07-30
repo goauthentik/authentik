@@ -1,3 +1,8 @@
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { BaseUserSettings } from "@goauthentik/web/user/user-settings/BaseUserSettings";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -7,22 +12,12 @@ import { until } from "lit/directives/until.js";
 
 import { SourcesApi } from "@goauthentik/api";
 
-import { AndNext, DEFAULT_CONFIG } from "../../../api/Config";
-import { BaseUserSettings } from "../BaseUserSettings";
-
 @customElement("ak-user-settings-source-oauth")
 export class SourceSettingsOAuth extends BaseUserSettings {
     @property()
     title!: string;
 
     render(): TemplateResult {
-        return html`<div class="pf-c-card">
-            <div class="pf-c-card__title">${t`Source ${this.title}`}</div>
-            <div class="pf-c-card__body">${this.renderInner()}</div>
-        </div>`;
-    }
-
-    renderInner(): TemplateResult {
         return html`${until(
             new SourcesApi(DEFAULT_CONFIG)
                 .sourcesUserConnectionsOauthList({
@@ -30,29 +25,38 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                 })
                 .then((connection) => {
                     if (connection.results.length > 0) {
-                        return html`<p>${t`Connected.`}</p>
-                            <button
-                                class="pf-c-button pf-m-danger"
-                                @click=${() => {
-                                    return new SourcesApi(
-                                        DEFAULT_CONFIG,
-                                    ).sourcesUserConnectionsOauthDestroy({
+                        return html` <button
+                            class="pf-c-button pf-m-danger"
+                            @click=${() => {
+                                return new SourcesApi(DEFAULT_CONFIG)
+                                    .sourcesUserConnectionsOauthDestroy({
                                         id: connection.results[0].pk || 0,
+                                    })
+                                    .then(() => {
+                                        showMessage({
+                                            level: MessageLevel.info,
+                                            message: t`Successfully disconnected source`,
+                                        });
+                                    })
+                                    .catch((exc) => {
+                                        showMessage({
+                                            level: MessageLevel.error,
+                                            message: t`Failed to disconnected source: ${exc}`,
+                                        });
                                     });
-                                }}
-                            >
-                                ${t`Disconnect`}
-                            </button>`;
-                    }
-                    return html`<p>${t`Not connected.`}</p>
-                        <a
-                            class="pf-c-button pf-m-primary"
-                            href="${ifDefined(this.configureUrl)}${AndNext(
-                                "/if/user/#/settings;page-sources",
-                            )}"
+                            }}
                         >
-                            ${t`Connect`}
-                        </a>`;
+                            ${t`Disconnect`}
+                        </button>`;
+                    }
+                    return html` <a
+                        class="pf-c-button pf-m-primary"
+                        href="${ifDefined(this.configureUrl)}${AndNext(
+                            `/if/user/#/settings;${JSON.stringify({ page: "page-sources" })}`,
+                        )}"
+                    >
+                        ${t`Connect`}
+                    </a>`;
                 }),
         )}`;
     }

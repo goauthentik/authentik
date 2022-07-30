@@ -1,3 +1,8 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/CodeMirror";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { dateTimeLocal, first } from "@goauthentik/web/utils";
 import YAML from "yaml";
 
 import { t } from "@lingui/macro";
@@ -6,12 +11,6 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { Invitation, StagesApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/CodeMirror";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { dateTimeLocal, first } from "../../../utils";
 
 @customElement("ak-invitation-form")
 export class InvitationForm extends ModelForm<Invitation, string> {
@@ -44,6 +43,20 @@ export class InvitationForm extends ModelForm<Invitation, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <ak-form-element-horizontal
+                ?slugMode=${true}
+                label=${t`Name`}
+                ?required=${true}
+                name="name"
+            >
+                <input
+                    type="text"
+                    value="${this.instance?.name || ""}"
+                    class="pf-c-form-control"
+                    required
+                    data-ak-slug="true"
+                />
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Expires`} ?required=${true} name="expires">
                 <input
                     type="datetime-local"

@@ -8,20 +8,11 @@ from channels.exceptions import DenyConnection
 from dacite import from_dict
 from dacite.data import Data
 from guardian.shortcuts import get_objects_for_user
-from prometheus_client import Gauge
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.channels import AuthJsonConsumer
+from authentik.outposts.apps import GAUGE_OUTPOSTS_CONNECTED, GAUGE_OUTPOSTS_LAST_UPDATE
 from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
-
-GAUGE_OUTPOSTS_CONNECTED = Gauge(
-    "authentik_outposts_connected", "Currently connected outposts", ["outpost", "uid", "expected"]
-)
-GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
-    "authentik_outposts_last_update",
-    "Last update from any outpost",
-    ["outpost", "uid", "version"],
-)
 
 
 class WebsocketMessageInstruction(IntEnum):
@@ -55,6 +46,10 @@ class OutpostConsumer(AuthJsonConsumer):
 
     first_msg = False
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.logger = get_logger()
+
     def connect(self):
         super().connect()
         uuid = self.scope["url_route"]["kwargs"]["pk"]
@@ -65,7 +60,7 @@ class OutpostConsumer(AuthJsonConsumer):
         )
         if not outpost:
             raise DenyConnection()
-        self.logger = get_logger().bind(outpost=outpost)
+        self.logger = self.logger.bind(outpost=outpost)
         try:
             self.accept()
         except RuntimeError as exc:

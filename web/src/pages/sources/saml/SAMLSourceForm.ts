@@ -1,3 +1,10 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import "@goauthentik/web/elements/utils/TimeDeltaHelp";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -16,12 +23,6 @@ import {
     SignatureAlgorithmEnum,
     SourcesApi,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { first } from "../../../utils";
 
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
@@ -231,6 +232,19 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             </option>
                         </select>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`User path`} name="userPathTemplate">
+                        <input
+                            type="text"
+                            value="${first(
+                                this.instance?.userPathTemplate,
+                                "goauthentik.io/sources/%(slug)s",
+                            )}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Path template for users created. Use placeholders like \`%(slug)s\` to insert the source slug.`}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Delete temporary users after`}
                         ?required=${true}
@@ -243,8 +257,9 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3).`}
+                            ${t`Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually.`}
                         </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Digest algorithm`}

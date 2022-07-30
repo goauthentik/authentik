@@ -1,20 +1,20 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { EventWithContext } from "@goauthentik/web/api/Events";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/../pages/events/EventInfo";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/Dropdown";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { Event, EventsApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { EventWithContext } from "../../api/Events";
-import { uiConfig } from "../../common/config";
-import "../../pages/events/EventInfo";
-import "../Tabs";
-import "../buttons/Dropdown";
-import "../buttons/ModalButton";
-import "../buttons/SpinnerButton";
-import { Table, TableColumn } from "../table/Table";
 
 @customElement("ak-events-user")
 export class ObjectChangelog extends Table<Event> {

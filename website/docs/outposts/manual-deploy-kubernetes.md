@@ -38,7 +38,7 @@ spec:
       protocol: TCP
       targetPort: http
     - name: https
-      port: 9443s
+      port: 9443
       protocol: TCP
       targetPort: https
   type: ClusterIP
@@ -88,7 +88,7 @@ spec:
               secretKeyRef:
                 key: authentik_host_insecure
                 name: authentik-outpost-api
-        image: ghcr.io/goauthentik/proxy:stable
+        image: ghcr.io/goauthentik/proxy
         name: proxy
         ports:
           - containerPort: 9000

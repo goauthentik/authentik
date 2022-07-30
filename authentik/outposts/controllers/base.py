@@ -1,12 +1,11 @@
 """Base Controller"""
 from dataclasses import dataclass
-from os import environ
 from typing import Optional
 
 from structlog.stdlib import get_logger
 from structlog.testing import capture_logs
 
-from authentik import ENV_GIT_HASH_KEY, __version__
+from authentik import __version__, get_build_hash
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.outposts.models import (
@@ -102,5 +101,5 @@ class BaseController:
         return image_name_template % {
             "type": self.outpost.type,
             "version": __version__,
-            "build_hash": environ.get(ENV_GIT_HASH_KEY, ""),
+            "build_hash": get_build_hash(),
         }

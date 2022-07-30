@@ -1,3 +1,10 @@
+const sidebar = require("./sidebars.js");
+
+const releases = sidebar.docs
+    .filter((doc) => doc.link?.slug === "releases")[0]
+    .items.filter((release) => typeof release === "string");
+const latestVersion = releases[0].replace("releases/v", "");
+
 module.exports = {
     title: "authentik",
     tagline: "Making authentication simple.",
@@ -38,6 +45,22 @@ module.exports = {
                     activeBasePath: "api",
                     label: "API",
                     position: "left",
+                },
+                {
+                    type: "dropdown",
+                    label: `Version: latest`,
+                    position: "right",
+                    items: releases.map((release) => {
+                        const subdomain = release
+                            .replace("releases/v", "")
+                            .replace(".", "-");
+                        const label =
+                            "Version: " + release.replace("releases/", "");
+                        return {
+                            label: label,
+                            href: `https://version-${subdomain}.goauthentik.io`,
+                        };
+                    }),
                 },
                 {
                     href: "https://github.com/goauthentik/authentik",
@@ -95,7 +118,8 @@ module.exports = {
             respectPrefersColorScheme: true,
         },
         algolia: {
-            apiKey: "1b60b8f630b127697cbe0d3b31841470",
+            appId: "36ROD0O0FV",
+            apiKey: "727db511300ca9aec5425645bbbddfb5",
             indexName: "goauthentik",
         },
     },
@@ -107,7 +131,7 @@ module.exports = {
                     id: "docs",
                     sidebarPath: require.resolve("./sidebars.js"),
                     editUrl:
-                        "https://github.com/goauthentik/authentik/edit/master/website/",
+                        "https://github.com/goauthentik/authentik/edit/main/website/",
                 },
                 theme: {
                     customCss: require.resolve("./src/css/custom.css"),
@@ -124,7 +148,7 @@ module.exports = {
                 routeBasePath: "integrations",
                 sidebarPath: require.resolve("./sidebarsIntegrations.js"),
                 editUrl:
-                    "https://github.com/goauthentik/authentik/edit/master/website/",
+                    "https://github.com/goauthentik/authentik/edit/main/website/",
             },
         ],
         [
@@ -135,7 +159,7 @@ module.exports = {
                 routeBasePath: "developer-docs",
                 sidebarPath: require.resolve("./sidebarsDev.js"),
                 editUrl:
-                    "https://github.com/goauthentik/authentik/edit/master/website/",
+                    "https://github.com/goauthentik/authentik/edit/main/website/",
             },
         ],
     ],

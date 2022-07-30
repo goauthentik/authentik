@@ -6,9 +6,9 @@
 
 | Version    | Supported          |
 | ---------- | ------------------ |
-| 2021.10.x  | :white_check_mark: |
-| 2021.12.x  | :white_check_mark: |
+| 2022.6.x   | :white_check_mark: |
+| 2022.7.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
-To report a vulnerability, send an email to [security@beryju.org](mailto:security@beryju.org)
+To report a vulnerability, send an email to [security@goauthentik.io](mailto:security@goauthentik.io)

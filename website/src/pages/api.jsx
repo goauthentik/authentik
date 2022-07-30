@@ -11,17 +11,19 @@ function APIBrowser() {
         <Layout title="API Browser" description={siteConfig.tagline}>
             <BrowserOnly>
                 {() => {
-                    import('rapidoc');
-                    return <rapi-doc
-                        spec-url={useBaseUrl("schema.yaml")}
-                        allow-try="false"
-                        show-header="false"
-                        theme="dark"
-                        render-style="view"
-                        primary-color="#fd4b2d"
-                        allow-spec-url-load="false"
-                        allow-spec-file-load="false">
-                    </rapi-doc>
+                    import("rapidoc");
+                    return (
+                        <rapi-doc
+                            spec-url={useBaseUrl("schema.yaml")}
+                            allow-try="false"
+                            show-header="false"
+                            theme="dark"
+                            render-style="view"
+                            primary-color="#fd4b2d"
+                            allow-spec-url-load="false"
+                            allow-spec-file-load="false"
+                        ></rapi-doc>
+                    );
                 }}
             </BrowserOnly>
         </Layout>

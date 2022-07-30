@@ -1,5 +1,6 @@
 """authentik saml source processor"""
 from base64 import b64decode
+from time import mktime
 from typing import TYPE_CHECKING, Any
 
 import xmlsec
@@ -7,9 +8,16 @@ from defusedxml.lxml import fromstring
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest, HttpResponse
+from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
+from authentik.core.models import (
+    USER_ATTRIBUTE_DELETE_ON_LOGOUT,
+    USER_ATTRIBUTE_EXPIRES,
+    USER_ATTRIBUTE_GENERATED,
+    USER_ATTRIBUTE_SOURCES,
+    User,
+)
 from authentik.flows.models import Flow
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
@@ -19,6 +27,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.utils import delete_none_keys
 from authentik.sources.saml.exceptions import (
@@ -36,7 +45,7 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
 )
-from authentik.sources.saml.processors.request import SESSION_REQUEST_ID
+from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_login.stage import BACKEND_INBUILT
@@ -110,11 +119,11 @@ class ResponseProcessor:
             seen_ids.append(self._root.attrib["ID"])
             cache.set(CACHE_SEEN_REQUEST_ID % self._source.pk, seen_ids)
             return
-        if SESSION_REQUEST_ID not in request.session or "InResponseTo" not in self._root.attrib:
+        if SESSION_KEY_REQUEST_ID not in request.session or "InResponseTo" not in self._root.attrib:
             raise MismatchedRequestID(
                 "Missing InResponseTo and IdP-initiated Logins are not allowed"
             )
-        if request.session[SESSION_REQUEST_ID] != self._root.attrib["InResponseTo"]:
+        if request.session[SESSION_KEY_REQUEST_ID] != self._root.attrib["InResponseTo"]:
             raise MismatchedRequestID("Mismatched request ID")
 
     def _handle_name_id_transient(self, request: HttpRequest) -> HttpResponse:
@@ -124,9 +133,20 @@ class ResponseProcessor:
         on logout and periodically."""
         # Create a temporary User
         name_id = self._get_name_id().text
+        expiry = mktime(
+            (now() + timedelta_from_string(self._source.temporary_user_delete_after)).timetuple()
+        )
         user: User = User.objects.create(
             username=name_id,
-            attributes={"saml": {"source": self._source.pk.hex, "delete_on_logout": True}},
+            attributes={
+                USER_ATTRIBUTE_GENERATED: True,
+                USER_ATTRIBUTE_SOURCES: [
+                    self._source.name,
+                ],
+                USER_ATTRIBUTE_DELETE_ON_LOGOUT: True,
+                USER_ATTRIBUTE_EXPIRES: expiry,
+            },
+            path=self._source.get_user_path(),
         )
         LOGGER.debug("Created temporary user for NameID Transient", username=name_id)
         user.set_unusable_password()

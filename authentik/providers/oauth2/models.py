@@ -6,8 +6,8 @@ import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from hashlib import sha256
-from typing import Any, Optional, Type
-from urllib.parse import urlparse
+from typing import Any, Optional
+from urllib.parse import urlparse, urlunparse
 
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
@@ -28,6 +28,7 @@ from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
 from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT
+from authentik.sources.oauth.models import OAuthSource
 
 
 class ClientTypes(models.TextChoices):
@@ -44,6 +45,14 @@ class GrantTypes(models.TextChoices):
     AUTHORIZATION_CODE = "authorization_code"
     IMPLICIT = "implicit"
     HYBRID = "hybrid"
+
+
+class ResponseMode(models.TextChoices):
+    """https://openid.net/specs/oauth-v2-multiple-response-types-1_0.html#OAuth.Post"""
+
+    QUERY = "query"
+    FRAGMENT = "fragment"
+    FORM_POST = "form_post"
 
 
 class SubModes(models.TextChoices):
@@ -91,7 +100,7 @@ class JWTAlgorithms(models.TextChoices):
 
     HS256 = "HS256", _("HS256 (Symmetric Encryption)")
     RS256 = "RS256", _("RS256 (Asymmetric Encryption)")
-    EC256 = "EC256", _("EC256 (Asymmetric Encryption)")
+    ES256 = "ES256", _("ES256 (Asymmetric Encryption)")
 
 
 class ScopeMapping(PropertyMapping):
@@ -113,7 +122,7 @@ class ScopeMapping(PropertyMapping):
         return "ak-property-mapping-scope-form"
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.providers.oauth2.api.scope import ScopeMappingSerializer
 
         return ScopeMappingSerializer
@@ -135,7 +144,10 @@ class OAuth2Provider(Provider):
         choices=ClientTypes.choices,
         default=ClientTypes.CONFIDENTIAL,
         verbose_name=_("Client Type"),
-        help_text=_(ClientTypes.__doc__),
+        help_text=_(
+            "Confidential clients are capable of maintaining the confidentiality "
+            "of their credentials. Public clients are incapable"
+        ),
     )
     client_id = models.CharField(
         max_length=255,
@@ -206,12 +218,22 @@ class OAuth2Provider(Provider):
 
     signing_key = models.ForeignKey(
         CertificateKeyPair,
-        verbose_name=_("RSA Key"),
+        verbose_name=_("Signing Key"),
         on_delete=models.SET_NULL,
         null=True,
         help_text=_(
             "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
         ),
+    )
+
+    jwks_sources = models.ManyToManyField(
+        OAuthSource,
+        verbose_name=_(
+            "Any JWT signed by the JWK of the selected source can be used to authenticate."
+        ),
+        related_name="oauth2_providers",
+        default=None,
+        blank=True,
     )
 
     def create_refresh_token(
@@ -221,7 +243,7 @@ class OAuth2Provider(Provider):
         token = RefreshToken(
             user=user,
             provider=self,
-            refresh_token=generate_key(),
+            refresh_token=base64.urlsafe_b64encode(generate_key().encode()).decode(),
             expires=timezone.now() + timedelta_from_string(self.token_validity),
             scope=scope,
         )
@@ -238,7 +260,7 @@ class OAuth2Provider(Provider):
         if isinstance(private_key, RSAPrivateKey):
             return key.key_data, JWTAlgorithms.RS256
         if isinstance(private_key, EllipticCurvePrivateKey):
-            return key.key_data, JWTAlgorithms.EC256
+            return key.key_data, JWTAlgorithms.ES256
         raise Exception(f"Invalid private key type: {type(private_key)}")
 
     def get_issuer(self, request: HttpRequest) -> Optional[str]:
@@ -260,15 +282,15 @@ class OAuth2Provider(Provider):
         if self.redirect_uris == "":
             return None
         main_url = self.redirect_uris.split("\n", maxsplit=1)[0]
-        launch_url = urlparse(main_url)
-        return main_url.replace(launch_url.path, "")
+        launch_url = urlparse(main_url)._replace(path="")
+        return urlunparse(launch_url)
 
     @property
     def component(self) -> str:
         return "ak-provider-oauth2-form"
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.providers.oauth2.api.provider import OAuth2ProviderSerializer
 
         return OAuth2ProviderSerializer

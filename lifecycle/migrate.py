@@ -51,7 +51,6 @@ def release_lock():
 
 
 if __name__ == "__main__":
-
     conn = connect(
         dbname=CONFIG.y("postgresql.name"),
         user=CONFIG.y("postgresql.user"),

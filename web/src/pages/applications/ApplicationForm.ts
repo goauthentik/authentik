@@ -1,12 +1,18 @@
+import { DEFAULT_CONFIG, config } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import "@goauthentik/web/pages/providers/ProviderWizard";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
-import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
-
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 
 import {
     Application,
@@ -16,16 +22,6 @@ import {
     Provider,
     ProvidersApi,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG, config } from "../../api/Config";
-import "../../elements/Spinner";
-import "../../elements/buttons/Dropdown";
-import "../../elements/forms/FormGroup";
-import "../../elements/forms/HorizontalFormElement";
-import "../../elements/forms/ModalForm";
-import { ModelForm } from "../../elements/forms/ModelForm";
-import "../../elements/forms/ProxyForm";
-import { first } from "../../utils";
 
 @customElement("ak-application-form")
 export class ApplicationForm extends ModelForm<Application, string> {
@@ -49,10 +45,6 @@ export class ApplicationForm extends ModelForm<Application, string> {
         }
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDropdown);
-    }
-
     send = async (data: Application): Promise<Application | void> => {
         let app: Application;
         if (this.instance) {
@@ -67,7 +59,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
         }
         const c = await config();
         if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
-            const icon = this.getFormFile();
+            const icon = this.getFormFiles()["metaIcon"];
             if (icon || this.clearIcon) {
                 await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
                     slug: app.slug,
@@ -129,6 +121,16 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 />
                 <p class="pf-c-form__helper-text">${t`Internal application name, used in URLs.`}</p>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Group`} name="group">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.group)}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Optionally enter a group name. Applications with identical groups are shown grouped together.`}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Provider`} name="provider">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.provider === undefined}>
@@ -144,44 +146,13 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 <p class="pf-c-form__helper-text">
                     ${t`Select a provider that this application should use. Alternatively, create a new provider.`}
                 </p>
-                <ak-dropdown class="pf-c-dropdown">
-                    <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                        <span class="pf-c-dropdown__toggle-text">${t`Create provider`}</span>
-                        <i
-                            class="fas fa-caret-down pf-c-dropdown__toggle-icon"
-                            aria-hidden="true"
-                        ></i>
-                    </button>
-                    <ul class="pf-c-dropdown__menu" hidden>
-                        ${until(
-                            new ProvidersApi(DEFAULT_CONFIG)
-                                .providersAllTypesList()
-                                .then((types) => {
-                                    return types.map((type) => {
-                                        return html`<li>
-                                            <ak-forms-modal>
-                                                <span slot="submit"> ${t`Create`} </span>
-                                                <span slot="header">
-                                                    ${t`Create ${type.name}`}
-                                                </span>
-                                                <ak-proxy-form slot="form" type=${type.component}>
-                                                </ak-proxy-form>
-                                                <button
-                                                    type="button"
-                                                    slot="trigger"
-                                                    class="pf-c-dropdown__menu-item"
-                                                >
-                                                    ${type.name}<br />
-                                                    <small>${type.description}</small>
-                                                </button>
-                                            </ak-forms-modal>
-                                        </li>`;
-                                    });
-                                }),
-                            html`<ak-spinner></ak-spinner>`,
-                        )}
-                    </ul>
-                </ak-dropdown>
+                <ak-provider-wizard
+                    .finalHandler=${async () => {
+                        this.requestUpdate();
+                    }}
+                    createText=${t`Create provider`}
+                >
+                </ak-provider-wizard>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Policy engine mode`}
@@ -214,6 +185,12 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${t`If left empty, authentik will try to extract the launch URL based on the selected provider.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Open in new tab`} name="openInNewTab">
+                        <input type="checkbox" ?checked=${this.instance?.openInNewTab} />
+                        <p class="pf-c-form__helper-text">
+                            ${t`If checked, the launch URL will open in a new browser tab or window from the user's application library.`}
                         </p>
                     </ak-form-element-horizontal>
                     ${until(

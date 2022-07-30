@@ -1,5 +1,4 @@
 """write stage models"""
-from typing import Type
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -27,6 +26,11 @@ class UserWriteStage(Stage):
         help_text=_("Optionally add newly created users to this group."),
     )
 
+    user_path_template = models.TextField(
+        default="",
+        blank=True,
+    )
+
     @property
     def serializer(self) -> BaseSerializer:
         from authentik.stages.user_write.api import UserWriteStageSerializer
@@ -34,7 +38,7 @@ class UserWriteStage(Stage):
         return UserWriteStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.user_write.stage import UserWriteStageView
 
         return UserWriteStageView

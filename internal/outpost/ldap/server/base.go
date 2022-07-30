@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/nmcclain/ldap"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/flags"
 )
 
@@ -31,8 +31,8 @@ type LDAPServerInstance interface {
 
 	UsersForGroup(api.Group) []string
 
-	GetFlags(string) (flags.UserFlags, bool)
-	SetFlags(string, flags.UserFlags)
+	GetFlags(dn string) *flags.UserFlags
+	SetFlags(dn string, flags flags.UserFlags)
 
 	GetBaseEntry() *ldap.Entry
 	GetNeededObjects(int, string, string) (bool, bool)

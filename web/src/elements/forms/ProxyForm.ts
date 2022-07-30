@@ -40,6 +40,7 @@ export class ProxyForm extends Form<unknown> {
             elementName = this.typeMap[this.type];
         }
         this.innerElement = document.createElement(elementName) as Form<unknown>;
+        this.innerElement.viewportCheck = this.viewportCheck;
         for (const k in this.args) {
             this.innerElement.setAttribute(k, this.args[k] as string);
             (this.innerElement as unknown as Record<string, unknown>)[k] = this.args[k];

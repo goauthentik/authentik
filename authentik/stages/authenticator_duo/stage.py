@@ -1,7 +1,7 @@
 """Duo stage"""
 from django.http import HttpRequest, HttpResponse
+from django.utils.timezone import now
 from rest_framework.fields import CharField
-from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
@@ -15,10 +15,8 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import InvalidStageError
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 
-LOGGER = get_logger()
-
-SESSION_KEY_DUO_USER_ID = "authentik_stages_authenticator_duo_user_id"
-SESSION_KEY_DUO_ACTIVATION_CODE = "authentik_stages_authenticator_duo_activation_code"
+SESSION_KEY_DUO_USER_ID = "authentik/stages/authenticator_duo/user_id"
+SESSION_KEY_DUO_ACTIVATION_CODE = "authentik/stages/authenticator_duo/activation_code"
 
 
 class AuthenticatorDuoChallenge(WithUserInfoChallenge):
@@ -68,7 +66,7 @@ class AuthenticatorDuoStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
         if not user:
-            LOGGER.debug("No pending user, continuing")
+            self.logger.debug("No pending user, continuing")
             return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 
@@ -85,8 +83,16 @@ class AuthenticatorDuoStageView(ChallengeStageView):
         self.request.session.pop(SESSION_KEY_DUO_ACTIVATION_CODE)
         if not existing_device:
             DuoDevice.objects.create(
-                name="Duo Device", user=self.get_pending_user(), duo_user_id=user_id, stage=stage
+                name="Duo Authenticator",
+                user=self.get_pending_user(),
+                duo_user_id=user_id,
+                stage=stage,
+                last_t=now(),
             )
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")
         return self.executor.stage_ok()
+
+    def cleanup(self):
+        self.request.session.pop(SESSION_KEY_DUO_USER_ID)
+        self.request.session.pop(SESSION_KEY_DUO_ACTIVATION_CODE)

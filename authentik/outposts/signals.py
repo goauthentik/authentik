@@ -52,7 +52,7 @@ def m2m_changed_update(sender, instance: Model, action: str, **_):
 
 @receiver(post_save)
 # pylint: disable=unused-argument
-def post_save_update(sender, instance: Model, **_):
+def post_save_update(sender, instance: Model, created: bool, **_):
     """If an Outpost is saved, Ensure that token is created/updated
 
     If an OutpostModel, or a model that is somehow connected to an OutpostModel is saved,
@@ -63,6 +63,9 @@ def post_save_update(sender, instance: Model, **_):
         return
     if not isinstance(instance, UPDATE_TRIGGERING_MODELS):
         return
+    if isinstance(instance, Outpost) and created:
+        LOGGER.info("New outpost saved, ensuring initial token and user are created")
+        _ = instance.token
     outpost_post_save.delay(class_to_path(instance.__class__), instance.pk)
 
 

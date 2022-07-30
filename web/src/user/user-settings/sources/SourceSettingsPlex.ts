@@ -1,3 +1,10 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { PlexAPIClient, popupCenterScreen } from "@goauthentik/web/api/Plex";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { BaseUserSettings } from "@goauthentik/web/user/user-settings/BaseUserSettings";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -6,22 +13,10 @@ import { until } from "lit/directives/until.js";
 
 import { SourcesApi } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { PlexAPIClient, popupCenterScreen } from "../../../api/Plex";
-import { EVENT_REFRESH } from "../../../constants";
-import { BaseUserSettings } from "../BaseUserSettings";
-
 @customElement("ak-user-settings-source-plex")
 export class SourceSettingsPlex extends BaseUserSettings {
     @property()
     title!: string;
-
-    render(): TemplateResult {
-        return html`<div class="pf-c-card">
-            <div class="pf-c-card__title">${t`Source ${this.title}`}</div>
-            <div class="pf-c-card__body">${this.renderInner()}</div>
-        </div>`;
-    }
 
     async doPlex(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.configureUrl || "");
@@ -43,7 +38,7 @@ export class SourceSettingsPlex extends BaseUserSettings {
         );
     }
 
-    renderInner(): TemplateResult {
+    render(): TemplateResult {
         return html`${until(
             new SourcesApi(DEFAULT_CONFIG)
                 .sourcesUserConnectionsPlexList({
@@ -51,24 +46,33 @@ export class SourceSettingsPlex extends BaseUserSettings {
                 })
                 .then((connection) => {
                     if (connection.results.length > 0) {
-                        return html`<p>${t`Connected.`}</p>
-                            <button
-                                class="pf-c-button pf-m-danger"
-                                @click=${() => {
-                                    return new SourcesApi(
-                                        DEFAULT_CONFIG,
-                                    ).sourcesUserConnectionsPlexDestroy({
+                        return html` <button
+                            class="pf-c-button pf-m-danger"
+                            @click=${() => {
+                                return new SourcesApi(DEFAULT_CONFIG)
+                                    .sourcesUserConnectionsPlexDestroy({
                                         id: connection.results[0].pk || 0,
+                                    })
+                                    .then(() => {
+                                        showMessage({
+                                            level: MessageLevel.info,
+                                            message: t`Successfully disconnected source`,
+                                        });
+                                    })
+                                    .catch((exc) => {
+                                        showMessage({
+                                            level: MessageLevel.error,
+                                            message: t`Failed to disconnected source: ${exc}`,
+                                        });
                                     });
-                                }}
-                            >
-                                ${t`Disconnect`}
-                            </button>`;
-                    }
-                    return html`<p>${t`Not connected.`}</p>
-                        <button @click=${this.doPlex} class="pf-c-button pf-m-primary">
-                            ${t`Connect`}
+                            }}
+                        >
+                            ${t`Disconnect`}
                         </button>`;
+                    }
+                    return html` <button @click=${this.doPlex} class="pf-c-button pf-m-primary">
+                        ${t`Connect`}
+                    </button>`;
                 }),
         )}`;
     }

@@ -5,17 +5,18 @@ from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
+from structlog.testing import capture_logs
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.applications import user_app_cache_key
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import CacheSerializer, MetaNameSerializer, TypeCreateSerializer
+from authentik.events.utils import sanitize_dict
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
 from authentik.policies.models import Policy, PolicyBinding
@@ -46,9 +47,7 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
 
     def get_bound_to(self, obj: Policy) -> int:
         """Return objects policy is bound to"""
-        if not obj.bindings.exists() and not obj.promptstage_set.exists():
-            return 0
-        return obj.bindings.count()
+        return obj.bindings.count() + obj.promptstage_set.count()
 
     def to_representation(self, instance: Policy):
         # pyright: reportGeneralTypeIssues=false
@@ -158,7 +157,7 @@ class PolicyViewSet(
             pk=test_params.validated_data["user"].pk
         )
         if not users.exists():
-            raise PermissionDenied()
+            return Response(status=400)
 
         p_request = PolicyRequest(users.first())
         p_request.debug = True
@@ -166,6 +165,13 @@ class PolicyViewSet(
         p_request.context = test_params.validated_data.get("context", {})
 
         proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
-        result = proc.execute()
+        with capture_logs() as logs:
+            result = proc.execute()
+        log_messages = []
+        for log in logs:
+            if log.get("process", "") == "PolicyProcess":
+                continue
+            log_messages.append(sanitize_dict(log))
+        result.log_messages = log_messages
         response = PolicyTestResultSerializer(result)
         return Response(response.data)

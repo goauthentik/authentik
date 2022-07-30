@@ -80,9 +80,10 @@ class PlexSource(Source):
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={
-                "title": f"Plex {self.name}",
+                "title": self.name,
                 "component": "ak-user-settings-source-plex",
                 "configure_url": self.client_id,
+                "icon_url": static("authentik/sources/plex.svg"),
             }
         )
 

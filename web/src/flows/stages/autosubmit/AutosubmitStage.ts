@@ -1,9 +1,12 @@
+import "@goauthentik/web/elements/EmptyState";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -12,9 +15,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AutoSubmitChallengeResponseRequest, AutosubmitChallenge } from "@goauthentik/api";
-
-import "../../../elements/EmptyState";
-import { BaseStage } from "../base";
 
 @customElement("ak-stage-autosubmit")
 export class AutosubmitStage extends BaseStage<
@@ -35,8 +35,12 @@ export class AutosubmitStage extends BaseStage<
         if (!this.challenge) {
             return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
+        let title = this.challenge.flowInfo?.title;
+        if (this.challenge.title && this.challenge.title !== "") {
+            title = this.challenge.title;
+        }
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+                <h1 class="pf-c-title pf-m-3xl">${title}</h1>
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form" action="${this.challenge.url}" method="POST">

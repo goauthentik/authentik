@@ -1,7 +1,8 @@
 """URL-related utils"""
+from typing import Optional
 from urllib.parse import urlparse
 
-from django.http import HttpResponse
+from django.http import HttpResponse, QueryDict
 from django.shortcuts import redirect
 from django.urls import NoReverseMatch, reverse
 from django.utils.http import urlencode
@@ -15,7 +16,9 @@ def is_url_absolute(url):
     return bool(urlparse(url).netloc)
 
 
-def redirect_with_qs(view: str, get_query_set=None, **kwargs) -> HttpResponse:
+def redirect_with_qs(
+    view: str, get_query_set: Optional[QueryDict] = None, **kwargs
+) -> HttpResponse:
     """Wrapper to redirect whilst keeping GET Parameters"""
     try:
         target = reverse(view, kwargs=kwargs)
@@ -28,3 +31,11 @@ def redirect_with_qs(view: str, get_query_set=None, **kwargs) -> HttpResponse:
         if get_query_set:
             target += "?" + urlencode(get_query_set.items())
         return redirect(target)
+
+
+def reverse_with_qs(view: str, query: Optional[QueryDict] = None, **kwargs) -> str:
+    """Reverse a view to it's url but include get params"""
+    url = reverse(view, **kwargs)
+    if query:
+        url += "?" + urlencode(query.items())
+    return url

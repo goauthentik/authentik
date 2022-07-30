@@ -1,3 +1,10 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import "@goauthentik/web/elements/utils/TimeDeltaHelp";
+import { first, randomString } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -14,14 +21,9 @@ import {
     OAuth2Provider,
     PropertymappingsApi,
     ProvidersApi,
+    SourcesApi,
     SubModeEnum,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { first, randomString } from "../../../utils";
 
 @customElement("ak-provider-oauth2-form")
 export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
@@ -161,7 +163,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Redirect URIs/Origins`}
+                        label=${t`Redirect URIs/Origins (RegEx)`}
                         name="redirectUris"
                     >
                         <textarea class="pf-c-form-control">
@@ -171,7 +173,10 @@ ${this.instance?.redirectUris}</textarea
                             ${t`Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.`}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`If no explicit redirect URIs are specified, any redirect URI is allowed.`}
+                            ${t`If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Signing Key`} name="signingKey">
@@ -188,7 +193,7 @@ ${this.instance?.redirectUris}</textarea
                                     .then((keys) => {
                                         return keys.results.map((key) => {
                                             let selected = this.instance?.signingKey === key.pk;
-                                            if (keys.results.length === 1) {
+                                            if (!this.instance && keys.results.length === 1) {
                                                 selected = true;
                                             }
                                             return html`<option
@@ -227,9 +232,7 @@ ${this.instance?.redirectUris}</textarea
                         <p class="pf-c-form__helper-text">
                             ${t`If you are using an Implicit, client-side flow (where the token-endpoint isn't used), you probably want to increase this time.`}
                         </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
-                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Token validity`}
@@ -245,9 +248,7 @@ ${this.instance?.redirectUris}</textarea
                         <p class="pf-c-form__helper-text">
                             ${t`Configure how long refresh tokens and their id_tokens are valid for.`}
                         </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
-                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Scopes`} name="propertyMappings">
                         <select class="pf-c-form-control" multiple>
@@ -361,6 +362,47 @@ ${this.instance?.redirectUris}</textarea
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Configure how the issuer field of the ID Token should be filled.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+
+            <ak-form-group>
+                <span slot="header">${t`Machine-to-Machine authentication settings`}</span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${t`Trusted OIDC Sources`} name="jwksSources">
+                        <select class="pf-c-form-control" multiple>
+                            ${until(
+                                new SourcesApi(DEFAULT_CONFIG)
+                                    .sourcesOauthList({
+                                        ordering: "name",
+                                    })
+                                    .then((sources) => {
+                                        return sources.results.map((source) => {
+                                            const selected = (
+                                                this.instance?.jwksSources || []
+                                            ).some((su) => {
+                                                return su == source.pk;
+                                            });
+                                            return html`<option
+                                                value=${source.pk}
+                                                ?selected=${selected}
+                                            >
+                                                ${source.name} (${source.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Deprecated. Instead of using this field, configure the JWKS data/URL in Sources.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`JWTs signed by certificates configured here can be used to authenticate to the provider.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Hold control/command to select multiple items.`}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

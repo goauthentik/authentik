@@ -1,10 +1,9 @@
 """core Configs API"""
-from os import environ, path
+from os import path
 
 from django.conf import settings
 from django.db import models
 from drf_spectacular.utils import extend_schema
-from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 from rest_framework.fields import (
     BooleanField,
     CharField,
@@ -28,7 +27,7 @@ class Capabilities(models.TextChoices):
 
     CAN_SAVE_MEDIA = "can_save_media"
     CAN_GEO_IP = "can_geo_ip"
-    CAN_BACKUP = "can_backup"
+    CAN_IMPERSONATE = "can_impersonate"
 
 
 class ErrorReportingConfigSerializer(PassiveSerializer):
@@ -65,19 +64,13 @@ class ConfigView(APIView):
             caps.append(Capabilities.CAN_SAVE_MEDIA)
         if GEOIP_READER.enabled:
             caps.append(Capabilities.CAN_GEO_IP)
-        if SERVICE_HOST_ENV_NAME in environ:
-            # Running in k8s, only s3 backup is supported
-            if CONFIG.y("postgresql.s3_backup"):
-                caps.append(Capabilities.CAN_BACKUP)
-        else:
-            # Running in compose, backup is always supported
-            caps.append(Capabilities.CAN_BACKUP)
+        if CONFIG.y_bool("impersonation"):
+            caps.append(Capabilities.CAN_IMPERSONATE)
         return caps
 
-    @extend_schema(responses={200: ConfigSerializer(many=False)})
-    def get(self, request: Request) -> Response:
-        """Retrieve public configuration options"""
-        config = ConfigSerializer(
+    def get_config(self) -> ConfigSerializer:
+        """Get Config"""
+        return ConfigSerializer(
             {
                 "error_reporting": {
                     "enabled": CONFIG.y("error_reporting.enabled"),
@@ -92,4 +85,8 @@ class ConfigView(APIView):
                 "cache_timeout_reputation": int(CONFIG.y("redis.cache_timeout_reputation")),
             }
         )
-        return Response(config.data)
+
+    @extend_schema(responses={200: ConfigSerializer(many=False)})
+    def get(self, request: Request) -> Response:
+        """Retrieve public configuration options"""
+        return Response(self.get_config().data)

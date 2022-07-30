@@ -1,30 +1,29 @@
 """Prompt tests"""
 from unittest.mock import MagicMock, patch
 
+from django.test import RequestFactory
 from django.urls import reverse
-from django.utils.encoding import force_str
-from rest_framework.exceptions import ErrorDetail
-from rest_framework.test import APITestCase
+from rest_framework.exceptions import ErrorDetail, ValidationError
 
-from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan
+from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
-from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
+from authentik.stages.prompt.models import FieldTypes, InlineFileField, Prompt, PromptStage
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptChallengeResponse
 
 
-class TestPromptStage(APITestCase):
+class TestPromptStage(FlowTestCase):
     """Prompt tests"""
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create(username="unittest", email="test@beryju.org")
-
+        self.user = create_test_admin_user()
+        self.factory = RequestFactory()
         self.flow = Flow.objects.create(
             name="test-prompt",
             slug="test-prompt",
@@ -111,6 +110,21 @@ class TestPromptStage(APITestCase):
 
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
+    def test_inline_file_field(self):
+        """test InlineFileField"""
+        with self.assertRaises(ValidationError):
+            InlineFileField().to_internal_value("foo")
+        with self.assertRaises(ValidationError):
+            InlineFileField().to_internal_value("data:foo/bar;foo,qwer")
+        self.assertEqual(
+            InlineFileField().to_internal_value("data:mine/type;base64,Zm9v"),
+            "data:mine/type;base64,Zm9v",
+        )
+        self.assertEqual(
+            InlineFileField().to_internal_value("data:mine/type;base64,Zm9vqwer"),
+            "data:mine/type;base64,Zm9vqwer",
+        )
+
     def test_render(self):
         """Test render of form, check if all prompts are rendered correctly"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -123,14 +137,17 @@ class TestPromptStage(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
         for prompt in self.stage.fields.all():
-            self.assertIn(prompt.field_key, force_str(response.content))
-            self.assertIn(prompt.label, force_str(response.content))
-            self.assertIn(prompt.placeholder, force_str(response.content))
+            self.assertIn(prompt.field_key, response.content.decode())
+            self.assertIn(prompt.label, response.content.decode())
+            self.assertIn(prompt.placeholder, response.content.decode())
 
     def test_valid_challenge_with_policy(self) -> PromptChallengeResponse:
         """Test challenge_response validation"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        expr = "return request.context['password_prompt'] == request.context['password2_prompt']"
+        expr = (
+            "return request.context['prompt_data']['password_prompt'] "
+            "== request.context['prompt_data']['password2_prompt']"
+        )
         expr_policy = ExpressionPolicy.objects.create(name="validate-form", expression=expr)
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
@@ -171,14 +188,7 @@ class TestPromptStage(APITestCase):
                 challenge_response.validated_data,
             )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
         # Check that valid data has been saved
         session = self.client.session
@@ -228,3 +238,97 @@ class TestPromptStage(APITestCase):
         self.assertNotEqual(challenge_response.validated_data["hidden_prompt"], "foo")
         self.assertEqual(challenge_response.validated_data["hidden_prompt"], "hidden")
         self.assertNotEqual(challenge_response.validated_data["static_prompt"], "foo")
+
+    def test_prompt_placeholder(self):
+        """Test placeholder and expression"""
+        context = {
+            "foo": generate_id(),
+        }
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=FieldTypes.TEXT,
+            placeholder="return prompt_context['foo']",
+            placeholder_expression=True,
+        )
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), context["foo"]
+        )
+        context["text_prompt_expression"] = generate_id()
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")),
+            context["text_prompt_expression"],
+        )
+        self.assertNotEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), context["foo"]
+        )
+
+    def test_prompt_placeholder_error(self):
+        """Test placeholder and expression"""
+        context = {}
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=FieldTypes.TEXT,
+            placeholder="something invalid dunno",
+            placeholder_expression=True,
+        )
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")),
+            "something invalid dunno",
+        )
+
+    def test_prompt_placeholder_disabled(self):
+        """Test placeholder and expression"""
+        context = {}
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=FieldTypes.TEXT,
+            placeholder="return prompt_context['foo']",
+            placeholder_expression=False,
+        )
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), prompt.placeholder
+        )
+
+    def test_invalid_save(self):
+        """Ensure field can't be saved with invalid type"""
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type="foo",
+            placeholder="foo",
+            placeholder_expression=False,
+            sub_text="test",
+            order=123,
+        )
+        with self.assertRaises(ValueError):
+            prompt.save()
+
+
+def field_type_tester_factory(field_type: FieldTypes, required: bool):
+    """Test field for field_type"""
+
+    def tester(self: TestPromptStage):
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=field_type,
+            placeholder="foo",
+            placeholder_expression=False,
+            sub_text="test",
+            order=123,
+            required=required,
+        )
+        self.assertIsNotNone(prompt.field("foo"))
+
+    return tester
+
+
+for _required in (True, False):
+    for _type in FieldTypes:
+        test_name = f"test_field_type_{_type}"
+        if _required:
+            test_name += "_required"
+        setattr(TestPromptStage, test_name, field_type_tester_factory(_type, _required))

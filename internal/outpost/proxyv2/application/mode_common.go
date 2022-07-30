@@ -1,27 +1,21 @@
 package application
 
 import (
+	"context"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
 
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
 )
 
 func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	// https://goauthentik.io/docs/providers/proxy/proxy
 
-	// Legacy headers, remove after 2022.1
-	headers.Set("X-Auth-Username", c.PreferredUsername)
-	headers.Set("X-Auth-Groups", strings.Join(c.Groups, "|"))
-	headers.Set("X-Forwarded-Email", c.Email)
-	headers.Set("X-Forwarded-Preferred-Username", c.PreferredUsername)
-	headers.Set("X-Forwarded-User", c.Sub)
-
-	// New headers, unique prefix
 	headers.Set("X-authentik-username", c.PreferredUsername)
 	headers.Set("X-authentik-groups", strings.Join(c.Groups, "|"))
 	headers.Set("X-authentik-email", c.Email)
@@ -30,7 +24,7 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	headers.Set("X-authentik-jwt", c.RawToken)
 
 	// System headers
-	headers.Set("X-authentik-meta-jwks", a.proxyConfig.OidcConfiguration.JwksUri)
+	headers.Set("X-authentik-meta-jwks", a.endpoint.JwksUri)
 	headers.Set("X-authentik-meta-outpost", a.outpostName)
 	headers.Set("X-authentik-meta-provider", a.proxyConfig.Name)
 	headers.Set("X-authentik-meta-app", a.proxyConfig.AssignedApplicationSlug)
@@ -65,7 +59,8 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	}
 }
 
-func (a *Application) getTraefikForwardUrl(r *http.Request) *url.URL {
+// getTraefikForwardUrl See https://doc.traefik.io/traefik/middlewares/forwardauth/
+func (a *Application) getTraefikForwardUrl(r *http.Request) (*url.URL, error) {
 	u, err := url.Parse(fmt.Sprintf(
 		"%s://%s%s",
 		r.Header.Get("X-Forwarded-Proto"),
@@ -73,33 +68,64 @@ func (a *Application) getTraefikForwardUrl(r *http.Request) *url.URL {
 		r.Header.Get("X-Forwarded-Uri"),
 	))
 	if err != nil {
-		a.log.WithError(err).Warning("Failed to parse URL from traefik")
-		return r.URL
+		return nil, err
 	}
 	a.log.WithField("url", u.String()).Trace("traefik forwarded url")
-	return u
+	return u, nil
 }
 
-func (a *Application) IsAllowlisted(r *http.Request) bool {
-	url := r.URL
-	// In Forward auth mode, we can't directly match against the requested URL
-	// Since that would be /akprox/auth/...
-	if a.Mode() == api.PROXYMODE_FORWARD_SINGLE || a.Mode() == api.PROXYMODE_FORWARD_DOMAIN {
-		// For traefik, we can get the Upstream URL from headers
-		// For nginx we can attempt to as well, but it's not guaranteed to work.
-		if strings.HasPrefix(r.URL.Path, "/akprox/auth") {
-			url = a.getTraefikForwardUrl(r)
+// getNginxForwardUrl See https://github.com/kubernetes/ingress-nginx/blob/main/rootfs/etc/nginx/template/nginx.tmpl
+func (a *Application) getNginxForwardUrl(r *http.Request) (*url.URL, error) {
+	ou := r.Header.Get("X-Original-URI")
+	if ou != "" {
+		// Turn this full URL into a relative URL
+		u := &url.URL{
+			Host:   "",
+			Scheme: "",
+			Path:   ou,
 		}
+		a.log.WithField("url", u.String()).Info("building forward URL from X-Original-URI")
+		return u, nil
 	}
-	for _, u := range a.UnauthenticatedRegex {
+	h := r.Header.Get("X-Original-URL")
+	if len(h) < 1 {
+		return nil, errors.New("no forward URL found")
+	}
+	u, err := url.Parse(h)
+	if err != nil {
+		a.log.WithError(err).Warning("failed to parse URL from nginx")
+		return nil, err
+	}
+	a.log.WithField("url", u.String()).Trace("nginx forwarded url")
+	return u, nil
+}
+
+func (a *Application) ReportMisconfiguration(r *http.Request, msg string, fields map[string]interface{}) {
+	fields["message"] = msg
+	a.log.WithFields(fields).Error("Reporting configuration error")
+	req := api.EventRequest{
+		Action:   api.EVENTACTIONS_CONFIGURATION_ERROR,
+		App:      "authentik.providers.proxy", // must match python apps.py name
+		ClientIp: *api.NewNullableString(api.PtrString(r.RemoteAddr)),
+		Context:  fields,
+	}
+	_, _, err := a.ak.Client.EventsApi.EventsEventsCreate(context.Background()).EventRequest(req).Execute()
+	if err != nil {
+		a.log.WithError(err).Warning("failed to report configuration error")
+	}
+}
+
+func (a *Application) IsAllowlisted(u *url.URL) bool {
+	for _, ur := range a.UnauthenticatedRegex {
 		var testString string
 		if a.Mode() == api.PROXYMODE_PROXY || a.Mode() == api.PROXYMODE_FORWARD_SINGLE {
-			testString = url.Path
+			testString = u.Path
 		} else {
-			testString = url.String()
+			testString = u.String()
 		}
-		a.log.WithField("regex", u.String()).WithField("url", testString).Trace("Matching URL against allow list")
-		if u.MatchString(testString) {
+		match := ur.MatchString(testString)
+		a.log.WithField("match", match).WithField("regex", ur.String()).WithField("url", testString).Trace("Matching URL against allow list")
+		if match {
 			return true
 		}
 	}

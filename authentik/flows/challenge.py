@@ -1,7 +1,8 @@
 """Challenge helpers"""
 from enum import Enum
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, TypedDict
 
+from django.db import models
 from django.http import JsonResponse
 from rest_framework.fields import ChoiceField, DictField
 from rest_framework.serializers import CharField
@@ -11,6 +12,20 @@ from authentik.core.api.utils import PassiveSerializer
 
 if TYPE_CHECKING:
     from authentik.flows.stage import StageView
+
+PLAN_CONTEXT_TITLE = "title"
+PLAN_CONTEXT_URL = "url"
+PLAN_CONTEXT_ATTRS = "attrs"
+
+
+class FlowLayout(models.TextChoices):
+    """Flow layouts"""
+
+    STACKED = "stacked"
+    CONTENT_LEFT = "content_left"
+    CONTENT_RIGHT = "content_right"
+    SIDEBAR_LEFT = "sidebar_left"
+    SIDEBAR_RIGHT = "sidebar_right"
 
 
 class ChallengeTypes(Enum):
@@ -34,6 +49,7 @@ class ContextualFlowInfo(PassiveSerializer):
     title = CharField(required=False, allow_blank=True)
     background = CharField(required=False)
     cancel_url = CharField()
+    layout = ChoiceField(choices=[(x.value, x.name) for x in FlowLayout])
 
 
 class Challenge(PassiveSerializer):
@@ -72,11 +88,18 @@ class WithUserInfoChallenge(Challenge):
     pending_user_avatar = CharField()
 
 
-class AccessDeniedChallenge(Challenge):
+class AccessDeniedChallenge(WithUserInfoChallenge):
     """Challenge when a flow's active stage calls `stage_invalid()`."""
 
     error_message = CharField(required=False)
     component = CharField(default="ak-stage-access-denied")
+
+
+class PermissionDict(TypedDict):
+    """Consent Permission"""
+
+    id: str
+    name: str
 
 
 class PermissionSerializer(PassiveSerializer):
@@ -95,6 +118,21 @@ class ChallengeResponse(PassiveSerializer):
     def __init__(self, instance=None, data=None, **kwargs):
         self.stage = kwargs.pop("stage", None)
         super().__init__(instance=instance, data=data, **kwargs)
+
+
+class AutosubmitChallenge(Challenge):
+    """Autosubmit challenge used to send and navigate a POST request"""
+
+    url = CharField()
+    attrs = DictField(child=CharField())
+    title = CharField(required=False)
+    component = CharField(default="ak-stage-autosubmit")
+
+
+class AutoSubmitChallengeResponse(ChallengeResponse):
+    """Pseudo class for autosubmit response"""
+
+    component = CharField(default="ak-stage-autosubmit")
 
 
 class HttpChallengeResponse(JsonResponse):

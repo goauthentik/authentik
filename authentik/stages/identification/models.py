@@ -1,5 +1,4 @@
 """identification stage models"""
-from typing import Type
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -88,7 +87,7 @@ class IdentificationStage(Stage):
     )
 
     sources = models.ManyToManyField(
-        Source, default=list, help_text=_("Specify which sources should be shown.")
+        Source, default=list, help_text=_("Specify which sources should be shown."), blank=True
     )
     show_source_labels = models.BooleanField(default=False)
 
@@ -99,7 +98,7 @@ class IdentificationStage(Stage):
         return IdentificationStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.identification.stage import IdentificationStageView
 
         return IdentificationStageView

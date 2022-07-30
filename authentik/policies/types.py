@@ -67,12 +67,15 @@ class PolicyResult:
     source_binding: Optional["PolicyBinding"]
     source_results: Optional[list["PolicyResult"]]
 
+    log_messages: Optional[list[dict]]
+
     def __init__(self, passing: bool, *messages: str):
         super().__init__()
         self.passing = passing
         self.messages = messages
         self.source_binding = None
         self.source_results = []
+        self.log_messages = []
 
     def __repr__(self):
         return self.__str__()

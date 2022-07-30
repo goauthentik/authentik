@@ -4,12 +4,19 @@ from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.http import urlencode
-from rest_framework.fields import CharField, DictField
+from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import (
+    PLAN_CONTEXT_TITLE,
+    AutosubmitChallenge,
+    AutoSubmitChallengeResponse,
+    Challenge,
+    ChallengeResponse,
+    ChallengeTypes,
+)
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.views import bad_request_message
@@ -27,22 +34,7 @@ REQUEST_KEY_SAML_SIG_ALG = "SigAlg"
 REQUEST_KEY_SAML_RESPONSE = "SAMLResponse"
 REQUEST_KEY_RELAY_STATE = "RelayState"
 
-SESSION_KEY_AUTH_N_REQUEST = "authn_request"
-
-
-class AutosubmitChallenge(Challenge):
-    """Autosubmit challenge used to send and navigate a POST request"""
-
-    url = CharField()
-    attrs = DictField(child=CharField())
-    component = CharField(default="ak-stage-autosubmit")
-
-
-class AutoSubmitChallengeResponse(ChallengeResponse):
-    """Pseudo class for autosubmit response"""
-
-    component = CharField(default="ak-stage-autosubmit")
-
+SESSION_KEY_AUTH_N_REQUEST = "authentik/providers/saml/authn_request"
 
 # This View doesn't have a URL on purpose, as its called by the FlowExecutor
 class SAMLFlowFinalView(ChallengeStageView):
@@ -88,7 +80,12 @@ class SAMLFlowFinalView(ChallengeStageView):
                 **{
                     "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-stage-autosubmit",
-                    "title": "Redirecting to %(app)s..." % {"app": application.name},
+                    "title": (
+                        self.executor.plan.context.get(
+                            PLAN_CONTEXT_TITLE,
+                            _("Redirecting to %(app)s..." % {"app": application.name}),
+                        )
+                    ),
                     "url": provider.acs_url,
                     "attrs": form_attrs,
                 },
@@ -109,3 +106,6 @@ class SAMLFlowFinalView(ChallengeStageView):
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # We'll never get here since the challenge redirects to the SP
         return HttpResponseBadRequest()
+
+    def cleanup(self):
+        self.request.session.pop(SESSION_KEY_AUTH_N_REQUEST, None)

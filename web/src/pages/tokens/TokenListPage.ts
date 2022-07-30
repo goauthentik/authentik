@@ -1,21 +1,21 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/buttons/Dropdown";
+import "@goauthentik/web/elements/buttons/TokenCopyButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/tokens/TokenForm";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import { PFColor } from "../../elements/Label";
-import "../../elements/buttons/Dropdown";
-import "../../elements/buttons/TokenCopyButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import "./TokenForm";
 
 export function IntentToLabel(intent: IntentEnum): string {
     switch (intent) {
@@ -92,7 +92,7 @@ export class TokenListPage extends TablePage<Token> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -100,7 +100,6 @@ export class TokenListPage extends TablePage<Token> {
                 <ak-token-form slot="form"> </ak-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 

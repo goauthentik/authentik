@@ -1,15 +1,15 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/Spinner";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
 import { EventTopPerUser, EventsApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/Spinner";
 
 @customElement("ak-top-applications-table")
 export class TopApplicationsTable extends LitElement {

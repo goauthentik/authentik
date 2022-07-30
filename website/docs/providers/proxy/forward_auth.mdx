@@ -2,6 +2,9 @@
 title: Forward auth
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 Using forward auth uses your existing reverse proxy to do the proxying, and only uses the
 authentik outpost to check authentication and authorization.
 
@@ -16,33 +19,31 @@ has the advantage that you can still do per-application access policies in authe
 ## Domain level
 
 To use forward auth instead of proxying, you have to change a couple of settings.
-In the Proxy Provider, make sure to use the *Forward auth (domain level)* mode.
+In the Proxy Provider, make sure to use the _Forward auth (domain level)_ mode.
 
-This mode differs from the *Forward auth (single application)* mode in the following points:
-- You don't have to configure an application in authentik for each domain
-- Users don't have to authorize multiple times
+This mode differs from the _Forward auth (single application)_ mode in the following points:
+
+-   You don't have to configure an application in authentik for each domain
+-   Users don't have to authorize multiple times
 
 There are however also some downsides, mainly the fact that you **can't** restrict individual
 applications to different users.
 
 The only configuration difference between single application and domain level is the host you specify.
 
-For single application, you'd use the domain which the application is running on, and only /akprox
+For single application, you'd use the domain which the application is running on, and only /outpost.goauthentik.io
 is redirected to the outpost.
 
 For domain level, you'd use the same domain as authentik.
 
 :::info
-*example-outpost* is used as a placeholder for the outpost name.
-*authentik.company* is used as a placeholder for the authentik install.
-*app.company* is used as a placeholder for the external domain for the application.
-*outpost.company* is used as a placeholder for the outpost. When using the embedded outpost, this can be the same as *authentik.company*
+_example-outpost_ is used as a placeholder for the outpost name.
+_authentik.company_ is used as a placeholder for the authentik install.
+_app.company_ is used as a placeholder for the external domain for the application.
+_outpost.company_ is used as a placeholder for the outpost. When using the embedded outpost, this can be the same as _authentik.company_
 :::
 
 ## Nginx
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 <Tabs
   defaultValue="standalone-nginx"
@@ -53,21 +54,21 @@ import TabItem from '@theme/TabItem';
   ]}>
   <TabItem value="standalone-nginx">
 
-import NginxStandalone from './_nginx_standalone.md'
+import NginxStandalone from "./_nginx_standalone.md";
 
 <NginxStandalone />
 
   </TabItem>
   <TabItem value="ingress">
 
-import NginxIngress from './_nginx_ingress.md'
+import NginxIngress from "./_nginx_ingress.md";
 
 <NginxIngress />
 
   </TabItem>
   <TabItem value="proxy-manager">
 
-import NginxProxyManager from './_nginx_proxy_manager.md'
+import NginxProxyManager from "./_nginx_proxy_manager.md";
 
 <NginxProxyManager />
 
@@ -85,23 +86,67 @@ import NginxProxyManager from './_nginx_proxy_manager.md'
   ]}>
   <TabItem value="standalone-traefik">
 
-import TraefikStandalone from './_traefik_standalone.md'
+import TraefikStandalone from "./_traefik_standalone.md";
 
 <TraefikStandalone />
 
   </TabItem>
   <TabItem value="docker-compose">
 
-import TraefikCompose from './_traefik_compose.md'
+import TraefikCompose from "./_traefik_compose.md";
 
 <TraefikCompose />
 
   </TabItem>
   <TabItem value="ingress">
 
-import TraefikIngress from './_traefik_ingress.md'
+import TraefikIngress from "./_traefik_ingress.md";
 
 <TraefikIngress />
+
+  </TabItem>
+</Tabs>
+
+## Enovy (Istio)
+
+:::info
+Requires authentik 2022.6
+:::
+
+:::info
+Support for this is still in preview, please report bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
+:::
+
+<Tabs
+  defaultValue="envoy-istio"
+  values={[
+    {label: 'Envoy (Istio)', value: 'envoy-istio'},
+  ]}>
+  <TabItem value="envoy-istio">
+
+import EnvoyIstio from "./_envoy_istio.md";
+
+<EnvoyIstio />
+
+  </TabItem>
+</Tabs>
+
+## Caddy
+
+:::info
+Requires authentik 2022.8
+:::
+
+<Tabs
+  defaultValue="caddy-standalone"
+  values={[
+    {label: 'Caddy (standalone)', value: 'caddy-standalone'},
+  ]}>
+  <TabItem value="caddy-standalone">
+
+import CaddyStandalone from "./_caddy_standalone.md";
+
+<CaddyStandalone />
 
   </TabItem>
 </Tabs>

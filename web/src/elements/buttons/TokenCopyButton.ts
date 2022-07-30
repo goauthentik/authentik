@@ -1,11 +1,14 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { ERROR_CLASS, SECONDARY_CLASS, SUCCESS_CLASS } from "@goauthentik/web/constants";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { CoreApi } from "@goauthentik/api";
+import { CoreApi, ResponseError } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { ERROR_CLASS, SECONDARY_CLASS, SUCCESS_CLASS } from "../../constants";
-import { PFSize } from "../Spinner";
 import { ActionButton } from "./ActionButton";
 
 @customElement("ak-token-copy-button")
@@ -35,15 +38,15 @@ export class TokenCopyButton extends ActionButton {
                 this.buttonClass = SUCCESS_CLASS;
                 return token.key;
             })
-            .catch((err: Error | Response | undefined) => {
+            .catch((err: Error | ResponseError | undefined) => {
                 this.buttonClass = ERROR_CLASS;
-                if (err instanceof Error) {
+                if (!(err instanceof ResponseError)) {
                     setTimeout(() => {
                         this.buttonClass = SECONDARY_CLASS;
                     }, 1500);
                     throw err;
                 }
-                return err?.json().then((errResp) => {
+                return err.response.json().then((errResp) => {
                     setTimeout(() => {
                         this.buttonClass = SECONDARY_CLASS;
                     }, 1500);
@@ -90,8 +93,15 @@ export class TokenCopyButton extends ActionButton {
                                 this.setDone(SUCCESS_CLASS);
                             });
                         })
-                        .catch((err: Response | undefined) => {
-                            return err?.json().then((errResp) => {
+                        .catch((err: ResponseError | Error) => {
+                            if (!(err instanceof ResponseError)) {
+                                showMessage({
+                                    level: MessageLevel.error,
+                                    message: err.message,
+                                });
+                                return;
+                            }
+                            return err.response.json().then((errResp) => {
                                 this.setDone(ERROR_CLASS);
                                 throw new Error(errResp["detail"]);
                             });

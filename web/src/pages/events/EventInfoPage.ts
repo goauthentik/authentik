@@ -1,20 +1,20 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { EventWithContext } from "@goauthentik/web/api/Events";
+import "@goauthentik/web/elements/PageHeader";
+import "@goauthentik/web/pages/events/EventInfo";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventsApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { EventWithContext } from "../../api/Events";
-import "../../elements/PageHeader";
-import "./EventInfo";
 
 @customElement("ak-event-info-page")
 export class EventInfoPage extends LitElement {

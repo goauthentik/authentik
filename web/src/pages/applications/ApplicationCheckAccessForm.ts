@@ -1,16 +1,18 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import { Form } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { UserOption } from "@goauthentik/web/elements/user/utils";
+
 import { t } from "@lingui/macro";
 
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import { Application, CoreApi, PolicyTestResult } from "@goauthentik/api";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { PFColor } from "../../elements/Label";
-import { Form } from "../../elements/forms/Form";
-import "../../elements/forms/HorizontalFormElement";
-import { UserOption } from "../../elements/user/utils";
+import { Application, CoreApi, PolicyTestResult } from "@goauthentik/api";
 
 @customElement("ak-application-check-access-form")
 export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
@@ -42,8 +44,13 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         this.result = undefined;
     }
 
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFDescriptionList);
+    }
+
     renderResult(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${t`Passing`}>
+        return html`
+            <ak-form-element-horizontal label=${t`Passing`}>
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <span class="pf-c-form__label-text">
@@ -70,7 +77,38 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                         </ul>
                     </div>
                 </div>
-            </ak-form-element-horizontal>`;
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Log messages`}>
+                <div class="pf-c-form__group-label">
+                    <div class="c-form__horizontal-group">
+                        <dl class="pf-c-description-list pf-m-horizontal">
+                            ${(this.result?.logMessages || []).length > 0
+                                ? this.result?.logMessages?.map((m) => {
+                                      return html`<div class="pf-c-description-list__group">
+                                          <dt class="pf-c-description-list__term">
+                                              <span class="pf-c-description-list__text"
+                                                  >${m.log_level}</span
+                                              >
+                                          </dt>
+                                          <dd class="pf-c-description-list__description">
+                                              <div class="pf-c-description-list__text">
+                                                  ${m.event}
+                                              </div>
+                                          </dd>
+                                      </div>`;
+                                  })
+                                : html`<div class="pf-c-description-list__group">
+                                      <dt class="pf-c-description-list__term">
+                                          <span class="pf-c-description-list__text"
+                                              >${t`No log messages.`}</span
+                                          >
+                                      </dt>
+                                  </div>`}
+                        </dl>
+                    </div>
+                </div>
+            </ak-form-element-horizontal>
+        `;
     }
 
     renderForm(): TemplateResult {

@@ -18,6 +18,7 @@ from kubernetes.client import (
     V1SecretKeySelector,
 )
 
+from authentik import __version__, get_full_version
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.triggers import NeedsUpdate
@@ -52,15 +53,18 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
             raise NeedsUpdate()
         super().reconcile(current, reference)
 
-    def get_pod_meta(self) -> dict[str, str]:
+    def get_pod_meta(self, **kwargs) -> dict[str, str]:
         """Get common object metadata"""
-        return {
-            "app.kubernetes.io/name": "authentik-outpost",
-            "app.kubernetes.io/managed-by": "goauthentik.io",
-            "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
-            "goauthentik.io/outpost-name": slugify(self.controller.outpost.name),
-            "goauthentik.io/outpost-type": str(self.controller.outpost.type),
-        }
+        kwargs.update(
+            {
+                "app.kubernetes.io/name": f"authentik-outpost-{self.outpost.type}",
+                "app.kubernetes.io/managed-by": "goauthentik.io",
+                "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
+                "goauthentik.io/outpost-name": slugify(self.controller.outpost.name),
+                "goauthentik.io/outpost-type": str(self.controller.outpost.type),
+            }
+        )
+        return kwargs
 
     def get_reference_object(self) -> V1Deployment:
         """Get deployment object for outpost"""
@@ -77,13 +81,24 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         meta = self.get_object_meta(name=self.name)
         image_name = self.controller.get_container_image()
         image_pull_secrets = self.outpost.config.kubernetes_image_pull_secrets
+        version = get_full_version()
         return V1Deployment(
             metadata=meta,
             spec=V1DeploymentSpec(
                 replicas=self.outpost.config.kubernetes_replicas,
                 selector=V1LabelSelector(match_labels=self.get_pod_meta()),
                 template=V1PodTemplateSpec(
-                    metadata=V1ObjectMeta(labels=self.get_pod_meta()),
+                    metadata=V1ObjectMeta(
+                        labels=self.get_pod_meta(
+                            **{
+                                # Support istio-specific labels, but also use the standard k8s
+                                # recommendations
+                                "app.kubernetes.io/version": version,
+                                "app": "authentik-outpost",
+                                "version": version,
+                            }
+                        )
+                    ),
                     spec=V1PodSpec(
                         image_pull_secrets=[
                             V1ObjectReference(name=secret) for secret in image_pull_secrets

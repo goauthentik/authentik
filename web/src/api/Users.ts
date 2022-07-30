@@ -1,27 +1,57 @@
-import { CoreApi, SessionUser } from "@goauthentik/api";
+import { activateLocale } from "@goauthentik/web/interfaces/locale";
+
+import { CoreApi, ResponseError, SessionUser } from "@goauthentik/api";
+
 import { DEFAULT_CONFIG } from "./Config";
 
-let globalMePromise: Promise<SessionUser>;
+let globalMePromise: Promise<SessionUser> | undefined;
+
+export function refreshMe(): Promise<SessionUser> {
+    globalMePromise = undefined;
+    return me();
+}
+
 export function me(): Promise<SessionUser> {
     if (!globalMePromise) {
-        globalMePromise = new CoreApi(DEFAULT_CONFIG).coreUsersMeRetrieve().catch((ex) => {
-            const defaultUser: SessionUser = {
-                user: {
-                    pk: -1,
-                    isSuperuser: false,
-                    isActive: true,
-                    groups: [],
-                    avatar: "",
-                    uid: "",
-                    username: "",
-                    name: ""
+        globalMePromise = new CoreApi(DEFAULT_CONFIG)
+            .coreUsersMeRetrieve()
+            .then((user) => {
+                if (!user.user.settings || !("locale" in user.user.settings)) {
+                    return user;
                 }
-            };
-            if (ex.status === 401 || ex.status === 403) {
-                window.location.assign("/");
-            }
-            return defaultUser;
-        });
+                const locale = user.user.settings.locale;
+                if (locale && locale !== "") {
+                    console.debug(
+                        `authentik/locale: Activating user's configured locale '${locale}'`,
+                    );
+                    activateLocale(locale);
+                }
+                return user;
+            })
+            .catch((ex: ResponseError) => {
+                const defaultUser: SessionUser = {
+                    user: {
+                        pk: -1,
+                        isSuperuser: false,
+                        isActive: true,
+                        groups: [],
+                        avatar: "",
+                        uid: "",
+                        username: "",
+                        name: "",
+                        settings: {},
+                    },
+                };
+                if (ex.response.status === 401 || ex.response.status === 403) {
+                    const relativeUrl = window.location
+                        .toString()
+                        .substring(window.location.origin.length);
+                    window.location.assign(
+                        `/flows/-/default/authentication/?next=${encodeURIComponent(relativeUrl)}`,
+                    );
+                }
+                return defaultUser;
+            });
     }
     return globalMePromise;
 }

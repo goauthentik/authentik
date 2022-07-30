@@ -8,7 +8,8 @@ SCOPE_AK_PROXY_EXPRESSION = """
 # which are used for example for the HTTP-Basic Authentication mapping.
 return {
     "ak_proxy": {
-        "user_attributes": request.user.group_attributes()
+        "user_attributes": request.user.group_attributes(request),
+        "is_superuser": request.user.is_superuser,
     }
 }"""
 

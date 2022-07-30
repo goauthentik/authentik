@@ -1,25 +1,26 @@
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/api/Config";
+import { currentInterface } from "@goauthentik/web/api/Sentry";
+import { me } from "@goauthentik/web/api/Users";
+import {
+    EVENT_API_DRAWER_TOGGLE,
+    EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_SIDEBAR_TOGGLE,
+    EVENT_WS_MESSAGE,
+    TITLE_DEFAULT,
+} from "@goauthentik/web/constants";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventsApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG, tenant } from "../api/Config";
-import { currentInterface } from "../api/Sentry";
-import {
-    EVENT_API_DRAWER_TOGGLE,
-    EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_REFRESH,
-    EVENT_SIDEBAR_TOGGLE,
-    TITLE_DEFAULT,
-} from "../constants";
 
 @customElement("ak-page-header")
 export class PageHeader extends LitElement {
@@ -96,21 +97,24 @@ export class PageHeader extends LitElement {
 
     constructor() {
         super();
-        window.addEventListener(EVENT_REFRESH, () => {
+        window.addEventListener(EVENT_WS_MESSAGE, () => {
             this.firstUpdated();
         });
     }
 
     firstUpdated(): void {
-        new EventsApi(DEFAULT_CONFIG)
-            .eventsNotificationsList({
-                seen: false,
-                ordering: "-created",
-                pageSize: 1,
-            })
-            .then((r) => {
-                this.hasNotifications = r.pagination.count > 0;
-            });
+        me().then((user) => {
+            new EventsApi(DEFAULT_CONFIG)
+                .eventsNotificationsList({
+                    seen: false,
+                    ordering: "-created",
+                    pageSize: 1,
+                    user: user.user.pk,
+                })
+                .then((r) => {
+                    this.hasNotifications = r.pagination.count > 0;
+                });
+        });
     }
 
     renderIcon(): TemplateResult {

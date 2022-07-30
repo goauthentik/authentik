@@ -1,10 +1,12 @@
 """Test Service-Provider Metadata Parser"""
 # flake8: noqa
 
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 
+from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
-from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping
+from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
+from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 
 METADATA_SIMPLE = """<?xml version="1.0"?>
@@ -66,6 +68,23 @@ class TestServiceProviderMetadataParser(TestCase):
 
     def setUp(self) -> None:
         self.flow = create_test_flow()
+        self.factory = RequestFactory()
+
+    def test_consistent(self):
+        """Test that metadata generation is consistent"""
+        provider = SAMLProvider.objects.create(
+            name="test",
+            authorization_flow=self.flow,
+        )
+        Application.objects.create(
+            name="test",
+            slug="test",
+            provider=provider,
+        )
+        request = self.factory.get("/")
+        metadata_a = MetadataProcessor(provider, request).build_entity_descriptor()
+        metadata_b = MetadataProcessor(provider, request).build_entity_descriptor()
+        self.assertEqual(metadata_a, metadata_b)
 
     def test_simple(self):
         """Test simple metadata without Signing"""

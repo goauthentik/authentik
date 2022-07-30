@@ -37,7 +37,6 @@
     max-height: 200px;
 }
 
-
 .before-after-slider img {
     max-width: none;
 }
@@ -154,7 +153,7 @@ table.comparison tr td.result.warning {
     color: var(--ifm-color-warning);
 }
 
-table.comparison tr td.result.passed.authentik {
+table.comparison tr td.result.authentik {
     background: var(--ifm-color-primary);
     color: var(--ifm-color-secondary);
 }

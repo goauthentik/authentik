@@ -1,24 +1,22 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+import "@goauthentik/web/pages/flows/StageBindingForm";
+import "@goauthentik/web/pages/policies/BoundPoliciesList";
+import "@goauthentik/web/pages/stages/StageWizard";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
-import { FlowStageBinding, FlowsApi, StagesApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/Tabs";
-import "../../elements/buttons/Dropdown";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/ProxyForm";
-import { Table, TableColumn } from "../../elements/table/Table";
-import "../policies/BoundPoliciesList";
-import "./StageBindingForm";
+import { FlowStageBinding, FlowsApi } from "@goauthentik/api";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
@@ -150,33 +148,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 </ak-stage-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Bind stage`}</button>
             </ak-forms-modal>
-            <ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-secondary pf-c-button pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${t`Create Stage`}</span>
-                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-                </button>
-                <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(
-                        new StagesApi(DEFAULT_CONFIG).stagesAllTypesList().then((types) => {
-                            return types.map((type) => {
-                                return html`<li>
-                                    <ak-forms-modal>
-                                        <span slot="submit"> ${t`Create`} </span>
-                                        <span slot="header"> ${t`Create ${type.name}`} </span>
-                                        <ak-proxy-form slot="form" type=${type.component}>
-                                        </ak-proxy-form>
-                                        <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                            ${type.name}<br />
-                                            <small>${type.description}</small>
-                                        </button>
-                                    </ak-forms-modal>
-                                </li>`;
-                            });
-                        }),
-                        html`<ak-spinner></ak-spinner>`,
-                    )}
-                </ul>
-            </ak-dropdown>
+            <ak-stage-wizard createText=${t`Create Stage`}></ak-stage-wizard>
             ${super.renderToolbar()}
         `;
     }

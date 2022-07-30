@@ -1,9 +1,10 @@
+import "@goauthentik/web/elements/EmptyState";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 
 import { SentryIgnoredError } from "./common/errors";
-import "./elements/EmptyState";
 
 export function getCookie(name: string): string {
     let cookieValue = "";
@@ -97,6 +98,10 @@ export function dateTimeLocal(date: Date): string {
     // milliseconds, which the input field doesn't like (on chrome, on firefox its fine)
     // On chrome, setting .valueAsNumber works, but that causes an error on firefox, so go
     // figure.
-    const parts = date.toISOString().split(":");
+    // Additionally, toISOString always returns the date without timezone, which we would like
+    // to include for better usability
+    const tzOffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
+    const localISOTime = new Date(date.getTime() - tzOffset).toISOString().slice(0, -1);
+    const parts = localISOTime.split(":");
     return `${parts[0]}:${parts[1]}`;
 }

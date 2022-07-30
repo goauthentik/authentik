@@ -1,7 +1,7 @@
 """authentik proxy models"""
 import string
 from random import SystemRandom
-from typing import Iterable, Optional, Type, Union
+from typing import Iterable, Optional
 from urllib.parse import urljoin
 
 from django.db import models
@@ -11,14 +11,10 @@ from rest_framework.serializers import Serializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.models import DomainlessURLValidator
 from authentik.outposts.models import OutpostModel
-from authentik.providers.oauth2.constants import (
-    SCOPE_OPENID,
-    SCOPE_OPENID_EMAIL,
-    SCOPE_OPENID_PROFILE,
-)
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
 
 SCOPE_AK_PROXY = "ak_proxy"
+OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
 
 
 def get_cookie_secret():
@@ -27,7 +23,13 @@ def get_cookie_secret():
 
 
 def _get_callback_url(uri: str) -> str:
-    return urljoin(uri, "/akprox/callback")
+    return "\n".join(
+        [
+            urljoin(uri, "outpost.goauthentik.io/callback")
+            + f"\\?{OUTPOST_CALLBACK_SIGNATURE}=true",
+            uri + f"\\?{OUTPOST_CALLBACK_SIGNATURE}=true",
+        ]
+    )
 
 
 class ProxyMode(models.TextChoices):
@@ -110,7 +112,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         return "ak-provider-proxy-form"
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.providers.proxy.api import ProxyProviderSerializer
 
         return ProxyProviderSerializer
@@ -125,11 +127,11 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         self.client_type = ClientTypes.CONFIDENTIAL
         self.signing_key = None
         scopes = ScopeMapping.objects.filter(
-            scope_name__in=[
-                SCOPE_OPENID,
-                SCOPE_OPENID_PROFILE,
-                SCOPE_OPENID_EMAIL,
-                SCOPE_AK_PROXY,
+            managed__in=[
+                "goauthentik.io/providers/oauth2/scope-openid",
+                "goauthentik.io/providers/oauth2/scope-profile",
+                "goauthentik.io/providers/oauth2/scope-email",
+                "goauthentik.io/providers/proxy/scope-proxy",
             ]
         )
         self.property_mappings.add(*list(scopes))
@@ -138,7 +140,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     def __str__(self):
         return f"Proxy Provider {self.name}"
 
-    def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
+    def get_required_objects(self) -> Iterable[models.Model | str]:
         required_models = [self]
         if self.certificate is not None:
             required_models.append(self.certificate)

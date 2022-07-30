@@ -1,3 +1,5 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { AKChart } from "@goauthentik/web/elements/charts/Chart";
 import { ChartData, ChartOptions } from "chart.js";
 
 import { t } from "@lingui/macro";
@@ -5,9 +7,6 @@ import { t } from "@lingui/macro";
 import { customElement } from "lit/decorators.js";
 
 import { CoreApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { AKChart } from "../../../elements/charts/Chart";
 
 interface GroupMetrics {
     count: number;

@@ -33,3 +33,5 @@ You have to select which group the generated notification should be sent to. If 
 
 You also have to select which transports should be used to send the notification.
 A transport with the name "default-email-transport" is created by default. This transport will use the [global email configuration](../installation/docker-compose#email-configuration-optional-but-recommended).
+
+Starting with authentik 2022.6, a new default transport will be created. This is because notifications are no longer created by default, they are now a transport method instead. This allows for better customization of the notification before it is created.

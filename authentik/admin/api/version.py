@@ -1,6 +1,4 @@
 """authentik administration overview"""
-from os import environ
-
 from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
 from packaging.version import parse
@@ -10,7 +8,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from authentik import ENV_GIT_HASH_KEY, __version__
+from authentik import __version__, get_build_hash
 from authentik.admin.tasks import VERSION_CACHE_KEY, update_latest_version
 from authentik.core.api.utils import PassiveSerializer
 
@@ -25,7 +23,7 @@ class VersionSerializer(PassiveSerializer):
 
     def get_build_hash(self, _) -> str:
         """Get build hash, if version is not latest or released"""
-        return environ.get(ENV_GIT_HASH_KEY, "")
+        return get_build_hash()
 
     def get_version_current(self, _) -> str:
         """Get current version"""

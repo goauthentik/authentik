@@ -1,24 +1,21 @@
-import CodeMirror from "codemirror";
-import "codemirror/addon/dialog/dialog";
-import "codemirror/addon/display/autorefresh";
-import "codemirror/addon/hint/show-hint";
-import "codemirror/addon/search/search";
-import "codemirror/addon/search/searchcursor";
-import "codemirror/mode/htmlmixed/htmlmixed.js";
-import "codemirror/mode/javascript/javascript.js";
-import "codemirror/mode/python/python.js";
-import "codemirror/mode/xml/xml.js";
-import "codemirror/mode/yaml/yaml.js";
+import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import { html as htmlLang } from "@codemirror/lang-html";
+import { javascript } from "@codemirror/lang-javascript";
+import { python } from "@codemirror/lang-python";
+import { xml } from "@codemirror/lang-xml";
+import {
+    LanguageSupport,
+    StreamLanguage,
+    defaultHighlightStyle,
+    syntaxHighlighting,
+} from "@codemirror/language";
+import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
+import { Compartment, EditorState, Extension } from "@codemirror/state";
+import { EditorView, keymap, lineNumbers } from "@codemirror/view";
 import YAML from "yaml";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
-
-import CodeMirrorDialogStyle from "codemirror/addon/dialog/dialog.css";
-import CodeMirrorShowHintStyle from "codemirror/addon/hint/show-hint.css";
-import CodeMirrorStyle from "codemirror/lib/codemirror.css";
-import CodeMirrorTheme from "codemirror/theme/monokai.css";
 
 @customElement("ak-codemirror")
 export class CodeMirrorTextarea extends LitElement {
@@ -31,9 +28,14 @@ export class CodeMirrorTextarea extends LitElement {
     @property()
     name?: string;
 
-    editor?: CodeMirror.EditorFromTextArea;
+    editor?: EditorView;
 
     _value?: string;
+
+    theme: Compartment;
+
+    themeLight: Extension;
+    themeDark: Extension;
 
     @property()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
@@ -56,7 +58,9 @@ export class CodeMirrorTextarea extends LitElement {
             }
         }
         if (this.editor) {
-            this.editor.setValue(textValue);
+            this.editor.dispatch({
+                changes: { from: 0, to: this.editor.state.doc.length, insert: textValue },
+            });
         } else {
             this._value = textValue;
         }
@@ -78,47 +82,81 @@ export class CodeMirrorTextarea extends LitElement {
         }
     }
 
+    constructor() {
+        super();
+        this.theme = new Compartment();
+        this.themeLight = EditorView.theme(
+            {
+                "&": {
+                    backgroundColor: "var(--pf-global--BackgroundColor--light-300)",
+                },
+            },
+            { dark: false },
+        );
+        this.themeDark = EditorView.theme(
+            {
+                "&": {
+                    backgroundColor: "var(--ak-dark-background-light)",
+                },
+            },
+            { dark: true },
+        );
+    }
+
     private getInnerValue(): string {
         if (!this.editor) {
             return "";
         }
-        return this.editor.getValue();
+        return this.editor.state.doc.toString();
     }
 
-    static get styles(): CSSResult[] {
-        return [
-            CodeMirrorStyle,
-            CodeMirrorTheme,
-            CodeMirrorDialogStyle,
-            CodeMirrorShowHintStyle,
-            css`
-                .CodeMirror-wrap pre {
-                    word-break: break-word !important;
-                }
-            `,
-        ];
+    getLanguageExtension(): LanguageSupport | undefined {
+        switch (this.mode.toLowerCase()) {
+            case "xml":
+                return xml();
+            case "javascript":
+                return javascript();
+            case "html":
+                return htmlLang();
+            case "python":
+                return python();
+            case "yaml":
+                return new LanguageSupport(StreamLanguage.define(yamlMode.yaml));
+        }
+        return undefined;
     }
 
     firstUpdated(): void {
-        const textarea = this.shadowRoot?.querySelector("textarea");
-        if (!textarea) {
-            return;
-        }
-        this.editor = CodeMirror.fromTextArea(textarea, {
-            mode: this.mode,
-            theme: "monokai",
-            lineNumbers: false, // Line Numbers seem to be broken on firefox?
-            readOnly: this.readOnly,
-            autoRefresh: true,
-            lineWrapping: true,
-            value: this._value,
+        const matcher = window.matchMedia("(prefers-color-scheme: light)");
+        const handler = (ev?: MediaQueryListEvent) => {
+            let theme;
+            if (ev?.matches || matcher.matches) {
+                theme = this.themeLight;
+            } else {
+                theme = this.themeDark;
+            }
+            this.editor?.dispatch({
+                effects: this.theme.reconfigure(theme),
+            });
+        };
+        const extensions = [
+            history(),
+            keymap.of([...defaultKeymap, ...historyKeymap]),
+            syntaxHighlighting(defaultHighlightStyle),
+            this.getLanguageExtension(),
+            lineNumbers(),
+            EditorView.lineWrapping,
+            EditorState.readOnly.of(this.readOnly),
+            EditorState.tabSize.of(2),
+            this.theme.of(this.themeLight),
+        ];
+        this.editor = new EditorView({
+            extensions: extensions.filter((p) => p) as Extension[],
+            root: this.shadowRoot || document,
+            doc: this._value,
         });
-        this.editor.on("blur", () => {
-            this.editor?.save();
-        });
-    }
-
-    render(): TemplateResult {
-        return html`<textarea name=${ifDefined(this.name)}>${ifDefined(this._value)}</textarea>`;
+        this.shadowRoot?.appendChild(this.editor.dom);
+        matcher.addEventListener("change", handler);
+        handler();
     }
 }

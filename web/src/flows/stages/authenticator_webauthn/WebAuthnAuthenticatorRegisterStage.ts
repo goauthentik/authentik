@@ -1,9 +1,12 @@
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -16,8 +19,6 @@ import {
     AuthenticatorWebAuthnChallengeResponseRequest,
 } from "@goauthentik/api";
 
-import { PFSize } from "../../../elements/Spinner";
-import { BaseStage } from "../base";
 import {
     Assertion,
     transformCredentialCreateOptions,
@@ -39,6 +40,8 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     @property()
     registerMessage = "";
 
+    publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
+
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFFormControl, PFForm, PFTitle, PFButton, AKGlobal];
     }
@@ -47,18 +50,11 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         if (!this.challenge) {
             return;
         }
-        // convert certain members of the PublicKeyCredentialCreateOptions into
-        // byte arrays as expected by the spec.
-        const publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
-            this.challenge?.registration as PublicKeyCredentialCreationOptions,
-            this.challenge?.registration.user.id,
-        );
-
         // request the authenticator(s) to create a new credential keypair.
         let credential;
         try {
             credential = (await navigator.credentials.create({
-                publicKey: publicKeyCredentialCreateOptions,
+                publicKey: this.publicKeyCredentialCreateOptions,
             })) as PublicKeyCredential;
             if (!credential) {
                 throw new Error("Credential is empty");
@@ -98,6 +94,12 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     }
 
     firstUpdated(): void {
+        // convert certain members of the PublicKeyCredentialCreateOptions into
+        // byte arrays as expected by the spec.
+        this.publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
+            this.challenge?.registration as PublicKeyCredentialCreationOptions,
+            this.challenge?.registration.user.id,
+        );
         this.registerWrapper();
     }
 

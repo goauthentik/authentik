@@ -1,6 +1,11 @@
 {
     "compilerOptions": {
         "strict": true,
+        "paths": {
+            "@goauthentik/web/*": ["src/*"],
+            "@goauthentik/docs/*": ["../website/docs/*"]
+        },
+        "baseUrl": ".",
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
@@ -19,6 +24,7 @@
             "ES2020",
             "ESNext",
             "DOM",
+            "DOM.Iterable",
             "WebWorker"
         ],
         "plugins": [

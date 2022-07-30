@@ -32,6 +32,7 @@ class BaseEvaluator:
         self._globals = {
             "regex_match": BaseEvaluator.expr_regex_match,
             "regex_replace": BaseEvaluator.expr_regex_replace,
+            "list_flatten": BaseEvaluator.expr_flatten,
             "ak_is_group_member": BaseEvaluator.expr_is_group_member,
             "ak_user_by": BaseEvaluator.expr_user_by,
             "ak_logger": get_logger(),
@@ -39,6 +40,15 @@ class BaseEvaluator:
         }
         self._context = {}
         self._filename = "BaseEvalautor"
+
+    @staticmethod
+    def expr_flatten(value: list[Any] | Any) -> Optional[Any]:
+        """Flatten `value` if its a list"""
+        if isinstance(value, list):
+            if len(value) < 1:
+                return None
+            return value[0]
+        return value
 
     @staticmethod
     def expr_regex_match(value: Any, regex: str) -> bool:

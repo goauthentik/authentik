@@ -5,8 +5,17 @@ from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
 from authentik.core.api.applications import user_app_cache_key
+from authentik.policies.apps import GAUGE_POLICIES_CACHED
+from authentik.root.monitoring import monitoring_set
 
 LOGGER = get_logger()
+
+
+@receiver(monitoring_set)
+# pylint: disable=unused-argument
+def monitoring_set_policies(sender, **kwargs):
+    """set policy gauges"""
+    GAUGE_POLICIES_CACHED.set(len(cache.keys("policy_*") or []))
 
 
 @receiver(post_save)

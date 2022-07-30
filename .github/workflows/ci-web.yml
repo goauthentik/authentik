@@ -3,68 +3,67 @@ name: authentik-ci-web
 on:
   push:
     branches:
-      - master
+      - main
       - next
       - version-*
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   lint-eslint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3.4.1
         with:
           node-version: '16'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
-      - run: |
-          cd web
-          npm install
+      - working-directory: web/
+        run: npm ci
       - name: Generate API
-        run: make gen-web
+        run: make gen-client-web
       - name: Eslint
-        run: |
-          cd web
-          npm run lint
+        working-directory: web/
+        run: npm run lint
   lint-prettier:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3.4.1
         with:
           node-version: '16'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
-      - run: |
-          cd web
-          npm install
+      - working-directory: web/
+        run: npm ci
       - name: Generate API
-        run: make gen-web
+        run: make gen-client-web
       - name: prettier
-        run: |
-          cd web
-          npm run prettier-check
+        working-directory: web/
+        run: npm run prettier-check
   lint-lit-analyse:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3.4.1
         with:
           node-version: '16'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
-      - run: |
-          cd web
-          npm install
-      - name: Generate API
-        run: make gen-web
-      - name: lit-analyse
+      - working-directory: web/
         run: |
-          cd web
-          npm run lit-analyse
+          npm ci
+          # lit-analyse doesn't understand path rewrites, so make it
+          # belive it's an actual module
+          cd node_modules/@goauthentik
+          ln -s ../../src/ web
+      - name: Generate API
+        run: make gen-client-web
+      - name: lit-analyse
+        working-directory: web/
+        run: npm run lit-analyse
   ci-web-mark:
     needs:
       - lint-eslint
@@ -78,18 +77,16 @@ jobs:
       - ci-web-mark
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3.4.1
         with:
           node-version: '16'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
-      - run: |
-          cd web
-          npm install
+      - working-directory: web/
+        run: npm ci
       - name: Generate API
-        run: make gen-web
+        run: make gen-client-web
       - name: build
-        run: |
-          cd web
-          npm run build
+        working-directory: web/
+        run: npm run build

@@ -1,10 +1,21 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/PageHeader";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/charts/ApplicationAuthorizeChart";
+import "@goauthentik/web/elements/events/ObjectChangelog";
+import "@goauthentik/web/pages/applications/ApplicationCheckAccessForm";
+import "@goauthentik/web/pages/applications/ApplicationForm";
+import "@goauthentik/web/pages/policies/BoundPoliciesList";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -15,17 +26,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Application, CoreApi, OutpostsApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/EmptyState";
-import "../../elements/PageHeader";
-import "../../elements/Tabs";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/charts/ApplicationAuthorizeChart";
-import "../../elements/events/ObjectChangelog";
-import "../policies/BoundPoliciesList";
-import "./ApplicationCheckAccessForm";
-import "./ApplicationForm";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends LitElement {

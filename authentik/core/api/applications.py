@@ -1,4 +1,6 @@
 """Application API Views"""
+from typing import Optional
+
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.http.response import HttpResponseBadRequest
@@ -7,7 +9,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import ReadOnlyField
+from rest_framework.fields import ReadOnlyField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -15,6 +17,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 from structlog.stdlib import get_logger
+from structlog.testing import capture_logs
 
 from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.decorators import permission_required
@@ -23,6 +26,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import FilePathSerializer, FileUploadSerializer
 from authentik.core.models import Application, User
 from authentik.events.models import EventAction
+from authentik.events.utils import sanitize_dict
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
@@ -39,10 +43,15 @@ def user_app_cache_key(user_pk: str) -> str:
 class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
-    launch_url = ReadOnlyField(source="get_launch_url")
-    provider_obj = ProviderSerializer(source="get_provider", required=False)
+    launch_url = SerializerMethodField()
+    provider_obj = ProviderSerializer(source="get_provider", required=False, read_only=True)
 
     meta_icon = ReadOnlyField(source="get_meta_icon")
+
+    def get_launch_url(self, app: Application) -> Optional[str]:
+        """Allow formatting of launch URL"""
+        user = self.context["request"].user
+        return app.get_launch_url(user)
 
     class Meta:
 
@@ -54,11 +63,13 @@ class ApplicationSerializer(ModelSerializer):
             "provider",
             "provider_obj",
             "launch_url",
+            "open_in_new_tab",
             "meta_launch_url",
             "meta_icon",
             "meta_description",
             "meta_publisher",
             "policy_engine_mode",
+            "group",
         ]
         extra_kwargs = {
             "meta_icon": {"read_only": True},
@@ -76,6 +87,15 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         "meta_launch_url",
         "meta_description",
         "meta_publisher",
+        "group",
+    ]
+    filterset_fields = [
+        "name",
+        "slug",
+        "meta_launch_url",
+        "meta_description",
+        "meta_publisher",
+        "group",
     ]
     lookup_field = "slug"
     ordering = ["name"]
@@ -125,12 +145,19 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 return HttpResponseBadRequest("for_user must be numerical")
         engine = PolicyEngine(application, for_user, request)
         engine.use_cache = False
-        engine.build()
-        result = engine.result
+        with capture_logs() as logs:
+            engine.build()
+            result = engine.result
         response = PolicyTestResultSerializer(PolicyResult(False))
         if result.passing:
             response = PolicyTestResultSerializer(PolicyResult(True))
         if request.user.is_superuser:
+            log_messages = []
+            for log in logs:
+                if log.get("process", "") == "PolicyProcess":
+                    continue
+                log_messages.append(sanitize_dict(log))
+            result.log_messages = log_messages
             response = PolicyTestResultSerializer(result)
         return Response(response.data)
 

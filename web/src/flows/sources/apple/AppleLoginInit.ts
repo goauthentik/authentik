@@ -1,9 +1,12 @@
+import "@goauthentik/web/elements/EmptyState";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -12,9 +15,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AppleChallengeResponseRequest, AppleLoginChallenge } from "@goauthentik/api";
-
-import "../../../elements/EmptyState";
-import { BaseStage } from "../../stages/base";
 
 @customElement("ak-flow-sources-oauth-apple")
 export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChallengeResponseRequest> {

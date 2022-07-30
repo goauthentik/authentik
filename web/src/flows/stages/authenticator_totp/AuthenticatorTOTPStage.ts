@@ -1,12 +1,18 @@
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/forms/FormElement";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import "@goauthentik/web/flows/FormStatic";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
 import "webcomponent-qr-code";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -19,20 +25,28 @@ import {
     AuthenticatorTOTPChallengeResponseRequest,
 } from "@goauthentik/api";
 
-import "../../../elements/EmptyState";
-import "../../../elements/forms/FormElement";
-import { MessageLevel } from "../../../elements/messages/Message";
-import { showMessage } from "../../../elements/messages/MessageContainer";
-import "../../FormStatic";
-import { BaseStage } from "../base";
-
 @customElement("ak-stage-authenticator-totp")
 export class AuthenticatorTOTPStage extends BaseStage<
     AuthenticatorTOTPChallenge,
     AuthenticatorTOTPChallengeResponseRequest
 > {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
+        return [
+            PFBase,
+            PFLogin,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            PFButton,
+            AKGlobal,
+            css`
+                .qr-container {
+                    display: flex;
+                    flex-direction: column;
+                    place-items: center;
+                }
+            `,
+        ];
     }
 
     render(): TemplateResult {
@@ -62,27 +76,31 @@ export class AuthenticatorTOTPStage extends BaseStage<
                     </ak-form-static>
                     <input type="hidden" name="otp_uri" value=${this.challenge.configUrl} />
                     <ak-form-element>
-                        <!-- @ts-ignore -->
-                        <qr-code data="${this.challenge.configUrl}"></qr-code>
-                        <button
-                            type="button"
-                            class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
-                            @click=${(e: Event) => {
-                                e.preventDefault();
-                                if (!this.challenge?.configUrl) return;
-                                navigator.clipboard
-                                    .writeText(this.challenge?.configUrl)
-                                    .then(() => {
-                                        showMessage({
-                                            level: MessageLevel.success,
-                                            message: t`Successfully copied TOTP Config.`,
+                        <div class="qr-container">
+                            <!-- @ts-ignore -->
+                            <qr-code data="${this.challenge.configUrl}"></qr-code>
+                            <button
+                                type="button"
+                                class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
+                                @click=${(e: Event) => {
+                                    e.preventDefault();
+                                    if (!this.challenge?.configUrl) return;
+                                    navigator.clipboard
+                                        .writeText(this.challenge?.configUrl)
+                                        .then(() => {
+                                            showMessage({
+                                                level: MessageLevel.success,
+                                                message: t`Successfully copied TOTP Config.`,
+                                            });
                                         });
-                                    });
-                            }}
-                        >
-                            <span class="pf-c-button__progress"><i class="fas fa-copy"></i></span>
-                            ${t`Copy`}
-                        </button>
+                                }}
+                            >
+                                <span class="pf-c-button__progress"
+                                    ><i class="fas fa-copy"></i
+                                ></span>
+                                ${t`Copy`}
+                            </button>
+                        </div>
                     </ak-form-element>
                     <ak-form-element
                         label="${t`Code`}"

@@ -1,12 +1,13 @@
+import { ROUTE_SEPARATOR } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/router/Router404";
+
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 
-import { ROUTE_SEPARATOR } from "../../constants";
 import { Route } from "./Route";
 import { RouteMatch } from "./RouteMatch";
-import "./Router404";
 
 // Poliyfill for hashchange.newURL,
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange
@@ -59,7 +60,6 @@ export class RouterOutlet extends LitElement {
             AKGlobal,
             css`
                 :host {
-                    height: 100vh;
                     background-color: transparent !important;
                 }
                 *:first-child {
@@ -104,12 +104,11 @@ export class RouterOutlet extends LitElement {
         });
         if (!matchedRoute) {
             console.debug(`authentik/router: route "${activeUrl}" not defined`);
-            const route = new Route(
-                RegExp(""),
-                html`<div class="pf-c-page__main">
+            const route = new Route(RegExp(""), async () => {
+                return html`<div class="pf-c-page__main">
                     <ak-router-404 url=${activeUrl}></ak-router-404>
-                </div>`,
-            );
+                </div>`;
+            });
             matchedRoute = new RouteMatch(route);
             matchedRoute.arguments = route.url.exec(activeUrl)?.groups || {};
             matchedRoute.fullUrl = activeUrl;

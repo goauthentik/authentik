@@ -1,5 +1,4 @@
 """Authenticator Validation Stage"""
-from typing import Type
 
 from django.contrib.postgres.fields.array import ArrayField
 from django.db import models
@@ -8,13 +7,14 @@ from django.views import View
 from rest_framework.serializers import BaseSerializer
 
 from authentik.flows.models import NotConfiguredAction, Stage
+from authentik.lib.utils.time import timedelta_string_validator
 
 
 class DeviceClasses(models.TextChoices):
     """Device classes this stage can validate"""
 
     # device class must match Device's class name so StaticDevice -> static
-    STATIC = "static"
+    STATIC = "static", _("Static")
     TOTP = "totp", _("TOTP")
     WEBAUTHN = "webauthn", _("WebAuthn")
     DUO = "duo", _("Duo")
@@ -39,16 +39,14 @@ class AuthenticatorValidateStage(Stage):
         choices=NotConfiguredAction.choices, default=NotConfiguredAction.SKIP
     )
 
-    configuration_stage = models.ForeignKey(
+    configuration_stages = models.ManyToManyField(
         Stage,
-        null=True,
         blank=True,
         default=None,
-        on_delete=models.SET_DEFAULT,
         related_name="+",
         help_text=_(
             (
-                "Stage used to configure Authenticator when user doesn't have any compatible "
+                "Stages used to configure Authenticator when user doesn't have any compatible "
                 "devices. After this configuration Stage passes, the user is not prompted again."
             )
         ),
@@ -60,6 +58,17 @@ class AuthenticatorValidateStage(Stage):
         default=default_device_classes,
     )
 
+    last_auth_threshold = models.TextField(
+        default="seconds=0",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            (
+                "If any of the user's device has been used within this threshold, this "
+                "stage will be skipped"
+            )
+        ),
+    )
+
     @property
     def serializer(self) -> BaseSerializer:
         from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
@@ -67,7 +76,7 @@ class AuthenticatorValidateStage(Stage):
         return AuthenticatorValidateStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.authenticator_validate.stage import AuthenticatorValidateStageView
 
         return AuthenticatorValidateStageView

@@ -1,3 +1,12 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/CodeMirror";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { DefaultTenant } from "@goauthentik/web/elements/sidebar/SidebarBrand";
+import { first } from "@goauthentik/web/utils";
+import YAML from "yaml";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -12,13 +21,6 @@ import {
     FlowsInstancesListDesignationEnum,
     Tenant,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/forms/FormGroup";
-import "../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../elements/forms/ModelForm";
-import { DefaultTenant } from "../../elements/sidebar/SidebarBrand";
-import { first } from "../../utils";
 
 @customElement("ak-tenant-form")
 export class TenantForm extends ModelForm<Tenant, string> {
@@ -275,6 +277,43 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             ${t`If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.`}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`User settings flow`}
+                        name="flowUserSettings"
+                    >
+                        <select class="pf-c-form-control">
+                            <option
+                                value=""
+                                ?selected=${this.instance?.flowUserSettings === undefined}
+                            >
+                                ---------
+                            </option>
+                            ${until(
+                                new FlowsApi(DEFAULT_CONFIG)
+                                    .flowsInstancesList({
+                                        ordering: "slug",
+                                        designation:
+                                            FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    })
+                                    .then((flows) => {
+                                        return flows.results.map((flow) => {
+                                            const selected =
+                                                this.instance?.flowUserSettings === flow.pk;
+                                            return html`<option
+                                                value=${flow.pk}
+                                                ?selected=${selected}
+                                            >
+                                                ${flow.name} (${flow.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`If set, users are able to configure details of their profile.`}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>
@@ -302,6 +341,16 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${t`Format: "weeks=3;days=2;hours=3,seconds=2".`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Attributes`} name="attributes">
+                        <ak-codemirror
+                            mode="yaml"
+                            value="${YAML.stringify(first(this.instance?.attributes, {}))}"
+                        >
+                        </ak-codemirror>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Web Certificate`} name="webCertificate">

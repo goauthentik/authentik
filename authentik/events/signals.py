@@ -2,15 +2,16 @@
 from threading import Thread
 from typing import Any, Optional
 
-from django.contrib.auth.signals import user_logged_in, user_logged_out, user_login_failed
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
 
 from authentik.core.models import User
-from authentik.core.signals import password_changed
+from authentik.core.signals import login_failed, password_changed
 from authentik.events.models import Event, EventAction
 from authentik.events.tasks import event_notification_handler, gdpr_cleanup
+from authentik.flows.models import Stage
 from authentik.flows.planner import PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation
@@ -77,11 +78,18 @@ def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any]
     thread.run()
 
 
-@receiver(user_login_failed)
+@receiver(login_failed)
 # pylint: disable=unused-argument
-def on_user_login_failed(sender, credentials: dict[str, str], request: HttpRequest, **_):
-    """Failed Login"""
-    thread = EventNewThread(EventAction.LOGIN_FAILED, request, **credentials)
+def on_login_failed(
+    signal,
+    sender,
+    credentials: dict[str, str],
+    request: HttpRequest,
+    stage: Optional[Stage] = None,
+    **kwargs,
+):
+    """Failed Login, authentik custom event"""
+    thread = EventNewThread(EventAction.LOGIN_FAILED, request, **credentials, stage=stage, **kwargs)
     thread.run()
 
 

@@ -1,3 +1,17 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/outposts/OutpostDeploymentModal";
+import "@goauthentik/web/pages/outposts/OutpostForm";
+import "@goauthentik/web/pages/outposts/OutpostHealth";
+import "@goauthentik/web/pages/outposts/OutpostHealthSimple";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult } from "lit";
@@ -9,20 +23,6 @@ import { until } from "lit/directives/until.js";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { Outpost, OutpostTypeEnum, OutpostsApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import { PFSize } from "../../elements/Spinner";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import "./OutpostDeploymentModal";
-import "./OutpostForm";
-import "./OutpostHealth";
-import "./OutpostHealthSimple";
 
 export function TypeToLabel(type?: OutpostTypeEnum): string {
     if (!type) return "";
@@ -126,7 +126,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
 
     renderExpanded(item: Outpost): TemplateResult {
-        return html`<td role="cell" colspan="3">
+        return html`<td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <h3>
                     ${t`Detailed health (one instance per column, data is cached so may be out of data)`}
@@ -178,7 +178,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -186,7 +186,6 @@ export class OutpostListPage extends TablePage<Outpost> {
                 <ak-outpost-form slot="form"> </ak-outpost-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 }

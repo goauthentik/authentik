@@ -11,7 +11,7 @@ class DiscordOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source):  # pragma: no cover
         return {
-            "scope": "email identify",
+            "scope": ["email", "identify"],
             "prompt": "none",
         }
 

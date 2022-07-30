@@ -1,10 +1,14 @@
 """Test Users API"""
+from json import loads
+
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import USER_ATTRIBUTE_CHANGE_EMAIL, USER_ATTRIBUTE_CHANGE_USERNAME, User
+from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
+from authentik.lib.config import CONFIG
+from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.email.models import EmailStage
 from authentik.tenants.models import Tenant
 
@@ -15,34 +19,6 @@ class TestUsersAPI(APITestCase):
     def setUp(self) -> None:
         self.admin = create_test_admin_user()
         self.user = User.objects.create(username="test-user")
-
-    def test_update_self(self):
-        """Test update_self"""
-        self.client.force_login(self.admin)
-        response = self.client.put(
-            reverse("authentik_api:user-update-self"), data={"username": "foo", "name": "foo"}
-        )
-        self.assertEqual(response.status_code, 200)
-
-    def test_update_self_username_denied(self):
-        """Test update_self"""
-        self.admin.attributes[USER_ATTRIBUTE_CHANGE_USERNAME] = False
-        self.admin.save()
-        self.client.force_login(self.admin)
-        response = self.client.put(
-            reverse("authentik_api:user-update-self"), data={"username": "foo", "name": "foo"}
-        )
-        self.assertEqual(response.status_code, 400)
-
-    def test_update_self_email_denied(self):
-        """Test update_self"""
-        self.admin.attributes[USER_ATTRIBUTE_CHANGE_EMAIL] = False
-        self.admin.save()
-        self.client.force_login(self.admin)
-        response = self.client.put(
-            reverse("authentik_api:user-update-self"), data={"email": "foo", "name": "foo"}
-        )
-        self.assertEqual(response.status_code, 400)
 
     def test_metrics(self):
         """Test user's metrics"""
@@ -67,6 +43,18 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
         )
         self.assertEqual(response.status_code, 404)
+
+    def test_set_password(self):
+        """Test Direct password set"""
+        self.client.force_login(self.admin)
+        new_pw = generate_key()
+        response = self.client.post(
+            reverse("authentik_api:user-set-password", kwargs={"pk": self.admin.pk}),
+            data={"password": new_pw},
+        )
+        self.assertEqual(response.status_code, 204)
+        self.admin.refresh_from_db()
+        self.assertTrue(self.admin.check_password(new_pw))
 
     def test_recovery(self):
         """Test user recovery link (no recovery flow set)"""
@@ -164,3 +152,109 @@ class TestUsersAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_paths(self):
+        """Test path"""
+        self.client.force_login(self.admin)
+        response = self.client.get(
+            reverse("authentik_api:user-paths"),
+        )
+        print(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content.decode(), {"paths": ["users"]})
+
+    def test_path_valid(self):
+        """Test path"""
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"name": generate_id(), "username": generate_id(), "groups": [], "path": "foo"},
+        )
+        self.assertEqual(response.status_code, 201)
+
+    def test_path_invalid(self):
+        """Test path (invalid)"""
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"name": generate_id(), "username": generate_id(), "groups": [], "path": "/foo"},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content.decode(), {"path": ["No leading or trailing slashes allowed."]}
+        )
+
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"name": generate_id(), "username": generate_id(), "groups": [], "path": ""},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content.decode(), {"path": ["This field may not be blank."]})
+
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"name": generate_id(), "username": generate_id(), "groups": [], "path": "foo/"},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content.decode(), {"path": ["No leading or trailing slashes allowed."]}
+        )
+
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={
+                "name": generate_id(),
+                "username": generate_id(),
+                "groups": [],
+                "path": "fos//o",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content.decode(), {"path": ["No empty segments in user path allowed."]}
+        )
+
+    def test_me(self):
+        """Test user's me endpoint"""
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+
+    @CONFIG.patch("avatars", "none")
+    def test_avatars_none(self):
+        """Test avatars none"""
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["user"]["avatar"], "/static/dist/assets/images/user_default.png")
+
+    @CONFIG.patch("avatars", "gravatar")
+    def test_avatars_gravatar(self):
+        """Test avatars gravatar"""
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertIn("gravatar", body["user"]["avatar"])
+
+    @CONFIG.patch("avatars", "foo-%(username)s")
+    def test_avatars_custom(self):
+        """Test avatars custom"""
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["user"]["avatar"], f"foo-{self.admin.username}")
+
+    @CONFIG.patch("avatars", "attributes.foo.avatar")
+    def test_avatars_attributes(self):
+        """Test avatars attributes"""
+        self.admin.attributes = {"foo": {"avatar": "bar"}}
+        self.admin.save()
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["user"]["avatar"], "bar")

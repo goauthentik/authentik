@@ -1,4 +1,4 @@
-import { CSSResult, LitElement, css } from "lit";
+import { CSSResult, LitElement } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -10,18 +10,7 @@ import { ErrorDetail } from "@goauthentik/api";
 @customElement("ak-form-element")
 export class FormElement extends LitElement {
     static get styles(): CSSResult[] {
-        return [
-            PFForm,
-            PFFormControl,
-            css`
-                slot {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    justify-content: space-around;
-                }
-            `,
-        ];
+        return [PFForm, PFFormControl];
     }
 
     @property()

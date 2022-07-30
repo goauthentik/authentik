@@ -3,23 +3,24 @@ package application
 import (
 	"fmt"
 	"math"
+	"net/url"
 	"os"
 	"strconv"
 
 	"github.com/gorilla/sessions"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"gopkg.in/boj/redistore.v1"
 )
 
-func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
+func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) sessions.Store {
 	var store sessions.Store
-	if config.G.Redis.Host != "" {
-		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.G.Redis.Host, config.G.Redis.Port), config.G.Redis.Password, strconv.Itoa(config.G.Redis.OutpostSessionDB), []byte(*p.CookieSecret))
+	if config.Get().Redis.Host != "" {
+		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port), config.Get().Redis.Password, strconv.Itoa(config.Get().Redis.OutpostSessionDB), []byte(*p.CookieSecret))
 		if err != nil {
 			panic(err)
 		}
-		rs.SetMaxLength(math.MaxInt64)
+		rs.SetMaxLength(math.MaxInt)
 		if p.TokenValidity.IsSet() {
 			t := p.TokenValidity.Get()
 			// Add one to the validity to ensure we don't have a session with indefinite length
@@ -28,7 +29,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
 			rs.SetMaxAge(0)
 		}
 		rs.Options.Domain = *p.CookieDomain
-		a.log.Info("using redis session backend")
+		a.log.Trace("using redis session backend")
 		store = rs
 	} else {
 		dir := os.TempDir()
@@ -39,7 +40,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
 		// when using OpenID Connect , since this can contain a large amount of extra information in the id_token
 
 		// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
-		cs.MaxLength(math.MaxInt64)
+		cs.MaxLength(math.MaxInt)
 		if p.TokenValidity.IsSet() {
 			t := p.TokenValidity.Get()
 			// Add one to the validity to ensure we don't have a session with indefinite length
@@ -48,7 +49,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig) sessions.Store {
 			cs.MaxAge(0)
 		}
 		cs.Options.Domain = *p.CookieDomain
-		a.log.WithField("dir", dir).Info("using filesystem session backend")
+		a.log.WithField("dir", dir).Trace("using filesystem session backend")
 		store = cs
 	}
 	return store

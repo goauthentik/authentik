@@ -10,7 +10,7 @@ from lxml.etree import Element  # nosec
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
 from authentik.providers.saml.utils.time import get_time_string
-from authentik.sources.saml.models import SAMLSource
+from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
@@ -19,7 +19,7 @@ from authentik.sources.saml.processors.constants import (
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
 
-SESSION_REQUEST_ID = "authentik_source_saml_request_id"
+SESSION_KEY_REQUEST_ID = "authentik/sources/saml/request_id"
 
 
 class RequestProcessor:
@@ -38,7 +38,7 @@ class RequestProcessor:
         self.http_request = request
         self.relay_state = relay_state
         self.request_id = get_random_id()
-        self.http_request.session[SESSION_REQUEST_ID] = self.request_id
+        self.http_request.session[SESSION_KEY_REQUEST_ID] = self.request_id
         self.issue_instant = get_time_string()
 
     def get_issuer(self) -> Element:
@@ -62,7 +62,7 @@ class RequestProcessor:
         auth_n_request.attrib["Destination"] = self.source.sso_url
         auth_n_request.attrib["ID"] = self.request_id
         auth_n_request.attrib["IssueInstant"] = self.issue_instant
-        auth_n_request.attrib["ProtocolBinding"] = self.source.binding_type
+        auth_n_request.attrib["ProtocolBinding"] = SAMLBindingTypes(self.source.binding_type).uri
         auth_n_request.attrib["Version"] = "2.0"
         # Create issuer object
         auth_n_request.append(self.get_issuer())

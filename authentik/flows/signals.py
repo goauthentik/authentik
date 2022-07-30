@@ -4,6 +4,9 @@ from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
+from authentik.flows.apps import GAUGE_FLOWS_CACHED
+from authentik.root.monitoring import monitoring_set
+
 LOGGER = get_logger()
 
 
@@ -12,6 +15,13 @@ def delete_cache_prefix(prefix: str) -> int:
     keys = cache.keys(prefix)
     cache.delete_many(keys)
     return len(keys)
+
+
+@receiver(monitoring_set)
+# pylint: disable=unused-argument
+def monitoring_set_flows(sender, **kwargs):
+    """set flow gauges"""
+    GAUGE_FLOWS_CACHED.set(len(cache.keys("flow_*") or []))
 
 
 @receiver(post_save)

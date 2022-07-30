@@ -17,6 +17,7 @@ AUTHENTIK_SOURCES_OAUTH_TYPES = [
     "authentik.sources.oauth.types.okta",
     "authentik.sources.oauth.types.reddit",
     "authentik.sources.oauth.types.twitter",
+    "authentik.sources.oauth.types.mailcow",
 ]
 
 
@@ -33,6 +34,5 @@ class AuthentikSourceOAuthConfig(AppConfig):
         for source_type in AUTHENTIK_SOURCES_OAUTH_TYPES:
             try:
                 import_module(source_type)
-                LOGGER.debug("Loaded OAuth Source Type", type=source_type)
             except ImportError as exc:
-                LOGGER.debug(str(exc))
+                LOGGER.warning("Failed to load OAuth Source", exc=exc)

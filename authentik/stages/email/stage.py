@@ -10,7 +10,6 @@ from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
-from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.models import FlowToken
@@ -21,8 +20,8 @@ from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
-LOGGER = get_logger()
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
+PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
 
 
 class EmailChallenge(Challenge):
@@ -83,13 +82,16 @@ class EmailStageView(ChallengeStageView):
         """Helper function that sends the actual email. Implies that you've
         already checked that there is a pending user."""
         pending_user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        email = self.executor.plan.context.get(PLAN_CONTEXT_EMAIL_OVERRIDE, None)
+        if not email:
+            email = pending_user.email
         current_stage: EmailStage = self.executor.current_stage
         token = self.get_token()
         # Send mail to user
         message = TemplateEmailMessage(
             subject=_(current_stage.subject),
             template_name=current_stage.template,
-            to=[pending_user.email],
+            to=[email],
             template_context={
                 "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
                 "user": pending_user,
@@ -109,7 +111,7 @@ class EmailStageView(ChallengeStageView):
                 self.executor.plan.context[PLAN_CONTEXT_PENDING_USER].save()
             return self.executor.stage_ok()
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
-            LOGGER.debug("No pending user")
+            self.logger.debug("No pending user")
             messages.error(self.request, _("No pending user."))
             return self.executor.stage_invalid()
         # Check if we've already sent the initial e-mail

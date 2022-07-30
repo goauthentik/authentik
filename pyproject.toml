@@ -14,7 +14,7 @@ pythonPlatform = "Linux"
 
 [tool.black]
 line-length = 100
-target-version = ['py39']
+target-version = ['py310']
 exclude = 'node_modules'
 
 [tool.isort]
@@ -55,13 +55,11 @@ show_missing = true
 [tool.pylint.master]
 disable = [
   "arguments-differ",
-  "no-self-use",
   "fixme",
   "locally-disabled",
   "too-many-ancestors",
   "too-few-public-methods",
   "import-outside-toplevel",
-  "bad-continuation",
   "signature-differs",
   "similarities",
   "cyclic-import",
@@ -92,12 +90,11 @@ addopts = "-p no:celery --junitxml=unittest.xml"
 
 [tool.poetry]
 name = "authentik"
-version = "2021.12.4"
+version = "2022.7.3"
 description = ""
-authors = ["Jens Langhammer <jens.langhammer@beryju.org>"]
+authors = ["authentik Team <hello@goauthentik.io>"]
 
 [tool.poetry.dependencies]
-boto3 = "*"
 celery = "*"
 channels = "*"
 channels-redis = "*"
@@ -107,21 +104,18 @@ dacite = "*"
 deepmerge = "*"
 defusedxml = "*"
 django = "*"
-django-dbbackup = { git = 'https://github.com/django-dbbackup/django-dbbackup.git', rev = '9d1909c30a3271c8c9c8450add30d6e0b996e145' }
 django-filter = "*"
 django-guardian = "*"
 django-model-utils = "*"
 django-otp = "*"
 django-prometheus = "*"
 django-redis = "*"
-django-storages = "*"
 djangorestframework = "*"
 djangorestframework-guardian = "*"
 docker = "*"
 drf-spectacular = "*"
 duo-client = "*"
 facebook-sdk = "*"
-flower = "*"
 geoip2 = "*"
 gunicorn = "*"
 kubernetes = "*"
@@ -135,7 +129,7 @@ pyjwt = "*"
 python = "^3.10"
 pyyaml = "*"
 requests-oauthlib = "*"
-sentry-sdk = { git = 'https://github.com/beryju/sentry-python.git', rev = '379aee28b15d3b87b381317746c4efd24b3d7bc3' }
+sentry-sdk = "*"
 service_identity = "*"
 structlog = "*"
 swagger-spec-validator = "*"
@@ -146,6 +140,8 @@ uvicorn = {extras = ["standard"],version = "*"}
 webauthn = "*"
 wsproto = "*"
 xmlsec = "*"
+twilio = "*"
+dumb-init = "*"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"
@@ -161,7 +157,11 @@ pytest-django = "*"
 pytest-randomly = "*"
 requests-mock = "*"
 selenium = "*"
+django-silk = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+ak = "lifecycle.ak:main"

@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 )
 
 type CryptoStore struct {

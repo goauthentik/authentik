@@ -1,10 +1,12 @@
+import { convertToSlug } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -45,8 +47,11 @@ export class HorizontalFormElement extends LitElement {
     @property({ type: Boolean })
     writeOnlyActivated = false;
 
-    @property()
-    errorMessage = "";
+    @property({ attribute: false })
+    errorMessages: string[] = [];
+
+    @property({ type: Boolean })
+    slugMode = false;
 
     _invalid = false;
 
@@ -70,6 +75,13 @@ export class HorizontalFormElement extends LitElement {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
         });
+        if (this.name === "slug" || this.slugMode) {
+            this.querySelectorAll<HTMLInputElement>("input[type='text']").forEach((input) => {
+                input.addEventListener("keyup", () => {
+                    input.value = convertToSlug(input.value);
+                });
+            });
+        }
         this.querySelectorAll("*").forEach((input) => {
             switch (input.tagName.toLowerCase()) {
                 case "input":
@@ -77,6 +89,7 @@ export class HorizontalFormElement extends LitElement {
                 case "select":
                 case "ak-codemirror":
                 case "ak-chip-group":
+                case "ak-search-select":
                     (input as HTMLInputElement).name = this.name;
                     break;
                 default:
@@ -123,11 +136,11 @@ export class HorizontalFormElement extends LitElement {
                               ${t`Click to change value`}
                           </p>`
                         : html``}
-                    ${this.invalid
-                        ? html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
-                              ${this.errorMessage}
-                          </p>`
-                        : html``}
+                    ${this.errorMessages.map((message) => {
+                        return html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
+                            ${message}
+                        </p>`;
+                    })}
                 </div>
             </div>
         </div>`;

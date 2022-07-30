@@ -1,36 +1,36 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { me } from "@goauthentik/web/api/Users";
+import { WebsocketClient } from "@goauthentik/web/common/ws";
+import {
+    EVENT_API_DRAWER_TOGGLE,
+    EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_SIDEBAR_TOGGLE,
+    VERSION,
+} from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/messages/MessageContainer";
+import "@goauthentik/web/elements/messages/MessageContainer";
+import "@goauthentik/web/elements/notifications/NotificationDrawer";
+import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/web/elements/router/Route";
+import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import "@goauthentik/web/elements/router/RouterOutlet";
+import "@goauthentik/web/elements/sidebar/Sidebar";
+import "@goauthentik/web/elements/sidebar/SidebarItem";
+import "@goauthentik/web/interfaces/locale";
+import { ROUTES } from "@goauthentik/web/routesAdmin";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AdminApi, Version } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../api/Config";
-import { me } from "../api/Users";
-import { WebsocketClient } from "../common/ws";
-import {
-    EVENT_API_DRAWER_TOGGLE,
-    EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_SIDEBAR_TOGGLE,
-    VERSION,
-} from "../constants";
-import "../elements/messages/MessageContainer";
-import "../elements/messages/MessageContainer";
-import "../elements/notifications/NotificationDrawer";
-import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "../elements/router/Route";
-import { getURLParam, updateURLParams } from "../elements/router/RouteMatch";
-import "../elements/router/RouterOutlet";
-import "../elements/sidebar/Sidebar";
-import "../elements/sidebar/SidebarItem";
-import { ROUTES } from "../routesAdmin";
-import "./locale";
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends LitElement {
@@ -100,6 +100,11 @@ export class AdminInterface extends LitElement {
             });
         });
         this.version = new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
+        me().then((u) => {
+            if (!u.user.isSuperuser && u.user.pk > 0) {
+                window.location.assign("/if/user");
+            }
+        });
     }
 
     render(): TemplateResult {
@@ -150,11 +155,6 @@ export class AdminInterface extends LitElement {
     }
 
     renderSidebarItems(): TemplateResult {
-        me().then((u) => {
-            if (!u.user.isSuperuser) {
-                window.location.assign("/if/user");
-            }
-        });
         return html`
             ${until(
                 this.version.then((version) => {
@@ -242,18 +242,15 @@ export class AdminInterface extends LitElement {
                 <ak-sidebar-item path="/policy/policies">
                     <span slot="label">${t`Policies`}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/policy/reputation/ip">
-                    <span slot="label">${t`Reputation policy - IPs`}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/policy/reputation/user">
-                    <span slot="label">${t`Reputation policy - Users`}</span>
+                <ak-sidebar-item path="/policy/reputation">
+                    <span slot="label">${t`Reputation scores`}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/core/property-mappings">
                     <span slot="label">${t`Property Mappings`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
-                <span slot="label">${t`Flows`}</span>
+                <span slot="label">${t`Flows & Stages`}</span>
                 <ak-sidebar-item
                     path="/flow/flows"
                     .activeWhen=${[`^/flow/flows/(?<slug>${SLUG_REGEX})$`]}
@@ -270,7 +267,11 @@ export class AdminInterface extends LitElement {
             <ak-sidebar-item>
                 <span slot="label">${t`Directory`}</span>
                 <ak-sidebar-item
-                    path="/identity/users"
+                    path=${`/identity/users;${encodeURIComponent(
+                        JSON.stringify({
+                            path: "users",
+                        }),
+                    )}`}
                     .activeWhen=${[`^/identity/users/(?<id>${ID_REGEX})$`]}
                 >
                     <span slot="label">${t`Users`}</span>

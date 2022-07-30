@@ -1,14 +1,14 @@
+import { ROUTE_SEPARATOR } from "@goauthentik/web/constants";
+
 import { CSSResult, LitElement, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { ROUTE_SEPARATOR } from "../../constants";
 
 @customElement("ak-sidebar-item")
 export class SidebarItem extends LitElement {
@@ -123,7 +123,8 @@ export class SidebarItem extends LitElement {
             return false;
         }
         if (this.path) {
-            if (new RegExp(`^${this.path}$`).exec(path)) {
+            const ourPath = this.path.split(";")[0];
+            if (new RegExp(`^${ourPath}$`).exec(path)) {
                 return true;
             }
         }

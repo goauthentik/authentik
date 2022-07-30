@@ -1,32 +1,31 @@
+import { me } from "@goauthentik/web/api/Users";
+import "@goauthentik/web/elements/PageHeader";
+import "@goauthentik/web/elements/cards/AggregatePromiseCard";
+import "@goauthentik/web/elements/charts/AdminLoginsChart";
+import { paramURL } from "@goauthentik/web/elements/router/RouterOutlet";
+import "@goauthentik/web/pages/admin-overview/TopApplicationsTable";
+import "@goauthentik/web/pages/admin-overview/cards/AdminStatusCard";
+import "@goauthentik/web/pages/admin-overview/cards/SystemStatusCard";
+import "@goauthentik/web/pages/admin-overview/cards/VersionStatusCard";
+import "@goauthentik/web/pages/admin-overview/cards/WorkerStatusCard";
+import "@goauthentik/web/pages/admin-overview/charts/FlowStatusChart";
+import "@goauthentik/web/pages/admin-overview/charts/GroupCountStatusChart";
+import "@goauthentik/web/pages/admin-overview/charts/LDAPSyncStatusChart";
+import "@goauthentik/web/pages/admin-overview/charts/OutpostStatusChart";
+import "@goauthentik/web/pages/admin-overview/charts/PolicyStatusChart";
+import "@goauthentik/web/pages/admin-overview/charts/UserCountStatusChart";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
-import { me } from "../../api/Users";
-import "../../elements/PageHeader";
-import "../../elements/cards/AggregatePromiseCard";
-import "../../elements/charts/AdminLoginsChart";
-import { paramURL } from "../../elements/router/RouterOutlet";
-import "./TopApplicationsTable";
-import "./cards/AdminStatusCard";
-import "./cards/BackupStatusCard";
-import "./cards/SystemStatusCard";
-import "./cards/VersionStatusCard";
-import "./cards/WorkerStatusCard";
-import "./charts/FlowStatusChart";
-import "./charts/GroupCountStatusChart";
-import "./charts/LDAPSyncStatusChart";
-import "./charts/OutpostStatusChart";
-import "./charts/PolicyStatusChart";
-import "./charts/UserCountStatusChart";
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends LitElement {
@@ -110,7 +109,7 @@ export class AdminOverviewPage extends LitElement {
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container"
                     >
                         <ak-aggregate-card
-                            icon="pf-icon pf-icon-server"
+                            icon="pf-icon pf-icon-process-automation"
                             header=${t`Flows`}
                             headerLink="#/flow/flows"
                         >
@@ -121,7 +120,7 @@ export class AdminOverviewPage extends LitElement {
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container"
                     >
                         <ak-aggregate-card
-                            icon="fa fa-sync-alt"
+                            icon="pf-icon pf-icon-zone"
                             header=${t`Outpost status`}
                             headerLink="#/outpost/outposts"
                         >
@@ -132,7 +131,7 @@ export class AdminOverviewPage extends LitElement {
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container"
                     >
                         <ak-aggregate-card
-                            icon="fa fa-sync-alt"
+                            icon="pf-icon pf-icon-user"
                             header=${t`Users`}
                             headerLink="#/identity/users"
                         >
@@ -143,7 +142,7 @@ export class AdminOverviewPage extends LitElement {
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-xl pf-m-2-col-on-2xl graph-container"
                     >
                         <ak-aggregate-card
-                            icon="fa fa-sync-alt"
+                            icon="pf-icon pf-icon-users"
                             header=${t`Groups`}
                             headerLink="#/identity/groups"
                         >
@@ -166,7 +165,7 @@ export class AdminOverviewPage extends LitElement {
                     </div>
                     <!-- row 2 -->
                     <div
-                        class="pf-l-grid__item pf-m-6-col pf-m-3-col-on-md pf-m-3-col-on-xl card-container"
+                        class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
                     >
                         <ak-admin-status-system
                             icon="pf-icon pf-icon-server"
@@ -175,7 +174,7 @@ export class AdminOverviewPage extends LitElement {
                         </ak-admin-status-system>
                     </div>
                     <div
-                        class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-3-col-on-xl card-container"
+                        class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
                     >
                         <ak-admin-status-version
                             icon="pf-icon pf-icon-bundle"
@@ -185,17 +184,7 @@ export class AdminOverviewPage extends LitElement {
                         </ak-admin-status-version>
                     </div>
                     <div
-                        class="pf-l-grid__item pf-m-6-col pf-m-2-col-on-md pf-m-3-col-on-xl card-container"
-                    >
-                        <ak-admin-status-card-backup
-                            icon="fa fa-database"
-                            header=${t`Backup status`}
-                            headerLink="#/administration/system-tasks"
-                        >
-                        </ak-admin-status-card-backup>
-                    </div>
-                    <div
-                        class="pf-l-grid__item pf-m-6-col pf-m-3-col-on-md pf-m-3-col-on-xl card-container"
+                        class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
                     >
                         <ak-admin-status-card-workers
                             icon="pf-icon pf-icon-server"

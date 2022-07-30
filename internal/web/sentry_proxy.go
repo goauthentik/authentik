@@ -14,7 +14,7 @@ type SentryRequest struct {
 }
 
 func (ws *WebServer) APISentryProxy(rw http.ResponseWriter, r *http.Request) {
-	if !config.G.ErrorReporting.Enabled {
+	if !config.Get().ErrorReporting.Enabled {
 		ws.log.Debug("error reporting disabled")
 		rw.WriteHeader(http.StatusBadRequest)
 		return
@@ -37,8 +37,8 @@ func (ws *WebServer) APISentryProxy(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if sd.DSN != config.G.ErrorReporting.DSN {
-		ws.log.WithField("have", sd.DSN).WithField("expected", config.G.ErrorReporting.DSN).Debug("invalid DSN")
+	if sd.DSN != config.Get().ErrorReporting.DSN {
+		ws.log.WithField("have", sd.DSN).WithField("expected", config.Get().ErrorReporting.DSN).Debug("invalid DSN")
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}

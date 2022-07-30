@@ -2,17 +2,15 @@
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
-from django.utils.encoding import force_str
 from django.utils.http import urlencode
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
-from authentik.core.models import User
-from authentik.core.tests.utils import create_test_admin_user
-from authentik.flows.challenge import ChallengeTypes
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation, InvitationStage
@@ -25,18 +23,13 @@ from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 
-class TestUserLoginStage(APITestCase):
+class TestUserLoginStage(FlowTestCase):
     """Login tests"""
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create(username="unittest", email="test@beryju.org")
-
-        self.flow = Flow.objects.create(
-            name="test-invitation",
-            slug="test-invitation",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.user = create_test_admin_user()
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = InvitationStage.objects.create(name="invitation")
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
@@ -56,19 +49,10 @@ class TestUserLoginStage(APITestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-access-denied",
-                "error_message": None,
-                "type": ChallengeTypes.NATIVE.value,
-                "flow_info": {
-                    "background": self.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-            },
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            component="ak-stage-access-denied",
         )
 
     def test_without_invitation_continue(self):
@@ -87,14 +71,7 @@ class TestUserLoginStage(APITestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
         self.stage.continue_flow_without_invitation = False
         self.stage.save()
@@ -119,14 +96,7 @@ class TestUserLoginStage(APITestCase):
         self.assertEqual(plan.context[PLAN_CONTEXT_PROMPT], data)
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_with_invitation_prompt_data(self):
         """Test with invitation, check data in session"""
@@ -152,14 +122,7 @@ class TestUserLoginStage(APITestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertFalse(Invitation.objects.filter(pk=invite.pk))
 
 
@@ -175,7 +138,7 @@ class TestInvitationsAPI(APITestCase):
         """Test Invitations creation endpoint"""
         response = self.client.post(
             reverse("authentik_api:invitation-list"),
-            {"identifier": "test-token", "fixed_data": {}},
+            {"name": "test-token", "fixed_data": {}},
             format="json",
         )
         self.assertEqual(response.status_code, 201)

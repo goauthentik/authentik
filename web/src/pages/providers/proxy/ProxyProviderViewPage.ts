@@ -1,9 +1,30 @@
+import MDCaddyStandalone from "@goauthentik/docs/providers/proxy/_caddy_standalone.md";
+import MDNginxIngress from "@goauthentik/docs/providers/proxy/_nginx_ingress.md";
+import MDNginxPM from "@goauthentik/docs/providers/proxy/_nginx_proxy_manager.md";
+import MDNginxStandalone from "@goauthentik/docs/providers/proxy/_nginx_standalone.md";
+import MDTraefikCompose from "@goauthentik/docs/providers/proxy/_traefik_compose.md";
+import MDTraefikIngress from "@goauthentik/docs/providers/proxy/_traefik_ingress.md";
+import MDTraefikStandalone from "@goauthentik/docs/providers/proxy/_traefik_standalone.md";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/CodeMirror";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import { MarkdownDocument } from "@goauthentik/web/elements/Markdown";
+import "@goauthentik/web/elements/Markdown";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/events/ObjectChangelog";
+import "@goauthentik/web/pages/providers/RelatedApplicationButton";
+import "@goauthentik/web/pages/providers/proxy/ProxyProviderForm";
+import { convertToSlug } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -17,25 +38,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ProvidersApi, ProxyMode, ProxyProvider } from "@goauthentik/api";
 
-import MDNginxIngress from "../../../../../website/docs/providers/proxy/_nginx_ingress.md";
-import MDNginxPM from "../../../../../website/docs/providers/proxy/_nginx_proxy_manager.md";
-import MDNginxStandalone from "../../../../../website/docs/providers/proxy/_nginx_standalone.md";
-import MDTraefikCompose from "../../../../../website/docs/providers/proxy/_traefik_compose.md";
-import MDTraefikIngres from "../../../../../website/docs/providers/proxy/_traefik_ingress.md";
-import MDTraefikStandalone from "../../../../../website/docs/providers/proxy/_traefik_standalone.md";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { EVENT_REFRESH } from "../../../constants";
-import "../../../elements/CodeMirror";
-import { PFColor } from "../../../elements/Label";
-import "../../../elements/Markdown";
-import { MarkdownDocument } from "../../../elements/Markdown";
-import "../../../elements/Tabs";
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/events/ObjectChangelog";
-import "../RelatedApplicationButton";
-import "./ProxyProviderForm";
-
 export function ModeToLabel(action?: ProxyMode): string {
     if (!action) return "";
     switch (action) {
@@ -45,6 +47,16 @@ export function ModeToLabel(action?: ProxyMode): string {
             return t`Forward auth (single application)`;
         case ProxyMode.ForwardDomain:
             return t`Forward auth (domain-level)`;
+    }
+}
+
+export function isForward(mode: ProxyMode): boolean {
+    switch (mode) {
+        case ProxyMode.Proxy:
+            return false;
+        case ProxyMode.ForwardSingle:
+        case ProxyMode.ForwardDomain:
+            return true;
     }
 }
 
@@ -92,18 +104,66 @@ export class ProxyProviderViewPage extends LitElement {
     }
 
     renderConfigTemplate(markdown: MarkdownDocument): MarkdownDocument {
+        const extHost = new URL(this.provider?.externalHost || "http://a");
         // See website/docs/providers/proxy/forward_auth.mdx
         if (this.provider?.mode === ProxyMode.ForwardSingle) {
             markdown.html = markdown.html
                 .replaceAll("authentik.company", window.location.hostname)
-                .replaceAll("outpost.company", window.location.hostname)
-                .replaceAll("app.company", this.provider?.externalHost || "");
+                .replaceAll("outpost.company:9000", window.location.hostname)
+                .replaceAll("https://app.company", extHost.toString())
+                .replaceAll("app.company", extHost.hostname);
         } else if (this.provider?.mode == ProxyMode.ForwardDomain) {
             markdown.html = markdown.html
                 .replaceAll("authentik.company", window.location.hostname)
-                .replaceAll("outpost.company", this.provider?.externalHost || "");
+                .replaceAll("outpost.company:9000", extHost.toString())
+                .replaceAll("https://app.company", extHost.toString())
+                .replaceAll("app.company", extHost.hostname);
         }
         return markdown;
+    }
+
+    renderConfig(): TemplateResult {
+        const serves = [
+            {
+                label: t`Nginx (Ingress)`,
+                md: MDNginxIngress,
+            },
+            {
+                label: t`Nginx (Proxy Manager)`,
+                md: MDNginxPM,
+            },
+            {
+                label: t`Nginx (standalone)`,
+                md: MDNginxStandalone,
+            },
+            {
+                label: t`Traefik (Ingress)`,
+                md: MDTraefikIngress,
+            },
+            {
+                label: t`Traefik (Compose)`,
+                md: MDTraefikCompose,
+            },
+            {
+                label: t`Traefik (Standalone)`,
+                md: MDTraefikStandalone,
+            },
+            {
+                label: t`Caddy (Standalone)`,
+                md: MDCaddyStandalone,
+            },
+        ];
+        return html`<ak-tabs pageIdentifier="proxy-setup">
+            ${serves.map((server) => {
+                return html`<section
+                    slot="page-${convertToSlug(server.label)}"
+                    data-tab-title="${server.label}"
+                    class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
+                >
+                    <ak-markdown .md=${this.renderConfigTemplate(server.md)}></ak-markdown>
+                </section>`;
+            })}</ak-tabs
+        >`;
     }
 
     render(): TemplateResult {
@@ -168,7 +228,9 @@ export class ProxyProviderViewPage extends LitElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.externalHost}
+                                        <a target="_blank" href="${this.provider.externalHost}"
+                                            >${this.provider.externalHost}</a
+                                        >
                                     </div>
                                 </dd>
                             </div>
@@ -240,67 +302,8 @@ export class ProxyProviderViewPage extends LitElement {
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__title">${t`Setup`}</div>
                     <div class="pf-c-card__body">
-                        ${[ProxyMode.ForwardSingle, ProxyMode.ForwardDomain].includes(
-                            this.provider?.mode || ProxyMode.Proxy,
-                        )
-                            ? html`
-                                  <ak-tabs pageIdentifier="proxy-setup">
-                                      <section
-                                          slot="page-nginx-ingress"
-                                          data-tab-title="${t`Nginx (Ingress)`}"
-                                          class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
-                                      >
-                                          <ak-markdown
-                                              .md=${this.renderConfigTemplate(MDNginxIngress)}
-                                          ></ak-markdown>
-                                      </section>
-                                      <section
-                                          slot="page-nginx-proxy-manager"
-                                          data-tab-title="${t`Nginx (Proxy Manager)`}"
-                                          class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
-                                      >
-                                          <ak-markdown
-                                              .md=${this.renderConfigTemplate(MDNginxPM)}
-                                          ></ak-markdown>
-                                      </section>
-                                      <section
-                                          slot="page-nginx-standalone"
-                                          data-tab-title="${t`Nginx (standalone)`}"
-                                          class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
-                                      >
-                                          <ak-markdown
-                                              .md=${this.renderConfigTemplate(MDNginxStandalone)}
-                                          ></ak-markdown>
-                                      </section>
-                                      <section
-                                          slot="page-traefik-ingress"
-                                          data-tab-title="${t`Traefik (Ingress)`}"
-                                          class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
-                                      >
-                                          <ak-markdown
-                                              .md=${this.renderConfigTemplate(MDTraefikIngres)}
-                                          ></ak-markdown>
-                                      </section>
-                                      <section
-                                          slot="page-traefik-compose"
-                                          data-tab-title="${t`Traefik (Compose)`}"
-                                          class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
-                                      >
-                                          <ak-markdown
-                                              .md=${this.renderConfigTemplate(MDTraefikCompose)}
-                                          ></ak-markdown>
-                                      </section>
-                                      <section
-                                          slot="page-traefik-standalone"
-                                          data-tab-title="${t`Traefik (Standalone)`}"
-                                          class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
-                                      >
-                                          <ak-markdown
-                                              .md=${this.renderConfigTemplate(MDTraefikStandalone)}
-                                          ></ak-markdown>
-                                      </section>
-                                  </ak-tabs>
-                              `
+                        ${isForward(this.provider?.mode || ProxyMode.Proxy)
+                            ? html` ${this.renderConfig()} `
                             : html` <p>${t`No additional setup is required.`}</p> `}
                     </div>
                 </div>

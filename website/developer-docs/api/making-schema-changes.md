@@ -14,10 +14,10 @@ The generated files are stored in `/api` in the root of the repository.
 
 ## Building the Web Client
 
-The web client is used by the web-interface and web-FlowExecutor to communicate with authentik. To build the client, run `make gen-web`.
+The web client is used by the web-interface and web-FlowExecutor to communicate with authentik. To build the client, run `make gen-client-web`.
 
-Since the client is normally distributed as an npm package, running `make gen-web` will overwrite the locally installed client with the newly built one.
+Since the client is normally distributed as an npm package, running `make gen-client-web` will overwrite the locally installed client with the newly built one.
 
 :::warning
-Running `npm i` in the `/web` folder after using `make gen-web` will overwrite the custom client and revert to the upstream client.
+Running `npm i` in the `/web` folder after using `make gen-client-web` will overwrite the custom client and revert to the upstream client.
 :::

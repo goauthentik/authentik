@@ -16,6 +16,9 @@ func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Certif
 		ws.log.WithError(err).Error("failed to generate default cert")
 	}
 	return func(ch *tls.ClientHelloInfo) (*tls.Certificate, error) {
+		if ch.ServerName == "" {
+			return &cert, nil
+		}
 		if ws.ProxyServer != nil {
 			appCert := ws.ProxyServer.GetCertificate(ch.ServerName)
 			if appCert != nil {
@@ -38,16 +41,16 @@ func (ws *WebServer) listenTLS() {
 		GetCertificate: ws.GetCertificate(),
 	}
 
-	ln, err := net.Listen("tcp", config.G.Web.ListenTLS)
+	ln, err := net.Listen("tcp", config.Get().Web.ListenTLS)
 	if err != nil {
-		ws.log.WithError(err).Fatalf("failed to listen")
+		ws.log.WithError(err).Fatalf("failed to listen (TLS)")
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}}
 	defer proxyListener.Close()
 
 	tlsListener := tls.NewListener(proxyListener, tlsConfig)
-	ws.log.WithField("listen", config.G.Web.ListenTLS).Info("Starting HTTPS server")
+	ws.log.WithField("listen", config.Get().Web.ListenTLS).Info("Starting HTTPS server")
 	ws.serve(tlsListener)
-	ws.log.WithField("listen", config.G.Web.ListenTLS).Info("Stopping HTTPS server")
+	ws.log.WithField("listen", config.Get().Web.ListenTLS).Info("Stopping HTTPS server")
 }

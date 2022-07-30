@@ -10,12 +10,13 @@ import (
 	"github.com/nmcclain/ldap"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/flow"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	"goauthentik.io/internal/outpost/ldap/flags"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/server"
+	"goauthentik.io/internal/outpost/ldap/utils"
 )
 
 const ContextUserKey = "ak_user"
@@ -35,7 +36,7 @@ func NewDirectBinder(si server.LDAPServerInstance) *DirectBinder {
 }
 
 func (db *DirectBinder) GetUsername(dn string) (string, error) {
-	if !strings.HasSuffix(strings.ToLower(dn), strings.ToLower(db.si.GetBaseDN())) {
+	if !utils.HasSuffixNoCase(dn, db.si.GetBaseDN()) {
 		return "", errors.New("invalid base DN")
 	}
 	dns, err := goldap.ParseDN(dn)
@@ -65,14 +66,18 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 	fe.Answers[flow.StagePassword] = req.BindPW
 
 	passed, err := fe.Execute()
+	flags := flags.UserFlags{
+		Session: fe.GetSession(),
+	}
+	db.si.SetFlags(req.BindDN, flags)
 	if !passed {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "invalid_credentials",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          db.si.GetAppSlug(),
 		}).Inc()
+		req.Log().Info("Invalid credentials")
 		return ldap.LDAPResultInvalidCredentials, nil
 	}
 	if err != nil {
@@ -80,8 +85,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "flow_error",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          db.si.GetAppSlug(),
 		}).Inc()
 		req.Log().WithError(err).Warning("failed to execute flow")
 		return ldap.LDAPResultOperationsError, nil
@@ -94,8 +98,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "access_denied",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          db.si.GetAppSlug(),
 		}).Inc()
 		return ldap.LDAPResultInsufficientAccessRights, nil
 	}
@@ -104,8 +107,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "access_check_fail",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          db.si.GetAppSlug(),
 		}).Inc()
 		req.Log().WithError(err).Warning("failed to check access")
 		return ldap.LDAPResultOperationsError, nil
@@ -119,17 +121,14 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "user_info_fail",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          db.si.GetAppSlug(),
 		}).Inc()
 		req.Log().WithError(err).Warning("failed to get user info")
 		return ldap.LDAPResultOperationsError, nil
 	}
 	cs := db.SearchAccessCheck(userInfo.User)
-	flags := flags.UserFlags{
-		UserPk:    userInfo.User.Pk,
-		CanSearch: cs != nil,
-	}
+	flags.UserPk = userInfo.User.Pk
+	flags.CanSearch = cs != nil
 	db.si.SetFlags(req.BindDN, flags)
 	if flags.CanSearch {
 		req.Log().WithField("group", cs).Info("Allowed access to search")
@@ -142,6 +141,9 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 func (db *DirectBinder) SearchAccessCheck(user api.UserSelf) *string {
 	for _, group := range user.Groups {
 		for _, allowedGroup := range db.si.GetSearchAllowedGroups() {
+			if allowedGroup == nil {
+				continue
+			}
 			db.log.WithField("userGroup", group.Pk).WithField("allowedGroup", allowedGroup).Trace("Checking search access")
 			if group.Pk == allowedGroup.String() {
 				return &group.Name

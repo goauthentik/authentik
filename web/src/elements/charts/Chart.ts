@@ -1,3 +1,8 @@
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import {
+    FONT_COLOUR_DARK_MODE,
+    FONT_COLOUR_LIGHT_MODE,
+} from "@goauthentik/web/pages/flows/FlowDiagram";
 import { Chart, ChartConfiguration, ChartData, ChartOptions, Plugin, Tick } from "chart.js";
 import { Legend, Tooltip } from "chart.js";
 import { BarController, DoughnutController, LineController } from "chart.js";
@@ -9,9 +14,6 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { property } from "lit/decorators.js";
-
-import { EVENT_REFRESH } from "../../constants";
-import { FONT_COLOUR_DARK_MODE, FONT_COLOUR_LIGHT_MODE } from "../../pages/flows/FlowDiagram";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);

@@ -35,21 +35,21 @@ class LDAPProviderManager(ObjectManager):
                 "goauthentik.io/sources/ldap/ms-userprincipalname",
                 name="authentik default Active Directory Mapping: userPrincipalName",
                 object_field="attributes.upn",
-                expression="return ldap.get('userPrincipalName')",
+                expression="return list_flatten(ldap.get('userPrincipalName'))",
             ),
             EnsureExists(
                 LDAPPropertyMapping,
                 "goauthentik.io/sources/ldap/ms-givenName",
                 name="authentik default Active Directory Mapping: givenName",
                 object_field="attributes.givenName",
-                expression="return ldap.get('givenName')",
+                expression="return list_flatten(ldap.get('givenName'))",
             ),
             EnsureExists(
                 LDAPPropertyMapping,
                 "goauthentik.io/sources/ldap/ms-sn",
                 name="authentik default Active Directory Mapping: sn",
                 object_field="attributes.sn",
-                expression="return ldap.get('sn')",
+                expression="return list_flatten(ldap.get('sn'))",
             ),
             # OpenLDAP specific mappings
             EnsureExists(

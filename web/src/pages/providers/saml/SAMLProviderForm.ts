@@ -1,3 +1,9 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import "@goauthentik/web/elements/utils/TimeDeltaHelp";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -16,11 +22,6 @@ import {
     SignatureAlgorithmEnum,
     SpBindingEnum,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
 
 @customElement("ak-provider-saml-form")
 export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
@@ -109,6 +110,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             class="pf-c-form-control"
                             required
                         />
+                        <p class="pf-c-form__helper-text">${t`Also known as EntityID.`}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Service Provider Binding`}
@@ -299,9 +301,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         <p class="pf-c-form__helper-text">
                             ${t`Configure the maximum allowed time drift for an assertion.`}
                         </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
-                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Assertion valid not on or after`}
@@ -315,8 +315,9 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).`}
+                            ${t`Assertion not valid on or after current time + this value.`}
                         </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Session valid not on or after`}
@@ -330,8 +331,9 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).`}
+                            ${t`Session not valid on or after current time + this value.`}
                         </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal

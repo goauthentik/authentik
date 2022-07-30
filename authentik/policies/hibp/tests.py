@@ -5,6 +5,7 @@ from guardian.shortcuts import get_anonymous_user
 from authentik.lib.generators import generate_key
 from authentik.policies.hibp.models import HaveIBeenPwendPolicy
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
 class TestHIBPPolicy(TestCase):
@@ -26,7 +27,7 @@ class TestHIBPPolicy(TestCase):
             name="test_false",
         )
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = "password"  # nosec
+        request.context[PLAN_CONTEXT_PROMPT] = {"password": "password"}  # nosec
         result: PolicyResult = policy.passes(request)
         self.assertFalse(result.passing)
         self.assertTrue(result.messages[0].startswith("Password exists on "))
@@ -37,7 +38,7 @@ class TestHIBPPolicy(TestCase):
             name="test_true",
         )
         request = PolicyRequest(get_anonymous_user())
-        request.context["password"] = generate_key()
+        request.context[PLAN_CONTEXT_PROMPT] = {"password": generate_key()}
         result: PolicyResult = policy.passes(request)
         self.assertTrue(result.passing)
         self.assertEqual(result.messages, tuple())

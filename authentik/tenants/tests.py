@@ -1,30 +1,30 @@
 """Test tenants"""
-from django.test import TestCase
 from django.test.client import RequestFactory
 from django.urls import reverse
-from django.utils.encoding import force_str
+from rest_framework.test import APITestCase
 
-from authentik.core.tests.utils import create_test_tenant
+from authentik.core.tests.utils import create_test_admin_user, create_test_tenant
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.tenants.models import Tenant
 
 
-class TestTenants(TestCase):
+class TestTenants(APITestCase):
     """Test tenants"""
 
     def test_current_tenant(self):
         """Test Current tenant API"""
         tenant = create_test_tenant()
         self.assertJSONEqual(
-            force_str(self.client.get(reverse("authentik_api:tenant-current")).content),
+            self.client.get(reverse("authentik_api:tenant-current")).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
                 "matched_domain": tenant.domain,
                 "ui_footer_links": CONFIG.y("footer_links"),
+                "default_locale": "",
             },
         )
 
@@ -33,17 +33,16 @@ class TestTenants(TestCase):
         Tenant.objects.all().delete()
         Tenant.objects.create(domain="bar.baz", branding_title="custom")
         self.assertJSONEqual(
-            force_str(
-                self.client.get(
-                    reverse("authentik_api:tenant-current"), HTTP_HOST="foo.bar.baz"
-                ).content
-            ),
+            self.client.get(
+                reverse("authentik_api:tenant-current"), HTTP_HOST="foo.bar.baz"
+            ).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "custom",
                 "matched_domain": "bar.baz",
                 "ui_footer_links": CONFIG.y("footer_links"),
+                "default_locale": "",
             },
         )
 
@@ -51,13 +50,14 @@ class TestTenants(TestCase):
         """Test fallback tenant"""
         Tenant.objects.all().delete()
         self.assertJSONEqual(
-            force_str(self.client.get(reverse("authentik_api:tenant-current")).content),
+            self.client.get(reverse("authentik_api:tenant-current")).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
                 "matched_domain": "fallback",
                 "ui_footer_links": CONFIG.y("footer_links"),
+                "default_locale": "",
             },
         )
 
@@ -81,3 +81,18 @@ class TestTenants(TestCase):
         self.assertEqual(
             event.expires.year, (event.created + timedelta_from_string("weeks=3")).year
         )
+
+    def test_create_default_multiple(self):
+        """Test attempted creation of multiple default tenants"""
+        Tenant.objects.create(
+            domain="foo",
+            default=True,
+            branding_title="custom",
+            event_retention="weeks=3",
+        )
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        response = self.client.post(
+            reverse("authentik_api:tenant-list"), data={"domain": "bar", "default": True}
+        )
+        self.assertEqual(response.status_code, 400)

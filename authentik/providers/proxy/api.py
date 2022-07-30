@@ -103,6 +103,7 @@ class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
         "redirect_uris": ["iexact"],
         "cookie_domain": ["iexact"],
     }
+    search_fields = ["name"]
     ordering = ["name"]
 
 
@@ -166,3 +167,5 @@ class ProxyOutpostConfigViewSet(ReadOnlyModelViewSet):
     queryset = ProxyProvider.objects.filter(application__isnull=False)
     serializer_class = ProxyOutpostConfigSerializer
     ordering = ["name"]
+    search_fields = ["name"]
+    filterset_fields = ["name"]

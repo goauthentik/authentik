@@ -9,12 +9,13 @@ from docker import DockerClient as UpstreamDockerClient
 from docker.errors import DockerException, NotFound
 from docker.models.containers import Container
 from docker.utils.utils import kwargs_from_env
+from paramiko.ssh_exception import SSHException
 from structlog.stdlib import get_logger
 from yaml import safe_dump
 
 from authentik import __version__
 from authentik.outposts.controllers.base import BaseClient, BaseController, ControllerException
-from authentik.outposts.docker_ssh import DockerInlineSSH
+from authentik.outposts.docker_ssh import DockerInlineSSH, SSHManagedExternallyException
 from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.outposts.managed import MANAGED_OUTPOST
 from authentik.outposts.models import (
@@ -34,6 +35,7 @@ class DockerClient(UpstreamDockerClient, BaseClient):
     def __init__(self, connection: DockerServiceConnection):
         self.tls = None
         self.ssh = None
+        self.logger = get_logger()
         if connection.local:
             # Same result as DockerClient.from_env
             super().__init__(**kwargs_from_env())
@@ -41,19 +43,25 @@ class DockerClient(UpstreamDockerClient, BaseClient):
             parsed_url = urlparse(connection.url)
             tls_config = False
             if parsed_url.scheme == "ssh":
-                self.ssh = DockerInlineSSH(parsed_url.hostname, connection.tls_authentication)
-                self.ssh.write()
+                try:
+                    self.ssh = DockerInlineSSH(parsed_url.hostname, connection.tls_authentication)
+                    self.ssh.write()
+                except SSHManagedExternallyException as exc:
+                    # SSH config is managed externally
+                    self.logger.info(f"SSH Managed externally: {exc}")
             else:
                 self.tls = DockerInlineTLS(
                     verification_kp=connection.tls_verification,
                     authentication_kp=connection.tls_authentication,
                 )
                 tls_config = self.tls.write()
-            super().__init__(
-                base_url=connection.url,
-                tls=tls_config,
-            )
-        self.logger = get_logger()
+            try:
+                super().__init__(
+                    base_url=connection.url,
+                    tls=tls_config,
+                )
+            except SSHException as exc:
+                raise ServiceConnectionInvalid from exc
         # Ensure the client actually works
         self.containers.list()
 
@@ -102,9 +110,12 @@ class DockerController(BaseController):
         ).lower()
 
     def _get_labels(self) -> dict[str, str]:
-        return {
+        labels = {
             "io.goauthentik.outpost-uuid": self.outpost.pk.hex,
         }
+        if self.outpost.config.docker_labels:
+            labels.update(self.outpost.config.docker_labels)
+        return labels
 
     def _get_env(self) -> dict[str, str]:
         return {
@@ -150,7 +161,7 @@ class DockerController(BaseController):
         #   {'HostIp': '::', 'HostPort': '389'}
         # ]}
         # If no ports are mapped (either mapping disabled, or host network)
-        if not container.ports:
+        if not container.ports or not self.outpost.config.docker_map_ports:
             return False
         for port in self.deployment_ports:
             key = f"{port.inner_port or port.port}/{port.protocol.lower()}"

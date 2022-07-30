@@ -1,3 +1,4 @@
+# update website/docs/installation/configuration.md
 # This is the default configuration file
 postgresql:
   host: localhost
@@ -5,16 +6,6 @@ postgresql:
   user: authentik
   port: 5432
   password: 'env://POSTGRES_PASSWORD'
-  backup:
-    enabled: true
-  s3_backup:
-    access_key: ""
-    secret_key: ""
-    bucket: ""
-    region: eu-central-1
-    host: ""
-    location: ""
-    insecure_skip_verify: false
 
 web:
   listen: 0.0.0.0:9000
@@ -46,7 +37,7 @@ error_reporting:
   enabled: false
   environment: customer
   send_pii: false
-  sample_rate: 0.5
+  sample_rate: 0.3
 
 # Global email settings
 email:
@@ -65,22 +56,26 @@ outposts:
   # %(version)s: Current version; 2021.4.1
   # %(build_hash)s: Build hash if you're running a beta version
   container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
+  discover: true
+
+ldap:
+  tls:
+    ciphers: null
 
 config_file_dir: "/config"
 cookie_domain: null
 disable_update_check: false
 disable_startup_analytics: false
 avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar
-geoip: "./GeoLite2-City.mmdb"
+geoip: "/geoip/GeoLite2-City.mmdb"
 
-footer_links:
-  - name: Documentation
-    href: https://goauthentik.io/docs/?utm_source=authentik
-  - name: authentik Website
-    href: https://goauthentik.io/?utm_source=authentik
+footer_links: []
 
+default_user_change_name: true
 default_user_change_email: true
 default_user_change_username: true
 
 gdpr_compliance: true
 cert_discovery_dir: /certs
+default_token_length: 128
+impersonation: true

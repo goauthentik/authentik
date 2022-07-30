@@ -1,4 +1,4 @@
-Contact: mailto:security@beryju.org
+Contact: mailto:security@goauthentik.io
 Expires: Sat, 1 Jan 2023 00:00 +0200
 Preferred-Languages: en, de
-Policy: https://github.com/goauthentik/authentik/blob/master/SECURITY.md
+Policy: https://github.com/goauthentik/authentik/blob/main/SECURITY.md

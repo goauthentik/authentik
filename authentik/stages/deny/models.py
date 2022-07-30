@@ -1,5 +1,4 @@
 """deny stage models"""
-from typing import Type
 
 from django.utils.translation import gettext_lazy as _
 from django.views import View
@@ -18,7 +17,7 @@ class DenyStage(Stage):
         return DenyStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.deny.stage import DenyStageView
 
         return DenyStageView

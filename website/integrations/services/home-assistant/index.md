@@ -2,6 +2,8 @@
 title: Home-Assistant
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Home-Assistant
 
 From https://www.home-assistant.io/
@@ -11,19 +13,15 @@ Open source home automation that puts local control and privacy first. Powered b
 :::
 
 :::warning
-You might run into CSRF errors, this is caused by Home-assistant and not authentik, see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
+You might run into CSRF errors, this is caused by a technology Home-assistant uses and not authentik, see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
 :::
 
 ## Preparation
 
 The following placeholders will be used:
 
-- `hass.company` is the FQDN of the Home-Assistant install.
-- `authentik.company` is the FQDN of the authentik install.
-
-:::note
-This setup uses https://github.com/BeryJu/hass-auth-header and the authentik proxy for authentication. When this [PR](https://github.com/home-assistant/core/pull/32926) is merged, this will no longer be necessary.
-:::
+-   `hass.company` is the FQDN of the Home-Assistant install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 ## Home-Assistant
 
@@ -31,7 +29,12 @@ This guide requires https://github.com/BeryJu/hass-auth-header, which can be ins
 
 Afterwards, make sure the `trusted_proxies` setting contains the IP(s) of the Host(s) authentik is running on.
 
-With the default Header of `X-Forwarded-Preferred-Username` matching is done on a username basis, so your Name in Home-Assistant and your username in authentik have to match.
+Use this configuration to match on the user's authentik username.
+
+```yaml
+auth_header:
+    username_header: X-authentik-username
+```
 
 If this is not the case, you can simply add an additional header for your user, which contains the Home-Assistant Name and authenticate based on that.
 
@@ -46,13 +49,13 @@ additionalHeaders:
 
 Create a Proxy Provider with the following values
 
-- Internal host
+-   Internal host
 
     If Home-Assistant is running in docker, and you're deploying the authentik proxy on the same host, set the value to `http://homeassistant:8123`, where Home-Assistant is the name of your container.
 
     If Home-Assistant is running on a different server than where you are deploying the authentik proxy, set the value to `http://hass.company:8123`.
 
-- External host
+-   External host
 
     Set this to the external URL you will be accessing Home-Assistant from.
 

@@ -2,7 +2,7 @@ package group
 
 import (
 	"github.com/nmcclain/ldap"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
@@ -16,13 +16,13 @@ type LDAPGroup struct {
 	Member         []string
 	IsSuperuser    bool
 	IsVirtualGroup bool
-	AKAttributes   interface{}
+	AKAttributes   map[string]interface{}
 }
 
 func (lg *LDAPGroup) Entry() *ldap.Entry {
 	attrs := utils.AKAttrsToLDAP(lg.AKAttributes)
 
-	objectClass := []string{constants.OCGroup, constants.OCGroupOfUniqueNames, constants.OCAKGroup}
+	objectClass := []string{constants.OCGroup, constants.OCGroupOfUniqueNames, constants.OCGroupOfNames, constants.OCAKGroup}
 	if lg.IsVirtualGroup {
 		objectClass = append(objectClass, constants.OCAKVirtualGroup)
 	}

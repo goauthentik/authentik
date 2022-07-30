@@ -1,6 +1,8 @@
 """authentik core celery"""
 import os
+from contextvars import ContextVar
 from logging.config import dictConfig
+from typing import Callable
 
 from celery import Celery
 from celery.signals import (
@@ -10,11 +12,13 @@ from celery.signals import (
     task_internal_error,
     task_postrun,
     task_prerun,
+    worker_ready,
 )
 from django.conf import settings
+from django.db import ProgrammingError
+from structlog.contextvars import STRUCTLOG_KEY_PREFIX
 from structlog.stdlib import get_logger
 
-from authentik.core.middleware import LOCAL
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 
@@ -23,6 +27,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 
 LOGGER = get_logger()
 CELERY_APP = Celery("authentik")
+CTX_TASK_ID = ContextVar(STRUCTLOG_KEY_PREFIX + "task_id", default=Ellipsis)
 
 
 # pylint: disable=unused-argument
@@ -45,9 +50,7 @@ def after_task_publish_hook(sender=None, headers=None, body=None, **kwargs):
 def task_prerun_hook(task_id: str, task, *args, **kwargs):
     """Log task_id on worker"""
     request_id = "task-" + task_id.replace("-", "")
-    LOCAL.authentik_task = {
-        "request_id": request_id,
-    }
+    CTX_TASK_ID.set(request_id)
     LOGGER.info("Task started", task_id=task_id, task_name=task.__name__)
 
 
@@ -56,10 +59,6 @@ def task_prerun_hook(task_id: str, task, *args, **kwargs):
 def task_postrun_hook(task_id, task, *args, retval=None, state=None, **kwargs):
     """Log task_id on worker"""
     LOGGER.info("Task finished", task_id=task_id, task_name=task.__name__, state=state)
-    if not hasattr(LOCAL, "authentik_task"):
-        return
-    for key in list(LOCAL.authentik_task.keys()):
-        del LOCAL.authentik_task[key]
 
 
 # pylint: disable=unused-argument
@@ -69,9 +68,37 @@ def task_error_hook(task_id, exception: Exception, traceback, *args, **kwargs):
     """Create system event for failed task"""
     from authentik.events.models import Event, EventAction
 
-    LOGGER.warning("Task failure", exception=exception)
+    LOGGER.warning("Task failure", exc=exception)
     if before_send({}, {"exc_info": (None, exception, None)}) is not None:
         Event.new(EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception)).save()
+
+
+def _get_startup_tasks() -> list[Callable]:
+    """Get all tasks to be run on startup"""
+    from authentik.admin.tasks import clear_update_notifications
+    from authentik.blueprints.tasks import managed_reconcile
+    from authentik.outposts.tasks import outpost_controller_all, outpost_local_connection
+    from authentik.providers.proxy.tasks import proxy_set_defaults
+
+    return [
+        clear_update_notifications,
+        outpost_local_connection,
+        outpost_controller_all,
+        proxy_set_defaults,
+        managed_reconcile,
+    ]
+
+
+@worker_ready.connect
+def worker_ready_hook(*args, **kwargs):
+    """Run certain tasks on worker start"""
+
+    LOGGER.info("Dispatching startup tasks...")
+    for task in _get_startup_tasks():
+        try:
+            task.delay()
+        except ProgrammingError as exc:
+            LOGGER.warning("Startup task failed", task=task, exc=exc)
 
 
 # Using a string here means the worker doesn't have to serialize

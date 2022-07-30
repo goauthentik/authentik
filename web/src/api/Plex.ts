@@ -1,5 +1,5 @@
-import { SentryIgnoredError } from "../common/errors";
-import { VERSION } from "../constants";
+import { SentryIgnoredError } from "@goauthentik/web/common/errors";
+import { VERSION } from "@goauthentik/web/constants";
 
 export interface PlexPinResponse {
     // Only has the fields we care about
@@ -20,7 +20,7 @@ export const DEFAULT_HEADERS = {
     "Content-Type": "application/json",
     "X-Plex-Product": "authentik",
     "X-Plex-Version": VERSION,
-    "X-Plex-Device-Vendor": "BeryJu.org",
+    "X-Plex-Device-Vendor": "goauthentik.io",
 };
 
 export function popupCenterScreen(url: string, title: string, w: number, h: number): Window | null {
@@ -74,10 +74,10 @@ export class PlexAPIClient {
             headers: headers,
         });
         if (pinResponse.status > 200) {
-            throw new SentryIgnoredError("Invalid response code")
+            throw new SentryIgnoredError("Invalid response code");
         }
         const pin: PlexPinResponse = await pinResponse.json();
-        console.debug(`authentik/plex: polling Pin`);
+        console.debug("authentik/plex: polling Pin");
         return pin.authToken;
     }
 

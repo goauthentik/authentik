@@ -1,9 +1,14 @@
+import "@goauthentik/web/elements/Divider";
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/forms/FormElement";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -18,10 +23,6 @@ import {
     LoginSource,
     UserFieldsEnum,
 } from "@goauthentik/api";
-
-import "../../../elements/EmptyState";
-import "../../../elements/forms/FormElement";
-import { BaseStage } from "../base";
 
 export const PasswordManagerPrefill: {
     password: string | undefined;
@@ -41,6 +42,8 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallenge,
     IdentificationChallengeResponseRequest
 > {
+    form?: HTMLFormElement;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -72,26 +75,30 @@ export class IdentificationStage extends BaseStage<
     }
 
     firstUpdated(): void {
-        const wrapperForm = document.createElement("form");
-        document.documentElement.appendChild(wrapperForm);
-        // This is a workaround for the fact that we're in a shadow dom
-        // adapted from https://github.com/home-assistant/frontend/issues/3133
-        const username = document.createElement("input");
-        username.setAttribute("type", "text");
-        username.setAttribute("name", "username"); // username as name for high compatibility
-        username.setAttribute("autocomplete", "username");
-        username.onkeyup = (ev: Event) => {
-            const el = ev.target as HTMLInputElement;
-            (this.shadowRoot || this)
-                .querySelectorAll<HTMLInputElement>("input[name=uidField]")
-                .forEach((input) => {
-                    input.value = el.value;
-                    // Because we assume only one input field exists that matches this
-                    // call focus so the user can press enter
-                    input.focus();
-                });
-        };
-        wrapperForm.appendChild(username);
+        this.form = document.createElement("form");
+        document.documentElement.appendChild(this.form);
+        // Only add the additional username input if we're in a shadow dom
+        // otherwise it just confuses browsers
+        if (!("ShadyDOM" in window)) {
+            // This is a workaround for the fact that we're in a shadow dom
+            // adapted from https://github.com/home-assistant/frontend/issues/3133
+            const username = document.createElement("input");
+            username.setAttribute("type", "text");
+            username.setAttribute("name", "username"); // username as name for high compatibility
+            username.setAttribute("autocomplete", "username");
+            username.onkeyup = (ev: Event) => {
+                const el = ev.target as HTMLInputElement;
+                (this.shadowRoot || this)
+                    .querySelectorAll<HTMLInputElement>("input[name=uidField]")
+                    .forEach((input) => {
+                        input.value = el.value;
+                        // Because we assume only one input field exists that matches this
+                        // call focus so the user can press enter
+                        input.focus();
+                    });
+            };
+            this.form.appendChild(username);
+        }
         const password = document.createElement("input");
         password.setAttribute("type", "password");
         password.setAttribute("name", "password");
@@ -115,7 +122,7 @@ export class IdentificationStage extends BaseStage<
                     input.focus();
                 });
         };
-        wrapperForm.appendChild(password);
+        this.form.appendChild(password);
         const totp = document.createElement("input");
         totp.setAttribute("type", "text");
         totp.setAttribute("name", "code");
@@ -139,7 +146,13 @@ export class IdentificationStage extends BaseStage<
                     input.focus();
                 });
         };
-        wrapperForm.appendChild(totp);
+        this.form.appendChild(totp);
+    }
+
+    cleanup(): void {
+        if (this.form) {
+            this.form.remove();
+        }
     }
 
     renderSource(source: LoginSource): TemplateResult {
@@ -168,13 +181,13 @@ export class IdentificationStage extends BaseStage<
         }
         return html`<div class="pf-c-login__main-footer-band">
             ${this.challenge.enrollUrl
-                ? html` <p class="pf-c-login__main-footer-band-item">
+                ? html`<p class="pf-c-login__main-footer-band-item">
                       ${t`Need an account?`}
                       <a id="enroll" href="${this.challenge.enrollUrl}">${t`Sign up.`}</a>
                   </p>`
                 : html``}
             ${this.challenge.recoveryUrl
-                ? html` <p class="pf-c-login__main-footer-band-item">
+                ? html`<p class="pf-c-login__main-footer-band-item">
                       <a id="recovery" href="${this.challenge.recoveryUrl}"
                           >${t`Forgot username or password?`}</a
                       >
@@ -228,7 +241,6 @@ export class IdentificationStage extends BaseStage<
                               type="password"
                               name="password"
                               placeholder="${t`Password`}"
-                              autofocus=""
                               autocomplete="current-password"
                               class="pf-c-form-control"
                               required
@@ -246,14 +258,15 @@ export class IdentificationStage extends BaseStage<
                 </button>
             </div>
             ${this.challenge.passwordlessUrl
-                ? html`<div class="pf-c-form__group pf-m-action">
-                      <a
-                          href=${this.challenge.passwordlessUrl}
-                          class="pf-c-button pf-m-secondary pf-m-block"
-                      >
-                          ${t`Use a security key`}
-                      </a>
-                  </div>`
+                ? html`<ak-divider>${t`Or`}</ak-divider>
+                      <div>
+                          <a
+                              href=${this.challenge.passwordlessUrl}
+                              class="pf-c-button pf-m-secondary pf-m-block"
+                          >
+                              ${t`Use a security key`}
+                          </a>
+                      </div>`
                 : html``}`;
     }
 

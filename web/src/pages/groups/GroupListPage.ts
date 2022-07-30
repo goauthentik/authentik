@@ -1,20 +1,20 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/groups/GroupForm";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { CoreApi, Group } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import { PFColor } from "../../elements/Label";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import "./GroupForm";
 
 @customElement("ak-group-list")
 export class GroupListPage extends TablePage<Group> {
@@ -33,7 +33,7 @@ export class GroupListPage extends TablePage<Group> {
     }
 
     @property()
-    order = "slug";
+    order = "name";
 
     async apiEndpoint(page: number): Promise<AKResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
@@ -78,7 +78,7 @@ export class GroupListPage extends TablePage<Group> {
 
     row(item: Group): TemplateResult[] {
         return [
-            html`${item.name}`,
+            html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`${item.parentName || t`-`}`,
             html`${Array.from(item.users || []).length}`,
             html` <ak-label color=${item.isSuperuser ? PFColor.Green : PFColor.Grey}>
@@ -95,7 +95,7 @@ export class GroupListPage extends TablePage<Group> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -103,7 +103,6 @@ export class GroupListPage extends TablePage<Group> {
                 <ak-group-form slot="form"> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 }

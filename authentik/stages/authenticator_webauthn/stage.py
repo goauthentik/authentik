@@ -13,7 +13,6 @@ from webauthn.helpers.structs import (
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
     RegistrationCredential,
-    ResidentKeyRequirement,
 )
 from webauthn.registration.verify_registration_response import VerifiedRegistration
 
@@ -30,8 +29,7 @@ from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnS
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
 LOGGER = get_logger()
-
-SESSION_KEY_WEBAUTHN_AUTHENTICATED = "authentik_stages_authenticator_webauthn_authenticated"
+SESSION_KEY_WEBAUTHN_CHALLENGE = "authentik/stages/authenticator_webauthn/challenge"
 
 
 class AuthenticatorWebAuthnChallenge(WithUserInfoChallenge):
@@ -52,7 +50,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
 
     def validate_response(self, response: dict) -> dict:
         """Validate webauthn challenge response"""
-        challenge = self.request.session["challenge"]
+        challenge = self.request.session[SESSION_KEY_WEBAUTHN_CHALLENGE]
 
         try:
             registration: VerifiedRegistration = verify_registration_response(
@@ -81,9 +79,15 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         # clear session variables prior to starting a new registration
-        self.request.session.pop("challenge", None)
+        self.request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
         stage: AuthenticateWebAuthnStage = self.executor.current_stage
         user = self.get_pending_user()
+
+        # library accepts none so we store null in the database, but if there is a value
+        # set, cast it to string to ensure it's not a django class
+        authenticator_attachment = stage.authenticator_attachment
+        if authenticator_attachment:
+            authenticator_attachment = str(authenticator_attachment)
 
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
             rp_id=get_rp_id(self.request),
@@ -92,12 +96,14 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             user_name=user.username,
             user_display_name=user.name,
             authenticator_selection=AuthenticatorSelectionCriteria(
-                resident_key=ResidentKeyRequirement.PREFERRED,
+                resident_key=str(stage.resident_key_requirement),
                 user_verification=str(stage.user_verification),
+                authenticator_attachment=authenticator_attachment,
             ),
         )
 
-        self.request.session["challenge"] = registration_options.challenge
+        self.request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = registration_options.challenge
+        self.request.session.save()
         return AuthenticatorWebAuthnChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
@@ -108,7 +114,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
         if not user:
-            LOGGER.debug("No pending user, continuing")
+            self.logger.debug("No pending user, continuing")
             return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 
@@ -136,3 +142,6 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")
         return self.executor.stage_ok()
+
+    def cleanup(self):
+        self.request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)

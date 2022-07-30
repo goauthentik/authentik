@@ -1,4 +1,6 @@
 """authentik consent stage"""
+from typing import Optional
+
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
 from rest_framework.fields import CharField
@@ -18,13 +20,15 @@ from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConse
 PLAN_CONTEXT_CONSENT_TITLE = "consent_title"
 PLAN_CONTEXT_CONSENT_HEADER = "consent_header"
 PLAN_CONTEXT_CONSENT_PERMISSIONS = "consent_permissions"
+PLAN_CONTEXT_CONSNET_EXTRA_PERMISSIONS = "consent_additional_permissions"
 
 
 class ConsentChallenge(WithUserInfoChallenge):
     """Challenge info for consent screens"""
 
-    header_text = CharField()
+    header_text = CharField(required=False)
     permissions = PermissionSerializer(many=True)
+    additional_permissions = PermissionSerializer(many=True)
     component = CharField(default="ak-stage-consent")
 
 
@@ -43,6 +47,9 @@ class ConsentStageView(ChallengeStageView):
         data = {
             "type": ChallengeTypes.NATIVE.value,
             "permissions": self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_PERMISSIONS, []),
+            "additional_permissions": self.executor.plan.context.get(
+                PLAN_CONTEXT_CONSNET_EXTRA_PERMISSIONS, []
+            ),
         }
         if PLAN_CONTEXT_CONSENT_TITLE in self.executor.plan.context:
             data["title"] = self.executor.plan.context[PLAN_CONTEXT_CONSENT_TITLE]
@@ -72,10 +79,26 @@ class ConsentStageView(ChallengeStageView):
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
 
-        if UserConsent.filter_not_expired(user=user, application=application).exists():
+        consent: Optional[UserConsent] = UserConsent.filter_not_expired(
+            user=user, application=application
+        ).first()
+
+        if consent:
+            perms = self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_PERMISSIONS, [])
+            allowed_perms = set(consent.permissions.split(" "))
+            requested_perms = set(x["id"] for x in perms)
+
+            if allowed_perms != requested_perms:
+                self.executor.plan.context[PLAN_CONTEXT_CONSENT_PERMISSIONS] = [
+                    x for x in perms if x["id"] in allowed_perms
+                ]
+                self.executor.plan.context[PLAN_CONTEXT_CONSNET_EXTRA_PERMISSIONS] = [
+                    x for x in perms if x["id"] in requested_perms.difference(allowed_perms)
+                ]
+                return super().get(request, *args, **kwargs)
             return self.executor.stage_ok()
 
-        # No consent found, return consent
+        # No consent found, return consent prompt
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
@@ -83,6 +106,10 @@ class ConsentStageView(ChallengeStageView):
         if PLAN_CONTEXT_APPLICATION not in self.executor.plan.context:
             return self.executor.stage_ok()
         application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
+        permissions = self.executor.plan.context.get(
+            PLAN_CONTEXT_CONSENT_PERMISSIONS, []
+        ) + self.executor.plan.context.get(PLAN_CONTEXT_CONSNET_EXTRA_PERMISSIONS, [])
+        permissions_string = " ".join(x["id"] for x in permissions)
         # Make this StageView work when injected, in which case `current_stage` is an instance
         # of the base class, and we don't save any consent, as it is assumed to be a one-time
         # prompt
@@ -91,12 +118,16 @@ class ConsentStageView(ChallengeStageView):
         # Since we only get here when no consent exists, we can create it without update
         if current_stage.mode == ConsentMode.PERMANENT:
             UserConsent.objects.create(
-                user=self.request.user, application=application, expiring=False
+                user=self.request.user,
+                application=application,
+                expiring=False,
+                permissions=permissions_string,
             )
         if current_stage.mode == ConsentMode.EXPIRING:
             UserConsent.objects.create(
                 user=self.request.user,
                 application=application,
                 expires=now() + timedelta_from_string(current_stage.consent_expire_in),
+                permissions=permissions_string,
             )
         return self.executor.stage_ok()

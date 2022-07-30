@@ -14,7 +14,7 @@ return not akadmin.has_usable_password()"""
 PREFILL_POLICY_EXPRESSION = """# This policy sets the user for the currently running flow
 # by injecting "pending_user"
 akadmin = ak_user_by(username="akadmin")
-context["pending_user"] = akadmin
+context["flow_plan"].context["pending_user"] = akadmin
 return True"""
 
 
@@ -130,7 +130,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("authentik_flows", "0017_auto_20210329_1334"),
         ("authentik_stages_user_write", "0002_auto_20200918_1653"),
-        ("authentik_stages_user_login", "__latest__"),
+        ("authentik_stages_user_login", "0003_session_duration_delta"),
         ("authentik_stages_password", "0002_passwordstage_change_flow"),
         ("authentik_policies", "0001_initial"),
         ("authentik_policies_expression", "0001_initial"),

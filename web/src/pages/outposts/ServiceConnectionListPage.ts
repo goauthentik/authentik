@@ -1,3 +1,18 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/outposts/OutpostHealth";
+import "@goauthentik/web/pages/outposts/ServiceConnectionDockerForm";
+import "@goauthentik/web/pages/outposts/ServiceConnectionKubernetesForm";
+import "@goauthentik/web/pages/outposts/ServiceConnectionWizard";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -6,21 +21,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import { OutpostsApi, ServiceConnection } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import { PFColor } from "../../elements/Label";
-import "../../elements/buttons/Dropdown";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/ProxyForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import "./OutpostHealth";
-import "./ServiceConnectionDockerForm";
-import "./ServiceConnectionKubernetesForm";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
@@ -123,36 +123,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         </ak-forms-delete-bulk>`;
     }
 
-    renderToolbar(): TemplateResult {
-        return html` <ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
-                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-                </button>
-                <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(
-                        new OutpostsApi(DEFAULT_CONFIG)
-                            .outpostsServiceConnectionsAllTypesList()
-                            .then((types) => {
-                                return types.map((type) => {
-                                    return html`<li>
-                                        <ak-forms-modal>
-                                            <span slot="submit"> ${t`Create`} </span>
-                                            <span slot="header"> ${t`Create ${type.name}`} </span>
-                                            <ak-proxy-form slot="form" type=${type.component}>
-                                            </ak-proxy-form>
-                                            <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                                ${type.name}<br />
-                                                <small>${type.description}</small>
-                                            </button>
-                                        </ak-forms-modal>
-                                    </li>`;
-                                });
-                            }),
-                        html`<ak-spinner></ak-spinner>`,
-                    )}
-                </ul>
-            </ak-dropdown>
-            ${super.renderToolbar()}`;
+    renderObjectCreate(): TemplateResult {
+        return html`<ak-service-connection-wizard></ak-service-connection-wizard> `;
     }
 }

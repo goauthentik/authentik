@@ -13,3 +13,4 @@ class AuthentikPolicyReputationConfig(AppConfig):
 
     def ready(self):
         import_module("authentik.policies.reputation.signals")
+        import_module("authentik.policies.reputation.tasks")

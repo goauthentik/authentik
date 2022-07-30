@@ -1,5 +1,4 @@
 """saml sp models"""
-from typing import Type
 
 from django.db import models
 from django.http import HttpRequest
@@ -19,6 +18,8 @@ from authentik.sources.saml.processors.constants import (
     RSA_SHA256,
     RSA_SHA384,
     RSA_SHA512,
+    SAML_BINDING_POST,
+    SAML_BINDING_REDIRECT,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
@@ -37,6 +38,15 @@ class SAMLBindingTypes(models.TextChoices):
     REDIRECT = "REDIRECT", _("Redirect Binding")
     POST = "POST", _("POST Binding")
     POST_AUTO = "POST_AUTO", _("POST Binding with auto-confirmation")
+
+    @property
+    def uri(self) -> str:
+        """Convert database field to URI"""
+        return {
+            SAMLBindingTypes.POST: SAML_BINDING_POST,
+            SAMLBindingTypes.POST_AUTO: SAML_BINDING_POST,
+            SAMLBindingTypes.REDIRECT: SAML_BINDING_REDIRECT,
+        }[self]
 
 
 class SAMLNameIDPolicy(models.TextChoices):
@@ -150,7 +160,7 @@ class SAMLSource(Source):
         return "ak-source-saml-form"
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.sources.saml.api import SAMLSourceSerializer
 
         return SAMLSourceSerializer

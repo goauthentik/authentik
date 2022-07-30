@@ -1,6 +1,7 @@
 """OpenID Connect OAuth Views"""
 from typing import Any
 
+from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
@@ -12,12 +13,14 @@ class OpenIDConnectOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source: OAuthSource):  # pragma: no cover
         return {
-            "scope": "openid email profile",
+            "scope": ["openid", "email", "profile"],
         }
 
 
 class OpenIDConnectOAuth2Callback(OAuthCallback):
     """OpenIDConnect OAuth2 Callback"""
+
+    client_class: UserprofileHeaderAuthClient
 
     def get_user_id(self, info: dict[str, str]) -> str:
         return info.get("sub", "")
@@ -27,7 +30,7 @@ class OpenIDConnectOAuth2Callback(OAuthCallback):
         info: dict[str, Any],
     ) -> dict[str, Any]:
         return {
-            "username": info.get("nickname"),
+            "username": info.get("nickname", info.get("preferred_username")),
             "email": info.get("email"),
             "name": info.get("name"),
         }

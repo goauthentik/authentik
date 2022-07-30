@@ -2,7 +2,7 @@
 from contextlib import contextmanager
 from copy import deepcopy
 from json import loads
-from typing import Any, Type
+from typing import Any
 
 from dacite import from_dict
 from dacite.exceptions import DaciteError
@@ -47,6 +47,7 @@ EXCLUDED_MODELS = (
 def transaction_rollback():
     """Enters an atomic transaction and always triggers a rollback at the end of the block."""
     atomic = transaction.atomic()
+    # pylint: disable=unnecessary-dunder-call
     atomic.__enter__()
     yield
     atomic.__exit__(IntegrityError, None, None)
@@ -106,7 +107,7 @@ class Importer:
     def _validate_single(self, entry: FlowBundleEntry) -> BaseSerializer:
         """Validate a single entry"""
         model_app_label, model_name = entry.model.split(".")
-        model: Type[SerializerModel] = apps.get_model(model_app_label, model_name)
+        model: type[SerializerModel] = apps.get_model(model_app_label, model_name)
         if isinstance(model(), EXCLUDED_MODELS):
             raise EntryInvalidError(f"Model {model} not allowed")
 
@@ -134,6 +135,11 @@ class Importer:
             serializer_kwargs["instance"] = model_instance
         else:
             self.logger.debug("initialise new instance", model=model, **updated_identifiers)
+            model_instance = model()
+            # pk needs to be set on the model instance otherwise a new one will be generated
+            if "pk" in updated_identifiers:
+                model_instance.pk = updated_identifiers["pk"]
+            serializer_kwargs["instance"] = model_instance
         full_data = self.__update_pks_for_attrs(entry.attrs)
         full_data.update(updated_identifiers)
         serializer_kwargs["data"] = full_data
@@ -186,7 +192,7 @@ class Importer:
     def validate(self) -> bool:
         """Validate loaded flow export, ensure all models are allowed
         and serializers have no errors"""
-        self.logger.debug("Starting flow import validaton")
+        self.logger.debug("Starting flow import validation")
         if self.__import.version != 1:
             self.logger.warning("Invalid bundle version")
             return False

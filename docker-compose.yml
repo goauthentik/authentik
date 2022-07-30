@@ -1,10 +1,16 @@
 ---
-version: '3.2'
+version: '3.4'
 
 services:
   postgresql:
     image: postgres:12-alpine
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
     volumes:
       - database:/var/lib/postgresql/data
     environment:
@@ -16,8 +22,14 @@ services:
   redis:
     image: redis:alpine
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
   server:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2021.12.4}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.7.3}
     restart: unless-stopped
     command: server
     environment:
@@ -35,10 +47,10 @@ services:
     env_file:
       - .env
     ports:
-      - "0.0.0.0:9000:9000"
-      - "0.0.0.0:9443:9443"
+      - "0.0.0.0:${AUTHENTIK_PORT_HTTP:-9000}:9000"
+      - "0.0.0.0:${AUTHENTIK_PORT_HTTPS:-9443}:9443"
   worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2021.12.4}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.7.3}
     restart: unless-stopped
     command: worker
     environment:
@@ -49,11 +61,10 @@ services:
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
       # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
     # This is optional, and can be removed. If you remove this, the following will happen
-    # - The permissions for the /backups and /media folders aren't fixed, so make sure they are 1000:1000
+    # - The permissions for the /media folders aren't fixed, so make sure they are 1000:1000
     # - The docker socket can't be accessed anymore
     user: root
     volumes:
-      - ./backups:/backups
       - ./media:/media
       - ./certs:/certs
       - /var/run/docker.sock:/var/run/docker.sock

@@ -3,7 +3,6 @@ import json
 from dataclasses import asdict
 
 from django.urls import reverse
-from django.utils.encoding import force_str
 
 from authentik.blueprints.manager import ObjectManager
 from authentik.core.models import Application
@@ -20,9 +19,9 @@ class TestUserinfo(OAuthTestCase):
     def setUp(self) -> None:
         super().setUp()
         ObjectManager().run()
-        self.app = Application.objects.create(name="test", slug="test")
+        self.app = Application.objects.create(name=generate_id(), slug=generate_id())
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
-            name="test",
+            name=generate_id(),
             client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
@@ -54,7 +53,7 @@ class TestUserinfo(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.token.access_token}",
         )
         self.assertJSONEqual(
-            force_str(res.content),
+            res.content.decode(),
             {
                 "name": self.user.name,
                 "given_name": self.user.name,
@@ -77,7 +76,7 @@ class TestUserinfo(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.token.access_token}",
         )
         self.assertJSONEqual(
-            force_str(res.content),
+            res.content.decode(),
             {
                 "name": self.user.name,
                 "given_name": self.user.name,

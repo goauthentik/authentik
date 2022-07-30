@@ -1,3 +1,12 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/buttons/Dropdown";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/TokenCopyButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -7,14 +16,6 @@ import { until } from "lit/directives/until.js";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
-import { AKResponse } from "../../../api/Client";
-import { AndNext, DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/buttons/Dropdown";
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/TokenCopyButton";
-import "../../../elements/forms/DeleteBulkForm";
-import "../../../elements/forms/ModalForm";
-import { Table, TableColumn } from "../../../elements/table/Table";
 import "./MFADeviceForm";
 
 export function stageToAuthenticatorName(stage: UserSetting): string {
@@ -31,6 +32,17 @@ export function stageToAuthenticatorName(stage: UserSetting): string {
             return t`Security key authenticator`;
     }
     return `Invalid stage component ${stage.component}`;
+}
+
+export function deviceTypeName(device: Device): string {
+    switch (device.type) {
+        case "otp_static.StaticDevice":
+            return t`Static tokens`;
+        case "otp_totp.TOTPDevice":
+            return t`TOTP Device`;
+        default:
+            return device.verboseName;
+    }
 }
 
 @customElement("ak-user-settings-mfa")
@@ -79,7 +91,9 @@ export class MFADevicesPage extends Table<Device> {
                                     return html`<li>
                                         <a
                                             href="${ifDefined(stage.configureUrl)}${AndNext(
-                                                "/if/user/#/settings;page-mfa",
+                                                `/if/user/#/settings;${JSON.stringify({
+                                                    page: "page-mfa",
+                                                })}`,
                                             )}"
                                             class="pf-c-dropdown__menu-item"
                                         >
@@ -140,21 +154,10 @@ export class MFADevicesPage extends Table<Device> {
         </ak-forms-delete-bulk>`;
     }
 
-    deviceTypeName(device: Device): string {
-        switch (device.type) {
-            case "otp_static.StaticDevice":
-                return t`Static tokens`;
-            case "otp_totp.TOTPDevice":
-                return t`TOTP Device`;
-            default:
-                return device.verboseName;
-        }
-    }
-
     row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${this.deviceTypeName(item)}`,
+            html`${deviceTypeName(item)}`,
             html`
                 <ak-forms-modal>
                     <span slot="submit">${t`Update`}</span>

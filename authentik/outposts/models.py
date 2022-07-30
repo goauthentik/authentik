@@ -1,8 +1,7 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from os import environ
-from typing import Iterable, Optional, Union
+from typing import Iterable, Optional
 from uuid import uuid4
 
 from dacite import from_dict
@@ -18,11 +17,12 @@ from packaging.version import LegacyVersion, Version, parse
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik import ENV_GIT_HASH_KEY, __version__
+from authentik import __version__, get_build_hash
 from authentik.blueprints.models import ManagedModel
 from authentik.core.models import (
     USER_ATTRIBUTE_CAN_OVERRIDE_IP,
     USER_ATTRIBUTE_SA,
+    USER_PATH_SYSTEM_PREFIX,
     Provider,
     Token,
     TokenIntents,
@@ -40,6 +40,8 @@ from authentik.tenants.models import Tenant
 OUR_VERSION = parse(__version__)
 OUTPOST_HELLO_INTERVAL = 10
 LOGGER = get_logger()
+
+USER_PATH_OUTPOSTS = USER_PATH_SYSTEM_PREFIX + "/outposts"
 
 
 class ServiceConnectionInvalid(SentryIgnoredException):
@@ -62,6 +64,7 @@ class OutpostConfig:
 
     docker_network: Optional[str] = field(default=None)
     docker_map_ports: bool = field(default=True)
+    docker_labels: Optional[dict[str, str]] = field(default=None)
 
     container_image: Optional[str] = field(default=None)
 
@@ -77,7 +80,7 @@ class OutpostConfig:
 class OutpostModel(Model):
     """Base model for providers that need more objects than just themselves"""
 
-    def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
+    def get_required_objects(self) -> Iterable[models.Model | str]:
         """Return a list of all required objects"""
         return [self]
 
@@ -347,19 +350,18 @@ class Outpost(SerializerModel, ManagedModel):
     @property
     def user(self) -> User:
         """Get/create user with access to all required objects"""
-        users = User.objects.filter(username=self.user_identifier)
-        should_create_user = not users.exists()
-        if should_create_user:
+        user = User.objects.filter(username=self.user_identifier).first()
+        user_created = False
+        if not user:
             user: User = User.objects.create(username=self.user_identifier)
             user.set_unusable_password()
-            user.save()
-        else:
-            user = users.first()
+            user_created = True
         user.attributes[USER_ATTRIBUTE_SA] = True
         user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
         user.name = f"Outpost {self.name} Service-Account"
+        user.path = USER_PATH_OUTPOSTS
         user.save()
-        if should_create_user:
+        if user_created:
             self.build_user_permissions(user)
         return user
 
@@ -394,9 +396,9 @@ class Outpost(SerializerModel, ManagedModel):
             Token.objects.filter(identifier=self.token_identifier).delete()
             return self.token
 
-    def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
+    def get_required_objects(self) -> Iterable[models.Model | str]:
         """Get an iterator of all objects the user needs read access to"""
-        objects: list[Union[models.Model, str]] = [
+        objects: list[models.Model | str] = [
             self,
             "authentik_events.add_event",
         ]
@@ -423,7 +425,7 @@ class OutpostState:
     channel_ids: list[str] = field(default_factory=list)
     last_seen: Optional[datetime] = field(default=None)
     version: Optional[str] = field(default=None)
-    version_should: Union[Version, LegacyVersion] = field(default=OUR_VERSION)
+    version_should: Version | LegacyVersion = field(default=OUR_VERSION)
     build_hash: str = field(default="")
 
     _outpost: Optional[Outpost] = field(default=None)
@@ -433,7 +435,7 @@ class OutpostState:
         """Check if outpost version matches our version"""
         if not self.version:
             return False
-        if self.build_hash != environ.get(ENV_GIT_HASH_KEY, ""):
+        if self.build_hash != get_build_hash():
             return False
         return parse(self.version) < OUR_VERSION
 

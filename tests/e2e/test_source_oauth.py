@@ -4,7 +4,6 @@ from sys import platform
 from time import sleep
 from typing import Any, Optional
 from unittest.case import skipUnless
-from unittest.mock import Mock, patch
 
 from docker.models.containers import Container
 from docker.types import Healthcheck
@@ -18,29 +17,44 @@ from authentik.core.models import User
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.manager import SourceType
-from authentik.sources.oauth.types.twitter import TwitterOAuthCallback
+from authentik.sources.oauth.types.manager import MANAGER, SourceType
+from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 CONFIG_PATH = "/tmp/dex.yml"  # nosec
 
 
-class OAUth1Type(SourceType):
-    """Twitter Type definition"""
+class OAUth1Callback(OAuthCallback):
+    """OAuth1 Callback with custom getters"""
 
-    callback_view = TwitterOAuthCallback
-    name = "Twitter"
-    slug = "twitter"
+    def get_user_id(self, info: dict[str, str]) -> str:
+        return info.get("id")
+
+    def get_user_enroll_context(
+        self,
+        info: dict[str, Any],
+    ) -> dict[str, Any]:
+        return {
+            "username": info.get("screen_name"),
+            "email": info.get("email"),
+            "name": info.get("name"),
+        }
+
+
+@MANAGER.type()
+class OAUth1Type(SourceType):
+    """OAuth1 Type definition"""
+
+    callback_view = OAUth1Callback
+    name = "OAuth1"
+    slug = "oauth1"
 
     request_token_url = "http://localhost:5000/oauth/request_token"  # nosec
     access_token_url = "http://localhost:5000/oauth/access_token"  # nosec
     authorization_url = "http://localhost:5000/oauth/authorize"
     profile_url = "http://localhost:5000/api/me"
     urls_customizable = False
-
-
-SOURCE_TYPE_MOCK = Mock(return_value=OAUth1Type)
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -256,7 +270,7 @@ class TestSourceOAuth1(SeleniumTestCase):
             slug=self.source_slug,
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
-            provider_type="twitter",
+            provider_type="oauth1",
             consumer_key=self.client_id,
             consumer_secret=self.client_secret,
         )
@@ -269,10 +283,6 @@ class TestSourceOAuth1(SeleniumTestCase):
     @apply_migration("authentik_flows", "0011_flow_title")
     @apply_migration("authentik_flows", "0009_source_flows")
     @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @patch(
-        "authentik.sources.oauth.types.manager.SourceTypeManager.find_type",
-        SOURCE_TYPE_MOCK,
-    )
     @object_manager
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""

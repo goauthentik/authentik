@@ -23,6 +23,7 @@ from authentik.events.monitored_tasks import (
     TaskResultStatus,
     prefill_task,
 )
+from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import path_to_class
 from authentik.outposts.controllers.base import BaseController, ControllerException
 from authentik.outposts.controllers.docker import DockerClient
@@ -77,8 +78,12 @@ def outpost_service_connection_state(connection_pk: Any):
         cls = DockerClient
     if isinstance(connection, KubernetesServiceConnection):
         cls = KubernetesClient
-    with cls(connection) as client:
-        state = client.fetch_state()
+    try:
+        with cls(connection) as client:
+            state = client.fetch_state()
+    except ServiceConnectionInvalid as exc:
+        LOGGER.warning("Failed to get client status", exc=exc)
+        return
     cache.set(connection.state_key, state, timeout=None)
 
 
@@ -227,6 +232,9 @@ def _outpost_single_update(outpost: Outpost, layer=None):
 @CELERY_APP.task()
 def outpost_local_connection():
     """Checks the local environment and create Service connections."""
+    if not CONFIG.y_bool("outposts.discover"):
+        LOGGER.debug("outpost integration discovery is disabled")
+        return
     # Explicitly check against token filename, as that's
     # only present when the integration is enabled
     if Path(SERVICE_TOKEN_FILENAME).exists():

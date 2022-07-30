@@ -30,3 +30,4 @@ class PasswordPolicyViewSet(UsedByMixin, ModelViewSet):
     serializer_class = PasswordPolicySerializer
     filterset_fields = "__all__"
     ordering = ["name"]
+    search_fields = ["name"]

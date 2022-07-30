@@ -1,14 +1,14 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { SentryIgnoredError } from "@goauthentik/web/common/errors";
+import { Form } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { Flow, FlowsApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { SentryIgnoredError } from "../../common/errors";
-import { Form } from "../../elements/forms/Form";
-import "../../elements/forms/HorizontalFormElement";
 
 @customElement("ak-flow-import-form")
 export class FlowImportForm extends Form<Flow> {
@@ -18,7 +18,7 @@ export class FlowImportForm extends Form<Flow> {
 
     // eslint-disable-next-line
     send = (data: Flow): Promise<void> => {
-        const file = this.getFormFile();
+        const file = this.getFormFiles()["flow"];
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }

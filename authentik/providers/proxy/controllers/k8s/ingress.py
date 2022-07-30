@@ -92,6 +92,8 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
             # Buffer sizes for large headers with JWTs
             "nginx.ingress.kubernetes.io/proxy-buffers-number": "4",
             "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k",
+            # Enable TLS in traefik
+            "traefik.ingress.kubernetes.io/router.tls": "true",
         }
         annotations.update(self.controller.outpost.config.kubernetes_ingress_annotations)
         return annotations
@@ -126,8 +128,8 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
                                         port=V1ServiceBackendPort(name="http"),
                                     ),
                                 ),
-                                path="/akprox",
-                                path_type="ImplementationSpecific",
+                                path="/outpost.goauthentik.io",
+                                path_type="Prefix",
                             )
                         ]
                     ),
@@ -145,7 +147,7 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
                                     ),
                                 ),
                                 path="/",
-                                path_type="ImplementationSpecific",
+                                path_type="Prefix",
                             )
                         ]
                     ),

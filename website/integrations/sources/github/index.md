@@ -2,14 +2,16 @@
 title: Github
 ---
 
+<span class="badge badge--primary">Support level: authentik</span>
+
 Allows users to authenticate using their Github credentials
 
 ## Preparation
 
 The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik install.
-- `www.my.company` Homepage URL for your site
+-   `authentik.company` is the FQDN of the authentik install.
+-   `www.my.company` Homepage URL for your site
 
 ## Github
 
@@ -24,37 +26,75 @@ The following placeholders will be used:
 
 Example screenshot
 
-![Example Screen](githubdeveloperexample.png)
+![](githubdeveloperexample.png)
 
 6. Copy the **Client ID** and _save it for later_
-7. Click **Generate a new client secret** and _save it for later_  You will not be able to see the secret again, so be sure to copy it now.
+7. Click **Generate a new client secret** and _save it for later_ You will not be able to see the secret again, so be sure to copy it now.
 
 ## authentik
 
-8. Under _Resources -> Sources_ Click **Create Github OAuth Source**
+8. Under _Directory -> Federation & Social login_ Click **Create Github OAuth Source**
 
 9. **Name**: Choose a name (For the example I use Github)
 10. **Slug**: github (If you choose a different slug the URLs will need to be updated to reflect the change)
-11.  **Consumer Key:** Client ID from step 6
+11. **Consumer Key:** Client ID from step 6
 12. **Consumer Secret:** Client Secret from step 7
-13. **Provider Type:** Github
-
-Expand URL settings:
-
-:::note
-As of June 20 2021 these URLS are correct. Here is the Github reference URL https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps
-:::
-
-14. **Authorization URL:** `https://github.com/login/oauth/authorize`
-15. **Access token URL:** `https://github.com/login/oauth/access_token`
-16. **Profile URL:** `https://api.github.com/user`
 
 Here is an example of a complete authentik Github OAuth Source
 
-![Example Screen](githubexample2.png)
+![](githubexample2.png)
 
 Save, and you now have Github as a source.
 
 :::note
 For more details on how-to have the new source display on the Login Page see [here](../).
 :::
+
+### Checking for membership of a GitHub Organisation
+
+:::info
+Requires authentik 2021.12.5.
+:::
+
+To check if the user is member of an organisation, you can use the following policy on your flows:
+
+```python
+# Ensure flow is only run during oauth logins via Github
+if context['source'].provider_type != "github":
+    return True
+
+accepted_org = "foo"
+
+# Get the user-source connection object from the context, and get the access token
+connection = context['goauthentik.io/sources/connection']
+access_token = connection.access_token
+
+# We also access the user info authentik already retrieved, to get the correct username
+github_username = context["oauth_userinfo"]
+
+# Github does not include Organisations in the userinfo endpoint, so we have to call another URL
+
+orgs = requests.get(
+    "https://api.github.com/user/orgs",
+    auth=(github_username["login"], access_token),
+    headers={
+        "accept": "application/vnd.github.v3+json"
+    }
+).json()
+
+# `orgs` will be formatted like this
+# [
+#     {
+#         "login": "beryjuorg",
+#         [...]
+#     }
+# ]
+user_matched = any(org['login'] == accepted_org for org in orgs)
+if not user_matched:
+    ak_message(f"User is not member of {accepted_org}.")
+return user_matched
+```
+
+If a user is not member of the chosen organisation, they will see this message
+
+![](./github_org_membership.png)

@@ -1,0 +1,86 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "authentik[core]: format & test",
+            "command": "poetry",
+            "args": [
+                "run",
+                "make"
+            ],
+            "group": "build",
+        },
+        {
+            "label": "authentik[core]: run",
+            "command": "poetry",
+            "args": [
+                "run",
+                "make",
+                "run",
+            ],
+            "group": "build",
+            "presentation": {
+                "panel": "dedicated",
+                "group": "running"
+            },
+        },
+        {
+            "label": "authentik[web]: format",
+            "command": "make",
+            "args": ["web"],
+            "group": "build",
+        },
+        {
+            "label": "authentik[web]: watch",
+            "command": "make",
+            "args": ["web-watch"],
+            "group": "build",
+            "presentation": {
+                "panel": "dedicated",
+                "group": "running"
+            },
+        },
+        {
+            "label": "authentik: install",
+            "command": "make",
+            "args": ["install"],
+            "group": "build",
+        },
+        {
+            "label": "authentik: i18n-extract",
+            "command": "poetry",
+            "args": [
+                "run",
+                "make",
+                "i18n-extract"
+            ],
+            "group": "build",
+        },
+        {
+            "label": "authentik[website]: format",
+            "command": "make",
+            "args": ["website"],
+            "group": "build",
+        },
+        {
+            "label": "authentik[website]: watch",
+            "command": "make",
+            "args": ["website-watch"],
+            "group": "build",
+            "presentation": {
+                "panel": "dedicated",
+                "group": "running"
+            },
+        },
+        {
+            "label": "authentik[api]: generate",
+            "command": "poetry",
+            "args": [
+                "run",
+                "make",
+                "gen"
+            ],
+            "group": "build"
+        },
+    ]
+}

@@ -4,13 +4,38 @@
 {% load i18n %}
 
 {% block head_before %}
+<link rel="prefetch" href="/static/dist/assets/images/flow_background.jpg" />
 <link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly.min.css' %}">
 {% endblock %}
 
 {% block head %}
 <style>
-.pf-c-background-image::before {
+:root {
     --ak-flow-background: url("/static/dist/assets/images/flow_background.jpg");
+    --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
+}
+/* Form with user */
+.form-control-static {
+    margin-top: var(--pf-global--spacer--sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.form-control-static .avatar {
+    display: flex;
+    align-items: center;
+}
+.form-control-static img {
+    margin-right: var(--pf-global--spacer--xs);
+}
+.form-control-static a {
+    padding-top: var(--pf-global--spacer--xs);
+    padding-bottom: var(--pf-global--spacer--xs);
+    line-height: var(--pf-global--spacer--xl);
 }
 </style>
 {% endblock %}
@@ -59,13 +84,11 @@
                     <a href="{{ link.href }}">{{ link.name }}</a>
                 </li>
                 {% endfor %}
-                {% if tenant.branding_title != "authentik" %}
                 <li>
                     <a href="https://goauthentik.io?utm_source=authentik">
                         {% trans 'Powered by authentik' %}
                     </a>
                 </li>
-                {% endif %}
             </ul>
         </footer>
     </div>

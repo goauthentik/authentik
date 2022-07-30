@@ -1,3 +1,7 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/CodeMirror";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
 import YAML from "yaml";
 
 import { t } from "@lingui/macro";
@@ -8,11 +12,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import { Outpost, OutpostTypeEnum, OutpostsApi, ProvidersApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/CodeMirror";
-import "../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../elements/forms/ModelForm";
 
 @customElement("ak-outpost-form")
 export class OutpostForm extends ModelForm<Outpost, string> {
@@ -129,7 +128,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         value=${OutpostTypeEnum.Ldap}
                         ?selected=${this.instance?.type === OutpostTypeEnum.Ldap}
                     >
-                        ${t`LDAP (Technical preview)`}
+                        ${t`LDAP`}
                     </option>
                 </select>
             </ak-form-element-horizontal>
@@ -167,7 +166,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     See
                     <a
                         target="_blank"
-                        href="https://goauthentik.io/docs/outposts/outposts?utm_source=authentik"
+                        href="https://goauthentik.io/docs/outposts?utm_source=authentik"
                         >documentation</a
                     >.
                 </p>
@@ -210,7 +209,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     See
                     <a
                         target="_blank"
-                        href="https://goauthentik.io/docs/outposts/outposts?utm_source=authentik#configuration"
+                        href="https://goauthentik.io/docs/outposts?utm_source=authentik#configuration"
                         >documentation</a
                     >.
                 </p>

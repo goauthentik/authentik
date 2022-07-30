@@ -3,6 +3,7 @@ from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
 
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.root.celery import CELERY_APP
 from authentik.sources.ldap.models import LDAPSource
@@ -52,5 +53,5 @@ def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str):
         )
     except LDAPException as exc:
         # No explicit event is created here as .set_status with an error will do that
-        LOGGER.debug(exc)
+        LOGGER.warning(exception_to_string(exc))
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))

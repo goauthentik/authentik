@@ -1,32 +1,30 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/forms/ConfirmationForm";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/policies/PolicyTestForm";
+import "@goauthentik/web/pages/policies/PolicyWizard";
+import "@goauthentik/web/pages/policies/dummy/DummyPolicyForm";
+import "@goauthentik/web/pages/policies/event_matcher/EventMatcherPolicyForm";
+import "@goauthentik/web/pages/policies/expiry/ExpiryPolicyForm";
+import "@goauthentik/web/pages/policies/expression/ExpressionPolicyForm";
+import "@goauthentik/web/pages/policies/hibp/HaveIBeenPwnedPolicyForm";
+import "@goauthentik/web/pages/policies/password/PasswordPolicyForm";
+import "@goauthentik/web/pages/policies/reputation/ReputationPolicyForm";
+import { groupBy } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import { PoliciesApi, Policy } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/buttons/Dropdown";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/ConfirmationForm";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import "../../elements/forms/ProxyForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import { groupBy } from "../../utils";
-import "./PolicyTestForm";
-import "./dummy/DummyPolicyForm";
-import "./event_matcher/EventMatcherPolicyForm";
-import "./expiry/ExpiryPolicyForm";
-import "./expression/ExpressionPolicyForm";
-import "./hibp/HaveIBeenPwnedPolicyForm";
-import "./password/PasswordPolicyForm";
-import "./reputation/ReputationPolicyForm";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
@@ -75,7 +73,7 @@ export class PolicyListPage extends TablePage<Policy> {
                 <div>${item.name}</div>
                 ${(item.boundTo || 0) > 0
                     ? html`<i class="pf-icon pf-icon-ok"></i>
-                          <small> ${t`Assigned to ${item.boundTo} object(s).`} </small>`
+                          <small>${t`Assigned to ${item.boundTo} object(s).`}</small>`
                     : html`<i class="pf-icon pf-icon-warning-triangle"></i>
                           <small>${t`Warning: Policy is not assigned.`}</small>`}
             </div>`,
@@ -128,35 +126,12 @@ export class PolicyListPage extends TablePage<Policy> {
         </ak-forms-delete-bulk>`;
     }
 
+    renderObjectCreate(): TemplateResult {
+        return html`<ak-policy-wizard> </ak-policy-wizard>`;
+    }
+
     renderToolbar(): TemplateResult {
-        return html` <ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${t`Create`}</span>
-                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-                </button>
-                <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(
-                        new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
-                            return types.map((type) => {
-                                return html`<li>
-                                    <ak-forms-modal>
-                                        <span slot="submit"> ${t`Create`} </span>
-                                        <span slot="header"> ${t`Create ${type.name}`} </span>
-                                        <ak-proxy-form slot="form" type=${type.component}>
-                                        </ak-proxy-form>
-                                        <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                            ${type.name}<br />
-                                            <small>${type.description}</small>
-                                        </button>
-                                    </ak-forms-modal>
-                                </li>`;
-                            });
-                        }),
-                        html`<ak-spinner></ak-spinner>`,
-                    )}
-                </ul>
-            </ak-dropdown>
-            ${super.renderToolbar()}
+        return html` ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${t`Successfully cleared policy cache`}
                 errorMessage=${t`Failed to delete policy cache`}

@@ -1,3 +1,5 @@
+import { AndNext } from "@goauthentik/web/api/Config";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -6,14 +8,12 @@ import { customElement } from "lit/decorators.js";
 import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { AndNext } from "../../../api/Config";
 
 @customElement("ak-user-settings-password")
 export class UserSettingsPassword extends LitElement {
@@ -32,7 +32,7 @@ export class UserSettingsPassword extends LitElement {
             <div class="pf-c-card__body">
                 <a
                     href="${ifDefined(this.configureUrl)}${AndNext(
-                        "/if/user/#/settings;page-details",
+                        `/if/user/#/settings;${JSON.stringify({ page: "page-details" })}`,
                     )}"
                     class="pf-c-button pf-m-primary"
                 >

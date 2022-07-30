@@ -1,7 +1,10 @@
 """Serializer for tenant models"""
+from typing import Any
+
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, ListField
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import CharField, ListField, ReadOnlyField
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -24,6 +27,15 @@ class FooterLinkSerializer(PassiveSerializer):
 class TenantSerializer(ModelSerializer):
     """Tenant Serializer"""
 
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        if attrs.get("default", False):
+            tenants = Tenant.objects.filter(default=True)
+            if self.instance:
+                tenants = tenants.exclude(pk=self.instance.pk)
+            if tenants.exists():
+                raise ValidationError("Only a single Tenant can be set as default.")
+        return super().validate(attrs)
+
     class Meta:
 
         model = Tenant
@@ -38,8 +50,10 @@ class TenantSerializer(ModelSerializer):
             "flow_invalidation",
             "flow_recovery",
             "flow_unenrollment",
+            "flow_user_settings",
             "event_retention",
             "web_certificate",
+            "attributes",
         ]
 
 
@@ -60,6 +74,9 @@ class CurrentTenantSerializer(PassiveSerializer):
     flow_invalidation = CharField(source="flow_invalidation.slug", required=False)
     flow_recovery = CharField(source="flow_recovery.slug", required=False)
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
+    flow_user_settings = CharField(source="flow_user_settings.slug", required=False)
+
+    default_locale = ReadOnlyField()
 
 
 class TenantViewSet(UsedByMixin, ModelViewSet):
@@ -72,7 +89,21 @@ class TenantViewSet(UsedByMixin, ModelViewSet):
         "branding_title",
         "web_certificate__name",
     ]
-    filterset_fields = "__all__"
+    filterset_fields = [
+        "tenant_uuid",
+        "domain",
+        "default",
+        "branding_title",
+        "branding_logo",
+        "branding_favicon",
+        "flow_authentication",
+        "flow_invalidation",
+        "flow_recovery",
+        "flow_unenrollment",
+        "flow_user_settings",
+        "event_retention",
+        "web_certificate",
+    ]
     ordering = ["domain"]
 
     @extend_schema(

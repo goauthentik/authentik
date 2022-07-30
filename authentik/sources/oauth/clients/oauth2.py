@@ -11,6 +11,7 @@ from structlog.stdlib import get_logger
 from authentik.sources.oauth.clients.base import BaseOAuthClient
 
 LOGGER = get_logger()
+SESSION_KEY_OAUTH_PKCE = "authentik/sources/oauth/pkce"
 
 
 class OAuth2Client(BaseOAuthClient):
@@ -69,15 +70,14 @@ class OAuth2Client(BaseOAuthClient):
             "code": code,
             "grant_type": "authorization_code",
         }
+        if SESSION_KEY_OAUTH_PKCE in self.request.session:
+            args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
         try:
             access_token_url = self.source.type.access_token_url or ""
             if self.source.type.urls_customizable and self.source.access_token_url:
                 access_token_url = self.source.access_token_url
             response = self.session.request(
-                "post",
-                access_token_url,
-                data=args,
-                headers=self._default_headers,
+                "post", access_token_url, data=args, headers=self._default_headers, **request_kwargs
             )
             response.raise_for_status()
         except RequestException as exc:
@@ -128,3 +128,25 @@ class OAuth2Client(BaseOAuthClient):
     @property
     def session_key(self):
         return f"oauth-client-{self.source.name}-request-state"
+
+
+class UserprofileHeaderAuthClient(OAuth2Client):
+    """OAuth client which only sends authentication via header, not querystring"""
+
+    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
+        "Fetch user profile information."
+        profile_url = self.source.type.profile_url or ""
+        if self.source.type.urls_customizable and self.source.profile_url:
+            profile_url = self.source.profile_url
+        try:
+            response = self.session.request(
+                "get",
+                profile_url,
+                headers={"Authorization": f"{token['token_type']} {token['access_token']}"},
+            )
+            response.raise_for_status()
+        except RequestException as exc:
+            LOGGER.warning("Unable to fetch user profile", exc=exc, body=response.text)
+            return None
+        else:
+            return response.json()

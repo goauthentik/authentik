@@ -1,9 +1,19 @@
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/PageHeader";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/events/ObjectChangelog";
+import "@goauthentik/web/pages/flows/BoundStagesList";
+import "@goauthentik/web/pages/flows/FlowDiagram";
+import "@goauthentik/web/pages/flows/FlowForm";
+import "@goauthentik/web/pages/policies/BoundPoliciesList";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -12,17 +22,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Flow, FlowsApi } from "@goauthentik/api";
-
-import { AndNext, DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/PageHeader";
-import "../../elements/Tabs";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/events/ObjectChangelog";
-import "../policies/BoundPoliciesList";
-import "./BoundStagesList";
-import "./FlowDiagram";
-import "./FlowForm";
+import { Flow, FlowsApi, ResponseError } from "@goauthentik/api";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends LitElement {
@@ -120,6 +120,19 @@ export class FlowViewPage extends LitElement {
                                                 <button
                                                     class="pf-c-button pf-m-primary"
                                                     @click=${() => {
+                                                        const finalURL = `${
+                                                            window.location.origin
+                                                        }/if/flow/${this.flow.slug}/${AndNext(
+                                                            `${window.location.pathname}#${window.location.hash}`,
+                                                        )}`;
+                                                        window.open(finalURL, "_blank");
+                                                    }}
+                                                >
+                                                    ${t`Normal`}
+                                                </button>
+                                                <button
+                                                    class="pf-c-button pf-m-secondary"
+                                                    @click=${() => {
                                                         new FlowsApi(DEFAULT_CONFIG)
                                                             .flowsInstancesExecuteRetrieve({
                                                                 slug: this.flow.slug,
@@ -134,7 +147,7 @@ export class FlowViewPage extends LitElement {
                                                             });
                                                     }}
                                                 >
-                                                    ${t`Normal`}
+                                                    ${t`with current user`}
                                                 </button>
                                                 <button
                                                     class="pf-c-button pf-m-secondary"
@@ -150,6 +163,14 @@ export class FlowViewPage extends LitElement {
                                                                     `inspector&next=/#${window.location.hash}`,
                                                                 )}`;
                                                                 window.open(finalURL, "_blank");
+                                                            })
+                                                            .catch((exc: ResponseError) => {
+                                                                // This request can return a HTTP 400 when a flow
+                                                                // is not applicable.
+                                                                window.open(
+                                                                    exc.response.url,
+                                                                    "_blank",
+                                                                );
                                                             });
                                                     }}
                                                 >

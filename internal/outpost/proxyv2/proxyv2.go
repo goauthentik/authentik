@@ -13,11 +13,12 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/application"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
+	sentryutils "goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
 )
 
@@ -46,7 +47,7 @@ func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
 	rootMux.Use(func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(rw, r)
-			rw.Header().Set("Server", "authentik_proxy2")
+			rw.Header().Set("X-Powered-By", "authentik_proxy2")
 		})
 	})
 
@@ -64,17 +65,18 @@ func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
 		akAPI:       ac,
 		defaultCert: defaultCert,
 	}
-	globalMux.PathPrefix("/akprox/static").HandlerFunc(s.HandleStatic)
-	globalMux.Path("/akprox/ping").HandlerFunc(s.HandlePing)
+	globalMux.PathPrefix("/outpost.goauthentik.io/static").HandlerFunc(s.HandleStatic)
+	globalMux.Path("/outpost.goauthentik.io/ping").HandlerFunc(sentryutils.SentryNoSample(s.HandlePing))
 	rootMux.PathPrefix("/").HandlerFunc(s.Handle)
 	return s
 }
 
-func (ps *ProxyServer) HandleHost(host string, rw http.ResponseWriter, r *http.Request) bool {
-	if app, ok := ps.apps[host]; ok {
-		if app.Mode() == api.PROXYMODE_PROXY {
+func (ps *ProxyServer) HandleHost(rw http.ResponseWriter, r *http.Request) bool {
+	a, host := ps.lookupApp(r)
+	if a != nil {
+		if a.Mode() == api.PROXYMODE_PROXY {
 			ps.log.WithField("host", host).Trace("routing to proxy outpost")
-			app.ServeHTTP(rw, r)
+			a.ServeHTTP(rw, r)
 			return true
 		}
 	}
@@ -90,7 +92,7 @@ func (ps *ProxyServer) TimerFlowCacheExpiry() {}
 func (ps *ProxyServer) GetCertificate(serverName string) *tls.Certificate {
 	app, ok := ps.apps[serverName]
 	if !ok {
-		ps.log.WithField("server-name", serverName).Debug("app does not exist")
+		ps.log.WithField("server-name", serverName).Debug("failed to get certificate for ServerName")
 		return nil
 	}
 	if app.Cert == nil {
@@ -101,7 +103,11 @@ func (ps *ProxyServer) GetCertificate(serverName string) *tls.Certificate {
 }
 
 func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
-	appCert := ps.GetCertificate(info.ServerName)
+	sn := info.ServerName
+	if sn == "" {
+		return &ps.defaultCert, nil
+	}
+	appCert := ps.GetCertificate(sn)
 	if appCert == nil {
 		return &ps.defaultCert, nil
 	}
@@ -134,7 +140,7 @@ func (ps *ProxyServer) ServeHTTPS() {
 
 	ln, err := net.Listen("tcp", listenAddress)
 	if err != nil {
-		ps.log.WithError(err).Warning("Failed to listen for HTTPS")
+		ps.log.WithError(err).Warning("Failed to listen (TLS)")
 	}
 	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}}
 	defer proxyListener.Close()
@@ -150,17 +156,14 @@ func (ps *ProxyServer) Start() error {
 	wg.Add(3)
 	go func() {
 		defer wg.Done()
-		ps.log.Debug("Starting HTTP Server...")
 		ps.ServeHTTP()
 	}()
 	go func() {
 		defer wg.Done()
-		ps.log.Debug("Starting HTTPs Server...")
 		ps.ServeHTTPS()
 	}()
 	go func() {
 		defer wg.Done()
-		ps.log.Debug("Starting Metrics Server...")
 		metrics.RunServer()
 	}()
 	return nil

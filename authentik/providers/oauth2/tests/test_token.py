@@ -3,10 +3,9 @@ from base64 import b64encode
 
 from django.test import RequestFactory
 from django.urls import reverse
-from django.utils.encoding import force_str
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.constants import (
@@ -25,17 +24,17 @@ class TestToken(OAuthTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.factory = RequestFactory()
-        self.app = Application.objects.create(name="test", slug="test")
+        self.app = Application.objects.create(name=generate_id(), slug="test")
 
     def test_request_auth_code(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
-            name="test",
+            name=generate_id(),
             client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://testserver",
-            signing_key=create_test_cert(),
+            redirect_uris="http://TestServer",
+            signing_key=self.keypair,
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
@@ -45,7 +44,7 @@ class TestToken(OAuthTestCase):
             data={
                 "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
                 "code": code.code,
-                "redirect_uri": "http://testserver",
+                "redirect_uri": "http://TestServer",
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
@@ -57,12 +56,12 @@ class TestToken(OAuthTestCase):
     def test_request_auth_code_invalid(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
-            name="test",
+            name=generate_id(),
             client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
-            signing_key=create_test_cert(),
+            signing_key=self.keypair,
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         request = self.factory.post(
@@ -80,12 +79,12 @@ class TestToken(OAuthTestCase):
     def test_request_refresh_token(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
-            name="test",
+            name=generate_id(),
             client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            signing_key=create_test_cert(),
+            signing_key=self.keypair,
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
@@ -109,12 +108,12 @@ class TestToken(OAuthTestCase):
     def test_auth_code_view(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
-            name="test",
+            name=generate_id(),
             client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            signing_key=create_test_cert(),
+            signing_key=self.keypair,
         )
         # Needs to be assigned to an application for iss to be set
         self.app.provider = provider
@@ -135,7 +134,7 @@ class TestToken(OAuthTestCase):
         )
         new_token: RefreshToken = RefreshToken.objects.filter(user=user).first()
         self.assertJSONEqual(
-            force_str(response.content),
+            response.content.decode(),
             {
                 "access_token": new_token.access_token,
                 "refresh_token": new_token.refresh_token,
@@ -151,12 +150,12 @@ class TestToken(OAuthTestCase):
     def test_refresh_token_view(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
-            name="test",
+            name=generate_id(),
             client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            signing_key=create_test_cert(),
+            signing_key=self.keypair,
         )
         # Needs to be assigned to an application for iss to be set
         self.app.provider = provider
@@ -184,7 +183,7 @@ class TestToken(OAuthTestCase):
         self.assertEqual(response["Access-Control-Allow-Credentials"], "true")
         self.assertEqual(response["Access-Control-Allow-Origin"], "http://local.invalid")
         self.assertJSONEqual(
-            force_str(response.content),
+            response.content.decode(),
             {
                 "access_token": new_token.access_token,
                 "refresh_token": new_token.refresh_token,
@@ -200,12 +199,12 @@ class TestToken(OAuthTestCase):
     def test_refresh_token_view_invalid_origin(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
-            name="test",
+            name=generate_id(),
             client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            signing_key=create_test_cert(),
+            signing_key=self.keypair,
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
@@ -230,7 +229,7 @@ class TestToken(OAuthTestCase):
         self.assertNotIn("Access-Control-Allow-Credentials", response)
         self.assertNotIn("Access-Control-Allow-Origin", response)
         self.assertJSONEqual(
-            force_str(response.content),
+            response.content.decode(),
             {
                 "access_token": new_token.access_token,
                 "refresh_token": new_token.refresh_token,
@@ -245,12 +244,12 @@ class TestToken(OAuthTestCase):
     def test_refresh_token_revoke(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
-            name="test",
+            name=generate_id(),
             client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
-            signing_key=create_test_cert(),
+            signing_key=self.keypair,
         )
         # Needs to be assigned to an application for iss to be set
         self.app.provider = provider

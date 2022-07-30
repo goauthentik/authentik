@@ -1,3 +1,10 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/CodeMirror";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -10,16 +17,11 @@ import {
     FlowsInstancesListDesignationEnum,
     OAuthSource,
     OAuthSourceRequest,
+    ProviderTypeEnum,
     SourceType,
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { first } from "../../../utils";
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
@@ -52,7 +54,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
     }
 
     @property({ attribute: false })
-    providerType?: SourceType;
+    providerType: SourceType | null = null;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -155,6 +157,42 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                           </p>
                       </ak-form-element-horizontal> `
                     : html``}
+                ${this.providerType.slug === ProviderTypeEnum.Openidconnect
+                    ? html`
+                          <ak-form-element-horizontal
+                              label=${t`OIDC Well-known URL`}
+                              name="oidcWellKnownUrl"
+                          >
+                              <input
+                                  type="text"
+                                  value="${ifDefined(this.instance?.oidcWellKnownUrl)}"
+                                  class="pf-c-form-control"
+                              />
+                              <p class="pf-c-form__helper-text">
+                                  ${t`OIDC well-known configuration URL. Can be used to automatically configure the URLs above.`}
+                              </p>
+                          </ak-form-element-horizontal>
+                          <ak-form-element-horizontal label=${t`OIDC JWKS URL`} name="oidcJwksUrl">
+                              <input
+                                  type="text"
+                                  value="${ifDefined(this.instance?.oidcJwksUrl)}"
+                                  class="pf-c-form-control"
+                              />
+                              <p class="pf-c-form__helper-text">
+                                  ${t`JSON Web Key URL. Keys from the URL will be used to validate JWTs from this source.`}
+                              </p>
+                          </ak-form-element-horizontal>
+
+                          <ak-form-element-horizontal label=${t`OIDC JWKS`} name="oidcJwks">
+                              <ak-codemirror
+                                  mode="javascript"
+                                  value="${JSON.stringify(first(this.instance?.oidcJwks, {}))}"
+                              >
+                              </ak-codemirror>
+                              <p class="pf-c-form__helper-text">${t`Raw JWKS data.`}</p>
+                          </ak-form-element-horizontal>
+                      `
+                    : html``}
             </div>
         </ak-form-group>`;
     }
@@ -230,6 +268,19 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                     </option>
                 </select>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`User path`} name="userPathTemplate">
+                <input
+                    type="text"
+                    value="${first(
+                        this.instance?.userPathTemplate,
+                        "goauthentik.io/sources/%(slug)s",
+                    )}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Path template for users created. Use placeholders like \`%(slug)s\` to insert the source slug.`}
+                </p>
+            </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Protocol settings`} </span>
@@ -253,6 +304,19 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         name="consumerSecret"
                     >
                         <textarea class="pf-c-form-control"></textarea>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Additional Scope`}
+                        name="additionalScopes"
+                    >
+                        <input
+                            type="text"
+                            value="${first(this.instance?.additionalScopes, "")}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Additional scopes to be passed to the OAuth Provider, separated by space.`}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

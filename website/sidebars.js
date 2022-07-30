@@ -7,8 +7,14 @@ module.exports = {
         {
             type: "category",
             label: "Installation",
+            link: {
+                type: "generated-index",
+                title: "Installation",
+                slug: "installation",
+                description:
+                    "Everything you need to get authentik up and running!",
+            },
             items: [
-                "installation/index",
                 "installation/docker-compose",
                 "installation/kubernetes",
                 "installation/beta",
@@ -33,13 +39,24 @@ module.exports = {
             type: "category",
             label: "Providers",
             items: [
-                "providers/oauth2",
+                {
+                    type: "category",
+                    label: "OAuth2 Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/oauth2/index",
+                    },
+                    items: ["providers/oauth2/client_credentials"],
+                },
                 "providers/saml",
                 {
                     type: "category",
                     label: "Proxy Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/proxy/index",
+                    },
                     items: [
-                        "providers/proxy/proxy",
                         "providers/proxy/custom_headers",
                         "providers/proxy/forward_auth",
                     ],
@@ -50,8 +67,11 @@ module.exports = {
         {
             type: "category",
             label: "Outposts",
+            link: {
+                type: "doc",
+                id: "outposts/index",
+            },
             items: [
-                "outposts/index",
                 "outposts/embedded/embedded",
                 {
                     type: "category",
@@ -75,11 +95,38 @@ module.exports = {
         {
             type: "category",
             label: "Flows",
-            items: ["flow/index", "flow/examples"],
+            link: {
+                type: "doc",
+                id: "flow/index",
+            },
+            items: [
+                "flow/layouts",
+                "flow/inspector",
+                {
+                    type: "category",
+                    label: "Examples",
+                    items: ["flow/examples/flows", "flow/examples/snippets"],
+                },
+                {
+                    type: "category",
+                    label: "Executors",
+                    items: [
+                        "flow/executors/if-flow",
+                        "flow/executors/user-settings",
+                        "flow/executors/headless",
+                    ],
+                },
+            ],
         },
         {
             type: "category",
             label: "Stages",
+            link: {
+                type: "generated-index",
+                title: "Stages",
+                slug: "flow/stages",
+                description: "Overview of all available stages",
+            },
             items: [
                 "flow/stages/authenticator_duo/index",
                 "flow/stages/authenticator_sms/index",
@@ -103,20 +150,44 @@ module.exports = {
         {
             type: "category",
             label: "Policies",
-            items: ["policies/index", "policies/expression"],
+            link: {
+                type: "doc",
+                id: "policies/index",
+            },
+            items: ["policies/expression"],
         },
         {
             type: "category",
             label: "Property Mappings",
-            items: ["property-mappings/index", "property-mappings/expression"],
+            link: {
+                type: "doc",
+                id: "property-mappings/index",
+            },
+            items: ["property-mappings/expression"],
         },
         {
             type: "category",
             label: "Events",
+            link: {
+                type: "doc",
+                id: "events/index",
+            },
+            items: ["events/notifications", "events/transports"],
+        },
+        {
+            type: "category",
+            label: "Interfaces",
             items: [
-                "events/index",
-                "events/notifications",
-                "events/transports",
+                {
+                    type: "category",
+                    label: "User",
+                    items: ["interfaces/user/customization"],
+                },
+                {
+                    type: "category",
+                    label: "Admin",
+                    items: ["interfaces/admin/customization"],
+                },
             ],
         },
         {
@@ -126,21 +197,28 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Maintenance",
-            items: ["maintenance/backups/index"],
-        },
-        {
-            type: "category",
             label: "Release Notes",
+            link: {
+                type: "generated-index",
+                title: "Releases",
+                slug: "releases",
+                description: "Release notes for recent authentik versions",
+            },
             items: [
-                "releases/v2021.12",
-                "releases/v2021.10",
-                "releases/v2021.9",
-                "releases/v2021.8",
+                "releases/v2022.7",
+                "releases/v2022.6",
+                "releases/v2022.5",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/v2022.4",
+                        "releases/v2022.2",
+                        "releases/v2022.1",
+                        "releases/v2021.12",
+                        "releases/v2021.10",
+                        "releases/v2021.9",
+                        "releases/v2021.8",
                         "releases/v2021.7",
                         "releases/v2021.6",
                         "releases/v2021.5",
@@ -161,11 +239,29 @@ module.exports = {
         {
             type: "category",
             label: "Troubleshooting",
+            link: {
+                type: "generated-index",
+                title: "Troubleshooting",
+                slug: "troubleshooting",
+                description: "Troubleshooting various issues",
+            },
             items: [
+                {
+                    type: "category",
+                    label: "Forward auth",
+                    items: ["troubleshooting/forward_auth/general"],
+                    link: {
+                        type: "generated-index",
+                        title: "Forward auth troubleshooting",
+                        slug: "troubleshooting/forward_auth",
+                        description:
+                            "Steps to help debug forward auth setups with various reverse proxies.",
+                    },
+                },
                 "troubleshooting/access",
                 "troubleshooting/emails",
                 "troubleshooting/login",
-                "troubleshooting/image_upload_backup",
+                "troubleshooting/image_upload",
                 "troubleshooting/missing_permission",
                 "troubleshooting/missing_admin_group",
             ],

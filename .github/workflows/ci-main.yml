@@ -3,14 +3,14 @@ name: authentik-ci-main
 on:
   push:
     branches:
-      - master
+      - main
       - next
       - version-*
     paths-ignore:
       - website
   pull_request:
     branches:
-      - master
+      - main
 
 env:
   POSTGRES_DB: authentik
@@ -31,76 +31,38 @@ jobs:
           - pending-migrations
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-      - id: cache-poetry
-        uses: actions/cache@v2.1.7
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v3-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+      - uses: actions/checkout@v3
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - name: run job
         run: poetry run make ci-${{ matrix.job }}
   test-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - id: cache-poetry
-        uses: actions/cache@v2.1.7
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v3-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+      - uses: actions/checkout@v3
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - name: run migrations
         run: poetry run python -m lifecycle.migrate
   test-migrations-from-stable:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v2
-      - name: prepare variables
-        id: ev
-        run: |
-          python ./scripts/gh_env.py
-          sudo pip install -U pipenv
-      - id: cache-poetry
-        uses: actions/cache@v2.1.7
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v3-${{ hashFiles('**/poetry.lock') }}
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - name: checkout stable
         run: |
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           cp -R .github ..
           cp -R scripts ..
-          cp -R poetry.lock pyproject.toml ..
           git checkout $(git describe --abbrev=0 --match 'version/*')
           rm -rf .github/ scripts/
-          mv ../.github ../scripts ../poetry.lock ../pyproject.toml .
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: |
-          scripts/ci_prepare.sh
-          # Sync anyways since stable will have different dependencies
-          # TODO: Remove after next stable release
-          if [[ -f "Pipfile.lock" ]]; then
-            pipenv install --dev
-          fi
-          poetry install
+          mv ../.github ../scripts .
+      - name: Setup authentik env (ensure stable deps are installed)
+        uses: ./.github/actions/setup
       - name: run migrations to stable
         run: poetry run python -m lifecycle.migrate
       - name: checkout current code
@@ -108,34 +70,19 @@ jobs:
           set -x
           git fetch
           git reset --hard HEAD
-          # TODO: Remove after next stable release
-          rm -f poetry.lock
+          git clean -d -fx .
           git checkout $GITHUB_SHA
-          # TODO: Remove after next stable release
-          if [[ -f "Pipfile.lock" ]]; then
-            pipenv install --dev
-          fi
           poetry install
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+      - name: Setup authentik env (ensure latest deps are installed)
+        uses: ./.github/actions/setup
       - name: migrate to latest
         run: poetry run python -m lifecycle.migrate
   test-unittest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - id: cache-poetry
-        uses: actions/cache@v2.1.7
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v3-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+      - uses: actions/checkout@v3
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
@@ -148,26 +95,18 @@ jobs:
         run: |
           testspace [unittest]unittest.xml --link=codecov
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
   test-integration:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - id: cache-poetry
-        uses: actions/cache@v2.1.7
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v3-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: scripts/ci_prepare.sh
+      - uses: actions/checkout@v3
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.2.0
+        uses: helm/kind-action@v1.3.0
       - name: run integration
         run: |
           poetry run make test-integration
@@ -177,41 +116,30 @@ jobs:
         run: |
           testspace [integration]unittest.xml --link=codecov
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
   test-e2e-provider:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-          cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+      - uses: actions/checkout@v3
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
-      - id: cache-poetry
-        uses: actions/cache@v2.1.7
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v3-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
+      - name: Setup authentik env
         run: |
-          scripts/ci_prepare.sh
           docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**') }}
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
+        working-directory: web
         run: |
-          cd web
-          npm i
+          npm ci
+          make -C .. gen-client-web
           npm run build
       - name: run e2e
         run: |
@@ -222,41 +150,30 @@ jobs:
         run: |
           testspace [e2e-provider]unittest.xml --link=codecov
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
   test-e2e-rest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-          cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+      - uses: actions/checkout@v3
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
-      - id: cache-poetry
-        uses: actions/cache@v2.1.7
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v3-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
+      - name: Setup authentik env
         run: |
-          scripts/ci_prepare.sh
           docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/**') }}
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**') }}
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
+        working-directory: web/
         run: |
-          cd web
-          npm i
+          npm ci
+          make -C .. gen-client-web
           npm run build
       - name: run e2e
         run: |
@@ -267,7 +184,7 @@ jobs:
         run: |
           testspace [e2e-rest]unittest.xml --link=codecov
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
   ci-core-mark:
     needs:
       - lint
@@ -290,26 +207,25 @@ jobs:
         arch:
           - 'linux/amd64'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1.2.0
+        uses: docker/setup-qemu-action@v2.0.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
       - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
         id: ev
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        run: |
-          python ./scripts/gh_env.py
       - name: Login to Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Building Docker Image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
@@ -317,4 +233,10 @@ jobs:
             ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.sha }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
+            VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           platforms: ${{ matrix.arch }}
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: ./.github/actions/comment-pr-instructions
+        with:
+          tag: gh-${{ steps.ev.outputs.branchNameContainer }}

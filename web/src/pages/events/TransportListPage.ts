@@ -1,20 +1,20 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/buttons/ActionButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/events/TransportForm";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { EventsApi, NotificationTransport } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/buttons/ActionButton";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import "./TransportForm";
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
@@ -56,7 +56,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Notification transports(s)`}
+            objectLabel=${t`Notification transport(s)`}
             .objects=${this.selectedElements}
             .usedBy=${(item: NotificationTransport) => {
                 return new EventsApi(DEFAULT_CONFIG).eventsTransportsUsedByList({
@@ -101,7 +101,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -109,7 +109,6 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 <ak-event-transport-form slot="form"> </ak-event-transport-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 }

@@ -1,12 +1,16 @@
+import { SearchSelect } from "@goauthentik/web/SearchSelect";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { camelToSnake, convertToSlug } from "@goauthentik/web/utils";
 import "@polymer/iron-form/iron-form";
 import { IronFormElement } from "@polymer/iron-form/iron-form";
 import "@polymer/paper-input/paper-input";
-import { PaperInputElement } from "@polymer/paper-input/paper-input";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -15,17 +19,18 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ValidationError } from "@goauthentik/api";
+import { ResponseError, ValidationError } from "@goauthentik/api";
 
-import { EVENT_REFRESH } from "../../constants";
-import { showMessage } from "../../elements/messages/MessageContainer";
-import { camelToSnake, convertToSlug } from "../../utils";
-import { MessageLevel } from "../messages/Message";
+import { HorizontalFormElement } from "./HorizontalFormElement";
 
 export class APIError extends Error {
     constructor(public response: ValidationError) {
         super();
     }
+}
+
+export interface KeyUnknown {
+    [key: string]: unknown;
 }
 
 @customElement("ak-form")
@@ -100,15 +105,11 @@ export class Form<T> extends LitElement {
         ironForm?.reset();
     }
 
-    /**
-     * If this form contains a file input, and the input as been filled, this function returns
-     * said file.
-     * @returns File object or undefined
-     */
-    getFormFile(): File | undefined {
+    getFormFiles(): { [key: string]: File } {
         const ironForm = this.shadowRoot?.querySelector("iron-form");
+        const files: { [key: string]: File } = {};
         if (!ironForm) {
-            return;
+            return files;
         }
         const elements = ironForm._getSubmittableElements();
         for (let i = 0; i < elements.length; i++) {
@@ -117,13 +118,18 @@ export class Form<T> extends LitElement {
                 if ((element.files || []).length < 1) {
                     continue;
                 }
-                // We already checked the length
-                return (element.files || [])[0];
+                files[element.name] = (element.files || [])[0];
             }
         }
+        return files;
     }
 
-    serializeForm(form: IronFormElement): T {
+    serializeForm(): T | undefined {
+        const form = this.shadowRoot?.querySelector<IronFormElement>("iron-form");
+        if (!form) {
+            console.warn("authentik/forms: failed to find iron-form");
+            return;
+        }
         const elements: HTMLInputElement[] = form._getSubmittableElements();
         const json: { [key: string]: unknown } = {};
         elements.forEach((element) => {
@@ -150,6 +156,13 @@ export class Form<T> extends LitElement {
                 json[element.name] = new Date(element.value);
             } else if (element.tagName.toLowerCase() === "input" && element.type === "checkbox") {
                 json[element.name] = element.checked;
+            } else if (element.tagName.toLowerCase() === "ak-search-select") {
+                const select = element as unknown as SearchSelect<unknown>;
+                try {
+                    json[element.name] = select.value(select.selectedObject);
+                } catch {
+                    console.debug("authentik/form: SearchSelect.value error");
+                }
             } else {
                 for (let v = 0; v < values.length; v++) {
                     this.serializeFieldRecursive(element, values[v], json);
@@ -181,12 +194,15 @@ export class Form<T> extends LitElement {
 
     submit(ev: Event): Promise<unknown> | undefined {
         ev.preventDefault();
-        const ironForm = this.shadowRoot?.querySelector("iron-form");
-        if (!ironForm) {
+        const data = this.serializeForm();
+        if (!data) {
+            return;
+        }
+        const form = this.shadowRoot?.querySelector<IronFormElement>("iron-form");
+        if (!form) {
             console.warn("authentik/forms: failed to find iron-form");
             return;
         }
-        const data = this.serializeForm(ironForm);
         return this.send(data)
             .then((r) => {
                 showMessage({
@@ -201,28 +217,27 @@ export class Form<T> extends LitElement {
                 );
                 return r;
             })
-            .catch(async (ex: Response | Error) => {
-                if (ex instanceof Error) {
+            .catch(async (ex: Error | ResponseError) => {
+                if (!(ex instanceof ResponseError)) {
                     throw ex;
                 }
-                let msg = ex.statusText;
-                if (ex.status > 399 && ex.status < 500) {
-                    const errorMessage: ValidationError = await ex.json();
+                let msg = ex.response.statusText;
+                if (ex.response.status > 399 && ex.response.status < 500) {
+                    const errorMessage: ValidationError = await ex.response.json();
                     if (!errorMessage) return errorMessage;
                     if (errorMessage instanceof Error) {
                         throw errorMessage;
                     }
                     // assign all input-related errors to their elements
-                    const elements: PaperInputElement[] = ironForm._getSubmittableElements();
+                    const elements: HorizontalFormElement[] = form._getSubmittableElements();
                     elements.forEach((element) => {
                         const elementName = element.name;
                         if (!elementName) return;
                         if (camelToSnake(elementName) in errorMessage) {
-                            element.errorMessage =
-                                errorMessage[camelToSnake(elementName)].join(", ");
+                            element.errorMessages = errorMessage[camelToSnake(elementName)];
                             element.invalid = true;
                         } else {
-                            element.errorMessage = "";
+                            element.errorMessages = [];
                             element.invalid = false;
                         }
                     });

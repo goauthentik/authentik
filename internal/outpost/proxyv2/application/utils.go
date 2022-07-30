@@ -6,7 +6,9 @@ import (
 	"net/url"
 	"path"
 	"strconv"
+	"strings"
 
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 
@@ -20,14 +22,39 @@ func urlJoin(originalUrl string, newPath string) string {
 }
 
 func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
-	authUrl := urlJoin(a.proxyConfig.ExternalHost, "/akprox/start")
-	http.Redirect(rw, r, authUrl, http.StatusFound)
+	s, err := a.sessions.Get(r, constants.SessionName)
+	if err != nil {
+		a.log.WithError(err).Warning("failed to decode session")
+	}
+	redirectUrl := urlJoin(a.proxyConfig.ExternalHost, r.URL.Path)
+	if a.Mode() == api.PROXYMODE_FORWARD_DOMAIN {
+		dom := strings.TrimPrefix(*a.proxyConfig.CookieDomain, ".")
+		// In forward_domain we only check that the current URL's host
+		// ends with the cookie domain (remove the leading period if set)
+		if !strings.HasSuffix(r.URL.Hostname(), dom) {
+			a.log.WithField("url", r.URL.String()).WithField("cd", dom).Warning("Invalid redirect found")
+			redirectUrl = a.proxyConfig.ExternalHost
+		}
+	}
+	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
+		s.Values[constants.SessionRedirect] = redirectUrl
+		err = s.Save(r, rw)
+		if err != nil {
+			a.log.WithError(err).Warning("failed to save session before redirect")
+		}
+	}
+
+	urlArgs := url.Values{
+		"rd": []string{redirectUrl},
+	}
+	authUrl := urlJoin(a.proxyConfig.ExternalHost, "/outpost.goauthentik.io/start")
+	http.Redirect(rw, r, authUrl+"?"+urlArgs.Encode(), http.StatusFound)
 }
 
 // getClaims Get claims which are currently in session
 // Returns an error if the session can't be loaded or the claims can't be parsed/type-cast
 func (a *Application) getClaims(r *http.Request) (*Claims, error) {
-	s, err := a.sessions.Get(r, constants.SeesionName)
+	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
 		// err == user has no session/session is not valid, reject
 		return nil, fmt.Errorf("invalid session")
@@ -64,4 +91,14 @@ func contains(s []string, e string) bool {
 		}
 	}
 	return false
+}
+
+func cleanseHeaders(headers http.Header) map[string]string {
+	h := make(map[string]string)
+	for hk, hv := range headers {
+		if len(hv) > 0 {
+			h[hk] = hv[0]
+		}
+	}
+	return h
 }

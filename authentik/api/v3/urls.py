@@ -15,7 +15,7 @@ from authentik.api.views import APIBrowserView
 from authentik.blueprints.api import BlueprintInstanceViewSet
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
-from authentik.core.api.devices import DeviceViewSet
+from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.propertymappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
@@ -23,11 +23,11 @@ from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSe
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.users import UserViewSet
 from authentik.crypto.api import CertificateKeyPairViewSet
-from authentik.events.api.event import EventViewSet
-from authentik.events.api.notification import NotificationViewSet
-from authentik.events.api.notification_mapping import NotificationWebhookMappingViewSet
-from authentik.events.api.notification_rule import NotificationRuleViewSet
-from authentik.events.api.notification_transport import NotificationTransportViewSet
+from authentik.events.api.events import EventViewSet
+from authentik.events.api.notification_mappings import NotificationWebhookMappingViewSet
+from authentik.events.api.notification_rules import NotificationRuleViewSet
+from authentik.events.api.notification_transports import NotificationTransportViewSet
+from authentik.events.api.notifications import NotificationViewSet
 from authentik.flows.api.bindings import FlowStageBindingViewSet
 from authentik.flows.api.flows import FlowViewSet
 from authentik.flows.api.stages import StageViewSet
@@ -47,11 +47,7 @@ from authentik.policies.expiry.api import PasswordExpiryPolicyViewSet
 from authentik.policies.expression.api import ExpressionPolicyViewSet
 from authentik.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from authentik.policies.password.api import PasswordPolicyViewSet
-from authentik.policies.reputation.api import (
-    IPReputationViewSet,
-    ReputationPolicyViewSet,
-    UserReputationViewSet,
-)
+from authentik.policies.reputation.api import ReputationPolicyViewSet, ReputationViewSet
 from authentik.providers.ldap.api import LDAPOutpostConfigViewSet, LDAPProviderViewSet
 from authentik.providers.oauth2.api.provider import OAuth2ProviderViewSet
 from authentik.providers.oauth2.api.scope import ScopeMappingViewSet
@@ -154,8 +150,7 @@ router.register("policies/event_matcher", EventMatcherPolicyViewSet)
 router.register("policies/haveibeenpwned", HaveIBeenPwendPolicyViewSet)
 router.register("policies/password_expiry", PasswordExpiryPolicyViewSet)
 router.register("policies/password", PasswordPolicyViewSet)
-router.register("policies/reputation/users", UserReputationViewSet)
-router.register("policies/reputation/ips", IPReputationViewSet)
+router.register("policies/reputation/scores", ReputationViewSet)
 router.register("policies/reputation", ReputationPolicyViewSet)
 
 router.register("providers/all", ProviderViewSet)
@@ -179,6 +174,11 @@ router.register("authenticators/sms", SMSDeviceViewSet)
 router.register("authenticators/static", StaticDeviceViewSet)
 router.register("authenticators/totp", TOTPDeviceViewSet)
 router.register("authenticators/webauthn", WebAuthnDeviceViewSet)
+router.register(
+    "authenticators/admin/all",
+    AdminDeviceViewSet,
+    basename="admin-device",
+)
 router.register(
     "authenticators/admin/duo",
     DuoAdminDeviceViewSet,

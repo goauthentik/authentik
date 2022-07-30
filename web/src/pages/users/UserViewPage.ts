@@ -1,9 +1,34 @@
+import { DEFAULT_CONFIG, config } from "@goauthentik/web/api/Config";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/CodeMirror";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/PageHeader";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/ActionButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/charts/UserChart";
+import "@goauthentik/web/elements/events/ObjectChangelog";
+import "@goauthentik/web/elements/events/UserEvents";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import "@goauthentik/web/elements/oauth/UserRefreshList";
+import "@goauthentik/web/elements/user/SessionList";
+import "@goauthentik/web/elements/user/UserConsentList";
+import "@goauthentik/web/elements/user/UserDevicesList";
+import "@goauthentik/web/pages/groups/RelatedGroupList";
+import "@goauthentik/web/pages/users/UserActiveForm";
+import "@goauthentik/web/pages/users/UserForm";
+import "@goauthentik/web/pages/users/UserPasswordForm";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -15,28 +40,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { CoreApi, User } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { EVENT_REFRESH } from "../../constants";
-import "../../elements/CodeMirror";
-import { PFColor } from "../../elements/Label";
-import "../../elements/PageHeader";
-import "../../elements/Tabs";
-import "../../elements/buttons/ActionButton";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/charts/UserChart";
-import "../../elements/events/ObjectChangelog";
-import "../../elements/events/UserEvents";
-import "../../elements/forms/ModalForm";
-import { MessageLevel } from "../../elements/messages/Message";
-import { showMessage } from "../../elements/messages/MessageContainer";
-import "../../elements/oauth/UserCodeList";
-import "../../elements/oauth/UserRefreshList";
-import "../../elements/user/SessionList";
-import "../../elements/user/UserConsentList";
-import "./UserActiveForm";
-import "./UserForm";
+import { CapabilitiesEnum, CoreApi, User } from "@goauthentik/api";
 
 @customElement("ak-user-view")
 export class UserViewPage extends LitElement {
@@ -194,6 +198,21 @@ export class UserViewPage extends LitElement {
                                 </button>
                             </ak-forms-modal>
                         </div>
+                        ${until(
+                            config().then((config) => {
+                                if (config.capabilities.includes(CapabilitiesEnum.Impersonate)) {
+                                    return html` <div class="pf-c-card__footer">
+                                        <a
+                                            class="pf-c-button pf-m-tertiary"
+                                            href="${`/-/impersonation/${this.user?.pk}/`}"
+                                        >
+                                            ${t`Impersonate`}
+                                        </a>
+                                    </div>`;
+                                }
+                                return html``;
+                            }),
+                        )}
                         <div class="pf-c-card__footer">
                             <ak-user-active-form
                                 .obj=${this.user}
@@ -240,12 +259,17 @@ export class UserViewPage extends LitElement {
                             </ak-action-button>
                         </div>
                         <div class="pf-c-card__footer">
-                            <a
-                                class="pf-c-button pf-m-tertiary"
-                                href="${`/-/impersonation/${this.user.pk}/`}"
-                            >
-                                ${t`Impersonate`}
-                            </a>
+                            <ak-forms-modal size=${PFSize.Medium}>
+                                <span slot="submit">${t`Update password`}</span>
+                                <span slot="header">${t`Update password`}</span>
+                                <ak-user-password-form
+                                    slot="form"
+                                    .instancePk=${this.user?.pk}
+                                ></ak-user-password-form>
+                                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                    ${t`Set password`}
+                                </button>
+                            </ak-forms-modal>
                         </div>
                     </div>
                     <div
@@ -284,6 +308,17 @@ export class UserViewPage extends LitElement {
                 </div>
             </section>
             <section
+                slot="page-groups"
+                data-tab-title="${t`Groups`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-group-related-list targetUser=${this.user.pk}> </ak-group-related-list>
+                    </div>
+                </div>
+            </section>
+            <section
                 slot="page-events"
                 data-tab-title="${t`User events`}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
@@ -306,17 +341,6 @@ export class UserViewPage extends LitElement {
                 </div>
             </section>
             <section
-                slot="page-oauth-code"
-                data-tab-title="${t`OAuth Authorization Codes`}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-user-oauth-code-list userId=${this.user.pk}> </ak-user-oauth-code-list>
-                    </div>
-                </div>
-            </section>
-            <section
                 slot="page-oauth-refresh"
                 data-tab-title="${t`OAuth Refresh Codes`}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
@@ -325,6 +349,17 @@ export class UserViewPage extends LitElement {
                     <div class="pf-c-card__body">
                         <ak-user-oauth-refresh-list userId=${this.user.pk}>
                         </ak-user-oauth-refresh-list>
+                    </div>
+                </div>
+            </section>
+            <section
+                slot="page-mfa-authenticators"
+                data-tab-title="${t`MFA Authenticators`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-user-device-list userId=${this.user.pk}> </ak-user-device-list>
                     </div>
                 </div>
             </section>

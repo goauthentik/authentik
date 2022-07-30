@@ -3,7 +3,6 @@ import json
 
 from django.test import RequestFactory
 from django.urls.base import reverse
-from django.utils.encoding import force_str
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
@@ -31,7 +30,7 @@ class TestJWKS(OAuthTestCase):
         response = self.client.get(
             reverse("authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug})
         )
-        body = json.loads(force_str(response.content))
+        body = json.loads(response.content.decode())
         self.assertEqual(len(body["keys"]), 1)
 
     def test_hs256(self):
@@ -46,4 +45,4 @@ class TestJWKS(OAuthTestCase):
         response = self.client.get(
             reverse("authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug})
         )
-        self.assertJSONEqual(force_str(response.content), {})
+        self.assertJSONEqual(response.content.decode(), {})

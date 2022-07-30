@@ -1,25 +1,27 @@
 """Outposts Settings"""
 from celery.schedules import crontab
 
+from authentik.lib.utils.time import fqdn_rand
+
 CELERY_BEAT_SCHEDULE = {
     "outposts_controller": {
         "task": "authentik.outposts.tasks.outpost_controller_all",
-        "schedule": crontab(minute="*/5"),
+        "schedule": crontab(minute=fqdn_rand("outposts_controller"), hour="*/4"),
         "options": {"queue": "authentik_scheduled"},
     },
     "outposts_service_connection_check": {
         "task": "authentik.outposts.tasks.outpost_service_connection_monitor",
-        "schedule": crontab(minute="*/5"),
+        "schedule": crontab(minute="3-59/15"),
         "options": {"queue": "authentik_scheduled"},
     },
     "outpost_token_ensurer": {
         "task": "authentik.outposts.tasks.outpost_token_ensurer",
-        "schedule": crontab(minute="*/5"),
+        "schedule": crontab(minute=fqdn_rand("outpost_token_ensurer"), hour="*/8"),
         "options": {"queue": "authentik_scheduled"},
     },
     "outpost_local_connection": {
         "task": "authentik.outposts.tasks.outpost_local_connection",
-        "schedule": crontab(minute="*/60"),
+        "schedule": crontab(minute=fqdn_rand("outpost_local_connection"), hour="*/8"),
         "options": {"queue": "authentik_scheduled"},
     },
 }

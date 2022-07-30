@@ -1,5 +1,4 @@
 """http helpers"""
-from os import environ
 from typing import Any, Optional
 
 from django.http import HttpRequest
@@ -7,7 +6,7 @@ from requests.sessions import Session
 from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
-from authentik import ENV_GIT_HASH_KEY, __version__
+from authentik import get_full_version
 
 OUTPOST_REMOTE_IP_HEADER = "HTTP_X_AUTHENTIK_REMOTE_IP"
 OUTPOST_TOKEN_HEADER = "HTTP_X_AUTHENTIK_OUTPOST_TOKEN"  # nosec
@@ -46,7 +45,7 @@ def _get_outpost_override_ip(request: HttpRequest) -> Optional[str]:
         LOGGER.warning("Attempted remote-ip override without token", fake_ip=fake_ip)
         return None
     user = tokens.first().user
-    if not user.group_attributes().get(USER_ATTRIBUTE_CAN_OVERRIDE_IP, False):
+    if not user.group_attributes(request).get(USER_ATTRIBUTE_CAN_OVERRIDE_IP, False):
         LOGGER.warning(
             "Remote-IP override: user doesn't have permission",
             user=user,
@@ -75,8 +74,7 @@ def get_client_ip(request: Optional[HttpRequest]) -> str:
 
 def authentik_user_agent() -> str:
     """Get a common user agent"""
-    build = environ.get(ENV_GIT_HASH_KEY, "tagged")
-    return f"authentik@{__version__} (build={build})"
+    return f"authentik@{get_full_version()}"
 
 
 def get_http_session() -> Session:

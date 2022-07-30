@@ -1,3 +1,7 @@
+import "@goauthentik/web/elements/Spinner";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/pages/applications/ApplicationForm";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
@@ -7,10 +11,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Provider } from "@goauthentik/api";
-
-import "../../elements/Spinner";
-import "../../elements/forms/ModalForm";
-import "../../pages/applications/ApplicationForm";
 
 @customElement("ak-provider-related-application")
 export class RelatedApplicationButton extends LitElement {

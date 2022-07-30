@@ -11,7 +11,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/nmcclain/ldap"
 	"github.com/prometheus/client_golang/prometheus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/group"
 	"goauthentik.io/internal/outpost/ldap/metrics"
@@ -36,7 +36,7 @@ func NewDirectSearcher(si server.LDAPServerInstance) *DirectSearcher {
 
 func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, error) {
 	accsp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.check_access")
-	baseDN := strings.ToLower(ds.si.GetBaseDN())
+	baseDN := ds.si.GetBaseDN()
 
 	filterOC, err := ldap.GetFilterObjectClass(req.Filter)
 	if err != nil {
@@ -44,8 +44,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			"outpost_name": ds.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "filter_parse_fail",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          ds.si.GetAppSlug(),
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
@@ -54,31 +53,28 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			"outpost_name": ds.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "empty_bind_dn",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          ds.si.GetAppSlug(),
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", req.BindDN)
 	}
-	if !strings.HasSuffix(req.BindDN, ","+baseDN) {
+	if !utils.HasSuffixNoCase(req.BindDN, ","+baseDN) {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": ds.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "invalid_bind_dn",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          ds.si.GetAppSlug(),
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: BindDN %s not in our BaseDN %s", req.BindDN, ds.si.GetBaseDN())
 	}
 
-	flags, ok := ds.si.GetFlags(req.BindDN)
-	if !ok {
+	flags := ds.si.GetFlags(req.BindDN)
+	if flags == nil {
 		req.Log().Debug("User info not cached")
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": ds.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "user_info_not_cached",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          ds.si.GetAppSlug(),
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
@@ -90,8 +86,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			"outpost_name": ds.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "filter_parse_fail",
-			"dn":           req.BindDN,
-			"client":       req.RemoteAddr(),
+			"app":          ds.si.GetAppSlug(),
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
@@ -105,7 +100,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	scope := req.SearchRequest.Scope
 	needUsers, needGroups := ds.si.GetNeededObjects(scope, req.BaseDN, filterOC)
 
-	if scope >= 0 && req.BaseDN == baseDN {
+	if scope >= 0 && strings.EqualFold(req.BaseDN, baseDN) {
 		if utils.IncludeObjectClass(filterOC, constants.GetDomainOCs()) {
 			entries = append(entries, ds.si.GetBaseEntry())
 		}
@@ -116,12 +111,12 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	var users *[]api.User
 	var groups *[]api.Group
 
-	errs, _ := errgroup.WithContext(req.Context())
+	errs, errCtx := errgroup.WithContext(req.Context())
 
 	if needUsers {
 		errs.Go(func() error {
 			if flags.CanSearch {
-				uapisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.api_user")
+				uapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_user")
 				searchReq, skip := utils.ParseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter, false)
 
 				if skip {
@@ -140,8 +135,8 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				users = &u.Results
 			} else {
 				if flags.UserInfo == nil {
-					uapisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.api_user")
-					u, _, err := c.CoreApi.CoreUsersRetrieve(req.Context(), flags.UserPk).Execute()
+					uapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_user")
+					u, _, err := c.CoreApi.CoreUsersRetrieve(uapisp.Context(), flags.UserPk).Execute()
 					uapisp.Finish()
 
 					if err != nil {
@@ -149,7 +144,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 						return fmt.Errorf("failed to get userinfo")
 					}
 
-					flags.UserInfo = &u
+					flags.UserInfo = u
 				}
 
 				u := make([]api.User, 1)
@@ -164,7 +159,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 	if needGroups {
 		errs.Go(func() error {
-			gapisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.api_group")
+			gapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_group")
 			searchReq, skip := utils.ParseFilterForGroup(c.CoreApi.CoreGroupsList(gapisp.Context()), parsedFilter, false)
 			if skip {
 				req.Log().Trace("Skip backend request")
@@ -209,8 +204,8 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, err
 	}
 
-	if scope >= 0 && (req.BaseDN == ds.si.GetBaseDN() || strings.HasSuffix(req.BaseDN, ds.si.GetBaseUserDN())) {
-		singleu := strings.HasSuffix(req.BaseDN, ","+ds.si.GetBaseUserDN())
+	if scope >= 0 && (strings.EqualFold(req.BaseDN, ds.si.GetBaseDN()) || utils.HasSuffixNoCase(req.BaseDN, ds.si.GetBaseUserDN())) {
+		singleu := utils.HasSuffixNoCase(req.BaseDN, ","+ds.si.GetBaseUserDN())
 
 		if !singleu && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
 			entries = append(entries, utils.GetContainerEntry(filterOC, ds.si.GetBaseUserDN(), constants.OUUsers))
@@ -220,7 +215,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		if scope >= 0 && users != nil && utils.IncludeObjectClass(filterOC, constants.GetUserOCs()) {
 			for _, u := range *users {
 				entry := ds.si.UserEntry(u)
-				if req.BaseDN == entry.DN || !singleu {
+				if strings.EqualFold(req.BaseDN, entry.DN) || !singleu {
 					entries = append(entries, entry)
 				}
 			}
@@ -229,8 +224,8 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		scope += 1 // Return the scope to what it was before we descended
 	}
 
-	if scope >= 0 && (req.BaseDN == ds.si.GetBaseDN() || strings.HasSuffix(req.BaseDN, ds.si.GetBaseGroupDN())) {
-		singleg := strings.HasSuffix(req.BaseDN, ","+ds.si.GetBaseGroupDN())
+	if scope >= 0 && (strings.EqualFold(req.BaseDN, ds.si.GetBaseDN()) || utils.HasSuffixNoCase(req.BaseDN, ds.si.GetBaseGroupDN())) {
+		singleg := utils.HasSuffixNoCase(req.BaseDN, ","+ds.si.GetBaseGroupDN())
 
 		if !singleg && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
 			entries = append(entries, utils.GetContainerEntry(filterOC, ds.si.GetBaseGroupDN(), constants.OUGroups))
@@ -240,7 +235,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		if scope >= 0 && groups != nil && utils.IncludeObjectClass(filterOC, constants.GetGroupOCs()) {
 			for _, g := range *groups {
 				entry := group.FromAPIGroup(g, ds.si).Entry()
-				if req.BaseDN == entry.DN || !singleg {
+				if strings.EqualFold(req.BaseDN, entry.DN) || !singleg {
 					entries = append(entries, entry)
 				}
 			}
@@ -249,10 +244,10 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		scope += 1 // Return the scope to what it was before we descended
 	}
 
-	if scope >= 0 && (req.BaseDN == ds.si.GetBaseDN() || strings.HasSuffix(req.BaseDN, ds.si.GetBaseVirtualGroupDN())) {
-		singlevg := strings.HasSuffix(req.BaseDN, ","+ds.si.GetBaseVirtualGroupDN())
+	if scope >= 0 && (strings.EqualFold(req.BaseDN, ds.si.GetBaseDN()) || utils.HasSuffixNoCase(req.BaseDN, ds.si.GetBaseVirtualGroupDN())) {
+		singlevg := utils.HasSuffixNoCase(req.BaseDN, ","+ds.si.GetBaseVirtualGroupDN())
 
-		if !singlevg || utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
+		if !singlevg && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
 			entries = append(entries, utils.GetContainerEntry(filterOC, ds.si.GetBaseVirtualGroupDN(), constants.OUVirtualGroups))
 			scope -= 1
 		}
@@ -260,7 +255,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		if scope >= 0 && users != nil && utils.IncludeObjectClass(filterOC, constants.GetVirtualGroupOCs()) {
 			for _, u := range *users {
 				entry := group.FromAPIUser(u, ds.si).Entry()
-				if req.BaseDN == entry.DN || !singlevg {
+				if strings.EqualFold(req.BaseDN, entry.DN) || !singlevg {
 					entries = append(entries, entry)
 				}
 			}

@@ -8,18 +8,25 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 
 def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    # We have to use a direct import here, otherwise we get an object manager error
-    from authentik.core.models import User
+    from django.contrib.auth.hashers import make_password
 
+    User = apps.get_model("authentik_core", "User")
     db_alias = schema_editor.connection.alias
 
     akadmin, _ = User.objects.using(db_alias).get_or_create(
         username="akadmin", email="root@localhost", name="authentik Default Admin"
     )
-    if "TF_BUILD" in environ or "AK_ADMIN_PASS" in environ or settings.TEST:
-        akadmin.set_password(environ.get("AK_ADMIN_PASS", "akadmin"), signal=False)  # noqa # nosec
+    password = None
+    if "TF_BUILD" in environ or settings.TEST:
+        password = "akadmin"  # noqa # nosec
+    if "AK_ADMIN_PASS" in environ:
+        password = environ["AK_ADMIN_PASS"]
+    if "AUTHENTIK_BOOTSTRAP_PASSWORD" in environ:
+        password = environ["AUTHENTIK_BOOTSTRAP_PASSWORD"]
+    if password:
+        akadmin.password = make_password(password)
     else:
-        akadmin.set_unusable_password()
+        akadmin.password = make_password(None)
     akadmin.save()
 
 

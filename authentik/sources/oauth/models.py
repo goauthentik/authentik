@@ -44,11 +44,18 @@ class OAuthSource(Source):
         verbose_name=_("Profile URL"),
         help_text=_("URL used by authentik to get user information."),
     )
+    additional_scopes = models.TextField(
+        default="", blank=True, verbose_name=_("Additional Scopes")
+    )
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
+    oidc_well_known_url = models.TextField(default="", blank=True)
+    oidc_jwks_url = models.TextField(default="", blank=True)
+    oidc_jwks = models.JSONField(default=dict, blank=True)
+
     @property
-    def type(self) -> Type["SourceType"]:
+    def type(self) -> type["SourceType"]:
         """Return the provider instance for this source"""
         from authentik.sources.oauth.types.manager import MANAGER
 
@@ -58,6 +65,7 @@ class OAuthSource(Source):
     def component(self) -> str:
         return "ak-source-oauth-form"
 
+    # we're using Type[] instead of type[] here since type[] interferes with the property above
     @property
     def serializer(self) -> Type[Serializer]:
         from authentik.sources.oauth.api.source import OAuthSourceSerializer
@@ -74,14 +82,17 @@ class OAuthSource(Source):
         )
 
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+        provider_type = self.type
+        provider = provider_type()
         return UserSettingSerializer(
             data={
-                "title": f"OAuth {self.name}",
+                "title": self.name,
                 "component": "ak-user-settings-source-oauth",
                 "configure_url": reverse(
                     "authentik_sources_oauth:oauth-client-login",
                     kwargs={"source_slug": self.slug},
                 ),
+                "icon_url": provider.icon_url(),
             }
         )
 
@@ -102,6 +113,16 @@ class GitHubOAuthSource(OAuthSource):
         abstract = True
         verbose_name = _("GitHub OAuth Source")
         verbose_name_plural = _("GitHub OAuth Sources")
+
+
+class MailcowOAuthSource(OAuthSource):
+    """Social Login using Mailcow."""
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _("Mailcow OAuth Source")
+        verbose_name_plural = _("Mailcow OAuth Sources")
 
 
 class TwitterOAuthSource(OAuthSource):
@@ -135,7 +156,7 @@ class DiscordOAuthSource(OAuthSource):
 
 
 class GoogleOAuthSource(OAuthSource):
-    """Social Login using Google or Gsuite."""
+    """Social Login using Google or Google Workspace (GSuite)."""
 
     class Meta:
 
@@ -165,7 +186,7 @@ class OpenIDConnectOAuthSource(OAuthSource):
 
 
 class AppleOAuthSource(OAuthSource):
-    """Login using a apple.com."""
+    """Social Login using Apple."""
 
     class Meta:
 
@@ -175,7 +196,7 @@ class AppleOAuthSource(OAuthSource):
 
 
 class OktaOAuthSource(OAuthSource):
-    """Login using a okta.com."""
+    """Social Login using Okta."""
 
     class Meta:
 

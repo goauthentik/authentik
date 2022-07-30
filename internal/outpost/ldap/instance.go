@@ -9,7 +9,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	ldapConstants "goauthentik.io/internal/outpost/ldap/constants"
@@ -38,7 +38,7 @@ type ProviderInstance struct {
 	outpostPk           int32
 	searchAllowedGroups []*strfmt.UUID
 	boundUsersMutex     sync.RWMutex
-	boundUsers          map[string]flags.UserFlags
+	boundUsers          map[string]*flags.UserFlags
 
 	uidStartNumber int32
 	gidStartNumber int32
@@ -68,16 +68,19 @@ func (pi *ProviderInstance) GetOutpostName() string {
 	return pi.outpostName
 }
 
-func (pi *ProviderInstance) GetFlags(dn string) (flags.UserFlags, bool) {
+func (pi *ProviderInstance) GetFlags(dn string) *flags.UserFlags {
 	pi.boundUsersMutex.RLock()
+	defer pi.boundUsersMutex.RUnlock()
 	flags, ok := pi.boundUsers[dn]
-	pi.boundUsersMutex.RUnlock()
-	return flags, ok
+	if !ok {
+		return nil
+	}
+	return flags
 }
 
 func (pi *ProviderInstance) SetFlags(dn string, flag flags.UserFlags) {
 	pi.boundUsersMutex.Lock()
-	pi.boundUsers[dn] = flag
+	pi.boundUsers[dn] = &flag
 	pi.boundUsersMutex.Unlock()
 }
 
@@ -124,7 +127,7 @@ func (pi *ProviderInstance) GetBaseEntry() *ldap.Entry {
 			},
 			{
 				Name:   "vendorVersion",
-				Values: []string{fmt.Sprintf("authentik LDAP Outpost Version %s (build %s)", constants.VERSION, constants.BUILD())},
+				Values: []string{fmt.Sprintf("authentik LDAP Outpost Version %s", constants.FullVersion())},
 			},
 		},
 	}
@@ -140,26 +143,26 @@ func (pi *ProviderInstance) GetNeededObjects(scope int, baseDN string, filterOC 
 	// If our requested base DN doesn't match any of the container DNs, then
 	// we're probably loading a user or group. If it does, then make sure our
 	// scope will eventually take us to users or groups.
-	if (baseDN == pi.BaseDN || strings.HasSuffix(baseDN, pi.UserDN)) && utils.IncludeObjectClass(filterOC, ldapConstants.GetUserOCs()) {
+	if (strings.EqualFold(baseDN, pi.BaseDN) || utils.HasSuffixNoCase(baseDN, pi.UserDN)) && utils.IncludeObjectClass(filterOC, ldapConstants.GetUserOCs()) {
 		if baseDN != pi.UserDN && baseDN != pi.BaseDN ||
-			baseDN == pi.BaseDN && scope > 1 ||
-			baseDN == pi.UserDN && scope > 0 {
+			strings.EqualFold(baseDN, pi.BaseDN) && scope > 1 ||
+			strings.EqualFold(baseDN, pi.UserDN) && scope > 0 {
 			needUsers = true
 		}
 	}
 
-	if (baseDN == pi.BaseDN || strings.HasSuffix(baseDN, pi.GroupDN)) && utils.IncludeObjectClass(filterOC, ldapConstants.GetGroupOCs()) {
+	if (strings.EqualFold(baseDN, pi.BaseDN) || utils.HasSuffixNoCase(baseDN, pi.GroupDN)) && utils.IncludeObjectClass(filterOC, ldapConstants.GetGroupOCs()) {
 		if baseDN != pi.GroupDN && baseDN != pi.BaseDN ||
-			baseDN == pi.BaseDN && scope > 1 ||
-			baseDN == pi.GroupDN && scope > 0 {
+			strings.EqualFold(baseDN, pi.BaseDN) && scope > 1 ||
+			strings.EqualFold(baseDN, pi.GroupDN) && scope > 0 {
 			needGroups = true
 		}
 	}
 
-	if (baseDN == pi.BaseDN || strings.HasSuffix(baseDN, pi.VirtualGroupDN)) && utils.IncludeObjectClass(filterOC, ldapConstants.GetVirtualGroupOCs()) {
+	if (strings.EqualFold(baseDN, pi.BaseDN) || utils.HasSuffixNoCase(baseDN, pi.VirtualGroupDN)) && utils.IncludeObjectClass(filterOC, ldapConstants.GetVirtualGroupOCs()) {
 		if baseDN != pi.VirtualGroupDN && baseDN != pi.BaseDN ||
-			baseDN == pi.BaseDN && scope > 1 ||
-			baseDN == pi.VirtualGroupDN && scope > 0 {
+			strings.EqualFold(baseDN, pi.BaseDN) && scope > 1 ||
+			strings.EqualFold(baseDN, pi.VirtualGroupDN) && scope > 0 {
 			needUsers = true
 		}
 	}

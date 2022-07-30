@@ -5,6 +5,7 @@ from rest_framework import mixins
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
@@ -28,6 +29,7 @@ class ConsentStageViewSet(UsedByMixin, ModelViewSet):
     serializer_class = ConsentStageSerializer
     filterset_fields = "__all__"
     ordering = ["name"]
+    search_fields = ["name"]
 
 
 class UserConsentSerializer(StageSerializer):
@@ -39,7 +41,7 @@ class UserConsentSerializer(StageSerializer):
     class Meta:
 
         model = UserConsent
-        fields = ["pk", "expires", "user", "application"]
+        fields = ["pk", "expires", "user", "application", "permissions"]
 
 
 class UserConsentViewSet(
@@ -55,11 +57,9 @@ class UserConsentViewSet(
     serializer_class = UserConsentSerializer
     filterset_fields = ["user", "application"]
     ordering = ["application", "expires"]
-    filter_backends = [
-        DjangoFilterBackend,
-        OrderingFilter,
-        SearchFilter,
-    ]
+    search_fields = ["user__username"]
+    permission_classes = [OwnerSuperuserPermissions]
+    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()

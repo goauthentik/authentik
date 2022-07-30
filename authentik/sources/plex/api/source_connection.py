@@ -4,12 +4,12 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
-from authentik.core.api.sources import SourceSerializer
+from authentik.core.api.sources import UserSourceConnectionSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.plex.models import PlexSourceConnection
 
 
-class PlexSourceConnectionSerializer(SourceSerializer):
+class PlexSourceConnectionSerializer(UserSourceConnectionSerializer):
     """Plex Source connection Serializer"""
 
     class Meta:
@@ -35,3 +35,4 @@ class PlexSourceConnectionViewSet(UsedByMixin, ModelViewSet):
     permission_classes = [OwnerSuperuserPermissions]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering = ["pk"]
+    search_fields = ["source__slug"]

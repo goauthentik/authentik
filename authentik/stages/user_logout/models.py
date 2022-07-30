@@ -1,5 +1,4 @@
 """logout stage models"""
-from typing import Type
 
 from django.utils.translation import gettext_lazy as _
 from django.views import View
@@ -18,7 +17,7 @@ class UserLogoutStage(Stage):
         return UserLogoutStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.user_logout.stage import UserLogoutStageView
 
         return UserLogoutStageView

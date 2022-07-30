@@ -6,9 +6,9 @@ Flows are a method of describing a sequence of stages. A stage represents a sing
 
 For example, a standard login flow would consist of the following stages:
 
-- Identification, user identifies themselves via a username or email address
-- Password, the user's password is checked against the hash in the database
-- Log the user in
+-   Identification, user identifies themselves via a username or email address
+-   Password, the user's password is checked against the hash in the database
+-   Log the user in
 
 Upon flow execution, a plan containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Re-evaluate Policies** option on the binding.
 
@@ -17,6 +17,16 @@ To determine which flow is linked, authentik searches all flows with the require
 ## Permissions
 
 Flows can have policies assigned to them. These policies determine if the current user is allowed to see and use this flow.
+
+Keep in mind that in certain circumstances, policies cannot match against users and groups as there is no authenticated user yet.
+
+### Denied action
+
+Configure what happens when access to a flow is denied by a policy. By default, authentik will redirect to a `?next` parameter if set, and otherwise show an error message.
+
+-   `MESSAGE_CONTINUE`: Show a message if no `?next` parameter is set, otherwise redirect.
+-   `MESSAGE`: Always show error message.
+-   `CONTINUE`: Always redirect, either to `?next` if set, otherwise to the default interface.
 
 ## Designation
 
@@ -47,6 +57,6 @@ This designates a flow for unenrollment. This flow can contain any amount of ver
 This designates a flow for recovery. This flow normally contains an [**identification**](stages/identification/) stage to find the user. It can also contain any amount of verification stages, such as [**email**](stages/email/) or [**captcha**](stages/captcha/).
 Afterwards, use the [**prompt**](stages/prompt/) stage to ask the user for a new password and the [**user_write**](stages/user_write.md) stage to update the password.
 
-### Setup
+### Stage configuration
 
 This designates a flow for general setup. This designation doesn't have any constraints in what you can do. For example, by default this designation is used to configure Factors, like change a password and setup TOTP.

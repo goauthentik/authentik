@@ -1,7 +1,7 @@
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
 import PFChipGroup from "@patternfly/patternfly/components/ChipGroup/chip-group.css";
@@ -12,7 +12,21 @@ import { Chip } from "./Chip";
 @customElement("ak-chip-group")
 export class ChipGroup extends LitElement {
     static get styles(): CSSResult[] {
-        return [PFBase, PFChip, PFChipGroup, PFButton, AKGlobal];
+        return [
+            PFBase,
+            PFChip,
+            PFChipGroup,
+            PFButton,
+            AKGlobal,
+            css`
+                ::slotted(*) {
+                    margin: 0 2px;
+                }
+                .pf-c-chip-group {
+                    margin-bottom: 8px;
+                }
+            `,
+        ];
     }
 
     set value(v: (string | number | undefined)[]) {

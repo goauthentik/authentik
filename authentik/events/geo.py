@@ -1,7 +1,5 @@
 """events GeoIP Reader"""
-from datetime import datetime
 from os import stat
-from time import time
 from typing import Optional, TypedDict
 
 from geoip2.database import Reader
@@ -35,26 +33,29 @@ class GeoIPReader:
 
     def __open(self):
         """Get GeoIP Reader, if configured, otherwise none"""
-        path = CONFIG.y("authentik.geoip")
+        path = CONFIG.y("geoip")
         if path == "" or not path:
             return
         try:
-            reader = Reader(path)
-            self.__reader = reader
+            self.__reader = Reader(path)
             self.__last_mtime = stat(path).st_mtime
             LOGGER.info("Loaded GeoIP database", last_write=self.__last_mtime)
         except OSError as exc:
             LOGGER.warning("Failed to load GeoIP database", exc=exc)
 
     def __check_expired(self):
-        """Check if the geoip database has been opened longer than 8 hours,
-        and re-open it, as it will probably will have been re-downloaded"""
-        now = time()
-        diff = datetime.fromtimestamp(now) - datetime.fromtimestamp(self.__last_mtime)
-        diff_hours = diff.total_seconds() // 3600
-        if diff_hours >= 8:
-            LOGGER.info("GeoIP databased loaded too long, re-opening", diff=diff)
-            self.__open()
+        """Check if the modification date of the GeoIP database has
+        changed, and reload it if so"""
+        path = CONFIG.y("geoip")
+        try:
+            mtime = stat(path).st_mtime
+            diff = self.__last_mtime < mtime
+            if diff > 0:
+                LOGGER.info("Found new GeoIP Database, reopening", diff=diff)
+                self.__open()
+        except OSError as exc:
+            LOGGER.warning("Failed to check GeoIP age", exc=exc)
+            return
 
     @property
     def enabled(self) -> bool:
@@ -75,11 +76,8 @@ class GeoIPReader:
             except (GeoIP2Error, ValueError):
                 return None
 
-    def city_dict(self, ip_address: str) -> Optional[GeoIPDict]:
-        """Wrapper for self.city that returns a dict"""
-        city = self.city(ip_address)
-        if not city:
-            return None
+    def city_to_dict(self, city: City) -> GeoIPDict:
+        """Convert City to dict"""
         city_dict: GeoIPDict = {
             "continent": city.continent.code,
             "country": city.country.iso_code,
@@ -90,6 +88,13 @@ class GeoIPReader:
         if city.city.name:
             city_dict["city"] = city.city.name
         return city_dict
+
+    def city_dict(self, ip_address: str) -> Optional[GeoIPDict]:
+        """Wrapper for self.city that returns a dict"""
+        city = self.city(ip_address)
+        if not city:
+            return None
+        return self.city_to_dict(city)
 
 
 GEOIP_READER = GeoIPReader()

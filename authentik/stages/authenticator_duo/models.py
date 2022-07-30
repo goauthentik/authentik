@@ -1,5 +1,5 @@
 """Duo stage"""
-from typing import Optional, Type
+from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -29,7 +29,7 @@ class AuthenticatorDuoStage(ConfigurableStage, Stage):
         return AuthenticatorDuoStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.authenticator_duo.stage import AuthenticatorDuoStageView
 
         return AuthenticatorDuoStageView
@@ -74,6 +74,7 @@ class DuoDevice(SerializerModel, Device):
     # Connect to the stage to when validating access we know the API Credentials
     stage = models.ForeignKey(AuthenticatorDuoStage, on_delete=models.CASCADE)
     duo_user_id = models.TextField()
+    last_t = models.DateTimeField(auto_now=True)
 
     @property
     def serializer(self) -> Serializer:

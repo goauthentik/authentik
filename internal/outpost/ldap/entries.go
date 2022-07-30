@@ -2,7 +2,7 @@ package ldap
 
 import (
 	"github.com/nmcclain/ldap"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/utils"
 )
@@ -12,11 +12,7 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 	attrs := utils.AKAttrsToLDAP(u.Attributes)
 
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
-		"memberOf": pi.GroupsForUser(u),
-		// Old fields for backwards compatibility
-		"accountStatus": {utils.BoolToString(*u.IsActive)},
-		"superuser":     {utils.BoolToString(u.IsSuperuser)},
-		// End old fields
+		"memberOf":                      pi.GroupsForUser(u),
 		"goauthentik.io/ldap/active":    {utils.BoolToString(*u.IsActive)},
 		"goauthentik.io/ldap/superuser": {utils.BoolToString(u.IsSuperuser)},
 		"cn":                            {u.Username},

@@ -44,7 +44,7 @@ func (ds *DirectSearcher) SearchBase(req *search.Request, authz bool) (ldap.Serv
 					},
 					{
 						Name:   "vendorVersion",
-						Values: []string{fmt.Sprintf("authentik LDAP Outpost Version %s (build %s)", constants.VERSION, constants.BUILD())},
+						Values: []string{fmt.Sprintf("authentik LDAP Outpost Version %s", constants.FullVersion())},
 					},
 				},
 			},

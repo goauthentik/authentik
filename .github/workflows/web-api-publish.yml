@@ -1,35 +1,36 @@
 name: authentik-web-api-publish
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'schema.yml'
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       # Setup .npmrc file to publish to npm
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3.4.1
         with:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'
       - name: Generate API Client
-        run: make gen-web
+        run: make gen-client-web
       - name: Publish package
+        working-directory: gen-ts-api/
         run: |
-          cd web-api/
-          npm i
+          npm ci
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
       - name: Upgrade /web
+        working-directory: web/
         run: |
-          cd web/
-          export VERSION=`node -e 'console.log(require("../web-api/package.json").version)'`
+          export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
           npm i @goauthentik/api@$VERSION
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         id: cpr
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -39,10 +40,3 @@ jobs:
           body: "web: Update Web API Client version"
           delete-branch: true
           signoff: true
-      - name: Enable Pull Request Automerge
-        if: steps.cpr.outputs.pull-request-operation == 'created'
-        uses: peter-evans/enable-pull-request-automerge@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          merge-method: squash

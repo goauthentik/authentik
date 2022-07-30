@@ -1,26 +1,36 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/CodeMirror";
+import "@goauthentik/web/elements/chips/Chip";
+import "@goauthentik/web/elements/chips/ChipGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { UserOption } from "@goauthentik/web/elements/user/utils";
+import "@goauthentik/web/pages/groups/MemberSelectModal";
+import { first } from "@goauthentik/web/utils";
 import YAML from "yaml";
 
 import { t } from "@lingui/macro";
 
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import { CoreApi, Group, User } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/CodeMirror";
-import "../../elements/chips/Chip";
-import "../../elements/chips/ChipGroup";
-import "../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../elements/forms/ModelForm";
-import { UserOption } from "../../elements/user/utils";
-import { first } from "../../utils";
-import "./MemberSelectModal";
-
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
+    static get styles(): CSSResult[] {
+        return super.styles.concat(css`
+            .pf-c-button.pf-m-control {
+                height: 100%;
+            }
+            .pf-c-form-control {
+                height: auto !important;
+            }
+        `);
+    }
+
     loadInstance(pk: string): Promise<Group> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({
             groupUuid: pk,

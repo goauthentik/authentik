@@ -1,13 +1,26 @@
 """Interface views"""
+from json import dumps
 from typing import Any
 
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
+from rest_framework.request import Request
 
+from authentik.api.v3.config import ConfigView
 from authentik.flows.models import Flow
+from authentik.tenants.api import CurrentTenantSerializer
 
 
-class FlowInterfaceView(TemplateView):
+class InterfaceView(TemplateView):
+    """Base interface view"""
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        kwargs["config_json"] = dumps(ConfigView(request=Request(self.request)).get_config().data)
+        kwargs["tenant_json"] = dumps(CurrentTenantSerializer(self.request.tenant).data)
+        return super().get_context_data(**kwargs)
+
+
+class FlowInterfaceView(InterfaceView):
     """Flow interface"""
 
     template_name = "if/flow.html"

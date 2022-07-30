@@ -6,9 +6,9 @@ This installation method is for test-setups and small-scale productive setups.
 
 ## Requirements
 
-- A Linux host with at least 2 CPU cores and 2 GB of RAM.
-- docker
-- docker-compose
+-   A Linux host with at least 2 CPU cores and 2 GB of RAM.
+-   docker
+-   docker-compose
 
 ## Preparation
 
@@ -21,8 +21,8 @@ If this is a fresh authentik install run the following commands to generate a pa
 sudo apt-get install -y pwgen
 # Because of a PostgreSQL limitation, only passwords up to 99 chars are supported
 # See https://www.postgresql.org/message-id/09512C4F-8CB9-4021-B455-EF4C4F0D55A0@amazon.com
-echo "PG_PASS=$(pwgen 40 1)" >> .env
-echo "AUTHENTIK_SECRET_KEY=$(pwgen 50 1)" >> .env
+echo "PG_PASS=$(pwgen -s 40 1)" >> .env
+echo "AUTHENTIK_SECRET_KEY=$(pwgen -s 50 1)" >> .env
 # Skip if you don't want to enable error reporting
 echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
 ```
@@ -67,19 +67,14 @@ The GeoIP database will automatically be updated every 8 hours.
 
 ## Running on Port 80/443
 
-By default, authentik listens on port 9000 for HTTP and 9443 for HTTPS. To change this, you can use a [docker-compose override file](https://docs.docker.com/compose/extends/#adding-and-overriding-configuration).
+By default, authentik listens on port 9000 for HTTP and 9443 for HTTPS. To change this, you can set the following variables in `.env`:
 
-Create a file called `docker-compose.override.yml` with the following contents:
-
-```yaml
-version: '3.2'
-
-services:
-  server:
-    ports:
-      - "0.0.0.0:80:9000"
-      - "0.0.0.0:443:9443"
+```shell
+AUTHENTIK_PORT_HTTP=80
+AUTHENTIK_PORT_HTTPS=443
 ```
+
+Afterwards, make sure to run `docker-compose up -d`.
 
 ## Startup
 
@@ -98,17 +93,26 @@ To start the initial setup, navigate to `https://<your server>/if/flow/initial-s
 
 ## Explanation
 
+:::warning
+The server assumes to have local timezone as UTC.
+All internals are handled in UTC, whenever a time is displayed to the user in UI it gets localized.
+Do not update or mount `/etc/timezone` or `/etc/localtime` in the authentik containers.
+This will not give any advantages.
+On the contrary, it will cause problems with OAuth and SAML authentication,
+e.g. [see this GitHub issue](https://github.com/goauthentik/authentik/issues/3005).
+:::
+
 The docker-compose project contains the following containers:
 
-- server
+-   server
 
     This is the backend service, which does all the logic, runs the API and the actual SSO part. It also runs the frontend, hosts the JS/CSS files, and also serves the files you've uploaded for icons/etc.
 
-- worker
+-   worker
 
-    This container executes background tasks, everything you can see on the *System Tasks* page in the frontend.
+    This container executes background tasks, everything you can see on the _System Tasks_ page in the frontend.
 
-- redis & postgresql
+-   redis & postgresql
 
     Cache and database respectively.
 

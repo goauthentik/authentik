@@ -3,38 +3,28 @@ from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
-from django.utils.encoding import force_str
-from rest_framework.test import APITestCase
 
-from authentik.core.models import User
-from authentik.flows.challenge import ChallengeTypes
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.generators import generate_key
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
 
 
-class TestPasswordStage(APITestCase):
+class TestPasswordStage(FlowTestCase):
     """Password tests"""
 
     def setUp(self):
         super().setUp()
-        self.password = generate_key()
-        self.user = User.objects.create_user(
-            username="unittest", email="test@beryju.org", password=self.password
-        )
+        self.user = create_test_admin_user()
 
-        self.flow = Flow.objects.create(
-            name="test-password",
-            slug="test-password",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = PasswordStage.objects.create(name="password", backends=[BACKEND_INBUILT])
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
@@ -52,27 +42,19 @@ class TestPasswordStage(APITestCase):
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             # Still have to send the password so the form is valid
-            {"password": self.password},
+            {"password": self.user.username},
         )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-access-denied",
-                "error_message": None,
-                "type": ChallengeTypes.NATIVE.value,
-                "flow_info": {
-                    "background": self.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-            },
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="Unknown error",
         )
 
     def test_recovery_flow_link(self):
         """Test link to the default recovery flow"""
-        flow = Flow.objects.create(designation=FlowDesignation.RECOVERY, slug="qewrqerqr")
+        flow = create_test_flow(designation=FlowDesignation.RECOVERY)
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
@@ -83,7 +65,7 @@ class TestPasswordStage(APITestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIn(flow.slug, force_str(response.content))
+        self.assertIn(flow.slug, response.content.decode())
 
     def test_valid_password(self):
         """Test with a valid pending user and valid password"""
@@ -96,18 +78,11 @@ class TestPasswordStage(APITestCase):
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             # Form data
-            {"password": self.password},
+            {"password": self.user.username},
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "xak-flow-redirect",
-                "to": reverse("authentik_core:root-redirect"),
-                "type": ChallengeTypes.REDIRECT.value,
-            },
-        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_invalid_password(self):
         """Test with a valid pending user and invalid password"""
@@ -120,7 +95,7 @@ class TestPasswordStage(APITestCase):
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             # Form data
-            {"password": self.password + "test"},
+            {"password": self.user.username + "test"},
         )
         self.assertEqual(response.status_code, 200)
 
@@ -139,14 +114,14 @@ class TestPasswordStage(APITestCase):
                     kwargs={"flow_slug": self.flow.slug},
                 ),
                 # Form data
-                {"password": self.password + "test"},
+                {"password": self.user.username + "test"},
             )
             self.assertEqual(response.status_code, 200)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             # Form data
-            {"password": self.password + "test"},
+            {"password": self.user.username + "test"},
         )
         self.assertEqual(response.status_code, 200)
         # To ensure the plan has been cancelled, check SESSION_KEY_PLAN
@@ -172,20 +147,12 @@ class TestPasswordStage(APITestCase):
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             # Form data
-            {"password": self.password + "test"},
+            {"password": self.user.username + "test"},
         )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {
-                "component": "ak-stage-access-denied",
-                "error_message": None,
-                "flow_info": {
-                    "background": self.flow.background_url,
-                    "cancel_url": reverse("authentik_flows:cancel"),
-                    "title": "",
-                },
-                "type": ChallengeTypes.NATIVE.value,
-            },
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="Unknown error",
         )

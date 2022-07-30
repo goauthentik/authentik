@@ -25,6 +25,7 @@ class LDAPProviderSerializer(ProviderSerializer):
             "gid_start_number",
             "outpost_set",
             "search_mode",
+            "bind_mode",
         ]
 
 
@@ -46,6 +47,7 @@ class LDAPProviderViewSet(UsedByMixin, ModelViewSet):
         "uid_start_number": ["iexact"],
         "gid_start_number": ["iexact"],
     }
+    search_fields = ["name"]
     ordering = ["name"]
 
 
@@ -70,6 +72,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
             "uid_start_number",
             "gid_start_number",
             "search_mode",
+            "bind_mode",
         ]
 
 
@@ -79,3 +82,5 @@ class LDAPOutpostConfigViewSet(ReadOnlyModelViewSet):
     queryset = LDAPProvider.objects.filter(application__isnull=False)
     serializer_class = LDAPOutpostConfigSerializer
     ordering = ["name"]
+    search_fields = ["name"]
+    filterset_fields = ["name"]

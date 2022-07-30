@@ -1,32 +1,37 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG, config, tenant } from "@goauthentik/web/api/Config";
+import { me } from "@goauthentik/web/api/Users";
+import { uiConfig } from "@goauthentik/web/common/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import "@goauthentik/web/elements/TreeView";
+import "@goauthentik/web/elements/buttons/ActionButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { getURLParam } from "@goauthentik/web/elements/router/RouteMatch";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/users/ServiceAccountForm";
+import "@goauthentik/web/pages/users/UserActiveForm";
+import "@goauthentik/web/pages/users/UserForm";
+import "@goauthentik/web/pages/users/UserPasswordForm";
+import "@goauthentik/web/pages/users/UserResetEmailForm";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CoreApi, User } from "@goauthentik/api";
-
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG, tenant } from "../../api/Config";
-import { me } from "../../api/Users";
-import { uiConfig } from "../../common/config";
-import { PFColor } from "../../elements/Label";
-import "../../elements/buttons/ActionButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import { MessageLevel } from "../../elements/messages/Message";
-import { showMessage } from "../../elements/messages/MessageContainer";
-import { getURLParam, updateURLParams } from "../../elements/router/RouteMatch";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import { first } from "../../utils";
-import "./ServiceAccountForm";
-import "./UserActiveForm";
-import "./UserForm";
-import "./UserResetEmailForm";
+import { CapabilitiesEnum, CoreApi, ResponseError, User } from "@goauthentik/api";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {
@@ -49,11 +54,11 @@ export class UserListPage extends TablePage<User> {
     @property()
     order = "last_login";
 
-    @property({ type: Boolean })
-    hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
+    @property()
+    activePath = getURLParam<string>("path", "/");
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFAlert);
+        return super.styles.concat(PFDescriptionList, PFCard, PFAlert, AKGlobal);
     }
 
     async apiEndpoint(page: number): Promise<AKResponse<User>> {
@@ -62,11 +67,7 @@ export class UserListPage extends TablePage<User> {
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
-            attributes: this.hideServiceAccounts
-                ? JSON.stringify({
-                      "goauthentik.io/user/service-account__isnull": true,
-                  })
-                : undefined,
+            pathStartswith: getURLParam("path", ""),
         });
     }
 
@@ -136,11 +137,11 @@ export class UserListPage extends TablePage<User> {
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </a>`,
-            html` <ak-label color=${item.isActive ? PFColor.Green : PFColor.Red}>
+            html`<ak-label color=${item.isActive ? PFColor.Green : PFColor.Red}>
                 ${item.isActive ? t`Yes` : t`No`}
             </ak-label>`,
             html`${first(item.lastLogin?.toLocaleString(), t`-`)}`,
-            html` <ak-forms-modal>
+            html`<ak-forms-modal>
                     <span slot="submit"> ${t`Update`} </span>
                     <span slot="header"> ${t`Update User`} </span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
@@ -148,9 +149,19 @@ export class UserListPage extends TablePage<User> {
                         <i class="fas fa-edit"></i>
                     </button>
                 </ak-forms-modal>
-                <a class="pf-c-button pf-m-tertiary" href="${`/-/impersonation/${item.pk}/`}">
-                    ${t`Impersonate`}
-                </a>`,
+                ${until(
+                    config().then((config) => {
+                        if (config.capabilities.includes(CapabilitiesEnum.Impersonate)) {
+                            return html`<a
+                                class="pf-c-button pf-m-tertiary"
+                                href="${`/-/impersonation/${item.pk}/`}"
+                            >
+                                ${t`Impersonate`}
+                            </a>`;
+                        }
+                        return html``;
+                    }),
+                )}`,
         ];
     }
 
@@ -204,17 +215,29 @@ export class UserListPage extends TablePage<User> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
+                                    <ak-forms-modal size=${PFSize.Medium}>
+                                        <span slot="submit">${t`Update password`}</span>
+                                        <span slot="header">${t`Update password`}</span>
+                                        <ak-user-password-form
+                                            slot="form"
+                                            .instancePk=${item.pk}
+                                        ></ak-user-password-form>
+                                        <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                            ${t`Set password`}
+                                        </button>
+                                    </ak-forms-modal>
                                     ${until(
                                         tenant().then((tenant) => {
                                             if (!tenant.flowRecovery) {
                                                 return html`
                                                     <p>
-                                                        ${t`To directly reset a user's password, configure a recovery flow on the currently active tenant.`}
+                                                        ${t`To let a user directly reset a their password, configure a recovery flow on the currently active tenant.`}
                                                     </p>
                                                 `;
                                             }
                                             return html`
                                                 <ak-action-button
+                                                    class="pf-m-secondary"
                                                     .apiRequest=${() => {
                                                         return new CoreApi(DEFAULT_CONFIG)
                                                             .coreUsersRecoveryRetrieve({
@@ -227,8 +250,8 @@ export class UserListPage extends TablePage<User> {
                                                                     description: rec.link,
                                                                 });
                                                             })
-                                                            .catch((ex: Response) => {
-                                                                ex.json().then(() => {
+                                                            .catch((ex: ResponseError) => {
+                                                                ex.response.json().then(() => {
                                                                     showMessage({
                                                                         level: MessageLevel.error,
                                                                         message: t`No recovery flow is configured.`,
@@ -277,7 +300,7 @@ export class UserListPage extends TablePage<User> {
             <td></td>`;
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -293,37 +316,28 @@ export class UserListPage extends TablePage<User> {
                     ${t`Create Service account`}
                 </button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 
-    renderToolbarAfter(): TemplateResult {
-        return html`&nbsp;
-            <div class="pf-c-toolbar__group pf-m-filter-group">
-                <div class="pf-c-toolbar__item pf-m-search-filter">
-                    <div class="pf-c-input-group">
-                        <div class="pf-c-check">
-                            <input
-                                class="pf-c-check__input"
-                                type="checkbox"
-                                id="hide-service-accounts"
-                                name="hide-service-accounts"
-                                ?checked=${this.hideServiceAccounts}
-                                @change=${() => {
-                                    this.hideServiceAccounts = !this.hideServiceAccounts;
-                                    this.page = 1;
-                                    this.fetch();
-                                    updateURLParams({
-                                        hideServiceAccounts: this.hideServiceAccounts,
-                                    });
-                                }}
-                            />
-                            <label class="pf-c-check__label" for="hide-service-accounts">
-                                ${t`Hide service-accounts`}
-                            </label>
-                        </div>
-                    </div>
+    renderSidebarBefore(): TemplateResult {
+        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
+            <div class="pf-c-card">
+                <div class="pf-c-card__title">${t`User folders`}</div>
+                <div class="pf-c-card__body">
+                    ${until(
+                        new CoreApi(DEFAULT_CONFIG)
+                            .coreUsersPathsRetrieve({
+                                search: this.search,
+                            })
+                            .then((paths) => {
+                                return html`<ak-treeview
+                                    .items=${paths.paths}
+                                    activePath=${this.activePath}
+                                ></ak-treeview>`;
+                            }),
+                    )}
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 }

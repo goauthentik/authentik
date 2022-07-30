@@ -1,5 +1,4 @@
 """authentik consent stage"""
-from typing import Type
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -28,9 +27,7 @@ class ConsentStage(Stage):
         validators=[timedelta_string_validator],
         default="weeks=4",
         verbose_name="Consent expires in",
-        help_text=_(
-            ("Offset after which consent expires. " "(Format: hours=1;minutes=2;seconds=3).")
-        ),
+        help_text=_(("Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).")),
     )
 
     @property
@@ -40,7 +37,7 @@ class ConsentStage(Stage):
         return ConsentStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.consent.stage import ConsentStageView
 
         return ConsentStageView
@@ -60,6 +57,7 @@ class UserConsent(SerializerModel, ExpiringModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     application = models.ForeignKey(Application, on_delete=models.CASCADE)
+    permissions = models.TextField(default="")
 
     @property
     def serializer(self) -> Serializer:
@@ -72,6 +70,6 @@ class UserConsent(SerializerModel, ExpiringModel):
 
     class Meta:
 
-        unique_together = (("user", "application"),)
+        unique_together = (("user", "application", "permissions"),)
         verbose_name = _("User Consent")
         verbose_name_plural = _("User Consents")

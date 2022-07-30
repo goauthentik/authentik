@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "akadmin",
         "asgi",
         "authentik",
         "authn",
@@ -12,7 +13,8 @@
         "totp",
         "webauthn",
         "traefik",
-        "passwordless"
+        "passwordless",
+        "kubernetes"
     ],
     "python.linting.pylintEnabled": true,
     "todo-tree.tree.showCountsInTree": true,
@@ -20,5 +22,9 @@
     "python.formatting.provider": "black",
     "files.associations": {
         "*.akflow": "json"
-    }
+    },
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "typescript.preferences.importModuleSpecifierEnding": "index",
+    "typescript.tsdk": "./web/node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true
 }

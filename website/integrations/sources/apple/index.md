@@ -2,6 +2,8 @@
 title: Apple
 ---
 
+<span class="badge badge--primary">Support level: authentik</span>
+
 Allows users to authenticate using their Apple ID.
 
 ## Preparation
@@ -12,7 +14,7 @@ An Apple developer account is required for this.
 
 The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 ## Apple
 
@@ -50,7 +52,7 @@ The following placeholders will be used:
 
 ## authentik
 
-20. Under _Resources -> Sources_ Click **Create Apple OAuth Source**
+20. Under _Directory -> Federation & Social login_ Click **Create Apple OAuth Source**
 
 21. **Name**: `Apple`
 22. **Slug**: `apple`

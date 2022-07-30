@@ -1,3 +1,15 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/stages/invitation/InvitationForm";
+import "@goauthentik/web/pages/stages/invitation/InvitationListLink";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -7,18 +19,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { Invitation, StagesApi } from "@goauthentik/api";
-
-import { AKResponse } from "../../../api/Client";
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { uiConfig } from "../../../common/config";
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/forms/DeleteBulkForm";
-import "../../../elements/forms/ModalForm";
-import { TableColumn } from "../../../elements/table/Table";
-import { TablePage } from "../../../elements/table/TablePage";
-import "./InvitationForm";
-import "./InvitationListLink";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
@@ -65,9 +65,10 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`ID`, "pk"),
+            new TableColumn(t`Name`, "name"),
             new TableColumn(t`Created by`, "created_by"),
             new TableColumn(t`Expiry`),
+            new TableColumn(t`Actions`),
         ];
     }
 
@@ -95,9 +96,17 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     row(item: Invitation): TemplateResult[] {
         return [
-            html`${item.pk}`,
+            html`${item.name}`,
             html`${item.createdBy?.username}`,
             html`${item.expires?.toLocaleString() || t`-`}`,
+            html` <ak-forms-modal>
+                <span slot="submit"> ${t`Update`} </span>
+                <span slot="header"> ${t`Update Invitation`} </span>
+                <ak-invitation-form slot="form" .instancePk=${item.pk}> </ak-invitation-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </ak-forms-modal>`,
         ];
     }
 
@@ -114,7 +123,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             <td></td>`;
     }
 
-    renderToolbar(): TemplateResult {
+    renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
@@ -122,7 +131,6 @@ export class InvitationListPage extends TablePage<Invitation> {
                 <ak-invitation-form slot="form"> </ak-invitation-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
             </ak-forms-modal>
-            ${super.renderToolbar()}
         `;
     }
 

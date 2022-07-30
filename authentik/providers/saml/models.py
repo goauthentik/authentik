@@ -1,5 +1,5 @@
 """authentik saml_idp Models"""
-from typing import Optional, Type
+from typing import Optional
 
 from django.db import models
 from django.urls import reverse
@@ -52,7 +52,7 @@ class SAMLProvider(Provider):
         default=SAMLBindings.REDIRECT,
         verbose_name=_("Service Provider Binding"),
         help_text=_(
-            ("This determines how authentik sends the " "response back to the Service Provider.")
+            ("This determines how authentik sends the response back to the Service Provider.")
         ),
     )
 
@@ -163,7 +163,7 @@ class SAMLProvider(Provider):
             return None
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.providers.saml.api import SAMLProviderSerializer
 
         return SAMLProviderSerializer
@@ -192,7 +192,7 @@ class SAMLPropertyMapping(PropertyMapping):
         return "ak-property-mapping-saml-form"
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.providers.saml.api import SAMLPropertyMappingSerializer
 
         return SAMLPropertyMappingSerializer

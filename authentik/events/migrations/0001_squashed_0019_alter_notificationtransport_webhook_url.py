@@ -19,7 +19,7 @@ def convert_user_to_json(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Event = apps.get_model("authentik_events", "Event")
 
     db_alias = schema_editor.connection.alias
-    for event in Event.objects.all():
+    for event in Event.objects.using(db_alias).all():
         event.delete()
         # Because event objects cannot be updated, we have to re-create them
         event.pk = None
@@ -383,6 +383,7 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(
                         help_text="Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.",
                         to="authentik_events.NotificationTransport",
+                        blank=True,
                     ),
                 ),
             ],

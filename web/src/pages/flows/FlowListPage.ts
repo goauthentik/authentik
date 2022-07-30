@@ -1,3 +1,16 @@
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/ConfirmationForm";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/flows/FlowForm";
+import "@goauthentik/web/pages/flows/FlowImportForm";
+import { groupBy } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -5,18 +18,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import { Flow, FlowsApi } from "@goauthentik/api";
 
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/ConfirmationForm";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import { groupBy } from "../../utils";
-import "./FlowForm";
-import "./FlowImportForm";
 import { DesignationToLabel } from "./utils";
 
 @customElement("ak-flow-list")
@@ -91,9 +92,14 @@ export class FlowListPage extends TablePage<Flow> {
 
     row(item: Flow): TemplateResult[] {
         return [
-            html`<a href="#/flow/flows/${item.slug}">
-                <code>${item.slug}</code>
-            </a>`,
+            html`<div>
+                <div>
+                    <a href="#/flow/flows/${item.slug}">
+                        <code>${item.slug}</code>
+                    </a>
+                </div>
+                <small>${item.title}</small>
+            </div>`,
             html`${item.name}`,
             html`${Array.from(item.stages || []).length}`,
             html`${Array.from(item.policies || []).length}`,
@@ -108,17 +114,10 @@ export class FlowListPage extends TablePage<Flow> {
                 <button
                     class="pf-c-button pf-m-plain"
                     @click=${() => {
-                        new FlowsApi(DEFAULT_CONFIG)
-                            .flowsInstancesExecuteRetrieve({
-                                slug: item.slug,
-                            })
-                            .then((link) => {
-                                window.open(
-                                    `${link.link}?inspector&next=${encodeURIComponent(
-                                        `/#${window.location.href}`,
-                                    )}`,
-                                );
-                            });
+                        const finalURL = `${window.location.origin}/if/flow/${item.slug}/${AndNext(
+                            `${window.location.pathname}#${window.location.hash}`,
+                        )}`;
+                        window.open(finalURL, "_blank");
                     }}
                 >
                     <i class="fas fa-play"></i>
@@ -129,8 +128,9 @@ export class FlowListPage extends TablePage<Flow> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
-        return html` <ak-forms-modal>
+    renderObjectCreate(): TemplateResult {
+        return html`
+            <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
                 <span slot="header"> ${t`Create Flow`} </span>
                 <ak-flow-form slot="form"> </ak-flow-form>
@@ -142,6 +142,11 @@ export class FlowListPage extends TablePage<Flow> {
                 <ak-flow-import-form slot="form"> </ak-flow-import-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${t`Import`}</button>
             </ak-forms-modal>
+        `;
+    }
+
+    renderToolbar(): TemplateResult {
+        return html`
             ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${t`Successfully cleared flow cache`}
@@ -160,6 +165,7 @@ export class FlowListPage extends TablePage<Flow> {
                     ${t`Clear cache`}
                 </button>
                 <div slot="modal"></div>
-            </ak-forms-confirm>`;
+            </ak-forms-confirm>
+        `;
     }
 }

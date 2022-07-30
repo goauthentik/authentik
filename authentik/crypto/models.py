@@ -1,7 +1,7 @@
 """authentik crypto models"""
 from binascii import hexlify
 from hashlib import md5
-from typing import Optional, Union
+from typing import Optional
 from uuid import uuid4
 
 from cryptography.hazmat.backends import default_backend
@@ -42,8 +42,8 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     )
 
     _cert: Optional[Certificate] = None
-    _private_key: Optional[Union[RSAPrivateKey, EllipticCurvePrivateKey, Ed25519PrivateKey]] = None
-    _public_key: Optional[Union[RSAPublicKey, EllipticCurvePublicKey, Ed25519PublicKey]] = None
+    _private_key: Optional[RSAPrivateKey | EllipticCurvePrivateKey | Ed25519PrivateKey] = None
+    _public_key: Optional[RSAPublicKey | EllipticCurvePublicKey | Ed25519PublicKey] = None
 
     @property
     def serializer(self) -> Serializer:
@@ -61,7 +61,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         return self._cert
 
     @property
-    def public_key(self) -> Optional[Union[RSAPublicKey, EllipticCurvePublicKey, Ed25519PublicKey]]:
+    def public_key(self) -> Optional[RSAPublicKey | EllipticCurvePublicKey | Ed25519PublicKey]:
         """Get public key of the private key"""
         if not self._public_key:
             self._public_key = self.private_key.public_key()
@@ -70,7 +70,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     @property
     def private_key(
         self,
-    ) -> Optional[Union[RSAPrivateKey, EllipticCurvePrivateKey, Ed25519PrivateKey]]:
+    ) -> Optional[RSAPrivateKey | EllipticCurvePrivateKey | Ed25519PrivateKey]:
         """Get python cryptography PrivateKey instance"""
         if not self._private_key and self.key_data != "":
             try:

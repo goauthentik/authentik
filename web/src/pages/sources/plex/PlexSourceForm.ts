@@ -1,3 +1,10 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/web/api/Plex";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { first, randomString } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -12,13 +19,6 @@ import {
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { PlexAPIClient, PlexResource, popupCenterScreen } from "../../../api/Plex";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { first, randomString } from "../../../utils";
 
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends ModelForm<PlexSource, string> {
@@ -214,6 +214,19 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         ${t`Use the user's username, but deny enrollment when the username already exists.`}
                     </option>
                 </select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`User path`} name="userPathTemplate">
+                <input
+                    type="text"
+                    value="${first(
+                        this.instance?.userPathTemplate,
+                        "goauthentik.io/sources/%(slug)s",
+                    )}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Path template for users created. Use placeholders like \`%(slug)s\` to insert the source slug.`}
+                </p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>

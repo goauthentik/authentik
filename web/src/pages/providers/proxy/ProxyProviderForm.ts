@@ -1,3 +1,10 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import "@goauthentik/web/elements/utils/TimeDeltaHelp";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, css } from "lit";
@@ -20,12 +27,6 @@ import {
     ProxyMode,
     ProxyProvider,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { first } from "../../../utils";
 
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
@@ -214,7 +215,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                     </ak-form-element-horizontal>`;
             case ProxyMode.ForwardSingle:
                 return html`<p class="pf-u-mb-xl">
-                        ${t`Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /akprox must be routed to the outpost (when using a manged outpost, this is done for you).`}
+                        ${t`Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you).`}
                     </p>
                     <ak-form-element-horizontal
                         label=${t`External host`}
@@ -329,9 +330,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">${t`Configure how long tokens are valid for.`}</p>
-                <p class="pf-c-form__helper-text">
-                    ${t`(Format: hours=-1;minutes=-2;seconds=-3).`}
-                </p>
+                <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
 
             <ak-form-group>
@@ -404,7 +403,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                     <ak-form-element-horizontal
                         label="${this.mode === ProxyMode.ForwardDomain
                             ? t`Unauthenticated URLs`
-                            : t`Unauthenticated Paths`}${t``}"
+                            : t`Unauthenticated Paths`}"
                         name="skipPathRegex"
                     >
                         <textarea class="pf-c-form-control">

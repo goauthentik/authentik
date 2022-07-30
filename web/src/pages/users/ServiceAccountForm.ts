@@ -1,3 +1,8 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { Form } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModalForm } from "@goauthentik/web/elements/forms/ModalForm";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
@@ -5,11 +10,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { CoreApi, UserServiceAccountRequest, UserServiceAccountResponse } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { Form } from "../../elements/forms/Form";
-import "../../elements/forms/HorizontalFormElement";
-import { ModalForm } from "../../elements/forms/ModalForm";
 
 @customElement("ak-user-service-account")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
@@ -42,7 +42,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             <ak-form-element-horizontal label=${t`Username`} ?required=${true} name="name">
                 <input type="text" value="" class="pf-c-form-control" required />
                 <p class="pf-c-form__helper-text">
-                    ${t`Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.`}
+                    ${t`User's primary identifier. 150 characters or fewer.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="createGroup">

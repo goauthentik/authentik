@@ -1,3 +1,7 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { me } from "@goauthentik/web/api/Users";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
@@ -5,7 +9,7 @@ import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -21,14 +25,11 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { me } from "../../api/Users";
-import { EVENT_REFRESH } from "../../constants";
 import "../../elements/Tabs";
 import "../../elements/user/SessionList";
 import "../../elements/user/UserConsentList";
-import "./details/UserDetailsForm";
 import "./details/UserPassword";
+import "./details/UserSettingsFlowExecutor";
 import "./mfa/MFADevicesPage";
 import "./sources/SourceSettings";
 import "./tokens/UserTokenList";
@@ -78,14 +79,7 @@ export class UserSettingsPage extends LitElement {
                     >
                         <div class="pf-l-stack pf-m-gutter">
                             <div class="pf-l-stack__item">
-                                <div class="pf-c-card">
-                                    <div class="pf-c-card__title">${t`Update details`}</div>
-                                    <div class="pf-c-card__body">
-                                        <ak-user-details-form
-                                            .instancePk=${1}
-                                        ></ak-user-details-form>
-                                    </div>
-                                </div>
+                                <ak-user-settings-flow-executor></ak-user-settings-flow-executor>
                             </div>
                             <div class="pf-l-stack__item">
                                 ${until(

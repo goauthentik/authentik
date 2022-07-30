@@ -39,12 +39,12 @@ func NewWebServer(g *gounicorn.GoUnicorn) *WebServer {
 	mainHandler.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	mainHandler.Use(handlers.ProxyHeaders)
 	mainHandler.Use(handlers.CompressHandler)
-	logginRouter := mainHandler.NewRoute().Subrouter()
-	logginRouter.Use(web.NewLoggingHandler(l, nil))
+	loggingHandler := mainHandler.NewRoute().Subrouter()
+	loggingHandler.Use(web.NewLoggingHandler(l, nil))
 
 	ws := &WebServer{
 		m:   mainHandler,
-		lh:  logginRouter,
+		lh:  loggingHandler,
 		log: l,
 		p:   g,
 	}
@@ -68,16 +68,16 @@ func (ws *WebServer) Shutdown() {
 }
 
 func (ws *WebServer) listenPlain() {
-	ln, err := net.Listen("tcp", config.G.Web.Listen)
+	ln, err := net.Listen("tcp", config.Get().Web.Listen)
 	if err != nil {
 		ws.log.WithError(err).Fatal("failed to listen")
 	}
 	proxyListener := &proxyproto.Listener{Listener: ln}
 	defer proxyListener.Close()
 
-	ws.log.WithField("listen", config.G.Web.Listen).Info("Starting HTTP server")
+	ws.log.WithField("listen", config.Get().Web.Listen).Info("Starting HTTP server")
 	ws.serve(proxyListener)
-	ws.log.WithField("listen", config.G.Web.Listen).Info("Stopping HTTP server")
+	ws.log.WithField("listen", config.Get().Web.Listen).Info("Stopping HTTP server")
 }
 
 func (ws *WebServer) serve(listener net.Listener) {

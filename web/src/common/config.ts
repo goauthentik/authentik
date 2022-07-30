@@ -1,9 +1,17 @@
-import { me } from "../api/Users";
+import { me } from "@goauthentik/web/api/Users";
+
+import { UserSelf } from "@goauthentik/api";
 
 export enum UserDisplay {
-    "username",
-    "name",
-    "email",
+    username = "username",
+    name = "name",
+    email = "email",
+}
+
+export enum LayoutType {
+    row = "row",
+    column_2 = "2-column",
+    column_3 = "3-column",
 }
 
 export interface UIConfig {
@@ -22,13 +30,17 @@ export interface UIConfig {
     navbar: {
         userDisplay: UserDisplay;
     };
-    color: {
+    theme: {
         background: string;
         cardBackground: string;
     };
     pagination: {
         perPage: number;
     };
+    layout: {
+        type: LayoutType;
+    };
+    locale: string;
 }
 
 export class DefaultUIConfig implements UIConfig {
@@ -39,32 +51,38 @@ export class DefaultUIConfig implements UIConfig {
         applicationEdit: true,
         search: true,
     };
+    layout = {
+        type: LayoutType.row,
+    };
     navbar = {
         userDisplay: UserDisplay.username,
     };
-    color = {
+    theme = {
         background: "",
         cardBackground: "",
     };
     pagination = {
         perPage: 20,
     };
+    locale = "";
 }
 
 let globalUiConfig: Promise<UIConfig>;
 
+export function getConfigForUser(user: UserSelf): UIConfig {
+    const settings = user.settings;
+    let config = new DefaultUIConfig();
+    if (!settings) {
+        return config;
+    }
+    config = Object.assign(new DefaultUIConfig(), settings);
+    return config;
+}
+
 export function uiConfig(): Promise<UIConfig> {
     if (!globalUiConfig) {
         globalUiConfig = me().then((user) => {
-            const settings = user.user.settings;
-            let config = new DefaultUIConfig();
-            if (!settings) {
-                return config;
-            }
-            if ("userInterface" in settings) {
-                config = Object.assign(new DefaultUIConfig(), settings.userInterface);
-            }
-            return config;
+            return getConfigForUser(user.user);
         });
     }
     return globalUiConfig;

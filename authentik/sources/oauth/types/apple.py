@@ -78,7 +78,7 @@ class AppleOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source: OAuthSource):  # pragma: no cover
         return {
-            "scope": "name email",
+            "scope": ["name", "email"],
             "response_mode": "form_post",
         }
 

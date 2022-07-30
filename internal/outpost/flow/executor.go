@@ -14,20 +14,21 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/utils/web"
 )
 
 var (
 	FlowTimingGet = promauto.NewHistogramVec(prometheus.HistogramOpts{
 		Name: "authentik_outpost_flow_timing_get",
 		Help: "Duration it took to get a challenge",
-	}, []string{"stage", "flow", "client", "user"})
+	}, []string{"stage", "flow"})
 	FlowTimingPost = promauto.NewHistogramVec(prometheus.HistogramOpts{
 		Name: "authentik_outpost_flow_timing_post",
 		Help: "Duration it took to send a challenge",
-	}, []string{"stage", "flow", "client", "user"})
+	}, []string{"stage", "flow"})
 )
 
 type FlowExecutor struct {
@@ -35,11 +36,13 @@ type FlowExecutor struct {
 	Answers map[StageComponent]string
 	Context context.Context
 
-	cip      string
-	api      *api.APIClient
-	flowSlug string
-	log      *log.Entry
-	token    string
+	cip       string
+	api       *api.APIClient
+	flowSlug  string
+	log       *log.Entry
+	token     string
+	session   *http.Cookie
+	transport http.RoundTripper
 
 	sp *sentry.Span
 }
@@ -54,28 +57,41 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 		l.WithError(err).Warning("Failed to create cookiejar")
 		panic(err)
 	}
+	transport := web.NewUserAgentTransport(constants.OutpostUserAgent(), web.NewTracingTransport(rsp.Context(), ak.GetTLSTransport()))
+	fe := &FlowExecutor{
+		Params:    url.Values{},
+		Answers:   make(map[StageComponent]string),
+		Context:   rsp.Context(),
+		flowSlug:  flowSlug,
+		log:       l,
+		sp:        rsp,
+		cip:       "",
+		transport: transport,
+	}
 	// Create new http client that also sets the correct ip
 	config := api.NewConfiguration()
 	config.Host = refConfig.Host
 	config.Scheme = refConfig.Scheme
 	config.HTTPClient = &http.Client{
 		Jar:       jar,
-		Transport: ak.NewUserAgentTransport(constants.OutpostUserAgent(), ak.NewTracingTransport(rsp.Context(), ak.GetTLSTransport())),
+		Transport: fe,
 	}
-	token := strings.Split(refConfig.DefaultHeader["Authorization"], " ")[1]
-	config.AddDefaultHeader(HeaderAuthentikOutpostToken, token)
-	apiClient := api.NewAPIClient(config)
-	return &FlowExecutor{
-		Params:   url.Values{},
-		Answers:  make(map[StageComponent]string),
-		Context:  rsp.Context(),
-		api:      apiClient,
-		flowSlug: flowSlug,
-		log:      l,
-		token:    token,
-		sp:       rsp,
-		cip:      "",
+	fe.token = strings.Split(refConfig.DefaultHeader["Authorization"], " ")[1]
+	config.AddDefaultHeader(HeaderAuthentikOutpostToken, fe.token)
+	fe.api = api.NewAPIClient(config)
+	return fe
+}
+
+func (fe *FlowExecutor) RoundTrip(req *http.Request) (*http.Response, error) {
+	res, err := fe.transport.RoundTrip(req)
+	if res != nil {
+		for _, cookie := range res.Cookies() {
+			if cookie.Name == "authentik_session" {
+				fe.session = cookie
+			}
+		}
 	}
+	return res, err
 }
 
 func (fe *FlowExecutor) ApiClient() *api.APIClient {
@@ -97,12 +113,12 @@ func (fe *FlowExecutor) CheckApplicationAccess(appSlug string) (bool, error) {
 	acsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.check_access")
 	defer acsp.Finish()
 	p, _, err := fe.api.CoreApi.CoreApplicationsCheckAccessRetrieve(acsp.Context(), appSlug).Execute()
+	if err != nil {
+		return false, fmt.Errorf("failed to check access: %w", err)
+	}
 	if !p.Passing {
 		fe.log.Info("Access denied for user")
 		return false, nil
-	}
-	if err != nil {
-		return false, fmt.Errorf("failed to check access: %w", err)
 	}
 	fe.log.Debug("User has access")
 	return true, nil
@@ -113,6 +129,10 @@ func (fe *FlowExecutor) getAnswer(stage StageComponent) string {
 		return v
 	}
 	return ""
+}
+
+func (fe *FlowExecutor) GetSession() *http.Cookie {
+	return fe.session
 }
 
 // WarmUp Ensure authentik's flow cache is warmed up
@@ -144,10 +164,8 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 	gcsp.SetTag("authentik.flow.component", ch.GetComponent())
 	gcsp.Finish()
 	FlowTimingGet.With(prometheus.Labels{
-		"stage":  ch.GetComponent(),
-		"flow":   fe.flowSlug,
-		"client": fe.cip,
-		"user":   fe.Answers[StageIdentification],
+		"stage": ch.GetComponent(),
+		"flow":  fe.flowSlug,
 	}).Observe(float64(gcsp.EndTime.Sub(gcsp.StartTime)))
 
 	// Resole challenge
@@ -211,10 +229,8 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 		}
 	}
 	FlowTimingPost.With(prometheus.Labels{
-		"stage":  ch.GetComponent(),
-		"flow":   fe.flowSlug,
-		"client": fe.cip,
-		"user":   fe.Answers[StageIdentification],
+		"stage": ch.GetComponent(),
+		"flow":  fe.flowSlug,
 	}).Observe(float64(scsp.EndTime.Sub(scsp.StartTime)))
 
 	if depth >= 10 {

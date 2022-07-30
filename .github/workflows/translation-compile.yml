@@ -1,14 +1,12 @@
 name: authentik-backend-translate-compile
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - '/locale/'
   pull_request:
     paths:
       - '/locale/'
-  schedule:
-  - cron: "0 */2 * * *"
   workflow_dispatch:
 
 env:
@@ -20,24 +18,13 @@ jobs:
   compile:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - id: cache-poetry
-        uses: actions/cache@v2.1.7
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-cache-v3-${{ hashFiles('**/poetry.lock') }}
-      - name: prepare
-        env:
-          INSTALL: ${{ steps.cache-poetry.outputs.cache-hit }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gettext
-          scripts/ci_prepare.sh
+      - uses: actions/checkout@v3
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - name: run compile
         run: poetry run ./manage.py compilemessages
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         id: cpr
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -47,10 +34,3 @@ jobs:
           body: "core: compile backend translations"
           delete-branch: true
           signoff: true
-      - name: Enable Pull Request Automerge
-        if: steps.cpr.outputs.pull-request-operation == 'created'
-        uses: peter-evans/enable-pull-request-automerge@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          merge-method: squash

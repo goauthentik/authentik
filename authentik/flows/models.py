@@ -1,11 +1,10 @@
 """Flow models"""
 from base64 import b64decode, b64encode
 from pickle import dumps, loads  # nosec
-from typing import TYPE_CHECKING, Optional, Type
+from typing import TYPE_CHECKING, Optional
 from uuid import uuid4
 
 from django.db import models
-from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
@@ -13,6 +12,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
+from authentik.flows.challenge import FlowLayout
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.policies.models import PolicyBindingModel
 
@@ -39,6 +39,14 @@ class InvalidResponseAction(models.TextChoices):
     RESTART_WITH_CONTEXT = "restart_with_context"
 
 
+class FlowDeniedAction(models.TextChoices):
+    """Configure what response is given to denied flow executions"""
+
+    MESSAGE_CONTINUE = "message_continue"
+    MESSAGE = "message"
+    CONTINUE = "continue"
+
+
 class FlowDesignation(models.TextChoices):
     """Designation of what a Flow should be used for. At a later point, this
     should be replaced by a database entry."""
@@ -63,7 +71,7 @@ class Stage(SerializerModel):
     objects = InheritanceManager()
 
     @property
-    def type(self) -> Type["StageView"]:
+    def type(self) -> type["StageView"]:
         """Return StageView class that implements logic for this stage"""
         # This is a bit of a workaround, since we can't set class methods with setattr
         if hasattr(self, "__in_memory_type"):
@@ -86,13 +94,15 @@ class Stage(SerializerModel):
         return f"Stage {self.name}"
 
 
-def in_memory_stage(view: Type["StageView"]) -> Stage:
+def in_memory_stage(view: type["StageView"], **kwargs) -> Stage:
     """Creates an in-memory stage instance, based on a `view` as view."""
     stage = Stage()
     # Because we can't pickle a locally generated function,
     # we set the view as a separate property and reference a generic function
     # that returns that member
     setattr(stage, "__in_memory_type", view)
+    for key, value in kwargs.items():
+        setattr(stage, key, value)
     return stage
 
 
@@ -107,6 +117,7 @@ class Flow(SerializerModel, PolicyBindingModel):
     slug = models.SlugField(unique=True, help_text=_("Visible in the URL."))
 
     title = models.TextField(help_text=_("Shown as the Title in Flow pages."))
+    layout = models.TextField(default=FlowLayout.STACKED, choices=FlowLayout.choices)
 
     designation = models.CharField(
         max_length=100,
@@ -135,6 +146,12 @@ class Flow(SerializerModel, PolicyBindingModel):
         ),
     )
 
+    denied_action = models.TextField(
+        choices=FlowDeniedAction.choices,
+        default=FlowDeniedAction.MESSAGE_CONTINUE,
+        help_text=_("Configure what should happen when a flow denies access to a user."),
+    )
+
     @property
     def background_url(self) -> str:
         """Get the URL to the background image. If the name is /static or starts with http
@@ -152,23 +169,6 @@ class Flow(SerializerModel, PolicyBindingModel):
         from authentik.flows.api.flows import FlowSerializer
 
         return FlowSerializer
-
-    @staticmethod
-    def with_policy(request: HttpRequest, **flow_filter) -> Optional["Flow"]:
-        """Get a Flow by `**flow_filter` and check if the request from `request` can access it."""
-        from authentik.policies.engine import PolicyEngine
-
-        flows = Flow.objects.filter(**flow_filter).order_by("slug")
-        for flow in flows:
-            engine = PolicyEngine(flow, request.user, request)
-            engine.build()
-            result = engine.result
-            if result.passing:
-                LOGGER.debug("with_policy: flow passing", flow=flow)
-                return flow
-            LOGGER.warning("with_policy: flow not passing", flow=flow, messages=result.messages)
-        LOGGER.debug("with_policy: no flow found", filters=flow_filter)
-        return None
 
     def __str__(self) -> str:
         return f"Flow {self.name} ({self.slug})"
@@ -231,7 +231,7 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         return FlowStageBindingSerializer
 
     def __str__(self) -> str:
-        return f"Flow-stage binding #{self.order} to {self.target}"
+        return f"Flow-stage binding #{self.order} to {self.target_id}"
 
     class Meta:
 

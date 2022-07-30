@@ -4,11 +4,11 @@ title: Embedded Outpost
 
 Starting with 2021.8.1, authentik comes with an embedded outpost. This has been added to simplify deployment for users using the Proxy provider.
 
-The embedded outpost is ran in the main `server` container, and is managed by authentik itself. The embedded outpost authenticates itself via the secret key.
+The embedded outpost runs in the main `server` container, and is managed by authentik itself. The embedded outpost authenticates itself via the secret key.
 
 You can access the embedded outpost on the same ports as authentik itself, 9000 and 9443.
 
-The embedded outpost cannot be disabled, if it doesn't make sense to use in your deployment you can simply ignore it.
+The embedded outpost cannot be disabled, if it doesn't make sense to use it in your deployment you can simply ignore it.
 
 ### Configuration
 
@@ -26,7 +26,7 @@ Make sure to set it to full URL, only configuring a hostname or FQDN will not wo
 Routing is handled like this:
 
 1. Paths starting with `/static`, `/media` and `/help` return packaged CSS/JS files, and user-uploaded media files.
-2. Paths starting with `/akprox` are sent to the embedded outpost.
+2. Paths starting with `/outpost.goauthentik.io` are sent to the embedded outpost.
 3. Any hosts configured in the providers assigned to the embedded outpost are sent to the outpost.
 4. Everything remaining is sent to the authentik backend server.
 

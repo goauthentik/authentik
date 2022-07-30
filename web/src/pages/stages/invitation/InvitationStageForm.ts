@@ -1,16 +1,15 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { first } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import { InvitationStage, StagesApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { first } from "../../../utils";
 
 @customElement("ak-stage-invitation-form")
 export class InvitationStageForm extends ModelForm<InvitationStage, string> {
@@ -49,7 +48,7 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
             <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
+                    value="${this.instance?.name || ""}"
                     class="pf-c-form-control"
                     required
                 />

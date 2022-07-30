@@ -1,8 +1,8 @@
-import { t } from "@lingui/macro";
+import { EVENT_WS_MESSAGE } from "@goauthentik/web/constants";
+import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
 
-import { EVENT_WS_MESSAGE } from "../constants";
-import { MessageLevel } from "../elements/messages/Message";
-import { showMessage } from "../elements/messages/MessageContainer";
+import { t } from "@lingui/macro";
 
 export interface WSMessage {
     message_type: string;
@@ -32,7 +32,7 @@ export class WebsocketClient {
         });
         this.messageSocket.addEventListener("close", (e) => {
             console.debug(`authentik/ws: closed ws connection: ${e}`);
-            if (this.retryDelay > 3000) {
+            if (this.retryDelay > 6000) {
                 showMessage(
                     {
                         level: MessageLevel.error,

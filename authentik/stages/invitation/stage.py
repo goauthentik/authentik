@@ -4,7 +4,6 @@ from typing import Optional
 from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
-from structlog.stdlib import get_logger
 
 from authentik.flows.models import in_memory_stage
 from authentik.flows.stage import StageView
@@ -13,7 +12,6 @@ from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
-LOGGER = get_logger()
 INVITATION_TOKEN_KEY_CONTEXT = "token"  # nosec
 INVITATION_TOKEN_KEY = "itoken"  # nosec
 INVITATION_IN_EFFECT = "invitation_in_effect"
@@ -51,7 +49,7 @@ class InvitationStageView(StageView):
 
         invite: Invitation = Invitation.objects.filter(pk=token).first()
         if not invite:
-            LOGGER.debug("invalid invitation", token=token)
+            self.logger.debug("invalid invitation", token=token)
             if stage.continue_flow_without_invitation:
                 return self.executor.stage_ok()
             return self.executor.stage_invalid()
@@ -81,11 +79,11 @@ class InvitationFinalStageView(StageView):
         """Delete invitation if single_use is active"""
         invitation: Invitation = self.executor.plan.context.get(INVITATION, None)
         if not invitation:
-            LOGGER.warning("InvitationFinalStageView stage called without invitation")
+            self.logger.warning("InvitationFinalStageView stage called without invitation")
             return HttpResponseBadRequest
         token = invitation.invite_uuid.hex
         if invitation.single_use:
             invitation.delete()
-            LOGGER.debug("Deleted invitation", token=token)
+            self.logger.debug("Deleted invitation", token=token)
         del self.executor.plan.context[INVITATION]
         return self.executor.stage_ok()

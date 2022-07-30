@@ -1,13 +1,13 @@
 """Sync LDAP Users and groups into authentik"""
 from typing import Any
 
-from deepmerge import always_merger
 from django.db.models.base import Model
 from django.db.models.query import QuerySet
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
+from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
@@ -64,7 +64,9 @@ class BaseLDAPSynchronizer:
 
     def build_user_properties(self, user_dn: str, **kwargs) -> dict[str, Any]:
         """Build attributes for User object based on property mappings."""
-        return self._build_object_properties(user_dn, self._source.property_mappings, **kwargs)
+        props = self._build_object_properties(user_dn, self._source.property_mappings, **kwargs)
+        props["path"] = self._source.get_user_path()
+        return props
 
     def build_group_properties(self, group_dn: str, **kwargs) -> dict[str, Any]:
         """Build attributes for Group object based on property mappings."""
@@ -123,8 +125,8 @@ class BaseLDAPSynchronizer:
                 continue
             setattr(instance, key, value)
         final_atttributes = {}
-        always_merger.merge(final_atttributes, instance.attributes)
-        always_merger.merge(final_atttributes, data.get("attributes", {}))
+        MERGE_LIST_UNIQUE.merge(final_atttributes, instance.attributes)
+        MERGE_LIST_UNIQUE.merge(final_atttributes, data.get("attributes", {}))
         instance.attributes = final_atttributes
         instance.save()
         return (instance, False)

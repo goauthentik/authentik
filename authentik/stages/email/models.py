@@ -88,7 +88,7 @@ class EmailStage(Stage):
         return EmailStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.email.stage import EmailStageView
 
         return EmailStageView

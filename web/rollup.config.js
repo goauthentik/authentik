@@ -5,7 +5,6 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import copy from "rollup-plugin-copy";
 import cssimport from "rollup-plugin-cssimport";
-import sourcemaps from "rollup-plugin-sourcemaps";
 import { terser } from "rollup-plugin-terser";
 
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
@@ -34,6 +33,7 @@ export const resources = [
         dest: "dist/",
     },
     { src: "src/authentik.css", dest: "dist/" },
+    { src: "src/custom.css", dest: "dist/" },
 
     {
         src: "node_modules/@patternfly/patternfly/assets/*",
@@ -69,24 +69,31 @@ export function manualChunks(id) {
     }
 }
 
-export const PLUGINS = [
-    cssimport(),
-    markdown(),
-    nodeResolve({ extensions, browser: true }),
-    commonjs(),
-    babel({
-        extensions,
-        babelHelpers: "runtime",
-        include: ["src/**/*"],
-    }),
-    replace({
-        "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
-        "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-        "preventAssignment": true,
-    }),
-    sourcemaps(),
-    isProdBuild && terser(),
-].filter((p) => p);
+export const defaultOptions = {
+    plugins: [
+        cssimport(),
+        markdown(),
+        nodeResolve({ extensions, browser: true }),
+        commonjs(),
+        babel({
+            extensions,
+            babelHelpers: "runtime",
+            include: ["src/**/*"],
+        }),
+        replace({
+            "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
+            "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
+            "preventAssignment": true,
+        }),
+        isProdBuild && terser(),
+    ].filter((p) => p),
+    watch: {
+        clearScreen: false,
+    },
+    preserveEntrySignatures: false,
+    cache: true,
+    context: "window",
+};
 
 // Polyfills (imported first)
 export const POLY = {
@@ -98,6 +105,7 @@ export const POLY = {
             sourcemap: true,
         },
     ],
+    cache: true,
     plugins: [
         cssimport(),
         nodeResolve({ browser: true }),
@@ -108,9 +116,6 @@ export const POLY = {
             copyOnce: false,
         }),
     ].filter((p) => p),
-    watch: {
-        clearScreen: false,
-    },
 };
 
 export default [
@@ -118,7 +123,6 @@ export default [
     // Flow interface
     {
         input: "./src/interfaces/FlowInterface.ts",
-        context: "window",
         output: [
             {
                 format: "es",
@@ -127,15 +131,11 @@ export default [
                 manualChunks: manualChunks,
             },
         ],
-        plugins: PLUGINS,
-        watch: {
-            clearScreen: false,
-        },
+        ...defaultOptions,
     },
     // Admin interface
     {
         input: "./src/interfaces/AdminInterface.ts",
-        context: "window",
         output: [
             {
                 format: "es",
@@ -144,15 +144,11 @@ export default [
                 manualChunks: manualChunks,
             },
         ],
-        plugins: PLUGINS,
-        watch: {
-            clearScreen: false,
-        },
+        ...defaultOptions,
     },
     // User interface
     {
         input: "./src/interfaces/UserInterface.ts",
-        context: "window",
         output: [
             {
                 format: "es",
@@ -161,9 +157,6 @@ export default [
                 manualChunks: manualChunks,
             },
         ],
-        plugins: PLUGINS,
-        watch: {
-            clearScreen: false,
-        },
+        ...defaultOptions,
     },
 ];

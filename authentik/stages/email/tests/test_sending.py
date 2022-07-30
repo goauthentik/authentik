@@ -7,10 +7,10 @@ from django.core.mail.backends.locmem import EmailBackend
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.email.models import EmailStage
@@ -21,13 +21,9 @@ class TestEmailStageSending(APITestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user(username="unittest", email="test@beryju.org")
+        self.user = create_test_admin_user()
 
-        self.flow = Flow.objects.create(
-            name="test-email",
-            slug="test-email",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = EmailStage.objects.create(
             name="email",
         )
@@ -53,9 +49,9 @@ class TestEmailStageSending(APITestCase):
             events = Event.objects.filter(action=EventAction.EMAIL_SENT)
             self.assertEqual(len(events), 1)
             event = events.first()
-            self.assertEqual(event.context["message"], "Email to test@beryju.org sent")
+            self.assertEqual(event.context["message"], f"Email to {self.user.email} sent")
             self.assertEqual(event.context["subject"], "authentik")
-            self.assertEqual(event.context["to_email"], ["test@beryju.org"])
+            self.assertEqual(event.context["to_email"], [self.user.email])
             self.assertEqual(event.context["from_email"], "system@authentik.local")
 
     def test_send_error(self):

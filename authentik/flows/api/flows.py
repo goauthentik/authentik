@@ -72,6 +72,8 @@ class FlowSerializer(ModelSerializer):
             "policy_engine_mode",
             "compatibility_mode",
             "export_url",
+            "layout",
+            "denied_action",
         ]
         extra_kwargs = {
             "background": {"read_only": True},
@@ -109,8 +111,8 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     serializer_class = FlowSerializer
     lookup_field = "slug"
     ordering = ["slug", "name"]
-    search_fields = ["name", "slug", "designation", "title"]
-    filterset_fields = ["flow_uuid", "name", "slug", "designation"]
+    search_fields = ["name", "slug", "designation", "title", "denied_action"]
+    filterset_fields = ["flow_uuid", "name", "slug", "designation", "denied_action"]
 
     @permission_required(None, ["authentik_flows.view_flow_cache"])
     @extend_schema(responses={200: CacheSerializer(many=False)})
@@ -211,12 +213,30 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         ]
         body: list[DiagramElement] = []
         footer = []
-        # First, collect all elements we need
+        # Collect all elements we need
+        # First, policies bound to the flow itself
+        for p_index, policy_binding in enumerate(
+            get_objects_for_user(request.user, "authentik_policies.view_policybinding")
+            .filter(target=flow)
+            .exclude(policy__isnull=True)
+            .order_by("order")
+        ):
+            body.append(
+                DiagramElement(
+                    f"flow_policy_{p_index}",
+                    "condition",
+                    _("Policy (%(type)s)" % {"type": policy_binding.policy._meta.verbose_name})
+                    + "\n"
+                    + policy_binding.policy.name,
+                )
+            )
+        # Collect all stages
         for s_index, stage_binding in enumerate(
             get_objects_for_user(request.user, "authentik_flows.view_flowstagebinding")
             .filter(target=flow)
             .order_by("order")
         ):
+            # First all policies bound to stages since they execute before stages
             for p_index, policy_binding in enumerate(
                 get_objects_for_user(request.user, "authentik_policies.view_policybinding")
                 .filter(target=stage_binding)
@@ -227,14 +247,18 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
                     DiagramElement(
                         f"stage_{s_index}_policy_{p_index}",
                         "condition",
-                        f"Policy\n{policy_binding.policy.name}",
+                        _("Policy (%(type)s)" % {"type": policy_binding.policy._meta.verbose_name})
+                        + "\n"
+                        + policy_binding.policy.name,
                     )
                 )
             body.append(
                 DiagramElement(
                     f"stage_{s_index}",
                     "operation",
-                    f"Stage\n{stage_binding.stage.name}",
+                    _("Stage (%(type)s)" % {"type": stage_binding.stage._meta.verbose_name})
+                    + "\n"
+                    + stage_binding.stage.name,
                 )
             )
         # If the 2nd last element is a policy, we need to have an item to point to
@@ -348,7 +372,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
                 request,
                 _(
                     "Flow not applicable to current user/request: %(messages)s"
-                    % {"messages": str(exc)}
+                    % {"messages": exc.messages}
                 ),
             )
         return Response(

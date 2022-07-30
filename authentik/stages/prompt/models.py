@@ -1,10 +1,13 @@
 """prompt models"""
-from typing import Any, Optional, Type
+from typing import Any, Optional
+from urllib.parse import urlparse, urlunparse
 from uuid import uuid4
 
 from django.db import models
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     BooleanField,
     CharField,
@@ -16,14 +19,22 @@ from rest_framework.fields import (
     ReadOnlyField,
 )
 from rest_framework.serializers import BaseSerializer
+from structlog.stdlib import get_logger
 
+from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression import PropertyMappingEvaluator
+from authentik.core.models import User
 from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import Policy
 
+LOGGER = get_logger()
+
 
 class FieldTypes(models.TextChoices):
     """Field types an Prompt can be"""
+
+    # update website/docs/flow/stages/prompt/index.md
 
     # Simple text field
     TEXT = "text", _("Text: Simple Text input")
@@ -34,7 +45,7 @@ class FieldTypes(models.TextChoices):
     # Same as text, but has autocomplete for password managers
     USERNAME = (
         "username",
-        _(("Username: Same as Text input, but checks for " "and prevents duplicate usernames.")),
+        _(("Username: Same as Text input, but checks for and prevents duplicate usernames.")),
     )
     EMAIL = "email", _("Email: Text field with Email type.")
     PASSWORD = (
@@ -52,9 +63,33 @@ class FieldTypes(models.TextChoices):
     DATE = "date"
     DATE_TIME = "date-time"
 
+    FILE = (
+        "file",
+        _(
+            "File: File upload for arbitrary files. File content will be available in flow "
+            "context as data-URI"
+        ),
+    )
+
     SEPARATOR = "separator", _("Separator: Static Separator Line")
     HIDDEN = "hidden", _("Hidden: Hidden field, can be used to insert data into form.")
     STATIC = "static", _("Static: Static value, displayed as-is.")
+
+    AK_LOCALE = "ak-locale", _("authentik: Selection of locales authentik supports")
+
+
+class InlineFileField(CharField):
+    """Field for inline data-URI base64 encoded files"""
+
+    def to_internal_value(self, data: str):
+        uri = urlparse(data)
+        if uri.scheme != "data":
+            raise ValidationError("Invalid scheme")
+        header, _encoded = uri.path.split(",", 1)
+        _mime, _, enc = header.partition(";")
+        if enc != "base64":
+            raise ValidationError("Invalid encoding")
+        return super().to_internal_value(urlunparse(uri))
 
 
 class Prompt(SerializerModel):
@@ -73,11 +108,32 @@ class Prompt(SerializerModel):
 
     order = models.IntegerField(default=0)
 
+    placeholder_expression = models.BooleanField(default=False)
+
     @property
     def serializer(self) -> BaseSerializer:
         from authentik.stages.prompt.api import PromptSerializer
 
         return PromptSerializer
+
+    def get_placeholder(self, prompt_context: dict, user: User, request: HttpRequest) -> str:
+        """Get fully interpolated placeholder"""
+        if self.field_key in prompt_context:
+            # We don't want to parse this as an expression since a user will
+            # be able to control the input
+            return prompt_context[self.field_key]
+
+        if self.placeholder_expression:
+            evaluator = PropertyMappingEvaluator()
+            evaluator.set_context(user, request, self, prompt_context=prompt_context)
+            try:
+                return evaluator.evaluate(self.placeholder)
+            except Exception as exc:  # pylint:disable=broad-except
+                LOGGER.warning(
+                    "failed to evaluate prompt placeholder",
+                    exc=PropertyMappingExpressionException(str(exc)),
+                )
+        return self.placeholder
 
     def field(self, default: Optional[Any]) -> CharField:
         """Get field type for Challenge and response"""
@@ -87,16 +143,16 @@ class Prompt(SerializerModel):
         }
         if self.type == FieldTypes.TEXT:
             kwargs["trim_whitespace"] = False
+            kwargs["allow_blank"] = not self.required
         if self.type == FieldTypes.TEXT_READ_ONLY:
             field_class = ReadOnlyField
+            # required can't be set for ReadOnlyField
+            kwargs["required"] = False
         if self.type == FieldTypes.EMAIL:
             field_class = EmailField
+            kwargs["allow_blank"] = not self.required
         if self.type == FieldTypes.NUMBER:
             field_class = IntegerField
-        if self.type == FieldTypes.HIDDEN:
-            field_class = HiddenField
-            kwargs["required"] = False
-            kwargs["default"] = self.placeholder
         if self.type == FieldTypes.CHECKBOX:
             field_class = BooleanField
             kwargs["required"] = False
@@ -104,13 +160,24 @@ class Prompt(SerializerModel):
             field_class = DateField
         if self.type == FieldTypes.DATE_TIME:
             field_class = DateTimeField
+        if self.type == FieldTypes.FILE:
+            field_class = InlineFileField
+
+        if self.type == FieldTypes.SEPARATOR:
+            kwargs["required"] = False
+            kwargs["label"] = ""
+        if self.type == FieldTypes.HIDDEN:
+            field_class = HiddenField
+            kwargs["required"] = False
+            kwargs["default"] = self.placeholder
         if self.type == FieldTypes.STATIC:
             kwargs["default"] = self.placeholder
             kwargs["required"] = False
             kwargs["label"] = ""
-        if self.type == FieldTypes.SEPARATOR:
-            kwargs["required"] = False
-            kwargs["label"] = ""
+
+        if self.type == FieldTypes.AK_LOCALE:
+            kwargs["allow_blank"] = True
+
         if default:
             kwargs["default"] = default
         # May not set both `required` and `default`
@@ -146,7 +213,7 @@ class PromptStage(Stage):
         return PromptStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.prompt.stage import PromptStageView
 
         return PromptStageView

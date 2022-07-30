@@ -2,6 +2,8 @@
 title: Vikunja
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Vikunja
 
 From https://vikunja.io/
@@ -18,8 +20,8 @@ This is based on authentik 2021.7.3 and Vikunja V0.17.1 using the Docker-Compose
 
 The following placeholders will be used:
 
-- `vik.company` is the FQDN of Vikunja.
-- `authentik.company` is the FQDN of authentik.
+-   `vik.company` is the FQDN of Vikunja.
+-   `authentik.company` is the FQDN of authentik.
 
 ### Step 1
 
@@ -30,14 +32,15 @@ Only settings that have been modified from default have been listed.
 :::
 
 **Protocol Settings**
-- Name: Vikunja
-- Client type: Confidential
-- Client ID: Copy and Save this for Later
-- Client Secret: Copy and Save this for later
-- Redirect URIs/Origins:
+
+-   Name: Vikunja
+-   Client type: Confidential
+-   Client ID: Copy and Save this for Later
+-   Client Secret: Copy and Save this for later
+-   Redirect URIs/Origins:
+
 ```
-https://vik.company/auth/openid
-https://vik.company/auth/openid/Vikunja
+https://vik.company/auth/openid/authentik
 ```
 
 ![](./vikunja1.png)
@@ -62,17 +65,14 @@ auth:
   # **Note 2:** The frontend expects to be redirected after authentication by the third party
   # to <frontend-url>/auth/openid/<auth key>. Please make sure to configure the redirect url with your third party
   # auth service accordingly if you're using the default Vikunja frontend.
-  # Take a look at the [default config file](https://kolaente.dev/vikunja/api/src/branch/main/config.yml.sample) for more information about how to configure openid authentication.
+  # Take a look at the [default config file](https://github.com/go-vikunja/api/blob/main/config.yml.sample) for more information about how to configure openid authentication.
   openid:
     # Enable or disable OpenID Connect authentication
-    enabled: true
-    # The url to redirect clients to. Defaults to the configured frontend url. If you're using Vikunja with the official
-    # frontend, you don't need to change this value.
-    redirecturl: https://vik.company/auth/openid/
+    enabled: truefo
     # A list of enabled providers
     providers:
       # The name of the provider as it will appear in the frontend.
-      - name: vikunja
+      - name: authentik
         # The auth url to send users to if they want to authenticate using OpenID Connect.
         authurl: https://authentik.company/application/o/vikunja/
         # The client ID used to authenticate Vikunja at the OpenID Connect provider.
@@ -89,10 +89,10 @@ Vikunja Reference link: https://vikunja.io/docs/config-options/#auth
 
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 
-- Name: Vikunja
-- Slug: vikunja
-- Provider: vikunja
-- Launch URL: https://vik.company
+-   Name: Vikunja
+-   Slug: vikunja
+-   Provider: vikunja
+-   Launch URL: https://vik.company
 
 ## Notes
 

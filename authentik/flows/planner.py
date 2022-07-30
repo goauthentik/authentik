@@ -4,19 +4,18 @@ from typing import Any, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
-from prometheus_client import Histogram
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
 from authentik.events.models import cleanse_dict
+from authentik.flows.apps import HIST_FLOWS_PLAN_TIME
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import Flow, FlowStageBinding, Stage
+from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage, in_memory_stage
 from authentik.lib.config import CONFIG
 from authentik.policies.engine import PolicyEngine
-from authentik.root.monitoring import UpdatingGauge
 
 LOGGER = get_logger()
 PLAN_CONTEXT_PENDING_USER = "pending_user"
@@ -27,16 +26,6 @@ PLAN_CONTEXT_SOURCE = "source"
 # Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan
 # was restored.
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
-GAUGE_FLOWS_CACHED = UpdatingGauge(
-    "authentik_flows_cached",
-    "Cached flows",
-    update_func=lambda: len(cache.keys("flow_*") or []),
-)
-HIST_FLOWS_PLAN_TIME = Histogram(
-    "authentik_flows_plan_time",
-    "Duration to build a plan for a flow",
-    ["flow_slug"],
-)
 CACHE_TIMEOUT = int(CONFIG.y("redis.cache_timeout_flows"))
 
 
@@ -72,6 +61,12 @@ class FlowPlan:
         """Insert stage into plan, as immediate next stage"""
         self.bindings.insert(1, FlowStageBinding(stage=stage, order=0))
         self.markers.insert(1, marker or StageMarker())
+
+    def redirect(self, destination: str):
+        """Insert a redirect stage as next stage"""
+        from authentik.flows.stage import RedirectStage
+
+        self.insert_stage(in_memory_stage(RedirectStage, destination=destination))
 
     def next(self, http_request: Optional[HttpRequest]) -> Optional[FlowStageBinding]:
         """Return next pending stage from the bottom of the list"""
@@ -119,7 +114,7 @@ class FlowPlanner:
         self.use_cache = True
         self.allow_empty_flows = False
         self.flow = flow
-        self._logger = get_logger().bind(flow=flow)
+        self._logger = get_logger().bind(flow_slug=flow.slug)
 
     def plan(
         self, request: HttpRequest, default_context: Optional[dict[str, Any]] = None
@@ -148,28 +143,30 @@ class FlowPlanner:
             engine = PolicyEngine(self.flow, user, request)
             if default_context:
                 span.set_data("default_context", cleanse_dict(default_context))
-                engine.request.context = default_context
+                engine.request.context.update(default_context)
             engine.build()
             result = engine.result
             if not result.passing:
-                raise FlowNonApplicableException(",".join(result.messages))
+                exc = FlowNonApplicableException()
+                exc.policy_result = result
+                raise exc
             # User is passing so far, check if we have a cached plan
             cached_plan_key = cache_key(self.flow, user)
             cached_plan = cache.get(cached_plan_key, None)
-            if cached_plan and self.use_cache:
-                self._logger.debug(
-                    "f(plan): taking plan from cache",
-                    key=cached_plan_key,
-                )
-                # Reset the context as this isn't factored into caching
-                cached_plan.context = default_context or {}
-                return cached_plan
+            if self.flow.designation not in [FlowDesignation.STAGE_CONFIGURATION]:
+                if cached_plan and self.use_cache:
+                    self._logger.debug(
+                        "f(plan): taking plan from cache",
+                        key=cached_plan_key,
+                    )
+                    # Reset the context as this isn't factored into caching
+                    cached_plan.context = default_context or {}
+                    return cached_plan
             self._logger.debug(
                 "f(plan): building plan",
             )
             plan = self._build_plan(user, request, default_context)
             cache.set(cache_key(self.flow, user), plan, CACHE_TIMEOUT)
-            GAUGE_FLOWS_CACHED.update()
             if not plan.bindings and not self.allow_empty_flows:
                 raise EmptyFlowException()
             return plan
@@ -207,7 +204,8 @@ class FlowPlanner:
                         stage=binding.stage,
                     )
                     engine = PolicyEngine(binding, user, request)
-                    engine.request.context = plan.context
+                    engine.request.context["flow_plan"] = plan
+                    engine.request.context.update(plan.context)
                     engine.build()
                     if engine.passing:
                         self._logger.debug(

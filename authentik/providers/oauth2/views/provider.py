@@ -10,15 +10,13 @@ from authentik.core.models import Application
 from authentik.providers.oauth2.constants import (
     ACR_AUTHENTIK_DEFAULT,
     GRANT_TYPE_AUTHORIZATION_CODE,
+    GRANT_TYPE_CLIENT_CREDENTIALS,
+    GRANT_TYPE_IMPLICIT,
+    GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
     SCOPE_OPENID,
 )
-from authentik.providers.oauth2.models import (
-    GrantTypes,
-    OAuth2Provider,
-    ResponseTypes,
-    ScopeMapping,
-)
+from authentik.providers.oauth2.models import OAuth2Provider, ResponseTypes, ScopeMapping
 from authentik.providers.oauth2.utils import cors_allow
 
 LOGGER = get_logger()
@@ -60,6 +58,9 @@ class ProviderInfoView(View):
             "introspection_endpoint": self.request.build_absolute_uri(
                 reverse("authentik_providers_oauth2:token-introspection")
             ),
+            "revocation_endpoint": self.request.build_absolute_uri(
+                reverse("authentik_providers_oauth2:token-revoke")
+            ),
             "response_types_supported": [
                 ResponseTypes.CODE,
                 ResponseTypes.ID_TOKEN,
@@ -77,7 +78,9 @@ class ProviderInfoView(View):
             "grant_types_supported": [
                 GRANT_TYPE_AUTHORIZATION_CODE,
                 GRANT_TYPE_REFRESH_TOKEN,
-                GrantTypes.IMPLICIT,
+                GRANT_TYPE_IMPLICIT,
+                GRANT_TYPE_CLIENT_CREDENTIALS,
+                GRANT_TYPE_PASSWORD,
             ],
             "id_token_signing_alg_values_supported": [supported_alg],
             # See: http://openid.net/specs/openid-connect-core-1_0.html#SubjectIDTypes

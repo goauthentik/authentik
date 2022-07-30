@@ -2,10 +2,19 @@
 from importlib import import_module
 
 from django.apps import AppConfig
-from django.db import ProgrammingError
+from prometheus_client import Gauge
 from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
+
+GAUGE_OUTPOSTS_CONNECTED = Gauge(
+    "authentik_outposts_connected", "Currently connected outposts", ["outpost", "uid", "expected"]
+)
+GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
+    "authentik_outposts_last_update",
+    "Last update from any outpost",
+    ["outpost", "uid", "version"],
+)
 
 
 class AuthentikOutpostConfig(AppConfig):
@@ -18,10 +27,3 @@ class AuthentikOutpostConfig(AppConfig):
     def ready(self):
         import_module("authentik.outposts.signals")
         import_module("authentik.outposts.managed")
-        try:
-            from authentik.outposts.tasks import outpost_controller_all, outpost_local_connection
-
-            outpost_local_connection.delay()
-            outpost_controller_all.delay()
-        except ProgrammingError:
-            pass

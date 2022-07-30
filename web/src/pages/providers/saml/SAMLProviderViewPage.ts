@@ -1,3 +1,14 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/CodeMirror";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/ActionButton";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/events/ObjectChangelog";
+import "@goauthentik/web/pages/providers/RelatedApplicationButton";
+import "@goauthentik/web/pages/providers/saml/SAMLProviderForm";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
@@ -5,28 +16,19 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { CryptoApi, ProvidersApi, SAMLProvider } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { EVENT_REFRESH } from "../../../constants";
-import "../../../elements/CodeMirror";
-import "../../../elements/Tabs";
-import "../../../elements/buttons/ActionButton";
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/events/ObjectChangelog";
-import "../RelatedApplicationButton";
-import "./SAMLProviderForm";
 
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends LitElement {
@@ -50,13 +52,15 @@ export class SAMLProviderViewPage extends LitElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,
-            PFPage,
             PFButton,
-            PFBanner,
+            PFPage,
+            PFGrid,
             PFContent,
             PFCard,
             PFDescriptionList,
-            PFGrid,
+            PFForm,
+            PFFormControl,
+            PFBanner,
             AKGlobal,
         ];
     }
@@ -69,30 +73,36 @@ export class SAMLProviderViewPage extends LitElement {
         });
     }
 
-    renderSigningCert(): Promise<TemplateResult> {
+    async renderRelatedObjects(): Promise<TemplateResult> {
         if (!this.provider?.signingKp) {
             return Promise.resolve(html``);
         }
-        return new CryptoApi(DEFAULT_CONFIG)
-            .cryptoCertificatekeypairsRetrieve({
-                kpUuid: this.provider.signingKp,
-            })
-            .then((kp) => {
-                return html` <div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text"
-                            >${t`Download signing certificate`}</span
-                        >
-                    </dt>
-                    <dd class="pf-c-description-list__description">
-                        <div class="pf-c-description-list__text">
-                            <a class="pf-c-button pf-m-primary" href=${kp.certificateDownloadUrl}
-                                >${t`Download`}</a
+        const kp = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({
+            kpUuid: this.provider.signingKp,
+        });
+        return html` <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+            <div class="pf-c-card__title">${t`Related objects`}</div>
+            <div class="pf-c-card__body">
+                <dl class="pf-c-description-list pf-m-2-col">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text"
+                                >${t`Download signing certificate`}</span
                             >
-                        </div>
-                    </dd>
-                </div>`;
-            });
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <a
+                                    class="pf-c-button pf-m-primary"
+                                    href=${kp.certificateDownloadUrl}
+                                    >${t`Download`}</a
+                                >
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>`;
     }
 
     render(): TemplateResult {
@@ -178,55 +188,105 @@ export class SAMLProviderViewPage extends LitElement {
                         </ak-forms-modal>
                     </div>
                 </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">
-                        ${t`Related objects`}
-                    </div>
-                    <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list pf-m-2-col">
-                            ${until(this.renderSigningCert())}
-                        </dl>
-                    </div>
-                </div>
+                ${until(this.renderRelatedObjects())}
                 ${
                     this.provider.assignedApplicationName
-                        ? html`<div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__title">${t`SAML Metadata`}</div>
-                              <div class="pf-c-card__body">
-                                  ${until(
-                                      new ProvidersApi(DEFAULT_CONFIG)
-                                          .providersSamlMetadataRetrieve({
-                                              id: this.provider.pk || 0,
-                                          })
-                                          .then((m) => {
-                                              return html`<ak-codemirror
-                                                  mode="xml"
-                                                  ?readOnly=${true}
-                                                  value="${ifDefined(m.metadata)}"
-                                              ></ak-codemirror>`;
-                                          }),
-                                  )}
+                        ? html` <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                                  <div class="pf-c-card__title">${t`SAML Configuration`}</div>
+                                  <div class="pf-c-card__body">
+                                      <form class="pf-c-form">
+                                          <div class="pf-c-form__group">
+                                              <label class="pf-c-form__label">
+                                                  <span class="pf-c-form__label-text"
+                                                      >${t`EntityID/Issuer`}</span
+                                                  >
+                                              </label>
+                                              <input
+                                                  class="pf-c-form-control"
+                                                  readonly
+                                                  type="text"
+                                                  value="${ifDefined(this.provider?.issuer)}"
+                                              />
+                                          </div>
+                                          <div class="pf-c-form__group">
+                                              <label class="pf-c-form__label">
+                                                  <span class="pf-c-form__label-text"
+                                                      >${t`SSO URL (Post)`}</span
+                                                  >
+                                              </label>
+                                              <input
+                                                  class="pf-c-form-control"
+                                                  readonly
+                                                  type="text"
+                                                  value="${ifDefined(this.provider.urlSsoPost)}"
+                                              />
+                                          </div>
+                                          <div class="pf-c-form__group">
+                                              <label class="pf-c-form__label">
+                                                  <span class="pf-c-form__label-text"
+                                                      >${t`SSO URL (Redirect)`}</span
+                                                  >
+                                              </label>
+                                              <input
+                                                  class="pf-c-form-control"
+                                                  readonly
+                                                  type="text"
+                                                  value="${ifDefined(this.provider.urlSsoRedirect)}"
+                                              />
+                                          </div>
+                                          <div class="pf-c-form__group">
+                                              <label class="pf-c-form__label">
+                                                  <span class="pf-c-form__label-text"
+                                                      >${t`SSO URL (IdP-initiated Login)`}</span
+                                                  >
+                                              </label>
+                                              <input
+                                                  class="pf-c-form-control"
+                                                  readonly
+                                                  type="text"
+                                                  value="${ifDefined(this.provider.urlSsoInit)}"
+                                              />
+                                          </div>
+                                      </form>
+                                  </div>
                               </div>
-                              <div class="pf-c-card__footer">
-                                  <a
-                                      class="pf-c-button pf-m-primary"
-                                      target="_blank"
-                                      href=${this.provider.metadataDownloadUrl}
-                                  >
-                                      ${t`Download`}
-                                  </a>
-                                  <ak-action-button
-                                      .apiRequest=${() => {
-                                          const fullUrl =
-                                              window.location.origin +
-                                              this.provider?.metadataDownloadUrl;
-                                          return navigator.clipboard.writeText(fullUrl);
-                                      }}
-                                  >
-                                      ${t`Copy download URL`}
-                                  </ak-action-button>
-                              </div>
-                          </div>`
+                              <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                                  <div class="pf-c-card__title">${t`SAML Metadata`}</div>
+                                  <div class="pf-c-card__body">
+                                      ${until(
+                                          new ProvidersApi(DEFAULT_CONFIG)
+                                              .providersSamlMetadataRetrieve({
+                                                  id: this.provider.pk || 0,
+                                              })
+                                              .then((m) => {
+                                                  return html`<ak-codemirror
+                                                      mode="xml"
+                                                      ?readOnly=${true}
+                                                      value="${ifDefined(m.metadata)}"
+                                                  ></ak-codemirror>`;
+                                              }),
+                                      )}
+                                  </div>
+                                  <div class="pf-c-card__footer">
+                                      <a
+                                          class="pf-c-button pf-m-primary"
+                                          target="_blank"
+                                          href=${this.provider.urlDownloadMetadata}
+                                      >
+                                          ${t`Download`}
+                                      </a>
+                                      <ak-action-button
+                                          class="pf-m-secondary"
+                                          .apiRequest=${() => {
+                                              return navigator.clipboard.writeText(
+                                                  this.provider?.urlDownloadMetadata || "",
+                                              );
+                                          }}
+                                      >
+                                          ${t`Copy download URL`}
+                                      </ak-action-button>
+                                  </div>
+                              </div>`
                         : html``
                 }
             </div>

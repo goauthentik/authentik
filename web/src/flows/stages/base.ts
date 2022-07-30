@@ -1,13 +1,26 @@
 import { LitElement, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import { ErrorDetail } from "@goauthentik/api";
+import { CurrentTenant, ErrorDetail } from "@goauthentik/api";
 
 export interface StageHost {
     challenge?: unknown;
-    flowSlug: string;
+    flowSlug?: string;
     loading: boolean;
-    submit(payload: unknown): Promise<void>;
+    submit(payload: unknown): Promise<boolean>;
+
+    readonly tenant: CurrentTenant;
+}
+
+export function readFileAsync(file: Blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            resolve(reader.result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
 }
 
 export class BaseStage<Tin, Tout> extends LitElement {
@@ -16,14 +29,26 @@ export class BaseStage<Tin, Tout> extends LitElement {
     @property({ attribute: false })
     challenge!: Tin;
 
-    submitForm(e: Event): void {
+    async submitForm(e: Event): Promise<boolean> {
         e.preventDefault();
         const object: {
             [key: string]: unknown;
         } = {};
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
-        form.forEach((value, key) => (object[key] = value));
-        this.host?.submit(object as unknown as Tout);
+
+        for await (const [key, value] of form.entries()) {
+            if (value instanceof Blob) {
+                object[key] = await readFileAsync(value);
+            } else {
+                object[key] = value;
+            }
+        }
+        return this.host?.submit(object as unknown as Tout).then((successful) => {
+            if (successful) {
+                this.cleanup();
+            }
+            return successful;
+        });
     }
 
     renderNonFieldErrors(errors: ErrorDetail[]): TemplateResult {
@@ -40,5 +65,10 @@ export class BaseStage<Tin, Tout> extends LitElement {
                 </div>`;
             })}
         </div>`;
+    }
+
+    cleanup(): void {
+        // Method that can be overridden by stages
+        return;
     }
 }

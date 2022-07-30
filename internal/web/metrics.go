@@ -10,6 +10,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/utils/sentry"
 )
 
 var (
@@ -22,6 +23,7 @@ var (
 func RunMetricsServer() {
 	m := mux.NewRouter()
 	l := log.WithField("logger", "authentik.router.metrics")
+	m.Use(sentry.SentryNoSampleMiddleware)
 	m.Path("/metrics").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		promhttp.InstrumentMetricHandler(
 			prometheus.DefaultRegisterer, promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{
@@ -30,12 +32,12 @@ func RunMetricsServer() {
 		).ServeHTTP(rw, r)
 
 		// Get upstream metrics
-		re, err := http.NewRequest("GET", "http://localhost:8000/metrics/", nil)
+		re, err := http.NewRequest("GET", "http://localhost:8000/-/metrics/", nil)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
-		re.SetBasicAuth("monitor", config.G.SecretKey)
+		re.SetBasicAuth("monitor", config.Get().SecretKey)
 		res, err := http.DefaultClient.Do(re)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
@@ -52,10 +54,10 @@ func RunMetricsServer() {
 			return
 		}
 	})
-	l.WithField("listen", config.G.Web.ListenMetrics).Info("Starting Metrics server")
-	err := http.ListenAndServe(config.G.Web.ListenMetrics, m)
+	l.WithField("listen", config.Get().Web.ListenMetrics).Info("Starting Metrics server")
+	err := http.ListenAndServe(config.Get().Web.ListenMetrics, m)
 	if err != nil {
 		l.WithError(err).Warning("Failed to start metrics server")
 	}
-	l.WithField("listen", config.G.Web.ListenMetrics).Info("Stopping Metrics server")
+	l.WithField("listen", config.Get().Web.ListenMetrics).Info("Stopping Metrics server")
 }

@@ -1,3 +1,10 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import "@goauthentik/web/elements/SearchSelect";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { UserOption } from "@goauthentik/web/elements/user/utils";
+import { first, groupBy } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, css } from "lit";
@@ -9,13 +16,16 @@ import { until } from "lit/directives/until.js";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 
-import { CoreApi, PoliciesApi, Policy, PolicyBinding } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../api/Config";
-import "../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../elements/forms/ModelForm";
-import { UserOption } from "../../elements/user/utils";
-import { first, groupBy } from "../../utils";
+import {
+    CoreApi,
+    CoreGroupsListRequest,
+    CoreUsersListRequest,
+    Group,
+    PoliciesApi,
+    Policy,
+    PolicyBinding,
+    User,
+} from "@goauthentik/api";
 
 enum target {
     policy,
@@ -119,14 +129,6 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     }
 
     renderModeSelector(): TemplateResult {
-        if (this.policyOnly) {
-            this.policyGroupUser = target.policy;
-            return html` <div class="pf-c-toggle-group__item">
-                <button class="pf-c-toggle-group__button pf-m-selected" type="button">
-                    <span class="pf-c-toggle-group__text">${t`Policy`}</span>
-                </button>
-            </div>`;
-        }
         return html` <div class="pf-c-toggle-group__item">
                 <button
                     class="pf-c-toggle-group__button ${this.policyGroupUser === target.policy
@@ -203,56 +205,72 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                         name="group"
                         ?hidden=${this.policyGroupUser !== target.group}
                     >
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.group === undefined}>
-                                ---------
-                            </option>
-                            ${until(
-                                new CoreApi(DEFAULT_CONFIG)
-                                    .coreGroupsList({
-                                        ordering: "name",
-                                    })
-                                    .then((groups) => {
-                                        return groups.results.map((group) => {
-                                            return html`<option
-                                                value=${ifDefined(group.pk)}
-                                                ?selected=${group.pk === this.instance?.group}
-                                            >
-                                                ${group.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <!-- @ts-ignore -->
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Group[]> => {
+                                const args: CoreGroupsListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
+                                    args,
+                                );
+                                return groups.results;
+                            }}
+                            .renderElement=${(group: Group): string => {
+                                return group.name;
+                            }}
+                            .value=${(group: Group | undefined): string | undefined => {
+                                return group ? group.pk : undefined;
+                            }}
+                            .selected=${(group: Group): boolean => {
+                                return group.pk === this.instance?.group;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
+                        ${this.policyOnly
+                            ? html`<p class="pf-c-form__helper-text">
+                                  ${t`Group mappings can only be checked if a user is already logged in when trying to access this source.`}
+                              </p>`
+                            : html``}
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`User`}
                         name="user"
                         ?hidden=${this.policyGroupUser !== target.user}
                     >
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.user === undefined}>
-                                ---------
-                            </option>
-                            ${until(
-                                new CoreApi(DEFAULT_CONFIG)
-                                    .coreUsersList({
-                                        ordering: "username",
-                                    })
-                                    .then((users) => {
-                                        return users.results.map((user) => {
-                                            return html`<option
-                                                value=${ifDefined(user.pk)}
-                                                ?selected=${user.pk === this.instance?.user}
-                                            >
-                                                ${UserOption(user)}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <!-- @ts-ignore -->
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<User[]> => {
+                                const args: CoreUsersListRequest = {
+                                    ordering: "username",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
+                                return users.results;
+                            }}
+                            .renderElement=${(user: User): string => {
+                                return UserOption(user);
+                            }}
+                            .value=${(user: User | undefined): number | undefined => {
+                                return user ? user.pk : undefined;
+                            }}
+                            .selected=${(user: User): boolean => {
+                                return user.pk === this.instance?.user;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
+                        ${this.policyOnly
+                            ? html`<p class="pf-c-form__helper-text">
+                                  ${t`User mappings can only be checked if a user is already logged in when trying to access this source.`}
+                              </p>`
+                            : html``}
                     </ak-form-element-horizontal>
                 </div>
             </div>

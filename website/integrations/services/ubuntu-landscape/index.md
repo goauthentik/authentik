@@ -2,6 +2,8 @@
 title: Ubuntu Landscape
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Ubuntu Landscape
 
 From https://en.wikipedia.org/wiki/Landscape_(software)
@@ -18,8 +20,8 @@ This requires authentik 0.10.3 or newer.
 
 The following placeholders will be used:
 
-- `landscape.company` is the FQDN of the Landscape server.
-- `authentik.company` is the FQDN of the authentik install.
+-   `landscape.company` is the FQDN of the Landscape server.
+-   `authentik.company` is the FQDN of the authentik install.
 
 Landscape uses the OpenID-Connect Protocol for single-sign on.
 

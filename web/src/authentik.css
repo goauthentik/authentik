@@ -9,6 +9,12 @@
     --ak-dark-background-light: #1c1e21;
     --ak-dark-background-light-ish: #212427;
     --ak-dark-background-lighter: #2b2e33;
+
+    --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
+    --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
 }
 
 html {
@@ -37,6 +43,7 @@ html > form > input {
 .pf-c-login__main {
     display: block;
     position: relative;
+    width: 100%;
 }
 .ak-login-container {
     height: calc(100vh - var(--pf-global--spacer--lg) - var(--pf-global--spacer--lg));
@@ -94,6 +101,11 @@ html > form > input {
     vertical-align: middle;
 }
 
+.pf-c-description-list__description .pf-c-button {
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+
 @media (prefers-color-scheme: dark) {
     .ak-static-page h1 {
         color: var(--ak-dark-foreground);
@@ -105,6 +117,7 @@ html > form > input {
         --pf-global--Color--100: var(--ak-dark-foreground);
         --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
         --pf-global--link--Color: var(--ak-dark-foreground-link);
+        --pf-c-radio__label--Color: var(--ak-dark-foreground-link);
     }
     /* Global page background colour */
     .pf-c-page {
@@ -223,8 +236,8 @@ html > form > input {
     option {
         color: var(--ak-dark-foreground);
     }
-    optgroup:checked,
-    option:checked {
+    select[multiple] optgroup:checked,
+    select[multiple] option:checked {
         color: var(--ak-dark-background);
     }
     .pf-c-input-group {
@@ -243,6 +256,32 @@ html > form > input {
     }
     .pf-c-form-control[readonly] {
         background-color: var(--ak-dark-background-light);
+    }
+    /* select toggle */
+    .pf-c-select__toggle::before {
+        --pf-c-select__toggle--before--BorderTopColor: var(--ak-dark-background-lighter);
+        --pf-c-select__toggle--before--BorderRightColor: var(--ak-dark-background-lighter);
+        --pf-c-select__toggle--before--BorderLeftColor: var(--ak-dark-background-lighter);
+    }
+    .pf-c-select__toggle.pf-m-typeahead {
+        --pf-c-select__toggle--BackgroundColor: var(--ak-dark-background-light);
+    }
+    .pf-c-select__menu {
+        --pf-c-select__menu--BackgroundColor: var(--ak-dark-background-light-ish);
+        color: var(--ak-dark-foreground);
+    }
+    .pf-c-select__menu-item {
+        color: var(--ak-dark-foreground);
+    }
+    .pf-c-select__menu-wrapper:hover,
+    .pf-c-select__menu-item:hover {
+        --pf-c-select__menu-item--hover--BackgroundColor: var(--ak-dark-background-lighter);
+    }
+    .pf-c-select__menu-wrapper:focus-within,
+    .pf-c-select__menu-wrapper.pf-m-focus,
+    .pf-c-select__menu-item:focus,
+    .pf-c-select__menu-item.pf-m-focus {
+        --pf-c-select__menu-item--focus--BackgroundColor: var(--ak-dark-background-light-ish);
     }
     .pf-c-button.pf-m-plain:hover {
         color: var(--ak-dark-foreground);
@@ -339,9 +378,39 @@ html > form > input {
         ) !important;
     }
     /* data list */
+    .pf-c-data-list {
+        border-top-color: var(--ak-dark-background-lighter);
+    }
     .pf-c-data-list__item {
-        --pf-c-data-list__item--BackgroundColor: var(--ak-dark-background-light);
+        --pf-c-data-list__item--BackgroundColor: transparent;
         --pf-c-data-list__item--BorderBottomColor: var(--ak-dark-background-lighter);
         color: var(--ak-dark-foreground);
     }
+    /* wizards */
+    .pf-c-wizard__nav {
+        --pf-c-wizard__nav--BackgroundColor: var(--ak-dark-background-lighter);
+        --pf-c-wizard__nav--lg--BorderRightColor: transparent;
+    }
+    .pf-c-wizard__main {
+        background-color: var(--ak-dark-background-light-ish);
+    }
+    .pf-c-wizard__footer {
+        --pf-c-wizard__footer--BackgroundColor: var(--ak-dark-background-light-ish);
+    }
+    .pf-c-wizard__toggle-num,
+    .pf-c-wizard__nav-link::before {
+        --pf-c-wizard__nav-link--before--BackgroundColor: transparent;
+    }
+    /* tree view */
+    .pf-c-tree-view__node:focus {
+        --pf-c-tree-view__node--focus--BackgroundColor: var(--ak-dark-background-light-ish);
+    }
+    .pf-c-tree-view__content:hover,
+    .pf-c-tree-view__content:focus-within {
+        --pf-c-tree-view__node--hover--BackgroundColor: var(--ak-dark-background-light-ish);
+    }
+}
+
+.pf-c-data-list__item {
+    background-color: transparent;
 }

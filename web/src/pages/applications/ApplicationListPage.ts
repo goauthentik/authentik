@@ -1,27 +1,28 @@
+import MDApplication from "@goauthentik/docs/core/applications.md";
+import { AKResponse } from "@goauthentik/web/api/Client";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { uiConfig } from "@goauthentik/web/common/config";
+import "@goauthentik/web/elements/Markdown";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { getURLParam } from "@goauthentik/web/elements/router/RouteMatch";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/web/pages/applications/ApplicationForm";
+import "@goauthentik/web/pages/applications/wizard/ApplicationWizard";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
-
-import MDApplication from "../../../../website/docs/core/applications.md";
-import { AKResponse } from "../../api/Client";
-import { DEFAULT_CONFIG } from "../../api/Config";
-import { uiConfig } from "../../common/config";
-import "../../elements/Markdown";
-import "../../elements/buttons/SpinnerButton";
-import "../../elements/forms/DeleteBulkForm";
-import "../../elements/forms/ModalForm";
-import { getURLParam } from "../../elements/router/RouteMatch";
-import { TableColumn } from "../../elements/table/Table";
-import { TablePage } from "../../elements/table/TablePage";
-import "./ApplicationForm";
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends TablePage<Application> {
@@ -73,7 +74,7 @@ export class ApplicationListPage extends TablePage<Application> {
         return [
             new TableColumn(""),
             new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Slug`, "slug"),
+            new TableColumn(t`Group`, "group"),
             new TableColumn(t`Provider`),
             new TableColumn(t`Provider Type`),
             new TableColumn(t`Actions`),
@@ -81,14 +82,20 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     renderSidebarAfter(): TemplateResult {
-        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
-            <div class="pf-c-card">
-                <div class="pf-c-card__title">${t`About applications`}</div>
-                <div class="pf-c-card__body">
-                    <ak-markdown .md=${MDApplication}></ak-markdown>
+        // Rendering the wizard with .open here, as if we set the attribute in
+        // renderObjectCreate() it'll open two wizards, since that function gets called twice
+        return html`<ak-application-wizard
+                .open=${getURLParam("createWizard", false)}
+                .showButton=${false}
+            ></ak-application-wizard>
+            <div class="pf-c-sidebar__panel pf-m-width-25">
+                <div class="pf-c-card">
+                    <div class="pf-c-card__title">${t`About applications`}</div>
+                    <div class="pf-c-card__body">
+                        <ak-markdown .md=${MDApplication}></ak-markdown>
+                    </div>
                 </div>
-            </div>
-        </div>`;
+            </div>`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -135,14 +142,14 @@ export class ApplicationListPage extends TablePage<Application> {
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
             </a>`,
-            html`<code>${item.slug}</code>`,
+            html`${item.group || t`-`}`,
             item.provider
                 ? html`<a href="#/core/providers/${item.providerObj?.pk}">
                       ${item.providerObj?.name}
                   </a>`
                 : html`-`,
             html`${item.providerObj?.verboseName || t`-`}`,
-            html` <ak-forms-modal>
+            html`<ak-forms-modal>
                     <span slot="submit"> ${t`Update`} </span>
                     <span slot="header"> ${t`Update Application`} </span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
@@ -159,15 +166,12 @@ export class ApplicationListPage extends TablePage<Application> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
-        return html`
-            <ak-forms-modal .open=${getURLParam("createForm", false)}>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Application`} </span>
-                <ak-application-form slot="form"> </ak-application-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
-            </ak-forms-modal>
-            ${super.renderToolbar()}
-        `;
+    renderObjectCreate(): TemplateResult {
+        return html`<ak-forms-modal .open=${getURLParam("createForm", false)}>
+            <span slot="submit"> ${t`Create`} </span>
+            <span slot="header"> ${t`Create Application`} </span>
+            <ak-application-form slot="form"> </ak-application-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+        </ak-forms-modal>`;
     }
 }

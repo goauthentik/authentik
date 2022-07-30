@@ -1,19 +1,20 @@
 """authentik core models"""
 from datetime import timedelta
 from hashlib import md5, sha256
-from typing import Any, Optional, Type
+from typing import Any, Optional
 from urllib.parse import urlencode
 from uuid import uuid4
 
 from deepmerge import always_merger
 from django.conf import settings
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.templatetags.static import static
-from django.utils.functional import cached_property
+from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.html import escape
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -26,7 +27,7 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton, UserSettingSerializer
-from authentik.lib.config import CONFIG
+from authentik.lib.config import CONFIG, get_path_from_dict
 from authentik.lib.generators import generate_id
 from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator, SerializerModel
 from authentik.lib.utils.http import get_client_ip
@@ -35,11 +36,18 @@ from authentik.policies.models import PolicyBindingModel
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
 USER_ATTRIBUTE_SA = "goauthentik.io/user/service-account"
+USER_ATTRIBUTE_GENERATED = "goauthentik.io/user/generated"
+USER_ATTRIBUTE_EXPIRES = "goauthentik.io/user/expires"
+USER_ATTRIBUTE_DELETE_ON_LOGOUT = "goauthentik.io/user/delete-on-logout"
 USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
 USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
 USER_ATTRIBUTE_CHANGE_USERNAME = "goauthentik.io/user/can-change-username"
+USER_ATTRIBUTE_CHANGE_NAME = "goauthentik.io/user/can-change-name"
 USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
 USER_ATTRIBUTE_CAN_OVERRIDE_IP = "goauthentik.io/user/override-ips"
+
+USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
+USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
 GRAVATAR_URL = "https://secure.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
@@ -57,7 +65,7 @@ def default_token_key():
     """Default token key"""
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
-    return generate_id(128)
+    return generate_id(int(CONFIG.y("default_token_length")))
 
 
 class Group(SerializerModel):
@@ -85,6 +93,13 @@ class Group(SerializerModel):
 
         return GroupSerializer
 
+    @property
+    def num_pk(self) -> int:
+        """Get a numerical, int32 ID for the group"""
+        # int max is 2147483647 (10 digits) so 9 is the max usable
+        # in the LDAP Outpost we use the last 5 chars so match here
+        return int(str(self.pk.int)[:5])
+
     def is_member(self, user: "User") -> bool:
         """Recursively check if `user` is member of us, or any parent."""
         query = """
@@ -97,7 +112,10 @@ class Group(SerializerModel):
 
             SELECT authentik_core_group.*, parents.relative_depth - 1
             FROM authentik_core_group,parents
-            WHERE authentik_core_group.parent_id = parents.group_uuid
+            WHERE (
+                authentik_core_group.parent_id = parents.group_uuid and
+                parents.relative_depth > -20
+            )
         )
         SELECT group_uuid
         FROM parents
@@ -132,6 +150,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
 
     uuid = models.UUIDField(default=uuid4, editable=False)
     name = models.TextField(help_text=_("User's display name."))
+    path = models.TextField(default="users")
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
     ak_groups = models.ManyToManyField("Group", related_name="users")
@@ -141,10 +160,17 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
 
     objects = UserManager()
 
-    def group_attributes(self) -> dict[str, Any]:
+    @staticmethod
+    def default_path() -> str:
+        """Get the default user path"""
+        return User._meta.get_field("path").default
+
+    def group_attributes(self, request: Optional[HttpRequest] = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
         including the users attributes"""
         final_attributes = {}
+        if request and hasattr(request, "tenant"):
+            always_merger.merge(final_attributes, request.tenant.attributes)
         for group in self.ak_groups.all().order_by("name"):
             always_merger.merge(final_attributes, group.attributes)
         always_merger.merge(final_attributes, self.attributes)
@@ -166,15 +192,31 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         """superuser == staff user"""
         return self.is_superuser  # type: ignore
 
-    def set_password(self, password, signal=True):
+    def set_password(self, raw_password, signal=True):
         if self.pk and signal:
-            password_changed.send(sender=self, user=self, password=password)
+            password_changed.send(sender=self, user=self, password=raw_password)
         self.password_change_date = now()
-        return super().set_password(password)
+        return super().set_password(raw_password)
+
+    def check_password(self, raw_password: str) -> bool:
+        """
+        Return a boolean of whether the raw_password was correct. Handles
+        hashing formats behind the scenes.
+
+        Slightly changed version which doesn't send a signal for such internal hash upgrades
+        """
+
+        def setter(raw_password):
+            self.set_password(raw_password, signal=False)
+            # Password hash upgrades shouldn't be considered password changes.
+            self._password = None
+            self.save(update_fields=["password"])
+
+        return check_password(raw_password, self.password, setter)
 
     @property
     def uid(self) -> str:
-        """Generate a globall unique UID, based on the user ID and the hashed secret key"""
+        """Generate a globally unique UID, based on the user ID and the hashed secret key"""
         return sha256(f"{self.id}-{settings.SECRET_KEY}".encode("ascii")).hexdigest()
 
     @property
@@ -183,9 +225,11 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         mode: str = CONFIG.y("avatars", "none")
         if mode == "none":
             return DEFAULT_AVATAR
-        # gravatar uses md5 for their URLs, so md5 can't be avoided
+        if mode.startswith("attributes."):
+            return get_path_from_dict(self.attributes, mode[11:], default=DEFAULT_AVATAR)
         mail_hash = md5(self.email.lower().encode("utf-8")).hexdigest()  # nosec
         if mode == "gravatar":
+            # gravatar uses md5 for their URLs, so md5 can't be avoided
             parameters = [
                 ("s", "158"),
                 ("r", "g"),
@@ -236,7 +280,7 @@ class Provider(SerializerModel):
         raise NotImplementedError
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         """Get serializer for this model"""
         raise NotImplementedError
 
@@ -251,6 +295,8 @@ class Application(SerializerModel, PolicyBindingModel):
 
     name = models.TextField(help_text=_("Application's display Name."))
     slug = models.SlugField(help_text=_("Internal application name, used in URLs."), unique=True)
+    group = models.TextField(blank=True, default="")
+
     provider = models.OneToOneField(
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
@@ -258,6 +304,11 @@ class Application(SerializerModel, PolicyBindingModel):
     meta_launch_url = models.TextField(
         default="", blank=True, validators=[DomainlessURLValidator()]
     )
+
+    open_in_new_tab = models.BooleanField(
+        default=False, help_text=_("Open launch URL in a new browser tab or window.")
+    )
+
     # For template applications, this can be set to /static/authentik/applications/*
     meta_icon = models.FileField(
         upload_to="application-icons/",
@@ -284,13 +335,24 @@ class Application(SerializerModel, PolicyBindingModel):
             return self.meta_icon.name
         return self.meta_icon.url
 
-    def get_launch_url(self) -> Optional[str]:
+    def get_launch_url(self, user: Optional["User"] = None) -> Optional[str]:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
-        if self.meta_launch_url:
-            return self.meta_launch_url
+        url = None
         if provider := self.get_provider():
-            return provider.launch_url
-        return None
+            url = provider.launch_url
+        if self.meta_launch_url:
+            url = self.meta_launch_url
+        if user and url:
+            if isinstance(user, SimpleLazyObject):
+                user._setup()
+                user = user._wrapped
+            try:
+                return url % user.__dict__
+            # pylint: disable=broad-except
+            except Exception as exc:
+                LOGGER.warning("Failed to format launch url", exc=exc)
+                return url
+        return url
 
     def get_provider(self) -> Optional[Provider]:
         """Get casted provider instance"""
@@ -343,6 +405,8 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     name = models.TextField(help_text=_("Source's display Name."))
     slug = models.SlugField(help_text=_("Internal source name, used in URLs."), unique=True)
 
+    user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
+
     enabled = models.BooleanField(default=True)
     property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
 
@@ -377,6 +441,17 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     )
 
     objects = InheritanceManager()
+
+    def get_user_path(self) -> str:
+        """Get user path, fallback to default for formatting errors"""
+        try:
+            return self.user_path_template % {
+                "slug": self.slug,
+            }
+        # pylint: disable=broad-except
+        except Exception as exc:
+            LOGGER.warning("Failed to template user path", exc=exc, source=self)
+            return User.default_path()
 
     @property
     def component(self) -> str:
@@ -432,8 +507,9 @@ class ExpiringModel(models.Model):
     def filter_not_expired(cls, **kwargs) -> QuerySet:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
-        expired = Q(expires__lt=now(), expiring=True)
-        return cls.objects.exclude(expired).filter(**kwargs)
+        for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):
+            obj.delete()
+        return cls.objects.filter(**kwargs)
 
     @property
     def is_expired(self) -> bool:
@@ -534,7 +610,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         raise NotImplementedError
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         """Get serializer for this model"""
         raise NotImplementedError
 

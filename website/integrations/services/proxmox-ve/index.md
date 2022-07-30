@@ -2,6 +2,8 @@
 title: Proxmox VE
 ---
 
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Proxmox VE
 
 From https://pve.proxmox.com/wiki/Main_Page
@@ -14,22 +16,20 @@ Proxmox Virtual Environment is an open source server virtualization management s
 This requires Proxmox VE 7.0 or newer.
 :::
 
-
 ## Preparation
 
 The following placeholders will be used:
 
-- `proxmox.company` is the FQDN of the Proxmox VE server.
-- `authentik.company` is the FQDN of the authentik install.
+-   `proxmox.company` is the FQDN of the Proxmox VE server.
+-   `authentik.company` is the FQDN of the authentik install.
 
 ### Step 1
 
 Under _Providers_, create an OAuth2/OpenID provider with these settings:
 
-- Name: proxmox
-- Client Type: Confidential
-- JWT Algorithm: RS256
-- Redirect URI: `https://proxmox.company:8006` (Note the absence of the trailing slash, and the inclusion of the webinterface port)
+-   Name: proxmox
+-   Client Type: Confidential
+-   Redirect URI: `https://proxmox.company:8006` (Note the absence of the trailing slash, and the inclusion of the webinterface port)
 
 ### Step 2
 
@@ -39,7 +39,7 @@ Set the Launch URL to `https://promox.company:8006`.
 
 ## Proxmox VE Setup
 
-Proxmox VE allows configuration of authentication sources using the web interface (under Datacenter -> Permissions -> Authentication).
+Proxmox VE allows configuration of authentication sources using the web interface (under Datacenter -> Permissions -> Realms).
 
 ![](proxmox-source.png)
 

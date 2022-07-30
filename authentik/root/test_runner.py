@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from django.conf import settings
 
 from authentik.lib.config import CONFIG
+from authentik.lib.sentry import sentry_init
 from tests.e2e.utils import get_docker_tag
 
 
@@ -15,7 +16,7 @@ class PytestTestRunner:  # pragma: no cover
         self.failfast = failfast
         self.keepdb = keepdb
 
-        self.args = ["-vv"]
+        self.args = ["-vv", "-s"]
         if self.failfast:
             self.args.append("--exitfirst")
         if self.keepdb:
@@ -26,17 +27,23 @@ class PytestTestRunner:  # pragma: no cover
 
         settings.TEST = True
         settings.CELERY_TASK_ALWAYS_EAGER = True
-        CONFIG.y_set("authentik.avatars", "none")
-        CONFIG.y_set("authentik.geoip", "tests/GeoLite2-City-Test.mmdb")
+        CONFIG.y_set("avatars", "none")
+        CONFIG.y_set("geoip", "tests/GeoLite2-City-Test.mmdb")
         CONFIG.y_set(
             "outposts.container_image_base",
             f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
+        )
+        CONFIG.y_set("error_reporting.sample_rate", 1.0)
+        sentry_init(
+            environment="testing",
+            send_default_pii=True,
         )
 
     @classmethod
     def add_arguments(cls, parser: ArgumentParser):
         """Add more pytest-specific arguments"""
         parser.add_argument("--randomly-seed", type=int)
+        parser.add_argument("--keepdb", action="store_true")
 
     def run_tests(self, test_labels):
         """Run pytest and return the exitcode.

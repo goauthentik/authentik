@@ -1,5 +1,5 @@
 """LDAP Provider"""
-from typing import Iterable, Optional, Type, Union
+from typing import Iterable, Optional
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -10,8 +10,8 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import OutpostModel
 
 
-class SearchModes(models.TextChoices):
-    """Search modes"""
+class APIAccessMode(models.TextChoices):
+    """API Access modes"""
 
     DIRECT = "direct"
     CACHED = "cached"
@@ -66,7 +66,8 @@ class LDAPProvider(OutpostModel, Provider):
         ),
     )
 
-    search_mode = models.TextField(default=SearchModes.DIRECT, choices=SearchModes.choices)
+    bind_mode = models.TextField(default=APIAccessMode.DIRECT, choices=APIAccessMode.choices)
+    search_mode = models.TextField(default=APIAccessMode.DIRECT, choices=APIAccessMode.choices)
 
     @property
     def launch_url(self) -> Optional[str]:
@@ -78,7 +79,7 @@ class LDAPProvider(OutpostModel, Provider):
         return "ak-provider-ldap-form"
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.providers.ldap.api import LDAPProviderSerializer
 
         return LDAPProviderSerializer
@@ -86,7 +87,7 @@ class LDAPProvider(OutpostModel, Provider):
     def __str__(self):
         return f"LDAP Provider {self.name}"
 
-    def get_required_objects(self) -> Iterable[Union[models.Model, str]]:
+    def get_required_objects(self) -> Iterable[models.Model | str]:
         required_models = [self, "authentik_core.view_user", "authentik_core.view_group"]
         if self.certificate is not None:
             required_models.append(self.certificate)

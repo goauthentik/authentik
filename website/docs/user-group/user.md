@@ -2,15 +2,15 @@
 title: User
 ---
 
+## Path
+
+:::info
+Requires authentik 2022.7
+:::
+
+Paths can be used to organize users into folders depending on which source created them or organizational structure. Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.
+
 ## Attributes
-
-### `goauthentik.io/user/can-change-username`
-
-Optional flag, when set to false prevents the user from changing their own username.
-
-### `goauthentik.io/user/can-change-email`
-
-Optional flag, when set to false prevents the user from changing their own email.
 
 ### `goauthentik.io/user/token-expires`:
 
@@ -44,24 +44,27 @@ These headers will now be passed to the application when the user logs in. Most 
 
 The User object has the following attributes:
 
-- `username`: User's username.
-- `email` User's email.
-- `name` User's display name.
-- `is_staff` Boolean field if user is staff.
-- `is_active` Boolean field if user is active.
-- `date_joined` Date user joined/was created.
-- `password_change_date` Date password was last changed.
-- `attributes` Dynamic attributes, see above
-- `group_attributes()` Merged attributes of all groups the user is member of and the user's own attributes.
-- `ak_groups` This is a queryset of all the user's groups.
+-   `username`: User's username.
+-   `email` User's email.
+-   `name` User's display name.
+-   `is_staff` Boolean field if user is staff.
+-   `is_active` Boolean field if user is active.
+-   `date_joined` Date user joined/was created.
+-   `password_change_date` Date password was last changed.
+-   `attributes` Dynamic attributes, see above
+-   `group_attributes()` Merged attributes of all groups the user is member of and the user's own attributes.
+-   `ak_groups` This is a queryset of all the user's groups.
 
     You can do additional filtering like
+
     ```python
     user.ak_groups.filter(name__startswith='test')
     ```
+
     see [here](https://docs.djangoproject.com/en/3.1/ref/models/querysets/#id4)
 
     To get the name of all groups, you can do
+
     ```python
     [group.name for group in user.ak_groups.all()]
     ```

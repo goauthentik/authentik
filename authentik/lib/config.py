@@ -20,6 +20,17 @@ ENV_PREFIX = "AUTHENTIK"
 ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
 
 
+def get_path_from_dict(root: dict, path: str, sep=".", default=None):
+    """Recursively walk through `root`, checking each part of `path` split by `sep`.
+    If at any point a dict does not exist, return default"""
+    for comp in path.split(sep):
+        if root and comp in root:
+            root = root.get(comp)
+        else:
+            return default
+    return root
+
+
 class ConfigLoader:
     """Search through SEARCH_PATHS and load configuration. Environment variables starting with
     `ENV_PREFIX` are also applied.
@@ -155,12 +166,7 @@ class ConfigLoader:
         # Walk sub_dicts before parsing path
         root = self.raw
         # Walk each component of the path
-        for comp in path.split(sep):
-            if root and comp in root:
-                root = root.get(comp)
-            else:
-                return default
-        return root
+        return get_path_from_dict(root, path, sep=sep, default=default)
 
     def y_set(self, path: str, value: Any, sep="."):
         """Set value using same syntax as y()"""

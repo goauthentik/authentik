@@ -1,10 +1,16 @@
+import "@goauthentik/web/elements/Divider";
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/forms/FormElement";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
+import { LOCALES } from "@goauthentik/web/interfaces/locale";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -20,18 +26,13 @@ import {
     StagePrompt,
 } from "@goauthentik/api";
 
-import "../../../elements/Divider";
-import "../../../elements/EmptyState";
-import "../../../elements/forms/FormElement";
-import { BaseStage } from "../base";
-
 @customElement("ak-stage-prompt")
 export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFAlert, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
-    renderPromptInner(prompt: StagePrompt): string {
+    renderPromptInner(prompt: StagePrompt, placeholderAsValue: boolean): string {
         switch (prompt.type) {
             case PromptTypeEnum.Text:
                 return `<input
@@ -41,7 +42,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     autocomplete="off"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
-                    value="">`;
+                    value="${placeholderAsValue ? prompt.placeholder : ""}">`;
             case PromptTypeEnum.TextReadOnly:
                 return `<input
                     type="text"
@@ -57,7 +58,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     autocomplete="username"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
-                    value="">`;
+                    value="${placeholderAsValue ? prompt.placeholder : ""}">`;
             case PromptTypeEnum.Email:
                 return `<input
                     type="email"
@@ -65,7 +66,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
-                    value="">`;
+                    value="${placeholderAsValue ? prompt.placeholder : ""}">`;
             case PromptTypeEnum.Password:
                 return `<input
                     type="password"
@@ -95,6 +96,13 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
+            case PromptTypeEnum.File:
+                return `<input
+                    type="file"
+                    name="${prompt.fieldKey}"
+                    placeholder="${prompt.placeholder}"
+                    class="pf-c-form-control"
+                    ?required=${prompt.required}>`;
             case PromptTypeEnum.Separator:
                 return `<ak-divider>${prompt.placeholder}</ak-divider>`;
             case PromptTypeEnum.Hidden:
@@ -106,6 +114,20 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     ?required=${prompt.required}>`;
             case PromptTypeEnum.Static:
                 return `<p>${prompt.placeholder}</p>`;
+            case PromptTypeEnum.AkLocale:
+                return `<select class="pf-c-form-control">
+                    <option value="" ${prompt.placeholder === "" ? "selected" : ""}>
+                        ${t`Auto-detect (based on your browser)`}
+                    </option>
+                    ${LOCALES.map((locale) => {
+                        return `<option
+                            value=${locale.code}
+                            ${prompt.placeholder === locale.code ? "selected" : ""}
+                        >
+                            ${locale.code.toUpperCase()} - ${locale.label}
+                        </option>`;
+                    }).join("")}
+                </select>`;
             default:
                 return `<p>invalid type '${prompt.type}'</p>`;
         }
@@ -116,6 +138,59 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
             return html``;
         }
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
+    }
+
+    shouldRenderInWrapper(prompt: StagePrompt): boolean {
+        // Special types that aren't rendered in a wrapper
+        if (
+            prompt.type === PromptTypeEnum.Static ||
+            prompt.type === PromptTypeEnum.Hidden ||
+            prompt.type === PromptTypeEnum.Separator
+        ) {
+            return false;
+        }
+        return true;
+    }
+
+    renderField(prompt: StagePrompt): TemplateResult {
+        // Checkbox is rendered differently
+        if (prompt.type === PromptTypeEnum.Checkbox) {
+            return html`<div class="pf-c-check">
+                <input
+                    type="checkbox"
+                    class="pf-c-check__input"
+                    name="${prompt.fieldKey}"
+                    ?checked=${prompt.placeholder !== ""}
+                    ?required=${prompt.required}
+                />
+                <label class="pf-c-check__label">${prompt.label}</label>
+                ${prompt.required
+                    ? html`<p class="pf-c-form__helper-text">${t`Required.`}</p>`
+                    : html``}
+                <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
+            </div>`;
+        }
+        if (this.shouldRenderInWrapper(prompt)) {
+            return html`<ak-form-element
+                label="${prompt.label}"
+                ?required="${prompt.required}"
+                class="pf-c-form__group"
+                .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
+            >
+                ${unsafeHTML(this.renderPromptInner(prompt, false))}
+                ${this.renderPromptHelpText(prompt)}
+            </ak-form-element>`;
+        }
+        return html` ${unsafeHTML(this.renderPromptInner(prompt, false))}
+        ${this.renderPromptHelpText(prompt)}`;
+    }
+
+    renderContinue(): TemplateResult {
+        return html` <div class="pf-c-form__group pf-m-action">
+            <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                ${t`Continue`}
+            </button>
+        </div>`;
     }
 
     render(): TemplateResult {
@@ -133,54 +208,14 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     }}
                 >
                     ${this.challenge.fields.map((prompt) => {
-                        // Checkbox is rendered differently
-                        if (prompt.type === PromptTypeEnum.Checkbox) {
-                            return html`<div class="pf-c-check">
-                                <input
-                                    type="checkbox"
-                                    class="pf-c-check__input"
-                                    name="${prompt.fieldKey}"
-                                    ?checked=${prompt.placeholder !== ""}
-                                    ?required=${prompt.required}
-                                />
-                                <label class="pf-c-check__label">${prompt.label}</label>
-                                ${prompt.required
-                                    ? html`<p class="pf-c-form__helper-text">${t`Required.`}</p>`
-                                    : html``}
-                                <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
-                            </div>`;
-                        }
-                        // Special types that aren't rendered in a wrapper
-                        if (
-                            prompt.type === PromptTypeEnum.Static ||
-                            prompt.type === PromptTypeEnum.Hidden ||
-                            prompt.type === PromptTypeEnum.Separator
-                        ) {
-                            return html`
-                                ${unsafeHTML(this.renderPromptInner(prompt))}
-                                ${this.renderPromptHelpText(prompt)}
-                            `;
-                        }
-                        return html`<ak-form-element
-                            label="${prompt.label}"
-                            ?required="${prompt.required}"
-                            class="pf-c-form__group"
-                            .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
-                        >
-                            ${unsafeHTML(this.renderPromptInner(prompt))}
-                            ${this.renderPromptHelpText(prompt)}
-                        </ak-form-element>`;
+                        return this.renderField(prompt);
                     })}
                     ${"non_field_errors" in (this.challenge?.responseErrors || {})
                         ? this.renderNonFieldErrors(
                               this.challenge?.responseErrors?.non_field_errors || [],
                           )
                         : html``}
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${t`Continue`}
-                        </button>
-                    </div>
+                    ${this.renderContinue()}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">

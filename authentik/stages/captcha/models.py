@@ -1,5 +1,4 @@
 """authentik captcha stage"""
-from typing import Type
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -26,7 +25,7 @@ class CaptchaStage(Stage):
         return CaptchaStageSerializer
 
     @property
-    def type(self) -> Type[View]:
+    def type(self) -> type[View]:
         from authentik.stages.captcha.stage import CaptchaStageView
 
         return CaptchaStageView

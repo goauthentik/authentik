@@ -1,15 +1,14 @@
 """authentik admin tasks"""
 import re
-from os import environ
 
 from django.core.cache import cache
 from django.core.validators import URLValidator
 from packaging.version import parse
-from prometheus_client import Info
 from requests import RequestException
 from structlog.stdlib import get_logger
 
-from authentik import ENV_GIT_HASH_KEY, __version__
+from authentik import __version__, get_build_hash
+from authentik.admin.apps import PROM_INFO
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.monitored_tasks import (
     MonitoredTask,
@@ -26,7 +25,6 @@ VERSION_CACHE_KEY = "authentik_latest_version"
 VERSION_CACHE_TIMEOUT = 8 * 60 * 60  # 8 hours
 # Chop of the first ^ because we want to search the entire string
 URL_FINDER = URLValidator.regex.pattern[1:]
-PROM_INFO = Info("authentik_version", "Currently running authentik version")
 LOCAL_VERSION = parse(__version__)
 
 
@@ -36,7 +34,7 @@ def _set_prom_info():
         {
             "version": __version__,
             "latest": cache.get(VERSION_CACHE_KEY, ""),
-            "build_hash": environ.get(ENV_GIT_HASH_KEY, ""),
+            "build_hash": get_build_hash(),
         }
     )
 

@@ -1,15 +1,15 @@
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/Spinner";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { OutpostHealth } from "@goauthentik/api";
-
-import { PFColor } from "../../elements/Label";
-import "../../elements/Spinner";
 
 @customElement("ak-outpost-health")
 export class OutpostHealthElement extends LitElement {
@@ -32,6 +32,13 @@ export class OutpostHealthElement extends LitElement {
         if (!this.outpostHealth) {
             return html`<ak-spinner></ak-spinner>`;
         }
+        let versionString = this.outpostHealth.version;
+        if (this.outpostHealth.buildHash) {
+            versionString = `${versionString} (build ${this.outpostHealth.buildHash.substring(
+                0,
+                8,
+            )})`;
+        }
         return html` <ul>
             <li>
                 <ak-label color=${PFColor.Green}>
@@ -44,7 +51,7 @@ export class OutpostHealthElement extends LitElement {
                           >${t`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`}
                       </ak-label>`
                     : html`<ak-label color=${PFColor.Green}
-                          >${t`Version: ${this.outpostHealth.version || ""}`}
+                          >${t`Version: ${versionString}`}
                       </ak-label>`}
             </li>
         </ul>`;

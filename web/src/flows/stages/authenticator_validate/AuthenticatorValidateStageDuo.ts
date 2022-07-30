@@ -1,10 +1,15 @@
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/forms/FormElement";
+import "@goauthentik/web/flows/FormStatic";
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -18,10 +23,6 @@ import {
     DeviceChallenge,
 } from "@goauthentik/api";
 
-import "../../../elements/EmptyState";
-import "../../../elements/forms/FormElement";
-import "../../FormStatic";
-import { BaseStage } from "../base";
 import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
 
 @customElement("ak-stage-authenticator-validate-duo")
@@ -49,6 +50,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
         if (!this.challenge) {
             return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
         }
+        const errors = this.challenge.responseErrors?.duo || [];
         return html`<div class="pf-c-login__main-body">
                 <form
                     class="pf-c-form"
@@ -67,6 +69,10 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
+
+                    ${errors.map((err) => {
+                        return html`<p>${err.string}</p>`;
+                    })}
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
@@ -28,18 +29,19 @@ func ldapResolveTypeSingle(in interface{}) *string {
 		s := BoolToString(*t)
 		return &s
 	default:
-		log.WithField("type", reflect.TypeOf(in).String()).Warning("Type can't be mapped to LDAP yet")
+		if in != nil {
+			log.WithField("type", reflect.TypeOf(in).String()).Warning("Type can't be mapped to LDAP yet")
+		}
 		return nil
 	}
 }
 
-func AKAttrsToLDAP(attrs interface{}) []*ldap.EntryAttribute {
+func AKAttrsToLDAP(attrs map[string]interface{}) []*ldap.EntryAttribute {
 	attrList := []*ldap.EntryAttribute{}
 	if attrs == nil {
 		return attrList
 	}
-	a := attrs.(*map[string]interface{})
-	for attrKey, attrValue := range *a {
+	for attrKey, attrValue := range attrs {
 		entry := &ldap.EntryAttribute{Name: attrKey}
 		switch t := attrValue.(type) {
 		case []string:
@@ -50,7 +52,9 @@ func AKAttrsToLDAP(attrs interface{}) []*ldap.EntryAttribute {
 			entry.Values = make([]string, len(t))
 			for idx, v := range t {
 				v := ldapResolveTypeSingle(v)
-				entry.Values[idx] = *v
+				if v != nil {
+					entry.Values[idx] = *v
+				}
 			}
 		default:
 			v := ldapResolveTypeSingle(t)
@@ -116,4 +120,8 @@ func GetContainerEntry(filterOC string, dn string, ou string) *ldap.Entry {
 	}
 
 	return nil
+}
+
+func HasSuffixNoCase(s1 string, s2 string) bool {
+	return strings.HasSuffix(strings.ToLower(s1), strings.ToLower(s2))
 }

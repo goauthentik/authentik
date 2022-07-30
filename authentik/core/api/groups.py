@@ -4,7 +4,7 @@ from json import loads
 from django.db.models.query import QuerySet
 from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
-from rest_framework.fields import CharField, JSONField
+from rest_framework.fields import CharField, IntegerField, JSONField
 from rest_framework.serializers import ListSerializer, ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
@@ -46,11 +46,14 @@ class GroupSerializer(ModelSerializer):
     )
     parent_name = CharField(source="parent.name", read_only=True)
 
+    num_pk = IntegerField(read_only=True)
+
     class Meta:
 
         model = Group
         fields = [
             "pk",
+            "num_pk",
             "name",
             "is_superuser",
             "parent",

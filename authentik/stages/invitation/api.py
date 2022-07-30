@@ -41,6 +41,7 @@ class InvitationStageViewSet(UsedByMixin, ModelViewSet):
     serializer_class = InvitationStageSerializer
     filterset_class = InvitationStageFilter
     ordering = ["name"]
+    search_fields = ["name"]
 
 
 class InvitationSerializer(ModelSerializer):
@@ -54,6 +55,7 @@ class InvitationSerializer(ModelSerializer):
         model = Invitation
         fields = [
             "pk",
+            "name",
             "expires",
             "fixed_data",
             "created_by",
@@ -67,8 +69,8 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
     queryset = Invitation.objects.all()
     serializer_class = InvitationSerializer
     ordering = ["-expires"]
-    search_fields = ["created_by__username", "expires"]
-    filterset_fields = ["created_by__username", "expires"]
+    search_fields = ["name", "created_by__username", "expires"]
+    filterset_fields = ["name", "created_by__username", "expires"]
 
     def perform_create(self, serializer: InvitationSerializer):
         serializer.save(created_by=self.request.user)

@@ -1,13 +1,13 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2021.12.4
+  version: 2022.7.3
   description: Making authentication simple.
   contact:
-    email: hello@beryju.org
+    email: hello@goauthentik.io
   license:
     name: GNU GPLv3
-    url: https://github.com/goauthentik/authentik/blob/master/LICENSE
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
 paths:
   /admin/apps/:
     get:
@@ -174,6 +174,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Workers'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /authenticators/admin/all/:
+    get:
+      operationId: authenticators_admin_all_list
+      description: Get all devices for current user
+      parameters:
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -407,6 +433,30 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: authenticators_admin_sms_create
+      description: Viewset for sms authenticator devices (for admins)
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SMSDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMSDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /authenticators/admin/sms/{id}/:
     get:
       operationId: authenticators_admin_sms_retrieve
@@ -429,6 +479,88 @@ paths:
               schema:
                 $ref: '#/components/schemas/SMSDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: authenticators_admin_sms_update
+      description: Viewset for sms authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SMS Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SMSDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMSDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: authenticators_admin_sms_partial_update
+      description: Viewset for sms authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SMS Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSMSDeviceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMSDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: authenticators_admin_sms_destroy
+      description: Viewset for sms authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SMS Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -481,6 +613,30 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: authenticators_admin_static_create
+      description: Viewset for static authenticator devices (for admins)
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaticDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /authenticators/admin/static/{id}/:
     get:
       operationId: authenticators_admin_static_retrieve
@@ -503,6 +659,88 @@ paths:
               schema:
                 $ref: '#/components/schemas/StaticDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: authenticators_admin_static_update
+      description: Viewset for static authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this static device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaticDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: authenticators_admin_static_partial_update
+      description: Viewset for static authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this static device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedStaticDeviceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: authenticators_admin_static_destroy
+      description: Viewset for static authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this static device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -555,6 +793,30 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: authenticators_admin_totp_create
+      description: Viewset for totp authenticator devices (for admins)
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TOTPDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TOTPDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /authenticators/admin/totp/{id}/:
     get:
       operationId: authenticators_admin_totp_retrieve
@@ -577,6 +839,88 @@ paths:
               schema:
                 $ref: '#/components/schemas/TOTPDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: authenticators_admin_totp_update
+      description: Viewset for totp authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this TOTP device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TOTPDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TOTPDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: authenticators_admin_totp_partial_update
+      description: Viewset for totp authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this TOTP device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTOTPDeviceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TOTPDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: authenticators_admin_totp_destroy
+      description: Viewset for totp authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this TOTP device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -629,6 +973,30 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: authenticators_admin_webauthn_create
+      description: Viewset for WebAuthn authenticator devices (for admins)
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebAuthnDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /authenticators/admin/webauthn/{id}/:
     get:
       operationId: authenticators_admin_webauthn_retrieve
@@ -651,6 +1019,88 @@ paths:
               schema:
                 $ref: '#/components/schemas/WebAuthnDevice'
           description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: authenticators_admin_webauthn_update
+      description: Viewset for WebAuthn authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this WebAuthn Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebAuthnDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: authenticators_admin_webauthn_partial_update
+      description: Viewset for WebAuthn authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this WebAuthn Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedWebAuthnDeviceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnDevice'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: authenticators_admin_webauthn_destroy
+      description: Viewset for WebAuthn authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this WebAuthn Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -1601,6 +2051,26 @@ paths:
       operationId: core_applications_list
       description: Custom list method that checks Policy based access instead of guardian
       parameters:
+      - in: query
+        name: group
+        schema:
+          type: string
+      - in: query
+        name: meta_description
+        schema:
+          type: string
+      - in: query
+        name: meta_launch_url
+        schema:
+          type: string
+      - in: query
+        name: meta_publisher
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -1623,6 +2093,10 @@ paths:
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: slug
         schema:
           type: string
       - in: query
@@ -2342,6 +2816,11 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: flow_user_settings
+        schema:
+          type: string
+          format: uuid
       - name: ordering
         required: false
         in: query
@@ -2782,6 +3261,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /core/tokens/{identifier}/set_key/:
+    post:
+      operationId: core_tokens_set_key_create
+      description: Return token key and log access
+      parameters:
+      - in: path
+        name: identifier
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenSetKeyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully changed key
+        '400':
+          description: Missing key
+        '404':
+          description: Token not found or expired
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /core/tokens/{identifier}/used_by/:
     get:
       operationId: core_tokens_used_by_list
@@ -3025,6 +3533,14 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: path
+        schema:
+          type: string
+      - in: query
+        name: path_startswith
+        schema:
+          type: string
       - name: search
         required: false
         in: query
@@ -3033,6 +3549,10 @@ paths:
           type: string
       - in: query
         name: username
+        schema:
+          type: string
+      - in: query
+        name: uuid
         schema:
           type: string
       tags:
@@ -3262,11 +3782,39 @@ paths:
       - authentik: []
       responses:
         '204':
-          description: No response body
+          description: Successfully sent recover email
         '404':
-          description: No response body
+          description: Bad request
         '400':
           $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /core/users/{id}/set_password/:
+    post:
+      operationId: core_users_set_password_create
+      description: Set password for user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPasswordSetRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully changed password
+        '400':
+          description: Bad request
         '403':
           $ref: '#/components/schemas/GenericError'
   /core/users/{id}/used_by/:
@@ -3316,6 +3864,30 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /core/users/paths/:
+    get:
+      operationId: core_users_paths_retrieve
+      description: Get all user paths
+      parameters:
+      - in: query
+        name: search
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPath'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /core/users/service_account/:
     post:
       operationId: core_users_service_account_create
@@ -3336,31 +3908,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserServiceAccountResponse'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /core/users/update_self/:
-    put:
-      operationId: core_users_update_self_update
-      description: Allow users to change information on their own profile
-      tags:
-      - core
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserSelfRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SessionUser'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -4029,6 +4576,10 @@ paths:
           - alert
           - notice
           - warning
+      - in: query
+        name: user
+        schema:
+          type: integer
       tags:
       - events
       security:
@@ -4437,6 +4988,7 @@ paths:
           type: string
           enum:
           - email
+          - local
           - webhook
           - webhook_slack
       - in: query
@@ -5055,6 +5607,15 @@ paths:
       description: Flow Viewset
       parameters:
       - in: query
+        name: denied_action
+        schema:
+          type: string
+          enum:
+          - continue
+          - message
+          - message_continue
+        description: Configure what should happen when a flow denies access to a user.
+      - in: query
         name: designation
         schema:
           type: string
@@ -5467,207 +6028,6 @@ paths:
           description: Successfully imported flow
         '400':
           description: Bad request
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /managed/blueprints/:
-    get:
-      operationId: managed_blueprints_list
-      description: Blueprint instances
-      parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      tags:
-      - managed
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedBlueprintInstanceList'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    post:
-      operationId: managed_blueprints_create
-      description: Blueprint instances
-      tags:
-      - managed
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BlueprintInstanceRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BlueprintInstance'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /managed/blueprints/{instance_uuid}/:
-    get:
-      operationId: managed_blueprints_retrieve
-      description: Blueprint instances
-      parameters:
-      - in: path
-        name: instance_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Blueprint Instance.
-        required: true
-      tags:
-      - managed
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BlueprintInstance'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    put:
-      operationId: managed_blueprints_update
-      description: Blueprint instances
-      parameters:
-      - in: path
-        name: instance_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Blueprint Instance.
-        required: true
-      tags:
-      - managed
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BlueprintInstanceRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BlueprintInstance'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    patch:
-      operationId: managed_blueprints_partial_update
-      description: Blueprint instances
-      parameters:
-      - in: path
-        name: instance_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Blueprint Instance.
-        required: true
-      tags:
-      - managed
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedBlueprintInstanceRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BlueprintInstance'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    delete:
-      operationId: managed_blueprints_destroy
-      description: Blueprint instances
-      parameters:
-      - in: path
-        name: instance_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Blueprint Instance.
-        required: true
-      tags:
-      - managed
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /managed/blueprints/available/:
-    get:
-      operationId: managed_blueprints_available_list
-      description: Get blueprints
-      tags:
-      - managed
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
   /oauth2/authorization_codes/:
@@ -6270,6 +6630,10 @@ paths:
       operationId: outposts_ldap_list
       description: LDAPProvider Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -6340,6 +6704,10 @@ paths:
       operationId: outposts_proxy_list
       description: ProxyProvider Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -9272,11 +9640,15 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /policies/reputation/ips/:
+  /policies/reputation/scores/:
     get:
-      operationId: policies_reputation_ips_list
-      description: IPReputation Viewset
+      operationId: policies_reputation_scores_list
+      description: Reputation Viewset
       parameters:
+      - in: query
+        name: identifier
+        schema:
+          type: string
       - in: query
         name: ip
         schema:
@@ -9318,22 +9690,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedIPReputationList'
+                $ref: '#/components/schemas/PaginatedReputationList'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /policies/reputation/ips/{id}/:
+  /policies/reputation/scores/{reputation_uuid}/:
     get:
-      operationId: policies_reputation_ips_retrieve
-      description: IPReputation Viewset
+      operationId: policies_reputation_scores_retrieve
+      description: Reputation Viewset
       parameters:
       - in: path
-        name: id
+        name: reputation_uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this ip reputation.
+          type: string
+          format: uuid
+        description: A UUID string identifying this reputation.
         required: true
       tags:
       - policies
@@ -9344,21 +9717,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IPReputation'
+                $ref: '#/components/schemas/Reputation'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
     delete:
-      operationId: policies_reputation_ips_destroy
-      description: IPReputation Viewset
+      operationId: policies_reputation_scores_destroy
+      description: Reputation Viewset
       parameters:
       - in: path
-        name: id
+        name: reputation_uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this ip reputation.
+          type: string
+          format: uuid
+        description: A UUID string identifying this reputation.
         required: true
       tags:
       - policies
@@ -9371,143 +9745,17 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
-  /policies/reputation/ips/{id}/used_by/:
+  /policies/reputation/scores/{reputation_uuid}/used_by/:
     get:
-      operationId: policies_reputation_ips_used_by_list
+      operationId: policies_reputation_scores_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this ip reputation.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /policies/reputation/users/:
-    get:
-      operationId: policies_reputation_users_list
-      description: UserReputation Viewset
-      parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
+        name: reputation_uuid
         schema:
           type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: score
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: username
-        schema:
-          type: string
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedUserReputationList'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /policies/reputation/users/{id}/:
-    get:
-      operationId: policies_reputation_users_retrieve
-      description: UserReputation Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user reputation.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserReputation'
-          description: ''
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-    delete:
-      operationId: policies_reputation_users_destroy
-      description: UserReputation Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user reputation.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/schemas/ValidationError'
-        '403':
-          $ref: '#/components/schemas/GenericError'
-  /policies/reputation/users/{id}/used_by/:
-    get:
-      operationId: policies_reputation_users_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user reputation.
+          format: uuid
+        description: A UUID string identifying this reputation.
         required: true
       tags:
       - policies
@@ -11044,9 +11292,8 @@ paths:
           enum:
           - confidential
           - public
-        description: |-
-          Confidential clients are capable of maintaining the confidentiality
-              of their credentials. Public clients are incapable.
+        description: Confidential clients are capable of maintaining the confidentiality
+          of their credentials. Public clients are incapable
       - in: query
         name: include_claims_in_id_token
         schema:
@@ -12121,6 +12368,14 @@ paths:
       operationId: sources_all_list
       description: Source Viewset
       parameters:
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -12143,6 +12398,10 @@ paths:
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: slug
         schema:
           type: string
       tags:
@@ -12608,6 +12867,10 @@ paths:
       parameters:
       - in: query
         name: access_token_url
+        schema:
+          type: string
+      - in: query
+        name: additional_scopes
         schema:
           type: string
       - in: query
@@ -13376,6 +13639,10 @@ paths:
           - username_link
         description: How the source determines if an existing user should be authenticated
           or a new user enrolled.
+      - in: query
+        name: user_path_template
+        schema:
+          type: string
       tags:
       - sources
       security:
@@ -14691,6 +14958,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: verify_only
+        schema:
+          type: boolean
       tags:
       - stages
       security:
@@ -15334,10 +15605,14 @@ paths:
       description: AuthenticatorValidateStage Viewset
       parameters:
       - in: query
-        name: configuration_stage
+        name: configuration_stages
         schema:
-          type: string
-          format: uuid
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - in: query
         name: name
         schema:
@@ -15560,6 +15835,14 @@ paths:
       description: AuthenticateWebAuthnStage Viewset
       parameters:
       - in: query
+        name: authenticator_attachment
+        schema:
+          type: string
+          nullable: true
+          enum:
+          - cross-platform
+          - platform
+      - in: query
         name: configure_flow
         schema:
           type: string
@@ -15586,6 +15869,14 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: resident_key_requirement
+        schema:
+          type: string
+          enum:
+          - discouraged
+          - preferred
+          - required
       - name: search
         required: false
         in: query
@@ -17209,6 +17500,10 @@ paths:
         schema:
           type: string
           format: date-time
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -17258,6 +17553,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/InvitationRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -17316,6 +17612,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/InvitationRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -17905,10 +18202,12 @@ paths:
         schema:
           type: string
           enum:
+          - ak-locale
           - checkbox
           - date
           - date-time
           - email
+          - file
           - hidden
           - number
           - password
@@ -19038,6 +19337,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: user_path_template
+        schema:
+          type: string
       tags:
       - stages
       security:
@@ -19237,9 +19540,15 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         error_message:
           type: string
       required:
+      - pending_user
+      - pending_user_avatar
       - type
     App:
       type: object
@@ -19362,11 +19671,16 @@ components:
           type: integer
           nullable: true
         provider_obj:
-          $ref: '#/components/schemas/Provider'
+          allOf:
+          - $ref: '#/components/schemas/Provider'
+          readOnly: true
         launch_url:
           type: string
           nullable: true
           readOnly: true
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
         meta_launch_url:
           type: string
           format: uri
@@ -19380,11 +19694,14 @@ components:
           type: string
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        group:
+          type: string
       required:
       - launch_url
       - meta_icon
       - name
       - pk
+      - provider_obj
       - slug
     ApplicationRequest:
       type: object
@@ -19403,8 +19720,9 @@ components:
         provider:
           type: integer
           nullable: true
-        provider_obj:
-          $ref: '#/components/schemas/ProviderRequest'
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
         meta_launch_url:
           type: string
           format: uri
@@ -19414,6 +19732,8 @@ components:
           type: string
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        group:
+          type: string
       required:
       - name
       - slug
@@ -19457,6 +19777,12 @@ components:
             If empty, user will not be able to configure this stage.
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+          nullable: true
+        resident_key_requirement:
+          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
       required:
       - component
       - meta_model_name
@@ -19483,6 +19809,12 @@ components:
             If empty, user will not be able to configure this stage.
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+          nullable: true
+        resident_key_requirement:
+          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
       required:
       - name
     AuthenticatedSession:
@@ -19497,9 +19829,11 @@ components:
           readOnly: true
         user_agent:
           type: object
+          description: User agent details
           properties:
             device:
               type: object
+              description: User agent device
               properties:
                 brand:
                   type: string
@@ -19507,8 +19841,13 @@ components:
                   type: string
                 model:
                   type: string
+              required:
+              - brand
+              - family
+              - model
             os:
               type: object
+              description: User agent os
               properties:
                 family:
                   type: string
@@ -19520,8 +19859,15 @@ components:
                   type: string
                 patch_minor:
                   type: string
+              required:
+              - family
+              - major
+              - minor
+              - patch
+              - patch_minor
             user_agent:
               type: object
+              description: User agent browser
               properties:
                 family:
                   type: string
@@ -19531,11 +19877,22 @@ components:
                   type: string
                 patch:
                   type: string
+              required:
+              - family
+              - major
+              - minor
+              - patch
             string:
               type: string
+          required:
+          - device
+          - os
+          - string
+          - user_agent
           readOnly: true
         geo_ip:
           type: object
+          description: GeoIP Details
           properties:
             continent:
               type: string
@@ -19543,12 +19900,18 @@ components:
               type: string
             lat:
               type: number
-              format: float
+              format: double
             long:
               type: number
-              format: float
+              format: double
             city:
               type: string
+          required:
+          - city
+          - continent
+          - country
+          - lat
+          - long
           nullable: true
           readOnly: true
         user:
@@ -19571,6 +19934,11 @@ components:
       - last_used
       - user
       - user_agent
+    AuthenticatorAttachmentEnum:
+      enum:
+      - platform
+      - cross-platform
+      type: string
     AuthenticatorDuoChallenge:
       type: object
       description: Duo Challenge
@@ -19777,6 +20145,11 @@ components:
           type: string
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
+        verify_only:
+          type: boolean
+          description: When enabled, the Phone number is only used during enrollment
+            to verify the users authenticity. Only a hash of the phone number is saved
+            to ensure it is not re-used in the future.
       required:
       - account_sid
       - auth
@@ -19820,6 +20193,11 @@ components:
           type: string
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
+        verify_only:
+          type: boolean
+          description: When enabled, the Phone number is only used during enrollment
+            to verify the users authenticity. Only a hash of the phone number is saved
+            to ensure it is not re-used in the future.
       required:
       - account_sid
       - auth
@@ -20076,13 +20454,18 @@ components:
           items:
             $ref: '#/components/schemas/DeviceClassesEnum'
           description: Device classes which can be used to authenticate
-        configuration_stage:
-          type: string
-          format: uuid
-          nullable: true
-          description: Stage used to configure Authenticator when user doesn't have
+        configuration_stages:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Stages used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
+        last_auth_threshold:
+          type: string
+          description: If any of the user's device has been used within this threshold,
+            this stage will be skipped
       required:
       - component
       - meta_model_name
@@ -20108,13 +20491,19 @@ components:
           items:
             $ref: '#/components/schemas/DeviceClassesEnum'
           description: Device classes which can be used to authenticate
-        configuration_stage:
-          type: string
-          format: uuid
-          nullable: true
-          description: Stage used to configure Authenticator when user doesn't have
+        configuration_stages:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Stages used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
+        last_auth_threshold:
+          type: string
+          minLength: 1
+          description: If any of the user's device has been used within this threshold,
+            this stage will be skipped
       required:
       - name
     AuthenticatorValidationChallenge:
@@ -20142,7 +20531,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeviceChallenge'
+        configuration_stages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SelectableStage'
       required:
+      - configuration_stages
       - device_challenges
       - pending_user
       - pending_user_avatar
@@ -20157,6 +20551,9 @@ components:
           default: ak-stage-authenticator-validate
         selected_challenge:
           $ref: '#/components/schemas/DeviceChallengeRequest'
+        selected_stage:
+          type: string
+          minLength: 1
         code:
           type: string
           minLength: 1
@@ -20238,6 +20635,8 @@ components:
           type: object
           additionalProperties:
             type: string
+        title:
+          type: string
       required:
       - attrs
       - type
@@ -20254,49 +20653,6 @@ components:
       - POST
       - POST_AUTO
       type: string
-    BlueprintInstance:
-      type: object
-      description: Info about a single blueprint instance file
-      properties:
-        path:
-          type: string
-        context:
-          type: object
-          additionalProperties: {}
-        last_applied:
-          type: string
-          format: date-time
-          readOnly: true
-        status:
-          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
-      required:
-      - context
-      - last_applied
-      - path
-      - status
-    BlueprintInstanceRequest:
-      type: object
-      description: Info about a single blueprint instance file
-      properties:
-        path:
-          type: string
-          minLength: 1
-        context:
-          type: object
-          additionalProperties: {}
-        status:
-          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
-      required:
-      - context
-      - path
-      - status
-    BlueprintInstanceStatusEnum:
-      enum:
-      - successful
-      - warning
-      - error
-      - unknown
-      type: string
     Cache:
       type: object
       description: Generic cache stats for an object
@@ -20310,7 +20666,7 @@ components:
       enum:
       - can_save_media
       - can_geo_ip
-      - can_backup
+      - can_impersonate
       type: string
     CaptchaChallenge:
       type: object
@@ -20629,8 +20985,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Permission'
+        additional_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
       required:
-      - header_text
+      - additional_permissions
       - pending_user
       - pending_user_avatar
       - permissions
@@ -20719,8 +21079,11 @@ components:
           type: string
         cancel_url:
           type: string
+        layout:
+          $ref: '#/components/schemas/LayoutEnum'
       required:
       - cancel_url
+      - layout
     Coordinate:
       type: object
       description: Coordinates for diagrams
@@ -20751,11 +21114,7 @@ components:
           items:
             $ref: '#/components/schemas/FooterLink'
           readOnly: true
-          default:
-          - href: https://goauthentik.io/docs/?utm_source=authentik
-            name: Documentation
-          - href: https://goauthentik.io/?utm_source=authentik
-            name: authentik Website
+          default: []
         flow_authentication:
           type: string
         flow_invalidation:
@@ -20764,12 +21123,24 @@ components:
           type: string
         flow_unenrollment:
           type: string
+        flow_user_settings:
+          type: string
+        default_locale:
+          type: string
+          readOnly: true
       required:
       - branding_favicon
       - branding_logo
       - branding_title
+      - default_locale
       - matched_domain
       - ui_footer_links
+    DeniedActionEnum:
+      enum:
+      - message_continue
+      - message
+      - continue
+      type: string
     DenyStage:
       type: object
       description: DenyStage Serializer
@@ -20837,7 +21208,10 @@ components:
         type:
           type: string
           readOnly: true
+        confirmed:
+          type: boolean
       required:
+      - confirmed
       - meta_model_name
       - name
       - pk
@@ -21330,7 +21704,7 @@ components:
           readOnly: true
         traces_sample_rate:
           type: number
-          format: float
+          format: double
           readOnly: true
       required:
       - enabled
@@ -21683,6 +22057,13 @@ components:
         export_url:
           type: string
           readOnly: true
+        layout:
+          $ref: '#/components/schemas/LayoutEnum'
+        denied_action:
+          allOf:
+          - $ref: '#/components/schemas/DeniedActionEnum'
+          description: Configure what should happen when a flow denies access to a
+            user.
       required:
       - background
       - cache_count
@@ -21818,6 +22199,13 @@ components:
           type: boolean
           description: Enable compatibility mode, increases compatibility with password
             managers on mobile devices.
+        layout:
+          $ref: '#/components/schemas/LayoutEnum'
+        denied_action:
+          allOf:
+          - $ref: '#/components/schemas/DeniedActionEnum'
+          description: Configure what should happen when a flow denies access to a
+            user.
       required:
       - designation
       - name
@@ -21939,6 +22327,9 @@ components:
           format: uuid
           readOnly: true
           title: Group uuid
+        num_pk:
+          type: integer
+          readOnly: true
         name:
           type: string
           maxLength: 80
@@ -21966,6 +22357,7 @@ components:
           readOnly: true
       required:
       - name
+      - num_pk
       - parent
       - parent_name
       - pk
@@ -22144,28 +22536,6 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-    IPReputation:
-      type: object
-      description: IPReputation Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        ip:
-          type: string
-        score:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - ip
-      - pk
-      - updated
     IdentificationChallenge:
       type: object
       description: Identification challenges with all UI elements
@@ -22389,6 +22759,10 @@ components:
           format: uuid
           readOnly: true
           title: Invite uuid
+        name:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
         expires:
           type: string
           format: date-time
@@ -22404,11 +22778,17 @@ components:
           description: When enabled, the invitation will be deleted after usage.
       required:
       - created_by
+      - name
       - pk
     InvitationRequest:
       type: object
       description: Invitation Serializer
       properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
         expires:
           type: string
           format: date-time
@@ -22418,6 +22798,8 @@ components:
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
+      required:
+      - name
     InvitationStage:
       type: object
       description: InvitationStage Serializer
@@ -22537,6 +22919,11 @@ components:
             the currently selected context.
       required:
       - name
+    LDAPAPIAccessMode:
+      enum:
+      - direct
+      - cached
+      type: string
     LDAPOutpostConfig:
       type: object
       description: LDAPProvider Serializer
@@ -22582,7 +22969,9 @@ components:
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         search_mode:
-          $ref: '#/components/schemas/SearchModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
+        bind_mode:
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
       required:
       - application_slug
       - bind_flow_slug
@@ -22733,7 +23122,9 @@ components:
             type: string
           readOnly: true
         search_mode:
-          $ref: '#/components/schemas/SearchModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
+        bind_mode:
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -22793,7 +23184,9 @@ components:
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         search_mode:
-          $ref: '#/components/schemas/SearchModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
+        bind_mode:
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
       required:
       - authorization_flow
       - name
@@ -22845,6 +23238,17 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
         server_uri:
           type: string
           format: uri
@@ -22907,6 +23311,7 @@ components:
       required:
       - base_dn
       - component
+      - managed
       - meta_model_name
       - name
       - pk
@@ -22947,6 +23352,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         server_uri:
           type: string
           minLength: 1
@@ -23020,6 +23428,14 @@ components:
       - name
       - server_uri
       - slug
+    LayoutEnum:
+      enum:
+      - stacked
+      - content_left
+      - content_right
+      - sidebar_left
+      - sidebar_right
+      type: string
     Link:
       type: object
       description: Returns a single link
@@ -23159,7 +23575,6 @@ components:
       - group_obj
       - name
       - pk
-      - transports
     NotificationRuleRequest:
       type: object
       description: NotificationRule Serializer
@@ -23188,7 +23603,6 @@ components:
             and shown to. If left empty, Notification won't ben sent.
       required:
       - name
-      - transports
     NotificationTransport:
       type: object
       description: NotificationTransport Serializer
@@ -23217,12 +23631,12 @@ components:
           description: Only send notification once, for example when sending a webhook
             into a chat channel.
       required:
-      - mode
       - mode_verbose
       - name
       - pk
     NotificationTransportModeEnum:
       enum:
+      - local
       - webhook
       - webhook_slack
       - email
@@ -23248,7 +23662,6 @@ components:
           description: Only send notification once, for example when sending a webhook
             into a chat channel.
       required:
-      - mode
       - name
     NotificationTransportTest:
       type: object
@@ -23332,9 +23745,8 @@ components:
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
-          description: |-
-            Confidential clients are capable of maintaining the confidentiality
-                of their credentials. Public clients are incapable.
+          description: Confidential clients are capable of maintaining the confidentiality
+            of their credentials. Public clients are incapable
         client_id:
           type: string
           maxLength: 255
@@ -23357,7 +23769,6 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: RSA Key
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
         redirect_uris:
@@ -23372,6 +23783,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
+        jwks_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -23401,9 +23820,8 @@ components:
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
-          description: |-
-            Confidential clients are capable of maintaining the confidentiality
-                of their credentials. Public clients are incapable.
+          description: Confidential clients are capable of maintaining the confidentiality
+            of their credentials. Public clients are incapable
         client_id:
           type: string
           minLength: 1
@@ -23429,7 +23847,6 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: RSA Key
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
         redirect_uris:
@@ -23444,6 +23861,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
+        jwks_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
       required:
       - authorization_flow
       - name
@@ -23469,9 +23894,13 @@ components:
         logout:
           type: string
           readOnly: true
+        jwks:
+          type: string
+          readOnly: true
       required:
       - authorize
       - issuer
+      - jwks
       - logout
       - provider_info
       - token
@@ -23524,6 +23953,17 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -23552,14 +23992,24 @@ components:
         callback_url:
           type: string
           readOnly: true
+        additional_scopes:
+          type: string
         type:
           allOf:
           - $ref: '#/components/schemas/SourceType'
           readOnly: true
+        oidc_well_known_url:
+          type: string
+        oidc_jwks_url:
+          type: string
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
       required:
       - callback_url
       - component
       - consumer_key
+      - managed
       - meta_model_name
       - name
       - pk
@@ -23601,6 +24051,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -23635,6 +24088,15 @@ components:
           type: string
           writeOnly: true
           minLength: 1
+        additional_scopes:
+          type: string
+        oidc_well_known_url:
+          type: string
+        oidc_jwks_url:
+          type: string
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
       required:
       - consumer_key
       - consumer_secret
@@ -23769,7 +24231,15 @@ components:
         version_outdated:
           type: boolean
           readOnly: true
+        build_hash:
+          type: string
+          readOnly: true
+        build_hash_should:
+          type: string
+          readOnly: true
       required:
+      - build_hash
+      - build_hash_should
       - last_seen
       - version
       - version_outdated
@@ -24092,41 +24562,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorValidateStage'
-      required:
-      - pagination
-      - results
-    PaginatedBlueprintInstanceList:
-      type: object
-      properties:
-        pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/BlueprintInstance'
       required:
       - pagination
       - results
@@ -24722,41 +25157,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/HaveIBeenPwendPolicy'
-      required:
-      - pagination
-      - results
-    PaginatedIPReputationList:
-      type: object
-      properties:
-        pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/IPReputation'
       required:
       - pagination
       - results
@@ -25775,6 +26175,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedReputationList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reputation'
+      required:
+      - pagination
+      - results
     PaginatedReputationPolicyList:
       type: object
       properties:
@@ -26440,41 +26875,6 @@ components:
       required:
       - pagination
       - results
-    PaginatedUserReputationList:
-      type: object
-      properties:
-        pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserReputation'
-      required:
-      - pagination
-      - results
     PaginatedUserSourceConnectionList:
       type: object
       properties:
@@ -26895,8 +27295,9 @@ components:
         provider:
           type: integer
           nullable: true
-        provider_obj:
-          $ref: '#/components/schemas/ProviderRequest'
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
         meta_launch_url:
           type: string
           format: uri
@@ -26906,6 +27307,8 @@ components:
           type: string
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
+        group:
+          type: string
     PatchedAuthenticateWebAuthnStageRequest:
       type: object
       description: AuthenticateWebAuthnStage Serializer
@@ -26925,6 +27328,12 @@ components:
             If empty, user will not be able to configure this stage.
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+          nullable: true
+        resident_key_requirement:
+          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
     PatchedAuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer
@@ -26984,6 +27393,11 @@ components:
           type: string
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
+        verify_only:
+          type: boolean
+          description: When enabled, the Phone number is only used during enrollment
+            to verify the users authenticity. Only a hash of the phone number is saved
+            to ensure it is not re-used in the future.
     PatchedAuthenticatorStaticStageRequest:
       type: object
       description: AuthenticatorStaticStage Serializer
@@ -27045,25 +27459,19 @@ components:
           items:
             $ref: '#/components/schemas/DeviceClassesEnum'
           description: Device classes which can be used to authenticate
-        configuration_stage:
-          type: string
-          format: uuid
-          nullable: true
-          description: Stage used to configure Authenticator when user doesn't have
+        configuration_stages:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Stages used to configure Authenticator when user doesn't have
             any compatible devices. After this configuration Stage passes, the user
             is not prompted again.
-    PatchedBlueprintInstanceRequest:
-      type: object
-      description: Info about a single blueprint instance file
-      properties:
-        path:
+        last_auth_threshold:
           type: string
           minLength: 1
-        context:
-          type: object
-          additionalProperties: {}
-        status:
-          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+          description: If any of the user's device has been used within this threshold,
+            this stage will be skipped
     PatchedCaptchaStageRequest:
       type: object
       description: CaptchaStage Serializer
@@ -27355,6 +27763,13 @@ components:
           type: boolean
           description: Enable compatibility mode, increases compatibility with password
             managers on mobile devices.
+        layout:
+          $ref: '#/components/schemas/LayoutEnum'
+        denied_action:
+          allOf:
+          - $ref: '#/components/schemas/DeniedActionEnum'
+          description: Configure what should happen when a flow denies access to a
+            user.
     PatchedFlowStageBindingRequest:
       type: object
       description: FlowStageBinding Serializer
@@ -27488,6 +27903,11 @@ components:
       type: object
       description: Invitation Serializer
       properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
         expires:
           type: string
           format: date-time
@@ -27599,7 +28019,9 @@ components:
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         search_mode:
-          $ref: '#/components/schemas/SearchModeEnum'
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
+        bind_mode:
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
@@ -27633,6 +28055,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         server_uri:
           type: string
           minLength: 1
@@ -27784,9 +28209,8 @@ components:
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
-          description: |-
-            Confidential clients are capable of maintaining the confidentiality
-                of their credentials. Public clients are incapable.
+          description: Confidential clients are capable of maintaining the confidentiality
+            of their credentials. Public clients are incapable
         client_id:
           type: string
           minLength: 1
@@ -27812,7 +28236,6 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: RSA Key
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
         redirect_uris:
@@ -27827,6 +28250,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
+        jwks_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
     PatchedOAuthSourceRequest:
       type: object
       description: OAuth Source Serializer
@@ -27860,6 +28291,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -27894,6 +28328,15 @@ components:
           type: string
           writeOnly: true
           minLength: 1
+        additional_scopes:
+          type: string
+        oidc_well_known_url:
+          type: string
+        oidc_jwks_url:
+          type: string
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
@@ -28016,9 +28459,6 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
-        source:
-          type: string
-          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -28058,6 +28498,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -28135,6 +28578,8 @@ components:
             $ref: '#/components/schemas/StageRequest'
         sub_text:
           type: string
+        placeholder_expression:
+          type: boolean
     PatchedPromptStageRequest:
       type: object
       description: PromptStage Serializer
@@ -28369,6 +28814,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         pre_authentication_flow:
           type: string
           format: uuid
@@ -28507,6 +28955,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_user_settings:
+          type: string
+          format: uuid
+          nullable: true
         event_retention:
           type: string
           minLength: 1
@@ -28516,6 +28968,9 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        attributes:
+          type: object
+          additionalProperties: {}
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -28538,8 +28993,6 @@ components:
           $ref: '#/components/schemas/IntentEnum'
         user:
           type: integer
-        user_obj:
-          $ref: '#/components/schemas/UserRequest'
         description:
           type: string
         expires:
@@ -28591,9 +29044,6 @@ components:
       properties:
         user:
           type: integer
-        source:
-          type: string
-          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -28609,9 +29059,6 @@ components:
         username:
           type: string
           minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
           maxLength: 150
         name:
           type: string
@@ -28638,6 +29085,9 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        path:
+          type: string
+          minLength: 1
     PatchedUserWriteStageRequest:
       type: object
       description: UserWriteStage Serializer
@@ -28657,6 +29107,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_path_template:
+          type: string
     PatchedWebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -28757,6 +29209,17 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
         client_id:
           type: string
           description: Client identifier used to talk to Plex.
@@ -28774,6 +29237,7 @@ components:
           description: Plex token used to check friends
       required:
       - component
+      - managed
       - meta_model_name
       - name
       - pk
@@ -28793,8 +29257,9 @@ components:
           type: integer
           readOnly: true
         source:
-          type: string
-          format: uuid
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
         identifier:
           type: string
         plex_token:
@@ -28809,9 +29274,6 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
-        source:
-          type: string
-          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -28821,7 +29283,6 @@ components:
       required:
       - identifier
       - plex_token
-      - source
     PlexSourceRequest:
       type: object
       description: Plex Source Serializer
@@ -28855,6 +29316,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -29053,7 +29517,14 @@ components:
           items:
             type: string
           readOnly: true
+        log_messages:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
       required:
+      - log_messages
       - messages
       - passing
     Prompt:
@@ -29086,6 +29557,8 @@ components:
             $ref: '#/components/schemas/Stage'
         sub_text:
           type: string
+        placeholder_expression:
+          type: boolean
       required:
       - field_key
       - label
@@ -29153,6 +29626,8 @@ components:
             $ref: '#/components/schemas/StageRequest'
         sub_text:
           type: string
+        placeholder_expression:
+          type: boolean
       required:
       - field_key
       - label
@@ -29237,9 +29712,11 @@ components:
       - checkbox
       - date
       - date-time
+      - file
       - separator
       - hidden
       - static
+      - ak-locale
       type: string
     PropertyMapping:
       type: object
@@ -29380,6 +29857,7 @@ components:
       - okta
       - reddit
       - twitter
+      - mailcow
       type: string
     ProxyMode:
       enum:
@@ -29450,7 +29928,7 @@ components:
           type: string
         token_validity:
           type: number
-          format: float
+          format: double
           nullable: true
           readOnly: true
         scopes_to_request:
@@ -29699,6 +30177,34 @@ components:
       - provider
       - scope
       - user
+    Reputation:
+      type: object
+      description: Reputation Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Reputation uuid
+        identifier:
+          type: string
+        ip:
+          type: string
+        ip_geo_data:
+          type: object
+          additionalProperties: {}
+        score:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - identifier
+      - ip
+      - updated
     ReputationPolicy:
       type: object
       description: Reputation Policy Serializer
@@ -29764,6 +30270,12 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+    ResidentKeyRequirementEnum:
+      enum:
+      - discouraged
+      - preferred
+      - required
+      type: string
     SAMLMetadata:
       type: object
       description: SAML Provider Metadata serializer
@@ -29946,7 +30458,16 @@ components:
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
-        metadata_download_url:
+        url_download_metadata:
+          type: string
+          readOnly: true
+        url_sso_post:
+          type: string
+          readOnly: true
+        url_sso_redirect:
+          type: string
+          readOnly: true
+        url_sso_init:
           type: string
           readOnly: true
       required:
@@ -29956,9 +30477,12 @@ components:
       - authorization_flow
       - component
       - meta_model_name
-      - metadata_download_url
       - name
       - pk
+      - url_download_metadata
+      - url_sso_init
+      - url_sso_post
+      - url_sso_redirect
       - verbose_name
       - verbose_name_plural
     SAMLProviderImportRequest:
@@ -30104,6 +30628,17 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
         pre_authentication_flow:
           type: string
           format: uuid
@@ -30152,6 +30687,7 @@ components:
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
+      - managed
       - meta_model_name
       - name
       - pk
@@ -30193,6 +30729,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
         pre_authentication_flow:
           type: string
           format: uuid
@@ -30356,11 +30895,24 @@ components:
       - expression
       - name
       - scope_name
-    SearchModeEnum:
-      enum:
-      - direct
-      - cached
-      type: string
+    SelectableStage:
+      type: object
+      description: Serializer for stages which can be selected by users
+      properties:
+        pk:
+          type: string
+          format: uuid
+        name:
+          type: string
+        verbose_name:
+          type: string
+        meta_model_name:
+          type: string
+      required:
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
     ServiceConnection:
       type: object
       description: ServiceConnection Serializer
@@ -30517,8 +31069,20 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
       required:
       - component
+      - managed
       - meta_model_name
       - name
       - pk
@@ -30558,6 +31122,9 @@ components:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated
             or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
       required:
       - name
       - slug
@@ -30724,6 +31291,13 @@ components:
           maxLength: 16
       required:
       - token
+    StatusEnum:
+      enum:
+      - SUCCESSFUL
+      - WARNING
+      - ERROR
+      - UNKNOWN
+      type: string
     SubModeEnum:
       enum:
       - hashed_user_id
@@ -30753,6 +31327,7 @@ components:
           readOnly: true
         runtime:
           type: object
+          description: Runtime information
           properties:
             python_version:
               type: string
@@ -30766,6 +31341,13 @@ components:
               type: string
             uname:
               type: string
+          required:
+          - architecture
+          - environment
+          - gunicorn_version
+          - platform
+          - python_version
+          - uname
           readOnly: true
         tenant:
           type: string
@@ -30824,7 +31406,7 @@ components:
           type: string
           format: date-time
         status:
-          $ref: '#/components/schemas/TaskStatusEnum'
+          $ref: '#/components/schemas/StatusEnum'
         messages:
           type: array
           items: {}
@@ -30834,13 +31416,6 @@ components:
       - task_description
       - task_finish_timestamp
       - task_name
-    TaskStatusEnum:
-      enum:
-      - SUCCESSFUL
-      - WARNING
-      - ERROR
-      - UNKNOWN
-      type: string
     Tenant:
       type: object
       description: Tenant Serializer
@@ -30877,6 +31452,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_user_settings:
+          type: string
+          format: uuid
+          nullable: true
         event_retention:
           type: string
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
@@ -30885,6 +31464,9 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - domain
       - tenant_uuid
@@ -30924,6 +31506,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_user_settings:
+          type: string
+          format: uuid
+          nullable: true
         event_retention:
           type: string
           minLength: 1
@@ -30933,6 +31519,9 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - domain
     Token:
@@ -30961,7 +31550,9 @@ components:
         user:
           type: integer
         user_obj:
-          $ref: '#/components/schemas/User'
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
         description:
           type: string
         expires:
@@ -30972,6 +31563,7 @@ components:
       required:
       - identifier
       - pk
+      - user_obj
     TokenRequest:
       type: object
       description: Token Serializer
@@ -30994,8 +31586,6 @@ components:
           $ref: '#/components/schemas/IntentEnum'
         user:
           type: integer
-        user_obj:
-          $ref: '#/components/schemas/UserRequest'
         description:
           type: string
         expires:
@@ -31005,6 +31595,14 @@ components:
           type: boolean
       required:
       - identifier
+    TokenSetKeyRequest:
+      type: object
+      properties:
+        key:
+          type: string
+          minLength: 1
+      required:
+      - key
     TokenView:
       type: object
       description: Show token's current key
@@ -31068,9 +31666,6 @@ components:
           title: ID
         username:
           type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
           maxLength: 150
         name:
           type: string
@@ -31111,6 +31706,8 @@ components:
         uid:
           type: string
           readOnly: true
+        path:
+          type: string
       required:
       - avatar
       - groups
@@ -31135,6 +31732,9 @@ components:
           $ref: '#/components/schemas/User'
         application:
           $ref: '#/components/schemas/Application'
+        permissions:
+          type: string
+          default: ''
       required:
       - application
       - pk
@@ -31337,8 +31937,9 @@ components:
         user:
           type: integer
         source:
-          type: string
-          format: uuid
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
         identifier:
           type: string
           maxLength: 255
@@ -31353,9 +31954,6 @@ components:
       properties:
         user:
           type: integer
-        source:
-          type: string
-          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -31366,30 +31964,25 @@ components:
           nullable: true
       required:
       - identifier
-      - source
       - user
-    UserReputation:
+    UserPasswordSetRequest:
       type: object
-      description: UserReputation Serializer
       properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
+        password:
           type: string
-        score:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        updated:
-          type: string
-          format: date-time
+          minLength: 1
+      required:
+      - password
+    UserPath:
+      type: object
+      properties:
+        paths:
+          type: array
+          items:
+            type: string
           readOnly: true
       required:
-      - pk
-      - updated
-      - username
+      - paths
     UserRequest:
       type: object
       description: User Serializer
@@ -31397,9 +31990,6 @@ components:
         username:
           type: string
           minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
           maxLength: 150
         name:
           type: string
@@ -31426,15 +32016,16 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        path:
+          type: string
+          minLength: 1
       required:
       - groups
       - name
       - username
     UserSelf:
       type: object
-      description: |-
-        User Serializer for information a user can retrieve about themselves and
-        update about themselves
+      description: User Serializer for information a user can retrieve about themselves
       properties:
         pk:
           type: integer
@@ -31477,6 +32068,7 @@ components:
         settings:
           type: object
           additionalProperties: {}
+          readOnly: true
       required:
       - avatar
       - groups
@@ -31484,6 +32076,7 @@ components:
       - is_superuser
       - name
       - pk
+      - settings
       - uid
       - username
     UserSelfGroups:
@@ -31498,33 +32091,6 @@ components:
       required:
       - name
       - pk
-    UserSelfRequest:
-      type: object
-      description: |-
-        User Serializer for information a user can retrieve about themselves and
-        update about themselves
-      properties:
-        username:
-          type: string
-          minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        settings:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - username
     UserServiceAccountRequest:
       type: object
       properties:
@@ -31543,8 +32109,16 @@ components:
           type: string
         token:
           type: string
+        user_uid:
+          type: string
+        user_pk:
+          type: integer
+        group_pk:
+          type: string
       required:
       - token
+      - user_pk
+      - user_uid
       - username
     UserSetting:
       type: object
@@ -31557,6 +32131,8 @@ components:
         title:
           type: string
         configure_url:
+          type: string
+        icon_url:
           type: string
       required:
       - component
@@ -31627,6 +32203,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_path_template:
+          type: string
       required:
       - component
       - meta_model_name
@@ -31653,6 +32231,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_path_template:
+          type: string
       required:
       - name
     ValidationError:
@@ -31730,4 +32310,3 @@ components:
       name: Authorization
 servers:
 - url: /api/v3/
-- url: /api/v2beta/

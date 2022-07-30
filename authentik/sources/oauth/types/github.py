@@ -3,6 +3,16 @@ from typing import Any
 
 from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
+from authentik.sources.oauth.views.redirect import OAuthRedirect
+
+
+class GitHubOAuthRedirect(OAuthRedirect):
+    """GitHub OAuth2 Redirect"""
+
+    def get_additional_parameters(self, source):  # pragma: no cover
+        return {
+            "scope": ["read:user", "user:email"],
+        }
 
 
 class GitHubOAuth2Callback(OAuthCallback):
@@ -24,6 +34,7 @@ class GitHubType(SourceType):
     """GitHub Type definition"""
 
     callback_view = GitHubOAuth2Callback
+    redirect_view = GitHubOAuthRedirect
     name = "GitHub"
     slug = "github"
 

@@ -23,15 +23,17 @@ class ProxyDockerController(DockerController):
             proxy_provider: ProxyProvider
             external_host_name = urlparse(proxy_provider.external_host)
             hosts.append(f"`{external_host_name.netloc}`")
-        traefik_name = f"ak-outpost-{self.outpost.pk.hex}"
+        traefik_name = self.name
         labels = super()._get_labels()
         labels["traefik.enable"] = "true"
-        labels[f"traefik.http.routers.{traefik_name}-router.rule"] = f"Host({','.join(hosts)})"
+        labels[
+            f"traefik.http.routers.{traefik_name}-router.rule"
+        ] = f"Host({','.join(hosts)}) && PathPrefix(`/outpost.goauthentik.io`)"
         labels[f"traefik.http.routers.{traefik_name}-router.tls"] = "true"
         labels[f"traefik.http.routers.{traefik_name}-router.service"] = f"{traefik_name}-service"
         labels[
             f"traefik.http.services.{traefik_name}-service.loadbalancer.healthcheck.path"
-        ] = "/akprox/ping"
+        ] = "/outpost.goauthentik.io/ping"
         labels[
             f"traefik.http.services.{traefik_name}-service.loadbalancer.healthcheck.port"
         ] = "9300"
