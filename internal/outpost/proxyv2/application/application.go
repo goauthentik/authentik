@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"net/http"
 	"net/url"
+	"path"
 	"regexp"
 	"strings"
 	"time"
@@ -34,7 +35,7 @@ type Application struct {
 	Cert                 *tls.Certificate
 	UnauthenticatedRegex []*regexp.Regexp
 
-	endpint       OIDCEndpoint
+	endpoint      OIDCEndpoint
 	oauthConfig   oauth2.Config
 	tokenVerifier *oidc.IDTokenVerifier
 	outpostName   string
@@ -72,12 +73,18 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		SupportedSigningAlgs: []string{"RS256", "HS256"},
 	})
 
+	redirectUri, _ := url.Parse(p.ExternalHost)
+	redirectUri.Path = path.Join(redirectUri.Path, "/outpost.goauthentik.io/callback")
+	redirectUri.RawQuery = url.Values{
+		CallbackSignature: []string{"true"},
+	}.Encode()
+
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(p, ak.Outpost.Config["authentik_host"].(string))
 	oauth2Config := oauth2.Config{
 		ClientID:     *p.ClientId,
 		ClientSecret: *p.ClientSecret,
-		RedirectURL:  urlJoin(p.ExternalHost, "/outpost.goauthentik.io/callback"),
+		RedirectURL:  redirectUri.String(),
 		Endpoint:     endpoint.Endpoint,
 		Scopes:       p.ScopesToRequest,
 	}
@@ -86,7 +93,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		Host:           externalHost.Host,
 		log:            muxLogger,
 		outpostName:    ak.Outpost.Name,
-		endpint:        endpoint,
+		endpoint:       endpoint,
 		oauthConfig:    oauth2Config,
 		tokenVerifier:  verifier,
 		proxyConfig:    p,
@@ -139,11 +146,18 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		})
 	})
 	mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
+	mux.Use(func(inner http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if _, set := r.URL.Query()[CallbackSignature]; set {
+				a.handleAuthCallback(w, r)
+			} else {
+				inner.ServeHTTP(w, r)
+			}
+		})
+	})
 
-	// Support /start and /sign_in for backwards compatibility
-	mux.HandleFunc("/outpost.goauthentik.io/start", a.handleRedirect)
-	mux.HandleFunc("/outpost.goauthentik.io/sign_in", a.handleRedirect)
-	mux.HandleFunc("/outpost.goauthentik.io/callback", a.handleCallback)
+	mux.HandleFunc("/outpost.goauthentik.io/start", a.handleAuthStart)
+	mux.HandleFunc("/outpost.goauthentik.io/callback", a.handleAuthCallback)
 	mux.HandleFunc("/outpost.goauthentik.io/sign_out", a.handleSignOut)
 	switch *p.Mode.Get() {
 	case api.PROXYMODE_PROXY:
@@ -197,14 +211,14 @@ func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 	//TODO: Token revocation
 	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
-		http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
+		http.Redirect(rw, r, a.endpoint.EndSessionEndpoint, http.StatusFound)
 		return
 	}
 	s.Options.MaxAge = -1
 	err = s.Save(r, rw)
 	if err != nil {
-		http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
+		http.Redirect(rw, r, a.endpoint.EndSessionEndpoint, http.StatusFound)
 		return
 	}
-	http.Redirect(rw, r, a.endpint.EndSessionEndpoint, http.StatusFound)
+	http.Redirect(rw, r, a.endpoint.EndSessionEndpoint, http.StatusFound)
 }

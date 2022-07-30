@@ -14,6 +14,7 @@ from authentik.outposts.models import OutpostModel
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
 
 SCOPE_AK_PROXY = "ak_proxy"
+OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
 
 
 def get_cookie_secret():
@@ -22,7 +23,13 @@ def get_cookie_secret():
 
 
 def _get_callback_url(uri: str) -> str:
-    return urljoin(uri, "outpost.goauthentik.io/callback")
+    return "\n".join(
+        [
+            urljoin(uri, "outpost.goauthentik.io/callback")
+            + f"\\?{OUTPOST_CALLBACK_SIGNATURE}=true",
+            uri + f"\\?{OUTPOST_CALLBACK_SIGNATURE}=true",
+        ]
+    )
 
 
 class ProxyMode(models.TextChoices):

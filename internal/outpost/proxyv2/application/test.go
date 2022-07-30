@@ -22,6 +22,11 @@ func newTestApplication() *Application {
 			BasicAuthEnabled:           api.PtrBool(true),
 			BasicAuthUserAttribute:     api.PtrString("username"),
 			BasicAuthPasswordAttribute: api.PtrString("password"),
+			OidcConfiguration: api.ProxyOutpostConfigOidcConfiguration{
+				AuthorizationEndpoint: "http://fake-auth.t.goauthentik.io/auth",
+				TokenEndpoint:         "http://fake-auth.t.goauthentik.io/token",
+				UserinfoEndpoint:      "http://fake-auth.t.goauthentik.io/userinfo",
+			},
 		},
 		http.DefaultClient,
 		nil,

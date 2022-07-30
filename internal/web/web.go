@@ -39,12 +39,12 @@ func NewWebServer(g *gounicorn.GoUnicorn) *WebServer {
 	mainHandler.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	mainHandler.Use(handlers.ProxyHeaders)
 	mainHandler.Use(handlers.CompressHandler)
-	logginRouter := mainHandler.NewRoute().Subrouter()
-	logginRouter.Use(web.NewLoggingHandler(l, nil))
+	loggingHandler := mainHandler.NewRoute().Subrouter()
+	loggingHandler.Use(web.NewLoggingHandler(l, nil))
 
 	ws := &WebServer{
 		m:   mainHandler,
-		lh:  logginRouter,
+		lh:  loggingHandler,
 		log: l,
 		p:   g,
 	}

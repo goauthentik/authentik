@@ -3,12 +3,9 @@ package application
 import (
 	"fmt"
 	"net/http"
-	"net/url"
 	"strings"
 
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
-	"goauthentik.io/internal/utils/web"
 )
 
 const (
@@ -40,7 +37,7 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		http.Error(rw, "configuration error", http.StatusInternalServerError)
 		return
 	}
-
+	// Check if we're authenticated, or the request path is on the allowlist
 	claims, err := a.getClaims(r)
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
@@ -51,22 +48,9 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
-	if strings.HasPrefix(r.Header.Get("X-Forwarded-Uri"), "/outpost.goauthentik.io") {
-		a.log.WithField("url", r.URL.String()).Trace("path begins with /outpost.goauthentik.io, allowing access")
-		return
-	}
-	host := ""
-	// Optional suffix, which is appended to the URL
-	if *a.proxyConfig.Mode.Get() == api.PROXYMODE_FORWARD_SINGLE {
-		host = web.GetHost(r)
-	} else if *a.proxyConfig.Mode.Get() == api.PROXYMODE_FORWARD_DOMAIN {
-		eh, err := url.Parse(a.proxyConfig.ExternalHost)
-		if err != nil {
-			a.log.WithField("host", a.proxyConfig.ExternalHost).WithError(err).Warning("invalid external_host")
-		} else {
-			host = eh.Host
-		}
-	}
+	tr := r.Clone(r.Context())
+	tr.URL = fwd
+	a.handleAuthStart(rw, r)
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
@@ -76,17 +60,9 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		s.Values[constants.SessionRedirect] = fwd.String()
 		err = s.Save(r, rw)
 		if err != nil {
-			a.log.WithError(err).Warning("failed to save session before redirect")
+			a.log.WithError(err).Warning("failed to save session")
 		}
 	}
-
-	proto := r.Header.Get("X-Forwarded-Proto")
-	if proto != "" {
-		proto = proto + ":"
-	}
-	rdFinal := fmt.Sprintf("%s//%s%s", proto, host, "/outpost.goauthentik.io/start")
-	a.log.WithField("url", rdFinal).Debug("Redirecting to login")
-	http.Redirect(rw, r, rdFinal, http.StatusTemporaryRedirect)
 }
 
 func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request) {
@@ -103,7 +79,7 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 		http.Error(rw, "configuration error", http.StatusInternalServerError)
 		return
 	}
-
+	// Check if we're authenticated, or the request path is on the allowlist
 	claims, err := a.getClaims(r)
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
@@ -114,22 +90,9 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
-	if strings.HasPrefix(r.Header.Get("X-Forwarded-Uri"), "/outpost.goauthentik.io") {
-		a.log.WithField("url", r.URL.String()).Trace("path begins with /outpost.goauthentik.io, allowing access")
-		return
-	}
-	host := ""
-	// Optional suffix, which is appended to the URL
-	if *a.proxyConfig.Mode.Get() == api.PROXYMODE_FORWARD_SINGLE {
-		host = web.GetHost(r)
-	} else if *a.proxyConfig.Mode.Get() == api.PROXYMODE_FORWARD_DOMAIN {
-		eh, err := url.Parse(a.proxyConfig.ExternalHost)
-		if err != nil {
-			a.log.WithField("host", a.proxyConfig.ExternalHost).WithError(err).Warning("invalid external_host")
-		} else {
-			host = eh.Host
-		}
-	}
+	tr := r.Clone(r.Context())
+	tr.URL = fwd
+	a.handleAuthStart(rw, r)
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
@@ -139,17 +102,9 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 		s.Values[constants.SessionRedirect] = fwd.String()
 		err = s.Save(r, rw)
 		if err != nil {
-			a.log.WithError(err).Warning("failed to save session before redirect")
+			a.log.WithError(err).Warning("failed to save session")
 		}
 	}
-
-	proto := r.Header.Get("X-Forwarded-Proto")
-	if proto != "" {
-		proto = proto + ":"
-	}
-	rdFinal := fmt.Sprintf("%s//%s%s", proto, host, "/outpost.goauthentik.io/start")
-	a.log.WithField("url", rdFinal).Debug("Redirecting to login")
-	http.Redirect(rw, r, rdFinal, http.StatusTemporaryRedirect)
 }
 
 func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request) {
@@ -200,7 +155,7 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 	a.log.WithField("header", r.Header).Trace("tracing headers for debug")
 	r.URL.Path = strings.TrimPrefix(r.URL.Path, envoyPrefix)
 	fwd := r.URL
-
+	// Check if we're authenticated, or the request path is on the allowlist
 	claims, err := a.getClaims(r)
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
@@ -211,22 +166,7 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
-	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io") {
-		a.log.WithField("url", r.URL.String()).Trace("path begins with /outpost.goauthentik.io, allowing access")
-		return
-	}
-	host := ""
-	// Optional suffix, which is appended to the URL
-	if *a.proxyConfig.Mode.Get() == api.PROXYMODE_FORWARD_SINGLE {
-		host = web.GetHost(r)
-	} else if *a.proxyConfig.Mode.Get() == api.PROXYMODE_FORWARD_DOMAIN {
-		eh, err := url.Parse(a.proxyConfig.ExternalHost)
-		if err != nil {
-			a.log.WithField("host", a.proxyConfig.ExternalHost).WithError(err).Warning("invalid external_host")
-		} else {
-			host = eh.Host
-		}
-	}
+	a.handleAuthStart(rw, r)
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
@@ -239,7 +179,4 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 			a.log.WithError(err).Warning("failed to save session before redirect")
 		}
 	}
-	rdFinal := fmt.Sprintf("//%s%s", host, "/outpost.goauthentik.io/start")
-	a.log.WithField("url", rdFinal).Debug("Redirecting to login")
-	http.Redirect(rw, r, rdFinal, http.StatusTemporaryRedirect)
 }

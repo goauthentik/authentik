@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"goauthentik.io/internal/outpost/proxyv2/application"
 	"goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
 )
@@ -52,7 +53,8 @@ func (ws *WebServer) configureProxy() {
 		}
 		before := time.Now()
 		if ws.ProxyServer != nil {
-			if ws.ProxyServer.HandleHost(rw, r) {
+			_, oauthCallbackSet := r.URL.Query()[application.CallbackSignature]
+			if ws.ProxyServer.HandleHost(rw, r) || oauthCallbackSet {
 				Requests.With(prometheus.Labels{
 					"dest": "embedded_outpost",
 				}).Observe(float64(time.Since(before)))
