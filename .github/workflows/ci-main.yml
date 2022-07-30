@@ -235,3 +235,8 @@ jobs:
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           platforms: ${{ matrix.arch }}
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: ./.github/actions/comment-pr-instructions
+        with:
+          tag: gh-${{ steps.ev.outputs.branchNameContainer }}
