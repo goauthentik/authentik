@@ -11,6 +11,7 @@ from authentik.providers.oauth2.constants import (
     ACR_AUTHENTIK_DEFAULT,
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_CLIENT_CREDENTIALS,
+    GRANT_TYPE_DEVICE_CODE,
     GRANT_TYPE_IMPLICIT,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
@@ -61,6 +62,9 @@ class ProviderInfoView(View):
             "revocation_endpoint": self.request.build_absolute_uri(
                 reverse("authentik_providers_oauth2:token-revoke")
             ),
+            "device_authorization_endpoint": self.request.build_absolute_uri(
+                reverse("authentik_providers_oauth2:device")
+            ),
             "response_types_supported": [
                 ResponseTypes.CODE,
                 ResponseTypes.ID_TOKEN,
@@ -81,6 +85,7 @@ class ProviderInfoView(View):
                 GRANT_TYPE_IMPLICIT,
                 GRANT_TYPE_CLIENT_CREDENTIALS,
                 GRANT_TYPE_PASSWORD,
+                GRANT_TYPE_DEVICE_CODE,
             ],
             "id_token_signing_alg_values_supported": [supported_alg],
             # See: http://openid.net/specs/openid-connect-core-1_0.html#SubjectIDTypes

@@ -5,6 +5,7 @@ GRANT_TYPE_IMPLICIT = "implicit"
 GRANT_TYPE_REFRESH_TOKEN = "refresh_token"  # nosec
 GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials"
 GRANT_TYPE_PASSWORD = "password"  # nosec
+GRANT_TYPE_DEVICE_CODE = "urn:ietf:params:oauth:grant-type:device_code"
 
 CLIENT_ASSERTION_TYPE = "client_assertion_type"
 CLIENT_ASSERTION = "client_assertion"

@@ -46,12 +46,12 @@ class TestProviderOAuth2Github(SeleniumTestCase):
                 "GF_AUTH_GITHUB_CLIENT_SECRET": self.client_secret,
                 "GF_AUTH_GITHUB_SCOPES": "user:email,read:org",
                 "GF_AUTH_GITHUB_AUTH_URL": self.url(
-                    "authentik_providers_oauth2_github:github-authorize"
+                    "authentik_providers_oauth2_root:github-authorize"
                 ),
                 "GF_AUTH_GITHUB_TOKEN_URL": self.url(
-                    "authentik_providers_oauth2_github:github-access-token"
+                    "authentik_providers_oauth2_root:github-access-token"
                 ),
-                "GF_AUTH_GITHUB_API_URL": self.url("authentik_providers_oauth2_github:github-user"),
+                "GF_AUTH_GITHUB_API_URL": self.url("authentik_providers_oauth2_root:github-user"),
                 "GF_LOG_LEVEL": "debug",
             },
         }
