@@ -3,7 +3,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 from django.db.models import Model
-from django.http.response import HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponse
+from django.http.response import HttpResponseBadRequest
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
@@ -29,7 +30,6 @@ from authentik.core.api.utils import (
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
-from authentik.flows.transfer.common import DataclassEncoder
 from authentik.flows.transfer.exporter import FlowExporter
 from authentik.flows.transfer.importer import FlowImporter
 from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
@@ -198,7 +198,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         """Export flow to .akflow file"""
         flow = self.get_object()
         exporter = FlowExporter(flow)
-        response = JsonResponse(exporter.export(), encoder=DataclassEncoder, safe=False)
+        response = HttpResponse(content=exporter.export_to_string())
         response["Content-Disposition"] = f'attachment; filename="{flow.slug}.akflow"'
         return response
 
