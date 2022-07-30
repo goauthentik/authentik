@@ -21,7 +21,7 @@
     "todo-tree.tree.showBadges": true,
     "python.formatting.provider": "black",
     "files.associations": {
-        "*.akflow": "json"
+        "*.akflow": "yaml"
     },
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",

@@ -5,6 +5,7 @@ from typing import Any
 from uuid import UUID
 
 from django.core.serializers.json import DjangoJSONEncoder
+from yaml import SafeDumper
 
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
@@ -82,6 +83,22 @@ class DataclassEncoder(DjangoJSONEncoder):
         if isinstance(o, Enum):
             return o.value
         return super().default(o)  # pragma: no cover
+
+
+class DataclassDumper(SafeDumper):
+    """Dump dataclasses to yaml"""
+
+    default_flow_style = False
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.add_representer(UUID, lambda self, data: self.represent_str(str(data)))
+        self.add_representer(Enum, lambda self, data: self.represent_str(data.value))
+
+    def represent(self, data) -> None:
+        if is_dataclass(data):
+            data = asdict(data)
+        return super().represent(data)
 
 
 class EntryInvalidError(SentryIgnoredException):

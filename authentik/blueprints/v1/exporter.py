@@ -1,11 +1,11 @@
 """Flow exporter"""
-from json import dumps
 from typing import Iterator
 from uuid import UUID
 
 from django.db.models import Q
+from yaml import dump
 
-from authentik.blueprints.v1.common import DataclassEncoder, FlowBundle, FlowBundleEntry
+from authentik.blueprints.v1.common import DataclassDumper, FlowBundle, FlowBundleEntry
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.stages.prompt.models import PromptStage
@@ -89,4 +89,4 @@ class Exporter:
     def export_to_string(self) -> str:
         """Call export and convert it to json"""
         bundle = self.export()
-        return dumps(bundle, cls=DataclassEncoder)
+        return dump(bundle, Dumper=DataclassDumper)

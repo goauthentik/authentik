@@ -3,7 +3,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 from django.db.models import Model
-from django.http.response import HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponse
+from django.http.response import HttpResponseBadRequest
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
@@ -198,7 +199,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         """Export flow to .akflow file"""
         flow = self.get_object()
         exporter = Exporter(flow)
-        response = JsonResponse(exporter.export(), encoder=DataclassEncoder, safe=False)
+        response = HttpResponse(content=exporter.export_to_string())
         response["Content-Disposition"] = f'attachment; filename="{flow.slug}.akflow"'
         return response
 

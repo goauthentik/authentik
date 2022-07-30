@@ -32,31 +32,37 @@ Configure what happens when access to a flow is denied by a policy. By default, 
 
 Flows are designated for a single purpose. This designation changes when a flow is used. The following designations are available:
 
-### Authentication
+#### Authentication
 
 This is designates a flow to be used for authentication.
 
 The authentication flow should always contain a [**User Login**](stages/user_login.md) stage, which attaches the staged user to the current session.
 
-### Invalidation
+#### Invalidation
 
 This designates a flow to be used to invalidate a session.
 
 This stage should always contain a [**User Logout**](stages/user_logout.md) stage, which resets the current session.
 
-### Enrollment
+#### Enrollment
 
 This designates a flow for enrollment. This flow can contain any amount of verification stages, such as [**email**](stages/email/) or [**captcha**](stages/captcha/). At the end, to create the user, you can use the [**user_write**](stages/user_write.md) stage, which either updates the currently staged user, or if none exists, creates a new one.
 
-### Unenrollment
+#### Unenrollment
 
 This designates a flow for unenrollment. This flow can contain any amount of verification stages, such as [**email**](stages/email/) or [**captcha**](stages/captcha/). As a final stage, to delete the account, use the [**user_delete**](stages/user_delete.md) stage.
 
-### Recovery
+#### Recovery
 
 This designates a flow for recovery. This flow normally contains an [**identification**](stages/identification/) stage to find the user. It can also contain any amount of verification stages, such as [**email**](stages/email/) or [**captcha**](stages/captcha/).
 Afterwards, use the [**prompt**](stages/prompt/) stage to ask the user for a new password and the [**user_write**](stages/user_write.md) stage to update the password.
 
-### Stage configuration
+#### Stage configuration
 
 This designates a flow for general setup. This designation doesn't have any constraints in what you can do. For example, by default this designation is used to configure Factors, like change a password and setup TOTP.
+
+## Import & Export
+
+Flows can be imported and exported to share with other people, the community and for troubleshooting. Flows can be imported to apply new functionality and apply existing workflows.
+
+Starting with authentik 2022.8, flows will be exported as YAML, but JSON-based flows can still be imported.

@@ -1,9 +1,8 @@
 """Test flow Transport"""
-from json import dumps
-
 from django.test import TransactionTestCase
+from yaml import dump
 
-from authentik.blueprints.v1.common import DataclassEncoder
+from authentik.blueprints.v1.common import DataclassDumper, DataclassEncoder
 from authentik.blueprints.v1.exporter import Exporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -70,9 +69,9 @@ class TestFlowTransport(TransactionTestCase):
             exporter = Exporter(flow)
             export = exporter.export()
             self.assertEqual(len(export.entries), 3)
-            export_json = exporter.export_to_string()
+            export_yaml = exporter.export_to_string()
 
-        importer = Importer(export_json)
+        importer = Importer(export_yaml)
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
 
@@ -82,14 +81,14 @@ class TestFlowTransport(TransactionTestCase):
         """Test export and import it twice"""
         count_initial = Prompt.objects.filter(field_key="username").count()
 
-        importer = FlowImporter(STATIC_PROMPT_EXPORT)
+        importer = Importer(STATIC_PROMPT_EXPORT)
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
 
         count_before = Prompt.objects.filter(field_key="username").count()
         self.assertEqual(count_initial + 1, count_before)
 
-        importer = FlowImporter(STATIC_PROMPT_EXPORT)
+        importer = Importer(STATIC_PROMPT_EXPORT)
         self.assertTrue(importer.apply())
 
         self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
@@ -118,9 +117,9 @@ class TestFlowTransport(TransactionTestCase):
             exporter = Exporter(flow)
             export = exporter.export()
 
-            export_json = dumps(export, cls=DataclassEncoder)
+            export_yaml = dump(export, Dumper=DataclassDumper)
 
-        importer = Importer(export_json)
+        importer = Importer(export_yaml)
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
         self.assertTrue(UserLoginStage.objects.filter(name=stage_name).exists())
@@ -162,9 +161,9 @@ class TestFlowTransport(TransactionTestCase):
 
             exporter = Exporter(flow)
             export = exporter.export()
-            export_json = dumps(export, cls=DataclassEncoder)
+            export_yaml = dump(export, Dumper=DataclassDumper)
 
-        importer = Importer(export_json)
+        importer = Importer(export_yaml)
 
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
