@@ -1,7 +1,6 @@
 """Flow importer"""
 from contextlib import contextmanager
 from copy import deepcopy
-from json import loads
 from typing import Any
 
 from dacite import from_dict
@@ -14,6 +13,7 @@ from django.db.utils import IntegrityError
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
+from yaml import safe_load
 
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.flows.transfer.common import EntryInvalidError, FlowBundle, FlowBundleEntry
@@ -39,10 +39,10 @@ class FlowImporter:
 
     logger: BoundLogger
 
-    def __init__(self, json_input: str):
+    def __init__(self, yaml_input: str):
         self.__pk_map: dict[Any, Model] = {}
         self.logger = get_logger()
-        import_dict = loads(json_input)
+        import_dict = safe_load(yaml_input)
         try:
             self.__import = from_dict(FlowBundle, import_dict)
         except DaciteError as exc:

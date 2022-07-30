@@ -1,10 +1,9 @@
 """Test flow transfer"""
-from json import dumps
-
 from django.test import TransactionTestCase
+from yaml import dump
 
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
-from authentik.flows.transfer.common import DataclassEncoder
+from authentik.flows.transfer.common import DataclassDumper
 from authentik.flows.transfer.exporter import FlowExporter
 from authentik.flows.transfer.importer import FlowImporter, transaction_rollback
 from authentik.lib.generators import generate_id
@@ -70,9 +69,9 @@ class TestFlowTransfer(TransactionTestCase):
             exporter = FlowExporter(flow)
             export = exporter.export()
             self.assertEqual(len(export.entries), 3)
-            export_json = exporter.export_to_string()
+            export_yaml = exporter.export_to_string()
 
-        importer = FlowImporter(export_json)
+        importer = FlowImporter(export_yaml)
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
 
@@ -118,9 +117,9 @@ class TestFlowTransfer(TransactionTestCase):
             exporter = FlowExporter(flow)
             export = exporter.export()
 
-            export_json = dumps(export, cls=DataclassEncoder)
+            export_yaml = dump(export, Dumper=DataclassDumper)
 
-        importer = FlowImporter(export_json)
+        importer = FlowImporter(export_yaml)
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
         self.assertTrue(UserLoginStage.objects.filter(name=stage_name).exists())
@@ -162,9 +161,9 @@ class TestFlowTransfer(TransactionTestCase):
 
             exporter = FlowExporter(flow)
             export = exporter.export()
-            export_json = dumps(export, cls=DataclassEncoder)
+            export_yaml = dump(export, Dumper=DataclassDumper)
 
-        importer = FlowImporter(export_json)
+        importer = FlowImporter(export_yaml)
 
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
