@@ -2,7 +2,7 @@
 from django.test import TransactionTestCase
 from yaml import dump
 
-from authentik.blueprints.v1.common import DataclassDumper, DataclassEncoder
+from authentik.blueprints.v1.common import DataclassDumper
 from authentik.blueprints.v1.exporter import Exporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding

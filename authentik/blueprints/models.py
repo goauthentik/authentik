@@ -1,6 +1,7 @@
 """Managed Object models"""
 from uuid import uuid4
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
@@ -52,6 +53,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
     last_applied = models.DateTimeField(auto_now=True)
     status = models.TextField(choices=BlueprintInstanceStatus.choices)
     enabled = models.BooleanField(default=True)
+    managed_models = ArrayField(models.TextField())
 
     @property
     def serializer(self) -> Serializer:

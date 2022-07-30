@@ -20,7 +20,6 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
-from authentik.blueprints.v1.common import DataclassEncoder
 from authentik.blueprints.v1.exporter import Exporter
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.api.used_by import UsedByMixin

@@ -275,7 +275,7 @@ class Event(SerializerModel, ExpiringModel):
 
     @property
     def serializer(self) -> "Serializer":
-        from authentik.events.api.event import EventSerializer
+        from authentik.events.api.events import EventSerializer
 
         return EventSerializer
 
@@ -456,7 +456,7 @@ class NotificationTransport(SerializerModel):
 
     @property
     def serializer(self) -> "Serializer":
-        from authentik.events.api.notification_transport import NotificationTransportSerializer
+        from authentik.events.api.notification_transports import NotificationTransportSerializer
 
         return NotificationTransportSerializer
 
@@ -490,7 +490,7 @@ class Notification(SerializerModel):
 
     @property
     def serializer(self) -> "Serializer":
-        from authentik.events.api.notification import NotificationSerializer
+        from authentik.events.api.notifications import NotificationSerializer
 
         return NotificationSerializer
 
@@ -538,7 +538,7 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
 
     @property
     def serializer(self) -> "Serializer":
-        from authentik.events.api.notification_rule import NotificationRuleSerializer
+        from authentik.events.api.notification_rules import NotificationRuleSerializer
 
         return NotificationRuleSerializer
 

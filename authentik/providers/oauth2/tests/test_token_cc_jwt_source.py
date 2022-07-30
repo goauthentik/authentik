@@ -6,10 +6,10 @@ from django.test import RequestFactory
 from django.urls import reverse
 from jwt import decode
 
+from authentik.blueprints.manager import ObjectManager
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id, generate_key
-from authentik.managed.manager import ObjectManager
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.constants import (
     GRANT_TYPE_CLIENT_CREDENTIALS,
