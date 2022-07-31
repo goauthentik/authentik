@@ -108,9 +108,9 @@ entries:
 
       return True
     meta_model_name: authentik_policies_expression.expressionpolicy
-    name: default-user-settings-authorization
   identifiers:
     name: default-user-settings-authorization
+  id: default-user-settings-authorization
   model: authentik_policies_expression.expressionpolicy
 - attrs:
     create_users_as_inactive: false

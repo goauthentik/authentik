@@ -27,7 +27,7 @@ entries:
     expression: |
       # Check if we''ve not been given a username by the external IdP
       # and trigger the enrollment flow
-      return ''username'' not in context.get(''prompt_data'', {})
+      return 'username' not in context.get('prompt_data', {})
     meta_model_name: authentik_policies_expression.expressionpolicy
   identifiers:
     name: default-source-enrollment-if-username
@@ -78,7 +78,7 @@ entries:
     order: 0
     stage: !KeyOf default-source-enrollment-prompt
     target: !KeyOf flow
-    id: prompt-binding
+  id: prompt-binding
   model: authentik_flows.flowstagebinding
 - attrs:
     evaluate_on_plan: true

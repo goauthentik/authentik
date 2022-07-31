@@ -93,7 +93,7 @@ entries:
       session_duration: seconds=0
   - identifiers:
       name: Change your password
-    name: stages-prompt-password
+    id: stages-prompt-password
     model: authentik_stages_prompt.promptstage
     attrs:
       fields:

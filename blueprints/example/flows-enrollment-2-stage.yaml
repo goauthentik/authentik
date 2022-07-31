@@ -76,7 +76,6 @@ entries:
         - !KeyOf prompt-field-password
         - !KeyOf prompt-field-password-repeat
   - identifiers:
-      pk: !KeyOf default-enrollment-user-login
       name: default-enrollment-user-login
     id: default-enrollment-user-login
     model: authentik_stages_user_login.userloginstage
