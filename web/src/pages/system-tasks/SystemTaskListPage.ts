@@ -14,7 +14,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { AdminApi, TaskStatusEnum, Task } from "@goauthentik/api";
+import { AdminApi, Task, TaskStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-system-task-list")
 export class SystemTaskListPage extends TablePage<Task> {
