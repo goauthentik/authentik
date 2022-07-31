@@ -8,21 +8,21 @@ entries:
     policy_engine_mode: all
     title: Welcome to authentik!
   identifiers:
-    pk: e88f126f-0b12-479d-9621-c524f534a183
     slug: default-authentication-flow
   model: authentik_flows.flow
+  id: flow
 - attrs:
     backends:
     - authentik.core.auth.InbuiltBackend
     - authentik.sources.ldap.auth.LDAPBackend
     - authentik.core.auth.TokenBackend
     - authentik.core.auth.TokenBackend
-    configure_flow: 5325f1af-9061-405e-8f7a-bdf3662c2c5c
+    # configure_flow: !Lookup 5325f1af-9061-405e-8f7a-bdf3662c2c5c
     failed_attempts_before_cancel: 5
     meta_model_name: authentik_stages_password.passwordstage
   identifiers:
     name: default-authentication-password
-    pk: 0ff8d037-0e52-442f-9184-2bdcc5d3dba1
+  id: default-authentication-password
   model: authentik_stages_password.passwordstage
 - attrs:
     configuration_stages: []
@@ -37,7 +37,7 @@ entries:
     not_configured_action: skip
   identifiers:
     name: default-authentication-mfa-validation
-    pk: 723220a0-7155-4a9c-ac82-d8a31cf10400
+  id: default-authentication-mfa-validation
   model: authentik_stages_authenticator_validate.authenticatorvalidatestage
 - attrs:
     case_insensitive_matching: true
@@ -54,14 +54,14 @@ entries:
     - username
   identifiers:
     name: default-authentication-identification
-    pk: 72599cbe-5cfb-44e3-a306-eb56ce28257f
+  id: default-authentication-identification
   model: authentik_stages_identification.identificationstage
 - attrs:
     meta_model_name: authentik_stages_user_login.userloginstage
     session_duration: seconds=0
   identifiers:
     name: default-authentication-login
-    pk: a31d1115-6821-4cd9-908b-b69d07f412cc
+  id: default-authentication-login
   model: authentik_stages_user_login.userloginstage
 - attrs:
     evaluate_on_plan: true
@@ -70,9 +70,8 @@ entries:
     re_evaluate_policies: false
   identifiers:
     order: 10
-    pk: 0f4e161c-4b39-4138-9009-fae887127901
-    stage: 72599cbe-5cfb-44e3-a306-eb56ce28257f
-    target: e88f126f-0b12-479d-9621-c524f534a183
+    stage: !KeyOf default-authentication-identification
+    target: !KeyOf flow
   model: authentik_flows.flowstagebinding
 - attrs:
     evaluate_on_plan: true
@@ -81,9 +80,8 @@ entries:
     re_evaluate_policies: false
   identifiers:
     order: 20
-    pk: 3351ef28-49bf-4efe-8a0b-051ef7f80365
-    stage: 0ff8d037-0e52-442f-9184-2bdcc5d3dba1
-    target: e88f126f-0b12-479d-9621-c524f534a183
+    stage: !KeyOf default-authentication-password
+    target: !KeyOf flow
   model: authentik_flows.flowstagebinding
 - attrs:
     evaluate_on_plan: true
@@ -92,9 +90,8 @@ entries:
     re_evaluate_policies: false
   identifiers:
     order: 30
-    pk: bffeacbe-913c-4c73-b278-ba71ed00fbdf
-    stage: 723220a0-7155-4a9c-ac82-d8a31cf10400
-    target: e88f126f-0b12-479d-9621-c524f534a183
+    stage: !KeyOf default-authentication-mfa-validation
+    target: !KeyOf flow
   model: authentik_flows.flowstagebinding
 - attrs:
     evaluate_on_plan: true
@@ -103,8 +100,7 @@ entries:
     re_evaluate_policies: false
   identifiers:
     order: 100
-    pk: 2937a1a1-da63-407b-8a9e-c2d40304e932
-    stage: a31d1115-6821-4cd9-908b-b69d07f412cc
-    target: e88f126f-0b12-479d-9621-c524f534a183
+    stage: !KeyOf default-authentication-login
+    target: !KeyOf flow
   model: authentik_flows.flowstagebinding
 version: 1

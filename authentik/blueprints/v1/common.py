@@ -1,9 +1,10 @@
 """transfer common classes"""
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 from uuid import UUID
 
+from django.db.models import Model
 from rest_framework.fields import Field
 from rest_framework.serializers import Serializer
 from yaml import SafeDumper, SafeLoader, ScalarNode
@@ -32,6 +33,10 @@ class BlueprintEntry:
     model: str
     attrs: dict[str, Any]
 
+    id: Optional[str] = None
+
+    _instance: Optional[Model] = None
+
     @staticmethod
     def from_model(model: SerializerModel, *extra_identifier_names: str) -> "BlueprintEntry":
         """Convert a SerializerModel instance to a Bundle Entry"""
@@ -48,6 +53,23 @@ class BlueprintEntry:
             attrs=all_attrs,
         )
 
+    def dict_checker(self, input: dict, blueprint: "Blueprint"):
+        """Check if we have any special tags that need handling"""
+        for key, value in input.items():
+            if isinstance(value, YAMLTag):
+                input[key] = value.resolve(self, blueprint)
+            if isinstance(value, dict):
+                input[key] = self.dict_checker(value)
+        return input
+
+    def get_attrs(self, blueprint: "Blueprint") -> dict[str, Any]:
+        """Get attributes of this entry, with all yaml tags resolved"""
+        return self.dict_checker(self.attrs, blueprint)
+
+    def get_identifiers(self, blueprint: "Blueprint") -> dict[str, Any]:
+        """Get attributes of this entry, with all yaml tags resolved"""
+        return self.dict_checker(self.identifiers, blueprint)
+
 
 @dataclass
 class Blueprint:
@@ -57,10 +79,27 @@ class Blueprint:
     entries: list[BlueprintEntry] = field(default_factory=list)
 
 
+class YAMLTag:
+    """Base class for all YAML Tags"""
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        """Implement yaml tag logic"""
+        raise NotImplementedError
+
+
 @dataclass
-class KeyOf:
+class KeyOf(YAMLTag):
+    """Reference another object by their ID"""
 
     id_from: str
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        for _entry in blueprint.entries:
+            if _entry.id == self.id_from and _entry._instance:
+                return _entry._instance.pk
+        raise ValueError(
+            f"KeyOf: failed to find entry with `id` of `{self.id_from}` and a model instance"
+        )
 
 
 class BlueprintDumper(SafeDumper):
@@ -84,7 +123,7 @@ class BlueprintLoader(SafeLoader):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.add_constructor("!ak/KeyOf", BlueprintLoader.construct_key_of)
+        self.add_constructor("!KeyOf", BlueprintLoader.construct_key_of)
 
     def construct_key_of(self, node: ScalarNode):
         return KeyOf(node.value)

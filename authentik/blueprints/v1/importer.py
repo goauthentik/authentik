@@ -13,9 +13,14 @@ from django.db.utils import IntegrityError
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
-from yaml import safe_load
+from yaml import load
 
-from authentik.blueprints.v1.common import Blueprint, BlueprintEntry, EntryInvalidError
+from authentik.blueprints.v1.common import (
+    Blueprint,
+    BlueprintEntry,
+    BlueprintLoader,
+    EntryInvalidError,
+)
 from authentik.core.models import (
     AuthenticatedSession,
     PropertyMapping,
@@ -61,7 +66,7 @@ class Importer:
     def __init__(self, yaml_input: str):
         self.__pk_map: dict[Any, Model] = {}
         self.logger = get_logger()
-        import_dict = safe_load(yaml_input)
+        import_dict = load(yaml_input, BlueprintLoader)
         try:
             self.__import = from_dict(Blueprint, import_dict)
         except DaciteError as exc:
@@ -94,7 +99,9 @@ class Importer:
         """Generate an or'd query from all identifiers in an entry"""
         # Since identifiers can also be pk-references to other objects (see FlowStageBinding)
         # we have to ensure those references are also replaced
-        main_query = Q(pk=attrs["pk"])
+        main_query = Q()
+        if "pk" in attrs:
+            main_query = Q(pk=attrs["pk"])
         sub_query = Q()
         for identifier, value in attrs.items():
             if isinstance(value, dict):
@@ -117,7 +124,7 @@ class Importer:
         # the full serializer for later usage
         # Because a model might have multiple unique columns, we chain all identifiers together
         # to create an OR query.
-        updated_identifiers = self.__update_pks_for_attrs(entry.identifiers)
+        updated_identifiers = self.__update_pks_for_attrs(entry.get_identifiers(self.__import))
         for key, value in list(updated_identifiers.items()):
             if isinstance(value, dict) and "pk" in value:
                 del updated_identifiers[key]
@@ -141,7 +148,7 @@ class Importer:
             if "pk" in updated_identifiers:
                 model_instance.pk = updated_identifiers["pk"]
             serializer_kwargs["instance"] = model_instance
-        full_data = self.__update_pks_for_attrs(entry.attrs)
+        full_data = self.__update_pks_for_attrs(entry.get_attrs(self.__import))
         full_data.update(updated_identifiers)
         serializer_kwargs["data"] = full_data
 
@@ -168,8 +175,7 @@ class Importer:
     def _apply_models(self) -> bool:
         """Apply (create/update) flow json"""
         self.__pk_map = {}
-        entries = deepcopy(self.__import.entries)
-        for entry in entries:
+        for entry in self.__import.entries:
             model_app_label, model_name = entry.model.split(".")
             try:
                 model: SerializerModel = apps.get_model(model_app_label, model_name)
@@ -186,7 +192,9 @@ class Importer:
                 return False
 
             model = serializer.save()
-            self.__pk_map[entry.identifiers["pk"]] = model.pk
+            if "pk" in entry.identifiers:
+                self.__pk_map[entry.identifiers["pk"]] = model.pk
+            entry._instance = model
             self.logger.debug("updated model", model=model, pk=model.pk)
         return True
 
@@ -194,6 +202,7 @@ class Importer:
         """Validate loaded flow export, ensure all models are allowed
         and serializers have no errors"""
         self.logger.debug("Starting flow import validation")
+        orig_import = deepcopy(self.__import)
         if self.__import.version != 1:
             self.logger.warning("Invalid bundle version")
             return False
@@ -201,4 +210,5 @@ class Importer:
             successful = self._apply_models()
             if not successful:
                 self.logger.debug("Flow validation failed")
+        self.__import = orig_import
         return successful

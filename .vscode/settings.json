@@ -23,6 +23,10 @@
     "files.associations": {
         "*.akflow": "yaml"
     },
+    "yaml.customTags": [
+        "!Lookup",
+        "!KeyOf"
+    ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",
     "typescript.tsdk": "./web/node_modules/typescript/lib",
