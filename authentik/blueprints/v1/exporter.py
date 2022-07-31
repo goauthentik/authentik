@@ -87,6 +87,6 @@ class Exporter:
         return bundle
 
     def export_to_string(self) -> str:
-        """Call export and convert it to json"""
+        """Call export and convert it to yaml"""
         bundle = self.export()
         return dump(bundle, Dumper=BlueprintDumper)

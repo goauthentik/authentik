@@ -59,7 +59,7 @@ def transaction_rollback():
 
 
 class Importer:
-    """Import Flow from json"""
+    """Import Blueprint from YAML"""
 
     logger: BoundLogger
 
@@ -160,7 +160,7 @@ class Importer:
         return serializer
 
     def apply(self) -> bool:
-        """Apply (create/update) flow json, in database transaction"""
+        """Apply (create/update) models yaml, in database transaction"""
         try:
             with transaction.atomic():
                 if not self._apply_models():
@@ -173,7 +173,7 @@ class Importer:
         return True
 
     def _apply_models(self) -> bool:
-        """Apply (create/update) flow json"""
+        """Apply (create/update) models yaml"""
         self.__pk_map = {}
         for entry in self.__import.entries:
             model_app_label, model_name = entry.model.split(".")

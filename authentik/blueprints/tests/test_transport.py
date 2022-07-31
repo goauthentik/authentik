@@ -1,8 +1,6 @@
 """Test flow Transport"""
 from django.test import TransactionTestCase
-from yaml import dump
 
-from authentik.blueprints.v1.common import BlueprintDumper
 from authentik.blueprints.v1.exporter import Exporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -115,9 +113,7 @@ class TestFlowTransport(TransactionTestCase):
             PolicyBinding.objects.create(policy=flow_policy, target=fsb, order=0)
 
             exporter = Exporter(flow)
-            export = exporter.export()
-
-            export_yaml = dump(export, Dumper=BlueprintDumper)
+            export_yaml = exporter.export_to_string()
 
         importer = Importer(export_yaml)
         self.assertTrue(importer.validate())
@@ -160,8 +156,7 @@ class TestFlowTransport(TransactionTestCase):
             FlowStageBinding.objects.create(target=flow, stage=first_stage, order=0)
 
             exporter = Exporter(flow)
-            export = exporter.export()
-            export_yaml = dump(export, Dumper=BlueprintDumper)
+            export_yaml = exporter.export_to_string()
 
         importer = Importer(export_yaml)
 

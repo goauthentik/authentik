@@ -1,4 +1,5 @@
 """transfer common classes"""
+from collections import OrderedDict
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from typing import Any, Optional
@@ -21,9 +22,13 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
 
     for field_name, _field in serializer.fields.items():
         _field: Field
+        if field_name not in data:
+            continue
         if _field.read_only:
             data.pop(field_name, None)
-        if _field.default == data[field_name]:
+        if _field.default == data.get(field_name, None):
+            data.pop(field_name, None)
+        if field_name.endswith("_set"):
             data.pop(field_name, None)
     return data
 
@@ -150,6 +155,7 @@ class BlueprintDumper(SafeDumper):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.add_representer(UUID, lambda self, data: self.represent_str(str(data)))
+        self.add_representer(OrderedDict, lambda self, data: self.represent_dict(dict(data)))
         self.add_representer(Enum, lambda self, data: self.represent_str(data.value))
 
     def represent(self, data) -> None:
