@@ -296,8 +296,9 @@ class TestSourceOAuth1(SeleniumTestCase):
         "blueprints/default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "blueprints/default/20-flow-default-source-authentication.yaml",
+        "blueprints/default/20-flow-default-source-enrollment.yaml",
+        "blueprints/default/20-flow-default-source-pre-authentication.yaml",
     )
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""
