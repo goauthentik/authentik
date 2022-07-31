@@ -73,7 +73,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
     adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
-    mkdir -p /certs /media && \
+    mkdir -p /certs /media /blueprints && \
     mkdir -p /authentik/.ssh && \
     chown authentik:authentik /certs /media /authentik/.ssh
 
@@ -82,7 +82,7 @@ COPY ./pyproject.toml /
 COPY ./xml /xml
 COPY ./tests /tests
 COPY ./manage.py /
-COPY ./blueprints/default /blueprints
+COPY ./blueprints/default /blueprints/default
 COPY ./lifecycle/ /lifecycle
 COPY --from=builder /work/authentik /authentik-proxy
 COPY --from=web-builder /work/web/dist/ /web/dist/
