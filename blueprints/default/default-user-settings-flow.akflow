@@ -12,7 +12,11 @@ entries:
   id: flow
 - attrs:
     order: 200
-    placeholder: "try:\n    return user.username\nexcept:\n    return ''"
+    placeholder: |
+      try:
+          return user.username
+      except:
+          return ''
     placeholder_expression: true
     required: true
     sub_text: ''
@@ -24,7 +28,11 @@ entries:
   model: authentik_stages_prompt.prompt
 - attrs:
     order: 201
-    placeholder: "try:\n    return user.name\nexcept:\n    return ''"
+    placeholder: |
+      try:
+          return user.name
+      except:
+          return ''
     placeholder_expression: true
     required: true
     sub_text: ''
@@ -36,7 +44,11 @@ entries:
   model: authentik_stages_prompt.prompt
 - attrs:
     order: 202
-    placeholder: "try:\n    return user.email\nexcept:\n    return ''"
+    placeholder: |
+      try:
+          return user.email
+      except:
+          return ''
     placeholder_expression: true
     required: true
     sub_text: ''
@@ -48,8 +60,11 @@ entries:
   model: authentik_stages_prompt.prompt
 - attrs:
     order: 203
-    placeholder: "try:\n    return user.attributes.get(\"settings\", {}).get(\"locale\"\
-      , \"\")\nexcept:\n    return ''"
+    placeholder: |
+      try:
+          return user.attributes.get("settings", {}).get("locale", "")
+      except:
+          return ''
     placeholder_expression: true
     required: true
     sub_text: ''
@@ -60,7 +75,6 @@ entries:
   id: prompt-field-locale
   model: authentik_stages_prompt.prompt
 - attrs:
-    bound_to: 1
     execution_logging: false
     expression:  |
       from authentik.lib.config import CONFIG

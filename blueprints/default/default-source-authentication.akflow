@@ -11,7 +11,6 @@ entries:
   model: authentik_flows.flow
   id: flow
 - attrs:
-    bound_to: 1
     execution_logging: false
     expression:  |
       # This policy ensures that this flow can only be used when the user

@@ -23,7 +23,6 @@ entries:
   id: prompt-field-username
   model: authentik_stages_prompt.prompt
 - attrs:
-    bound_to: 1
     execution_logging: false
     expression: |
       # Check if we''ve not been given a username by the external IdP
@@ -35,7 +34,6 @@ entries:
   id: default-source-enrollment-if-username
   model: authentik_policies_expression.expressionpolicy
 - attrs:
-    bound_to: 1
     execution_logging: false
     expression: |
       # This policy ensures that this flow can only be used when the user
