@@ -4,10 +4,11 @@ from enum import Enum
 from typing import Any, Optional
 from uuid import UUID
 
-from django.db.models import Model
+from django.apps import apps
+from django.db.models import Model, Q
 from rest_framework.fields import Field
 from rest_framework.serializers import Serializer
-from yaml import SafeDumper, SafeLoader, ScalarNode
+from yaml import SafeDumper, SafeLoader, ScalarNode, SequenceNode
 
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
@@ -33,6 +34,7 @@ class BlueprintEntry:
     model: str
     attrs: dict[str, Any]
 
+    # pylint: disable=invalid-name
     id: Optional[str] = None
 
     _instance: Optional[Model] = None
@@ -53,14 +55,14 @@ class BlueprintEntry:
             attrs=all_attrs,
         )
 
-    def dict_checker(self, input: dict, blueprint: "Blueprint"):
+    def dict_checker(self, in_dict: dict, blueprint: "Blueprint"):
         """Check if we have any special tags that need handling"""
-        for key, value in input.items():
+        for key, value in in_dict.items():
             if isinstance(value, YAMLTag):
-                input[key] = value.resolve(self, blueprint)
+                in_dict[key] = value.resolve(self, blueprint)
             if isinstance(value, dict):
-                input[key] = self.dict_checker(value)
-        return input
+                in_dict[key] = self.dict_checker(value, blueprint)
+        return in_dict
 
     def get_attrs(self, blueprint: "Blueprint") -> dict[str, Any]:
         """Get attributes of this entry, with all yaml tags resolved"""
@@ -87,11 +89,15 @@ class YAMLTag:
         raise NotImplementedError
 
 
-@dataclass
 class KeyOf(YAMLTag):
     """Reference another object by their ID"""
 
     id_from: str
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
+        super().__init__()
+        self.id_from = node.value
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         for _entry in blueprint.entries:
@@ -100,6 +106,35 @@ class KeyOf(YAMLTag):
         raise ValueError(
             f"KeyOf: failed to find entry with `id` of `{self.id_from}` and a model instance"
         )
+
+
+class Find(YAMLTag):
+    """Find any object"""
+
+    model_name: str
+    conditions: list[list]
+
+    model_class: type[Model]
+
+    def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
+        super().__init__()
+        self.model_name = node.value[0].value
+        self.model_class = apps.get_model(*self.model_name.split("."))
+        self.conditions = []
+        for raw_node in node.value[1:]:
+            values = []
+            for node_values in raw_node.value:
+                values.append(loader.construct_object(node_values))
+            self.conditions.append(values)
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        query = Q()
+        for cond in self.conditions:
+            query &= Q(**{cond[0]: cond[1]})
+        instance = self.model_class.objects.filter(query).first()
+        if instance:
+            return instance.pk
+        return None
 
 
 class BlueprintDumper(SafeDumper):
@@ -123,10 +158,8 @@ class BlueprintLoader(SafeLoader):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.add_constructor("!KeyOf", BlueprintLoader.construct_key_of)
-
-    def construct_key_of(self, node: ScalarNode):
-        return KeyOf(node.value)
+        self.add_constructor("!KeyOf", KeyOf)
+        self.add_constructor("!Find", Find)
 
 
 class EntryInvalidError(SentryIgnoredException):

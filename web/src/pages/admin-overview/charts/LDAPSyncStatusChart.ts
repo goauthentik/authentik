@@ -7,7 +7,7 @@ import { t } from "@lingui/macro";
 
 import { customElement } from "lit/decorators.js";
 
-import { SourcesApi, StatusEnum } from "@goauthentik/api";
+import { SourcesApi, TaskStatusEnum } from "@goauthentik/api";
 
 interface LDAPSyncStats {
     healthy: number;
@@ -50,7 +50,7 @@ export class LDAPSyncStatusChart extends AKChart<LDAPSyncStats> {
                     });
 
                     health.forEach((task) => {
-                        if (task.status !== StatusEnum.Successful) {
+                        if (task.status !== TaskStatusEnum.Successful) {
                             sourceKey = "failed";
                         }
                         const now = new Date().getTime();

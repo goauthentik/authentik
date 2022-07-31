@@ -14,7 +14,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { AdminApi, StatusEnum, Task } from "@goauthentik/api";
+import { AdminApi, TaskStatusEnum, Task } from "@goauthentik/api";
 
 @customElement("ak-system-task-list")
 export class SystemTaskListPage extends TablePage<Task> {
@@ -67,11 +67,11 @@ export class SystemTaskListPage extends TablePage<Task> {
 
     taskStatus(task: Task): TemplateResult {
         switch (task.status) {
-            case StatusEnum.Successful:
+            case TaskStatusEnum.Successful:
                 return html`<ak-label color=${PFColor.Green}>${t`Successful`}</ak-label>`;
-            case StatusEnum.Warning:
+            case TaskStatusEnum.Warning:
                 return html`<ak-label color=${PFColor.Orange}>${t`Warning`}</ak-label>`;
-            case StatusEnum.Error:
+            case TaskStatusEnum.Error:
                 return html`<ak-label color=${PFColor.Red}>${t`Error`}</ak-label>`;
             default:
                 return html`<ak-label color=${PFColor.Grey}>${t`Unknown`}</ak-label>`;

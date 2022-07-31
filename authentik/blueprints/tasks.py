@@ -1,5 +1,6 @@
 """managed tasks"""
 from django.db import DatabaseError
+from django.db.utils import ProgrammingError
 
 from authentik.blueprints.manager import ObjectManager
 from authentik.core.tasks import CELERY_APP
@@ -24,6 +25,5 @@ def managed_reconcile(self: MonitoredTask):
         self.set_status(
             TaskResult(TaskResultStatus.SUCCESSFUL, ["Successfully updated managed models."])
         )
-    except DatabaseError as exc:  # pragma: no cover
+    except (DatabaseError, ProgrammingError) as exc:  # pragma: no cover
         self.set_status(TaskResult(TaskResultStatus.WARNING, [str(exc)]))
-        self.retry()

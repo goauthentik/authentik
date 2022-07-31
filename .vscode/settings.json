@@ -24,8 +24,8 @@
         "*.akflow": "yaml"
     },
     "yaml.customTags": [
-        "!Lookup",
-        "!KeyOf"
+        "!Find sequence",
+        "!KeyOf scalar"
     ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",

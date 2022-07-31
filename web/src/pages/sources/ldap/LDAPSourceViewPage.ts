@@ -24,7 +24,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { LDAPSource, SourcesApi, StatusEnum } from "@goauthentik/api";
+import { LDAPSource, SourcesApi, TaskStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends LitElement {
@@ -145,9 +145,9 @@ export class LDAPSourceViewPage extends LitElement {
                                         return html`<ul class="pf-c-list">
                                             ${tasks.map((task) => {
                                                 let header = "";
-                                                if (task.status === StatusEnum.Warning) {
+                                                if (task.status === TaskStatusEnum.Warning) {
                                                     header = t`Task finished with warnings`;
-                                                } else if (task.status === StatusEnum.Error) {
+                                                } else if (task.status === TaskStatusEnum.Error) {
                                                     header = t`Task finished with errors`;
                                                 } else {
                                                     header = t`Last sync: ${task.taskFinishTimestamp.toLocaleString()}`;

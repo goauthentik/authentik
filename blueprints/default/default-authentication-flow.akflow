@@ -17,7 +17,7 @@ entries:
     - authentik.sources.ldap.auth.LDAPBackend
     - authentik.core.auth.TokenBackend
     - authentik.core.auth.TokenBackend
-    # configure_flow: !Lookup 5325f1af-9061-405e-8f7a-bdf3662c2c5c
+    configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
     failed_attempts_before_cancel: 5
     meta_model_name: authentik_stages_password.passwordstage
   identifiers:
