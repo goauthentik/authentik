@@ -1,5 +1,6 @@
 """consent tests"""
 from time import sleep
+from uuid import uuid4
 
 from django.urls import reverse
 
@@ -14,7 +15,10 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
-from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_PERMISSIONS
+from authentik.stages.consent.stage import (
+    PLAN_CONTEXT_CONSENT_PERMISSIONS,
+    SESSION_KEY_CONSENT_TOKEN,
+)
 
 
 class TestConsentStage(FlowTestCase):
@@ -37,10 +41,13 @@ class TestConsentStage(FlowTestCase):
         plan = FlowPlan(flow_pk=flow.pk.hex, bindings=[binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
+        session[SESSION_KEY_CONSENT_TOKEN] = str(uuid4())
         session.save()
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {},
+            {
+                "token": session[SESSION_KEY_CONSENT_TOKEN],
+            },
         )
         # pylint: disable=no-member
         self.assertEqual(response.status_code, 200)
@@ -62,10 +69,13 @@ class TestConsentStage(FlowTestCase):
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
+        session[SESSION_KEY_CONSENT_TOKEN] = str(uuid4())
         session.save()
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {},
+            {
+                "token": session[SESSION_KEY_CONSENT_TOKEN],
+            },
         )
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
@@ -96,7 +106,7 @@ class TestConsentStage(FlowTestCase):
             {},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertStageResponse(
+        raw_res = self.assertStageResponse(
             response,
             flow,
             self.user,
@@ -105,7 +115,9 @@ class TestConsentStage(FlowTestCase):
         )
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {},
+            {
+                "token": raw_res["token"],
+            },
         )
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
@@ -144,7 +156,7 @@ class TestConsentStage(FlowTestCase):
             {},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertStageResponse(
+        raw_res = self.assertStageResponse(
             response,
             flow,
             self.user,
@@ -155,7 +167,9 @@ class TestConsentStage(FlowTestCase):
         )
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {},
+            {
+                "token": raw_res["token"],
+            },
         )
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
@@ -187,7 +201,7 @@ class TestConsentStage(FlowTestCase):
             {},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertStageResponse(
+        raw_res = self.assertStageResponse(
             response,
             flow,
             self.user,
@@ -200,7 +214,9 @@ class TestConsentStage(FlowTestCase):
         )
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {},
+            {
+                "token": raw_res["token"],
+            },
         )
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
