@@ -86,7 +86,7 @@ class TestProviderLDAP(SeleniumTestCase):
         "blueprints/default/10-flow-default-authentication-flow.yaml",
         "blueprints/default/10-flow-default-invalidation-flow.yaml",
     )
-    @apply_blueprint("blueprints/system/providers-saml.yaml")
+    @apply_blueprint("blueprints/system/providers-ldap.yaml")
     def test_ldap_bind_success(self):
         """Test simple bind"""
         self._prepare()
@@ -114,7 +114,7 @@ class TestProviderLDAP(SeleniumTestCase):
         "blueprints/default/10-flow-default-authentication-flow.yaml",
         "blueprints/default/10-flow-default-invalidation-flow.yaml",
     )
-    @apply_blueprint("blueprints/system/providers-saml.yaml")
+    @apply_blueprint("blueprints/system/providers-ldap.yaml")
     def test_ldap_bind_success_ssl(self):
         """Test simple bind with ssl"""
         self._prepare()
@@ -142,7 +142,7 @@ class TestProviderLDAP(SeleniumTestCase):
         "blueprints/default/10-flow-default-authentication-flow.yaml",
         "blueprints/default/10-flow-default-invalidation-flow.yaml",
     )
-    @apply_blueprint("blueprints/system/providers-saml.yaml")
+    @apply_blueprint("blueprints/system/providers-ldap.yaml")
     def test_ldap_bind_fail(self):
         """Test simple bind (failed)"""
         self._prepare()
@@ -168,7 +168,7 @@ class TestProviderLDAP(SeleniumTestCase):
         "blueprints/default/10-flow-default-authentication-flow.yaml",
         "blueprints/default/10-flow-default-invalidation-flow.yaml",
     )
-    @apply_blueprint("blueprints/system/providers-saml.yaml")
+    @apply_blueprint("blueprints/system/providers-ldap.yaml")
     def test_ldap_bind_search(self):
         """Test simple bind + search"""
         outpost = self._prepare()

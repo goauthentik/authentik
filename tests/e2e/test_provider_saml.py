@@ -72,6 +72,9 @@ class TestProviderSAML(SeleniumTestCase):
         "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
         "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
+    @apply_blueprint(
+        "blueprints/system/providers-saml.yaml",
+    )
     @reconcile_app("authentik_crypto")
     def test_sp_initiated_implicit(self):
         """test SAML Provider flow SP-initiated flow (implicit consent)"""
@@ -137,6 +140,9 @@ class TestProviderSAML(SeleniumTestCase):
     @apply_blueprint(
         "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
         "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/system/providers-saml.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_sp_initiated_explicit(self):
@@ -219,6 +225,9 @@ class TestProviderSAML(SeleniumTestCase):
         "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
         "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
+    @apply_blueprint(
+        "blueprints/system/providers-saml.yaml",
+    )
     @reconcile_app("authentik_crypto")
     def test_sp_initiated_explicit_post(self):
         """test SAML Provider flow SP-initiated flow (explicit consent) (POST binding)"""
@@ -300,6 +309,9 @@ class TestProviderSAML(SeleniumTestCase):
         "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
         "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
+    @apply_blueprint(
+        "blueprints/system/providers-saml.yaml",
+    )
     @reconcile_app("authentik_crypto")
     def test_idp_initiated_implicit(self):
         """test SAML Provider flow IdP-initiated flow (implicit consent)"""
@@ -371,6 +383,9 @@ class TestProviderSAML(SeleniumTestCase):
     @apply_blueprint(
         "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
         "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/system/providers-saml.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_sp_initiated_denied(self):

@@ -32,7 +32,6 @@ class TestFlowsAuthenticator(SeleniumTestCase):
     )
     def test_totp_validate(self):
         """test flow with otp stages"""
-        sleep(1)
         # Setup TOTP Device
         device = TOTPDevice.objects.create(user=self.user, confirmed=True, digits=6)
 
@@ -50,7 +49,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         flow_executor = self.get_shadow_root("ak-flow-executor")
         validation_stage = self.get_shadow_root("ak-stage-authenticator-validate", flow_executor)
         code_stage = self.get_shadow_root("ak-stage-authenticator-validate-code", validation_stage)
-
+        sleep(3)
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(totp.token())
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(Keys.ENTER)
         self.wait_for_url(self.if_user_url("/library"))

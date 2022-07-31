@@ -65,6 +65,9 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
         "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
+    @apply_blueprint(
+        "blueprints/system/providers-oauth2.yaml",
+    )
     @reconcile_app("authentik_crypto")
     def test_authorization_consent_implied(self):
         """test OAuth Provider flow (default authorization flow with implied consent)"""
@@ -117,6 +120,9 @@ class TestProviderOAuth2Github(SeleniumTestCase):
     @apply_blueprint(
         "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
         "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/system/providers-oauth2.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_authorization_consent_explicit(self):

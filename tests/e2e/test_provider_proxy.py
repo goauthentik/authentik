@@ -62,6 +62,9 @@ class TestProviderProxy(SeleniumTestCase):
         "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
         "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
+    @apply_blueprint(
+        "blueprints/system/providers-proxy.yaml",
+    )
     @reconcile_app("authentik_crypto")
     def test_proxy_simple(self):
         """Test simple outpost setup with single provider"""
