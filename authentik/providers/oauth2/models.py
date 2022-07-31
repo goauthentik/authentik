@@ -24,6 +24,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
 from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
 from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT
@@ -335,7 +336,7 @@ class BaseGrantModel(models.Model):
         abstract = True
 
 
-class AuthorizationCode(ExpiringModel, BaseGrantModel):
+class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Authorization Code"""
 
     code = models.CharField(max_length=255, unique=True, verbose_name=_("Code"))
@@ -345,6 +346,12 @@ class AuthorizationCode(ExpiringModel, BaseGrantModel):
     code_challenge_method = models.CharField(
         max_length=255, null=True, verbose_name=_("Code Challenge Method")
     )
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.providers.oauth2.api.tokens import ExpiringBaseGrantModelSerializer
+
+        return ExpiringBaseGrantModelSerializer
 
     @property
     def c_hash(self):
@@ -398,12 +405,18 @@ class IDToken:
         return dic
 
 
-class RefreshToken(ExpiringModel, BaseGrantModel):
+class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Refresh Token"""
 
     access_token = models.TextField(verbose_name=_("Access Token"))
     refresh_token = models.CharField(max_length=255, unique=True, verbose_name=_("Refresh Token"))
     _id_token = models.TextField(verbose_name=_("ID Token"))
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.providers.oauth2.api.tokens import ExpiringBaseGrantModelSerializer
+
+        return ExpiringBaseGrantModelSerializer
 
     class Meta:
         verbose_name = _("OAuth2 Token")

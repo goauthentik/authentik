@@ -20,9 +20,10 @@
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "python.formatting.provider": "black",
-    "files.associations": {
-        "*.akflow": "yaml"
-    },
+    "yaml.customTags": [
+        "!Find sequence",
+        "!KeyOf scalar"
+    ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",
     "typescript.tsdk": "./web/node_modules/typescript/lib",

@@ -1,0 +1,12 @@
+entries:
+- attrs:
+    compatibility_mode: false
+    designation: stage_configuration
+    layout: stacked
+    name: Pre-Authentication
+    policy_engine_mode: any
+    title: ''
+  identifiers:
+    slug: default-source-pre-authentication
+  model: authentik_flows.flow
+version: 1

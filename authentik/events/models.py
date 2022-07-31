@@ -30,7 +30,7 @@ from authentik.core.middleware import (
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
 from authentik.events.geo import GEOIP_READER
 from authentik.events.utils import cleanse_dict, get_user, model_to_dict, sanitize_dict
-from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.models import DomainlessURLValidator, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_client_ip, get_http_session
 from authentik.lib.utils.time import timedelta_from_string
@@ -168,7 +168,7 @@ class EventManager(Manager):
         return self.get_queryset().get_events_per_day()
 
 
-class Event(ExpiringModel):
+class Event(SerializerModel, ExpiringModel):
     """An individual Audit/Metrics/Notification/Error Event"""
 
     event_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -274,6 +274,12 @@ class Event(ExpiringModel):
         super().save(*args, **kwargs)
 
     @property
+    def serializer(self) -> "Serializer":
+        from authentik.events.api.events import EventSerializer
+
+        return EventSerializer
+
+    @property
     def summary(self) -> str:
         """Return a summary of this event."""
         if "message" in self.context:
@@ -298,7 +304,7 @@ class TransportMode(models.TextChoices):
     EMAIL = "email", _("Email")
 
 
-class NotificationTransport(models.Model):
+class NotificationTransport(SerializerModel):
     """Action which is executed when a Rule matches"""
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -448,6 +454,12 @@ class NotificationTransport(models.Model):
         except (SMTPException, ConnectionError, OSError) as exc:
             raise NotificationTransportError from exc
 
+    @property
+    def serializer(self) -> "Serializer":
+        from authentik.events.api.notification_transports import NotificationTransportSerializer
+
+        return NotificationTransportSerializer
+
     def __str__(self) -> str:
         return f"Notification Transport {self.name}"
 
@@ -465,7 +477,7 @@ class NotificationSeverity(models.TextChoices):
     ALERT = "alert", _("Alert")
 
 
-class Notification(models.Model):
+class Notification(SerializerModel):
     """Event Notification"""
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -475,6 +487,12 @@ class Notification(models.Model):
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True, blank=True)
     seen = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @property
+    def serializer(self) -> "Serializer":
+        from authentik.events.api.notifications import NotificationSerializer
+
+        return NotificationSerializer
 
     def __str__(self) -> str:
         body_trunc = (self.body[:75] + "..") if len(self.body) > 75 else self.body
@@ -486,7 +504,7 @@ class Notification(models.Model):
         verbose_name_plural = _("Notifications")
 
 
-class NotificationRule(PolicyBindingModel):
+class NotificationRule(SerializerModel, PolicyBindingModel):
     """Decide when to create a Notification based on policies attached to this object."""
 
     name = models.TextField(unique=True)
@@ -517,6 +535,12 @@ class NotificationRule(PolicyBindingModel):
         blank=True,
         on_delete=models.SET_NULL,
     )
+
+    @property
+    def serializer(self) -> "Serializer":
+        from authentik.events.api.notification_rules import NotificationRuleSerializer
+
+        return NotificationRuleSerializer
 
     def __str__(self) -> str:
         return f"Notification Rule {self.name}"

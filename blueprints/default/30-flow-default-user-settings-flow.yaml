@@ -1,0 +1,157 @@
+entries:
+- attrs:
+    compatibility_mode: false
+    designation: stage_configuration
+    layout: stacked
+    name: Update your info
+    policy_engine_mode: any
+    title: ''
+  identifiers:
+    slug: default-user-settings-flow
+  model: authentik_flows.flow
+  id: flow
+- attrs:
+    order: 200
+    placeholder: |
+      try:
+          return user.username
+      except:
+          return ''
+    placeholder_expression: true
+    required: true
+    sub_text: ''
+    type: text
+  identifiers:
+    field_key: username
+    label: Username
+  id: prompt-field-username
+  model: authentik_stages_prompt.prompt
+- attrs:
+    order: 201
+    placeholder: |
+      try:
+          return user.name
+      except:
+          return ''
+    placeholder_expression: true
+    required: true
+    sub_text: ''
+    type: text
+  identifiers:
+    field_key: name
+    label: Name
+  id: prompt-field-name
+  model: authentik_stages_prompt.prompt
+- attrs:
+    order: 202
+    placeholder: |
+      try:
+          return user.email
+      except:
+          return ''
+    placeholder_expression: true
+    required: true
+    sub_text: ''
+    type: email
+  identifiers:
+    field_key: email
+    label: Email
+  id: prompt-field-email
+  model: authentik_stages_prompt.prompt
+- attrs:
+    order: 203
+    placeholder: |
+      try:
+          return user.attributes.get("settings", {}).get("locale", "")
+      except:
+          return ''
+    placeholder_expression: true
+    required: true
+    sub_text: ''
+    type: ak-locale
+  identifiers:
+    field_key: attributes.settings.locale
+    label: Locale
+  id: prompt-field-locale
+  model: authentik_stages_prompt.prompt
+- attrs:
+    execution_logging: false
+    expression:  |
+      from authentik.lib.config import CONFIG
+      from authentik.core.models import (
+          USER_ATTRIBUTE_CHANGE_EMAIL,
+          USER_ATTRIBUTE_CHANGE_NAME,
+          USER_ATTRIBUTE_CHANGE_USERNAME
+      )
+      prompt_data = request.context.get("prompt_data")
+
+      if not request.user.group_attributes(request.http_request).get(
+          USER_ATTRIBUTE_CHANGE_EMAIL, CONFIG.y_bool("default_user_change_email", True)
+      ):
+          if prompt_data.get("email") != request.user.email:
+              ak_message("Not allowed to change email address.")
+              return False
+
+      if not request.user.group_attributes(request.http_request).get(
+          USER_ATTRIBUTE_CHANGE_NAME, CONFIG.y_bool("default_user_change_name", True)
+      ):
+          if prompt_data.get("name") != request.user.name:
+              ak_message("Not allowed to change name.")
+              return False
+
+      if not request.user.group_attributes(request.http_request).get(
+          USER_ATTRIBUTE_CHANGE_USERNAME, CONFIG.y_bool("default_user_change_username", True)
+      ):
+          if prompt_data.get("username") != request.user.username:
+              ak_message("Not allowed to change username.")
+              return False
+
+      return True
+    meta_model_name: authentik_policies_expression.expressionpolicy
+    name: default-user-settings-authorization
+  identifiers:
+    name: default-user-settings-authorization
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
+    create_users_as_inactive: false
+    create_users_group: null
+    meta_model_name: authentik_stages_user_write.userwritestage
+    user_path_template: ''
+  identifiers:
+    name: default-user-settings-write
+  id: default-user-settings-write
+  model: authentik_stages_user_write.userwritestage
+- attrs:
+    fields:
+    - !KeyOf prompt-field-username
+    - !KeyOf prompt-field-name
+    - !KeyOf prompt-field-email
+    - !KeyOf prompt-field-locale
+    meta_model_name: authentik_stages_prompt.promptstage
+    validation_policies:
+    - !KeyOf default-user-settings-authorization
+  identifiers:
+    name: default-user-settings
+  id: default-user-settings
+  model: authentik_stages_prompt.promptstage
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    policy_engine_mode: any
+    re_evaluate_policies: false
+  identifiers:
+    order: 20
+    stage: !KeyOf default-user-settings
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    policy_engine_mode: any
+    re_evaluate_policies: false
+  identifiers:
+    order: 100
+    stage: !KeyOf default-user-settings-write
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+version: 1

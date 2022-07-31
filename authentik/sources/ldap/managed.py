@@ -1,5 +1,5 @@
 """LDAP Source managed objects"""
-from authentik.managed.manager import EnsureExists, ObjectManager
+from authentik.blueprints.manager import EnsureExists, ObjectManager
 from authentik.sources.ldap.models import LDAPPropertyMapping
 
 

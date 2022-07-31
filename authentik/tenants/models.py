@@ -3,13 +3,15 @@ from uuid import uuid4
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import Serializer
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
+from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
 
-class Tenant(models.Model):
+class Tenant(SerializerModel):
     """Single tenant"""
 
     tenant_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -62,8 +64,13 @@ class Tenant(models.Model):
         on_delete=models.SET_DEFAULT,
         help_text=_(("Web Certificate used by the authentik Core webserver.")),
     )
-
     attributes = models.JSONField(default=dict, blank=True)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.tenants.api import TenantSerializer
+
+        return TenantSerializer
 
     @property
     def default_locale(self) -> str:

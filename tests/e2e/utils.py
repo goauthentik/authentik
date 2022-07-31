@@ -25,10 +25,10 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from structlog.stdlib import get_logger
 
+from authentik.blueprints.manager import ObjectManager
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.managed.manager import ObjectManager
 
 RETRIES = int(environ.get("RETRIES", "3"))
 

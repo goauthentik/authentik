@@ -1,0 +1,121 @@
+entries:
+- attrs:
+    compatibility_mode: false
+    designation: enrollment
+    layout: stacked
+    name: Welcome to authentik! Please select a username.
+    policy_engine_mode: all
+    title: Welcome to authentik! Please select a username.
+  identifiers:
+    slug: default-source-enrollment
+  model: authentik_flows.flow
+  id: flow
+- attrs:
+    order: 100
+    placeholder: Username
+    placeholder_expression: false
+    required: true
+    sub_text: ''
+    type: text
+  identifiers:
+    field_key: username
+    label: Username
+  id: prompt-field-username
+  model: authentik_stages_prompt.prompt
+- attrs:
+    execution_logging: false
+    expression: |
+      # Check if we''ve not been given a username by the external IdP
+      # and trigger the enrollment flow
+      return ''username'' not in context.get(''prompt_data'', {})
+    meta_model_name: authentik_policies_expression.expressionpolicy
+  identifiers:
+    name: default-source-enrollment-if-username
+  id: default-source-enrollment-if-username
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
+    execution_logging: false
+    expression: |
+      # This policy ensures that this flow can only be used when the user
+      # is in a SSO Flow (meaning they come from an external IdP)
+      return ak_is_sso_flow
+    meta_model_name: authentik_policies_expression.expressionpolicy
+  identifiers:
+    name: default-source-enrollment-if-sso
+  id: default-source-enrollment-if-sso
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
+    meta_model_name: authentik_stages_user_login.userloginstage
+    session_duration: seconds=0
+  identifiers:
+    name: default-source-enrollment-login
+  id: default-source-enrollment-login
+  model: authentik_stages_user_login.userloginstage
+- attrs:
+    fields:
+    - !KeyOf prompt-field-username
+    meta_model_name: authentik_stages_prompt.promptstage
+    validation_policies: []
+  identifiers:
+    name: default-source-enrollment-prompt
+  id: default-source-enrollment-prompt
+  model: authentik_stages_prompt.promptstage
+- attrs:
+    create_users_as_inactive: false
+    create_users_group: null
+    meta_model_name: authentik_stages_user_write.userwritestage
+    user_path_template: ''
+  identifiers:
+    name: default-source-enrollment-write
+  id: default-source-enrollment-write
+  model: authentik_stages_user_write.userwritestage
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    policy_engine_mode: all
+    re_evaluate_policies: true
+  identifiers:
+    order: 0
+    stage: !KeyOf default-source-enrollment-prompt
+    target: !KeyOf flow
+    id: prompt-binding
+  model: authentik_flows.flowstagebinding
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    policy_engine_mode: all
+    re_evaluate_policies: false
+  identifiers:
+    order: 1
+    stage: !KeyOf default-source-enrollment-write
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    policy_engine_mode: all
+    re_evaluate_policies: false
+  identifiers:
+    order: 2
+    stage: !KeyOf default-source-enrollment-login
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- attrs:
+    enabled: true
+    negate: false
+    timeout: 30
+  identifiers:
+    order: 0
+    policy: !KeyOf default-source-enrollment-if-sso
+    target: !KeyOf flow
+  model: authentik_policies.policybinding
+- attrs:
+    enabled: true
+    negate: false
+    timeout: 30
+  identifiers:
+    order: 0
+    policy: !KeyOf default-source-enrollment-if-username
+    target: !KeyOf prompt-binding
+  model: authentik_policies.policybinding
+version: 1

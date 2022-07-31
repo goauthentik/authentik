@@ -12,6 +12,7 @@ from authentik.admin.api.version import VersionView
 from authentik.admin.api.workers import WorkerView
 from authentik.api.v3.config import ConfigView
 from authentik.api.views import APIBrowserView
+from authentik.blueprints.api import BlueprintInstanceViewSet
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
 from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
@@ -130,6 +131,8 @@ router.register("events/events", EventViewSet)
 router.register("events/notifications", NotificationViewSet)
 router.register("events/transports", NotificationTransportViewSet)
 router.register("events/rules", NotificationRuleViewSet)
+
+router.register("managed/blueprints", BlueprintInstanceViewSet)
 
 router.register("sources/all", SourceViewSet)
 router.register("sources/user_connections/all", UserSourceConnectionViewSet)

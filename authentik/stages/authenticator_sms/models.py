@@ -17,6 +17,7 @@ from twilio.rest import Client
 from authentik.core.types import UserSettingSerializer
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import ConfigurableStage, Stage
+from authentik.lib.models import SerializerModel
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.http import get_http_session
 
@@ -163,7 +164,7 @@ def hash_phone_number(phone_number: str) -> str:
     return "hash:" + sha256(phone_number.encode()).hexdigest()
 
 
-class SMSDevice(SideChannelDevice):
+class SMSDevice(SerializerModel, SideChannelDevice):
     """SMS Device"""
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
@@ -183,6 +184,12 @@ class SMSDevice(SideChannelDevice):
     def is_hashed(self) -> bool:
         """Check if the phone number is hashed"""
         return self.phone_number.startswith("hash:")
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from authentik.stages.authenticator_sms.api import SMSDeviceSerializer
+
+        return SMSDeviceSerializer
 
     def verify_token(self, token):
         valid = super().verify_token(token)

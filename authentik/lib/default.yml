@@ -62,6 +62,7 @@ ldap:
   tls:
     ciphers: null
 
+config_file_dir: "/config"
 cookie_domain: null
 disable_update_check: false
 disable_startup_analytics: false

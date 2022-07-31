@@ -4,10 +4,11 @@ from uuid import uuid4
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from rest_framework.serializers import BaseSerializer
+from rest_framework.serializers import BaseSerializer, Serializer
 
 from authentik.core.models import ExpiringModel, User
 from authentik.flows.models import Stage
+from authentik.lib.models import SerializerModel
 
 
 class InvitationStage(Stage):
@@ -47,7 +48,7 @@ class InvitationStage(Stage):
         verbose_name_plural = _("Invitation Stages")
 
 
-class Invitation(ExpiringModel):
+class Invitation(SerializerModel, ExpiringModel):
     """Single-use invitation link"""
 
     invite_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -65,6 +66,12 @@ class Invitation(ExpiringModel):
         blank=True,
         help_text=_("Optional fixed data to enforce on user enrollment."),
     )
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.stages.consent.api import UserConsentSerializer
+
+        return UserConsentSerializer
 
     def __str__(self):
         return f"Invitation {self.invite_uuid.hex} created by {self.created_by}"

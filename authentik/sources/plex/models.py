@@ -7,7 +7,7 @@ from django.http.request import HttpRequest
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
-from rest_framework.serializers import BaseSerializer
+from rest_framework.serializers import BaseSerializer, Serializer
 
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
@@ -98,6 +98,12 @@ class PlexSourceConnection(UserSourceConnection):
 
     plex_token = models.TextField()
     identifier = models.TextField()
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.sources.plex.api.source_connection import PlexSourceConnectionSerializer
+
+        return PlexSourceConnectionSerializer
 
     class Meta:
 

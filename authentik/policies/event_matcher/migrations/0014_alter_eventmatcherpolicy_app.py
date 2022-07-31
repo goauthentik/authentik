@@ -76,7 +76,7 @@ class Migration(migrations.Migration):
                     ("authentik.stages.user_logout", "authentik Stages.User Logout"),
                     ("authentik.stages.user_write", "authentik Stages.User Write"),
                     ("authentik.core", "authentik Core"),
-                    ("authentik.managed", "authentik Managed"),
+                    ("authentik.blueprints", "authentik Blueprints"),
                 ],
                 default="",
                 help_text="Match events created by selected application. When left empty, all applications are matched.",

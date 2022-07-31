@@ -1,5 +1,5 @@
 """Outpost managed objects"""
-from authentik.managed.manager import EnsureExists, ObjectManager
+from authentik.blueprints.manager import EnsureExists, ObjectManager
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,

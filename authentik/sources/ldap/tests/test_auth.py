@@ -4,9 +4,9 @@ from unittest.mock import Mock, PropertyMock, patch
 from django.db.models import Q
 from django.test import TestCase
 
+from authentik.blueprints.manager import ObjectManager
 from authentik.core.models import User
 from authentik.lib.generators import generate_key
-from authentik.managed.manager import ObjectManager
 from authentik.sources.ldap.auth import LDAPBackend
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer

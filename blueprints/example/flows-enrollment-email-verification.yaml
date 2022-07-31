@@ -1,0 +1,141 @@
+version: 1
+entries:
+  - identifiers:
+      slug: default-enrollment-flow
+    id: flow
+    model: authentik_flows.flow
+    attrs:
+      name: Default enrollment Flow
+      title: Welcome to authentik!
+      designation: enrollment
+  - identifiers:
+      field_key: username
+      label: Username
+    id: prompt-field-username
+    model: authentik_stages_prompt.prompt
+    attrs:
+      type: username
+      required: true
+      placeholder: Username
+      order: 0
+  - identifiers:
+      field_key: password
+      label: Password
+    id: prompt-field-password
+    model: authentik_stages_prompt.prompt
+    attrs:
+      type: password
+      required: true
+      placeholder: Password
+      order: 0
+  - identifiers:
+      field_key: password_repeat
+      label: Password (repeat)
+    id: prompt-field-password-repeat
+    model: authentik_stages_prompt.prompt
+    attrs:
+      type: password
+      required: true
+      placeholder: Password (repeat)
+      order: 1
+  - identifiers:
+      field_key: name
+      label: Name
+    id: prompt-field-name
+    model: authentik_stages_prompt.prompt
+    attrs:
+      type: text
+      required: true
+      placeholder: Name
+      order: 0
+  - identifiers:
+      field_key: email
+      label: Email
+    id: prompt-field-email
+    model: authentik_stages_prompt.prompt
+    attrs:
+      type: email
+      required: true
+      placeholder: Email
+      order: 1
+  - identifiers:
+      name: default-enrollment-email-verification
+    id: default-enrollment-email-verification
+    model: authentik_stages_email.emailstage
+    attrs:
+      use_global_settings: true
+      host: localhost
+      port: 25
+      username: ""
+      use_tls: false
+      use_ssl: false
+      timeout: 10
+      from_address: system@authentik.local
+      token_expiry: 30
+      subject: authentik
+      template: email/account_confirmation.html
+      activate_user_on_success: true
+  - identifiers:
+      name: default-enrollment-prompt-second
+    id: default-enrollment-prompt-second
+    model: authentik_stages_prompt.promptstage
+    attrs:
+      fields:
+        - !KeyOf prompt-field-name
+        - !KeyOf prompt-field-email
+  - identifiers:
+      name: default-enrollment-prompt-first
+    id: default-enrollment-prompt-first
+    model: authentik_stages_prompt.promptstage
+    attrs:
+      fields:
+        - !KeyOf prompt-field-username
+        - !KeyOf prompt-field-password
+        - !KeyOf prompt-field-password-repeat
+  - identifiers:
+      name: default-enrollment-user-login
+    id: default-enrollment-user-login
+    model: authentik_stages_user_login.userloginstage
+    attrs:
+      session_duration: seconds=0
+  - identifiers:
+      name: default-enrollment-user-write
+    id: default-enrollment-user-write
+    model: authentik_stages_user_write.userwritestage
+    attrs:
+      create_users_as_inactive: true
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-enrollment-prompt-first
+      order: 10
+    model: authentik_flows.flowstagebinding
+    attrs:
+      re_evaluate_policies: false
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-enrollment-prompt-second
+      order: 11
+    model: authentik_flows.flowstagebinding
+    attrs:
+      re_evaluate_policies: false
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-enrollment-user-write
+      order: 20
+    model: authentik_flows.flowstagebinding
+    attrs:
+      re_evaluate_policies: false
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-enrollment-email-verification
+      order: 30
+    model: authentik_flows.flowstagebinding
+    attrs:
+      re_evaluate_policies: false
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-enrollment-user-login
+      order: 40
+    model: authentik_flows.flowstagebinding
+    attrs:
+      re_evaluate_policies: false

@@ -73,7 +73,7 @@ class Migration(migrations.Migration):
                         "authentik.stages.authenticator_webauthn",
                         "authentik Stages.WebAuthn",
                     ),
-                    ("authentik.managed", "authentik Managed"),
+                    ("authentik.blueprints", "authentik Blueprints"),
                     ("authentik.core", "authentik Core"),
                 ],
                 default="",

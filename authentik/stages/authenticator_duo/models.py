@@ -7,11 +7,12 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django_otp.models import Device
 from duo_client.auth import Auth
-from rest_framework.serializers import BaseSerializer
+from rest_framework.serializers import BaseSerializer, Serializer
 
 from authentik import __version__
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
+from authentik.lib.models import SerializerModel
 
 
 class AuthenticatorDuoStage(ConfigurableStage, Stage):
@@ -65,7 +66,7 @@ class AuthenticatorDuoStage(ConfigurableStage, Stage):
         verbose_name_plural = _("Duo Authenticator Setup Stages")
 
 
-class DuoDevice(Device):
+class DuoDevice(SerializerModel, Device):
     """Duo Device for a single user"""
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
@@ -73,8 +74,13 @@ class DuoDevice(Device):
     # Connect to the stage to when validating access we know the API Credentials
     stage = models.ForeignKey(AuthenticatorDuoStage, on_delete=models.CASCADE)
     duo_user_id = models.TextField()
-
     last_t = models.DateTimeField(auto_now=True)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.stages.authenticator_duo.api import DuoDeviceSerializer
+
+        return DuoDeviceSerializer
 
     def __str__(self):
         return self.name or str(self.user)

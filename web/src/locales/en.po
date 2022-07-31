@@ -56,8 +56,8 @@ msgid "-"
 msgstr "-"
 
 #: src/pages/flows/FlowImportForm.ts
-msgid ".akflow files, which can be found on goauthentik.io and can be exported by authentik."
-msgstr ".akflow files, which can be found on goauthentik.io and can be exported by authentik."
+msgid ".yaml files, which can be found on goauthentik.io and can be exported by authentik."
+msgstr ".yaml files, which can be found on goauthentik.io and can be exported by authentik."
 
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "6 digits, widely compatible"

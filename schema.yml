@@ -5869,7 +5869,7 @@ paths:
   /flows/instances/{slug}/export/:
     get:
       operationId: flows_instances_export_retrieve
-      description: Export flow to .akflow file
+      description: Export flow to .yaml file
       parameters:
       - in: path
         name: slug
@@ -6013,7 +6013,7 @@ paths:
   /flows/instances/import_flow/:
     post:
       operationId: flows_instances_import_flow_create
-      description: Import flow from .akflow file
+      description: Import flow from .yaml file
       tags:
       - flows
       requestBody:
@@ -6028,6 +6028,215 @@ paths:
           description: Successfully imported flow
         '400':
           description: Bad request
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /managed/blueprints/:
+    get:
+      operationId: managed_blueprints_list
+      description: Blueprint instances
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: path
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBlueprintInstanceList'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    post:
+      operationId: managed_blueprints_create
+      description: Blueprint instances
+      tags:
+      - managed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlueprintInstanceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /managed/blueprints/{instance_uuid}/:
+    get:
+      operationId: managed_blueprints_retrieve
+      description: Blueprint instances
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    put:
+      operationId: managed_blueprints_update
+      description: Blueprint instances
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlueprintInstanceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    patch:
+      operationId: managed_blueprints_partial_update
+      description: Blueprint instances
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBlueprintInstanceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+    delete:
+      operationId: managed_blueprints_destroy
+      description: Blueprint instances
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /managed/blueprints/available/:
+    get:
+      operationId: managed_blueprints_available_list
+      description: Get blueprints
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
   /oauth2/authorization_codes/:
@@ -8145,12 +8354,12 @@ paths:
           enum:
           - authentik.admin
           - authentik.api
+          - authentik.blueprints
           - authentik.core
           - authentik.crypto
           - authentik.events
           - authentik.flows
           - authentik.lib
-          - authentik.managed
           - authentik.outposts
           - authentik.policies
           - authentik.policies.dummy
@@ -19607,7 +19816,7 @@ components:
       - authentik.stages.user_logout
       - authentik.stages.user_write
       - authentik.tenants
-      - authentik.managed
+      - authentik.blueprints
       - authentik.core
       type: string
     AppleChallengeResponseRequest:
@@ -20652,6 +20861,60 @@ components:
       - REDIRECT
       - POST
       - POST_AUTO
+      type: string
+    BlueprintInstance:
+      type: object
+      description: Info about a single blueprint instance file
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+        context:
+          type: object
+          additionalProperties: {}
+        last_applied:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+        enabled:
+          type: boolean
+      required:
+      - context
+      - last_applied
+      - name
+      - path
+      - status
+    BlueprintInstanceRequest:
+      type: object
+      description: Info about a single blueprint instance file
+      properties:
+        name:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        context:
+          type: object
+          additionalProperties: {}
+        status:
+          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+        enabled:
+          type: boolean
+      required:
+      - context
+      - name
+      - path
+      - status
+    BlueprintInstanceStatusEnum:
+      enum:
+      - successful
+      - warning
+      - error
+      - unknown
       type: string
     Cache:
       type: object
@@ -24565,6 +24828,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedBlueprintInstanceList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlueprintInstance'
+      required:
+      - pagination
+      - results
     PaginatedCaptchaStageList:
       type: object
       properties:
@@ -27472,6 +27770,23 @@ components:
           minLength: 1
           description: If any of the user's device has been used within this threshold,
             this stage will be skipped
+    PatchedBlueprintInstanceRequest:
+      type: object
+      description: Info about a single blueprint instance file
+      properties:
+        name:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        context:
+          type: object
+          additionalProperties: {}
+        status:
+          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+        enabled:
+          type: boolean
     PatchedCaptchaStageRequest:
       type: object
       description: CaptchaStage Serializer
@@ -31291,13 +31606,6 @@ components:
           maxLength: 16
       required:
       - token
-    StatusEnum:
-      enum:
-      - SUCCESSFUL
-      - WARNING
-      - ERROR
-      - UNKNOWN
-      type: string
     SubModeEnum:
       enum:
       - hashed_user_id
@@ -31406,7 +31714,7 @@ components:
           type: string
           format: date-time
         status:
-          $ref: '#/components/schemas/StatusEnum'
+          $ref: '#/components/schemas/TaskStatusEnum'
         messages:
           type: array
           items: {}
@@ -31416,6 +31724,13 @@ components:
       - task_description
       - task_finish_timestamp
       - task_name
+    TaskStatusEnum:
+      enum:
+      - SUCCESSFUL
+      - WARNING
+      - ERROR
+      - UNKNOWN
+      type: string
     Tenant:
       type: object
       description: Tenant Serializer

@@ -1,14 +1,16 @@
 """Challenge helpers"""
+from dataclasses import asdict, is_dataclass
 from enum import Enum
 from typing import TYPE_CHECKING, Optional, TypedDict
+from uuid import UUID
 
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.http import JsonResponse
 from rest_framework.fields import ChoiceField, DictField
 from rest_framework.serializers import CharField
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.flows.transfer.common import DataclassEncoder
 
 if TYPE_CHECKING:
     from authentik.flows.stage import StageView
@@ -133,6 +135,19 @@ class AutoSubmitChallengeResponse(ChallengeResponse):
     """Pseudo class for autosubmit response"""
 
     component = CharField(default="ak-stage-autosubmit")
+
+
+class DataclassEncoder(DjangoJSONEncoder):
+    """Convert any dataclass to json"""
+
+    def default(self, o):
+        if is_dataclass(o):
+            return asdict(o)
+        if isinstance(o, UUID):
+            return str(o)
+        if isinstance(o, Enum):
+            return o.value
+        return super().default(o)  # pragma: no cover
 
 
 class HttpChallengeResponse(JsonResponse):

@@ -51,10 +51,10 @@ msgstr "-"
 
 #: src/pages/flows/FlowImportForm.ts
 msgid ""
-".akflow files, which can be found on goauthentik.io and can be exported by "
+".yaml files, which can be found on goauthentik.io and can be exported by "
 "authentik."
 msgstr ""
-"Pliki .akflow, które można znaleźć na goauthentik.io i mogą być "
+"Pliki .yaml, które można znaleźć na goauthentik.io i mogą być "
 "wyeksportowane przez authentik."
 
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts

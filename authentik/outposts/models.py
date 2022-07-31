@@ -14,9 +14,11 @@ from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
 from model_utils.managers import InheritanceManager
 from packaging.version import LegacyVersion, Version, parse
+from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik import __version__, get_build_hash
+from authentik.blueprints.models import ManagedModel
 from authentik.core.models import (
     USER_ATTRIBUTE_CAN_OVERRIDE_IP,
     USER_ATTRIBUTE_SA,
@@ -29,10 +31,9 @@ from authentik.core.models import (
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InheritanceForeignKey
+from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
-from authentik.managed.models import ManagedModel
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.tenants.models import Tenant
 
@@ -155,7 +156,7 @@ class OutpostServiceConnection(models.Model):
         verbose_name_plural = _("Outpost Service-Connections")
 
 
-class DockerServiceConnection(OutpostServiceConnection):
+class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
     """Service Connection to a Docker endpoint"""
 
     url = models.TextField(
@@ -193,6 +194,12 @@ class DockerServiceConnection(OutpostServiceConnection):
     )
 
     @property
+    def serializer(self) -> Serializer:
+        from authentik.outposts.api.service_connections import DockerServiceConnectionSerializer
+
+        return DockerServiceConnectionSerializer
+
+    @property
     def component(self) -> str:
         return "ak-service-connection-docker-form"
 
@@ -205,7 +212,7 @@ class DockerServiceConnection(OutpostServiceConnection):
         verbose_name_plural = _("Docker Service-Connections")
 
 
-class KubernetesServiceConnection(OutpostServiceConnection):
+class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
     """Service Connection to a Kubernetes cluster"""
 
     kubeconfig = models.JSONField(
@@ -217,6 +224,12 @@ class KubernetesServiceConnection(OutpostServiceConnection):
         ),
         blank=True,
     )
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.outposts.api.service_connections import KubernetesServiceConnectionSerializer
+
+        return KubernetesServiceConnectionSerializer
 
     @property
     def component(self) -> str:
@@ -231,7 +244,7 @@ class KubernetesServiceConnection(OutpostServiceConnection):
         verbose_name_plural = _("Kubernetes Service-Connections")
 
 
-class Outpost(ManagedModel):
+class Outpost(SerializerModel, ManagedModel):
     """Outpost instance which manages a service user and token"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)
@@ -255,6 +268,12 @@ class Outpost(ManagedModel):
     _config = models.JSONField(default=default_outpost_config)
 
     providers = models.ManyToManyField(Provider)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.outposts.api.outposts import OutpostSerializer
+
+        return OutpostSerializer
 
     @property
     def config(self) -> OutpostConfig:

@@ -2,9 +2,9 @@
 from datetime import datetime
 from typing import Optional
 
+from authentik.blueprints.manager import ObjectManager
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
-from authentik.managed.manager import ObjectManager
 
 MANAGED_KEY = "goauthentik.io/crypto/jwt-managed"
 

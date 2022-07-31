@@ -16,15 +16,16 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.lib.models import CreatedUpdatedModel
-from authentik.managed.models import ManagedModel
+from authentik.blueprints.models import ManagedModel
+from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 
 LOGGER = get_logger()
 
 
-class CertificateKeyPair(ManagedModel, CreatedUpdatedModel):
+class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     """CertificateKeyPair that can be used for signing or encrypting if `key_data`
     is set, otherwise it can be used to verify remote data."""
 
@@ -43,6 +44,12 @@ class CertificateKeyPair(ManagedModel, CreatedUpdatedModel):
     _cert: Optional[Certificate] = None
     _private_key: Optional[RSAPrivateKey | EllipticCurvePrivateKey | Ed25519PrivateKey] = None
     _public_key: Optional[RSAPublicKey | EllipticCurvePublicKey | Ed25519PublicKey] = None
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.crypto.api import CertificateKeyPairSerializer
+
+        return CertificateKeyPairSerializer
 
     @property
     def certificate(self) -> Certificate:

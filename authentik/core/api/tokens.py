@@ -15,13 +15,13 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authorization import OwnerSuperuserPermissions
 from authentik.api.decorators import permission_required
+from authentik.blueprints.api import ManagedSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenIntents
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
-from authentik.managed.api import ManagedSerializer
 
 
 class TokenSerializer(ManagedSerializer, ModelSerializer):

@@ -5,10 +5,10 @@ from django.test import TestCase
 from django.urls import reverse
 
 from authentik import __version__
+from authentik.blueprints.tasks import managed_reconcile
 from authentik.core.models import Group, User
 from authentik.core.tasks import clean_expired_models
 from authentik.events.monitored_tasks import TaskResultStatus
-from authentik.managed.tasks import managed_reconcile
 
 
 class TestAdminAPI(TestCase):

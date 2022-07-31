@@ -14,12 +14,12 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.decorators import permission_required
+from authentik.blueprints.api import ManagedSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer, TypeCreateSerializer
 from authentik.core.expression import PropertyMappingEvaluator
 from authentik.core.models import PropertyMapping
 from authentik.lib.utils.reflection import all_subclasses
-from authentik.managed.api import ManagedSerializer
 from authentik.policies.api.exec import PolicyTestSerializer
 
 

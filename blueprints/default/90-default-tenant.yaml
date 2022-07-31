@@ -1,0 +1,9 @@
+version: 1
+entries:
+- attrs:
+    flow_authentication: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+    flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
+  identifiers:
+    domain: authentik-default
+    default: True
+  model: authentik_tenants.Tenant

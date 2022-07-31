@@ -211,6 +211,14 @@ class UserOAuthSourceConnection(UserSourceConnection):
     identifier = models.CharField(max_length=255)
     access_token = models.TextField(blank=True, null=True, default=None)
 
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.sources.oauth.api.source_connection import (
+            UserOAuthSourceConnectionSerializer,
+        )
+
+        return UserOAuthSourceConnectionSerializer
+
     def save(self, *args, **kwargs):
         self.access_token = self.access_token or None
         super().save(*args, **kwargs)

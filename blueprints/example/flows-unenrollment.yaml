@@ -1,0 +1,22 @@
+version: 1
+entries:
+  - identifiers:
+      slug: default-unenrollment-flow
+    model: authentik_flows.flow
+    id: flow
+    attrs:
+      name: Default unenrollment flow
+      title: Delete your account
+      designation: unenrollment
+  - identifiers:
+      name: default-unenrollment-user-delete
+    id: default-unenrollment-user-delete
+    model: authentik_stages_user_delete.userdeletestage
+    attrs: {}
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-unenrollment-user-delete
+      order: 10
+    model: authentik_flows.flowstagebinding
+    attrs:
+      re_evaluate_policies: false
