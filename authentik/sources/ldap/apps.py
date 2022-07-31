@@ -13,4 +13,3 @@ class AuthentikSourceLDAPConfig(AppConfig):
 
     def ready(self):
         import_module("authentik.sources.ldap.signals")
-        import_module("authentik.sources.ldap.managed")

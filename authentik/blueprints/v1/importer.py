@@ -199,9 +199,9 @@ class Importer:
         return True
 
     def validate(self) -> bool:
-        """Validate loaded flow export, ensure all models are allowed
+        """Validate loaded blueprint export, ensure all models are allowed
         and serializers have no errors"""
-        self.logger.debug("Starting flow import validation")
+        self.logger.debug("Starting blueprint import validation")
         orig_import = deepcopy(self.__import)
         if self.__import.version != 1:
             self.logger.warning("Invalid bundle version")
@@ -209,6 +209,6 @@ class Importer:
         with transaction_rollback():
             successful = self._apply_models()
             if not successful:
-                self.logger.debug("Flow validation failed")
+                self.logger.debug("blueprint validation failed")
         self.__import = orig_import
         return successful

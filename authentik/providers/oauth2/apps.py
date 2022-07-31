@@ -1,6 +1,4 @@
 """authentik oauth provider app config"""
-from importlib import import_module
-
 from django.apps import AppConfig
 
 
@@ -14,6 +12,3 @@ class AuthentikProviderOAuth2Config(AppConfig):
         "authentik.providers.oauth2.urls_github": "",
         "authentik.providers.oauth2.urls": "application/o/",
     }
-
-    def ready(self) -> None:
-        import_module("authentik.providers.oauth2.managed")
