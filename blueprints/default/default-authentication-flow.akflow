@@ -41,11 +41,7 @@ entries:
   model: authentik_stages_authenticator_validate.authenticatorvalidatestage
 - attrs:
     case_insensitive_matching: true
-    enrollment_flow: null
     meta_model_name: authentik_stages_identification.identificationstage
-    password_stage: null
-    passwordless_flow: null
-    recovery_flow: null
     show_matched_user: true
     show_source_labels: false
     sources: []

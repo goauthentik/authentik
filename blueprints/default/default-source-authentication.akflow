@@ -1,6 +1,5 @@
 entries:
 - attrs:
-    cache_count: 0
     compatibility_mode: false
     designation: authentication
     layout: stacked
@@ -8,28 +7,27 @@ entries:
     policy_engine_mode: all
     title: Welcome to authentik!
   identifiers:
-    pk: dd5d0206-ab3d-4d7a-adca-dba0080e082e
     slug: default-source-authentication
   model: authentik_flows.flow
+  id: flow
 - attrs:
     bound_to: 1
     execution_logging: false
-    expression: '# This policy ensures that this flow can only be used when the user
-
+    expression:  |
+      # This policy ensures that this flow can only be used when the user
       # is in a SSO Flow (meaning they come from an external IdP)
-
-      return ak_is_sso_flow'
+      return ak_is_sso_flow
     meta_model_name: authentik_policies_expression.expressionpolicy
-    name: default-source-authentication-if-sso
   identifiers:
-    pk: a7ffa1a0-d337-404e-87d9-7d59cd50a5eb
+    name: default-source-authentication-if-sso
+  id: default-source-authentication-if-sso
   model: authentik_policies_expression.expressionpolicy
 - attrs:
     meta_model_name: authentik_stages_user_login.userloginstage
     session_duration: seconds=0
   identifiers:
     name: default-source-authentication-login
-    pk: 476cf493-6491-4cdc-8d64-a2b57d6a9fdd
+  id: default-source-authentication-login
   model: authentik_stages_user_login.userloginstage
 - attrs:
     evaluate_on_plan: true
@@ -38,9 +36,8 @@ entries:
     re_evaluate_policies: false
   identifiers:
     order: 0
-    pk: d95ede1d-5193-4f84-b68a-44d7cef8046d
-    stage: 476cf493-6491-4cdc-8d64-a2b57d6a9fdd
-    target: dd5d0206-ab3d-4d7a-adca-dba0080e082e
+    stage: !KeyOf default-source-authentication-login
+    target: !KeyOf flow
   model: authentik_flows.flowstagebinding
 - attrs:
     enabled: true
@@ -48,8 +45,7 @@ entries:
     timeout: 30
   identifiers:
     order: 0
-    pk: 76d58b5f-57cd-4ed8-b36b-da72d6b5ea2a
-    policy: a7ffa1a0-d337-404e-87d9-7d59cd50a5eb
-    target: dd5d0206-ab3d-4d7a-adca-dba0080e082e
+    policy: !KeyOf default-source-authentication-if-sso
+    target: !KeyOf flow
   model: authentik_policies.policybinding
 version: 1

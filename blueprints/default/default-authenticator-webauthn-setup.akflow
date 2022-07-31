@@ -1,6 +1,5 @@
 entries:
 - attrs:
-    cache_count: 0
     compatibility_mode: false
     designation: stage_configuration
     layout: stacked
@@ -8,18 +7,18 @@ entries:
     policy_engine_mode: any
     title: Setup WebAuthn
   identifiers:
-    pk: b531d658-851a-4fd4-87cb-c58e7cb1720d
     slug: default-authenticator-webauthn-setup
   model: authentik_flows.flow
+  id: flow
 - attrs:
     authenticator_attachment: null
-    configure_flow: b531d658-851a-4fd4-87cb-c58e7cb1720d
+    configure_flow: !KeyOf flow
     meta_model_name: authentik_stages_authenticator_webauthn.authenticatewebauthnstage
     resident_key_requirement: preferred
     user_verification: preferred
   identifiers:
     name: default-authenticator-webauthn-setup
-    pk: 8878af30-fa18-4f54-bcef-9c95b365e513
+  id: default-authenticator-webauthn-setup
   model: authentik_stages_authenticator_webauthn.authenticatewebauthnstage
 - attrs:
     evaluate_on_plan: true
@@ -28,8 +27,7 @@ entries:
     re_evaluate_policies: false
   identifiers:
     order: 0
-    pk: 093df03c-0971-494c-82e7-7d9a7153e589
-    stage: 8878af30-fa18-4f54-bcef-9c95b365e513
-    target: b531d658-851a-4fd4-87cb-c58e7cb1720d
+    stage: !KeyOf default-authenticator-webauthn-setup
+    target: !KeyOf flow
   model: authentik_flows.flowstagebinding
 version: 1

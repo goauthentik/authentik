@@ -1,6 +1,5 @@
 entries:
 - attrs:
-    cache_count: 0
     compatibility_mode: false
     designation: enrollment
     layout: stacked
@@ -8,12 +7,10 @@ entries:
     policy_engine_mode: all
     title: Welcome to authentik! Please select a username.
   identifiers:
-    pk: cd8eed16-dde0-4123-8c77-0424477efcd7
     slug: default-source-enrollment
   model: authentik_flows.flow
+  id: flow
 - attrs:
-    field_key: username
-    label: Username
     order: 100
     placeholder: Username
     placeholder_expression: false
@@ -21,49 +18,49 @@ entries:
     sub_text: ''
     type: text
   identifiers:
-    pk: 1cfe7a64-f770-47f8-9212-a977cead961d
+    field_key: username
+    label: Username
+  id: prompt-field-username
   model: authentik_stages_prompt.prompt
 - attrs:
     bound_to: 1
     execution_logging: false
-    expression: '# Check if we''ve not been given a username by the external IdP
-
+    expression: |
+      # Check if we''ve not been given a username by the external IdP
       # and trigger the enrollment flow
-
-      return ''username'' not in context.get(''prompt_data'', {})'
+      return ''username'' not in context.get(''prompt_data'', {})
     meta_model_name: authentik_policies_expression.expressionpolicy
-    name: default-source-enrollment-if-username
   identifiers:
-    pk: 4eb97ac4-cc23-43f2-bff9-d48a8959bc1d
+    name: default-source-enrollment-if-username
+  id: default-source-enrollment-if-username
   model: authentik_policies_expression.expressionpolicy
 - attrs:
     bound_to: 1
     execution_logging: false
-    expression: '# This policy ensures that this flow can only be used when the user
-
+    expression: |
+      # This policy ensures that this flow can only be used when the user
       # is in a SSO Flow (meaning they come from an external IdP)
-
-      return ak_is_sso_flow'
+      return ak_is_sso_flow
     meta_model_name: authentik_policies_expression.expressionpolicy
-    name: default-source-enrollment-if-sso
   identifiers:
-    pk: 618213b1-575d-4055-838d-5ab524c9e8ed
+    name: default-source-enrollment-if-sso
+  id: default-source-enrollment-if-sso
   model: authentik_policies_expression.expressionpolicy
 - attrs:
     meta_model_name: authentik_stages_user_login.userloginstage
     session_duration: seconds=0
   identifiers:
     name: default-source-enrollment-login
-    pk: 12499da3-769b-4c42-8df4-7654423d9c05
+  id: default-source-enrollment-login
   model: authentik_stages_user_login.userloginstage
 - attrs:
     fields:
-    - 1cfe7a64-f770-47f8-9212-a977cead961d
+    - !KeyOf prompt-field-username
     meta_model_name: authentik_stages_prompt.promptstage
     validation_policies: []
   identifiers:
     name: default-source-enrollment-prompt
-    pk: 73e1ddd9-7cbf-4bdc-8446-19a2bc9c20b6
+  id: default-source-enrollment-prompt
   model: authentik_stages_prompt.promptstage
 - attrs:
     create_users_as_inactive: false
@@ -72,7 +69,7 @@ entries:
     user_path_template: ''
   identifiers:
     name: default-source-enrollment-write
-    pk: dcc3c202-5661-4c97-a88f-394f942ae7bf
+  id: default-source-enrollment-write
   model: authentik_stages_user_write.userwritestage
 - attrs:
     evaluate_on_plan: true
@@ -81,9 +78,9 @@ entries:
     re_evaluate_policies: true
   identifiers:
     order: 0
-    pk: 2583ff43-7c05-47c0-869a-90b1772009b5
-    stage: 73e1ddd9-7cbf-4bdc-8446-19a2bc9c20b6
-    target: cd8eed16-dde0-4123-8c77-0424477efcd7
+    stage: !KeyOf default-source-enrollment-prompt
+    target: !KeyOf flow
+    id: prompt-binding
   model: authentik_flows.flowstagebinding
 - attrs:
     evaluate_on_plan: true
@@ -92,9 +89,8 @@ entries:
     re_evaluate_policies: false
   identifiers:
     order: 1
-    pk: 85991b05-11bb-4260-8685-1c3ffea286f2
-    stage: dcc3c202-5661-4c97-a88f-394f942ae7bf
-    target: cd8eed16-dde0-4123-8c77-0424477efcd7
+    stage: !KeyOf default-source-enrollment-write
+    target: !KeyOf flow
   model: authentik_flows.flowstagebinding
 - attrs:
     evaluate_on_plan: true
@@ -103,9 +99,8 @@ entries:
     re_evaluate_policies: false
   identifiers:
     order: 2
-    pk: 31746831-f535-4350-a3ab-2f9b91520609
-    stage: 12499da3-769b-4c42-8df4-7654423d9c05
-    target: cd8eed16-dde0-4123-8c77-0424477efcd7
+    stage: !KeyOf default-source-enrollment-login
+    target: !KeyOf flow
   model: authentik_flows.flowstagebinding
 - attrs:
     enabled: true
@@ -113,9 +108,8 @@ entries:
     timeout: 30
   identifiers:
     order: 0
-    pk: 55ce60fd-3733-4c14-a076-4609b4015c35
-    policy: 618213b1-575d-4055-838d-5ab524c9e8ed
-    target: cd8eed16-dde0-4123-8c77-0424477efcd7
+    policy: !KeyOf default-source-enrollment-if-sso
+    target: !KeyOf flow
   model: authentik_policies.policybinding
 - attrs:
     enabled: true
@@ -123,8 +117,7 @@ entries:
     timeout: 30
   identifiers:
     order: 0
-    pk: a0f833d3-1508-4860-8f0c-6d22a7878fc6
-    policy: 4eb97ac4-cc23-43f2-bff9-d48a8959bc1d
-    target: 2583ff43-7c05-47c0-869a-90b1772009b5
+    policy: !KeyOf default-source-enrollment-if-username
+    target: !KeyOf prompt-binding
   model: authentik_policies.policybinding
 version: 1
