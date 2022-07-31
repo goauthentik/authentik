@@ -1,0 +1,14 @@
+entries:
+- attrs:
+    cache_count: 0
+    compatibility_mode: false
+    designation: authorization
+    layout: stacked
+    name: Authorize Application
+    policy_engine_mode: all
+    title: Redirecting to %(app)s
+  identifiers:
+    pk: ed98eff9-732d-4637-9053-e68db9d35cea
+    slug: default-provider-authorization-implicit-consent
+  model: authentik_flows.flow
+version: 1

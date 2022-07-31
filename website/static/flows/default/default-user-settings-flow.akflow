@@ -1,0 +1,130 @@
+entries:
+- attrs:
+    cache_count: 0
+    compatibility_mode: false
+    designation: stage_configuration
+    layout: stacked
+    name: Update your info
+    policy_engine_mode: any
+    title: ''
+  identifiers:
+    pk: 8e5bdddc-496c-448f-9e4c-ff19ff0f30d0
+    slug: default-user-settings-flow
+  model: authentik_flows.flow
+- attrs:
+    field_key: username
+    label: Username
+    order: 200
+    placeholder: "try:\n    return user.username\nexcept:\n    return ''"
+    placeholder_expression: true
+    required: true
+    sub_text: ''
+    type: text
+  identifiers:
+    pk: 2a8f9c9d-105e-46ae-b171-d3f95d77ed8b
+  model: authentik_stages_prompt.prompt
+- attrs:
+    field_key: name
+    label: Name
+    order: 201
+    placeholder: "try:\n    return user.name\nexcept:\n    return ''"
+    placeholder_expression: true
+    required: true
+    sub_text: ''
+    type: text
+  identifiers:
+    pk: f572d198-2062-4ba3-8776-adaa2507eceb
+  model: authentik_stages_prompt.prompt
+- attrs:
+    field_key: email
+    label: Email
+    order: 202
+    placeholder: "try:\n    return user.email\nexcept:\n    return ''"
+    placeholder_expression: true
+    required: true
+    sub_text: ''
+    type: email
+  identifiers:
+    pk: c8fa3d42-36dc-4735-8ac5-333baa032a58
+  model: authentik_stages_prompt.prompt
+- attrs:
+    field_key: attributes.settings.locale
+    label: Locale
+    order: 203
+    placeholder: "try:\n    return user.attributes.get(\"settings\", {}).get(\"locale\"\
+      , \"\")\nexcept:\n    return ''"
+    placeholder_expression: true
+    required: true
+    sub_text: ''
+    type: ak-locale
+  identifiers:
+    pk: 25cc5a64-12d0-4245-9486-c3ea7effa744
+  model: authentik_stages_prompt.prompt
+- attrs:
+    bound_to: 1
+    execution_logging: false
+    expression: "from authentik.lib.config import CONFIG\nfrom authentik.core.models\
+      \ import (\n    USER_ATTRIBUTE_CHANGE_EMAIL,\n    USER_ATTRIBUTE_CHANGE_NAME,\n\
+      \    USER_ATTRIBUTE_CHANGE_USERNAME\n)\nprompt_data = request.context.get(\"\
+      prompt_data\")\n\nif not request.user.group_attributes(request.http_request).get(\n\
+      \    USER_ATTRIBUTE_CHANGE_EMAIL, CONFIG.y_bool(\"default_user_change_email\"\
+      , True)\n):\n    if prompt_data.get(\"email\") != request.user.email:\n    \
+      \    ak_message(\"Not allowed to change email address.\")\n        return False\n\
+      \nif not request.user.group_attributes(request.http_request).get(\n    USER_ATTRIBUTE_CHANGE_NAME,\
+      \ CONFIG.y_bool(\"default_user_change_name\", True)\n):\n    if prompt_data.get(\"\
+      name\") != request.user.name:\n        ak_message(\"Not allowed to change name.\"\
+      )\n        return False\n\nif not request.user.group_attributes(request.http_request).get(\n\
+      \    USER_ATTRIBUTE_CHANGE_USERNAME, CONFIG.y_bool(\"default_user_change_username\"\
+      , True)\n):\n    if prompt_data.get(\"username\") != request.user.username:\n\
+      \        ak_message(\"Not allowed to change username.\")\n        return False\n\
+      \nreturn True\n"
+    meta_model_name: authentik_policies_expression.expressionpolicy
+    name: default-user-settings-authorization
+  identifiers:
+    pk: 381ef4ee-0537-418b-9d2a-0e7e7dc90e6f
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
+    create_users_as_inactive: false
+    create_users_group: null
+    meta_model_name: authentik_stages_user_write.userwritestage
+    user_path_template: ''
+  identifiers:
+    name: default-user-settings-write
+    pk: 642c5bbe-8876-4f12-b5dd-c3da422f9c37
+  model: authentik_stages_user_write.userwritestage
+- attrs:
+    fields:
+    - 2a8f9c9d-105e-46ae-b171-d3f95d77ed8b
+    - f572d198-2062-4ba3-8776-adaa2507eceb
+    - c8fa3d42-36dc-4735-8ac5-333baa032a58
+    - 25cc5a64-12d0-4245-9486-c3ea7effa744
+    meta_model_name: authentik_stages_prompt.promptstage
+    validation_policies:
+    - 381ef4ee-0537-418b-9d2a-0e7e7dc90e6f
+  identifiers:
+    name: default-user-settings
+    pk: f1fac6de-53d1-4854-bfcc-b2982aeaea84
+  model: authentik_stages_prompt.promptstage
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    policy_engine_mode: any
+    re_evaluate_policies: false
+  identifiers:
+    order: 20
+    pk: debad595-ef48-4a9e-bf6a-ed840f0a7961
+    stage: f1fac6de-53d1-4854-bfcc-b2982aeaea84
+    target: 8e5bdddc-496c-448f-9e4c-ff19ff0f30d0
+  model: authentik_flows.flowstagebinding
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    policy_engine_mode: any
+    re_evaluate_policies: false
+  identifiers:
+    order: 100
+    pk: cea4a2df-429e-4537-b555-5f2fa10964c9
+    stage: 642c5bbe-8876-4f12-b5dd-c3da422f9c37
+    target: 8e5bdddc-496c-448f-9e4c-ff19ff0f30d0
+  model: authentik_flows.flowstagebinding
+version: 1

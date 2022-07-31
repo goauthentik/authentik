@@ -1,0 +1,33 @@
+entries:
+- attrs:
+    cache_count: 0
+    compatibility_mode: false
+    designation: stage_configuration
+    layout: stacked
+    name: default-authenticator-totp-setup
+    policy_engine_mode: any
+    title: Setup Two-Factor authentication
+  identifiers:
+    pk: a317cbf6-b7ac-4d94-b332-80103e472df9
+    slug: default-authenticator-totp-setup
+  model: authentik_flows.flow
+- attrs:
+    configure_flow: a317cbf6-b7ac-4d94-b332-80103e472df9
+    digits: 6
+    meta_model_name: authentik_stages_authenticator_totp.authenticatortotpstage
+  identifiers:
+    name: default-authenticator-totp-setup
+    pk: 2f536fa8-8167-4df3-8b26-e4c67eb5878a
+  model: authentik_stages_authenticator_totp.authenticatortotpstage
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    policy_engine_mode: any
+    re_evaluate_policies: false
+  identifiers:
+    order: 0
+    pk: d12cc390-177a-4751-8892-b5b3c3876525
+    stage: 2f536fa8-8167-4df3-8b26-e4c67eb5878a
+    target: a317cbf6-b7ac-4d94-b332-80103e472df9
+  model: authentik_flows.flowstagebinding
+version: 1
