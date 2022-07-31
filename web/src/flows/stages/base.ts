@@ -23,17 +23,19 @@ export function readFileAsync(file: Blob) {
     });
 }
 
+export type KeyUnknown = {
+    [key: string]: unknown;
+};
+
 export class BaseStage<Tin, Tout> extends LitElement {
     host!: StageHost;
 
     @property({ attribute: false })
     challenge!: Tin;
 
-    async submitForm(e: Event): Promise<boolean> {
+    async submitForm(e: Event, defaults?: KeyUnknown): Promise<boolean> {
         e.preventDefault();
-        const object: {
-            [key: string]: unknown;
-        } = {};
+        const object: KeyUnknown = defaults || {};
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
 
         for await (const [key, value] of form.entries()) {

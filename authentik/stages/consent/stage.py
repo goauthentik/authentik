@@ -1,5 +1,6 @@
 """authentik consent stage"""
 from typing import Optional
+from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
@@ -21,6 +22,7 @@ PLAN_CONTEXT_CONSENT_TITLE = "consent_title"
 PLAN_CONTEXT_CONSENT_HEADER = "consent_header"
 PLAN_CONTEXT_CONSENT_PERMISSIONS = "consent_permissions"
 PLAN_CONTEXT_CONSNET_EXTRA_PERMISSIONS = "consent_additional_permissions"
+SESSION_KEY_CONSENT_TOKEN = "authentik/stages/consent/token"  # nosec
 
 
 class ConsentChallenge(WithUserInfoChallenge):
@@ -30,12 +32,14 @@ class ConsentChallenge(WithUserInfoChallenge):
     permissions = PermissionSerializer(many=True)
     additional_permissions = PermissionSerializer(many=True)
     component = CharField(default="ak-stage-consent")
+    token = CharField(required=True)
 
 
 class ConsentChallengeResponse(ChallengeResponse):
     """Consent challenge response, any valid response request is valid"""
 
     component = CharField(default="ak-stage-consent")
+    token = CharField(required=True)
 
 
 class ConsentStageView(ChallengeStageView):
@@ -44,12 +48,15 @@ class ConsentStageView(ChallengeStageView):
     response_class = ConsentChallengeResponse
 
     def get_challenge(self) -> Challenge:
+        token = str(uuid4())
+        self.request.session[SESSION_KEY_CONSENT_TOKEN] = token
         data = {
             "type": ChallengeTypes.NATIVE.value,
             "permissions": self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_PERMISSIONS, []),
             "additional_permissions": self.executor.plan.context.get(
                 PLAN_CONTEXT_CONSNET_EXTRA_PERMISSIONS, []
             ),
+            "token": token,
         }
         if PLAN_CONTEXT_CONSENT_TITLE in self.executor.plan.context:
             data["title"] = self.executor.plan.context[PLAN_CONTEXT_CONSENT_TITLE]
@@ -102,6 +109,8 @@ class ConsentStageView(ChallengeStageView):
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
+        if response.data["token"] != self.request.session[SESSION_KEY_CONSENT_TOKEN]:
+            return self.get(self.request)
         current_stage: ConsentStage = self.executor.current_stage
         if PLAN_CONTEXT_APPLICATION not in self.executor.plan.context:
             return self.executor.stage_ok()

@@ -20523,11 +20523,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Permission'
+        token:
+          type: string
       required:
       - additional_permissions
       - pending_user
       - pending_user_avatar
       - permissions
+      - token
       - type
     ConsentChallengeResponseRequest:
       type: object
@@ -20537,6 +20540,11 @@ components:
           type: string
           minLength: 1
           default: ak-stage-consent
+        token:
+          type: string
+          minLength: 1
+      required:
+      - token
     ConsentStage:
       type: object
       description: ConsentStage Serializer
