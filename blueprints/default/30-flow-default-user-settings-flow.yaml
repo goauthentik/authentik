@@ -3,9 +3,9 @@ entries:
     compatibility_mode: false
     designation: stage_configuration
     layout: stacked
-    name: Update your info
+    name: User settings
     policy_engine_mode: any
-    title: ''
+    title: Update your info
   identifiers:
     slug: default-user-settings-flow
   model: authentik_flows.flow
