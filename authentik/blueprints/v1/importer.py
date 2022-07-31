@@ -108,7 +108,8 @@ class Importer:
         """Validate a single entry"""
         model_app_label, model_name = entry.model.split(".")
         model: type[SerializerModel] = apps.get_model(model_app_label, model_name)
-        if isinstance(model(), EXCLUDED_MODELS):
+        # Don't use isinstance since we don't want to check for inheritance
+        if model in EXCLUDED_MODELS:
             raise EntryInvalidError(f"Model {model} not allowed")
 
         # If we try to validate without referencing a possible instance

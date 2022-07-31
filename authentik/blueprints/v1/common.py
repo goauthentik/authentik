@@ -5,6 +5,8 @@ from typing import Any
 from uuid import UUID
 
 from django.core.serializers.json import DjangoJSONEncoder
+from rest_framework.fields import Field
+from rest_framework.serializers import Serializer
 from yaml import SafeDumper
 
 from authentik.lib.models import SerializerModel
@@ -13,29 +15,13 @@ from authentik.lib.sentry import SentryIgnoredException
 
 def get_attrs(obj: SerializerModel) -> dict[str, Any]:
     """Get object's attributes via their serializer, and convert it to a normal dict"""
-    data = dict(obj.serializer(obj).data)
-    to_remove = (
-        "policies",
-        "stages",
-        "pk",
-        "background",
-        "group",
-        "user",
-        "verbose_name",
-        "verbose_name_plural",
-        "component",
-        "flow_set",
-        "promptstage_set",
-        "policybindingmodel_ptr_id",
-        "export_url",
-        "meta_model_name",
-    )
-    for to_remove_name in to_remove:
-        if to_remove_name in data:
-            data.pop(to_remove_name)
-    for key in list(data.keys()):
-        if key.endswith("_obj"):
-            data.pop(key)
+    serializer: Serializer = obj.serializer(obj)
+    data = dict(serializer.data)
+
+    for field_name, _field in serializer.fields.items():
+        _field: Field
+        if _field.read_only:
+            data.pop(field_name, None)
     return data
 
 
