@@ -1,4 +1,4 @@
-"""Flow importer"""
+"""Blueprint importer"""
 from contextlib import contextmanager
 from copy import deepcopy
 from typing import Any
@@ -15,7 +15,7 @@ from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
 from yaml import safe_load
 
-from authentik.blueprints.v1.common import EntryInvalidError, FlowBundle, FlowBundleEntry
+from authentik.blueprints.v1.common import Blueprint, BlueprintEntry, EntryInvalidError
 from authentik.core.models import (
     AuthenticatedSession,
     PropertyMapping,
@@ -63,7 +63,7 @@ class Importer:
         self.logger = get_logger()
         import_dict = safe_load(yaml_input)
         try:
-            self.__import = from_dict(FlowBundle, import_dict)
+            self.__import = from_dict(Blueprint, import_dict)
         except DaciteError as exc:
             raise EntryInvalidError from exc
 
@@ -104,7 +104,7 @@ class Importer:
             sub_query &= Q(**{identifier: value})
         return main_query | sub_query
 
-    def _validate_single(self, entry: FlowBundleEntry) -> BaseSerializer:
+    def _validate_single(self, entry: BlueprintEntry) -> BaseSerializer:
         """Validate a single entry"""
         model_app_label, model_name = entry.model.split(".")
         model: type[SerializerModel] = apps.get_model(model_app_label, model_name)

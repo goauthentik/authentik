@@ -4,10 +4,9 @@ from enum import Enum
 from typing import Any
 from uuid import UUID
 
-from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework.fields import Field
 from rest_framework.serializers import Serializer
-from yaml import SafeDumper
+from yaml import SafeDumper, SafeLoader, ScalarNode
 
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
@@ -26,7 +25,7 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
 
 
 @dataclass
-class FlowBundleEntry:
+class BlueprintEntry:
     """Single entry of a bundle"""
 
     identifiers: dict[str, Any]
@@ -34,7 +33,7 @@ class FlowBundleEntry:
     attrs: dict[str, Any]
 
     @staticmethod
-    def from_model(model: SerializerModel, *extra_identifier_names: str) -> "FlowBundleEntry":
+    def from_model(model: SerializerModel, *extra_identifier_names: str) -> "BlueprintEntry":
         """Convert a SerializerModel instance to a Bundle Entry"""
         identifiers = {
             "pk": model.pk,
@@ -43,7 +42,7 @@ class FlowBundleEntry:
 
         for extra_identifier_name in extra_identifier_names:
             identifiers[extra_identifier_name] = all_attrs.pop(extra_identifier_name)
-        return FlowBundleEntry(
+        return BlueprintEntry(
             identifiers=identifiers,
             model=f"{model._meta.app_label}.{model._meta.model_name}",
             attrs=all_attrs,
@@ -51,27 +50,20 @@ class FlowBundleEntry:
 
 
 @dataclass
-class FlowBundle:
+class Blueprint:
     """Dataclass used for a full export"""
 
     version: int = field(default=1)
-    entries: list[FlowBundleEntry] = field(default_factory=list)
+    entries: list[BlueprintEntry] = field(default_factory=list)
 
 
-class DataclassEncoder(DjangoJSONEncoder):
-    """Convert FlowBundleEntry to json"""
+@dataclass
+class KeyOf:
 
-    def default(self, o):
-        if is_dataclass(o):
-            return asdict(o)
-        if isinstance(o, UUID):
-            return str(o)
-        if isinstance(o, Enum):
-            return o.value
-        return super().default(o)  # pragma: no cover
+    id_from: str
 
 
-class DataclassDumper(SafeDumper):
+class BlueprintDumper(SafeDumper):
     """Dump dataclasses to yaml"""
 
     default_flow_style = False
@@ -85,6 +77,17 @@ class DataclassDumper(SafeDumper):
         if is_dataclass(data):
             data = asdict(data)
         return super().represent(data)
+
+
+class BlueprintLoader(SafeLoader):
+    """Loader for blueprints with custom tag support"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.add_constructor("!ak/KeyOf", BlueprintLoader.construct_key_of)
+
+    def construct_key_of(self, node: ScalarNode):
+        return KeyOf(node.value)
 
 
 class EntryInvalidError(SentryIgnoredException):
