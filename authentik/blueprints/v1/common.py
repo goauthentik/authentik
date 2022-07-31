@@ -55,22 +55,25 @@ class BlueprintEntry:
             attrs=all_attrs,
         )
 
-    def dict_checker(self, in_dict: dict, blueprint: "Blueprint"):
+    def tag_resolver(self, value: Any, blueprint: "Blueprint") -> Any:
         """Check if we have any special tags that need handling"""
-        for key, value in in_dict.items():
-            if isinstance(value, YAMLTag):
-                in_dict[key] = value.resolve(self, blueprint)
-            if isinstance(value, dict):
-                in_dict[key] = self.dict_checker(value, blueprint)
-        return in_dict
+        if isinstance(value, YAMLTag):
+            return value.resolve(self, blueprint)
+        if isinstance(value, dict):
+            for key, inner_value in value.items():
+                value[key] = self.tag_resolver(inner_value, blueprint)
+        if isinstance(value, list):
+            for idx, inner_value in enumerate(value):
+                value[idx] = self.tag_resolver(inner_value, blueprint)
+        return value
 
     def get_attrs(self, blueprint: "Blueprint") -> dict[str, Any]:
         """Get attributes of this entry, with all yaml tags resolved"""
-        return self.dict_checker(self.attrs, blueprint)
+        return self.tag_resolver(self.attrs, blueprint)
 
     def get_identifiers(self, blueprint: "Blueprint") -> dict[str, Any]:
         """Get attributes of this entry, with all yaml tags resolved"""
-        return self.dict_checker(self.identifiers, blueprint)
+        return self.tag_resolver(self.identifiers, blueprint)
 
 
 @dataclass
