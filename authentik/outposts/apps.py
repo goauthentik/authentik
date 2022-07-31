@@ -34,6 +34,7 @@ class AuthentikOutpostConfig(AppConfig):
             pass
 
     def reconcile_embedded_outpost(self):
+        """Reconcile embedded outpost"""
         from authentik.outposts.models import (
             DockerServiceConnection,
             KubernetesServiceConnection,

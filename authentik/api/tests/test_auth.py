@@ -10,7 +10,7 @@ from authentik.api.authentication import bearer_auth
 from authentik.core.models import USER_ATTRIBUTE_SA, Token, TokenIntents
 from authentik.core.tests.utils import create_test_flow
 from authentik.lib.generators import generate_id
-from authentik.outposts.managed import OutpostManager
+from authentik.outposts.apps import AuthentikOutpostConfig
 from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
 from authentik.providers.oauth2.models import OAuth2Provider, RefreshToken
 
@@ -44,7 +44,7 @@ class TestAPIAuth(TestCase):
         with self.assertRaises(AuthenticationFailed):
             user = bearer_auth(f"Bearer {settings.SECRET_KEY}".encode())
 
-        OutpostManager().run()
+        AuthentikOutpostConfig().reconcile_embedded_outpost()
         user = bearer_auth(f"Bearer {settings.SECRET_KEY}".encode())
         self.assertEqual(user.attributes[USER_ATTRIBUTE_SA], True)
 

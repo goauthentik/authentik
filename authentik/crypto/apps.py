@@ -46,6 +46,7 @@ class AuthentikCryptoConfig(AppConfig):
         cert.save()
 
     def reconcile_managed_jwt_cert(self):
+        """Reconcile managed JWT certificate"""
         from authentik.crypto.models import CertificateKeyPair
 
         certs = CertificateKeyPair.objects.filter(managed=MANAGED_KEY)

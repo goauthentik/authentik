@@ -26,6 +26,7 @@ class AuthentikCoreConfig(AppConfig):
             pass
 
     def ensure_source_inbuilt(self):
+        """Reconcile inbuilt source"""
         from authentik.core.models import Source
 
         Source.objects.update_or_create(
