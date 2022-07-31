@@ -38,6 +38,7 @@ class BlueprintInstanceStatus(models.TextChoices):
     SUCCESSFUL = "successful"
     WARNING = "warning"
     ERROR = "error"
+    ORPHANED = "orphaned"
     UNKNOWN = "unknown"
 
 
@@ -51,6 +52,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
     path = models.TextField()
     context = models.JSONField()
     last_applied = models.DateTimeField(auto_now=True)
+    last_applied_hash = models.TextField()
     status = models.TextField(choices=BlueprintInstanceStatus.choices)
     enabled = models.BooleanField(default=True)
     managed_models = ArrayField(models.TextField())
