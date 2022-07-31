@@ -24,6 +24,6 @@ def pbflow_tester(file_name: str) -> Callable:
     return tester
 
 
-for flow_file in glob("website/static/flows/*.akflow"):
+for flow_file in glob("website/static/flows/*.yaml"):
     method_name = Path(flow_file).stem.replace("-", "_").replace(".", "_")
     setattr(TestTransportDocs, f"test_flow_{method_name}", pbflow_tester(flow_file))

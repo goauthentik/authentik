@@ -5869,7 +5869,7 @@ paths:
   /flows/instances/{slug}/export/:
     get:
       operationId: flows_instances_export_retrieve
-      description: Export flow to .akflow file
+      description: Export flow to .yaml file
       parameters:
       - in: path
         name: slug
@@ -6013,7 +6013,7 @@ paths:
   /flows/instances/import_flow/:
     post:
       operationId: flows_instances_import_flow_create
-      description: Import flow from .akflow file
+      description: Import flow from .yaml file
       tags:
       - flows
       requestBody:

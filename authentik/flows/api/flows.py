@@ -163,7 +163,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     )
     @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
     def import_flow(self, request: Request) -> Response:
-        """Import flow from .akflow file"""
+        """Import flow from .yaml file"""
         file = request.FILES.get("file", None)
         if not file:
             return HttpResponseBadRequest()
@@ -195,11 +195,11 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     @action(detail=True, pagination_class=None, filter_backends=[])
     # pylint: disable=unused-argument
     def export(self, request: Request, slug: str) -> Response:
-        """Export flow to .akflow file"""
+        """Export flow to .yaml file"""
         flow = self.get_object()
         exporter = Exporter(flow)
         response = HttpResponse(content=exporter.export_to_string())
-        response["Content-Disposition"] = f'attachment; filename="{flow.slug}.akflow"'
+        response["Content-Disposition"] = f'attachment; filename="{flow.slug}.yaml"'
         return response
 
     @extend_schema(responses={200: FlowDiagramSerializer()})
