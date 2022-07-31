@@ -17,7 +17,7 @@ from authentik.flows.models import Flow
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.e2e.utils import SeleniumTestCase, reconcile_app, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -165,6 +165,7 @@ class TestProviderLDAP(SeleniumTestCase):
         "blueprints/default/10-flow-default-authentication-flow.yaml",
         "blueprints/default/10-flow-default-invalidation-flow.yaml",
     )
+    @reconcile_app("authentik_outposts")
     def test_ldap_bind_search(self):
         """Test simple bind + search"""
         outpost = self._prepare()
