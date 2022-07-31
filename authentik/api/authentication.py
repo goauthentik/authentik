@@ -65,7 +65,7 @@ def bearer_auth(raw_header: bytes) -> Optional[User]:
 def token_secret_key(value: str) -> Optional[User]:
     """Check if the token is the secret key
     and return the service account for the managed outpost"""
-    from authentik.outposts.managed import MANAGED_OUTPOST
+    from authentik.outposts.apps import MANAGED_OUTPOST
 
     if value != settings.SECRET_KEY:
         return None

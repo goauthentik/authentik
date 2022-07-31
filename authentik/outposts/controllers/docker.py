@@ -14,10 +14,10 @@ from structlog.stdlib import get_logger
 from yaml import safe_dump
 
 from authentik import __version__
+from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.base import BaseClient, BaseController, ControllerException
 from authentik.outposts.docker_ssh import DockerInlineSSH, SSHManagedExternallyException
 from authentik.outposts.docker_tls import DockerInlineTLS
-from authentik.outposts.managed import MANAGED_OUTPOST
 from authentik.outposts.models import (
     DockerServiceConnection,
     Outpost,

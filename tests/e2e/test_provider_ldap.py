@@ -13,7 +13,7 @@ from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 from authentik.core.models import Application, User
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
-from authentik.outposts.managed import MANAGED_OUTPOST
+from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
 from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry

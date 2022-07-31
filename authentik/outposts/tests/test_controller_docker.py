@@ -3,9 +3,9 @@ from django.test import TestCase
 from docker.models.containers import Container
 
 from authentik.blueprints.manager import ObjectManager
+from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.base import ControllerException
 from authentik.outposts.controllers.docker import DockerController
-from authentik.outposts.managed import MANAGED_OUTPOST
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostType
 from authentik.providers.proxy.controllers.docker import ProxyDockerController
 

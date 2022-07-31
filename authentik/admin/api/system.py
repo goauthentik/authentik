@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.outposts.managed import MANAGED_OUTPOST
+from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
 
 
