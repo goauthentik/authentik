@@ -6035,6 +6035,10 @@ paths:
       operationId: managed_blueprints_list
       description: Blueprint instances
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -6053,6 +6057,10 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: path
+        schema:
+          type: string
       - name: search
         required: false
         in: query
@@ -20858,6 +20866,8 @@ components:
       type: object
       description: Info about a single blueprint instance file
       properties:
+        name:
+          type: string
         path:
           type: string
         context:
@@ -20869,15 +20879,21 @@ components:
           readOnly: true
         status:
           $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+        enabled:
+          type: boolean
       required:
       - context
       - last_applied
+      - name
       - path
       - status
     BlueprintInstanceRequest:
       type: object
       description: Info about a single blueprint instance file
       properties:
+        name:
+          type: string
+          minLength: 1
         path:
           type: string
           minLength: 1
@@ -20886,8 +20902,11 @@ components:
           additionalProperties: {}
         status:
           $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+        enabled:
+          type: boolean
       required:
       - context
+      - name
       - path
       - status
     BlueprintInstanceStatusEnum:
@@ -27755,6 +27774,9 @@ components:
       type: object
       description: Info about a single blueprint instance file
       properties:
+        name:
+          type: string
+          minLength: 1
         path:
           type: string
           minLength: 1
@@ -27763,6 +27785,8 @@ components:
           additionalProperties: {}
         status:
           $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+        enabled:
+          type: boolean
     PatchedCaptchaStageRequest:
       type: object
       description: CaptchaStage Serializer

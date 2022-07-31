@@ -27,10 +27,12 @@ class BlueprintInstanceSerializer(ModelSerializer):
 
         model = BlueprintInstance
         fields = [
+            "name",
             "path",
             "context",
             "last_applied",
             "status",
+            "enabled",
         ]
 
 
@@ -40,6 +42,8 @@ class BlueprintInstanceViewSet(ModelViewSet):
     permission_classes = [IsAdminUser]
     serializer_class = BlueprintInstanceSerializer
     queryset = BlueprintInstance.objects.all()
+    search_fields = ["name", "path"]
+    filterset_fields = ["name", "path"]
 
     @extend_schema(responses={200: ListSerializer(child=CharField())})
     @action(detail=False, pagination_class=None, filter_backends=[])
