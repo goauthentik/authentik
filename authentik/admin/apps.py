@@ -1,19 +1,20 @@
 """authentik admin app config"""
-from importlib import import_module
-
-from django.apps import AppConfig
 from prometheus_client import Gauge, Info
+
+from authentik.blueprints.manager import ManagedAppConfig
 
 PROM_INFO = Info("authentik_version", "Currently running authentik version")
 GAUGE_WORKERS = Gauge("authentik_admin_workers", "Currently connected workers")
 
 
-class AuthentikAdminConfig(AppConfig):
+class AuthentikAdminConfig(ManagedAppConfig):
     """authentik admin app config"""
 
     name = "authentik.admin"
     label = "authentik_admin"
     verbose_name = "authentik Admin"
+    default = True
 
-    def ready(self):
-        import_module("authentik.admin.signals")
+    def reconcile_load_admin_signals(self):
+        """Load admin signals"""
+        self.import_module("authentik.admin.signals")

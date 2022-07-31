@@ -1,8 +1,7 @@
 """authentik policies app config"""
-from importlib import import_module
-
-from django.apps import AppConfig
 from prometheus_client import Gauge, Histogram
+
+from authentik.blueprints.manager import ManagedAppConfig
 
 GAUGE_POLICIES_CACHED = Gauge(
     "authentik_policies_cached",
@@ -27,12 +26,14 @@ HIST_POLICIES_EXECUTION_TIME = Histogram(
 )
 
 
-class AuthentikPoliciesConfig(AppConfig):
+class AuthentikPoliciesConfig(ManagedAppConfig):
     """authentik policies app config"""
 
     name = "authentik.policies"
     label = "authentik_policies"
     verbose_name = "authentik Policies"
+    default = True
 
-    def ready(self):
-        import_module("authentik.policies.signals")
+    def reconcile_load_policies_signals(self):
+        """Load policies signals"""
+        self.import_module("authentik.policies.signals")

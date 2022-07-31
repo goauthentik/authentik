@@ -8,8 +8,3 @@ class AuthentikBlueprintsConfig(AppConfig):
     name = "authentik.blueprints"
     label = "authentik_blueprints"
     verbose_name = "authentik Blueprints"
-
-    def ready(self) -> None:
-        from authentik.blueprints.tasks import managed_reconcile
-
-        managed_reconcile.delay()

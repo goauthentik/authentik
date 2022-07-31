@@ -1,10 +1,7 @@
 """authentik flows app config"""
-from importlib import import_module
-
-from django.apps import AppConfig
-from django.db.utils import ProgrammingError
 from prometheus_client import Gauge, Histogram
 
+from authentik.blueprints.manager import ManagedAppConfig
 from authentik.lib.utils.reflection import all_subclasses
 
 GAUGE_FLOWS_CACHED = Gauge(
@@ -18,20 +15,22 @@ HIST_FLOWS_PLAN_TIME = Histogram(
 )
 
 
-class AuthentikFlowsConfig(AppConfig):
+class AuthentikFlowsConfig(ManagedAppConfig):
     """authentik flows app config"""
 
     name = "authentik.flows"
     label = "authentik_flows"
     mountpoint = "flows/"
     verbose_name = "authentik Flows"
+    default = True
 
-    def ready(self):
-        import_module("authentik.flows.signals")
-        try:
-            from authentik.flows.models import Stage
+    def reconcile_load_flows_signals(self):
+        """Load flows signals"""
+        self.import_module("authentik.flows.signals")
 
-            for stage in all_subclasses(Stage):
-                _ = stage().type
-        except ProgrammingError:
-            pass
+    def reconcile_stages_loaded(self):
+        """Ensure all stages are loaded"""
+        from authentik.flows.models import Stage
+
+        for stage in all_subclasses(Stage):
+            _ = stage().type

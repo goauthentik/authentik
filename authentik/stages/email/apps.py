@@ -1,30 +1,26 @@
 """authentik email stage config"""
-from importlib import import_module
-
-from django.apps import AppConfig
-from django.db import ProgrammingError
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import get_template
 from structlog.stdlib import get_logger
 
+from authentik.blueprints.manager import ManagedAppConfig
+
 LOGGER = get_logger()
 
 
-class AuthentikStageEmailConfig(AppConfig):
+class AuthentikStageEmailConfig(ManagedAppConfig):
     """authentik email stage config"""
 
     name = "authentik.stages.email"
     label = "authentik_stages_email"
     verbose_name = "authentik Stages.Email"
+    default = True
 
-    def ready(self):
-        import_module("authentik.stages.email.tasks")
-        try:
-            self.validate_stage_templates()
-        except ProgrammingError:
-            pass
+    def reconcile_load_stages_emails_tasks(self):
+        """Load stages.emails tasks"""
+        self.import_module("authentik.stages.email.tasks")
 
-    def validate_stage_templates(self):
+    def reconcile_stage_templates_valid(self):
         """Ensure all stage's templates actually exist"""
         from authentik.events.models import Event, EventAction
         from authentik.stages.email.models import EmailStage, EmailTemplates

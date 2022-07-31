@@ -1,8 +1,7 @@
 """authentik events app"""
-from importlib import import_module
-
-from django.apps import AppConfig
 from prometheus_client import Gauge
+
+from authentik.blueprints.manager import ManagedAppConfig
 
 GAUGE_TASKS = Gauge(
     "authentik_system_tasks",
@@ -11,12 +10,14 @@ GAUGE_TASKS = Gauge(
 )
 
 
-class AuthentikEventsConfig(AppConfig):
+class AuthentikEventsConfig(ManagedAppConfig):
     """authentik events app"""
 
     name = "authentik.events"
     label = "authentik_events"
     verbose_name = "authentik Events"
+    default = True
 
-    def ready(self):
-        import_module("authentik.events.signals")
+    def reconcile_load_events_signals(self):
+        """Load events signals"""
+        self.import_module("authentik.events.signals")

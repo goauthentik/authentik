@@ -1,16 +1,19 @@
 """Authentik reputation_policy app config"""
-from importlib import import_module
-
-from django.apps import AppConfig
+from authentik.blueprints.manager import ManagedAppConfig
 
 
-class AuthentikPolicyReputationConfig(AppConfig):
+class AuthentikPolicyReputationConfig(ManagedAppConfig):
     """Authentik reputation app config"""
 
     name = "authentik.policies.reputation"
     label = "authentik_policies_reputation"
     verbose_name = "authentik Policies.Reputation"
+    default = True
 
-    def ready(self):
-        import_module("authentik.policies.reputation.signals")
-        import_module("authentik.policies.reputation.tasks")
+    def reconcile_load_policies_reputation_signals(self):
+        """Load policies.reputation signals"""
+        self.import_module("authentik.policies.reputation.signals")
+
+    def reconcile_load_policies_reputation_tasks(self):
+        """Load policies.reputation tasks"""
+        self.import_module("authentik.policies.reputation.tasks")
