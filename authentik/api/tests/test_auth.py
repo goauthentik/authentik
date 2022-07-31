@@ -44,7 +44,7 @@ class TestAPIAuth(TestCase):
         with self.assertRaises(AuthenticationFailed):
             user = bearer_auth(f"Bearer {settings.SECRET_KEY}".encode())
 
-        apps.get_app_config("authentik_api").reconcile_embedded_outpost()
+        apps.get_app_config("authentik_outposts").reconcile_embedded_outpost()
         user = bearer_auth(f"Bearer {settings.SECRET_KEY}".encode())
         self.assertEqual(user.attributes[USER_ATTRIBUTE_SA], True)
 

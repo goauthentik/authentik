@@ -83,8 +83,8 @@ class TestProviderLDAP(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml"
-        "blueprints/default/10-flow-default-invalidation-flow.yaml"
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint("blueprints/system/providers-saml.yaml")
     def test_ldap_bind_success(self):
@@ -111,8 +111,8 @@ class TestProviderLDAP(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml"
-        "blueprints/default/10-flow-default-invalidation-flow.yaml"
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint("blueprints/system/providers-saml.yaml")
     def test_ldap_bind_success_ssl(self):
@@ -139,8 +139,8 @@ class TestProviderLDAP(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml"
-        "blueprints/default/10-flow-default-invalidation-flow.yaml"
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint("blueprints/system/providers-saml.yaml")
     def test_ldap_bind_fail(self):
@@ -165,8 +165,8 @@ class TestProviderLDAP(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml"
-        "blueprints/default/10-flow-default-invalidation-flow.yaml"
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint("blueprints/system/providers-saml.yaml")
     def test_ldap_bind_search(self):
