@@ -5,7 +5,6 @@ from django.test import TestCase
 from django.urls import reverse
 
 from authentik import __version__
-from authentik.blueprints.tasks import managed_reconcile
 from authentik.core.models import Group, User
 from authentik.core.tasks import clean_expired_models
 from authentik.events.monitored_tasks import TaskResultStatus
@@ -91,11 +90,4 @@ class TestAdminAPI(TestCase):
     def test_apps(self):
         """Test apps API"""
         response = self.client.get(reverse("authentik_api:apps-list"))
-        self.assertEqual(response.status_code, 200)
-
-    def test_system(self):
-        """Test system API"""
-        # pyright: reportGeneralTypeIssues=false
-        managed_reconcile()  # pylint: disable=no-value-for-parameter
-        response = self.client.get(reverse("authentik_api:admin_system"))
         self.assertEqual(response.status_code, 200)

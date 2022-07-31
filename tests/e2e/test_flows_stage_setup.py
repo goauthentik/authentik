@@ -5,11 +5,12 @@ from unittest.case import skipUnless
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+from authentik.blueprints import apply_blueprint
 from authentik.core.models import User
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.generators import generate_key
 from authentik.stages.password.models import PasswordStage
-from tests.e2e.utils import SeleniumTestCase, apply_migration, retry
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -17,9 +18,11 @@ class TestFlowsStageSetup(SeleniumTestCase):
     """test stage setup flows"""
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_stages_password", "0002_passwordstage_change_flow")
+    @apply_blueprint("blueprints/default/0-flow-password-change.yaml")
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml"
+        "blueprints/default/10-flow-default-invalidation-flow.yaml"
+    )
     def test_password_change(self):
         """test password change flow"""
         # Ensure that password stage has change_flow set

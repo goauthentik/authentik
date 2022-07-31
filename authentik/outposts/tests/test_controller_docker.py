@@ -1,8 +1,9 @@
 """Docker controller tests"""
+from django.apps import apps
 from django.test import TestCase
 from docker.models.containers import Container
 
-from authentik.outposts.apps import MANAGED_OUTPOST, AuthentikOutpostConfig
+from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.base import ControllerException
 from authentik.outposts.controllers.docker import DockerController
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostType
@@ -18,7 +19,7 @@ class DockerControllerTests(TestCase):
             type=OutpostType.PROXY,
         )
         self.integration = DockerServiceConnection(name="test")
-        AuthentikOutpostConfig().reconcile()
+        apps.get_app_config("authentik_outposts").reconcile()
 
     def test_init_managed(self):
         """Docker controller shouldn't do anything for managed outpost"""

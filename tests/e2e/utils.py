@@ -10,7 +10,6 @@ from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection
 from django.db.migrations.loader import MigrationLoader
-from django.db.migrations.operations.special import RunPython
 from django.test.testcases import TransactionTestCase
 from django.urls import reverse
 from docker import DockerClient, from_env
@@ -25,7 +24,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from structlog.stdlib import get_logger
 
-from authentik.blueprints.manager import ObjectManager
+from authentik.blueprints.manager import ManagedAppConfig
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
@@ -193,37 +192,22 @@ def get_loader():
     return MigrationLoader(connection)
 
 
-def apply_migration(app_name: str, migration_name: str):
-    """Re-apply migrations that create objects using RunPython before test cases"""
+def reconcile_app(app_name: str):
+    """Re-reconcile AppConfig methods"""
 
-    def wrapper_outter(func: Callable):
-        """Retry test multiple times"""
+    def wrapper_outer(func: Callable):
+        """Re-reconcile AppConfig methods"""
 
         @wraps(func)
         def wrapper(self: TransactionTestCase, *args, **kwargs):
-            migration = get_loader().get_migration(app_name, migration_name)
-            with connection.schema_editor() as schema_editor:
-                for operation in migration.operations:
-                    if not isinstance(operation, RunPython):
-                        continue
-                    operation.code(apps, schema_editor)
+            config = apps.get_app_config(app_name)
+            if isinstance(config, ManagedAppConfig):
+                config.reconcile()
             return func(self, *args, **kwargs)
 
         return wrapper
 
-    return wrapper_outter
-
-
-def object_manager(func: Callable):
-    """Run objectmanager before a test function"""
-
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        """Run objectmanager before a test function"""
-        ObjectManager().run()
-        return func(*args, **kwargs)
-
-    return wrapper
+    return wrapper_outer
 
 
 def retry(max_retires=RETRIES, exceptions=None):

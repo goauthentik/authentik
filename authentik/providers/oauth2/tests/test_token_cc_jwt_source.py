@@ -6,7 +6,7 @@ from django.test import RequestFactory
 from django.urls import reverse
 from jwt import decode
 
-from authentik.blueprints.manager import ObjectManager
+from authentik.blueprints import apply_blueprint
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id, generate_key
@@ -26,9 +26,9 @@ from authentik.sources.oauth.models import OAuthSource
 class TestTokenClientCredentialsJWTSource(OAuthTestCase):
     """Test token (client_credentials, with JWT) view"""
 
+    @apply_blueprint("blueprints/system/providers-oauth2.yaml")
     def setUp(self) -> None:
         super().setUp()
-        ObjectManager().run()
         self.factory = RequestFactory()
         self.cert = create_test_cert()
 

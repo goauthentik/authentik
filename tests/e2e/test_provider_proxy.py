@@ -11,12 +11,13 @@ from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 
 from authentik import __version__
+from authentik.blueprints import apply_blueprint
 from authentik.core.models import Application
 from authentik.flows.models import Flow
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
 from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, reconcile_app, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -53,11 +54,15 @@ class TestProviderProxy(SeleniumTestCase):
         return container
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @reconcile_app("authentik_crypto")
     def test_proxy_simple(self):
         """Test simple outpost setup with single provider"""
         # set additionalHeaders to test later
@@ -116,11 +121,15 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     """Test Proxy connectivity over websockets"""
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @reconcile_app("authentik_crypto")
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
         outpost_local_connection()

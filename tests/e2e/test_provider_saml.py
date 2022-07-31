@@ -10,6 +10,7 @@ from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from authentik.blueprints import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
@@ -17,7 +18,7 @@ from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.sources.saml.processors.constants import SAML_BINDING_POST
-from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, reconcile_app, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -63,11 +64,15 @@ class TestProviderSAML(SeleniumTestCase):
             sleep(1)
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @reconcile_app("authentik_crypto")
     def test_sp_initiated_implicit(self):
         """test SAML Provider flow SP-initiated flow (implicit consent)"""
         # Bootstrap all needed objects
@@ -125,11 +130,15 @@ class TestProviderSAML(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @reconcile_app("authentik_crypto")
     def test_sp_initiated_explicit(self):
         """test SAML Provider flow SP-initiated flow (explicit consent)"""
         # Bootstrap all needed objects
@@ -202,11 +211,15 @@ class TestProviderSAML(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @reconcile_app("authentik_crypto")
     def test_sp_initiated_explicit_post(self):
         """test SAML Provider flow SP-initiated flow (explicit consent) (POST binding)"""
         # Bootstrap all needed objects
@@ -279,11 +292,15 @@ class TestProviderSAML(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @reconcile_app("authentik_crypto")
     def test_idp_initiated_implicit(self):
         """test SAML Provider flow IdP-initiated flow (implicit consent)"""
         # Bootstrap all needed objects
@@ -347,11 +364,15 @@ class TestProviderSAML(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @reconcile_app("authentik_crypto")
     def test_sp_initiated_denied(self):
         """test SAML Provider flow SP-initiated flow (Policy denies access)"""
         # Bootstrap all needed objects

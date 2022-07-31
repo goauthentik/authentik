@@ -2,7 +2,8 @@
 from sys import platform
 from unittest.case import skipUnless
 
-from tests.e2e.utils import SeleniumTestCase, apply_migration, retry
+from authentik.blueprints import apply_blueprint
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -10,8 +11,10 @@ class TestFlowsLogin(SeleniumTestCase):
     """test default login flow"""
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml"
+        "blueprints/default/10-flow-default-invalidation-flow.yaml"
+    )
     def test_login(self):
         """test default login flow"""
         self.driver.get(

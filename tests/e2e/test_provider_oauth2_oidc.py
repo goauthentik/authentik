@@ -10,6 +10,7 @@ from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from authentik.blueprints import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
@@ -22,7 +23,7 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_PROFILE,
 )
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
-from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, reconcile_app, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -64,10 +65,15 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             sleep(1)
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @reconcile_app("authentik_crypto")
     def test_redirect_uri_error(self):
         """test OpenID Provider flow (invalid redirect URI, check error message)"""
         sleep(1)
@@ -105,11 +111,16 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @reconcile_app("authentik_crypto")
+    @apply_blueprint("blueprints/system/providers-oauth2.yaml")
     def test_authorization_consent_implied(self):
         """test OpenID Provider flow (default authorization flow with implied consent)"""
         sleep(1)
@@ -155,11 +166,16 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.assertEqual(body["UserInfo"]["email"], self.user.email)
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @reconcile_app("authentik_crypto")
+    @apply_blueprint("blueprints/system/providers-oauth2.yaml")
     def test_authorization_consent_explicit(self):
         """test OpenID Provider flow (default authorization flow with explicit consent)"""
         sleep(1)
@@ -220,10 +236,15 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.assertEqual(body["UserInfo"]["email"], self.user.email)
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @reconcile_app("authentik_crypto")
     def test_authorization_denied(self):
         """test OpenID Provider flow (default authorization with access deny)"""
         sleep(1)
