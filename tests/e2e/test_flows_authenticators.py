@@ -15,6 +15,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.blueprints import apply_blueprint
 from authentik.flows.models import Flow, FlowStageBinding
+from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
@@ -37,7 +38,11 @@ class TestFlowsAuthenticator(SeleniumTestCase):
 
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
         FlowStageBinding.objects.create(
-            target=flow, order=30, stage=AuthenticatorValidateStage.objects.create()
+            target=flow,
+            order=30,
+            stage=AuthenticatorValidateStage.objects.create(
+                name=generate_id(),
+            ),
         )
 
         self.driver.get(self.url("authentik_core:if-flow", flow_slug=flow.slug))
