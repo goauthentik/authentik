@@ -23,6 +23,8 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
         _field: Field
         if _field.read_only:
             data.pop(field_name, None)
+        if _field.default == data[field_name]:
+            data.pop(field_name, None)
     return data
 
 
