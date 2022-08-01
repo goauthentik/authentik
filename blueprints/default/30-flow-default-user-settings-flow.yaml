@@ -3,9 +3,9 @@ entries:
     compatibility_mode: false
     designation: stage_configuration
     layout: stacked
-    name: Update your info
+    name: User settings
     policy_engine_mode: any
-    title: ''
+    title: Update your info
   identifiers:
     slug: default-user-settings-flow
   model: authentik_flows.flow
@@ -108,9 +108,9 @@ entries:
 
       return True
     meta_model_name: authentik_policies_expression.expressionpolicy
-    name: default-user-settings-authorization
   identifiers:
     name: default-user-settings-authorization
+  id: default-user-settings-authorization
   model: authentik_policies_expression.expressionpolicy
 - attrs:
     create_users_as_inactive: false

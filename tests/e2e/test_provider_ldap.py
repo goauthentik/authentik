@@ -10,13 +10,14 @@ from guardian.shortcuts import get_anonymous_user
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 
+from authentik.blueprints import apply_blueprint
 from authentik.core.models import Application, User
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
-from authentik.outposts.managed import MANAGED_OUTPOST
+from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
-from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, reconcile_app, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -81,8 +82,10 @@ class TestProviderLDAP(SeleniumTestCase):
         return outpost
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
     def test_ldap_bind_success(self):
         """Test simple bind"""
         self._prepare()
@@ -106,8 +109,10 @@ class TestProviderLDAP(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
     def test_ldap_bind_success_ssl(self):
         """Test simple bind with ssl"""
         self._prepare()
@@ -131,8 +136,10 @@ class TestProviderLDAP(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
     def test_ldap_bind_fail(self):
         """Test simple bind (failed)"""
         self._prepare()
@@ -154,8 +161,11 @@ class TestProviderLDAP(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @reconcile_app("authentik_outposts")
     def test_ldap_bind_search(self):
         """Test simple bind + search"""
         outpost = self._prepare()

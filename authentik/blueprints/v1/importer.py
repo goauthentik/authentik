@@ -13,6 +13,8 @@ from django.db.utils import IntegrityError
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
+from structlog.testing import capture_logs
+from structlog.types import EventDict
 from yaml import load
 
 from authentik.blueprints.v1.common import (
@@ -198,17 +200,20 @@ class Importer:
             self.logger.debug("updated model", model=model, pk=model.pk)
         return True
 
-    def validate(self) -> bool:
-        """Validate loaded flow export, ensure all models are allowed
+    def validate(self) -> tuple[bool, list[EventDict]]:
+        """Validate loaded blueprint export, ensure all models are allowed
         and serializers have no errors"""
-        self.logger.debug("Starting flow import validation")
+        self.logger.debug("Starting blueprint import validation")
         orig_import = deepcopy(self.__import)
         if self.__import.version != 1:
             self.logger.warning("Invalid bundle version")
-            return False
-        with transaction_rollback():
+            return False, []
+        with (
+            transaction_rollback(),
+            capture_logs() as logs,
+        ):
             successful = self._apply_models()
             if not successful:
-                self.logger.debug("Flow validation failed")
+                self.logger.debug("blueprint validation failed")
         self.__import = orig_import
-        return successful
+        return successful, logs

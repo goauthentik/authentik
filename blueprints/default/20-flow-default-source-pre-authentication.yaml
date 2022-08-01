@@ -5,7 +5,7 @@ entries:
     layout: stacked
     name: Pre-Authentication
     policy_engine_mode: any
-    title: ''
+    title: Pre-authentication
   identifiers:
     slug: default-source-pre-authentication
   model: authentik_flows.flow

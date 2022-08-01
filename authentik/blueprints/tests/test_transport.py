@@ -37,14 +37,14 @@ class TestFlowTransport(TransactionTestCase):
     def test_bundle_invalid_format(self):
         """Test bundle with invalid format"""
         importer = Importer('{"version": 3}')
-        self.assertFalse(importer.validate())
+        self.assertFalse(importer.validate()[0])
         importer = Importer(
             (
                 '{"version": 1,"entries":[{"identifiers":{},"attrs":{},'
                 '"model": "authentik_core.User"}]}'
             )
         )
-        self.assertFalse(importer.validate())
+        self.assertFalse(importer.validate()[0])
 
     def test_export_validate_import(self):
         """Test export and validate it"""
@@ -70,7 +70,7 @@ class TestFlowTransport(TransactionTestCase):
             export_yaml = exporter.export_to_string()
 
         importer = Importer(export_yaml)
-        self.assertTrue(importer.validate())
+        self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 
         self.assertTrue(Flow.objects.filter(slug=flow_slug).exists())
@@ -80,7 +80,7 @@ class TestFlowTransport(TransactionTestCase):
         count_initial = Prompt.objects.filter(field_key="username").count()
 
         importer = Importer(STATIC_PROMPT_EXPORT)
-        self.assertTrue(importer.validate())
+        self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 
         count_before = Prompt.objects.filter(field_key="username").count()
@@ -116,7 +116,7 @@ class TestFlowTransport(TransactionTestCase):
             export_yaml = exporter.export_to_string()
 
         importer = Importer(export_yaml)
-        self.assertTrue(importer.validate())
+        self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         self.assertTrue(UserLoginStage.objects.filter(name=stage_name).exists())
         self.assertTrue(Flow.objects.filter(slug=flow_slug).exists())
@@ -160,5 +160,5 @@ class TestFlowTransport(TransactionTestCase):
 
         importer = Importer(export_yaml)
 
-        self.assertTrue(importer.validate())
+        self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())

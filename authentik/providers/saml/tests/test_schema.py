@@ -4,7 +4,7 @@ from base64 import b64encode
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
 
-from authentik.blueprints.manager import ObjectManager
+from authentik.blueprints import apply_blueprint
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.lib.tests.utils import get_request
 from authentik.lib.xml import lxml_from_string
@@ -18,8 +18,8 @@ from authentik.sources.saml.processors.request import RequestProcessor
 class TestSchema(TestCase):
     """Test Requests and Responses against schema"""
 
+    @apply_blueprint("blueprints/system/providers-saml.yaml")
     def setUp(self):
-        ObjectManager().run()
         cert = create_test_cert()
         self.provider: SAMLProvider = SAMLProvider.objects.create(
             authorization_flow=create_test_flow(),

@@ -13,6 +13,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from yaml import safe_dump
 
+from authentik.blueprints import apply_blueprint
 from authentik.core.models import User
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
@@ -20,7 +21,7 @@ from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.manager import MANAGER, SourceType
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, retry
 
 CONFIG_PATH = "/tmp/dex.yml"  # nosec
 
@@ -141,11 +142,19 @@ class TestSourceOAuth2(SeleniumTestCase):
         ident_stage.save()
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0009_source_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-source-authentication.yaml",
+        "blueprints/default/20-flow-default-source-enrollment.yaml",
+        "blueprints/default/20-flow-default-source-pre-authentication.yaml",
+    )
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""
         self.create_objects()
@@ -190,11 +199,14 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0009_source_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
     def test_oauth_enroll_auth(self):
         """test OAuth Source With With OIDC (enroll and authenticate again)"""
         self.test_oauth_enroll()
@@ -279,11 +291,15 @@ class TestSourceOAuth1(SeleniumTestCase):
         ident_stage.save()
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0009_source_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-source-authentication.yaml",
+        "blueprints/default/20-flow-default-source-enrollment.yaml",
+        "blueprints/default/20-flow-default-source-pre-authentication.yaml",
+    )
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""
         self.create_objects()

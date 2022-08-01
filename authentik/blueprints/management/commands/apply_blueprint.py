@@ -13,9 +13,9 @@ class Command(BaseCommand):  # pragma: no cover
         for blueprint_path in options.get("blueprints", []):
             with open(blueprint_path, "r", encoding="utf8") as blueprint_file:
                 importer = Importer(blueprint_file.read())
-                valid = importer.validate()
+                valid, logs = importer.validate()
                 if not valid:
-                    raise ValueError("blueprint invalid")
+                    raise ValueError(f"blueprint invalid: {logs}")
                 importer.apply()
 
     def add_arguments(self, parser):

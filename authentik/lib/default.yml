@@ -62,7 +62,6 @@ ldap:
   tls:
     ciphers: null
 
-config_file_dir: "/config"
 cookie_domain: null
 disable_update_check: false
 disable_startup_analytics: false
@@ -79,3 +78,6 @@ gdpr_compliance: true
 cert_discovery_dir: /certs
 default_token_length: 128
 impersonation: true
+
+blueprint_locations:
+  - /blueprints

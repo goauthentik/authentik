@@ -1,16 +1,55 @@
 """authentik crypto app config"""
-from importlib import import_module
+from datetime import datetime
+from typing import TYPE_CHECKING, Optional
 
-from django.apps import AppConfig
+from authentik.blueprints.manager import ManagedAppConfig
+
+if TYPE_CHECKING:
+    from authentik.crypto.models import CertificateKeyPair
+
+MANAGED_KEY = "goauthentik.io/crypto/jwt-managed"
 
 
-class AuthentikCryptoConfig(AppConfig):
+class AuthentikCryptoConfig(ManagedAppConfig):
     """authentik crypto app config"""
 
     name = "authentik.crypto"
     label = "authentik_crypto"
     verbose_name = "authentik Crypto"
+    default = True
 
-    def ready(self):
-        import_module("authentik.crypto.managed")
-        import_module("authentik.crypto.tasks")
+    def reconcile_load_crypto_tasks(self):
+        """Load crypto tasks"""
+        self.import_module("authentik.crypto.tasks")
+
+    def _create_update_cert(self, cert: Optional["CertificateKeyPair"] = None):
+        from authentik.crypto.builder import CertificateBuilder
+        from authentik.crypto.models import CertificateKeyPair
+
+        builder = CertificateBuilder()
+        builder.common_name = "goauthentik.io"
+        builder.build(
+            subject_alt_names=["goauthentik.io"],
+            validity_days=360,
+        )
+        if not cert:
+
+            cert = CertificateKeyPair()
+        cert.certificate_data = builder.certificate
+        cert.key_data = builder.private_key
+        cert.name = "authentik Internal JWT Certificate"
+        cert.managed = MANAGED_KEY
+        cert.save()
+
+    def reconcile_managed_jwt_cert(self):
+        """Ensure managed JWT certificate"""
+        from authentik.crypto.models import CertificateKeyPair
+
+        certs = CertificateKeyPair.objects.filter(managed=MANAGED_KEY)
+        if not certs.exists():
+            self._create_update_cert()
+            return
+        cert: CertificateKeyPair = certs.first()
+        now = datetime.now()
+        if now < cert.certificate.not_valid_before or now > cert.certificate.not_valid_after:
+            self._create_update_cert(cert)

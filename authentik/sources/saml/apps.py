@@ -1,17 +1,16 @@
 """Authentik SAML app config"""
-
-from importlib import import_module
-
-from django.apps import AppConfig
+from authentik.blueprints.manager import ManagedAppConfig
 
 
-class AuthentikSourceSAMLConfig(AppConfig):
+class AuthentikSourceSAMLConfig(ManagedAppConfig):
     """authentik saml source app config"""
 
     name = "authentik.sources.saml"
     label = "authentik_sources_saml"
     verbose_name = "authentik Sources.SAML"
     mountpoint = "source/saml/"
+    default = True
 
-    def ready(self):
-        import_module("authentik.sources.saml.signals")
+    def reconcile_load_sources_saml_signals(self):
+        """Load sources.saml signals"""
+        self.import_module("authentik.sources.saml.signals")

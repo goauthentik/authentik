@@ -33,8 +33,8 @@ test:
 	coverage report
 
 lint-fix:
-	isort authentik tests lifecycle
-	black authentik tests lifecycle
+	isort authentik tests scripts lifecycle
+	black authentik tests scripts lifecycle
 	codespell -I .github/codespell-words.txt -S 'web/src/locales/**' -w \
 		authentik \
 		internal \
@@ -90,6 +90,9 @@ gen-client-go:
 		-c /local/config.yaml
 	go mod edit -replace goauthentik.io/api/v3=./gen-go-api
 	rm -rf config.yaml ./templates/
+
+gen-dev-config:
+	python -m scripts.generate_config
 
 gen: gen-build gen-clean gen-client-web
 

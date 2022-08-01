@@ -10,8 +10,8 @@ from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
 
 from authentik import __version__
+from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.k8s.triggers import NeedsRecreate, NeedsUpdate
-from authentik.outposts.managed import MANAGED_OUTPOST
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController

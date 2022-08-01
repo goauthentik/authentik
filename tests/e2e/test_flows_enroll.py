@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from authentik.blueprints import apply_blueprint
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding
@@ -18,7 +19,7 @@ from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.user_login.models import UserLoginStage
 from authentik.stages.user_write.models import UserWriteStage
-from tests.e2e.utils import SeleniumTestCase, apply_migration, retry
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -39,8 +40,10 @@ class TestFlowsEnroll(SeleniumTestCase):
         }
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""
         # First stage fields
@@ -103,8 +106,10 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.assertEqual(user.email, "foo@bar.baz")
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
     def test_enroll_email(self):
         """Test enroll with Email verification"""
         # First stage fields

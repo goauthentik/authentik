@@ -58,6 +58,7 @@ def task_prerun_hook(task_id: str, task, *args, **kwargs):
 @task_postrun.connect
 def task_postrun_hook(task_id, task, *args, retval=None, state=None, **kwargs):
     """Log task_id on worker"""
+    CTX_TASK_ID.set(...)
     LOGGER.info("Task finished", task_id=task_id, task_name=task.__name__, state=state)
 
 
@@ -69,6 +70,7 @@ def task_error_hook(task_id, exception: Exception, traceback, *args, **kwargs):
     from authentik.events.models import Event, EventAction
 
     LOGGER.warning("Task failure", exc=exception)
+    CTX_TASK_ID.set(...)
     if before_send({}, {"exc_info": (None, exception, None)}) is not None:
         Event.new(EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception)).save()
 
@@ -76,7 +78,6 @@ def task_error_hook(task_id, exception: Exception, traceback, *args, **kwargs):
 def _get_startup_tasks() -> list[Callable]:
     """Get all tasks to be run on startup"""
     from authentik.admin.tasks import clear_update_notifications
-    from authentik.blueprints.tasks import managed_reconcile
     from authentik.outposts.tasks import outpost_controller_all, outpost_local_connection
     from authentik.providers.proxy.tasks import proxy_set_defaults
 
@@ -85,7 +86,6 @@ def _get_startup_tasks() -> list[Callable]:
         outpost_local_connection,
         outpost_controller_all,
         proxy_set_defaults,
-        managed_reconcile,
     ]
 
 

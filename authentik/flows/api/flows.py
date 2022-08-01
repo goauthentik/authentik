@@ -168,7 +168,8 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         if not file:
             return HttpResponseBadRequest()
         importer = Importer(file.read().decode())
-        valid = importer.validate()
+        valid, _logs = importer.validate()
+        # TODO: return logs
         if not valid:
             return HttpResponseBadRequest()
         successful = importer.apply()

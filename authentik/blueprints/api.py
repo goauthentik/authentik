@@ -27,13 +27,21 @@ class BlueprintInstanceSerializer(ModelSerializer):
 
         model = BlueprintInstance
         fields = [
+            "pk",
             "name",
             "path",
             "context",
             "last_applied",
+            "last_applied_hash",
             "status",
             "enabled",
+            "managed_models",
         ]
+        extra_kwargs = {
+            "last_applied": {"read_only": True},
+            "last_applied_hash": {"read_only": True},
+            "managed_models": {"read_only": True},
+        }
 
 
 class BlueprintInstanceViewSet(ModelViewSet):

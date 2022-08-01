@@ -8,13 +8,14 @@ from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from authentik.blueprints import apply_blueprint
 from authentik.core.models import Application
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider
-from tests.e2e.utils import SeleniumTestCase, apply_migration, retry
+from tests.e2e.utils import SeleniumTestCase, reconcile_app, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -56,10 +57,18 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         }
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/system/providers-oauth2.yaml",
+    )
+    @reconcile_app("authentik_crypto")
     def test_authorization_consent_implied(self):
         """test OAuth Provider flow (default authorization flow with implied consent)"""
         # Bootstrap all needed objects
@@ -104,10 +113,18 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/system/providers-oauth2.yaml",
+    )
+    @reconcile_app("authentik_crypto")
     def test_authorization_consent_explicit(self):
         """test OAuth Provider flow (default authorization flow with explicit consent)"""
         # Bootstrap all needed objects
@@ -171,10 +188,15 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0010_provider_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @reconcile_app("authentik_crypto")
     def test_denied(self):
         """test OAuth Provider flow (default authorization flow, denied)"""
         # Bootstrap all needed objects

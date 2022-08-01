@@ -13,11 +13,11 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from authentik.flows.models import Flow, FlowStageBinding
+from authentik.blueprints import apply_blueprint
+from authentik.flows.models import Flow
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
-from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
-from tests.e2e.utils import SeleniumTestCase, apply_migration, retry
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -25,18 +25,16 @@ class TestFlowsAuthenticator(SeleniumTestCase):
     """test flow with otp stages"""
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
     def test_totp_validate(self):
         """test flow with otp stages"""
-        sleep(1)
         # Setup TOTP Device
         device = TOTPDevice.objects.create(user=self.user, confirmed=True, digits=6)
 
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
-        FlowStageBinding.objects.create(
-            target=flow, order=30, stage=AuthenticatorValidateStage.objects.create()
-        )
 
         self.driver.get(self.url("authentik_core:if-flow", flow_slug=flow.slug))
         self.login()
@@ -47,16 +45,17 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         flow_executor = self.get_shadow_root("ak-flow-executor")
         validation_stage = self.get_shadow_root("ak-stage-authenticator-validate", flow_executor)
         code_stage = self.get_shadow_root("ak-stage-authenticator-validate-code", validation_stage)
-
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(totp.token())
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(Keys.ENTER)
         self.wait_for_url(self.if_user_url("/library"))
         self.assert_user(self.user)
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_stages_authenticator_totp", "0006_default_setup_flow")
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint("blueprints/default/20-flow-default-authenticator-totp-setup.yaml")
     def test_totp_setup(self):
         """test TOTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
@@ -98,9 +97,11 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.assertTrue(TOTPDevice.objects.filter(user=self.user, confirmed=True).exists())
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_stages_authenticator_static", "0005_default_setup_flow")
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint("blueprints/default/20-flow-default-authenticator-static-setup.yaml")
     def test_static_setup(self):
         """test Static OTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")

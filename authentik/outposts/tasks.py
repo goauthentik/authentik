@@ -233,7 +233,7 @@ def _outpost_single_update(outpost: Outpost, layer=None):
 def outpost_local_connection():
     """Checks the local environment and create Service connections."""
     if not CONFIG.y_bool("outposts.discover"):
-        LOGGER.debug("outpost integration discovery is disabled")
+        LOGGER.debug("Outpost integration discovery is disabled")
         return
     # Explicitly check against token filename, as that's
     # only present when the integration is enabled

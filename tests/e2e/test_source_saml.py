@@ -11,12 +11,13 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from authentik.blueprints import apply_blueprint
 from authentik.core.models import User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
+from tests.e2e.utils import SeleniumTestCase, retry
 
 IDP_CERT = """-----BEGIN CERTIFICATE-----
 MIIDXTCCAkWgAwIBAgIJALmVVuDWu4NYMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
@@ -94,12 +95,15 @@ class TestSourceSAML(SeleniumTestCase):
         }
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0009_source_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @apply_migration("authentik_sources_saml", "0010_samlsource_pre_authentication_flow")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-source-authentication.yaml",
+        "blueprints/default/20-flow-default-source-enrollment.yaml",
+        "blueprints/default/20-flow-default-source-pre-authentication.yaml",
+    )
     def test_idp_redirect(self):
         """test SAML Source With redirect binding"""
         # Bootstrap all needed objects
@@ -161,12 +165,15 @@ class TestSourceSAML(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0009_source_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @apply_migration("authentik_sources_saml", "0010_samlsource_pre_authentication_flow")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-source-authentication.yaml",
+        "blueprints/default/20-flow-default-source-enrollment.yaml",
+        "blueprints/default/20-flow-default-source-pre-authentication.yaml",
+    )
     def test_idp_post(self):
         """test SAML Source With post binding"""
         # Bootstrap all needed objects
@@ -241,12 +248,15 @@ class TestSourceSAML(SeleniumTestCase):
         )
 
     @retry()
-    @apply_migration("authentik_flows", "0008_default_flows")
-    @apply_migration("authentik_flows", "0011_flow_title")
-    @apply_migration("authentik_flows", "0009_source_flows")
-    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
-    @apply_migration("authentik_sources_saml", "0010_samlsource_pre_authentication_flow")
-    @object_manager
+    @apply_blueprint(
+        "blueprints/default/10-flow-default-authentication-flow.yaml",
+        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "blueprints/default/20-flow-default-source-authentication.yaml",
+        "blueprints/default/20-flow-default-source-enrollment.yaml",
+        "blueprints/default/20-flow-default-source-pre-authentication.yaml",
+    )
     def test_idp_post_auto(self):
         """test SAML Source With post binding (auto redirect)"""
         # Bootstrap all needed objects

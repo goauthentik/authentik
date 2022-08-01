@@ -20866,6 +20866,11 @@ components:
       type: object
       description: Info about a single blueprint instance file
       properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Instance uuid
         name:
           type: string
         path:
@@ -20877,15 +20882,26 @@ components:
           type: string
           format: date-time
           readOnly: true
+        last_applied_hash:
+          type: string
+          readOnly: true
         status:
           $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
         enabled:
           type: boolean
+        managed_models:
+          type: array
+          items:
+            type: string
+          readOnly: true
       required:
       - context
       - last_applied
+      - last_applied_hash
+      - managed_models
       - name
       - path
+      - pk
       - status
     BlueprintInstanceRequest:
       type: object
@@ -20914,6 +20930,7 @@ components:
       - successful
       - warning
       - error
+      - orphaned
       - unknown
       type: string
     Cache:
