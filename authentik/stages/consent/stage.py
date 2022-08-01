@@ -21,7 +21,7 @@ from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConse
 PLAN_CONTEXT_CONSENT_TITLE = "consent_title"
 PLAN_CONTEXT_CONSENT_HEADER = "consent_header"
 PLAN_CONTEXT_CONSENT_PERMISSIONS = "consent_permissions"
-PLAN_CONTEXT_CONSNET_EXTRA_PERMISSIONS = "consent_additional_permissions"
+PLAN_CONTEXT_CONSENT_EXTRA_PERMISSIONS = "consent_additional_permissions"
 SESSION_KEY_CONSENT_TOKEN = "authentik/stages/consent/token"  # nosec
 
 
@@ -54,7 +54,7 @@ class ConsentStageView(ChallengeStageView):
             "type": ChallengeTypes.NATIVE.value,
             "permissions": self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_PERMISSIONS, []),
             "additional_permissions": self.executor.plan.context.get(
-                PLAN_CONTEXT_CONSNET_EXTRA_PERMISSIONS, []
+                PLAN_CONTEXT_CONSENT_EXTRA_PERMISSIONS, []
             ),
             "token": token,
         }
@@ -92,14 +92,14 @@ class ConsentStageView(ChallengeStageView):
 
         if consent:
             perms = self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_PERMISSIONS, [])
-            allowed_perms = set(consent.permissions.split(" "))
+            allowed_perms = set(consent.permissions.split(" ") if consent.permissions != "" else [])
             requested_perms = set(x["id"] for x in perms)
 
             if allowed_perms != requested_perms:
                 self.executor.plan.context[PLAN_CONTEXT_CONSENT_PERMISSIONS] = [
                     x for x in perms if x["id"] in allowed_perms
                 ]
-                self.executor.plan.context[PLAN_CONTEXT_CONSNET_EXTRA_PERMISSIONS] = [
+                self.executor.plan.context[PLAN_CONTEXT_CONSENT_EXTRA_PERMISSIONS] = [
                     x for x in perms if x["id"] in requested_perms.difference(allowed_perms)
                 ]
                 return super().get(request, *args, **kwargs)
@@ -117,7 +117,7 @@ class ConsentStageView(ChallengeStageView):
         application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
         permissions = self.executor.plan.context.get(
             PLAN_CONTEXT_CONSENT_PERMISSIONS, []
-        ) + self.executor.plan.context.get(PLAN_CONTEXT_CONSNET_EXTRA_PERMISSIONS, [])
+        ) + self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_EXTRA_PERMISSIONS, [])
         permissions_string = " ".join(x["id"] for x in permissions)
         # Make this StageView work when injected, in which case `current_stage` is an instance
         # of the base class, and we don't save any consent, as it is assumed to be a one-time
@@ -125,18 +125,14 @@ class ConsentStageView(ChallengeStageView):
         if not isinstance(current_stage, ConsentStage):
             return self.executor.stage_ok()
         # Since we only get here when no consent exists, we can create it without update
+        consent = UserConsent(
+            user=self.request.user,
+            application=application,
+            permissions=permissions_string,
+        )
         if current_stage.mode == ConsentMode.PERMANENT:
-            UserConsent.objects.create(
-                user=self.request.user,
-                application=application,
-                expiring=False,
-                permissions=permissions_string,
-            )
+            consent.expiring = False
         if current_stage.mode == ConsentMode.EXPIRING:
-            UserConsent.objects.create(
-                user=self.request.user,
-                application=application,
-                expires=now() + timedelta_from_string(current_stage.consent_expire_in),
-                permissions=permissions_string,
-            )
+            consent.expires = now() + timedelta_from_string(current_stage.consent_expire_in)
+        consent.save()
         return self.executor.stage_ok()
