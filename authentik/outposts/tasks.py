@@ -10,6 +10,7 @@ import yaml
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.cache import cache
+from django.db import DatabaseError, InternalError, ProgrammingError
 from django.db.models.base import Model
 from django.utils.text import slugify
 from docker.constants import DEFAULT_UNIX_SOCKET
@@ -87,7 +88,11 @@ def outpost_service_connection_state(connection_pk: Any):
     cache.set(connection.state_key, state, timeout=None)
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(
+    bind=True,
+    base=MonitoredTask,
+    throws=(DatabaseError, ProgrammingError, InternalError),
+)
 @prefill_task
 def outpost_service_connection_monitor(self: MonitoredTask):
     """Regularly check the state of Outpost Service Connections"""
@@ -102,7 +107,9 @@ def outpost_service_connection_monitor(self: MonitoredTask):
     )
 
 
-@CELERY_APP.task()
+@CELERY_APP.task(
+    throws=(DatabaseError, ProgrammingError, InternalError),
+)
 def outpost_controller_all():
     """Launch Controller for all Outposts which support it"""
     for outpost in Outpost.objects.exclude(service_connection=None):

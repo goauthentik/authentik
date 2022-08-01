@@ -19,7 +19,9 @@ from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
 
-@CELERY_APP.task()
+@CELERY_APP.task(
+    throws=(DatabaseError, ProgrammingError, InternalError),
+)
 @prefill_task
 def blueprints_discover():
     """Find blueprints and check if they need to be created in the database"""

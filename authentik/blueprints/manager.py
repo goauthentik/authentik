@@ -3,7 +3,7 @@ from importlib import import_module
 from inspect import ismethod
 
 from django.apps import AppConfig
-from django.db import DatabaseError, ProgrammingError
+from django.db import DatabaseError, InternalError, ProgrammingError
 from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
@@ -33,5 +33,5 @@ class ManagedAppConfig(AppConfig):
             try:
                 meth()
                 LOGGER.debug("Successfully reconciled", name=name)
-            except (ProgrammingError, DatabaseError) as exc:
+            except (DatabaseError, ProgrammingError, InternalError) as exc:
                 LOGGER.debug("Failed to run reconcile", name=name, exc=exc)

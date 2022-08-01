@@ -3,6 +3,7 @@ import re
 
 from django.core.cache import cache
 from django.core.validators import URLValidator
+from django.db import DatabaseError, InternalError, ProgrammingError
 from packaging.version import parse
 from requests import RequestException
 from structlog.stdlib import get_logger
@@ -39,7 +40,9 @@ def _set_prom_info():
     )
 
 
-@CELERY_APP.task()
+@CELERY_APP.task(
+    throws=(DatabaseError, ProgrammingError, InternalError),
+)
 def clear_update_notifications():
     """Clear update notifications on startup if the notification was for the version
     we're running now."""
