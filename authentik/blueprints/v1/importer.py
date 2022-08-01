@@ -207,7 +207,7 @@ class Importer:
         orig_import = deepcopy(self.__import)
         if self.__import.version != 1:
             self.logger.warning("Invalid bundle version")
-            return False
+            return False, []
         with (
             transaction_rollback(),
             capture_logs() as logs,

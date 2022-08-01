@@ -36,7 +36,7 @@ def check_blueprint_v1_file(path: Path):
         if version != 1:
             return
         blueprint_file.seek(0)
-    hash = sha512(path.read_bytes()).hexdigest()
+    file_hash = sha512(path.read_bytes()).hexdigest()
     instance: BlueprintInstance = BlueprintInstance.objects.filter(path=path).first()
     if not instance:
         instance = BlueprintInstance(
@@ -48,9 +48,9 @@ def check_blueprint_v1_file(path: Path):
             managed_models=[],
         )
         instance.save()
-    if instance.last_applied_hash != hash:
+    if instance.last_applied_hash != file_hash:
         apply_blueprint.delay(instance.pk.hex)
-        instance.last_applied_hash = hash
+        instance.last_applied_hash = file_hash
         instance.save()
 
 
