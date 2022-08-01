@@ -32,6 +32,7 @@ export class UserConsentList extends Table<UserConsent> {
         return [
             new TableColumn(t`Application`, "application"),
             new TableColumn(t`Expires`, "expires"),
+            new TableColumn(t`Permissions`, "permissions"),
         ];
     }
 
@@ -58,6 +59,10 @@ export class UserConsentList extends Table<UserConsent> {
     }
 
     row(item: UserConsent): TemplateResult[] {
-        return [html`${item.application.name}`, html`${item.expires?.toLocaleString()}`];
+        return [
+            html`${item.application.name}`,
+            html`${item.expires?.toLocaleString()}`,
+            html`${item.permissions || "-"}`,
+        ];
     }
 }

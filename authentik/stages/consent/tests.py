@@ -225,3 +225,70 @@ class TestConsentStage(FlowTestCase):
                 user=self.user, application=self.application, permissions="foo bar"
             ).exists()
         )
+
+    def test_permanent_same(self):
+        """Test permanent consent from user"""
+        self.client.force_login(self.user)
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage = ConsentStage.objects.create(name=generate_id(), mode=ConsentMode.PERMANENT)
+        binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
+
+        plan = FlowPlan(
+            flow_pk=flow.pk.hex,
+            bindings=[binding],
+            markers=[StageMarker()],
+            context={
+                PLAN_CONTEXT_APPLICATION: self.application,
+            },
+        )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        # First, consent with a single permission
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {},
+        )
+        self.assertEqual(response.status_code, 200)
+        raw_res = self.assertStageResponse(
+            response,
+            flow,
+            self.user,
+            permissions=[],
+            additional_permissions=[],
+        )
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {
+                "token": raw_res["token"],
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.assertTrue(
+            UserConsent.objects.filter(
+                user=self.user, application=self.application, permissions=""
+            ).exists()
+        )
+
+        # Request again with the same perms
+        plan = FlowPlan(
+            flow_pk=flow.pk.hex,
+            bindings=[binding],
+            markers=[StageMarker()],
+            context={
+                PLAN_CONTEXT_APPLICATION: self.application,
+                PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
+            },
+        )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(response, component="xak-flow-redirect")
