@@ -63,7 +63,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
     self.save_on_success = False
     try:
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
-        if not instance:
+        if not instance or not instance.enabled:
             return
         with open(instance.path, "r", encoding="utf-8") as blueprint_file:
             importer = Importer(blueprint_file.read())
