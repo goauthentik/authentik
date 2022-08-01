@@ -9,13 +9,13 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 
 def migration_blueprint_import(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    from authentik.blueprints.v1.tasks import blueprints_v1_discover
+    from authentik.blueprints.v1.tasks import blueprints_discover
 
     BlueprintInstance = apps.get_model("authentik_blueprints", "BlueprintInstance")
     Flow = apps.get_model("authentik_flows", "Flow")
 
     db_alias = schema_editor.connection.alias
-    blueprints_v1_discover()
+    blueprints_discover()
     for blueprint in BlueprintInstance.objects.using(db_alias).all():
         # If we already have flows (and we should always run before flow migrations)
         # then this is an existing install and we want to disable all blueprints

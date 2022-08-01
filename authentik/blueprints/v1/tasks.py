@@ -2,35 +2,41 @@
 from glob import glob
 from hashlib import sha512
 from pathlib import Path
-from re import I
 
 from django.db import DatabaseError, InternalError, ProgrammingError
-from yaml import safe_load
+from yaml import load
 
 from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
+from authentik.blueprints.v1.common import BlueprintLoader
 from authentik.blueprints.v1.importer import Importer
-from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.monitored_tasks import (
+    MonitoredTask,
+    TaskResult,
+    TaskResultStatus,
+    prefill_task,
+)
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
 
 @CELERY_APP.task()
-def blueprints_v1_discover():
+@prefill_task
+def blueprints_discover():
     """Find blueprints and check if they need to be created in the database"""
     for folder in CONFIG.y("blueprint_locations"):
-        for file in glob(f"{folder}/**.yaml", recursive=True):
+        for file in glob(f"{folder}/**/*.yaml", recursive=True):
             check_blueprint_v1_file(Path(file))
 
 
 def check_blueprint_v1_file(path: Path):
     """Check if blueprint should be imported"""
     with open(path, "r", encoding="utf-8") as blueprint_file:
-        raw_blueprint = safe_load(blueprint_file.read())
+        raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
         version = raw_blueprint.get("version", 1)
         if version != 1:
             return
         blueprint_file.seek(0)
-        hash = sha512(blueprint_file.read()).hexdigest()
+    hash = sha512(path.read_bytes()).hexdigest()
     instance: BlueprintInstance = BlueprintInstance.objects.filter(path=path).first()
     if not instance:
         instance = BlueprintInstance(
@@ -39,7 +45,7 @@ def check_blueprint_v1_file(path: Path):
             context={},
             status=BlueprintInstanceStatus.UNKNOWN,
             enabled=True,
-            managed_models="",
+            managed_models=[],
         )
         instance.save()
     if instance.last_applied_hash != hash:
@@ -54,8 +60,9 @@ def check_blueprint_v1_file(path: Path):
 )
 def apply_blueprint(self: MonitoredTask, instance_pk: str):
     """Apply single blueprint"""
+    self.save_on_success = False
     try:
-        instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk)
+        instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
         if not instance:
             return
         with open(instance.path, "r", encoding="utf-8") as blueprint_file:
