@@ -1,6 +1,7 @@
 """test admin api"""
 from json import loads
 
+from django.apps import apps
 from django.test import TestCase
 from django.urls import reverse
 
@@ -90,4 +91,10 @@ class TestAdminAPI(TestCase):
     def test_apps(self):
         """Test apps API"""
         response = self.client.get(reverse("authentik_api:apps-list"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_system(self):
+        """Test system API"""
+        apps.get_app_config("authentik_outposts").reconcile_embedded_outpost()
+        response = self.client.get(reverse("authentik_api:admin_system"))
         self.assertEqual(response.status_code, 200)
