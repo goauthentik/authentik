@@ -19,7 +19,7 @@ def blueprint_tester(file_name: str) -> Callable:
     def tester(self: TestBundled):
         with open(file_name, "r", encoding="utf8") as flow_yaml:
             importer = Importer(flow_yaml.read())
-        self.assertTrue(importer.validate())
+        self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 
     return tester

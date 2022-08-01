@@ -3,14 +3,35 @@
 import uuid
 
 import django.contrib.postgres.fields
+from django.apps.registry import Apps
 from django.db import migrations, models
+from django.db.backends.base.schema import BaseDatabaseSchemaEditor
+
+
+def migration_blueprint_import(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    from authentik.blueprints.v1.tasks import blueprints_v1_discover
+
+    BlueprintInstance = apps.get_model("authentik_blueprints", "BlueprintInstance")
+    Flow = apps.get_model("authentik_flows", "Flow")
+
+    db_alias = schema_editor.connection.alias
+    blueprints_v1_discover()
+    for blueprint in BlueprintInstance.objects.using(db_alias).all():
+        # If we already have flows (and we should always run before flow migrations)
+        # then this is an existing install and we want to disable all blueprints
+        if Flow.objects.using(db_alias).all().exists():
+            blueprint.enabled = False
+        # System blueprints are always enabled
+        if "/system/" in blueprint.path:
+            blueprint.enabled = True
+        blueprint.save()
 
 
 class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = []
+    dependencies = [("authentik_flows", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
@@ -65,4 +86,5 @@ class Migration(migrations.Migration):
                 "unique_together": {("name", "path")},
             },
         ),
+        migrations.RunPython(migration_blueprint_import),
     ]
