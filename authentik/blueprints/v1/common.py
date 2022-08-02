@@ -88,7 +88,7 @@ class BlueprintMetadata:
     """Optional blueprint metadata"""
 
     name: str
-    labels: dict[str, str] = field(default=dict)
+    labels: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass

@@ -1,12 +1,11 @@
 """v1 blueprints tasks"""
-from curses import meta
 from dataclasses import asdict, dataclass, field
 from glob import glob
 from hashlib import sha512
 from pathlib import Path
 from typing import Optional
 
-from django.conf import settings
+from dacite import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
 from yaml import load
 
@@ -52,8 +51,8 @@ def blueprints_find() -> list[dict]:
                 return
             blueprint_file.seek(0)
         file_hash = sha512(path.read_bytes()).hexdigest()
-        blueprint = BlueprintFile(file, version, file_hash, path.stat().st_mtime)
-        blueprint.meta = metadata
+        blueprint = BlueprintFile(str(path), version, file_hash, path.stat().st_mtime)
+        blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
         blueprints.append(blueprint)
     return blueprints
 
@@ -69,13 +68,13 @@ def blueprints_discover():
             blueprint.meta
             and blueprint.meta.labels.get(LABEL_AUTHENTIK_EXAMPLE, "").lower() == "true"
         ):
-            return
+            continue
         check_blueprint_v1_file(blueprint)
 
 
 def check_blueprint_v1_file(blueprint: BlueprintFile):
     """Check if blueprint should be imported"""
-    rel_path = blueprint.path.relative_to(Path(CONFIG.y("blueprints_dir")))
+    rel_path = Path(blueprint.path).relative_to(Path(CONFIG.y("blueprints_dir")))
     instance: BlueprintInstance = BlueprintInstance.objects.filter(path=blueprint.path).first()
     if not instance:
         instance = BlueprintInstance(
@@ -85,6 +84,7 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
             status=BlueprintInstanceStatus.UNKNOWN,
             enabled=True,
             managed_models=[],
+            metadata=asdict(blueprint.meta),
         )
         instance.save()
     blueprint.meta = asdict(blueprint.meta)
@@ -118,6 +118,8 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
                 instance.status = BlueprintInstanceStatus.ERROR
                 instance.save()
                 self.set_status(TaskResult(TaskResultStatus.ERROR, "Failed to apply"))
+            instance.status = BlueprintInstanceStatus.SUCCESSFUL
+            instance.save()
     except (DatabaseError, ProgrammingError, InternalError) as exc:
         instance.status = BlueprintInstanceStatus.ERROR
         instance.save()

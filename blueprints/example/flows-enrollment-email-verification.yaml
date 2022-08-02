@@ -1,4 +1,8 @@
 version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/example: "true"
+  name: Example - Enrollment with email verification
 entries:
   - identifiers:
       slug: default-enrollment-flow

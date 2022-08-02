@@ -1,4 +1,8 @@
 version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/system: "true"
+  name: System - LDAP Source - Mappings
 entries:
   - identifiers:
       managed: goauthentik.io/sources/ldap/default-name

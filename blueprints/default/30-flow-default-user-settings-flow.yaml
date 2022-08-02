@@ -1,3 +1,5 @@
+metadata:
+  name: Default - User settings flow
 entries:
 - attrs:
     compatibility_mode: false

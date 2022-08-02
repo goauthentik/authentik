@@ -1,3 +1,5 @@
+metadata:
+  name: Default - Invalidation flow
 entries:
 - attrs:
     compatibility_mode: false

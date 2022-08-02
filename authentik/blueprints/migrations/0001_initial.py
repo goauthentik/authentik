@@ -4,6 +4,7 @@ from glob import glob
 from pathlib import Path
 
 import django.contrib.postgres.fields
+from dacite import from_dict
 from django.apps.registry import Apps
 from django.conf import settings
 from django.db import migrations, models
@@ -16,28 +17,33 @@ from authentik.lib.config import CONFIG
 def check_blueprint_v1_file(BlueprintInstance: type["BlueprintInstance"], path: Path):
     """Check if blueprint should be imported"""
     from authentik.blueprints.models import BlueprintInstanceStatus
-    from authentik.blueprints.v1.common import BlueprintLoader
+    from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata
     from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_EXAMPLE
 
     with open(path, "r", encoding="utf-8") as blueprint_file:
         raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
+        metadata = raw_blueprint.get("metadata", None)
         version = raw_blueprint.get("version", 1)
         if version != 1:
             return
         blueprint_file.seek(0)
     instance: BlueprintInstance = BlueprintInstance.objects.filter(path=path).first()
     rel_path = path.relative_to(Path(CONFIG.y("blueprints_dir")))
-    if rel_path.parent == "example" and settings.DEBUG:
-        return
+    meta = None
+    if metadata:
+        meta = from_dict(BlueprintMetadata, metadata)
+        if meta.labels.get(LABEL_AUTHENTIK_EXAMPLE, "").lower() == "true":
+            return
     if not instance:
         instance = BlueprintInstance(
-            name=str(rel_path),
+            name=meta.name if meta else str(rel_path),
             path=str(path),
             context={},
             status=BlueprintInstanceStatus.UNKNOWN,
             enabled=True,
             managed_models=[],
             last_applied_hash="",
+            metadata=metadata,
         )
         instance.save()
 

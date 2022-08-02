@@ -1,4 +1,8 @@
 version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/system: "true"
+  name: System - SAML Provider - Mappings
 entries:
   - identifiers:
       managed: goauthentik.io/providers/saml/upn
