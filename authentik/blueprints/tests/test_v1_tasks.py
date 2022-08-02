@@ -1,20 +1,13 @@
 """Test blueprints v1 tasks"""
-from tempfile import NamedTemporaryFile, gettempdir, mkdtemp, tempdir
+from tempfile import NamedTemporaryFile, mkdtemp
 
 from django.test import TransactionTestCase
 from yaml import dump
 
-from authentik.blueprints.models import BlueprintInstance
-from authentik.blueprints.v1.exporter import Exporter
-from authentik.blueprints.v1.importer import Importer, transaction_rollback
-from authentik.blueprints.v1.tasks import blueprints_discover, blueprints_find
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
+from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_discover, blueprints_find
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
-from authentik.policies.expression.models import ExpressionPolicy
-from authentik.policies.models import PolicyBinding
-from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
-from authentik.stages.user_login.models import UserLoginStage
 
 TMP = mkdtemp("authentik-blueprints")
 
@@ -43,7 +36,6 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
     @CONFIG.patch("blueprints_dir", TMP)
     def test_valid(self):
         """Test valid file"""
-        blueprints_discover()
         with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
             file.write(
                 dump(
@@ -54,7 +46,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 )
             )
             file.flush()
-            blueprints_discover()
+            blueprints_discover()  # pylint: disable=no-value-for-parameter
             self.assertEqual(
                 BlueprintInstance.objects.first().last_applied_hash,
                 (
@@ -67,7 +59,6 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
     @CONFIG.patch("blueprints_dir", TMP)
     def test_valid_updated(self):
         """Test valid file"""
-        blueprints_discover()
         with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
             file.write(
                 dump(
@@ -78,7 +69,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 )
             )
             file.flush()
-            blueprints_discover()
+            blueprints_discover()  # pylint: disable=no-value-for-parameter
             self.assertEqual(
                 BlueprintInstance.objects.first().last_applied_hash,
                 (
@@ -99,7 +90,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 )
             )
             file.flush()
-            blueprints_discover()
+            blueprints_discover()  # pylint: disable=no-value-for-parameter
             self.assertEqual(
                 BlueprintInstance.objects.first().last_applied_hash,
                 (
@@ -107,7 +98,43 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                     "681510b5db37ea98759c61f9a98dd2381f46a3b5a2da69dfb45158897f14e824"
                 ),
             )
-            self.assertEqual(BlueprintInstance.objects.first().metadata, {
-                "name": "foo",
-                "labels": {},
-            })
+            self.assertEqual(
+                BlueprintInstance.objects.first().metadata,
+                {
+                    "name": "foo",
+                    "labels": {},
+                },
+            )
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_valid_disabled(self):
+        """Test valid file"""
+        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+            file.write(
+                dump(
+                    {
+                        "version": 1,
+                        "entries": [],
+                    }
+                )
+            )
+            file.flush()
+            instance: BlueprintInstance = BlueprintInstance.objects.create(
+                name=generate_id(),
+                path=file.name,
+                enabled=False,
+                status=BlueprintInstanceStatus.UNKNOWN,
+            )
+            instance.refresh_from_db()
+            self.assertEqual(instance.last_applied_hash, "")
+            self.assertEqual(
+                instance.status,
+                BlueprintInstanceStatus.UNKNOWN,
+            )
+            apply_blueprint(instance.pk)  # pylint: disable=no-value-for-parameter
+            instance.refresh_from_db()
+            self.assertEqual(instance.last_applied_hash, "")
+            self.assertEqual(
+                instance.status,
+                BlueprintInstanceStatus.UNKNOWN,
+            )

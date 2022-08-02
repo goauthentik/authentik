@@ -56,7 +56,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
     last_applied_hash = models.TextField()
     status = models.TextField(choices=BlueprintInstanceStatus.choices)
     enabled = models.BooleanField(default=True)
-    managed_models = ArrayField(models.TextField())
+    managed_models = ArrayField(models.TextField(), default=list)
 
     @property
     def serializer(self) -> Serializer:

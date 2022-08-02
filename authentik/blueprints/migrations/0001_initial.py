@@ -117,7 +117,7 @@ class Migration(migrations.Migration):
                 (
                     "managed_models",
                     django.contrib.postgres.fields.ArrayField(
-                        base_field=models.TextField(), size=None
+                        base_field=models.TextField(), default=list, size=None
                     ),
                 ),
             ],
