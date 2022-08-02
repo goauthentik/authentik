@@ -114,25 +114,25 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
         if not instance or not instance.enabled:
             return
-        file_hash = sha512(instance.path.read_bytes()).hexdigest()
+        file_hash = sha512(Path(instance.path).read_bytes()).hexdigest()
         with open(instance.path, "r", encoding="utf-8") as blueprint_file:
             importer = Importer(blueprint_file.read())
-            valid, logs = importer.validate()
-            if not valid:
-                instance.status = BlueprintInstanceStatus.ERROR
-                instance.save()
-                self.set_status(TaskResult(TaskResultStatus.ERROR, [x["event"] for x in logs]))
-                return
-            applied = importer.apply()
-            if not applied:
-                instance.status = BlueprintInstanceStatus.ERROR
-                instance.save()
-                self.set_status(TaskResult(TaskResultStatus.ERROR, "Failed to apply"))
-                return
-            instance.status = BlueprintInstanceStatus.SUCCESSFUL
-            instance.last_applied_hash = file_hash
-            instance.last_applied = now()
+        valid, logs = importer.validate()
+        if not valid:
+            instance.status = BlueprintInstanceStatus.ERROR
             instance.save()
+            self.set_status(TaskResult(TaskResultStatus.ERROR, [x["event"] for x in logs]))
+            return
+        applied = importer.apply()
+        if not applied:
+            instance.status = BlueprintInstanceStatus.ERROR
+            instance.save()
+            self.set_status(TaskResult(TaskResultStatus.ERROR, "Failed to apply"))
+            return
+        instance.status = BlueprintInstanceStatus.SUCCESSFUL
+        instance.last_applied_hash = file_hash
+        instance.last_applied = now()
+        instance.save()
     except (DatabaseError, ProgrammingError, InternalError, IOError) as exc:
         instance.status = BlueprintInstanceStatus.ERROR
         instance.save()

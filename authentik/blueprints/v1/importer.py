@@ -195,7 +195,7 @@ class Importer:
             try:
                 serializer = self._validate_single(entry)
             except EntryInvalidError as exc:
-                self.logger.warning("entry not valid", entry=entry, error=exc)
+                self.logger.warning("entry invalid", entry=entry, error=exc)
                 return False
 
             model = serializer.save()
