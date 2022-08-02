@@ -96,9 +96,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.TextField()),
-                ("metadata", models.JSONField()),
+                ("metadata", models.JSONField(default=dict)),
                 ("path", models.TextField()),
-                ("context", models.JSONField()),
+                ("context", models.JSONField(default=dict)),
                 ("last_applied", models.DateTimeField(auto_now=True)),
                 ("last_applied_hash", models.TextField()),
                 (

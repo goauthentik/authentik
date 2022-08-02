@@ -1,7 +1,7 @@
 """email tests"""
 from os import chmod, unlink
 from pathlib import Path
-from tempfile import gettempdir, mkstemp
+from tempfile import gettempdir, mkdtemp, mkstemp
 from typing import Any
 
 from django.conf import settings
@@ -17,12 +17,15 @@ def get_templates_setting(temp_dir: str) -> dict[str, Any]:
     return templates_setting
 
 
+TMP = mkdtemp("authentik-stages-email")
+
+
 class TestEmailStageTemplates(TestCase):
     """Email tests"""
 
     def test_custom_template(self):
         """Test with custom template"""
-        with self.settings(TEMPLATES=get_templates_setting(gettempdir())):
+        with self.settings(TEMPLATES=get_templates_setting(TMP)):
             _, file = mkstemp(suffix=".html")
             _, file2 = mkstemp(suffix=".html")
             chmod(file2, 0o000)  # Remove all permissions so we can't read the file

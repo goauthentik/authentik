@@ -20976,7 +20976,6 @@ components:
           additionalProperties: {}
           readOnly: true
       required:
-      - context
       - last_applied
       - last_applied_hash
       - managed_models
@@ -21001,7 +21000,6 @@ components:
         enabled:
           type: boolean
       required:
-      - context
       - name
       - path
     BlueprintInstanceStatusEnum:

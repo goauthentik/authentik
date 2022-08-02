@@ -10,6 +10,7 @@ from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from yaml import load
+from yaml.error import YAMLError
 
 from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
 from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata
@@ -45,12 +46,16 @@ def blueprints_find():
     for file in glob(f"{CONFIG.y('blueprints_dir')}/**/*.yaml", recursive=True):
         path = Path(file)
         with open(path, "r", encoding="utf-8") as blueprint_file:
-            raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
+            try:
+                raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
+            except YAMLError:
+                raw_blueprint = None
+            if not raw_blueprint:
+                continue
             metadata = raw_blueprint.get("metadata", None)
             version = raw_blueprint.get("version", 1)
             if version != 1:
                 continue
-            blueprint_file.seek(0)
         file_hash = sha512(path.read_bytes()).hexdigest()
         blueprint = BlueprintFile(str(path), version, file_hash, path.stat().st_mtime)
         blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
@@ -93,11 +98,12 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
             status=BlueprintInstanceStatus.UNKNOWN,
             enabled=True,
             managed_models=[],
-            metadata=asdict(blueprint.meta),
+            metadata={},
         )
         instance.save()
-    blueprint.meta = asdict(blueprint.meta)
     if instance.last_applied_hash != blueprint.hash:
+        instance.metadata = asdict(blueprint.meta) if blueprint.meta else {}
+        instance.save()
         apply_blueprint.delay(instance.pk.hex)
 
 
