@@ -1,7 +1,10 @@
 """Apply blueprint from commandline"""
 from django.core.management.base import BaseCommand, no_translations
+from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.importer import Importer
+
+LOGGER = get_logger()
 
 
 class Command(BaseCommand):  # pragma: no cover
@@ -15,7 +18,9 @@ class Command(BaseCommand):  # pragma: no cover
                 importer = Importer(blueprint_file.read())
                 valid, logs = importer.validate()
                 if not valid:
-                    raise ValueError(f"blueprint invalid: {logs}")
+                    for log in logs:
+                        LOGGER.debug(**log)
+                    raise ValueError(f"blueprint invalid")
                 importer.apply()
 
     def add_arguments(self, parser):

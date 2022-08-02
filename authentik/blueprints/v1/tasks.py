@@ -120,7 +120,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
                 self.set_status(TaskResult(TaskResultStatus.ERROR, "Failed to apply"))
             instance.status = BlueprintInstanceStatus.SUCCESSFUL
             instance.save()
-    except (DatabaseError, ProgrammingError, InternalError) as exc:
+    except (DatabaseError, ProgrammingError, InternalError, IOError) as exc:
         instance.status = BlueprintInstanceStatus.ERROR
         instance.save()
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))

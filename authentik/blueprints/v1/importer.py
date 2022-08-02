@@ -215,5 +215,7 @@ class Importer:
             successful = self._apply_models()
             if not successful:
                 self.logger.debug("blueprint validation failed")
+        for log in logs:
+            self.logger.debug(**log)
         self.__import = orig_import
         return successful, logs
