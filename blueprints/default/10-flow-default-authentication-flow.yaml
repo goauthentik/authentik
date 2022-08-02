@@ -1,3 +1,5 @@
+metadata:
+  name: Default - Authentication flow
 entries:
 - attrs:
     cache_count: 1

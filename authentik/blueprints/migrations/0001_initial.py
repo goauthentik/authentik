@@ -4,7 +4,9 @@ from glob import glob
 from pathlib import Path
 
 import django.contrib.postgres.fields
+from dacite import from_dict
 from django.apps.registry import Apps
+from django.conf import settings
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from yaml import load
@@ -15,24 +17,33 @@ from authentik.lib.config import CONFIG
 def check_blueprint_v1_file(BlueprintInstance: type["BlueprintInstance"], path: Path):
     """Check if blueprint should be imported"""
     from authentik.blueprints.models import BlueprintInstanceStatus
-    from authentik.blueprints.v1.common import BlueprintLoader
+    from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata
+    from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_EXAMPLE
 
     with open(path, "r", encoding="utf-8") as blueprint_file:
         raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
+        metadata = raw_blueprint.get("metadata", None)
         version = raw_blueprint.get("version", 1)
         if version != 1:
             return
         blueprint_file.seek(0)
     instance: BlueprintInstance = BlueprintInstance.objects.filter(path=path).first()
+    rel_path = path.relative_to(Path(CONFIG.y("blueprints_dir")))
+    meta = None
+    if metadata:
+        meta = from_dict(BlueprintMetadata, metadata)
+        if meta.labels.get(LABEL_AUTHENTIK_EXAMPLE, "").lower() == "true":
+            return
     if not instance:
         instance = BlueprintInstance(
-            name=path.name,
+            name=meta.name if meta else str(rel_path),
             path=str(path),
             context={},
             status=BlueprintInstanceStatus.UNKNOWN,
             enabled=True,
             managed_models=[],
             last_applied_hash="",
+            metadata=metadata,
         )
         instance.save()
 
@@ -42,9 +53,8 @@ def migration_blueprint_import(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
     Flow = apps.get_model("authentik_flows", "Flow")
 
     db_alias = schema_editor.connection.alias
-    for folder in CONFIG.y("blueprint_locations"):
-        for file in glob(f"{folder}/**/*.yaml", recursive=True):
-            check_blueprint_v1_file(BlueprintInstance, Path(file))
+    for file in glob(f"{CONFIG.y('blueprints_dir')}/**/*.yaml", recursive=True):
+        check_blueprint_v1_file(BlueprintInstance, Path(file))
 
     for blueprint in BlueprintInstance.objects.using(db_alias).all():
         # If we already have flows (and we should always run before flow migrations)
@@ -86,8 +96,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.TextField()),
+                ("metadata", models.JSONField(default=dict)),
                 ("path", models.TextField()),
-                ("context", models.JSONField()),
+                ("context", models.JSONField(default=dict)),
                 ("last_applied", models.DateTimeField(auto_now=True)),
                 ("last_applied_hash", models.TextField()),
                 (
@@ -106,7 +117,7 @@ class Migration(migrations.Migration):
                 (
                     "managed_models",
                     django.contrib.postgres.fields.ArrayField(
-                        base_field=models.TextField(), size=None
+                        base_field=models.TextField(), default=list, size=None
                     ),
                 ),
             ],

@@ -74,6 +74,11 @@ class Importer:
         except DaciteError as exc:
             raise EntryInvalidError from exc
 
+    @property
+    def blueprint(self) -> Blueprint:
+        """Get imported blueprint"""
+        return self.__import
+
     def __update_pks_for_attrs(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Replace any value if it is a known primary key of an other object"""
 
@@ -190,7 +195,7 @@ class Importer:
             try:
                 serializer = self._validate_single(entry)
             except EntryInvalidError as exc:
-                self.logger.warning("entry not valid", entry=entry, error=exc)
+                self.logger.warning("entry invalid", entry=entry, error=exc)
                 return False
 
             model = serializer.save()
@@ -215,5 +220,7 @@ class Importer:
             successful = self._apply_models()
             if not successful:
                 self.logger.debug("blueprint validation failed")
+        for log in logs:
+            self.logger.debug(**log)
         self.__import = orig_import
         return successful, logs

@@ -13,8 +13,8 @@ with open("local.env.yml", "w") as _config:
             },
             "outposts": {
                 "container_image_base": "ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s",
-                "blueprint_locations": ["./blueprints"],
             },
+            "blueprints_dir": "./blueprints",
             "web": {
                 "outpost_port_offset": 100,
             },

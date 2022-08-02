@@ -1,11 +1,11 @@
 """test admin api"""
 from json import loads
 
-from django.apps import apps
 from django.test import TestCase
 from django.urls import reverse
 
 from authentik import __version__
+from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Group, User
 from authentik.core.tasks import clean_expired_models
 from authentik.events.monitored_tasks import TaskResultStatus
@@ -93,8 +93,8 @@ class TestAdminAPI(TestCase):
         response = self.client.get(reverse("authentik_api:apps-list"))
         self.assertEqual(response.status_code, 200)
 
+    @reconcile_app("authentik_outposts")
     def test_system(self):
         """Test system API"""
-        apps.get_app_config("authentik_outposts").reconcile_embedded_outpost()
         response = self.client.get(reverse("authentik_api:admin_system"))
         self.assertEqual(response.status_code, 200)

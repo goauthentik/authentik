@@ -1,4 +1,8 @@
 version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/system: "true"
+  name: System - Proxy Provider - Scopes
 entries:
   - identifiers:
       managed: goauthentik.io/providers/proxy/scope-proxy

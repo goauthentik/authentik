@@ -11,13 +11,13 @@ from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 
 from authentik import __version__
-from authentik.blueprints import apply_blueprint
+from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application
 from authentik.flows.models import Flow
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
 from authentik.outposts.tasks import outpost_local_connection
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import SeleniumTestCase, reconcile_app, retry
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")

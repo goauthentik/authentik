@@ -6,7 +6,6 @@ from os import environ, makedirs
 from time import sleep, time
 from typing import Any, Callable, Optional
 
-from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection
 from django.db.migrations.loader import MigrationLoader
@@ -24,7 +23,6 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from structlog.stdlib import get_logger
 
-from authentik.blueprints.manager import ManagedAppConfig
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
@@ -190,24 +188,6 @@ def get_loader():
     """Thin wrapper to lazily get a Migration Loader, only when it's needed
     and only once"""
     return MigrationLoader(connection)
-
-
-def reconcile_app(app_name: str):
-    """Re-reconcile AppConfig methods"""
-
-    def wrapper_outer(func: Callable):
-        """Re-reconcile AppConfig methods"""
-
-        @wraps(func)
-        def wrapper(self: TransactionTestCase, *args, **kwargs):
-            config = apps.get_app_config(app_name)
-            if isinstance(config, ManagedAppConfig):
-                config.reconcile()
-            return func(self, *args, **kwargs)
-
-        return wrapper
-
-    return wrapper_outer
 
 
 def retry(max_retires=RETRIES, exceptions=None):

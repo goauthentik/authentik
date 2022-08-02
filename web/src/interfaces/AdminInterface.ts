@@ -300,6 +300,9 @@ export class AdminInterface extends LitElement {
                 <ak-sidebar-item path="/crypto/certificates">
                     <span slot="label">${t`Certificates`}</span>
                 </ak-sidebar-item>
+                <ak-sidebar-item path="/blueprints/instances">
+                    <span slot="label">${t`Blueprints`}</span>
+                </ak-sidebar-item>
             </ak-sidebar-item>
         `;
     }

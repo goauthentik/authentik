@@ -1,4 +1,4 @@
-"""Test flow Transport"""
+"""Test blueprints v1"""
 from django.test import TransactionTestCase
 
 from authentik.blueprints.v1.exporter import Exporter
@@ -10,32 +10,26 @@ from authentik.policies.models import PolicyBinding
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.user_login.models import UserLoginStage
 
-STATIC_PROMPT_EXPORT = """{
-    "version": 1,
-    "entries": [
-        {
-            "identifiers": {
-                "pk": "cb954fd4-65a5-4ad9-b1ee-180ee9559cf4"
-            },
-            "model": "authentik_stages_prompt.prompt",
-            "attrs": {
-                "field_key": "username",
-                "label": "Username",
-                "type": "username",
-                "required": true,
-                "placeholder": "Username",
-                "order": 0
-            }
-        }
-    ]
-}"""
+STATIC_PROMPT_EXPORT = """version: 1
+entries:
+- identifiers:
+    pk: cb954fd4-65a5-4ad9-b1ee-180ee9559cf4
+  model: authentik_stages_prompt.prompt
+  attrs:
+    field_key: username
+    label: Username
+    type: username
+    required: true
+    placeholder: Username
+    order: 0
+"""
 
 
-class TestFlowTransport(TransactionTestCase):
-    """Test flow Transport"""
+class TestBlueprintsV1(TransactionTestCase):
+    """Test Blueprints"""
 
-    def test_bundle_invalid_format(self):
-        """Test bundle with invalid format"""
+    def test_blueprint_invalid_format(self):
+        """Test blueprint with invalid format"""
         importer = Importer('{"version": 3}')
         self.assertFalse(importer.validate()[0])
         importer = Importer(

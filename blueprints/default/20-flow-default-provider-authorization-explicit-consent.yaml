@@ -1,3 +1,5 @@
+metadata:
+  name: Default - Provider authorization flow (explicit consent)
 entries:
 - attrs:
     compatibility_mode: false

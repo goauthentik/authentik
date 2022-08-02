@@ -1,3 +1,5 @@
+metadata:
+  name: Default - Source authentication flow
 entries:
 - attrs:
     compatibility_mode: false

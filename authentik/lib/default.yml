@@ -79,5 +79,4 @@ cert_discovery_dir: /certs
 default_token_length: 128
 impersonation: true
 
-blueprint_locations:
-  - /blueprints
+blueprints_dir: /blueprints

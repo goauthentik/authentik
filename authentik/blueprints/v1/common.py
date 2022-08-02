@@ -13,6 +13,7 @@ from yaml import SafeDumper, SafeLoader, ScalarNode, SequenceNode
 
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.policies.models import PolicyBindingModel
 
 
 def get_attrs(obj: SerializerModel) -> dict[str, Any]:
@@ -84,11 +85,21 @@ class BlueprintEntry:
 
 
 @dataclass
+class BlueprintMetadata:
+    """Optional blueprint metadata"""
+
+    name: str
+    labels: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass
 class Blueprint:
     """Dataclass used for a full export"""
 
     version: int = field(default=1)
     entries: list[BlueprintEntry] = field(default_factory=list)
+
+    metadata: Optional[BlueprintMetadata] = field(default=None)
 
 
 class YAMLTag:
@@ -112,6 +123,13 @@ class KeyOf(YAMLTag):
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         for _entry in blueprint.entries:
             if _entry.id == self.id_from and _entry._instance:
+                # Special handling for PolicyBindingModels, as they'll have a different PK
+                # which is used when creating policy bindings
+                if (
+                    isinstance(_entry._instance, PolicyBindingModel)
+                    and entry.model.lower() == "authentik_policies.policybinding"
+                ):
+                    return _entry._instance.pbm_uuid
                 return _entry._instance.pk
         raise ValueError(
             f"KeyOf: failed to find entry with `id` of `{self.id_from}` and a model instance"

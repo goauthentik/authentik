@@ -6218,6 +6218,62 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /managed/blueprints/{instance_uuid}/apply/:
+    post:
+      operationId: managed_blueprints_apply_create
+      description: Apply a blueprint
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
+  /managed/blueprints/{instance_uuid}/used_by/:
+    get:
+      operationId: managed_blueprints_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /managed/blueprints/available/:
     get:
       operationId: managed_blueprints_available_list
@@ -6233,7 +6289,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
+                  $ref: '#/components/schemas/BlueprintFile'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -20862,6 +20918,25 @@ components:
       - POST
       - POST_AUTO
       type: string
+    BlueprintFile:
+      type: object
+      properties:
+        path:
+          type: string
+        last_m:
+          type: string
+          format: date-time
+        hash:
+          type: string
+        meta:
+          allOf:
+          - $ref: '#/components/schemas/Metadata'
+          readOnly: true
+      required:
+      - hash
+      - last_m
+      - meta
+      - path
     BlueprintInstance:
       type: object
       description: Info about a single blueprint instance file
@@ -20886,7 +20961,9 @@ components:
           type: string
           readOnly: true
         status:
-          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+          allOf:
+          - $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+          readOnly: true
         enabled:
           type: boolean
         managed_models:
@@ -20894,11 +20971,15 @@ components:
           items:
             type: string
           readOnly: true
+        metadata:
+          type: object
+          additionalProperties: {}
+          readOnly: true
       required:
-      - context
       - last_applied
       - last_applied_hash
       - managed_models
+      - metadata
       - name
       - path
       - pk
@@ -20916,15 +20997,11 @@ components:
         context:
           type: object
           additionalProperties: {}
-        status:
-          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
         enabled:
           type: boolean
       required:
-      - context
       - name
       - path
-      - status
     BlueprintInstanceStatusEnum:
       enum:
       - successful
@@ -23773,6 +23850,18 @@ components:
           $ref: '#/components/schemas/LoginChallengeTypes'
       required:
       - challenge
+      - name
+    Metadata:
+      type: object
+      description: Serializer for blueprint metadata
+      properties:
+        name:
+          type: string
+        labels:
+          type: object
+          additionalProperties: {}
+      required:
+      - labels
       - name
     NameIdPolicyEnum:
       enum:
@@ -27808,8 +27897,6 @@ components:
         context:
           type: object
           additionalProperties: {}
-        status:
-          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
         enabled:
           type: boolean
     PatchedCaptchaStageRequest:

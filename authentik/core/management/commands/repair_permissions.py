@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand, no_translations
 from guardian.management import create_anonymous_user
 
 
-class Command(BaseCommand):  # pragma: no cover
+class Command(BaseCommand):
     """Repair missing permissions"""
 
     @no_translations

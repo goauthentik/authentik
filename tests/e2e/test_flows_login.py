@@ -2,7 +2,7 @@
 from sys import platform
 from unittest.case import skipUnless
 
-from authentik.blueprints import apply_blueprint
+from authentik.blueprints.tests import apply_blueprint
 from tests.e2e.utils import SeleniumTestCase, retry
 
 

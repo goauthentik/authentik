@@ -124,7 +124,7 @@ export class SystemTaskListPage extends TablePage<Task> {
                         });
                 }}
             >
-                <i class="fas fa-sync-alt" aria-hidden="true"></i>
+                <i class="fas fa-play" aria-hidden="true"></i>
             </ak-action-button>`,
         ];
     }

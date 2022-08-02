@@ -48,7 +48,7 @@ class FlowPlanProcess(PROCESS_CLASS):  # pragma: no cover
         self.return_dict[self.index] = diffs
 
 
-class Command(BaseCommand):  # pragma: no cover
+class Command(BaseCommand):
     """Benchmark authentik"""
 
     def add_arguments(self, parser):

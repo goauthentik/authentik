@@ -22,7 +22,7 @@ BANNER_TEXT = """### authentik shell ({authentik})
 )
 
 
-class Command(BaseCommand):  # pragma: no cover
+class Command(BaseCommand):
     """Start the Django shell with all authentik models already imported"""
 
     django_models = {}

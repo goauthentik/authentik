@@ -129,4 +129,8 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/web/pages/crypto/CertificateKeyPairListPage");
         return html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`;
     }),
+    new Route(new RegExp("^/blueprints/instances$"), async () => {
+        await import("@goauthentik/web/pages/blueprints/BlueprintListPage");
+        return html`<ak-blueprint-list></ak-blueprint-list>`;
+    }),
 ];

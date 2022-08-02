@@ -1,3 +1,5 @@
+metadata:
+  name: Default - TOTP MFA setup flow
 entries:
 - attrs:
     compatibility_mode: false

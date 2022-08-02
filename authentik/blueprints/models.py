@@ -49,13 +49,14 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
     instance_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField()
+    metadata = models.JSONField(default=dict)
     path = models.TextField()
-    context = models.JSONField()
+    context = models.JSONField(default=dict)
     last_applied = models.DateTimeField(auto_now=True)
     last_applied_hash = models.TextField()
     status = models.TextField(choices=BlueprintInstanceStatus.choices)
     enabled = models.BooleanField(default=True)
-    managed_models = ArrayField(models.TextField())
+    managed_models = ArrayField(models.TextField(), default=list)
 
     @property
     def serializer(self) -> Serializer:
