@@ -5,24 +5,10 @@ from django.db import migrations
 from authentik.lib.generators import generate_id
 
 
-def create_self_signed(apps, schema_editor):
-    CertificateKeyPair = apps.get_model("authentik_crypto", "CertificateKeyPair")
-    db_alias = schema_editor.connection.alias
-    from authentik.crypto.builder import CertificateBuilder
-
-    builder = CertificateBuilder()
-    builder.build(subject_alt_names=[f"{generate_id()}.self-signed.goauthentik.io"])
-    CertificateKeyPair.objects.using(db_alias).create(
-        name="authentik Self-signed Certificate",
-        certificate_data=builder.certificate,
-        key_data=builder.private_key,
-    )
-
-
 class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_crypto", "0001_initial"),
     ]
 
-    operations = [migrations.RunPython(create_self_signed)]
+    operations = []

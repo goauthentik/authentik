@@ -84,11 +84,21 @@ class BlueprintEntry:
 
 
 @dataclass
+class BlueprintMetadata:
+    """Optional blueprint metadata"""
+
+    name: str
+    labels: dict[str, str] = field(default=dict)
+
+
+@dataclass
 class Blueprint:
     """Dataclass used for a full export"""
 
     version: int = field(default=1)
     entries: list[BlueprintEntry] = field(default_factory=list)
+
+    metadata: Optional[BlueprintMetadata] = field(default=None)
 
 
 class YAMLTag:

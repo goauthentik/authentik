@@ -49,6 +49,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
     instance_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField()
+    metadata = models.JSONField()
     path = models.TextField()
     context = models.JSONField()
     last_applied = models.DateTimeField(auto_now=True)

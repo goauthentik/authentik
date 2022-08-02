@@ -4,13 +4,19 @@ from inspect import ismethod
 
 from django.apps import AppConfig
 from django.db import DatabaseError, InternalError, ProgrammingError
-from structlog.stdlib import get_logger
+from structlog.stdlib import BoundLogger, get_logger
 
 LOGGER = get_logger()
 
 
 class ManagedAppConfig(AppConfig):
     """Basic reconciliation logic for apps"""
+
+    _logger: BoundLogger
+
+    def __init__(self, app_name: str, *args, **kwargs) -> None:
+        super().__init__(app_name, *args, **kwargs)
+        self._logger = get_logger().bind(app_name=app_name)
 
     def ready(self) -> None:
         self.reconcile()
@@ -31,7 +37,8 @@ class ManagedAppConfig(AppConfig):
                 continue
             name = meth_name.replace(prefix, "")
             try:
+                self._logger.debug("Starting reconciler", name=name)
                 meth()
-                LOGGER.debug("Successfully reconciled", name=name)
+                self._logger.debug("Successfully reconciled", name=name)
             except (DatabaseError, ProgrammingError, InternalError) as exc:
-                LOGGER.debug("Failed to run reconcile", name=name, exc=exc)
+                self._logger.debug("Failed to run reconcile", name=name, exc=exc)

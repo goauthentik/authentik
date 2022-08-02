@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
 from authentik.blueprints.manager import ManagedAppConfig
+from authentik.lib.generators import generate_id
 
 if TYPE_CHECKING:
     from authentik.crypto.models import CertificateKeyPair
@@ -53,3 +54,19 @@ class AuthentikCryptoConfig(ManagedAppConfig):
         now = datetime.now()
         if now < cert.certificate.not_valid_before or now > cert.certificate.not_valid_after:
             self._create_update_cert(cert)
+
+    def reconcile_self_signed(self):
+        """Create self-signed keypair"""
+        from authentik.crypto.builder import CertificateBuilder
+        from authentik.crypto.models import CertificateKeyPair
+
+        name = "authentik Self-signed Certificate"
+        if CertificateKeyPair.objects.filter(name=name).exists():
+            return
+        builder = CertificateBuilder()
+        builder.build(subject_alt_names=[f"{generate_id()}.self-signed.goauthentik.io"])
+        CertificateKeyPair.objects.create(
+            name="authentik Self-signed Certificate",
+            certificate_data=builder.certificate,
+            key_data=builder.private_key,
+        )

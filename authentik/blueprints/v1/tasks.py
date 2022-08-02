@@ -1,14 +1,19 @@
 """v1 blueprints tasks"""
+from curses import meta
+from dataclasses import asdict, dataclass, field
 from glob import glob
 from hashlib import sha512
 from pathlib import Path
+from typing import Optional
 
+from django.conf import settings
 from django.db import DatabaseError, InternalError, ProgrammingError
 from yaml import load
 
 from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
-from authentik.blueprints.v1.common import BlueprintLoader
+from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata
 from authentik.blueprints.v1.importer import Importer
+from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_EXAMPLE
 from authentik.events.monitored_tasks import (
     MonitoredTask,
     TaskResult,
@@ -19,40 +24,73 @@ from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
 
+@dataclass
+class BlueprintFile:
+    """Basic info about a blueprint file"""
+
+    path: str
+    version: int
+    hash: str
+    last_m: int
+    meta: Optional[BlueprintMetadata] = field(default=None)
+
+
+@CELERY_APP.task(
+    throws=(DatabaseError, ProgrammingError, InternalError),
+)
+@prefill_task
+def blueprints_find() -> list[dict]:
+    """Find blueprints and return valid ones"""
+    blueprints = []
+    for file in glob(f"{CONFIG.y('blueprints_dir')}/**/*.yaml", recursive=True):
+        path = Path(file)
+        with open(path, "r", encoding="utf-8") as blueprint_file:
+            raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
+            metadata = raw_blueprint.get("metadata", None)
+            version = raw_blueprint.get("version", 1)
+            if version != 1:
+                return
+            blueprint_file.seek(0)
+        file_hash = sha512(path.read_bytes()).hexdigest()
+        blueprint = BlueprintFile(file, version, file_hash, path.stat().st_mtime)
+        blueprint.meta = metadata
+        blueprints.append(blueprint)
+    return blueprints
+
+
 @CELERY_APP.task(
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
 @prefill_task
 def blueprints_discover():
     """Find blueprints and check if they need to be created in the database"""
-    for folder in CONFIG.y("blueprint_locations"):
-        for file in glob(f"{folder}/**/*.yaml", recursive=True):
-            check_blueprint_v1_file(Path(file))
-
-
-def check_blueprint_v1_file(path: Path):
-    """Check if blueprint should be imported"""
-    with open(path, "r", encoding="utf-8") as blueprint_file:
-        raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
-        version = raw_blueprint.get("version", 1)
-        if version != 1:
+    for blueprint in blueprints_find():
+        if (
+            blueprint.meta
+            and blueprint.meta.labels.get(LABEL_AUTHENTIK_EXAMPLE, "").lower() == "true"
+        ):
             return
-        blueprint_file.seek(0)
-    file_hash = sha512(path.read_bytes()).hexdigest()
-    instance: BlueprintInstance = BlueprintInstance.objects.filter(path=path).first()
+        check_blueprint_v1_file(blueprint)
+
+
+def check_blueprint_v1_file(blueprint: BlueprintFile):
+    """Check if blueprint should be imported"""
+    rel_path = blueprint.path.relative_to(Path(CONFIG.y("blueprints_dir")))
+    instance: BlueprintInstance = BlueprintInstance.objects.filter(path=blueprint.path).first()
     if not instance:
         instance = BlueprintInstance(
-            name=path.name,
-            path=str(path),
+            name=blueprint.meta.name if blueprint.meta else str(rel_path),
+            path=blueprint.path,
             context={},
             status=BlueprintInstanceStatus.UNKNOWN,
             enabled=True,
             managed_models=[],
         )
         instance.save()
-    if instance.last_applied_hash != file_hash:
+    blueprint.meta = asdict(blueprint.meta)
+    if instance.last_applied_hash != blueprint.hash:
         apply_blueprint.delay(instance.pk.hex)
-        instance.last_applied_hash = file_hash
+        instance.last_applied_hash = blueprint.hash
         instance.save()
 
 

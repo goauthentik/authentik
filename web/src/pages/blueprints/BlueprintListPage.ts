@@ -81,13 +81,10 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     }
 
     row(item: BlueprintInstance): TemplateResult[] {
-        const delta = Date.now() - item.lastApplied.getTime();
-        const ago = Math.round(delta / 1000 / 3600);
-        const applyDelta = t`${ago} hours ago`;
         return [
             html`${item.name}`,
             html`${item.status}`,
-            html`${applyDelta}`,
+            html`${item.lastApplied.toLocaleString()}`,
             html`<ak-label color=${item.enabled ? PFColor.Green : PFColor.Red}>
                 ${item.enabled ? t`Yes` : t`No`}
             </ak-label>`,

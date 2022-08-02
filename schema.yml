@@ -6262,7 +6262,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
+                  $ref: '#/components/schemas/BlueprintFile'
           description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
@@ -20891,6 +20891,25 @@ components:
       - POST
       - POST_AUTO
       type: string
+    BlueprintFile:
+      type: object
+      properties:
+        path:
+          type: string
+        last_m:
+          type: string
+          format: date-time
+        hash:
+          type: string
+        meta:
+          allOf:
+          - $ref: '#/components/schemas/Metadata'
+          readOnly: true
+      required:
+      - hash
+      - last_m
+      - meta
+      - path
     BlueprintInstance:
       type: object
       description: Info about a single blueprint instance file
@@ -20923,11 +20942,16 @@ components:
           items:
             type: string
           readOnly: true
+        metadata:
+          type: object
+          additionalProperties: {}
+          readOnly: true
       required:
       - context
       - last_applied
       - last_applied_hash
       - managed_models
+      - metadata
       - name
       - path
       - pk
@@ -23802,6 +23826,18 @@ components:
           $ref: '#/components/schemas/LoginChallengeTypes'
       required:
       - challenge
+      - name
+    Metadata:
+      type: object
+      description: Serializer for blueprint metadata
+      properties:
+        name:
+          type: string
+        labels:
+          type: object
+          additionalProperties: {}
+      required:
+      - labels
       - name
     NameIdPolicyEnum:
       enum:
