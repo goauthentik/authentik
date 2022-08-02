@@ -1,5 +1,5 @@
 """Serializer mixin for managed models"""
-from drf_spectacular.utils import extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, DateTimeField, JSONField
 from rest_framework.permissions import IsAdminUser
@@ -8,8 +8,9 @@ from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.decorators import permission_required
 from authentik.blueprints.models import BlueprintInstance
-from authentik.blueprints.v1.tasks import BlueprintFile, blueprints_find
+from authentik.blueprints.v1.tasks import BlueprintFile, apply_blueprint, blueprints_find
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 
@@ -82,3 +83,17 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
         """Get blueprints"""
         files: list[BlueprintFile] = blueprints_find.delay().get()
         return Response(files)
+
+    @permission_required("authentik_blueprints.view_blueprintinstance")
+    @extend_schema(
+        request={},
+        responses={
+            200: BlueprintInstanceSerializer(),
+        },
+    )
+    @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
+    def apply(self, request: Request, *args, **kwargs) -> Response:
+        """Apply a blueprint"""
+        blueprint = self.get_object()
+        apply_blueprint.delay(str(blueprint.pk)).get()
+        return self.retrieve(request, *args, **kwargs)

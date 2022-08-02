@@ -134,6 +134,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance.last_applied_hash = file_hash
         instance.last_applied = now()
         instance.save()
+        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
     except (DatabaseError, ProgrammingError, InternalError, IOError) as exc:
         instance.status = BlueprintInstanceStatus.ERROR
         instance.save()

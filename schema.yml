@@ -6218,6 +6218,36 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /managed/blueprints/{instance_uuid}/apply/:
+    post:
+      operationId: managed_blueprints_apply_create
+      description: Apply a blueprint
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      requestBody:
+        content: {}
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /managed/blueprints/{instance_uuid}/used_by/:
     get:
       operationId: managed_blueprints_used_by_list
