@@ -109,6 +109,7 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 )
 def apply_blueprint(self: MonitoredTask, instance_pk: str):
     """Apply single blueprint"""
+    self.set_uid(instance_pk)
     self.save_on_success = False
     try:
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()

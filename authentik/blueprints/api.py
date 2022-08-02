@@ -80,5 +80,5 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, pagination_class=None, filter_backends=[])
     def available(self, request: Request) -> Response:
         """Get blueprints"""
-        files: list[BlueprintFile] = blueprints_find().delay().get()
+        files: list[BlueprintFile] = blueprints_find.delay().get()
         return Response(files)
