@@ -7,7 +7,7 @@ from authentik.blueprints.v1.importer import Importer
 LOGGER = get_logger()
 
 
-class Command(BaseCommand):  # pragma: no cover
+class Command(BaseCommand):
     """Apply blueprint from commandline"""
 
     @no_translations

@@ -8,7 +8,7 @@ from authentik.stages.email.tasks import send_mail
 from authentik.stages.email.utils import TemplateEmailMessage
 
 
-class Command(BaseCommand):  # pragma: no cover
+class Command(BaseCommand):
     """Send a test-email with global settings"""
 
     @no_translations

@@ -8,14 +8,14 @@ from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from authentik.blueprints import apply_blueprint
+from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider
-from tests.e2e.utils import SeleniumTestCase, reconcile_app, retry
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")

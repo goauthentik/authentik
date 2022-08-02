@@ -10,14 +10,14 @@ from guardian.shortcuts import get_anonymous_user
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 
-from authentik.blueprints import apply_blueprint
+from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application, User
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
-from tests.e2e.utils import SeleniumTestCase, reconcile_app, retry
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")

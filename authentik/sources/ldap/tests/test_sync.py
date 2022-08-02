@@ -4,7 +4,7 @@ from unittest.mock import PropertyMock, patch
 from django.db.models import Q
 from django.test import TestCase
 
-from authentik.blueprints import apply_blueprint
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction

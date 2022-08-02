@@ -5,7 +5,7 @@ from django.test import RequestFactory
 from django.urls import reverse
 from jwt import decode
 
-from authentik.blueprints import apply_blueprint
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import USER_ATTRIBUTE_SA, Application, Group, Token, TokenIntents
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id, generate_key

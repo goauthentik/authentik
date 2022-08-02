@@ -29,7 +29,14 @@ force_to_top = "*"
 [tool.coverage.run]
 source = ["authentik"]
 relative_files = true
-omit = ["*/asgi.py", "manage.py", "*/migrations/*", "*/apps.py", "website/"]
+omit = [
+  "*/asgi.py",
+  "manage.py",
+  "*/migrations/*",
+  "*/management/commands/*",
+  "*/apps.py",
+  "website/",
+]
 
 [tool.coverage.report]
 sort = "Cover"

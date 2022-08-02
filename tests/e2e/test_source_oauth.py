@@ -13,7 +13,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from yaml import safe_dump
 
-from authentik.blueprints import apply_blueprint
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key

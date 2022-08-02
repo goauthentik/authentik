@@ -4,7 +4,7 @@ from unittest.mock import Mock, PropertyMock, patch
 from django.db.models import Q
 from django.test import TestCase
 
-from authentik.blueprints import apply_blueprint
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.lib.generators import generate_key
 from authentik.sources.ldap.auth import LDAPBackend
