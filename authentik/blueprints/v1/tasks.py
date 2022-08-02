@@ -38,7 +38,7 @@ class BlueprintFile:
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
 @prefill_task
-def blueprints_find() -> list[dict]:
+def blueprints_find():
     """Find blueprints and return valid ones"""
     blueprints = []
     for file in glob(f"{CONFIG.y('blueprints_dir')}/**/*.yaml", recursive=True):
@@ -48,7 +48,7 @@ def blueprints_find() -> list[dict]:
             metadata = raw_blueprint.get("metadata", None)
             version = raw_blueprint.get("version", 1)
             if version != 1:
-                return
+                continue
             blueprint_file.seek(0)
         file_hash = sha512(path.read_bytes()).hexdigest()
         blueprint = BlueprintFile(str(path), version, file_hash, path.stat().st_mtime)

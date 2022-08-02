@@ -20,7 +20,7 @@ class Command(BaseCommand):  # pragma: no cover
                 if not valid:
                     for log in logs:
                         LOGGER.debug(**log)
-                    raise ValueError(f"blueprint invalid")
+                    raise ValueError("blueprint invalid")
                 importer.apply()
 
     def add_arguments(self, parser):
