@@ -74,6 +74,11 @@ class Importer:
         except DaciteError as exc:
             raise EntryInvalidError from exc
 
+    @property
+    def blueprint(self) -> Blueprint:
+        """Get imported blueprint"""
+        return self.__import
+
     def __update_pks_for_attrs(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Replace any value if it is a known primary key of an other object"""
 

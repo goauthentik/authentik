@@ -7,6 +7,8 @@ from typing import Optional
 
 from dacite import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
+from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 from yaml import load
 
 from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
@@ -37,7 +39,6 @@ class BlueprintFile:
 @CELERY_APP.task(
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
-@prefill_task
 def blueprints_find():
     """Find blueprints and return valid ones"""
     blueprints = []
@@ -58,11 +59,12 @@ def blueprints_find():
 
 
 @CELERY_APP.task(
-    throws=(DatabaseError, ProgrammingError, InternalError),
+    throws=(DatabaseError, ProgrammingError, InternalError), base=MonitoredTask, bind=True
 )
 @prefill_task
-def blueprints_discover():
+def blueprints_discover(self: MonitoredTask):
     """Find blueprints and check if they need to be created in the database"""
+    count = 0
     for blueprint in blueprints_find():
         if (
             blueprint.meta
@@ -70,6 +72,13 @@ def blueprints_discover():
         ):
             continue
         check_blueprint_v1_file(blueprint)
+        count += 1
+    self.set_status(
+        TaskResult(
+            TaskResultStatus.SUCCESSFUL,
+            messages=[_("Successfully imported %(count)d files." % {"count": count})],
+        )
+    )
 
 
 def check_blueprint_v1_file(blueprint: BlueprintFile):
@@ -105,6 +114,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
         if not instance or not instance.enabled:
             return
+        file_hash = sha512(instance.path.read_bytes()).hexdigest()
         with open(instance.path, "r", encoding="utf-8") as blueprint_file:
             importer = Importer(blueprint_file.read())
             valid, logs = importer.validate()
@@ -118,7 +128,10 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
                 instance.status = BlueprintInstanceStatus.ERROR
                 instance.save()
                 self.set_status(TaskResult(TaskResultStatus.ERROR, "Failed to apply"))
+                return
             instance.status = BlueprintInstanceStatus.SUCCESSFUL
+            instance.last_applied_hash = file_hash
+            instance.last_applied = now()
             instance.save()
     except (DatabaseError, ProgrammingError, InternalError, IOError) as exc:
         instance.status = BlueprintInstanceStatus.ERROR
