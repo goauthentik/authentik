@@ -9,6 +9,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
+from authentik.core.api.used_by import UsedByMixin
 
 from authentik.blueprints.models import BlueprintInstance
 from authentik.lib.config import CONFIG
@@ -44,7 +45,7 @@ class BlueprintInstanceSerializer(ModelSerializer):
         }
 
 
-class BlueprintInstanceViewSet(ModelViewSet):
+class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     """Blueprint instances"""
 
     permission_classes = [IsAdminUser]

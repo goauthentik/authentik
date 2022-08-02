@@ -6218,6 +6218,35 @@ paths:
           $ref: '#/components/schemas/ValidationError'
         '403':
           $ref: '#/components/schemas/GenericError'
+  /managed/blueprints/{instance_uuid}/used_by/:
+    get:
+      operationId: managed_blueprints_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/schemas/ValidationError'
+        '403':
+          $ref: '#/components/schemas/GenericError'
   /managed/blueprints/available/:
     get:
       operationId: managed_blueprints_available_list
