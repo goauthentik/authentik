@@ -54,6 +54,11 @@ def blueprints_find():
         file_hash = sha512(path.read_bytes()).hexdigest()
         blueprint = BlueprintFile(str(path), version, file_hash, path.stat().st_mtime)
         blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
+        if (
+            blueprint.meta
+            and blueprint.meta.labels.get(LABEL_AUTHENTIK_EXAMPLE, "").lower() == "true"
+        ):
+            continue
         blueprints.append(blueprint)
     return blueprints
 
@@ -66,11 +71,6 @@ def blueprints_discover(self: MonitoredTask):
     """Find blueprints and check if they need to be created in the database"""
     count = 0
     for blueprint in blueprints_find():
-        if (
-            blueprint.meta
-            and blueprint.meta.labels.get(LABEL_AUTHENTIK_EXAMPLE, "").lower() == "true"
-        ):
-            continue
         check_blueprint_v1_file(blueprint)
         count += 1
     self.set_status(

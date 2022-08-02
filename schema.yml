@@ -6232,9 +6232,6 @@ paths:
         required: true
       tags:
       - managed
-      requestBody:
-        content: {}
-        required: true
       security:
       - authentik: []
       responses:
@@ -20964,7 +20961,9 @@ components:
           type: string
           readOnly: true
         status:
-          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+          allOf:
+          - $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+          readOnly: true
         enabled:
           type: boolean
         managed_models:
@@ -20999,15 +20998,12 @@ components:
         context:
           type: object
           additionalProperties: {}
-        status:
-          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
         enabled:
           type: boolean
       required:
       - context
       - name
       - path
-      - status
     BlueprintInstanceStatusEnum:
       enum:
       - successful
@@ -27903,8 +27899,6 @@ components:
         context:
           type: object
           additionalProperties: {}
-        status:
-          $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
         enabled:
           type: boolean
     PatchedCaptchaStageRequest:

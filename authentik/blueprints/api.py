@@ -1,5 +1,7 @@
 """Serializer mixin for managed models"""
-from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from dataclasses import asdict
+
+from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, DateTimeField, JSONField
 from rest_framework.permissions import IsAdminUser
@@ -47,6 +49,7 @@ class BlueprintInstanceSerializer(ModelSerializer):
             "metadata",
         ]
         extra_kwargs = {
+            "status": {"read_only": True},
             "last_applied": {"read_only": True},
             "last_applied_hash": {"read_only": True},
             "managed_models": {"read_only": True},
@@ -82,11 +85,11 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     def available(self, request: Request) -> Response:
         """Get blueprints"""
         files: list[BlueprintFile] = blueprints_find.delay().get()
-        return Response(files)
+        return Response([asdict(file) for file in files])
 
     @permission_required("authentik_blueprints.view_blueprintinstance")
     @extend_schema(
-        request={},
+        request=None,
         responses={
             200: BlueprintInstanceSerializer(),
         },

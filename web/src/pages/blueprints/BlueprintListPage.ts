@@ -1,7 +1,9 @@
 import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/buttons/ActionButton";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
@@ -14,8 +16,23 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { BlueprintInstance, ManagedApi } from "@goauthentik/api";
+import { BlueprintInstance, BlueprintInstanceStatusEnum, ManagedApi } from "@goauthentik/api";
 
+export function BlueprintStatus(blueprint?: BlueprintInstance): string {
+    if (!blueprint) return "";
+    switch (blueprint.status) {
+        case BlueprintInstanceStatusEnum.Successful:
+            return t`Successful`;
+        case BlueprintInstanceStatusEnum.Orphaned:
+            return t`Orphaned`;
+        case BlueprintInstanceStatusEnum.Unknown:
+            return t`Unknown`;
+        case BlueprintInstanceStatusEnum.Warning:
+            return t`Warning`;
+        case BlueprintInstanceStatusEnum.Error:
+            return t`Error`;
+    }
+}
 @customElement("ak-blueprint-list")
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
     searchEnabled(): boolean {
@@ -83,19 +100,38 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     row(item: BlueprintInstance): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${item.status}`,
+            html`${BlueprintStatus(item)}`,
             html`${item.lastApplied.toLocaleString()}`,
             html`<ak-label color=${item.enabled ? PFColor.Green : PFColor.Red}>
                 ${item.enabled ? t`Yes` : t`No`}
             </ak-label>`,
-            html`<ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update Blueprint`} </span>
-                <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <i class="fas fa-edit"></i>
-                </button>
-            </ak-forms-modal>`,
+            html`<ak-action-button
+                    class="pf-m-plain"
+                    .apiRequest=${() => {
+                        return new ManagedApi(DEFAULT_CONFIG)
+                            .managedBlueprintsApplyCreate({
+                                instanceUuid: item.pk,
+                            })
+                            .then(() => {
+                                this.dispatchEvent(
+                                    new CustomEvent(EVENT_REFRESH, {
+                                        bubbles: true,
+                                        composed: true,
+                                    }),
+                                );
+                            });
+                    }}
+                >
+                    <i class="fas fa-play" aria-hidden="true"></i>
+                </ak-action-button>
+                <ak-forms-modal>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update Blueprint`} </span>
+                    <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </ak-forms-modal>`,
         ];
     }
 

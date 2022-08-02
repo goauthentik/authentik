@@ -1,10 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import "@goauthentik/web/elements/CodeMirror";
-import "@goauthentik/web/elements/SearchSelect";
 import "@goauthentik/web/elements/forms/FormGroup";
 import "@goauthentik/web/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
-import { DefaultTenant } from "@goauthentik/web/elements/sidebar/SidebarBrand";
 import { first } from "@goauthentik/web/utils";
 import YAML from "yaml";
 
@@ -12,15 +10,9 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import {
-    BlueprintInstance,
-    FlowsApi,
-    FlowsInstancesListDesignationEnum,
-    ManagedApi,
-} from "@goauthentik/api";
+import { BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
 @customElement("ak-blueprint-form")
 export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
@@ -61,335 +53,50 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="path">
-                <!-- @ts-ignore -->
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<string[]> => {
-                        const paths = await new ManagedApi(
-                            DEFAULT_CONFIG,
-                        ).managedBlueprintsAvailableList();
-                        return paths.filter((path) => (query ? path.includes(query) : true));
-                    }}
-                    .renderElement=${(path: string): string => {
-                        return path;
-                    }}
-                    .value=${(path: string | undefined): string | undefined => {
-                        return path;
-                    }}
-                    .selected=${(path: string): boolean => {
-                        return path === this.instance?.path;
-                    }}
-                    ?blankable=${true}
-                >
-                </ak-search-select>
-                <p class="pf-c-form__helper-text">
-                    ${t`Use this tenant for each domain that doesn't have a dedicated tenant.`}
-                </p>
+            <ak-form-element-horizontal name="enabled">
+                <div class="pf-c-check">
+                    <input
+                        type="checkbox"
+                        class="pf-c-check__input"
+                        ?checked=${first(this.instance?.enabled, false)}
+                    />
+                    <label class="pf-c-check__label"> ${t`Enabled`} </label>
+                </div>
+                <p class="pf-c-form__helper-text">${t`Disabled blueprints are never applied.`}</p>
             </ak-form-element-horizontal>
-
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Branding settings`} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${t`Title`}
-                        ?required=${true}
-                        name="brandingTitle"
-                    >
-                        <input
-                            type="text"
-                            value="${first(
-                                this.instance?.brandingTitle,
-                                DefaultTenant.brandingTitle,
-                            )}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${t`Branding shown in page title and several other places.`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Logo`}
-                        ?required=${true}
-                        name="brandingLogo"
-                    >
-                        <input
-                            type="text"
-                            value="${first(
-                                this.instance?.brandingLogo,
-                                DefaultTenant.brandingLogo,
-                            )}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${t`Icon shown in sidebar/header and flow executor.`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Favicon`}
-                        ?required=${true}
-                        name="brandingFavicon"
-                    >
-                        <input
-                            type="text"
-                            value="${first(
-                                this.instance?.brandingFavicon,
-                                DefaultTenant.brandingFavicon,
-                            )}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">${t`Icon shown in the browser tab.`}</p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
+            <ak-form-element-horizontal label=${t`Path`} name="path">
+                <select class="pf-c-form-control">
+                    ${until(
+                        new ManagedApi(DEFAULT_CONFIG)
+                            .managedBlueprintsAvailableList()
+                            .then((files) => {
+                                return files.map((file) => {
+                                    let name = file.path;
+                                    if (file.meta && file.meta.name) {
+                                        name = `${name} (${file.meta.name})`;
+                                    }
+                                    const selected = file.path === this.instance?.path;
+                                    return html`<option ?selected=${selected} value=${file.path}>
+                                        ${name}
+                                    </option>`;
+                                });
+                            }),
+                        html`<option>${t`Loading...`}</option>`,
+                    )}
+                </select>
+            </ak-form-element-horizontal>
             <ak-form-group>
-                <span slot="header"> ${t`Default flows`} </span>
+                <span slot="header">${t`Additional settings`}</span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${t`Authentication flow`}
-                        name="flowAuthentication"
-                    >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.flowAuthentication === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation:
-                                            FlowsInstancesListDesignationEnum.Authentication,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            const selected =
-                                                this.instance?.flowAuthentication === flow.pk;
-                                            return html`<option
-                                                value=${flow.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${t`Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Invalidation flow`}
-                        name="flowInvalidation"
-                    >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.flowInvalidation === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation: FlowsInstancesListDesignationEnum.Invalidation,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            const selected =
-                                                this.instance?.flowInvalidation === flow.pk;
-                                            return html`<option
-                                                value=${flow.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${t`Flow used to logout. If left empty, the first applicable flow sorted by the slug is used.`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Recovery flow`} name="flowRecovery">
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.flowRecovery === undefined}>
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation: FlowsInstancesListDesignationEnum.Recovery,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            const selected =
-                                                this.instance?.flowRecovery === flow.pk;
-                                            return html`<option
-                                                value=${flow.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${t`Recovery flow. If left empty, the first applicable flow sorted by the slug is used.`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Unenrollment flow`}
-                        name="flowUnenrollment"
-                    >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.flowUnenrollment === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation: FlowsInstancesListDesignationEnum.Unenrollment,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            const selected =
-                                                this.instance?.flowUnenrollment === flow.pk;
-                                            return html`<option
-                                                value=${flow.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${t`If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`User settings flow`}
-                        name="flowUserSettings"
-                    >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.flowUserSettings === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation:
-                                            FlowsInstancesListDesignationEnum.StageConfiguration,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            const selected =
-                                                this.instance?.flowUserSettings === flow.pk;
-                                            return html`<option
-                                                value=${flow.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${t`If set, users are able to configure details of their profile.`}
-                        </p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${t`Other global settings`} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${t`Event retention`}
-                        ?required=${true}
-                        name="eventRetention"
-                    >
-                        <input
-                            type="text"
-                            value="${first(this.instance?.eventRetention, "days=365")}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${t`Duration after which events will be deleted from the database.`}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`When using an external logging solution for archiving, this can be set to "minutes=5".`}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`This setting only affects new Events, as the expiration is saved per-event.`}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`Format: "weeks=3;days=2;hours=3,seconds=2".`}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Attributes`} name="attributes">
+                    <ak-form-element-horizontal label=${t`Context`} name="context">
                         <ak-codemirror
                             mode="yaml"
-                            value="${YAML.stringify(first(this.instance?.attributes, {}))}"
+                            value="${YAML.stringify(first(this.instance?.context, {}))}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">
-                            ${t`Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant.`}
+                            ${t`Configure the blueprint context, used for templating.`}
                         </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Web Certificate`} name="webCertificate">
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.webCertificate === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new CryptoApi(DEFAULT_CONFIG)
-                                    .cryptoCertificatekeypairsList({
-                                        ordering: "name",
-                                        hasKey: true,
-                                    })
-                                    .then((keys) => {
-                                        return keys.results.map((key) => {
-                                            return html`<option
-                                                value=${ifDefined(key.pk)}
-                                                ?selected=${this.instance?.webCertificate ===
-                                                key.pk}
-                                            >
-                                                ${key.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
