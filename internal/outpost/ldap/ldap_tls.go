@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/pires/go-proxyproto"
+	"goauthentik.io/internal/config"
 )
 
 func (ls *LDAPServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
@@ -28,7 +29,7 @@ func (ls *LDAPServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certifica
 }
 
 func (ls *LDAPServer) StartLDAPTLSServer() error {
-	listen := "0.0.0.0:6636"
+	listen := config.Get().Listen.LDAPS
 	tlsConfig := &tls.Config{
 		MinVersion:     tls.VersionTLS12,
 		MaxVersion:     tls.VersionTLS12,

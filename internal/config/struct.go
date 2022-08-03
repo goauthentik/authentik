@@ -1,13 +1,14 @@
 package config
 
 type Config struct {
-	Debug          bool                 `yaml:"debug" env:"AUTHENTIK_DEBUG"`
-	SecretKey      string               `yaml:"secret_key" env:"AUTHENTIK_SECRET_KEY"`
-	Web            WebConfig            `yaml:"web"`
-	Paths          PathsConfig          `yaml:"paths"`
-	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL"`
-	ErrorReporting ErrorReportingConfig `yaml:"error_reporting"`
-	Redis          RedisConfig          `yaml:"redis"`
+	Debug                  bool                 `yaml:"debug" env:"AUTHENTIK_DEBUG"`
+	SecretKey              string               `yaml:"secret_key" env:"AUTHENTIK_SECRET_KEY"`
+	Listen                 ListenConfig         `yaml:"listen"`
+	Paths                  PathsConfig          `yaml:"paths"`
+	LogLevel               string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL"`
+	ErrorReporting         ErrorReportingConfig `yaml:"error_reporting"`
+	Redis                  RedisConfig          `yaml:"redis"`
+	DisableEmbeddedOutpost bool                 `yaml:"disable_embedded_outpost" env:"AUTHENTIK_WEB__DISABLE_EMBEDDED_OUTPOST"`
 }
 
 type RedisConfig struct {
@@ -26,11 +27,13 @@ type RedisConfig struct {
 	CacheTimeoutReputation int    `yaml:"cache_timeout_reputation" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION"`
 }
 
-type WebConfig struct {
-	Listen                 string `yaml:"listen"`
-	ListenTLS              string `yaml:"listen_tls"`
-	ListenMetrics          string `yaml:"listen_metrics"`
-	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"AUTHENTIK_WEB__DISABLE_EMBEDDED_OUTPOST"`
+type ListenConfig struct {
+	HTTP    string `yaml:"listen_http" env:"AUTHENTIK_LISTEN__HTTP"`
+	HTTPS   string `yaml:"listen_https" env:"AUTHENTIK_LISTEN__HTTPS"`
+	LDAP    string `yaml:"listen_ldap" env:"AUTHENTIK_LISTEN__LDAP,default=0.0.0.0:3389"`
+	LDAPS   string `yaml:"listen_ldaps" env:"AUTHENTIK_LISTEN__LDAPS,default=0.0.0.0:6636"`
+	Metrics string `yaml:"listen_metrics" env:"AUTHENTIK_LISTEN__METRICS,default=0.0.0.0:9300"`
+	Debug   string `yaml:"listen_debug" env:"AUTHENTIK_LISTEN__DEBUG,default=0.0.0.0:9900"`
 }
 
 type PathsConfig struct {

@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
-	"fmt"
 	"net"
 	"net/http"
 	"sync"
@@ -14,6 +13,7 @@ import (
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/application"
@@ -23,9 +23,6 @@ import (
 )
 
 type ProxyServer struct {
-	Listen     string
-	PortOffset int
-
 	defaultCert tls.Certificate
 	stop        chan struct{} // channel for waiting shutdown
 
@@ -36,7 +33,7 @@ type ProxyServer struct {
 	akAPI       *ak.APIController
 }
 
-func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
+func NewProxyServer(ac *ak.APIController) *ProxyServer {
 	l := log.WithField("logger", "authentik.outpost.proxyv2")
 	defaultCert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
@@ -55,9 +52,6 @@ func NewProxyServer(ac *ak.APIController, portOffset int) *ProxyServer {
 	globalMux.Use(web.NewLoggingHandler(l.WithField("logger", "authentik.outpost.proxyv2.http"), nil))
 	globalMux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	s := &ProxyServer{
-		Listen:     "0.0.0.0:%d",
-		PortOffset: portOffset,
-
 		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
 		apps:        make(map[string]*application.Application),
 		log:         l,
@@ -116,7 +110,7 @@ func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certific
 
 // ServeHTTP constructs a net.Listener and starts handling HTTP requests
 func (ps *ProxyServer) ServeHTTP() {
-	listenAddress := fmt.Sprintf(ps.Listen, 9000+ps.PortOffset)
+	listenAddress := config.Get().Listen.HTTP
 	listener, err := net.Listen("tcp", listenAddress)
 	if err != nil {
 		ps.log.WithField("listen", listenAddress).WithError(err).Fatalf("listen failed")
@@ -131,7 +125,7 @@ func (ps *ProxyServer) ServeHTTP() {
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
 func (ps *ProxyServer) ServeHTTPS() {
-	listenAddress := fmt.Sprintf(ps.Listen, 9443+ps.PortOffset)
+	listenAddress := config.Get().Listen.HTTPS
 	config := &tls.Config{
 		MinVersion:     tls.VersionTLS12,
 		MaxVersion:     tls.VersionTLS12,

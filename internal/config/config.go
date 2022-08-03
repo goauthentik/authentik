@@ -19,6 +19,7 @@ var cfg *Config
 func Get() *Config {
 	if cfg == nil {
 		cfg = defaultConfig()
+		cfg.Setup()
 	}
 	return cfg
 }
@@ -26,9 +27,11 @@ func Get() *Config {
 func defaultConfig() *Config {
 	return &Config{
 		Debug: false,
-		Web: WebConfig{
-			Listen:    "localhost:9000",
-			ListenTLS: "localhost:9443",
+		Listen: ListenConfig{
+			HTTP:  "localhost:9000",
+			HTTPS: "localhost:9443",
+			LDAP:  "localhost:3389",
+			LDAPS: "localhost:6636",
 		},
 		Paths: PathsConfig{
 			Media: "./media",
