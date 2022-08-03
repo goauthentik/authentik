@@ -37,6 +37,15 @@ All of these variables can be set to values, but you can also use a URI-like for
 -   `AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES`: Timeout for cached policies until they expire in seconds, defaults to 300
 -   `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION`: Timeout for cached reputation until they expire in seconds, defaults to 300
 
+## Listen Setting
+
+-   `AUTHENTIK_LISTEN__HTTP`: Listening port for HTTP (Server and Proxy outpost)
+-   `AUTHENTIK_LISTEN__HTTPS`: Listening port for HTTPS (Server and Proxy outpost)
+-   `AUTHENTIK_LISTEN__LDAP`: Listening port for LDAP (LDAP outpost)
+-   `AUTHENTIK_LISTEN__LDAPS`: Listening port for LDAPS (LDAP outpost)
+-   `AUTHENTIK_LISTEN__METRICS`: Listening port for Prometheus metrics (All)
+-   `AUTHENTIK_LISTEN__DEBUG`: Listening port for Go Debugging metrics (All)
+
 ## authentik Settings
 
 ### `AUTHENTIK_SECRET_KEY`

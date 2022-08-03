@@ -32,8 +32,8 @@ type ListenConfig struct {
 	HTTPS   string `yaml:"listen_https" env:"AUTHENTIK_LISTEN__HTTPS"`
 	LDAP    string `yaml:"listen_ldap" env:"AUTHENTIK_LISTEN__LDAP,default=0.0.0.0:3389"`
 	LDAPS   string `yaml:"listen_ldaps" env:"AUTHENTIK_LISTEN__LDAPS,default=0.0.0.0:6636"`
-	Metrics string `yaml:"listen_metrics" env:"AUTHENTIK_LISTEN__LISTEN_METRICS,default=0.0.0.0:9300"`
-	Debug   string `yaml:"listen_debug" env:"AUTHENTIK_LISTEN__LISTEN_DEBUG,default=0.0.0.0:9900"`
+	Metrics string `yaml:"listen_metrics" env:"AUTHENTIK_LISTEN__METRICS,default=0.0.0.0:9300"`
+	Debug   string `yaml:"listen_debug" env:"AUTHENTIK_LISTEN__DEBUG,default=0.0.0.0:9900"`
 }
 
 type PathsConfig struct {
