@@ -1,6 +1,7 @@
 package metrics
 
 import (
+	"goauthentik.io/internal/utils"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
@@ -31,7 +32,8 @@ func RunServer() {
 		rw.WriteHeader(204)
 	})
 	m.Path("/metrics").Handler(promhttp.Handler())
-	listen := "0.0.0.0:9300"
+	host := "0.0.0.0"
+	listen := utils.GetEnv("AUTHENTIK_METRICS_PORT", host+"9300")
 	l.WithField("listen", listen).Info("Starting Metrics server")
 	err := http.ListenAndServe(listen, m)
 	if err != nil {
