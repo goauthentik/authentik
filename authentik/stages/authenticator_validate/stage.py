@@ -363,7 +363,6 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             cookie,
             expires=expiry,
             path="/",
-            max_age=delta,
             domain=settings.SESSION_COOKIE_DOMAIN,
             samesite="Lax",
         )
