@@ -30,7 +30,7 @@ RUN pip install --no-cache-dir poetry && \
     poetry export -f requirements.txt --dev --output requirements-dev.txt
 
 # Stage 4: Build go proxy
-FROM docker.io/golang:1.18.5-bullseye AS builder
+FROM docker.io/golang:1.19.0-bullseye AS builder
 
 WORKDIR /work
 
