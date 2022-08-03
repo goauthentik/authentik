@@ -50,7 +50,7 @@ func (ls *LDAPServer) Type() string {
 
 func (ls *LDAPServer) StartLDAPServer() error {
 	host := "0.0.0.0:"
-	listen := utils.GetEnv("AUTHENTIK_LDAP_PORT", host+"3389")
+	listen := host + utils.GetEnv("AUTHENTIK_LDAP_PORT", "3389")
 
 	ln, err := net.Listen("tcp", listen)
 	if err != nil {

@@ -30,7 +30,7 @@ func (ls *LDAPServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certifica
 
 func (ls *LDAPServer) StartLDAPTLSServer() error {
 	host := "0.0.0.0:"
-	listen := utils.GetEnv("AUTHENTIK_LDAPS_PORT", host+"6636")
+	listen := host + utils.GetEnv("AUTHENTIK_LDAPS_PORT", "6636")
 	tlsConfig := &tls.Config{
 		MinVersion:     tls.VersionTLS12,
 		MaxVersion:     tls.VersionTLS12,
