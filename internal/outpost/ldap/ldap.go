@@ -10,6 +10,7 @@ import (
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/metrics"
+	"goauthentik.io/internal/utils"
 
 	"github.com/nmcclain/ldap"
 )
@@ -48,7 +49,7 @@ func (ls *LDAPServer) Type() string {
 }
 
 func (ls *LDAPServer) StartLDAPServer() error {
-	listen := "0.0.0.0:3389"
+	listen := utils.GetEnv("AUTHENTIK_LDAP_PORT", "0.0.0.0:3389")
 
 	ln, err := net.Listen("tcp", listen)
 	if err != nil {

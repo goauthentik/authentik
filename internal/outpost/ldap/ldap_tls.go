@@ -2,6 +2,7 @@ package ldap
 
 import (
 	"crypto/tls"
+	"goauthentik.io/internal/utils"
 	"net"
 
 	"github.com/pires/go-proxyproto"
@@ -28,7 +29,7 @@ func (ls *LDAPServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certifica
 }
 
 func (ls *LDAPServer) StartLDAPTLSServer() error {
-	listen := "0.0.0.0:6636"
+	listen := utils.GetEnv("AUTHENTIK_LDAPS_PORT", "0.0.0.0:6636")
 	tlsConfig := &tls.Config{
 		MinVersion:     tls.VersionTLS12,
 		MaxVersion:     tls.VersionTLS12,
