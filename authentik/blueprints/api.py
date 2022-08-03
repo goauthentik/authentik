@@ -15,6 +15,7 @@ from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.v1.tasks import BlueprintFile, apply_blueprint, blueprints_find
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
+from authentik.events.utils import sanitize_dict
 
 
 class ManagedSerializer:
@@ -85,7 +86,7 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     def available(self, request: Request) -> Response:
         """Get blueprints"""
         files: list[BlueprintFile] = blueprints_find.delay().get()
-        return Response([asdict(file) for file in files])
+        return Response([sanitize_dict(asdict(file)) for file in files])
 
     @permission_required("authentik_blueprints.view_blueprintinstance")
     @extend_schema(

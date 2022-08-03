@@ -1,6 +1,4 @@
 metadata:
-  labels:
-    foo: bar
   name: Default - Out-of-box-experience flow
 version: 1
 entries:
@@ -161,8 +159,3 @@ entries:
     policy: !KeyOf policy-default-oobe-prefill-user
     target: !KeyOf binding-password-write
   model: authentik_policies.policybinding
-- attrs:
-    enabled: false
-  identifiers:
-    name: 91-flow-oobe.yaml
-  model: authentik_blueprints.blueprintinstance

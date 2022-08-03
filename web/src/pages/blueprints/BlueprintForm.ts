@@ -10,6 +10,7 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import { BlueprintInstance, ManagedApi } from "@goauthentik/api";
@@ -48,7 +49,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
             <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
                 <input
                     type="text"
-                    value="${first(this.instance?.name)}"
+                    value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
                 />

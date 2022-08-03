@@ -1,6 +1,7 @@
 """event utilities"""
 import re
 from dataclasses import asdict, is_dataclass
+from pathlib import Path
 from typing import Any, Optional
 from uuid import UUID
 
@@ -97,6 +98,8 @@ def sanitize_dict(source: dict[Any, Any]) -> dict[Any, Any]:
             continue
         elif isinstance(value, City):
             final_dict[key] = GEOIP_READER.city_to_dict(value)
+        elif isinstance(value, Path):
+            final_dict[key] = str(value)
         elif isinstance(value, type):
             final_dict[key] = {
                 "type": value.__name__,
