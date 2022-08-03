@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/sentry"
 
 	"github.com/gorilla/mux"
@@ -31,7 +32,7 @@ func RunServer() {
 		rw.WriteHeader(204)
 	})
 	m.Path("/metrics").Handler(promhttp.Handler())
-	listen := "0.0.0.0:9300"
+	listen := config.Get().Listen.Metrics
 	l.WithField("listen", listen).Info("Starting Metrics server")
 	err := http.ListenAndServe(listen, m)
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/metrics"
@@ -48,7 +49,7 @@ func (ls *LDAPServer) Type() string {
 }
 
 func (ls *LDAPServer) StartLDAPServer() error {
-	listen := "0.0.0.0:3389"
+	listen := config.Get().Listen.LDAP
 
 	ln, err := net.Listen("tcp", listen)
 	if err != nil {

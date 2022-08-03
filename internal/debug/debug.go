@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/config"
 )
 
 func EnableDebugServer() {
@@ -21,5 +22,5 @@ func EnableDebugServer() {
 	h.HandleFunc("/debug/pprof/profile", pprof.Profile)
 	h.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 	h.HandleFunc("/debug/pprof/trace", pprof.Trace)
-	l.Println(http.ListenAndServe("0.0.0.0:9900", nil))
+	l.Println(http.ListenAndServe(config.Get().Listen.Debug, nil))
 }

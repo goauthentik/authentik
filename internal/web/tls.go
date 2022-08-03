@@ -41,7 +41,7 @@ func (ws *WebServer) listenTLS() {
 		GetCertificate: ws.GetCertificate(),
 	}
 
-	ln, err := net.Listen("tcp", config.Get().Web.ListenTLS)
+	ln, err := net.Listen("tcp", config.Get().Listen.HTTPS)
 	if err != nil {
 		ws.log.WithError(err).Fatalf("failed to listen (TLS)")
 		return
@@ -50,7 +50,7 @@ func (ws *WebServer) listenTLS() {
 	defer proxyListener.Close()
 
 	tlsListener := tls.NewListener(proxyListener, tlsConfig)
-	ws.log.WithField("listen", config.Get().Web.ListenTLS).Info("Starting HTTPS server")
+	ws.log.WithField("listen", config.Get().Listen.HTTPS).Info("Starting HTTPS server")
 	ws.serve(tlsListener)
-	ws.log.WithField("listen", config.Get().Web.ListenTLS).Info("Stopping HTTPS server")
+	ws.log.WithField("listen", config.Get().Listen.HTTPS).Info("Stopping HTTPS server")
 }
