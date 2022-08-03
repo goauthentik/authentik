@@ -218,9 +218,6 @@ export class AdminInterface extends LitElement {
                 <ak-sidebar-item path="/outpost/outposts">
                     <span slot="label">${t`Outposts`}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/outpost/integrations">
-                    <span slot="label">${t`Outpost Integrations`}</span>
-                </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
                 <span slot="label">${t`Events`}</span>
@@ -247,6 +244,9 @@ export class AdminInterface extends LitElement {
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/core/property-mappings">
                     <span slot="label">${t`Property Mappings`}</span>
+                </ak-sidebar-item>
+                <ak-sidebar-item path="/blueprints/instances">
+                    <span slot="label">${t`Blueprints`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
@@ -300,8 +300,8 @@ export class AdminInterface extends LitElement {
                 <ak-sidebar-item path="/crypto/certificates">
                     <span slot="label">${t`Certificates`}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/blueprints/instances">
-                    <span slot="label">${t`Blueprints`}</span>
+                <ak-sidebar-item path="/outpost/integrations">
+                    <span slot="label">${t`Outpost Integrations`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
         `;
