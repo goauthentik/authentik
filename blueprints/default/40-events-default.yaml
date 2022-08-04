@@ -18,7 +18,10 @@ entries:
   id: group
   identifiers:
     name: authentik Admins
+  attrs:
     is_superuser: true
+    users: []
+    parent: null
 
 - model: authentik_policies_event_matcher.eventmatcherpolicy
   id: default-match-configuration-error

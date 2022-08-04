@@ -40,7 +40,7 @@ class BlueprintEntry:
 
     identifiers: dict[str, Any]
     model: str
-    attrs: Optional[dict[str, Any]] = field(default_factory=dict)
+    attrs: dict[str, Any]
 
     # pylint: disable=invalid-name
     id: Optional[str] = None

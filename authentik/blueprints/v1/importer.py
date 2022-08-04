@@ -135,6 +135,8 @@ class Importer:
         # Don't use isinstance since we don't want to check for inheritance
         if not is_model_allowed(model):
             raise EntryInvalidError(f"Model {model} not allowed")
+        if entry.identifiers == {}:
+            raise EntryInvalidError("No identifiers")
 
         # If we try to validate without referencing a possible instance
         # we'll get a duplicate error, hence we load the model here and return
