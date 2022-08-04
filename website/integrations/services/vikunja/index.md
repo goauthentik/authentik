@@ -22,6 +22,7 @@ The following placeholders will be used:
 
 -   `vik.company` is the FQDN of Vikunja.
 -   `authentik.company` is the FQDN of authentik.
+-   `Authentik Login` is the name shown on Vikunja set in config.yml, and used for the Redirect URI. If the name set in config.yml has capitalization or spaces like in this example, they will be set to lowercase and no spaces in the callback URL, like `authentiklogin`.
 
 ### Step 1
 
@@ -40,16 +41,16 @@ Only settings that have been modified from default have been listed.
 -   Redirect URIs/Origins:
 
 ```
-https://vik.company/auth/openid/authentik
+https://vik.company/auth/openid/authentiklogin
 ```
 
 ![](./vikunja1.png)
 
 ### Step 2
 
-Edit/Create you `config.yml` file for Vikunja
+Edit/Create your `config.yml` file for Vikunja. Local authentication can be safely disabled in the Local block if all users must login through Authentik, in this example it is left enabled.
 
-Incorporate the following example Auth block into your `config.yml`
+Incorporate the following example Auth block into your `config.yml`:
 
 ```bash
 auth:
@@ -68,11 +69,11 @@ auth:
   # Take a look at the [default config file](https://github.com/go-vikunja/api/blob/main/config.yml.sample) for more information about how to configure openid authentication.
   openid:
     # Enable or disable OpenID Connect authentication
-    enabled: truefo
+    enabled: true
     # A list of enabled providers
     providers:
       # The name of the provider as it will appear in the frontend.
-      - name: authentik
+      - name: "Authentik Login"
         # The auth url to send users to if they want to authenticate using OpenID Connect.
         authurl: https://authentik.company/application/o/vikunja/
         # The client ID used to authenticate Vikunja at the OpenID Connect provider.
@@ -97,5 +98,5 @@ In authentik, create an application which uses this provider. Optionally apply a
 ## Notes
 
 :::note
-Recommend you restart the Vikunja stack after making the config file changes.
+It is recommended to restart all Vikunja components (API and frontend) after applying the OpenID configuration to Vikunja.
 :::
