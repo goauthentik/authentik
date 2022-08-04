@@ -17,6 +17,10 @@ location / {
     auth_request_set $auth_cookie $upstream_http_set_cookie;
     add_header Set-Cookie $auth_cookie;
 
+    # pass original hostname and url to Nginx Proxy Manager
+    proxy_set_header    Host $host;
+    proxy_set_header    X-Original-URL $scheme://$http_host$request_uri;
+
     # translate headers from the outposts back to the actual upstream
     auth_request_set $authentik_username $upstream_http_x_authentik_username;
     auth_request_set $authentik_groups $upstream_http_x_authentik_groups;
