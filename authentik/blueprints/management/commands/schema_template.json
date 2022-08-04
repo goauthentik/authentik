@@ -37,8 +37,7 @@
                 "type": "object",
                 "required": [
                     "model",
-                    "identifiers",
-                    "attrs"
+                    "identifiers"
                 ],
                 "properties": {
                     "model": {
@@ -52,6 +51,7 @@
                     },
                     "attrs": {
                         "type": "object",
+                        "default": {},
                         "properties": {
                             "name": {
                                 "type": "string",
@@ -62,6 +62,7 @@
                     },
                     "identifiers": {
                         "type": "object",
+                        "default": {},
                         "properties": {
                             "pk": {
                                 "description": "Commonly available field, may not exist on all models",
