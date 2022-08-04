@@ -6,6 +6,8 @@ from typing import Any
 from dacite import from_dict
 from dacite.exceptions import DaciteError
 from django.apps import apps
+from django.contrib.auth.models import Group as DjangoGroup
+from django.contrib.auth.models import User as DjangoUser
 from django.db import transaction
 from django.db.models import Model
 from django.db.models.query_utils import Q
@@ -36,6 +38,8 @@ from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 
 EXCLUDED_MODELS = (
+    DjangoUser,
+    DjangoGroup,
     # Base classes
     Provider,
     Source,

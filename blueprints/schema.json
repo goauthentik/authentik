@@ -45,7 +45,6 @@
                         "type": "string",
                         "enum": [
                             "auth.permission",
-                            "auth.group",
                             "contenttypes.contenttype",
                             "sessions.session",
                             "authentik_crypto.certificatekeypair",
