@@ -10,7 +10,7 @@ Blueprints are YAML files, which can use some additional tags to ease blueprint 
 
 Example: `policy: !KeyOf my-policy-id`
 
-Resolves to the primary key of the model instance defined by id *my-policy-id*.
+Resolves to the primary key of the model instance defined by id _my-policy-id_.
 
 If no matching entry can be found, an error is raised and the blueprint is invalid.
 
@@ -20,7 +20,6 @@ Example: `configure_flow: !Find [authentik_flows.flow, [slug, default-password-c
 
 Looks up any model and resolves to the the matches' primary key.
 First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
-
 
 ## Structure
 
@@ -35,20 +34,20 @@ metadata:
     name: example-blueprint
 # List of entries (required)
 entries:
-  - # Model in app.model notation, possibilities are listed in the schema (required)
-    model: authentik_flows.flow
-    # Key:value filters to uniquely identify this object (required)
-    identifiers:
-        slug: initial-setup
-    # Optional ID for use with !KeyOf
-    id: flow
-    # Attributes to set on the object. Only explicitly required settings should be stated
-    # as these values will override existing attributes
-    attrs:
-        denied_action: message_continue
-        designation: stage_configuration
-        name: default-oobe-setup
-        title: Welcome to authentik!
+    - # Model in app.model notation, possibilities are listed in the schema (required)
+      model: authentik_flows.flow
+      # Key:value filters to uniquely identify this object (required)
+      identifiers:
+          slug: initial-setup
+      # Optional ID for use with !KeyOf
+      id: flow
+      # Attributes to set on the object. Only explicitly required settings should be stated
+      # as these values will override existing attributes
+      attrs:
+          denied_action: message_continue
+          designation: stage_configuration
+          name: default-oobe-setup
+          title: Welcome to authentik!
 ```
 
 ## Special Labels

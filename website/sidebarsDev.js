@@ -7,18 +7,16 @@ module.exports = {
         {
             type: "category",
             label: "Blueprints",
-            link:  {
+            link: {
                 type: "doc",
                 id: "blueprints/index",
             },
-            items: [
-                "blueprints/v1/structure"
-            ],
+            items: ["blueprints/v1/structure"],
         },
         {
             type: "category",
             label: "API",
-            link:  {
+            link: {
                 type: "doc",
                 id: "api/api",
             },
