@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	env "github.com/Netflix/go-env"
-	"github.com/imdario/mergo"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
@@ -18,8 +17,9 @@ var cfg *Config
 
 func Get() *Config {
 	if cfg == nil {
-		cfg = defaultConfig()
-		cfg.Setup()
+		c := defaultConfig()
+		c.Setup()
+		cfg = c
 	}
 	return cfg
 }
@@ -28,10 +28,12 @@ func defaultConfig() *Config {
 	return &Config{
 		Debug: false,
 		Listen: ListenConfig{
-			HTTP:  "localhost:9000",
-			HTTPS: "localhost:9443",
-			LDAP:  "localhost:3389",
-			LDAPS: "localhost:6636",
+			HTTP:    "0.0.0.0:9000",
+			HTTPS:   "0.0.0.0:9443",
+			LDAP:    "0.0.0.0:3389",
+			LDAPS:   "0.0.0.0:6636",
+			Metrics: "0.0.0.0:9300",
+			Debug:   "0.0.0.0:9900",
 		},
 		Paths: PathsConfig{
 			Media: "./media",
@@ -64,13 +66,9 @@ func (c *Config) LoadConfig(path string) error {
 	if err != nil {
 		return fmt.Errorf("Failed to load config file: %w", err)
 	}
-	nc := Config{}
-	err = yaml.Unmarshal(raw, &nc)
+	err = yaml.Unmarshal(raw, c)
 	if err != nil {
 		return fmt.Errorf("Failed to parse YAML: %w", err)
-	}
-	if err := mergo.Merge(c, nc, mergo.WithOverride); err != nil {
-		return fmt.Errorf("failed to overlay config: %w", err)
 	}
 	c.walkScheme(c)
 	log.WithField("path", path).Debug("Loaded config")
@@ -78,13 +76,9 @@ func (c *Config) LoadConfig(path string) error {
 }
 
 func (c *Config) fromEnv() error {
-	nc := Config{}
-	_, err := env.UnmarshalFromEnviron(&nc)
+	_, err := env.UnmarshalFromEnviron(c)
 	if err != nil {
 		return fmt.Errorf("failed to load environment variables: %w", err)
-	}
-	if err := mergo.Merge(c, nc, mergo.WithOverride); err != nil {
-		return fmt.Errorf("failed to overlay config: %w", err)
 	}
 	c.walkScheme(c)
 	log.Debug("Loaded config from environment")

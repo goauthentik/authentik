@@ -61,7 +61,7 @@ func main() {
 	g := gounicorn.NewGoUnicorn()
 	ws := web.NewWebServer(g)
 	g.HealthyCallback = func() {
-		if !config.Get().DisableEmbeddedOutpost {
+		if !config.Get().Outposts.DisableEmbeddedOutpost {
 			go attemptProxyStart(ws, u)
 		}
 	}
