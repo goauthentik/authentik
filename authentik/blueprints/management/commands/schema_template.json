@@ -57,6 +57,7 @@
                                 "description": "Commonly available field, may not exist on all models"
                             }
                         },
+                        "default": {},
                         "additionalProperties": true
                     },
                     "identifiers": {

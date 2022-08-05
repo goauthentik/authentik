@@ -6,9 +6,23 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Using the API",
+            label: "Blueprints",
+            link:  {
+                type: "doc",
+                id: "blueprints/index",
+            },
             items: [
-                "api/api",
+                "blueprints/v1/structure"
+            ],
+        },
+        {
+            type: "category",
+            label: "API",
+            link:  {
+                type: "doc",
+                id: "api/api",
+            },
+            items: [
                 "api/flow-executor",
                 "api/making-schema-changes",
                 "api/websocket",
