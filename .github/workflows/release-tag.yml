@@ -24,7 +24,7 @@ jobs:
           echo "AUTHENTIK_TAG=latest" >> .env
           docker-compose up --no-start
           docker-compose start postgresql redis
-          docker-compose run -u root server test
+          docker-compose run -u root server test-all
       - name: Extract version number
         id: get_version
         uses: actions/github-script@v6

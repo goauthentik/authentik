@@ -11,6 +11,7 @@ from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from yaml import load
 
+from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_SYSTEM
 from authentik.lib.config import CONFIG
 
 
@@ -37,7 +38,7 @@ def check_blueprint_v1_file(BlueprintInstance: type["BlueprintInstance"], path: 
     if not instance:
         instance = BlueprintInstance(
             name=meta.name if meta else str(rel_path),
-            path=str(path),
+            path=str(rel_path),
             context={},
             status=BlueprintInstanceStatus.UNKNOWN,
             enabled=True,
@@ -62,7 +63,7 @@ def migration_blueprint_import(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
         if Flow.objects.using(db_alias).all().exists():
             blueprint.enabled = False
         # System blueprints are always enabled
-        if "/system/" in blueprint.path:
+        if blueprint.metadata.get("labels", {}).get(LABEL_AUTHENTIK_SYSTEM, "").lower() == "true":
             blueprint.enabled = True
         blueprint.save()
 

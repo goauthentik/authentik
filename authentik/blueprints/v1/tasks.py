@@ -1,6 +1,5 @@
 """v1 blueprints tasks"""
 from dataclasses import asdict, dataclass, field
-from glob import glob
 from hashlib import sha512
 from pathlib import Path
 from typing import Optional
@@ -43,7 +42,8 @@ class BlueprintFile:
 def blueprints_find():
     """Find blueprints and return valid ones"""
     blueprints = []
-    for file in glob(f"{CONFIG.y('blueprints_dir')}/**/*.yaml", recursive=True):
+    root = Path(CONFIG.y("blueprints_dir"))
+    for file in root.glob("**/*.yaml"):
         path = Path(file)
         with open(path, "r", encoding="utf-8") as blueprint_file:
             try:
@@ -57,7 +57,7 @@ def blueprints_find():
             if version != 1:
                 continue
         file_hash = sha512(path.read_bytes()).hexdigest()
-        blueprint = BlueprintFile(str(path), version, file_hash, path.stat().st_mtime)
+        blueprint = BlueprintFile(path.relative_to(root), version, file_hash, path.stat().st_mtime)
         blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
         if (
             blueprint.meta
@@ -88,11 +88,10 @@ def blueprints_discover(self: MonitoredTask):
 
 def check_blueprint_v1_file(blueprint: BlueprintFile):
     """Check if blueprint should be imported"""
-    rel_path = Path(blueprint.path).relative_to(Path(CONFIG.y("blueprints_dir")))
     instance: BlueprintInstance = BlueprintInstance.objects.filter(path=blueprint.path).first()
     if not instance:
         instance = BlueprintInstance(
-            name=blueprint.meta.name if blueprint.meta else str(rel_path),
+            name=blueprint.meta.name if blueprint.meta else str(blueprint.path),
             path=blueprint.path,
             context={},
             status=BlueprintInstanceStatus.UNKNOWN,
@@ -119,8 +118,9 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
         if not instance or not instance.enabled:
             return
-        file_hash = sha512(Path(instance.path).read_bytes()).hexdigest()
-        with open(instance.path, "r", encoding="utf-8") as blueprint_file:
+        full_path = Path(CONFIG.y("blueprints_dir")).joinpath(Path(instance.path))
+        file_hash = sha512(full_path.read_bytes()).hexdigest()
+        with open(full_path, "r", encoding="utf-8") as blueprint_file:
             importer = Importer(blueprint_file.read())
         valid, logs = importer.validate()
         if not valid:

@@ -87,10 +87,6 @@ def sentry_init(**sentry_init_kwargs):
     set_tag("authentik.build_hash", get_build_hash("tagged"))
     set_tag("authentik.env", get_env())
     set_tag("authentik.component", "backend")
-    LOGGER.info(
-        "Error reporting is enabled",
-        env=kwargs["environment"],
-    )
 
 
 def traces_sampler(sampling_context: dict) -> float:

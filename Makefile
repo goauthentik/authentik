@@ -52,10 +52,11 @@ lint:
 i18n-extract: i18n-extract-core web-extract
 
 i18n-extract-core:
-	./manage.py makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
+	ak makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
 
 gen-build:
-	AUTHENTIK_DEBUG=true ./manage.py spectacular --file schema.yml
+	AUTHENTIK_DEBUG=true ak make_blueprint_schema > blueprints/schema.json
+	AUTHENTIK_DEBUG=true ak spectacular --file schema.yml
 
 gen-clean:
 	rm -rf web/api/src/
@@ -168,7 +169,7 @@ ci-pyright: ci--meta-debug
 	pyright e2e lifecycle
 
 ci-pending-migrations: ci--meta-debug
-	./manage.py makemigrations --check
+	ak makemigrations --check
 
 install: web-install website-install
 	poetry install

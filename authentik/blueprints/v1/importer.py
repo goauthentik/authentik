@@ -35,19 +35,29 @@ from authentik.lib.models import SerializerModel
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 
-EXCLUDED_MODELS = (
-    # Base classes
-    Provider,
-    Source,
-    PropertyMapping,
-    UserSourceConnection,
-    Stage,
-    OutpostServiceConnection,
-    Policy,
-    PolicyBindingModel,
-    # Classes that have other dependencies
-    AuthenticatedSession,
-)
+
+def is_model_allowed(model: type[Model]) -> bool:
+    """Check if model is allowed"""
+    # pylint: disable=imported-auth-user
+    from django.contrib.auth.models import Group as DjangoGroup
+    from django.contrib.auth.models import User as DjangoUser
+
+    excluded_models = (
+        DjangoUser,
+        DjangoGroup,
+        # Base classes
+        Provider,
+        Source,
+        PropertyMapping,
+        UserSourceConnection,
+        Stage,
+        OutpostServiceConnection,
+        Policy,
+        PolicyBindingModel,
+        # Classes that have other dependencies
+        AuthenticatedSession,
+    )
+    return model not in excluded_models
 
 
 @contextmanager
@@ -123,8 +133,10 @@ class Importer:
         model_app_label, model_name = entry.model.split(".")
         model: type[SerializerModel] = apps.get_model(model_app_label, model_name)
         # Don't use isinstance since we don't want to check for inheritance
-        if model in EXCLUDED_MODELS:
+        if not is_model_allowed(model):
             raise EntryInvalidError(f"Model {model} not allowed")
+        if entry.identifiers == {}:
+            raise EntryInvalidError("No identifiers")
 
         # If we try to validate without referencing a possible instance
         # we'll get a duplicate error, hence we load the model here and return
@@ -148,6 +160,7 @@ class Importer:
                 pk=model_instance.pk,
             )
             serializer_kwargs["instance"] = model_instance
+            serializer_kwargs["partial"] = True
         else:
             self.logger.debug("initialise new instance", model=model, **updated_identifiers)
             model_instance = model()
