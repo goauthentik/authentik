@@ -22723,10 +22723,8 @@ components:
       required:
       - name
       - num_pk
-      - parent
       - parent_name
       - pk
-      - users
       - users_obj
     GroupMember:
       type: object
@@ -22833,8 +22831,6 @@ components:
           additionalProperties: {}
       required:
       - name
-      - parent
-      - users
     HaveIBeenPwendPolicy:
       type: object
       description: Have I Been Pwned Policy Serializer

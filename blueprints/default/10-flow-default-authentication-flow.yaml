@@ -1,13 +1,11 @@
+version: 1
 metadata:
   name: Default - Authentication flow
 entries:
 - attrs:
-    cache_count: 1
-    compatibility_mode: false
     designation: authentication
     layout: stacked
     name: Welcome to authentik!
-    policy_engine_mode: all
     title: Welcome to authentik!
   identifiers:
     slug: default-authentication-flow
@@ -21,32 +19,23 @@ entries:
     - authentik.core.auth.TokenBackend
     configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
     failed_attempts_before_cancel: 5
-    meta_model_name: authentik_stages_password.passwordstage
   identifiers:
     name: default-authentication-password
   id: default-authentication-password
   model: authentik_stages_password.passwordstage
 - attrs:
-    configuration_stages: []
     device_classes:
     - static
     - totp
     - webauthn
     - duo
     - sms
-    last_auth_threshold: seconds=0
-    meta_model_name: authentik_stages_authenticator_validate.authenticatorvalidatestage
     not_configured_action: skip
   identifiers:
     name: default-authentication-mfa-validation
   id: default-authentication-mfa-validation
   model: authentik_stages_authenticator_validate.authenticatorvalidatestage
 - attrs:
-    case_insensitive_matching: true
-    meta_model_name: authentik_stages_identification.identificationstage
-    show_matched_user: true
-    show_source_labels: false
-    sources: []
     user_fields:
     - email
     - username
@@ -55,50 +44,28 @@ entries:
   id: default-authentication-identification
   model: authentik_stages_identification.identificationstage
 - attrs:
-    meta_model_name: authentik_stages_user_login.userloginstage
     session_duration: seconds=0
   identifiers:
     name: default-authentication-login
   id: default-authentication-login
   model: authentik_stages_user_login.userloginstage
-- attrs:
-    evaluate_on_plan: true
-    invalid_response_action: retry
-    policy_engine_mode: all
-    re_evaluate_policies: false
-  identifiers:
+- identifiers:
     order: 10
     stage: !KeyOf default-authentication-identification
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
-- attrs:
-    evaluate_on_plan: true
-    invalid_response_action: retry
-    policy_engine_mode: all
-    re_evaluate_policies: false
-  identifiers:
+- identifiers:
     order: 20
     stage: !KeyOf default-authentication-password
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
-- attrs:
-    evaluate_on_plan: true
-    invalid_response_action: retry
-    policy_engine_mode: any
-    re_evaluate_policies: false
-  identifiers:
+- identifiers:
     order: 30
     stage: !KeyOf default-authentication-mfa-validation
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
-- attrs:
-    evaluate_on_plan: true
-    invalid_response_action: retry
-    policy_engine_mode: all
-    re_evaluate_policies: false
-  identifiers:
+- identifiers:
     order: 100
     stage: !KeyOf default-authentication-login
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
-version: 1

@@ -1,52 +1,37 @@
+version: 1
 metadata:
   name: Default - Source authentication flow
 entries:
 - attrs:
-    compatibility_mode: false
     designation: authentication
-    layout: stacked
     name: Welcome to authentik!
-    policy_engine_mode: all
     title: Welcome to authentik!
   identifiers:
     slug: default-source-authentication
   model: authentik_flows.flow
   id: flow
 - attrs:
-    execution_logging: false
     expression:  |
       # This policy ensures that this flow can only be used when the user
       # is in a SSO Flow (meaning they come from an external IdP)
       return ak_is_sso_flow
-    meta_model_name: authentik_policies_expression.expressionpolicy
   identifiers:
     name: default-source-authentication-if-sso
   id: default-source-authentication-if-sso
   model: authentik_policies_expression.expressionpolicy
 - attrs:
-    meta_model_name: authentik_stages_user_login.userloginstage
     session_duration: seconds=0
   identifiers:
     name: default-source-authentication-login
   id: default-source-authentication-login
   model: authentik_stages_user_login.userloginstage
-- attrs:
-    evaluate_on_plan: true
-    invalid_response_action: retry
-    policy_engine_mode: all
-    re_evaluate_policies: false
-  identifiers:
+- identifiers:
     order: 0
     stage: !KeyOf default-source-authentication-login
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
-- attrs:
-    enabled: true
-    negate: false
-    timeout: 30
-  identifiers:
+- identifiers:
     order: 0
     policy: !KeyOf default-source-authentication-if-sso
     target: !KeyOf flow
   model: authentik_policies.policybinding
-version: 1

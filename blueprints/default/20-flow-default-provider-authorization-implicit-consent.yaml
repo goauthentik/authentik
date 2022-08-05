@@ -1,14 +1,11 @@
+version: 1
 metadata:
   name: Default - Provider authorization flow (implicit consent)
 entries:
 - attrs:
-    compatibility_mode: false
     designation: authorization
-    layout: stacked
     name: Authorize Application
-    policy_engine_mode: all
     title: Redirecting to %(app)s
   identifiers:
     slug: default-provider-authorization-implicit-consent
   model: authentik_flows.flow
-version: 1

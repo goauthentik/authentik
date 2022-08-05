@@ -1,33 +1,21 @@
+version: 1
 metadata:
   name: Default - Provider authorization flow (explicit consent)
 entries:
 - attrs:
-    compatibility_mode: false
     designation: authorization
-    layout: stacked
     name: Authorize Application
-    policy_engine_mode: all
     title: Redirecting to %(app)s
   identifiers:
     slug: default-provider-authorization-explicit-consent
   model: authentik_flows.flow
   id: flow
-- attrs:
-    consent_expire_in: weeks=4
-    meta_model_name: authentik_stages_consent.consentstage
-    mode: always_require
-  identifiers:
+- identifiers:
     name: default-provider-authorization-consent
   id: default-provider-authorization-consent
   model: authentik_stages_consent.consentstage
-- attrs:
-    evaluate_on_plan: true
-    invalid_response_action: retry
-    policy_engine_mode: all
-    re_evaluate_policies: false
-  identifiers:
+- identifiers:
     order: 0
     stage: !KeyOf default-provider-authorization-consent
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
-version: 1

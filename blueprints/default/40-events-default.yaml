@@ -18,10 +18,6 @@ entries:
   id: group
   identifiers:
     name: authentik Admins
-  attrs:
-    is_superuser: true
-    users: []
-    parent: null
 
 - model: authentik_policies_event_matcher.eventmatcherpolicy
   id: default-match-configuration-error
@@ -40,10 +36,6 @@ entries:
       - !KeyOf default-email-transport
       - !KeyOf default-local-transport
 - model: authentik_policies.policybinding
-  attrs:
-    enabled: true
-    negate: false
-    timeout: 30
   identifiers:
     order: 0
     policy: !KeyOf default-match-configuration-error
@@ -66,10 +58,6 @@ entries:
       - !KeyOf default-email-transport
       - !KeyOf default-local-transport
 - model: authentik_policies.policybinding
-  attrs:
-    enabled: true
-    negate: false
-    timeout: 30
   identifiers:
     order: 0
     policy: !KeyOf default-match-update
@@ -98,19 +86,11 @@ entries:
       - !KeyOf default-email-transport
       - !KeyOf default-local-transport
 - model: authentik_policies.policybinding
-  attrs:
-    enabled: true
-    negate: false
-    timeout: 30
   identifiers:
     order: 0
     policy: !KeyOf default-match-policy-exception
     target: !KeyOf default-notify-exception
 - model: authentik_policies.policybinding
-  attrs:
-    enabled: true
-    negate: false
-    timeout: 30
   identifiers:
     order: 1
     policy: !KeyOf default-match-property-mapping-exception
