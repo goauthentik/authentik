@@ -1,10 +1,9 @@
+version: 1
 metadata:
   name: Default - Static MFA setup flow
 entries:
 - attrs:
-    compatibility_mode: false
     designation: stage_configuration
-    layout: stacked
     name: default-authenticator-static-setup
     policy_engine_mode: any
     title: Setup Static OTP Tokens
@@ -14,20 +13,13 @@ entries:
   id: flow
 - attrs:
     configure_flow: !KeyOf flow
-    meta_model_name: authentik_stages_authenticator_static.authenticatorstaticstage
     token_count: 6
   identifiers:
     name: default-authenticator-static-setup
   id: default-authenticator-static-setup
   model: authentik_stages_authenticator_static.authenticatorstaticstage
-- attrs:
-    evaluate_on_plan: true
-    invalid_response_action: retry
-    policy_engine_mode: any
-    re_evaluate_policies: false
-  identifiers:
+- identifiers:
     order: 0
     stage: !KeyOf default-authenticator-static-setup
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
-version: 1

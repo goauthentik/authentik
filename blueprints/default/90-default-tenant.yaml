@@ -9,4 +9,4 @@ entries:
   identifiers:
     domain: authentik-default
     default: True
-  model: authentik_tenants.Tenant
+  model: authentik_tenants.tenant

@@ -1,12 +1,10 @@
+version: 1
 metadata:
   name: Default - User settings flow
 entries:
 - attrs:
-    compatibility_mode: false
     designation: stage_configuration
-    layout: stacked
     name: User settings
-    policy_engine_mode: any
     title: Update your info
   identifiers:
     slug: default-user-settings-flow
@@ -21,7 +19,6 @@ entries:
           return ''
     placeholder_expression: true
     required: true
-    sub_text: ''
     type: text
   identifiers:
     field_key: username
@@ -37,7 +34,6 @@ entries:
           return ''
     placeholder_expression: true
     required: true
-    sub_text: ''
     type: text
   identifiers:
     field_key: name
@@ -53,7 +49,6 @@ entries:
           return ''
     placeholder_expression: true
     required: true
-    sub_text: ''
     type: email
   identifiers:
     field_key: email
@@ -69,7 +64,6 @@ entries:
           return ''
     placeholder_expression: true
     required: true
-    sub_text: ''
     type: ak-locale
   identifiers:
     field_key: attributes.settings.locale
@@ -77,7 +71,6 @@ entries:
   id: prompt-field-locale
   model: authentik_stages_prompt.prompt
 - attrs:
-    execution_logging: false
     expression:  |
       from authentik.lib.config import CONFIG
       from authentik.core.models import (
@@ -109,17 +102,11 @@ entries:
               return False
 
       return True
-    meta_model_name: authentik_policies_expression.expressionpolicy
   identifiers:
     name: default-user-settings-authorization
   id: default-user-settings-authorization
   model: authentik_policies_expression.expressionpolicy
-- attrs:
-    create_users_as_inactive: false
-    create_users_group: null
-    meta_model_name: authentik_stages_user_write.userwritestage
-    user_path_template: ''
-  identifiers:
+- identifiers:
     name: default-user-settings-write
   id: default-user-settings-write
   model: authentik_stages_user_write.userwritestage
@@ -129,31 +116,19 @@ entries:
     - !KeyOf prompt-field-name
     - !KeyOf prompt-field-email
     - !KeyOf prompt-field-locale
-    meta_model_name: authentik_stages_prompt.promptstage
     validation_policies:
     - !KeyOf default-user-settings-authorization
   identifiers:
     name: default-user-settings
   id: default-user-settings
   model: authentik_stages_prompt.promptstage
-- attrs:
-    evaluate_on_plan: true
-    invalid_response_action: retry
-    policy_engine_mode: any
-    re_evaluate_policies: false
-  identifiers:
+- identifiers:
     order: 20
     stage: !KeyOf default-user-settings
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
-- attrs:
-    evaluate_on_plan: true
-    invalid_response_action: retry
-    policy_engine_mode: any
-    re_evaluate_policies: false
-  identifiers:
+- identifiers:
     order: 100
     stage: !KeyOf default-user-settings-write
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
-version: 1

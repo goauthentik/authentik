@@ -12,10 +12,6 @@ entries:
       name: Default recovery flow
       title: Reset your password
       designation: recovery
-      cache_count: 0
-      policy_engine_mode: any
-      compatibility_mode: false
-      layout: stacked
   - identifiers:
       field_key: password
       label: Password
@@ -45,7 +41,6 @@ entries:
     id: default-recovery-skip-if-restored
     model: authentik_policies_expression.expressionpolicy
     attrs:
-      execution_logging: false
       expression: |
         return request.context.get('is_restored', False)
   - identifiers:
@@ -69,10 +64,6 @@ entries:
       name: default-recovery-user-write
     id: default-recovery-user-write
     model: authentik_stages_user_write.userwritestage
-    attrs:
-      create_users_as_inactive: false
-      create_users_group: null
-      user_path_template: ""
   - identifiers:
       name: default-recovery-identification
     id: default-recovery-identification
@@ -81,14 +72,6 @@ entries:
       user_fields:
         - email
         - username
-      password_stage: null
-      case_insensitive_matching: true
-      show_matched_user: true
-      enrollment_flow: null
-      recovery_flow: null
-      passwordless_flow: null
-      sources: []
-      show_source_labels: false
   - identifiers:
       name: default-recovery-user-login
     id: default-recovery-user-login

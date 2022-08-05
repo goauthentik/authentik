@@ -1,14 +1,11 @@
+version: 1
 metadata:
   name: Default - Source pre-authentication flow
 entries:
 - attrs:
-    compatibility_mode: false
     designation: stage_configuration
-    layout: stacked
     name: Pre-Authentication
-    policy_engine_mode: any
     title: Pre-authentication
   identifiers:
     slug: default-source-pre-authentication
   model: authentik_flows.flow
-version: 1
