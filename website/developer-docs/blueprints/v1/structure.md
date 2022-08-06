@@ -21,6 +21,12 @@ Example: `configure_flow: !Find [authentik_flows.flow, [slug, default-password-c
 Looks up any model and resolves to the the matches' primary key.
 First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
 
+#### `!Context`
+
+Example: `configure_flow: !Context foo`
+
+Find values from the context. Can optionally be called with a default like `!Context [foo, default-value]`.
+
 ## Structure
 
 ```yaml
@@ -32,6 +38,9 @@ metadata:
     labels:
         foo: bar
     name: example-blueprint
+# Optional default context, instance context is merged over this.
+context:
+    foo: bar
 # List of entries (required)
 entries:
     - # Model in app.model notation, possibilities are listed in the schema (required)

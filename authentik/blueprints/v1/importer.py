@@ -1,10 +1,11 @@
 """Blueprint importer"""
 from contextlib import contextmanager
 from copy import deepcopy
-from typing import Any
+from typing import Any, Optional
 
 from dacite import from_dict
 from dacite.exceptions import DaciteError
+from deepmerge import always_merger
 from django.apps import apps
 from django.db import transaction
 from django.db.models import Model
@@ -75,7 +76,7 @@ class Importer:
 
     logger: BoundLogger
 
-    def __init__(self, yaml_input: str):
+    def __init__(self, yaml_input: str, context: Optional[dict] = None):
         self.__pk_map: dict[Any, Model] = {}
         self.logger = get_logger()
         import_dict = load(yaml_input, BlueprintLoader)
@@ -83,6 +84,11 @@ class Importer:
             self.__import = from_dict(Blueprint, import_dict)
         except DaciteError as exc:
             raise EntryInvalidError from exc
+        context = {}
+        always_merger.merge(context, self.__import.context)
+        if context:
+            always_merger.merge(context, context)
+        self.__import.context = context
 
     @property
     def blueprint(self) -> Blueprint:

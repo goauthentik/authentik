@@ -100,6 +100,7 @@ class Blueprint:
     entries: list[BlueprintEntry] = field(default_factory=list)
 
     metadata: Optional[BlueprintMetadata] = field(default=None)
+    context: Optional[dict] = field(default_factory=dict)
 
 
 class YAMLTag:
@@ -134,6 +135,29 @@ class KeyOf(YAMLTag):
         raise ValueError(
             f"KeyOf: failed to find entry with `id` of `{self.id_from}` and a model instance"
         )
+
+
+class Context(YAMLTag):
+    """Lookup key from instance context"""
+
+    key: str
+    default: Optional[Any]
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
+        super().__init__()
+        self.default = None
+        if isinstance(node, ScalarNode):
+            self.key = node.value
+        if isinstance(node, SequenceNode):
+            self.key = node.value[0].value
+            self.default = node.value[1].value
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        value = self.default
+        if self.key in blueprint.context:
+            value = blueprint.context[self.key]
+        return value
 
 
 class Find(YAMLTag):
@@ -189,6 +213,7 @@ class BlueprintLoader(SafeLoader):
         super().__init__(*args, **kwargs)
         self.add_constructor("!KeyOf", KeyOf)
         self.add_constructor("!Find", Find)
+        self.add_constructor("!Context", Context)
 
 
 class EntryInvalidError(SentryIgnoredException):

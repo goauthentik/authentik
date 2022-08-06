@@ -121,7 +121,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         full_path = Path(CONFIG.y("blueprints_dir")).joinpath(Path(instance.path))
         file_hash = sha512(full_path.read_bytes()).hexdigest()
         with open(full_path, "r", encoding="utf-8") as blueprint_file:
-            importer = Importer(blueprint_file.read())
+            importer = Importer(blueprint_file.read(), instance.context)
         valid, logs = importer.validate()
         if not valid:
             instance.status = BlueprintInstanceStatus.ERROR

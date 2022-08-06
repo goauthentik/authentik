@@ -30,6 +30,11 @@
                 }
             }
         },
+        "context": {
+            "$id": "#/properties/context",
+            "type": "object",
+            "additionalProperties": true
+        },
         "entries": {
             "type": "array",
             "items": {
