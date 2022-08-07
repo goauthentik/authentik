@@ -160,6 +160,29 @@ class Context(YAMLTag):
         return value
 
 
+class Format(YAMLTag):
+    """Format a string"""
+
+    format_string: str
+    args: list[Any]
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
+        super().__init__()
+        self.format_string = node.value[0].value
+        self.args = []
+        for raw_node in node.value[1:]:
+            self.args.append(raw_node.value)
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        try:
+            print(self.format_string)
+            print(self.args)
+            return self.format_string % tuple(self.args)
+        except TypeError as exc:
+            raise EntryInvalidError(exc)
+
+
 class Find(YAMLTag):
     """Find any object"""
 
@@ -214,6 +237,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!KeyOf", KeyOf)
         self.add_constructor("!Find", Find)
         self.add_constructor("!Context", Context)
+        self.add_constructor("!Format", Format)
 
 
 class EntryInvalidError(SentryIgnoredException):

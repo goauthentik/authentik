@@ -1,7 +1,7 @@
 version: 1
 metadata:
   labels:
-    blueprints.goauthentik.io/example: "true"
+    blueprints.goauthentik.io/instantiate: "false"
   name: Example - Recovery with email verification
 entries:
   - identifiers:

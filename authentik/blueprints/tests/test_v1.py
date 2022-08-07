@@ -24,6 +24,18 @@ entries:
     order: 0
 """
 
+YAML_TAG_TESTS = """version: 1
+context:
+    foo: bar
+entries:
+- attrs:
+    expression: return True
+  identifiers:
+    name: !Format [foo-%s-%s, !Context foo, !Context bar]
+  id: default-source-enrollment-if-username
+  model: authentik_policies_expression.expressionpolicy
+"""
+
 
 class TestBlueprintsV1(TransactionTestCase):
     """Test Blueprints"""
@@ -84,6 +96,14 @@ class TestBlueprintsV1(TransactionTestCase):
         self.assertTrue(importer.apply())
 
         self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
+
+    def test_import_yaml_tags(self):
+        """Test some yaml tags"""
+        ExpressionPolicy.objects.filter(name="foo-foo-bar").delete()
+        importer = Importer(YAML_TAG_TESTS, {"bar": "baz"})
+        self.assertTrue(importer.validate()[0])
+        self.assertTrue(importer.apply())
+        self.assertTrue(ExpressionPolicy.objects.filter(name="foo-foo-bar"))
 
     def test_export_validate_import_policies(self):
         """Test export and validate it"""

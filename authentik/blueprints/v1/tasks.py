@@ -14,7 +14,7 @@ from yaml.error import YAMLError
 from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
 from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata
 from authentik.blueprints.v1.importer import Importer
-from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_EXAMPLE
+from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.events.monitored_tasks import (
     MonitoredTask,
     TaskResult,
@@ -59,11 +59,6 @@ def blueprints_find():
         file_hash = sha512(path.read_bytes()).hexdigest()
         blueprint = BlueprintFile(path.relative_to(root), version, file_hash, path.stat().st_mtime)
         blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
-        if (
-            blueprint.meta
-            and blueprint.meta.labels.get(LABEL_AUTHENTIK_EXAMPLE, "").lower() == "true"
-        ):
-            continue
         blueprints.append(blueprint)
     return blueprints
 
@@ -89,6 +84,11 @@ def blueprints_discover(self: MonitoredTask):
 def check_blueprint_v1_file(blueprint: BlueprintFile):
     """Check if blueprint should be imported"""
     instance: BlueprintInstance = BlueprintInstance.objects.filter(path=blueprint.path).first()
+    if (
+        blueprint.meta
+        and blueprint.meta.labels.get(LABEL_AUTHENTIK_INSTANTIATE, "").lower() == "false"
+    ):
+        return
     if not instance:
         instance = BlueprintInstance(
             name=blueprint.meta.name if blueprint.meta else str(blueprint.path),

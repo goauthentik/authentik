@@ -82,8 +82,7 @@ COPY ./pyproject.toml /
 COPY ./xml /xml
 COPY ./tests /tests
 COPY ./manage.py /
-COPY ./blueprints/default /blueprints/default
-COPY ./blueprints/system /blueprints/system
+COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY --from=builder /work/authentik /authentik-proxy
 COPY --from=web-builder /work/web/dist/ /web/dist/

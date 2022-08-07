@@ -19,10 +19,12 @@ def check_blueprint_v1_file(BlueprintInstance: type["BlueprintInstance"], path: 
     """Check if blueprint should be imported"""
     from authentik.blueprints.models import BlueprintInstanceStatus
     from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata
-    from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_EXAMPLE
+    from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 
     with open(path, "r", encoding="utf-8") as blueprint_file:
         raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
+        if not raw_blueprint:
+            return
         metadata = raw_blueprint.get("metadata", None)
         version = raw_blueprint.get("version", 1)
         if version != 1:
@@ -33,7 +35,7 @@ def check_blueprint_v1_file(BlueprintInstance: type["BlueprintInstance"], path: 
     meta = None
     if metadata:
         meta = from_dict(BlueprintMetadata, metadata)
-        if meta.labels.get(LABEL_AUTHENTIK_EXAMPLE, "").lower() == "true":
+        if meta.labels.get(LABEL_AUTHENTIK_INSTANTIATE, "").lower() == "false":
             return
     if not instance:
         instance = BlueprintInstance(
