@@ -5,7 +5,6 @@ from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
-from structlog.stdlib import get_logger
 from webauthn import generate_registration_options, options_to_json, verify_registration_response
 from webauthn.helpers import bytes_to_base64url
 from webauthn.helpers.exceptions import InvalidRegistrationResponse
@@ -28,7 +27,6 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnStage, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
-LOGGER = get_logger()
 SESSION_KEY_WEBAUTHN_CHALLENGE = "authentik/stages/authenticator_webauthn/challenge"
 
 
@@ -60,7 +58,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 expected_origin=get_origin(self.request),
             )
         except InvalidRegistrationResponse as exc:
-            LOGGER.warning("registration failed", exc=exc)
+            self.stage.logger.warning("registration failed", exc=exc)
             raise ValidationError(f"Registration failed. Error: {exc}")
 
         credential_id_exists = WebAuthnDevice.objects.filter(

@@ -12,7 +12,6 @@ from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_fiel
 from rest_framework.fields import BooleanField, CharField, DictField, ListField
 from rest_framework.serializers import ValidationError
 from sentry_sdk.hub import Hub
-from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Application, Source, User
@@ -31,8 +30,6 @@ from authentik.sources.plex.models import PlexAuthenticationChallenge
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
 from authentik.stages.password.stage import authenticate
-
-LOGGER = get_logger()
 
 
 @extend_schema_field(
@@ -98,7 +95,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             ):
                 # Sleep a random time (between 90 and 210ms) to "prevent" user enumeration attacks
                 sleep(0.030 * SystemRandom().randint(3, 7))
-            LOGGER.debug("invalid_login", identifier=uid_field)
+            self.stage.logger.info("invalid_login", identifier=uid_field)
             identification_failed.send(sender=self, request=self.stage.request, uid_field=uid_field)
             # We set the pending_user even on failure so it's part of the context, even
             # when the input is invalid
@@ -118,7 +115,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
         password = attrs.get("password", None)
         if not password:
-            LOGGER.warning("Password not set for ident+auth attempt")
+            self.stage.logger.warning("Password not set for ident+auth attempt")
         try:
             with Hub.current.start_span(
                 op="authentik.stages.identification.authenticate",

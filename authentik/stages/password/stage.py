@@ -56,7 +56,7 @@ def authenticate(
             continue
         # Annotate the user object with the path of the backend.
         user.backend = backend_path
-        LOGGER.debug("Successful authentication", user=user.username, backend=backend_path)
+        LOGGER.info("Successful authentication", user=user.username, backend=backend_path)
         return user
 
     # The credentials supplied are invalid to all backends, fire signal
