@@ -1,6 +1,5 @@
 """consent tests"""
 from time import sleep
-from uuid import uuid4
 
 from django.urls import reverse
 
@@ -41,8 +40,13 @@ class TestConsentStage(FlowTestCase):
         plan = FlowPlan(flow_pk=flow.pk.hex, bindings=[binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
-        session[SESSION_KEY_CONSENT_TOKEN] = str(uuid4())
         session.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+
+        session = self.client.session
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {
@@ -65,12 +69,19 @@ class TestConsentStage(FlowTestCase):
             flow_pk=flow.pk.hex,
             bindings=[binding],
             markers=[StageMarker()],
-            context={PLAN_CONTEXT_APPLICATION: self.application},
+            context={
+                PLAN_CONTEXT_APPLICATION: self.application,
+            },
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
-        session[SESSION_KEY_CONSENT_TOKEN] = str(uuid4())
         session.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+
+        session = self.client.session
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {

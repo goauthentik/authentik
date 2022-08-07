@@ -107,7 +107,7 @@ class PermissionDict(TypedDict):
 class PermissionSerializer(PassiveSerializer):
     """Permission used for consent"""
 
-    name = CharField()
+    name = CharField(allow_blank=True)
     id = CharField()
 
 

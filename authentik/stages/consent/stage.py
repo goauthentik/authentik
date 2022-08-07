@@ -18,6 +18,7 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
 
+PLAN_CONTEXT_CONSENT = "consent"
 PLAN_CONTEXT_CONSENT_TITLE = "consent_title"
 PLAN_CONTEXT_CONSENT_HEADER = "consent_header"
 PLAN_CONTEXT_CONSENT_PERMISSIONS = "consent_permissions"
@@ -65,21 +66,28 @@ class ConsentStageView(ChallengeStageView):
         challenge = ConsentChallenge(data=data)
         return challenge
 
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def should_always_prompt(self) -> bool:
+        """Check if the current request should require a prompt for non consent reasons,
+        i.e. this stage injected from another stage, mode is always requireed or no application
+        is set."""
         current_stage: ConsentStage = self.executor.current_stage
         # Make this StageView work when injected, in which case `current_stage` is an instance
         # of the base class, and we don't save any consent, as it is assumed to be a one-time
         # prompt
         if not isinstance(current_stage, ConsentStage):
-            return super().get(request, *args, **kwargs)
+            return True
         # For always require, we always return the challenge
         if current_stage.mode == ConsentMode.ALWAYS_REQUIRE:
-            return super().get(request, *args, **kwargs)
+            return True
         # at this point we need to check consent from database
         if PLAN_CONTEXT_APPLICATION not in self.executor.plan.context:
             # No application in this plan, hence we can't check DB and require user consent
-            return super().get(request, *args, **kwargs)
+            return True
+        return None
 
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        if self.should_always_prompt():
+            return super().get(request, *args, **kwargs)
         application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
 
         user = self.request.user
@@ -89,6 +97,7 @@ class ConsentStageView(ChallengeStageView):
         consent: Optional[UserConsent] = UserConsent.filter_not_expired(
             user=user, application=application
         ).first()
+        self.executor.plan.context[PLAN_CONTEXT_CONSENT] = consent
 
         if consent:
             perms = self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_PERMISSIONS, [])
@@ -110,26 +119,24 @@ class ConsentStageView(ChallengeStageView):
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         if response.data["token"] != self.request.session[SESSION_KEY_CONSENT_TOKEN]:
+            self.logger.info("Invalid consent token, re-showing prompt")
             return self.get(self.request)
-        current_stage: ConsentStage = self.executor.current_stage
-        if PLAN_CONTEXT_APPLICATION not in self.executor.plan.context:
+        if self.should_always_prompt():
             return self.executor.stage_ok()
+        current_stage: ConsentStage = self.executor.current_stage
         application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
         permissions = self.executor.plan.context.get(
             PLAN_CONTEXT_CONSENT_PERMISSIONS, []
         ) + self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_EXTRA_PERMISSIONS, [])
         permissions_string = " ".join(x["id"] for x in permissions)
-        # Make this StageView work when injected, in which case `current_stage` is an instance
-        # of the base class, and we don't save any consent, as it is assumed to be a one-time
-        # prompt
-        if not isinstance(current_stage, ConsentStage):
-            return self.executor.stage_ok()
-        # Since we only get here when no consent exists, we can create it without update
-        consent = UserConsent(
-            user=self.request.user,
-            application=application,
-            permissions=permissions_string,
-        )
+
+        if not self.executor.plan.context.get(PLAN_CONTEXT_CONSENT, None):
+            self.executor.plan.context[PLAN_CONTEXT_CONSENT] = UserConsent(
+                user=self.request.user,
+                application=application,
+            )
+        consent: UserConsent = self.executor.plan.context[PLAN_CONTEXT_CONSENT]
+        consent.permissions = permissions_string
         if current_stage.mode == ConsentMode.PERMANENT:
             consent.expiring = False
         if current_stage.mode == ConsentMode.EXPIRING:

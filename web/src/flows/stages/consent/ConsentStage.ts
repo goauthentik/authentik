@@ -86,7 +86,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                           <ul class="pf-c-list" id="permmissions">
                               ${this.challenge.additionalPermissions.map((permission) => {
                                   return html`<li data-permission-code="${permission.id}">
-                                      ${permission.name}
+                                      ${permission.name === "" ? permission.id : permission.name}
                                   </li>`;
                               })}
                           </ul>
