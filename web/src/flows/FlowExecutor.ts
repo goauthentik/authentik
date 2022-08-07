@@ -428,7 +428,7 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     getLayout(): string {
-        const prefilledFlow = globalAK().flow?.layout || LayoutEnum.Stacked;
+        const prefilledFlow = globalAK()?.flow?.layout || LayoutEnum.Stacked;
         if (this.challenge) {
             return this.challenge?.flowInfo?.layout || prefilledFlow;
         }
@@ -521,7 +521,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                                                     ? html`
                                                           <li>
                                                               <a
-                                                                  href="https://unsplash.com/@jangottweiss"
+                                                                  href="https://unsplash.com/@wild_away"
                                                                   >${t`Background image`}</a
                                                               >
                                                           </li>
