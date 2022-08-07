@@ -18,7 +18,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
-import { ConsentChallenge, ConsentChallengeResponseRequest } from "@goauthentik/api";
+import { ConsentChallenge, ConsentChallengeResponseRequest, Permission } from "@goauthentik/api";
 
 @customElement("ak-stage-consent")
 export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeResponseRequest> {
@@ -36,6 +36,14 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
         ];
     }
 
+    renderPermissions(perms: Permission[]): TemplateResult {
+        return html`${perms.map((permission) => {
+            return html`<li data-permission-code="${permission.id}">
+                ${permission.name === "" ? permission.id : permission.name}
+            </li>`;
+        })}`;
+    }
+
     renderNoPrevious(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
@@ -46,11 +54,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                               ${t`Application requires following permissions:`}
                           </p>
                           <ul class="pf-c-list" id="permmissions">
-                              ${this.challenge.permissions.map((permission) => {
-                                  return html`<li data-permission-code="${permission.id}">
-                                      ${permission.name}
-                                  </li>`;
-                              })}
+                              ${this.renderPermissions(this.challenge.permissions)}
                           </ul>
                       `
                     : html``}
@@ -68,11 +72,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                               ${t`Application already has access to the following permissions:`}
                           </p>
                           <ul class="pf-c-list" id="permmissions">
-                              ${this.challenge.permissions.map((permission) => {
-                                  return html`<li data-permission-code="${permission.id}">
-                                      ${permission.name === "" ? permission.id : permission.name}
-                                  </li>`;
-                              })}
+                              ${this.renderPermissions(this.challenge.permissions)}
                           </ul>
                       `
                     : html``}
@@ -84,11 +84,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                               ${t`Application requires following new permissions:`}
                           </strong>
                           <ul class="pf-c-list" id="permmissions">
-                              ${this.challenge.additionalPermissions.map((permission) => {
-                                  return html`<li data-permission-code="${permission.id}">
-                                      ${permission.name === "" ? permission.id : permission.name}
-                                  </li>`;
-                              })}
+                              ${this.renderPermissions(this.challenge.additionalPermissions)}
                           </ul>
                       `
                     : html``}
