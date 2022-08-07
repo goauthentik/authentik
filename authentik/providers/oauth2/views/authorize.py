@@ -457,7 +457,7 @@ class OAuthFulfillmentStage(StageView):
                 EventAction.AUTHORIZE_APPLICATION,
                 authorized_application=self.application,
                 flow=self.executor.plan.flow_pk,
-                scopes=", ".join(self.params.scope),
+                scopes=" ".join(self.params.scope),
             ).from_http(self.request)
             return self.redirect(self.create_response_uri())
         except (ClientIdError, RedirectUriError) as error:
