@@ -54,7 +54,8 @@ func (ws *WebServer) configureProxy() {
 		before := time.Now()
 		if ws.ProxyServer != nil {
 			_, oauthCallbackSet := r.URL.Query()[application.CallbackSignature]
-			if ws.ProxyServer.HandleHost(rw, r) || oauthCallbackSet {
+			_, logoutSet := r.URL.Query()[application.LogoutSignature]
+			if ws.ProxyServer.HandleHost(rw, r) || oauthCallbackSet || logoutSet {
 				Requests.With(prometheus.Labels{
 					"dest": "embedded_outpost",
 				}).Observe(float64(time.Since(before)))

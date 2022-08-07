@@ -150,6 +150,8 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if _, set := r.URL.Query()[CallbackSignature]; set {
 				a.handleAuthCallback(w, r)
+			} else if _, set := r.URL.Query()[LogoutSignature]; set {
+				a.handleSignOut(w, r)
 			} else {
 				inner.ServeHTTP(w, r)
 			}
