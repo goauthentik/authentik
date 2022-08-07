@@ -11,7 +11,7 @@ module.exports = {
                 type: "doc",
                 id: "blueprints/index",
             },
-            items: ["blueprints/v1/structure"],
+            items: ["blueprints/v1/structure", "blueprints/v1/tags"],
         },
         {
             type: "category",

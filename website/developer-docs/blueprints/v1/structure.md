@@ -1,31 +1,6 @@
----
-title: File structure
----
+# File structure
 
 Blueprints are YAML files, which can use some additional tags to ease blueprint creation.
-
-## Additional Tags
-
-#### `!KeyOf`
-
-Example: `policy: !KeyOf my-policy-id`
-
-Resolves to the primary key of the model instance defined by id _my-policy-id_.
-
-If no matching entry can be found, an error is raised and the blueprint is invalid.
-
-#### `!Find`
-
-Example: `configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]`
-
-Looks up any model and resolves to the the matches' primary key.
-First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
-
-#### `!Context`
-
-Example: `configure_flow: !Context foo`
-
-Find values from the context. Can optionally be called with a default like `!Context [foo, default-value]`.
 
 ## Structure
 
@@ -65,6 +40,6 @@ entries:
 
 Used by authentik's packaged blueprints to keep globals up-to-date. Should only be removed in special cases.
 
-#### `blueprints.goauthentik.io/example`:
+#### `blueprints.goauthentik.io/instantiate`:
 
-Blueprints with this label are not automatically imported. They are still available when creating a new instance.
+Configure if this blueprint should automatically be instantiated (defaults to `"true"`). When set to `"false"`, blueprints are listed and available to be instantiated via API/Browser.
