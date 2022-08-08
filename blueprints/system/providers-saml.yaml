@@ -6,7 +6,7 @@ metadata:
 entries:
   - identifiers:
       managed: goauthentik.io/providers/saml/upn
-    model: authentik_providers_saml.SAMLPropertyMapping
+    model: authentik_providers_saml.samlpropertymapping
     attrs:
       name: "authentik default SAML Mapping: UPN"
       saml_name: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"
@@ -14,7 +14,7 @@ entries:
         return request.user.attributes.get('upn', request.user.email)
   - identifiers:
       managed: goauthentik.io/providers/saml/name
-    model: authentik_providers_saml.SAMLPropertyMapping
+    model: authentik_providers_saml.samlpropertymapping
     attrs:
       name: "authentik default SAML Mapping: Name"
       saml_name: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
@@ -22,7 +22,7 @@ entries:
         return request.user.name
   - identifiers:
       managed: goauthentik.io/providers/saml/email
-    model: authentik_providers_saml.SAMLPropertyMapping
+    model: authentik_providers_saml.samlpropertymapping
     attrs:
       name: "authentik default SAML Mapping: Email"
       saml_name: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
@@ -30,7 +30,7 @@ entries:
         return request.user.email
   - identifiers:
       managed: goauthentik.io/providers/saml/username
-    model: authentik_providers_saml.SAMLPropertyMapping
+    model: authentik_providers_saml.samlpropertymapping
     attrs:
       name: "authentik default SAML Mapping: Username"
       saml_name: "http://schemas.goauthentik.io/2021/02/saml/username"
@@ -38,7 +38,7 @@ entries:
         return request.user.username
   - identifiers:
       managed: goauthentik.io/providers/saml/uid
-    model: authentik_providers_saml.SAMLPropertyMapping
+    model: authentik_providers_saml.samlpropertymapping
     attrs:
       name: "authentik default SAML Mapping: User ID"
       saml_name: "http://schemas.goauthentik.io/2021/02/saml/uid"
@@ -46,7 +46,7 @@ entries:
         return request.user.pk
   - identifiers:
       managed: goauthentik.io/providers/saml/groups
-    model: authentik_providers_saml.SAMLPropertyMapping
+    model: authentik_providers_saml.samlpropertymapping
     attrs:
       name: "authentik default SAML Mapping: Groups"
       saml_name: "http://schemas.xmlsoap.org/claims/Group"
@@ -55,7 +55,7 @@ entries:
             yield group.name
   - identifiers:
       managed: goauthentik.io/providers/saml/ms-windowsaccountname
-    model: authentik_providers_saml.SAMLPropertyMapping
+    model: authentik_providers_saml.samlpropertymapping
     attrs:
       name: "authentik default SAML Mapping: WindowsAccountname (Username)"
       saml_name: "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"

@@ -6,7 +6,7 @@ metadata:
 entries:
   - identifiers:
       managed: goauthentik.io/providers/proxy/scope-proxy
-    model: authentik_providers_oauth2.ScopeMapping
+    model: authentik_providers_oauth2.scopemapping
     attrs:
       name: "authentik default OAuth Mapping: Proxy outpost"
       scope_name: ak_proxy
