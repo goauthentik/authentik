@@ -15076,10 +15076,12 @@ paths:
       security:
       - authentik: []
       responses:
-        '204':
-          description: Enrollment successful
-        '420':
-          description: Enrollment pending/failed
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DuoDeviceEnrollmentStatus'
+          description: ''
         '400':
           $ref: '#/components/schemas/ValidationError'
         '403':
@@ -21877,6 +21879,13 @@ components:
       required:
       - name
       - pk
+    DuoDeviceEnrollmentStatus:
+      type: object
+      properties:
+        duo_response:
+          $ref: '#/components/schemas/DuoResponseEnum'
+      required:
+      - duo_response
     DuoDeviceRequest:
       type: object
       description: Serializer for Duo authenticator devices
@@ -21888,6 +21897,12 @@ components:
           maxLength: 64
       required:
       - name
+    DuoResponseEnum:
+      enum:
+      - success
+      - waiting
+      - invalid
+      type: string
     EmailChallenge:
       type: object
       description: Email challenge

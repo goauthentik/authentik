@@ -94,5 +94,5 @@ class AuthenticatorDuoStageView(ChallengeStageView):
         return self.executor.stage_ok()
 
     def cleanup(self):
-        self.request.session.pop(SESSION_KEY_DUO_USER_ID)
-        self.request.session.pop(SESSION_KEY_DUO_ACTIVATION_CODE)
+        self.request.session.pop(SESSION_KEY_DUO_USER_ID, None)
+        self.request.session.pop(SESSION_KEY_DUO_ACTIVATION_CODE, None)

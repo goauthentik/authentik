@@ -21,6 +21,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     AuthenticatorDuoChallenge,
     AuthenticatorDuoChallengeResponseRequest,
+    DuoResponseEnum,
     StagesApi,
 } from "@goauthentik/api";
 
@@ -35,23 +36,29 @@ export class AuthenticatorDuoStage extends BaseStage<
 
     firstUpdated(): void {
         const i = setInterval(() => {
-            this.checkEnrollStatus().then(() => {
-                clearInterval(i);
+            this.checkEnrollStatus().then((shouldStop) => {
+                if (shouldStop) {
+                    clearInterval(i);
+                }
             });
         }, 3000);
     }
 
-    checkEnrollStatus(): Promise<void> {
-        return new StagesApi(DEFAULT_CONFIG)
-            .stagesAuthenticatorDuoEnrollmentStatusCreate({
-                stageUuid: this.challenge?.stageUuid || "",
-            })
-            .then(() => {
+    async checkEnrollStatus(): Promise<boolean> {
+        const status = await new StagesApi(
+            DEFAULT_CONFIG,
+        ).stagesAuthenticatorDuoEnrollmentStatusCreate({
+            stageUuid: this.challenge?.stageUuid || "",
+        });
+        console.debug(`authentik/flows/duo: Enrollment status: ${status.duoResponse}`);
+        switch (status.duoResponse) {
+            case DuoResponseEnum.Success:
                 this.host?.submit({});
-            })
-            .catch(() => {
-                console.debug("authentik/flows/duo: Waiting for auth status");
-            });
+                return true;
+            case DuoResponseEnum.Waiting:
+                break;
+        }
+        return false;
     }
 
     render(): TemplateResult {
