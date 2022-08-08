@@ -1620,7 +1620,7 @@ urllib3 = {version = ">=1.26,<2.0", extras = ["secure", "socks"]}
 
 [[package]]
 name = "sentry-sdk"
-version = "1.9.0"
+version = "1.9.2"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
@@ -1628,7 +1628,10 @@ python-versions = "*"
 
 [package.dependencies]
 certifi = "*"
-urllib3 = ">=1.10.0"
+urllib3 = [
+    {version = ">=1.26.9", markers = "python_version >= \"3.5\""},
+    {version = ">=1.26.11", markers = "python_version >= \"3.6\""},
+]
 
 [package.extras]
 aiohttp = ["aiohttp (>=3.5)"]
@@ -3443,8 +3446,8 @@ selenium = [
     {file = "selenium-4.3.0-py3-none-any.whl", hash = "sha256:f67402b8f973aaa98d9c55b8f9aa63532009cd1859b2222a8b9800354942d8bc"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-1.9.0.tar.gz", hash = "sha256:f185c53496d79b280fe5d9d21e6572aee1ab802d3354eb12314d216cfbaa8d30"},
-    {file = "sentry_sdk-1.9.0-py2.py3-none-any.whl", hash = "sha256:60b13757d6344a94bf0ccb3c0a006c4de77daab09871b30fbbd05d5ec24e54fb"},
+    {file = "sentry-sdk-1.9.2.tar.gz", hash = "sha256:9921e76e29135aa1fa65fe231aaaef47355f85470c5ec59ce32715e22e6340b6"},
+    {file = "sentry_sdk-1.9.2-py2.py3-none-any.whl", hash = "sha256:011155f11ab828a977fe8a60c5b534c30f49d70c9938362536d206bb230bb519"},
 ]
 service-identity = [
     {file = "service-identity-21.1.0.tar.gz", hash = "sha256:6e6c6086ca271dc11b033d17c3a8bea9f24ebff920c587da090afc9519419d34"},
