@@ -28,7 +28,7 @@ class OAuth2Client(BaseOAuthClient):
         return self.request.GET.get(key, default)
 
     def check_application_state(self) -> bool:
-        "Check optional state parameter."
+        """Check optional state parameter."""
         stored = self.request.session.get(self.session_key, None)
         returned = self.get_request_arg("state", None)
         check = False
@@ -42,7 +42,7 @@ class OAuth2Client(BaseOAuthClient):
         return check
 
     def get_application_state(self) -> str:
-        "Generate state optional parameter."
+        """Generate state optional parameter."""
         return get_random_string(32)
 
     def get_client_id(self) -> str:
@@ -54,7 +54,7 @@ class OAuth2Client(BaseOAuthClient):
         return self.source.consumer_secret
 
     def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
-        "Fetch access token from callback request."
+        """Fetch access token from callback request."""
         callback = self.request.build_absolute_uri(self.callback or self.request.path)
         if not self.check_application_state():
             LOGGER.warning("Application state check failed.")
@@ -87,7 +87,7 @@ class OAuth2Client(BaseOAuthClient):
             return response.json()
 
     def get_redirect_args(self) -> dict[str, str]:
-        "Get request parameters for redirect url."
+        """Get request parameters for redirect url."""
         callback = self.request.build_absolute_uri(self.callback)
         client_id: str = self.get_client_id()
         args: dict[str, str] = {
@@ -102,7 +102,7 @@ class OAuth2Client(BaseOAuthClient):
         return args
 
     def parse_raw_token(self, raw_token: str) -> dict[str, Any]:
-        "Parse token and secret from raw token response."
+        """Parse token and secret from raw token response."""
         # Load as json first then parse as query string
         try:
             token_data = loads(raw_token)
@@ -112,7 +112,7 @@ class OAuth2Client(BaseOAuthClient):
             return token_data
 
     def do_request(self, method: str, url: str, **kwargs) -> Response:
-        "Build remote url request. Constructs necessary auth."
+        """Build remote url request. Constructs necessary auth."""
         if "token" in kwargs:
             token = kwargs.pop("token")
 

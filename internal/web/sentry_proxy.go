@@ -27,7 +27,7 @@ func (ws *WebServer) APISentryProxy(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	lines := strings.Split(string(fb.Bytes()), "\n")
+	lines := strings.Split(fb.String(), "\n")
 	if len(lines) < 1 {
 		rw.WriteHeader(http.StatusBadRequest)
 		return

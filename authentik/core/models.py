@@ -228,9 +228,9 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
             return DEFAULT_AVATAR
         if mode.startswith("attributes."):
             return get_path_from_dict(self.attributes, mode[11:], default=DEFAULT_AVATAR)
+        # gravatar uses md5 for their URLs, so md5 can't be avoided
         mail_hash = md5(self.email.lower().encode("utf-8")).hexdigest()  # nosec
         if mode == "gravatar":
-            # gravatar uses md5 for their URLs, so md5 can't be avoided
             parameters = [
                 ("s", "158"),
                 ("r", "g"),
