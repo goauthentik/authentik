@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"reflect"
@@ -62,7 +61,7 @@ func (c *Config) Setup(paths ...string) {
 }
 
 func (c *Config) LoadConfig(path string) error {
-	raw, err := ioutil.ReadFile(path)
+	raw, err := os.ReadFile(path)
 	if err != nil {
 		return fmt.Errorf("Failed to load config file: %w", err)
 	}
@@ -129,7 +128,7 @@ func (c *Config) parseScheme(rawVal string) string {
 		}
 		return u.RawQuery
 	} else if u.Scheme == "file" {
-		d, err := ioutil.ReadFile(u.Path)
+		d, err := os.ReadFile(u.Path)
 		if err != nil {
 			return u.RawQuery
 		}

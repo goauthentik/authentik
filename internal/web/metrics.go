@@ -1,7 +1,7 @@
 package web
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -43,12 +43,7 @@ func RunMetricsServer() {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
-		bm, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			l.WithError(err).Warning("failed to get upstream metrics")
-			return
-		}
-		_, err = rw.Write(bm)
+		_, err = io.Copy(rw, res.Body)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
