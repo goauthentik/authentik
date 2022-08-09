@@ -10,6 +10,7 @@ entries:
     attrs:
       name: "authentik default OAuth Mapping: Proxy outpost"
       scope_name: ak_proxy
+      description: authentik Proxy - User information
       expression: |
         # This mapping is used by the authentik proxy. It passes extra user attributes,
         # which are used for example for the HTTP-Basic Authentication mapping.

@@ -37,10 +37,13 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     }
 
     renderPermissions(perms: Permission[]): TemplateResult {
+        const shouldShowId = perms.filter((perm) => perm.name === "").length === perms.length;
         return html`${perms.map((permission) => {
-            return html`<li data-permission-code="${permission.id}">
-                ${permission.name === "" ? permission.id : permission.name}
-            </li>`;
+            let name = permission.name;
+            if (permission.name === "" && shouldShowId) {
+                name = permission.id;
+            }
+            return html`<li data-permission-code="${permission.id}">${name}</li>`;
         })}`;
     }
 
