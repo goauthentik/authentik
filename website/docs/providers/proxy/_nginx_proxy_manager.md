@@ -6,6 +6,7 @@ For Nginx Proxy Manager you can use this snippet
 # header from upstream' error when trying to access an application protected by goauthentik
 proxy_buffers 8 16k;
 proxy_buffer_size 32k;
+port_in_redirect off;
 
 location / {
     # Put your proxy_pass to your application here
