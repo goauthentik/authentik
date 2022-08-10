@@ -1324,10 +1324,10 @@ optional = false
 python-versions = ">=3.6"
 
 [package.extras]
-tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
-docs = ["zope.interface", "sphinx-rtd-theme", "sphinx"]
-dev = ["pre-commit", "mypy", "coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)", "cryptography (>=3.3.1)", "zope.interface", "sphinx-rtd-theme", "sphinx"]
 crypto = ["cryptography (>=3.3.1)"]
+dev = ["sphinx", "sphinx-rtd-theme", "zope.interface", "cryptography (>=3.3.1)", "pytest (>=6.0.0,<7.0.0)", "coverage[toml] (==5.0.4)", "mypy", "pre-commit"]
+docs = ["sphinx", "sphinx-rtd-theme", "zope.interface"]
+tests = ["pytest (>=6.0.0,<7.0.0)", "coverage[toml] (==5.0.4)"]
 
 [[package]]
 name = "pylint"
@@ -1620,7 +1620,7 @@ urllib3 = {version = ">=1.26,<2.0", extras = ["secure", "socks"]}
 
 [[package]]
 name = "sentry-sdk"
-version = "1.9.2"
+version = "1.9.3"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
@@ -3446,8 +3446,8 @@ selenium = [
     {file = "selenium-4.3.0-py3-none-any.whl", hash = "sha256:f67402b8f973aaa98d9c55b8f9aa63532009cd1859b2222a8b9800354942d8bc"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-1.9.2.tar.gz", hash = "sha256:9921e76e29135aa1fa65fe231aaaef47355f85470c5ec59ce32715e22e6340b6"},
-    {file = "sentry_sdk-1.9.2-py2.py3-none-any.whl", hash = "sha256:011155f11ab828a977fe8a60c5b534c30f49d70c9938362536d206bb230bb519"},
+    {file = "sentry-sdk-1.9.3.tar.gz", hash = "sha256:75643a8c656ffd61ea0a37bf4b0b9463825d6043d4fbfd7c80872ab66e4fa06e"},
+    {file = "sentry_sdk-1.9.3-py2.py3-none-any.whl", hash = "sha256:baac8e9426b7927f95792b1f38c83ae743a62471e92b72fa3ec2d5987609abeb"},
 ]
 service-identity = [
     {file = "service-identity-21.1.0.tar.gz", hash = "sha256:6e6c6086ca271dc11b033d17c3a8bea9f24ebff920c587da090afc9519419d34"},
