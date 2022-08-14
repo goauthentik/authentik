@@ -84,9 +84,9 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
         """Send SMS via outside API"""
 
         data = {
-            "From": self.from_number,
-            "To": device.phone_number,
-            "Body": token,
+            "from": self.from_number,
+            "to": device.phone_number,
+            "body": token,
         }
 
         if self.auth_type == SMSAuthTypes.BEARER:
