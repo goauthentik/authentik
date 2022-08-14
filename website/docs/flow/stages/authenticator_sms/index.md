@@ -28,9 +28,9 @@ For the generic provider, a POST request will be sent to the URL you have specif
 
 ```json
 {
-    "From": "<value of the *From number* field>",
-    "To": "<the phone number of the user's device>",
-    "Body": "<the token that the user needs to authenticate>,
+    "from": "<value of the *From number* field>",
+    "to": "<the phone number of the user's device>",
+    "body": "<the token that the user needs to authenticate>,
 }
 ```
 
