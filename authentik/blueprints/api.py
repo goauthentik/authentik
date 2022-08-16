@@ -1,4 +1,6 @@
 """Serializer mixin for managed models"""
+from dataclasses import asdict
+
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, DateTimeField, JSONField
@@ -84,7 +86,7 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     def available(self, request: Request) -> Response:
         """Get blueprints"""
         files: list[BlueprintFile] = blueprints_find.delay().get()
-        return Response([sanitize_dict(file) for file in files])
+        return Response([sanitize_dict(asdict(file)) for file in files])
 
     @permission_required("authentik_blueprints.view_blueprintinstance")
     @extend_schema(

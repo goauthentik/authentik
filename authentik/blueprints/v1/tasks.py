@@ -21,7 +21,6 @@ from authentik.events.monitored_tasks import (
     TaskResultStatus,
     prefill_task,
 )
-from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
@@ -35,17 +34,6 @@ class BlueprintFile:
     hash: str
     last_m: int
     meta: Optional[BlueprintMetadata] = field(default=None)
-
-    @staticmethod
-    def from_raw(raw: dict, path: Path) -> "BlueprintFile":
-        """Create blueprint file from raw YAML"""
-        root = Path(CONFIG.y("blueprints_dir"))
-        metadata = raw.get("metadata", None)
-        version = raw.get("version", 1)
-        file_hash = sha512(path.read_bytes()).hexdigest()
-        blueprint = BlueprintFile(path.relative_to(root), version, file_hash, path.stat().st_mtime)
-        blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
-        return blueprint
 
 
 @CELERY_APP.task(
@@ -64,11 +52,14 @@ def blueprints_find():
                 raw_blueprint = None
             if not raw_blueprint:
                 continue
+            metadata = raw_blueprint.get("metadata", None)
             version = raw_blueprint.get("version", 1)
             if version != 1:
                 continue
-        blueprint = BlueprintFile.from_raw(raw_blueprint, path)
-        blueprints.append(sanitize_dict(asdict(blueprint)))
+        file_hash = sha512(path.read_bytes()).hexdigest()
+        blueprint = BlueprintFile(path.relative_to(root), version, file_hash, path.stat().st_mtime)
+        blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
+        blueprints.append(blueprint)
     return blueprints
 
 
@@ -79,11 +70,8 @@ def blueprints_find():
 def blueprints_discover(self: MonitoredTask):
     """Find blueprints and check if they need to be created in the database"""
     count = 0
-    root = Path(CONFIG.y("blueprints_dir"))
     for blueprint in blueprints_find():
-        check_blueprint_v1_file(
-            BlueprintFile.from_raw(blueprint, Path(root, blueprint.get("path")))
-        )
+        check_blueprint_v1_file(blueprint)
         count += 1
     self.set_status(
         TaskResult(
