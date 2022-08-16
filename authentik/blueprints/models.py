@@ -54,7 +54,9 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
     context = models.JSONField(default=dict)
     last_applied = models.DateTimeField(auto_now=True)
     last_applied_hash = models.TextField()
-    status = models.TextField(choices=BlueprintInstanceStatus.choices)
+    status = models.TextField(
+        choices=BlueprintInstanceStatus.choices, default=BlueprintInstanceStatus.UNKNOWN
+    )
     enabled = models.BooleanField(default=True)
     managed_models = ArrayField(models.TextField(), default=list)
 

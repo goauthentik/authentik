@@ -113,7 +113,8 @@ class Migration(migrations.Migration):
                             ("error", "Error"),
                             ("orphaned", "Orphaned"),
                             ("unknown", "Unknown"),
-                        ]
+                        ],
+                        default="unknown",
                     ),
                 ),
                 ("enabled", models.BooleanField(default=True)),
