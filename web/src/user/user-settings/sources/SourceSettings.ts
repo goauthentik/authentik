@@ -15,12 +15,15 @@ import AKGlobal from "@goauthentik/web/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
-import { SourcesApi, UserSetting } from "@goauthentik/api";
+import { PaginatedUserSourceConnectionList, SourcesApi, UserSetting } from "@goauthentik/api";
 
 @customElement("ak-user-settings-source")
 export class UserSourceSettingsPage extends LitElement {
     @property({ attribute: false })
     sourceSettings?: Promise<UserSetting[]>;
+
+    @property({ attribute: false })
+    connections?: PaginatedUserSourceConnectionList;
 
     static get styles(): CSSResult[] {
         return [
@@ -55,15 +58,30 @@ export class UserSourceSettingsPage extends LitElement {
 
     firstUpdated(): void {
         this.sourceSettings = new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList();
+        new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsAllList().then((connections) => {
+            this.connections = connections;
+        });
     }
 
     renderSourceSettings(source: UserSetting): TemplateResult {
+        let connectionPk = -1;
+        if (this.connections) {
+            const connections = this.connections.results.filter(
+                (con) => con.source.slug === source.objectUid,
+            );
+            if (connections.length > 0) {
+                connectionPk = connections[0].pk;
+            } else {
+                connectionPk = 0;
+            }
+        }
         switch (source.component) {
             case "ak-user-settings-source-oauth":
                 return html`<ak-user-settings-source-oauth
                     class="pf-c-data-list__item-row"
                     objectId=${source.objectUid}
                     title=${source.title}
+                    connectionPk=${connectionPk}
                     .configureUrl=${source.configureUrl}
                 >
                 </ak-user-settings-source-oauth>`;
@@ -72,6 +90,7 @@ export class UserSourceSettingsPage extends LitElement {
                     class="pf-c-data-list__item-row"
                     objectId=${source.objectUid}
                     title=${source.title}
+                    connectionPk=${connectionPk}
                     .configureUrl=${source.configureUrl}
                 >
                 </ak-user-settings-source-plex>`;
