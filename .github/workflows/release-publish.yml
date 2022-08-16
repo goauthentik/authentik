@@ -138,7 +138,7 @@ jobs:
           docker-compose pull -q
           docker-compose up --no-start
           docker-compose start postgresql redis
-          docker-compose run -u root server test
+          docker-compose run -u root server test-all
   sentry-release:
     needs:
       - build-server
