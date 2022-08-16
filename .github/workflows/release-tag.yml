@@ -16,10 +16,7 @@ jobs:
           echo "PG_PASS=$(openssl rand -base64 32)" >> .env
           echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
           docker buildx install
-          docker build \
-            --no-cache \
-            -t testing:latest \
-            -f Dockerfile .
+          docker build -t testing:latest .
           echo "AUTHENTIK_IMAGE=testing" >> .env
           echo "AUTHENTIK_TAG=latest" >> .env
           docker-compose up --no-start
