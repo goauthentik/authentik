@@ -21,6 +21,7 @@ from authentik.events.monitored_tasks import (
     TaskResultStatus,
     prefill_task,
 )
+from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
@@ -39,6 +40,14 @@ class BlueprintFile:
 @CELERY_APP.task(
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
+def blueprints_find_dict():
+    """Find blueprints as `blueprints_find` does, but return a safe dict"""
+    blueprints = []
+    for blueprint in blueprints_find():
+        blueprints.append(sanitize_dict(asdict(blueprint)))
+    return blueprints
+
+
 def blueprints_find():
     """Find blueprints and return valid ones"""
     blueprints = []
