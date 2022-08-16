@@ -38,6 +38,9 @@ def cleanse_dict(source: dict[Any, Any]) -> dict[Any, Any]:
             final_dict[key] = value
         if isinstance(value, dict):
             final_dict[key] = cleanse_dict(value)
+        elif isinstance(value, list):
+            for idx, item in enumerate(value):
+                value[idx] = cleanse_dict(item)
     return final_dict
 
 
@@ -88,6 +91,9 @@ def sanitize_dict(source: dict[Any, Any]) -> dict[Any, Any]:
             value = asdict(value)
         if isinstance(value, dict):
             final_dict[key] = sanitize_dict(value)
+        elif isinstance(value, list):
+            for idx, item in enumerate(value):
+                value[idx] = sanitize_dict(item)
         elif isinstance(value, (User, AnonymousUser)):
             final_dict[key] = sanitize_dict(get_user(value))
         elif isinstance(value, models.Model):
