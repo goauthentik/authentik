@@ -8,6 +8,7 @@
 | ---------- | ------------------ |
 | 2022.6.x   | :white_check_mark: |
 | 2022.7.x   | :white_check_mark: |
+| 2022.8.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 

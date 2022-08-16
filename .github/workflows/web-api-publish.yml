@@ -35,8 +35,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: update-web-api-client
-          commit-message: "web: Update Web API Client version"
-          title: "web: Update Web API Client version"
-          body: "web: Update Web API Client version"
+          commit-message: "web: bump API Client version"
+          title: "web: bump API Client version"
+          body: "web: bump API Client version"
           delete-branch: true
           signoff: true
