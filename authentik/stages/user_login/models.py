@@ -23,7 +23,7 @@ class UserLoginStage(Stage):
     )
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.user_login.api import UserLoginStageSerializer
 
         return UserLoginStageSerializer

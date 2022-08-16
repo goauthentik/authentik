@@ -1,5 +1,5 @@
 """prompt models"""
-from typing import Any, Optional
+from typing import Any, Optional, Type
 from urllib.parse import urlparse, urlunparse
 from uuid import uuid4
 
@@ -111,7 +111,7 @@ class Prompt(SerializerModel):
     placeholder_expression = models.BooleanField(default=False)
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> Type[BaseSerializer]:
         from authentik.stages.prompt.api import PromptSerializer
 
         return PromptSerializer
@@ -207,7 +207,7 @@ class PromptStage(Stage):
     validation_policies = models.ManyToManyField(Policy, blank=True)
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.prompt.api import PromptStageSerializer
 
         return PromptStageSerializer

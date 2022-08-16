@@ -82,7 +82,7 @@ class EmailStage(Stage):
     template = models.TextField(default=EmailTemplates.PASSWORD_RESET)
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.email.api import EmailStageSerializer
 
         return EmailStageSerializer

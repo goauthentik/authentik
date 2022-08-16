@@ -23,7 +23,7 @@ class AuthenticatorTOTPStage(ConfigurableStage, Stage):
     digits = models.IntegerField(choices=TOTPDigits.choices)
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.authenticator_totp.api import AuthenticatorTOTPStageSerializer
 
         return AuthenticatorTOTPStageSerializer

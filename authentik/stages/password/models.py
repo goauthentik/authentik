@@ -48,7 +48,7 @@ class PasswordStage(ConfigurableStage, Stage):
     )
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.password.api import PasswordStageSerializer
 
         return PasswordStageSerializer

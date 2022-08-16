@@ -23,7 +23,7 @@ class AuthenticatorDuoStage(ConfigurableStage, Stage):
     api_hostname = models.TextField()
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.authenticator_duo.api import AuthenticatorDuoStageSerializer
 
         return AuthenticatorDuoStageSerializer

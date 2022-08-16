@@ -92,7 +92,7 @@ class IdentificationStage(Stage):
     show_source_labels = models.BooleanField(default=False)
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.identification.api import IdentificationStageSerializer
 
         return IdentificationStageSerializer

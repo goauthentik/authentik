@@ -20,7 +20,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
-from rest_framework.serializers import BaseSerializer, Serializer
+from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
@@ -482,7 +482,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
     objects = InheritanceManager()
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[Serializer]:
         """Get serializer for this model"""
         raise NotImplementedError
 
@@ -553,7 +553,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
     description = models.TextField(default="", blank=True)
 
     @property
-    def serializer(self) -> Serializer:
+    def serializer(self) -> type[Serializer]:
         from authentik.core.api.tokens import TokenSerializer
 
         return TokenSerializer

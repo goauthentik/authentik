@@ -24,7 +24,7 @@ class DummyPolicy(Policy):
     wait_max = models.IntegerField(default=30)
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.policies.dummy.api import DummyPolicySerializer
 
         return DummyPolicySerializer

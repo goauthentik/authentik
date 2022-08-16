@@ -31,7 +31,7 @@ class ConsentStage(Stage):
     )
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.consent.api import ConsentStageSerializer
 
         return ConsentStageSerializer

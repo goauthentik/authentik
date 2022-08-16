@@ -25,7 +25,7 @@ class ReputationPolicy(Policy):
     threshold = models.IntegerField(default=-5)
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.policies.reputation.api import ReputationPolicySerializer
 
         return ReputationPolicySerializer
@@ -73,7 +73,7 @@ class Reputation(SerializerModel):
     updated = models.DateTimeField(auto_now_add=True)
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.policies.reputation.api import ReputationSerializer
 
         return ReputationSerializer

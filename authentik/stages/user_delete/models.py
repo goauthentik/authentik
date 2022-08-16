@@ -12,7 +12,7 @@ class UserDeleteStage(Stage):
     Use with caution."""
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.user_delete.api import UserDeleteStageSerializer
 
         return UserDeleteStageSerializer

@@ -58,7 +58,7 @@ class PlexSource(Source):
         return "ak-source-plex-form"
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.sources.plex.api.source import PlexSourceSerializer
 
         return PlexSourceSerializer

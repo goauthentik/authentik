@@ -33,7 +33,7 @@ class PasswordPolicy(Policy):
     error_message = models.TextField()
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.policies.password.api import PasswordPolicySerializer
 
         return PasswordPolicySerializer

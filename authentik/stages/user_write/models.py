@@ -32,7 +32,7 @@ class UserWriteStage(Stage):
     )
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.user_write.api import UserWriteStageSerializer
 
         return UserWriteStageSerializer

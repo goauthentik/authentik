@@ -165,7 +165,7 @@ class Flow(SerializerModel, PolicyBindingModel):
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.flows.api.flows import FlowSerializer
 
         return FlowSerializer
@@ -225,7 +225,7 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
     objects = InheritanceManager()
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.flows.api.bindings import FlowStageBindingSerializer
 
         return FlowStageBindingSerializer

@@ -54,7 +54,7 @@ class EventMatcherPolicy(Policy):
     )
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.policies.event_matcher.api import EventMatcherPolicySerializer
 
         return EventMatcherPolicySerializer

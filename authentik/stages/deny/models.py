@@ -11,7 +11,7 @@ class DenyStage(Stage):
     """Cancells the current flow."""
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.deny.api import DenyStageSerializer
 
         return DenyStageSerializer

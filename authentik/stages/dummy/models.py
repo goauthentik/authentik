@@ -13,7 +13,7 @@ class DummyStage(Stage):
     __debug_only__ = True
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.dummy.api import DummyStageSerializer
 
         return DummyStageSerializer

@@ -102,7 +102,7 @@ class PolicyBinding(SerializerModel):
         return PolicyResult(False)
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.policies.api.bindings import PolicyBindingSerializer
 
         return PolicyBindingSerializer
