@@ -157,6 +157,7 @@ jobs:
           docker cp ${container}:web/ .
       - name: Create a Sentry.io release
         uses: getsentry/action-release@v1
+        continue-on-error: true
         if: ${{ github.event_name == 'release' }}
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
