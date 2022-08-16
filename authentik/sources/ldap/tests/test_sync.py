@@ -23,7 +23,7 @@ LDAP_PASSWORD = generate_key()
 class LDAPSyncTests(TestCase):
     """LDAP Sync tests"""
 
-    @apply_blueprint("blueprints/system/sources-ldap.yaml")
+    @apply_blueprint("system/sources-ldap.yaml")
     def setUp(self):
         self.source: LDAPSource = LDAPSource.objects.create(
             name="ldap",

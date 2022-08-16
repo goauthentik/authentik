@@ -30,7 +30,7 @@ RUN pip install --no-cache-dir poetry && \
     poetry export -f requirements.txt --dev --output requirements-dev.txt
 
 # Stage 4: Build go proxy
-FROM docker.io/golang:1.19.0-bullseye AS builder
+FROM docker.io/golang:1.19.0-bullseye AS go-builder
 
 WORKDIR /work
 
@@ -46,7 +46,7 @@ COPY ./go.sum /work/go.sum
 RUN go build -o /work/authentik ./cmd/server/main.go
 
 # Stage 5: Run
-FROM docker.io/python:3.10.6-slim-bullseye
+FROM docker.io/python:3.10.6-slim-bullseye AS final-image
 
 LABEL org.opencontainers.image.url https://goauthentik.io
 LABEL org.opencontainers.image.description goauthentik.io Main server image, see https://goauthentik.io for more info.

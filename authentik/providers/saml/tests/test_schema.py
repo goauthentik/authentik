@@ -18,7 +18,7 @@ from authentik.sources.saml.processors.request import RequestProcessor
 class TestSchema(TestCase):
     """Test Requests and Responses against schema"""
 
-    @apply_blueprint("blueprints/system/providers-saml.yaml")
+    @apply_blueprint("system/providers-saml.yaml")
     def setUp(self):
         cert = create_test_cert()
         self.provider: SAMLProvider = SAMLProvider.objects.create(

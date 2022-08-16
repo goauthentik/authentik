@@ -16,7 +16,7 @@ from authentik.providers.oauth2.tests.utils import OAuthTestCase
 class TestUserinfo(OAuthTestCase):
     """Test token view"""
 
-    @apply_blueprint("blueprints/system/providers-oauth2.yaml")
+    @apply_blueprint("system/providers-oauth2.yaml")
     def setUp(self) -> None:
         super().setUp()
         self.app = Application.objects.create(name=generate_id(), slug=generate_id())
