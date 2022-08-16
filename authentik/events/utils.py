@@ -27,19 +27,18 @@ def cleanse_item(key: str, value: Any) -> Any:
     """Cleanse a single item"""
     if isinstance(value, dict):
         return cleanse_dict(value)
-    elif isinstance(value, list):
+    if isinstance(value, list):
         for idx, item in enumerate(value):
-            if isinstance(value, dict):
-                value[idx] = cleanse_dict(item)
+            value[idx] = cleanse_item(key, item)
+        return value
     try:
         if SafeExceptionReporterFilter.hidden_settings.search(
             key
         ) and not ALLOWED_SPECIAL_KEYS.search(key):
             return SafeExceptionReporterFilter.cleansed_substitute
-        else:
-            return value
     except TypeError:  # pragma: no cover
         return value
+    return value
 
 
 def cleanse_dict(source: dict[Any, Any]) -> dict[Any, Any]:
@@ -47,7 +46,7 @@ def cleanse_dict(source: dict[Any, Any]) -> dict[Any, Any]:
     final_dict = {}
     for key, value in source.items():
         new_value = cleanse_item(key, value)
-        if new_value:
+        if new_value is not ...:
             final_dict[key] = new_value
     return final_dict
 
@@ -93,22 +92,26 @@ def sanitize_item(value: Any) -> Any:
         value = asdict(value)
     if isinstance(value, dict):
         return sanitize_dict(value)
-    elif isinstance(value, list):
-        for idx, item in enumerate(value):
-            value[idx] = sanitize_item(item)
-    elif isinstance(value, (User, AnonymousUser)):
+    if isinstance(value, list):
+        new_values = []
+        for item in value:
+            new_value = sanitize_item(item)
+            if new_value:
+                new_values.append(new_value)
+        return new_values
+    if isinstance(value, (User, AnonymousUser)):
         return sanitize_dict(get_user(value))
-    elif isinstance(value, models.Model):
+    if isinstance(value, models.Model):
         return sanitize_dict(model_to_dict(value))
-    elif isinstance(value, UUID):
+    if isinstance(value, UUID):
         return value.hex
-    elif isinstance(value, (HttpRequest, WSGIRequest)):
-        return None
-    elif isinstance(value, City):
+    if isinstance(value, (HttpRequest, WSGIRequest)):
+        return ...
+    if isinstance(value, City):
         return GEOIP_READER.city_to_dict(value)
-    elif isinstance(value, Path):
+    if isinstance(value, Path):
         return str(value)
-    elif isinstance(value, type):
+    if isinstance(value, type):
         return {
             "type": value.__name__,
             "module": value.__module__,
@@ -126,6 +129,6 @@ def sanitize_dict(source: dict[Any, Any]) -> dict[Any, Any]:
     final_dict = {}
     for key, value in source.items():
         new_value = sanitize_item(value)
-        if new_value:
+        if new_value is not ...:
             final_dict[key] = new_value
     return final_dict
