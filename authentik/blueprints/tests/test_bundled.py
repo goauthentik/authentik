@@ -1,5 +1,4 @@
 """test packaged blueprints"""
-from glob import glob
 from pathlib import Path
 from typing import Callable
 
@@ -21,17 +20,19 @@ class TestBundled(TransactionTestCase):
         self.assertTrue(Tenant.objects.filter(domain="authentik-default").exists())
 
 
-def blueprint_tester(file_name: str) -> Callable:
+def blueprint_tester(file_name: Path) -> Callable:
     """This is used instead of subTest for better visibility"""
 
     def tester(self: TestBundled):
-        importer = Importer(BlueprintInstance(path=file_name).retrieve())
+        base = Path("blueprints/")
+        rel_path = Path(file_name).relative_to(base)
+        importer = Importer(BlueprintInstance(path=str(rel_path)).retrieve())
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 
     return tester
 
 
-for flow_file in glob("blueprints/**/*.yaml", recursive=True):
-    method_name = slugify(Path(flow_file).stem).replace("-", "_").replace(".", "_")
+for flow_file in Path("blueprints/").glob("**/*.yaml"):
+    method_name = slugify(flow_file.stem).replace("-", "_").replace(".", "_")
     setattr(TestBundled, f"test_flow_{method_name}", blueprint_tester(flow_file))
