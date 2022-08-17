@@ -41,11 +41,12 @@ Navigate to your enterprise settings by clicking your GitHub user portrait in th
 In the left-hand navigation, within the `Settings` section, click `Authentication security`
 
 On this page:
-- Select the `Require SAML authentication` checkbox.
-- In `Sign on URL`, type `https://authentik.company/application/saml/<authentik application slug>/sso/binding/redirect/`
-- For `Issuer`, type `https://github.com/enterprises/foo` or the `Audience` you set in authentik
-- For `Public certificate`, paste the *full* signing certificate into this field.
-- Verify that the `Signature method` and `Digest method` match your SAML provider settings in authentik.
+
+-   Select the `Require SAML authentication` checkbox.
+-   In `Sign on URL`, type `https://authentik.company/application/saml/<authentik application slug>/sso/binding/redirect/`
+-   For `Issuer`, type `https://github.com/enterprises/foo` or the `Audience` you set in authentik
+-   For `Public certificate`, paste the _full_ signing certificate into this field.
+-   Verify that the `Signature method` and `Digest method` match your SAML provider settings in authentik.
 
 ![Screenshot showing populated GitHub enterprise SAML settings](ghec_saml_settings.png)
 

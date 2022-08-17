@@ -37,11 +37,12 @@ Navigate to your organization settings by going to your organization page at htt
 In the left-hand navigation, scroll down to the Security section and click `Authentication security`
 
 On this page:
-- Select the `Enable SAML authentication` checkbox.
-- In `sign-on URL`, type `https://authentik.company/application/saml/<authentik application slug>/sso/binding/redirect/`
-- For `Issuer`, type `https://github.com/orgs/foo` or the `Audience` you set in authentik
-- For `Public certificate`, paste the *full* signing certificate into this field.
-- Verify that the `Signature method` and `Digest method` match your SAML provider settings in authentik.
+
+-   Select the `Enable SAML authentication` checkbox.
+-   In `sign-on URL`, type `https://authentik.company/application/saml/<authentik application slug>/sso/binding/redirect/`
+-   For `Issuer`, type `https://github.com/orgs/foo` or the `Audience` you set in authentik
+-   For `Public certificate`, paste the _full_ signing certificate into this field.
+-   Verify that the `Signature method` and `Digest method` match your SAML provider settings in authentik.
 
 Once these fields are populated, you can use the `Test SAML configuation` button to test the authentication flow. If the flow completes successfully, you will see a green tick next to the Test button.
 
@@ -49,4 +50,4 @@ Scroll down to hit the `Save` button below.
 
 ![Screenshot showing populated GitHub organization SAML settings](ghorg_saml_settings.png)
 
-This enables SAML as an authentication *option*. If you want to *require* SAML for your organization, visit your SSO url at `https://github.com/orgs/foo/sso` and sign in. Once signed in, you can navigate back to the `Authentication security` page and check `Require SAML SSO authentication for all members of the foo organization.`
+This enables SAML as an authentication _option_. If you want to _require_ SAML for your organization, visit your SSO url at `https://github.com/orgs/foo/sso` and sign in. Once signed in, you can navigate back to the `Authentication security` page and check `Require SAML SSO authentication for all members of the foo organization.`
