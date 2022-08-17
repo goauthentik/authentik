@@ -12,14 +12,18 @@ The embedded outpost cannot be disabled, if it doesn't make sense to use it in y
 
 ### Configuration
 
-Since the outpost uses OAuth2, there is some configuration required.
+Since authentik doesn't know it's own "primary" URL, there might be some configuration required.
 
-On a fresh authentik install, your Outpost list will look like this:
+By default, when opening the admin dashboard on a fresh install, authentik will automatically configure the outpost to use the same URL as was used to access authentik.
 
-![](./stock.png)
-
-Click the edit button on the right of the column, and set the value of `authentik_host` to the URL you want to login with.
+If this isn't correct, or needs to be changed, click the edit button on the right of the outpost, and set the value of `authentik_host` to the URL you want to login with.
 Make sure to set it to full URL, only configuring a hostname or FQDN will not work.
+
+Additionally, most of the other configuration options can be used as with any other outpost, except from items which are marked as "non-embedded"
+
+import Configuration from "../_config.md";
+
+<Configuration />
 
 ### Routing
 
