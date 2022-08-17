@@ -1,6 +1,5 @@
 """outpost tasks"""
 from os import R_OK, access
-from os.path import expanduser
 from pathlib import Path
 from socket import gethostname
 from typing import Any, Optional
@@ -252,13 +251,13 @@ def outpost_local_connection():
                 name="Local Kubernetes Cluster", local=True, kubeconfig={}
             )
     # For development, check for the existence of a kubeconfig file
-    kubeconfig_path = expanduser(KUBE_CONFIG_DEFAULT_LOCATION)
-    if Path(kubeconfig_path).exists():
+    kubeconfig_path = Path(KUBE_CONFIG_DEFAULT_LOCATION).expanduser()
+    if kubeconfig_path.exists():
         LOGGER.debug("Detected kubeconfig")
         kubeconfig_local_name = f"k8s-{gethostname()}"
         if not KubernetesServiceConnection.objects.filter(name=kubeconfig_local_name).exists():
             LOGGER.debug("Creating kubeconfig Service Connection")
-            with open(kubeconfig_path, "r", encoding="utf8") as _kubeconfig:
+            with kubeconfig_path.open("r", encoding="utf8") as _kubeconfig:
                 KubernetesServiceConnection.objects.create(
                     name=kubeconfig_local_name,
                     kubeconfig=yaml.safe_load(_kubeconfig),
