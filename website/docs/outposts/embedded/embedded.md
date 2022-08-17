@@ -21,6 +21,8 @@ On a fresh authentik install, your Outpost list will look like this:
 Click the edit button on the right of the column, and set the value of `authentik_host` to the URL you want to login with.
 Make sure to set it to full URL, only configuring a hostname or FQDN will not work.
 
+
+(Kubernetes Only)
 Any annotations that need to be applied to the ingress should be added to the ``kubernetes_ingress_annotations`` object.
 For example if Cert Manager and NGINX Ingress Controller are being used the following must be added to the configuration:
 
