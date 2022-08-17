@@ -80,11 +80,17 @@ module.exports = {
                     type: "category",
                     label: "Developer tools",
                     items: [
-                        "services/gitea/index",
-                        "services/gitlab/index",
                         "services/sentry/index",
                         "services/sssd/index",
                         "services/weblate/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Version Control Systems",
+                    items: [
+                        "services/gitea/index",
+                        "services/gitlab/index",
                     ],
                 },
                 "services/home-assistant/index",
