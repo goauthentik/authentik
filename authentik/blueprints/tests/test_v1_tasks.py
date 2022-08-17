@@ -1,4 +1,5 @@
 """Test blueprints v1 tasks"""
+from hashlib import sha512
 from tempfile import NamedTemporaryFile, mkdtemp
 
 from django.test import TransactionTestCase
@@ -36,25 +37,32 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
     @CONFIG.patch("blueprints_dir", TMP)
     def test_valid(self):
         """Test valid file"""
+        blueprint_id = generate_id()
         with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
             file.write(
                 dump(
                     {
                         "version": 1,
                         "entries": [],
+                        "metadata": {
+                            "name": blueprint_id,
+                        },
                     }
                 )
             )
+            file.seek(0)
+            file_hash = sha512(file.read().encode()).hexdigest()
             file.flush()
             blueprints_discover()  # pylint: disable=no-value-for-parameter
+            instance = BlueprintInstance.objects.filter(name=blueprint_id).first()
+            self.assertEqual(instance.last_applied_hash, file_hash)
             self.assertEqual(
-                BlueprintInstance.objects.first().last_applied_hash,
-                (
-                    "e52bb445b03cd36057258dc9f0ce0fbed8278498ee1470e45315293e5f026d1b"
-                    "d1f9b3526871c0003f5c07be5c3316d9d4a08444bd8fed1b3f03294e51e44522"
-                ),
+                instance.metadata,
+                {
+                    "name": blueprint_id,
+                    "labels": {},
+                },
             )
-            self.assertEqual(BlueprintInstance.objects.first().metadata, {})
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_valid_updated(self):
