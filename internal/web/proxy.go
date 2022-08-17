@@ -11,7 +11,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/internal/outpost/proxyv2/application"
 	"goauthentik.io/internal/utils/sentry"
-	"goauthentik.io/internal/utils/web"
 )
 
 func (ws *WebServer) configureProxy() {
@@ -65,7 +64,6 @@ func (ws *WebServer) configureProxy() {
 		Requests.With(prometheus.Labels{
 			"dest": "py",
 		}).Observe(float64(time.Since(before)))
-		ws.log.WithField("host", web.GetHost(r)).Trace("routing to application server")
 		rp.ServeHTTP(rw, r)
 	}))
 }

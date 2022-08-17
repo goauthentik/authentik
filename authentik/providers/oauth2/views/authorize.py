@@ -24,12 +24,7 @@ from authentik.flows.challenge import (
     HttpChallengeResponse,
 )
 from authentik.flows.models import in_memory_stage
-from authentik.flows.planner import (
-    PLAN_CONTEXT_APPLICATION,
-    PLAN_CONTEXT_SSO,
-    FlowPlan,
-    FlowPlanner,
-)
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
@@ -353,7 +348,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # planner.use_cache = False
         planner.allow_empty_flows = True
         scope_descriptions = UserInfoView().get_scope_descriptions(self.params.scope)
-        plan: FlowPlan = planner.plan(
+        plan = planner.plan(
             self.request,
             {
                 PLAN_CONTEXT_SSO: True,
