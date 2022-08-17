@@ -1,12 +1,23 @@
 """Managed Object models"""
+from pathlib import Path
+from urllib.parse import urlparse
 from uuid import uuid4
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from requests import RequestException
 from rest_framework.serializers import Serializer
 
+from authentik.lib.config import CONFIG
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
+from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.utils.http import get_http_session
+
+
+class BlueprintRetrievalFailed(SentryIgnoredException):
+    """Error raised when we're unable to fetch the blueprint contents, whether it be HTTP files
+    not being accessible or local files not being readable"""
 
 
 class ManagedModel(models.Model):
@@ -59,6 +70,19 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
     )
     enabled = models.BooleanField(default=True)
     managed_models = ArrayField(models.TextField(), default=list)
+
+    def retrieve(self) -> str:
+        """Retrieve blueprint contents"""
+        if urlparse(self.path).scheme != "":
+            try:
+                res = get_http_session().get(self.path, timeout=3, allow_redirects=True)
+                res.raise_for_status()
+                return res.text
+            except RequestException as exc:
+                raise BlueprintRetrievalFailed(exc) from exc
+        path = Path(CONFIG.y("blueprints_dir")).joinpath(Path(self.path))
+        with path.open("r", encoding="utf-8") as _file:
+            return _file.read()
 
     @property
     def serializer(self) -> Serializer:

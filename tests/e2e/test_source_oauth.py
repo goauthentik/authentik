@@ -1,5 +1,5 @@
 """test OAuth Source"""
-from os.path import abspath
+from pathlib import Path
 from sys import platform
 from time import sleep
 from typing import Any, Optional
@@ -116,7 +116,7 @@ class TestSourceOAuth2(SeleniumTestCase):
                 interval=5 * 100 * 1000000,
                 start_period=1 * 100 * 1000000,
             ),
-            "volumes": {abspath(CONFIG_PATH): {"bind": "/config.yml", "mode": "ro"}},
+            "volumes": {str(Path(CONFIG_PATH).absolute()): {"bind": "/config.yml", "mode": "ro"}},
         }
 
     def create_objects(self):

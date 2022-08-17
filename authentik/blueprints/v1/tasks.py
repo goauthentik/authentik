@@ -8,10 +8,15 @@ from dacite import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from structlog.stdlib import get_logger
 from yaml import load
 from yaml.error import YAMLError
 
-from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
+from authentik.blueprints.models import (
+    BlueprintInstance,
+    BlueprintInstanceStatus,
+    BlueprintRetrievalFailed,
+)
 from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
@@ -24,6 +29,8 @@ from authentik.events.monitored_tasks import (
 from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
+
+LOGGER = get_logger()
 
 
 @dataclass
@@ -54,21 +61,29 @@ def blueprints_find():
     root = Path(CONFIG.y("blueprints_dir"))
     for file in root.glob("**/*.yaml"):
         path = Path(file)
+        LOGGER.debug("found blueprint", path=str(path))
         with open(path, "r", encoding="utf-8") as blueprint_file:
             try:
                 raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
-            except YAMLError:
+            except YAMLError as exc:
                 raw_blueprint = None
+                LOGGER.warning("failed to parse blueprint", exc=exc, path=str(path))
             if not raw_blueprint:
                 continue
             metadata = raw_blueprint.get("metadata", None)
             version = raw_blueprint.get("version", 1)
             if version != 1:
+                LOGGER.warning("invalid blueprint version", version=version, path=str(path))
                 continue
         file_hash = sha512(path.read_bytes()).hexdigest()
         blueprint = BlueprintFile(path.relative_to(root), version, file_hash, path.stat().st_mtime)
         blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
         blueprints.append(blueprint)
+        LOGGER.info(
+            "parsed & loaded blueprint",
+            hash=file_hash,
+            path=str(path),
+        )
     return blueprints
 
 
@@ -127,10 +142,9 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
         if not instance or not instance.enabled:
             return
-        full_path = Path(CONFIG.y("blueprints_dir")).joinpath(Path(instance.path))
-        file_hash = sha512(full_path.read_bytes()).hexdigest()
-        with open(full_path, "r", encoding="utf-8") as blueprint_file:
-            importer = Importer(blueprint_file.read(), instance.context)
+        blueprint_content = instance.retrieve()
+        file_hash = sha512(blueprint_content.encode()).hexdigest()
+        importer = Importer(blueprint_content, instance.context)
         valid, logs = importer.validate()
         if not valid:
             instance.status = BlueprintInstanceStatus.ERROR
@@ -148,7 +162,13 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance.last_applied = now()
         instance.save()
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
-    except (DatabaseError, ProgrammingError, InternalError, IOError) as exc:
+    except (
+        DatabaseError,
+        ProgrammingError,
+        InternalError,
+        IOError,
+        BlueprintRetrievalFailed,
+    ) as exc:
         instance.status = BlueprintInstanceStatus.ERROR
         instance.save()
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
