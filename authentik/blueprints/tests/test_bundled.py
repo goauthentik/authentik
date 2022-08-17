@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Callable
 
 from django.test import TransactionTestCase
-from django.utils.text import slugify
 
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.tests import apply_blueprint
@@ -33,6 +32,5 @@ def blueprint_tester(file_name: Path) -> Callable:
     return tester
 
 
-for flow_file in Path("blueprints/").glob("**/*.yaml"):
-    method_name = slugify(flow_file.stem).replace("-", "_").replace(".", "_")
-    setattr(TestBundled, f"test_flow_{method_name}", blueprint_tester(flow_file))
+for blueprint_file in Path("blueprints/").glob("**/*.yaml"):
+    setattr(TestBundled, f"test_blueprint_{blueprint_file}", blueprint_tester(blueprint_file))

@@ -1,7 +1,7 @@
 """Test blueprints v1"""
 from django.test import TransactionTestCase
 
-from authentik.blueprints.v1.exporter import Exporter
+from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.lib.generators import generate_id
@@ -70,7 +70,7 @@ class TestBlueprintsV1(TransactionTestCase):
                 order=0,
             )
 
-            exporter = Exporter(flow)
+            exporter = FlowExporter(flow)
             export = exporter.export()
             self.assertEqual(len(export.entries), 3)
             export_yaml = exporter.export_to_string()
@@ -126,7 +126,7 @@ class TestBlueprintsV1(TransactionTestCase):
             fsb = FlowStageBinding.objects.create(target=flow, stage=user_login, order=0)
             PolicyBinding.objects.create(policy=flow_policy, target=fsb, order=0)
 
-            exporter = Exporter(flow)
+            exporter = FlowExporter(flow)
             export_yaml = exporter.export_to_string()
 
         importer = Importer(export_yaml)
@@ -169,7 +169,7 @@ class TestBlueprintsV1(TransactionTestCase):
 
             FlowStageBinding.objects.create(target=flow, stage=first_stage, order=0)
 
-            exporter = Exporter(flow)
+            exporter = FlowExporter(flow)
             export_yaml = exporter.export_to_string()
 
         importer = Importer(export_yaml)
