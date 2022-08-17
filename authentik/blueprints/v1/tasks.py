@@ -11,7 +11,11 @@ from django.utils.translation import gettext_lazy as _
 from yaml import load
 from yaml.error import YAMLError
 
-from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
+from authentik.blueprints.models import (
+    BlueprintInstance,
+    BlueprintInstanceStatus,
+    BlueprintRetrievalFailed,
+)
 from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
@@ -127,10 +131,9 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
         if not instance or not instance.enabled:
             return
-        full_path = Path(CONFIG.y("blueprints_dir")).joinpath(Path(instance.path))
-        file_hash = sha512(full_path.read_bytes()).hexdigest()
-        with open(full_path, "r", encoding="utf-8") as blueprint_file:
-            importer = Importer(blueprint_file.read(), instance.context)
+        blueprint_content = instance.retrieve()
+        file_hash = sha512(blueprint_content.encode()).hexdigest()
+        importer = Importer(blueprint_content, instance.context)
         valid, logs = importer.validate()
         if not valid:
             instance.status = BlueprintInstanceStatus.ERROR
@@ -148,7 +151,13 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance.last_applied = now()
         instance.save()
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
-    except (DatabaseError, ProgrammingError, InternalError, IOError) as exc:
+    except (
+        DatabaseError,
+        ProgrammingError,
+        InternalError,
+        IOError,
+        BlueprintRetrievalFailed,
+    ) as exc:
         instance.status = BlueprintInstanceStatus.ERROR
         instance.save()
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))

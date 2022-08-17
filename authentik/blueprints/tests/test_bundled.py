@@ -6,6 +6,7 @@ from typing import Callable
 from django.test import TransactionTestCase
 from django.utils.text import slugify
 
+from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.tests import apply_blueprint
 from authentik.blueprints.v1.importer import Importer
 from authentik.tenants.models import Tenant
@@ -24,8 +25,7 @@ def blueprint_tester(file_name: str) -> Callable:
     """This is used instead of subTest for better visibility"""
 
     def tester(self: TestBundled):
-        with open(file_name, "r", encoding="utf8") as flow_yaml:
-            importer = Importer(flow_yaml.read())
+        importer = Importer(BlueprintInstance(path=file_name).retrieve())
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 
