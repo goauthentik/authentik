@@ -39,12 +39,13 @@ class Exporter:
             for obj in model.objects.all():
                 yield BlueprintEntry.from_model(obj)
 
-    def _pre_export(self):
+    def _pre_export(self, blueprint: Blueprint):
         """Hook to run anything pre-export"""
 
     def export(self) -> Blueprint:
         """Create a list of all objects and create a blueprint"""
         blueprint = Blueprint()
+        self._pre_export(blueprint)
         blueprint.metadata = BlueprintMetadata(
             name=_("authentik Export - %(date)s" % {"date": str(now())}),
             labels={
@@ -75,7 +76,7 @@ class FlowExporter(Exporter):
         self.with_policies = True
         self.with_stage_prompts = True
 
-    def _pre_export(self):
+    def _pre_export(self, blueprint: Blueprint):
         if not self.with_policies:
             return
         self.pbm_uuids = [self.flow.pbm_uuid]
