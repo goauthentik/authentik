@@ -201,6 +201,16 @@ func (a *Application) Mode() api.ProxyMode {
 	return *a.proxyConfig.Mode.Get()
 }
 
+func (a *Application) HasQuerySignature(r *http.Request) bool {
+	if strings.EqualFold(r.URL.Query().Get(CallbackSignature), "true") {
+		return true
+	}
+	if strings.EqualFold(r.URL.Query().Get(LogoutSignature), "true") {
+		return true
+	}
+	return false
+}
+
 func (a *Application) ProxyConfig() api.ProxyOutpostConfig {
 	return a.proxyConfig
 }
