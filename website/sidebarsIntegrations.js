@@ -48,7 +48,10 @@ module.exports = {
                 {
                     type: "category",
                     label: "Cloud Providers",
-                    items: ["services/aws/index"],
+                    items: [
+                        "services/aws/index",
+                        "services/oracle-cloud/index",
+                    ],
                 },
                 {
                     type: "category",
