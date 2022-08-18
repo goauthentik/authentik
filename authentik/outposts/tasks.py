@@ -239,12 +239,12 @@ def _outpost_single_update(outpost: Outpost, layer=None):
 def outpost_local_connection():
     """Checks the local environment and create Service connections."""
     if not CONFIG.y_bool("outposts.discover"):
-        LOGGER.debug("Outpost integration discovery is disabled")
+        LOGGER.info("Outpost integration discovery is disabled")
         return
     # Explicitly check against token filename, as that's
     # only present when the integration is enabled
     if Path(SERVICE_TOKEN_FILENAME).exists():
-        LOGGER.debug("Detected in-cluster Kubernetes Config")
+        LOGGER.info("Detected in-cluster Kubernetes Config")
         if not KubernetesServiceConnection.objects.filter(local=True).exists():
             LOGGER.debug("Created Service Connection for in-cluster")
             KubernetesServiceConnection.objects.create(
@@ -253,7 +253,7 @@ def outpost_local_connection():
     # For development, check for the existence of a kubeconfig file
     kubeconfig_path = Path(KUBE_CONFIG_DEFAULT_LOCATION).expanduser()
     if kubeconfig_path.exists():
-        LOGGER.debug("Detected kubeconfig")
+        LOGGER.info("Detected kubeconfig")
         kubeconfig_local_name = f"k8s-{gethostname()}"
         if not KubernetesServiceConnection.objects.filter(name=kubeconfig_local_name).exists():
             LOGGER.debug("Creating kubeconfig Service Connection")
@@ -265,7 +265,7 @@ def outpost_local_connection():
     unix_socket_path = urlparse(DEFAULT_UNIX_SOCKET).path
     socket = Path(unix_socket_path)
     if socket.exists() and access(socket, R_OK):
-        LOGGER.debug("Detected local docker socket")
+        LOGGER.info("Detected local docker socket")
         if len(DockerServiceConnection.objects.filter(local=True)) == 0:
             LOGGER.debug("Created Service Connection for docker")
             DockerServiceConnection.objects.create(
