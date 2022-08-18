@@ -10,7 +10,7 @@ from authentik.blueprints.v1.importer import Importer
 from authentik.tenants.models import Tenant
 
 
-class TestBundled(TransactionTestCase):
+class TestPackaged(TransactionTestCase):
     """Empty class, test methods are added dynamically"""
 
     @apply_blueprint("default/90-default-tenant.yaml")
@@ -22,7 +22,7 @@ class TestBundled(TransactionTestCase):
 def blueprint_tester(file_name: Path) -> Callable:
     """This is used instead of subTest for better visibility"""
 
-    def tester(self: TestBundled):
+    def tester(self: TestPackaged):
         base = Path("blueprints/")
         rel_path = Path(file_name).relative_to(base)
         importer = Importer(BlueprintInstance(path=str(rel_path)).retrieve())
@@ -33,4 +33,4 @@ def blueprint_tester(file_name: Path) -> Callable:
 
 
 for blueprint_file in Path("blueprints/").glob("**/*.yaml"):
-    setattr(TestBundled, f"test_blueprint_{blueprint_file}", blueprint_tester(blueprint_file))
+    setattr(TestPackaged, f"test_blueprint_{blueprint_file}", blueprint_tester(blueprint_file))

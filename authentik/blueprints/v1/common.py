@@ -232,7 +232,13 @@ class BlueprintDumper(SafeDumper):
 
     def represent(self, data) -> None:
         if is_dataclass(data):
-            data = asdict(data)
+
+            def factory(items):
+                final_dict = dict(items)
+                final_dict.pop("_state", None)
+                return final_dict
+
+            data = asdict(data, dict_factory=factory)
         return super().represent(data)
 
 

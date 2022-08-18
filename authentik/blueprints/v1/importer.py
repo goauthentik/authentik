@@ -231,7 +231,7 @@ class Importer:
         self.logger.debug("Starting blueprint import validation")
         orig_import = deepcopy(self.__import)
         if self.__import.version != 1:
-            self.logger.warning("Invalid bundle version")
+            self.logger.warning("Invalid blueprint version")
             return False, []
         with (
             transaction_rollback(),
