@@ -154,6 +154,7 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request) {
 	a.log.WithField("header", r.Header).Trace("tracing headers for debug")
 	r.URL.Path = strings.TrimPrefix(r.URL.Path, envoyPrefix)
+	r.URL.Host = r.Host
 	fwd := r.URL
 	// Check if we're authenticated, or the request path is on the allowlist
 	claims, err := a.getClaims(r)

@@ -24,7 +24,8 @@ func TestForwardHandleEnvoy_Single_Skip(t *testing.T) {
 
 func TestForwardHandleEnvoy_Single_Headers(t *testing.T) {
 	a := newTestApplication()
-	req, _ := http.NewRequest("GET", "http://test.goauthentik.io/app", nil)
+	req, _ := http.NewRequest("GET", "http:///app", nil)
+	req.Host = "ext.t.goauthentik.io"
 
 	rr := httptest.NewRecorder()
 	a.forwardHandleEnvoy(rr, req)
@@ -39,7 +40,7 @@ func TestForwardHandleEnvoy_Single_Headers(t *testing.T) {
 		"state":         []string{s.Values[constants.SessionOAuthState].([]string)[0]},
 	}
 	assert.Equal(t, fmt.Sprintf("http://fake-auth.t.goauthentik.io/auth?%s", shouldUrl.Encode()), loc.String())
-	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
+	assert.Equal(t, "http://ext.t.goauthentik.io/app", s.Values[constants.SessionRedirect])
 }
 
 func TestForwardHandleEnvoy_Single_Claims(t *testing.T) {
@@ -91,7 +92,8 @@ func TestForwardHandleEnvoy_Domain_Header(t *testing.T) {
 	a.proxyConfig.Mode = *api.NewNullableProxyMode(api.PROXYMODE_FORWARD_DOMAIN.Ptr())
 	a.proxyConfig.CookieDomain = api.PtrString("foo")
 	a.proxyConfig.ExternalHost = "http://auth.test.goauthentik.io"
-	req, _ := http.NewRequest("GET", "http://test.goauthentik.io/app", nil)
+	req, _ := http.NewRequest("GET", "http:///app", nil)
+	req.Host = "test.goauthentik.io"
 
 	rr := httptest.NewRecorder()
 	a.forwardHandleEnvoy(rr, req)
