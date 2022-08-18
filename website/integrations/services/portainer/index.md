@@ -34,7 +34,6 @@ Only settings that have been modified from default have been listed.
 **Protocol Settings**
 
 -   Name: Portainer
--   Client type: Confidential
 -   Client ID: Copy and Save this for Later
 -   Client Secret: Copy and Save this for later
 -   Redirect URIs/Origins: `https://port.company`

@@ -55,11 +55,10 @@ Under _Sources_, click _Edit_ and ensure that "authentik default Active Director
 
 Under _Providers_, create an OAuth2/OpenID provider with these settings:
 
--   Client Type: Confidential
--   JWT Algorithm: RS256
 -   Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
 -   Sub Mode: If your Email address Schema matches your UPN, select "Based on the User's Email...", otherwise select "Based on the User's UPN...".
 -   Scopes: Select the Scope Mapping you've created in Step 1
+-   Signing Key: Select any available key
 
 ![](./authentik_setup.png)
 

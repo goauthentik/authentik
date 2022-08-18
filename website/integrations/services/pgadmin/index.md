@@ -30,7 +30,6 @@ In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these s
 **Provider Settings**
 
 -   Name: pgAdmin
--   Client type: Confidential
 -   Client ID: Copy and Save this for Later
 -   Client Secret: Copy and Save this for later
 -   Redirect URIs/Origins: `http://pgadmin.company/oauth2/authorize`

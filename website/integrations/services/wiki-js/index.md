@@ -33,8 +33,6 @@ Add a _Generic OpenID Connect / OAuth2_ strategy and note the _Callback URL / Re
 
 In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
 
--   Client Type: Confidential
--   JWT Algorithm: RS256
 -   Redirect URI: The _Callback URL / Redirect URI_ you noted from the previous step.
 -   Scopes: Default OAUth mappings for: OpenID, email, profile.
 -   Signing Key: Select any available key
