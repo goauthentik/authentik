@@ -173,6 +173,7 @@ msgid "Action"
 msgstr "Eylem"
 
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/EventListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -278,6 +279,7 @@ msgstr "Proxy'ye iletilen ek kapsam eşlemeleri."
 msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
 msgstr "OAuth Sağlayıcıya iletilecek ek kapsamlar, boşlukla ayrılmış."
 
+#: src/pages/blueprints/BlueprintForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional settings"
 msgstr "Ek ayarlar"
@@ -634,6 +636,10 @@ msgstr "Yetkili başvuru:"
 msgid "Auto-detect (based on your browser)"
 msgstr "Otomatik algıla (tarayıcınıza göre)"
 
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Automate and template configuration within authentik."
+msgstr ""
+
 #: src/interfaces/UserInterface.ts
 msgid "Avatar image"
 msgstr "Avatar resmi"
@@ -742,6 +748,15 @@ msgstr "Ciltleme"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Binding Type"
 msgstr "Bağlama Tipi"
+
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Blueprint(s)"
+msgstr ""
+
+#: src/interfaces/AdminInterface.ts
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Blueprints"
+msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
 msgid "Branding settings"
@@ -1134,6 +1149,10 @@ msgstr "Üssün çekirdek authentik sunucusunun kullanıcılarını nasıl sorgu
 #~ msgid "Configure settings relevant to your user profile."
 #~ msgstr "Kullanıcı profilinizle ilgili ayarları yapılandırın."
 
+#: src/pages/blueprints/BlueprintForm.ts
+msgid "Configure the blueprint context, used for templating."
+msgstr ""
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Configure the maximum allowed time drift for an assertion."
 msgstr "Bir onaylama işlemi için izin verilen maksimum zaman kaymasını yapılandırın."
@@ -1223,6 +1242,7 @@ msgstr ""
 msgid "Content right"
 msgstr ""
 
+#: src/pages/blueprints/BlueprintForm.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
@@ -1277,6 +1297,8 @@ msgstr "Kurtarma bağlantısı kopyalama"
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/ApplicationWizard.ts
+#: src/pages/blueprints/BlueprintListPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -1338,6 +1360,10 @@ msgstr "Uygulama Oluştur"
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Create Binding"
 msgstr "Bağlama Oluştur"
+
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Create Blueprint Instance"
+msgstr ""
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Create Certificate-Key Pair"
@@ -1563,6 +1589,7 @@ msgstr "E-posta veya Webhook gibi kullanıcılara bildirimlerin nasıl gönderil
 #: src/elements/user/SessionList.ts
 #: src/elements/user/UserConsentList.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
 #: src/pages/events/TransportListPage.ts
@@ -1746,6 +1773,10 @@ msgstr "Rehber"
 msgid "Disabled"
 msgstr "Devre Dışı"
 
+#: src/pages/blueprints/BlueprintForm.ts
+msgid "Disabled blueprints are never applied."
+msgstr ""
+
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
 msgid "Disconnect"
@@ -1927,6 +1958,8 @@ msgstr "StartTLS'yi Etkinleştir"
 msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 msgstr "Uyumluluk modunu etkinleştirin, mobil cihazlarda parola yöneticileri ile uyumluluğu artırır."
 
+#: src/pages/blueprints/BlueprintForm.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -1963,6 +1996,7 @@ msgstr "Kayıt akışı"
 msgid "EntityID/Issuer"
 msgstr ""
 
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Error"
 msgstr "Hata"
@@ -2937,6 +2971,10 @@ msgstr "Etiket, istemin yanında veya üstünde gösterilir."
 msgid "Last IP"
 msgstr "Son IP"
 
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Last applied"
+msgstr ""
+
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
@@ -3049,6 +3087,7 @@ msgstr "Yükleniyor"
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
+#: src/pages/blueprints/BlueprintForm.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/TransportForm.ts
@@ -3352,6 +3391,9 @@ msgstr "Uygulamalarım"
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+#: src/pages/blueprints/BlueprintForm.ts
+#: src/pages/blueprints/BlueprintListPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -3524,6 +3566,7 @@ msgstr "Nginx (bağımsız)"
 #: src/elements/oauth/UserRefreshList.ts
 #: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
@@ -3873,6 +3916,10 @@ msgstr ""
 msgid "Order"
 msgstr "Sıra"
 
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Orphaned"
+msgstr ""
+
 #: src/pages/tenants/TenantForm.ts
 msgid "Other global settings"
 msgstr "Diğer genel ayarlar"
@@ -4003,6 +4050,7 @@ msgstr "Parola: Maskeli giriş, parola kaynaklara karşı doğrulanır. İlkeler
 msgid "Passwordless flow"
 msgstr "Parolasız akış"
 
+#: src/pages/blueprints/BlueprintForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Path"
 msgstr ""
@@ -4016,6 +4064,10 @@ msgstr ""
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Path template for users created. Use placeholders like `%(slug)s` to insert the source slug."
+msgstr ""
+
+#: src/elements/user/UserConsentList.ts
+msgid "Permissions"
 msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -5185,6 +5237,7 @@ msgstr "Statik: Statik değer, olduğu gibi görüntülenir."
 msgid "Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding."
 msgstr "Akışı statik olarak reddet. Bu aşamayı etkili bir şekilde kullanmak için ilgili bağlama üzerinde *Planda değerlendirme* devre dışı bırakın."
 
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Status"
 msgstr "Durum"
@@ -5212,6 +5265,7 @@ msgstr "Konu modu"
 msgid "Subject-alt name"
 msgstr "Konu-alt adı"
 
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Successful"
 msgstr "Başarılı"
@@ -5257,6 +5311,10 @@ msgstr "Akış başarıyla oluşturuldu."
 #: src/pages/groups/GroupForm.ts
 msgid "Successfully created group."
 msgstr "Grup başarıyla oluşturuldu."
+
+#: src/pages/blueprints/BlueprintForm.ts
+msgid "Successfully created instance."
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -5423,6 +5481,10 @@ msgstr "Akış başarıyla güncellendi."
 #: src/pages/groups/GroupForm.ts
 msgid "Successfully updated group."
 msgstr "Grup başarıyla güncellendi."
+
+#: src/pages/blueprints/BlueprintForm.ts
+msgid "Successfully updated instance."
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -6097,6 +6159,7 @@ msgstr "Sağlıksız üsler"
 msgid "Unique identifier the token is referenced by."
 msgstr "Belirteç tarafından başvurulan benzersiz tanımlayıcı."
 
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Unknown"
 msgstr "bilinmeyen"
@@ -6118,6 +6181,7 @@ msgstr "Güncel!"
 
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
 #: src/pages/events/TransportListPage.ts
@@ -6168,6 +6232,10 @@ msgstr "Uygulamayı Güncelle"
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Binding"
 msgstr "Ciltlemeyi Güncelle"
+
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Update Blueprint"
+msgstr ""
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Update Certificate-Key Pair"
@@ -6632,6 +6700,7 @@ msgstr "Bekle (dk)"
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
@@ -6809,6 +6878,7 @@ msgstr ""
 #: src/elements/oauth/UserRefreshList.ts
 #: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/groups/RelatedGroupList.ts

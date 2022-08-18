@@ -173,6 +173,7 @@ msgid "Action"
 msgstr "Acción"
 
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/EventListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -278,6 +279,7 @@ msgstr "Asignaciones de ámbitos adicionales, que se pasan al proxy."
 msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
 msgstr "Ámbitos adicionales que se pasarán al proveedor de OAuth, separados por espacios."
 
+#: src/pages/blueprints/BlueprintForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional settings"
 msgstr "Configuraciones adicionales"
@@ -634,6 +636,10 @@ msgstr "Solicitud autorizada:"
 msgid "Auto-detect (based on your browser)"
 msgstr "Detección automática (según su navegador)"
 
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Automate and template configuration within authentik."
+msgstr ""
+
 #: src/interfaces/UserInterface.ts
 msgid "Avatar image"
 msgstr "Imagen de avatar"
@@ -742,6 +748,15 @@ msgstr "Vinculante"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Binding Type"
 msgstr "Tipo de enlace"
+
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Blueprint(s)"
+msgstr ""
+
+#: src/interfaces/AdminInterface.ts
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Blueprints"
+msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
 msgid "Branding settings"
@@ -1134,6 +1149,10 @@ msgstr "Configure la forma en que el puesto avanzado consulta a los usuarios del
 #~ msgid "Configure settings relevant to your user profile."
 #~ msgstr "Configure los ajustes relevantes para su perfil de usuario."
 
+#: src/pages/blueprints/BlueprintForm.ts
+msgid "Configure the blueprint context, used for templating."
+msgstr ""
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Configure the maximum allowed time drift for an assertion."
 msgstr "Configure la desviación de tiempo máxima permitida para una afirmación."
@@ -1223,6 +1242,7 @@ msgstr ""
 msgid "Content right"
 msgstr ""
 
+#: src/pages/blueprints/BlueprintForm.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
@@ -1277,6 +1297,8 @@ msgstr "Enlace de recuperación de copia"
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/ApplicationWizard.ts
+#: src/pages/blueprints/BlueprintListPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -1338,6 +1360,10 @@ msgstr "Crear aplicación"
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Create Binding"
 msgstr "Crear enlace"
+
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Create Blueprint Instance"
+msgstr ""
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Create Certificate-Key Pair"
@@ -1563,6 +1589,7 @@ msgstr "Defina cómo se envían las notificaciones a los usuarios, como el corre
 #: src/elements/user/SessionList.ts
 #: src/elements/user/UserConsentList.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
 #: src/pages/events/TransportListPage.ts
@@ -1746,6 +1773,10 @@ msgstr "Directorio"
 msgid "Disabled"
 msgstr "Discapacitado"
 
+#: src/pages/blueprints/BlueprintForm.ts
+msgid "Disabled blueprints are never applied."
+msgstr ""
+
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
 msgid "Disconnect"
@@ -1927,6 +1958,8 @@ msgstr "Habilitar StartTLS"
 msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 msgstr "Habilite el modo de compatibilidad, aumenta la compatibilidad con los administradores de contraseñas en dispositivos móviles."
 
+#: src/pages/blueprints/BlueprintForm.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -1963,6 +1996,7 @@ msgstr "Flujo de inscripción"
 msgid "EntityID/Issuer"
 msgstr ""
 
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Error"
 msgstr "Error"
@@ -2936,6 +2970,10 @@ msgstr "La etiqueta se muestra al lado o encima de la solicitud."
 msgid "Last IP"
 msgstr "Última IP"
 
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Last applied"
+msgstr ""
+
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
@@ -3048,6 +3086,7 @@ msgstr "Cargando"
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
+#: src/pages/blueprints/BlueprintForm.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/TransportForm.ts
@@ -3351,6 +3390,9 @@ msgstr "Mis solicitudes"
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+#: src/pages/blueprints/BlueprintForm.ts
+#: src/pages/blueprints/BlueprintListPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -3523,6 +3565,7 @@ msgstr "Nginx (independiente)"
 #: src/elements/oauth/UserRefreshList.ts
 #: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
@@ -3871,6 +3914,10 @@ msgstr ""
 msgid "Order"
 msgstr "Orden"
 
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Orphaned"
+msgstr ""
+
 #: src/pages/tenants/TenantForm.ts
 msgid "Other global settings"
 msgstr "Otros ajustes globales"
@@ -4001,6 +4048,7 @@ msgstr "Contraseña: entrada enmascarada, la contraseña se valida contra las fu
 msgid "Passwordless flow"
 msgstr "Flujo sin contraseña"
 
+#: src/pages/blueprints/BlueprintForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Path"
 msgstr ""
@@ -4014,6 +4062,10 @@ msgstr ""
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Path template for users created. Use placeholders like `%(slug)s` to insert the source slug."
+msgstr ""
+
+#: src/elements/user/UserConsentList.ts
+msgid "Permissions"
 msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -5183,6 +5235,7 @@ msgstr "Estático: valor estático, que se muestra tal cual."
 msgid "Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding."
 msgstr "Niega el flujo estáticamente. Para usar esta etapa de manera efectiva, desactive *Evaluar en plan* en el encuadernado respectivo."
 
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Status"
 msgstr "Estatus"
@@ -5210,6 +5263,7 @@ msgstr "Modo asignatura"
 msgid "Subject-alt name"
 msgstr "Nombre de asunto ALT"
 
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Successful"
 msgstr "Éxito"
@@ -5255,6 +5309,10 @@ msgstr "El flujo se creó correctamente."
 #: src/pages/groups/GroupForm.ts
 msgid "Successfully created group."
 msgstr "Se ha creado el grupo correctamente."
+
+#: src/pages/blueprints/BlueprintForm.ts
+msgid "Successfully created instance."
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -5421,6 +5479,10 @@ msgstr "Se actualizó correctamente el flujo."
 #: src/pages/groups/GroupForm.ts
 msgid "Successfully updated group."
 msgstr "El grupo se actualizó correctamente."
+
+#: src/pages/blueprints/BlueprintForm.ts
+msgid "Successfully updated instance."
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -6095,6 +6157,7 @@ msgstr "Puestos avanzados insalubres"
 msgid "Unique identifier the token is referenced by."
 msgstr "Identificador único por el que se hace referencia al token."
 
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Unknown"
 msgstr "Desconocido"
@@ -6116,6 +6179,7 @@ msgstr "¡Actuales!"
 
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
 #: src/pages/events/TransportListPage.ts
@@ -6166,6 +6230,10 @@ msgstr "Aplicación de actualización"
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Binding"
 msgstr "Enlace de actualización"
+
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Update Blueprint"
+msgstr ""
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Update Certificate-Key Pair"
@@ -6630,6 +6698,7 @@ msgstr "Espera (min)"
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
@@ -6807,6 +6876,7 @@ msgstr ""
 #: src/elements/oauth/UserRefreshList.ts
 #: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/groups/RelatedGroupList.ts

@@ -174,6 +174,7 @@ msgid "Action"
 msgstr "操作"
 
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/EventListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -278,6 +279,7 @@ msgstr "传递给代理的额外作用域映射。"
 msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
 msgstr "要传递给 OAuth 提供商的额外作用域，用空格分隔。"
 
+#: src/pages/blueprints/BlueprintForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
 msgid "Additional settings"
 msgstr "其他设置"
@@ -632,6 +634,10 @@ msgstr "已授权应用程序："
 msgid "Auto-detect (based on your browser)"
 msgstr "自动检测（基于您的浏览器）"
 
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Automate and template configuration within authentik."
+msgstr ""
+
 #: src/interfaces/UserInterface.ts
 msgid "Avatar image"
 msgstr "头像图片"
@@ -737,6 +743,15 @@ msgstr "绑定"
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Binding Type"
 msgstr "绑定类型"
+
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Blueprint(s)"
+msgstr ""
+
+#: src/interfaces/AdminInterface.ts
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Blueprints"
+msgstr ""
 
 #: src/pages/tenants/TenantForm.ts
 msgid "Branding settings"
@@ -1129,6 +1144,10 @@ msgstr "配置前哨如何查询核心 authentik 服务器的用户。"
 #~ msgid "Configure settings relevant to your user profile."
 #~ msgstr "配置与您的用户资料相关的设置。"
 
+#: src/pages/blueprints/BlueprintForm.ts
+msgid "Configure the blueprint context, used for templating."
+msgstr ""
+
 #: src/pages/providers/saml/SAMLProviderForm.ts
 msgid "Configure the maximum allowed time drift for an assertion."
 msgstr "为断言配置允许的最大时间漂移。"
@@ -1218,6 +1237,7 @@ msgstr "内容左侧"
 msgid "Content right"
 msgstr "内容右侧"
 
+#: src/pages/blueprints/BlueprintForm.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
 #: src/pages/events/EventInfo.ts
@@ -1272,6 +1292,8 @@ msgstr "复制恢复链接"
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/ApplicationWizard.ts
+#: src/pages/blueprints/BlueprintListPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
@@ -1333,6 +1355,10 @@ msgstr "创建应用程序"
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Create Binding"
 msgstr "创建绑定"
+
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Create Blueprint Instance"
+msgstr ""
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Create Certificate-Key Pair"
@@ -1558,6 +1584,7 @@ msgstr "定义如何向用户发送通知，例如电子邮件或 Webhook。"
 #: src/elements/user/SessionList.ts
 #: src/elements/user/UserConsentList.ts
 #: src/pages/applications/ApplicationListPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
 #: src/pages/events/TransportListPage.ts
@@ -1740,6 +1767,10 @@ msgstr "目录"
 msgid "Disabled"
 msgstr "已禁用"
 
+#: src/pages/blueprints/BlueprintForm.ts
+msgid "Disabled blueprints are never applied."
+msgstr ""
+
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
 msgid "Disconnect"
@@ -1920,6 +1951,8 @@ msgstr "启用 StartTLS"
 msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
 msgstr "启用兼容模式，增强与移动设备上密码管理器的兼容性。"
 
+#: src/pages/blueprints/BlueprintForm.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/policies/BoundPoliciesList.ts
 #: src/pages/policies/PolicyBindingForm.ts
 #: src/pages/sources/ldap/LDAPSourceForm.ts
@@ -1956,6 +1989,7 @@ msgstr "注册流程"
 msgid "EntityID/Issuer"
 msgstr ""
 
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Error"
 msgstr "错误"
@@ -2920,6 +2954,10 @@ msgstr "标签会显示在输入侧方/上方。"
 msgid "Last IP"
 msgstr "上次 IP"
 
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Last applied"
+msgstr ""
+
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/users/RelatedUserList.ts
 #: src/pages/users/UserListPage.ts
@@ -3032,6 +3070,7 @@ msgstr "正在加载"
 #: src/pages/applications/ApplicationCheckAccessForm.ts
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
+#: src/pages/blueprints/BlueprintForm.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/events/TransportForm.ts
@@ -3334,6 +3373,9 @@ msgstr "我的应用"
 #: src/pages/applications/ApplicationForm.ts
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/wizard/InitialApplicationWizardPage.ts
+#: src/pages/blueprints/BlueprintForm.ts
+#: src/pages/blueprints/BlueprintListPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairForm.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
@@ -3506,6 +3548,7 @@ msgstr "Nginx（独立）"
 #: src/elements/oauth/UserRefreshList.ts
 #: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
@@ -3850,6 +3893,10 @@ msgstr ""
 msgid "Order"
 msgstr "顺序"
 
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Orphaned"
+msgstr ""
+
 #: src/pages/tenants/TenantForm.ts
 msgid "Other global settings"
 msgstr "其他全局设置"
@@ -3976,6 +4023,7 @@ msgstr "密码：屏蔽输入内容，密码根据来源进行验证。策略仍
 msgid "Passwordless flow"
 msgstr "无密码流程"
 
+#: src/pages/blueprints/BlueprintForm.ts
 #: src/pages/users/UserForm.ts
 msgid "Path"
 msgstr ""
@@ -3989,6 +4037,10 @@ msgstr ""
 #: src/pages/sources/plex/PlexSourceForm.ts
 #: src/pages/sources/saml/SAMLSourceForm.ts
 msgid "Path template for users created. Use placeholders like `%(slug)s` to insert the source slug."
+msgstr ""
+
+#: src/elements/user/UserConsentList.ts
+msgid "Permissions"
 msgstr ""
 
 #: src/pages/sources/saml/SAMLSourceForm.ts
@@ -5149,6 +5201,7 @@ msgstr "静态：静态值，按原样显示。"
 msgid "Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding."
 msgstr "静态拒绝流。要有效地使用此阶段，请在相应的绑定上禁用*规划时进行评估*。"
 
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Status"
 msgstr "状态"
@@ -5176,6 +5229,7 @@ msgstr "Subject 模式"
 msgid "Subject-alt name"
 msgstr "替代名称"
 
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Successful"
 msgstr "成功"
@@ -5221,6 +5275,10 @@ msgstr "已成功创建流程。"
 #: src/pages/groups/GroupForm.ts
 msgid "Successfully created group."
 msgstr "已成功创建组。"
+
+#: src/pages/blueprints/BlueprintForm.ts
+msgid "Successfully created instance."
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -5386,6 +5444,10 @@ msgstr "已成功更新流程。"
 #: src/pages/groups/GroupForm.ts
 msgid "Successfully updated group."
 msgstr "已成功更新组。"
+
+#: src/pages/blueprints/BlueprintForm.ts
+msgid "Successfully updated instance."
+msgstr ""
 
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #: src/pages/outposts/ServiceConnectionKubernetesForm.ts
@@ -6058,6 +6120,7 @@ msgstr "不健康的前哨"
 msgid "Unique identifier the token is referenced by."
 msgstr "引用令牌的唯一标识符。"
 
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Unknown"
 msgstr "未知"
@@ -6079,6 +6142,7 @@ msgstr "最新！"
 
 #: src/pages/applications/ApplicationListPage.ts
 #: src/pages/applications/ApplicationViewPage.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 #: src/pages/events/RuleListPage.ts
 #: src/pages/events/TransportListPage.ts
@@ -6129,6 +6193,10 @@ msgstr "更新应用程序"
 #: src/pages/policies/BoundPoliciesList.ts
 msgid "Update Binding"
 msgstr "更新绑定"
+
+#: src/pages/blueprints/BlueprintListPage.ts
+msgid "Update Blueprint"
+msgstr ""
 
 #: src/pages/crypto/CertificateKeyPairListPage.ts
 msgid "Update Certificate-Key Pair"
@@ -6592,6 +6660,7 @@ msgstr "等待（最短）"
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
 #: src/pages/admin-overview/cards/SystemStatusCard.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/events/RuleForm.ts
 #: src/pages/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
@@ -6771,6 +6840,7 @@ msgstr ""
 #: src/elements/oauth/UserRefreshList.ts
 #: src/elements/user/UserDevicesList.ts
 #: src/pages/applications/ApplicationCheckAccessForm.ts
+#: src/pages/blueprints/BlueprintListPage.ts
 #: src/pages/groups/GroupListPage.ts
 #: src/pages/groups/MemberSelectModal.ts
 #: src/pages/groups/RelatedGroupList.ts
