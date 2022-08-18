@@ -28,7 +28,7 @@ class AuthentikFlowsConfig(ManagedAppConfig):
         """Load flows signals"""
         self.import_module("authentik.flows.signals")
 
-    def reconcile_stages_loaded(self):
+    def reconcile_load_stages(self):
         """Ensure all stages are loaded"""
         from authentik.flows.models import Stage
 
