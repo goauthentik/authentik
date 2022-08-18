@@ -149,6 +149,7 @@ wsproto = "*"
 xmlsec = "*"
 twilio = "*"
 dumb-init = "*"
+flower = "*"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"
