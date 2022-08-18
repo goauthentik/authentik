@@ -75,24 +75,28 @@ export class Form<T> extends LitElement {
 
     updated(): void {
         this.shadowRoot
-            ?.querySelectorAll<HTMLInputElement>("input[name=name]")
+            ?.querySelectorAll("ak-form-element-horizontal[name=name]")
             .forEach((nameInput) => {
+                const input = nameInput.firstElementChild as HTMLInputElement;
                 const form = nameInput.closest("form");
                 if (form === null) {
                     return;
                 }
-                const slugField = form.querySelector<HTMLInputElement>("input[name=slug]");
-                if (!slugField) {
+                const slugFieldWrapper = form.querySelector(
+                    "ak-form-element-horizontal[name=slug]",
+                );
+                if (!slugFieldWrapper) {
                     return;
                 }
+                const slugField = slugFieldWrapper.firstElementChild as HTMLInputElement;
                 // Only attach handler if the slug is already equal to the name
                 // if not, they are probably completely different and shouldn't update
                 // each other
-                if (convertToSlug(nameInput.value) !== slugField.value) {
+                if (convertToSlug(input.value) !== slugField.value) {
                     return;
                 }
                 nameInput.addEventListener("input", () => {
-                    slugField.value = convertToSlug(nameInput.value);
+                    slugField.value = convertToSlug(input.value);
                 });
             });
     }
