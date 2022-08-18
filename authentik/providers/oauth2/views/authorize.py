@@ -477,7 +477,7 @@ class OAuthFulfillmentStage(StageView):
                 GrantTypes.HYBRID,
             ]:
                 code = self.params.create_code(self.request)
-                code.save(force_insert=True)
+                code.save()
 
             if self.params.response_mode == ResponseMode.QUERY:
                 query_params = parse_qs(uri.query)
