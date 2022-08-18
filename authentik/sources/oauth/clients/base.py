@@ -72,7 +72,7 @@ class BaseOAuthClient:
         # Special handling for scope, since it's set as array
         # to make additional scopes easier
         args["scope"] = " ".join(sorted(set(args["scope"])))
-        params = urlencode(args, quote_via=quote)
+        params = urlencode(args, quote_via=quote, doseq=True)
         LOGGER.info("redirect args", **args)
         return urlunparse(parsed_url._replace(query=params))
 
