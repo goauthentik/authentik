@@ -1,5 +1,5 @@
 ---
-title: Oracle cloud
+title: Oracle Cloud
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
@@ -28,7 +28,7 @@ Only settings that have been modified from default have been listed.
 
 **Protocol Settings**
 
--   Name: Oracle cloud
+-   Name: Oracle Cloud
 -   Client ID: Copy and Save this for Later
 -   Client Secret: Copy and Save this for later
 -   Signing Key: Select any available key
@@ -37,11 +37,11 @@ Create an application which uses this provider. Optionally apply access restrict
 
 -   Name: Oracle Cloud
 -   Slug: oracle-cloud
--   Provider: Oracle cloud
+-   Provider: Oracle Cloud
 
 ### Step 2 - Oracle Cloud
 
-In Oracle cloud, open the top-left navigation and go to _Identity & Security_ and then _Domains_. Click on the domain of your choice. Click on _Security_ in the sidebar, then on _Identity providers_.
+In Oracle Cloud, open the top-left navigation and go to _Identity & Security_ and then _Domains_. Click on the domain of your choice. Click on _Security_ in the sidebar, then on _Identity providers_.
 
 Create a new _Social IdP_ via the _Add IdP_ button. Set the name to authentik and fill in the client ID and secret from above.
 
