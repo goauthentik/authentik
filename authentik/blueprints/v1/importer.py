@@ -21,6 +21,7 @@ from yaml import load
 from authentik.blueprints.v1.common import (
     Blueprint,
     BlueprintEntry,
+    BlueprintEntryState,
     BlueprintLoader,
     EntryInvalidError,
 )
@@ -220,7 +221,7 @@ class Importer:
             model = serializer.save()
             if "pk" in entry.identifiers:
                 self.__pk_map[entry.identifiers["pk"]] = model.pk
-            entry._instance = model
+            entry._state = BlueprintEntryState(model)
             self.logger.debug("updated model", model=model, pk=model.pk)
         return True
 

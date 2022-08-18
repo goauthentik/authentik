@@ -27,7 +27,7 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
             continue
         if _field.read_only:
             data.pop(field_name, None)
-        if _field.default == data.get(field_name, None):
+        if _field.get_initial() == data.get(field_name, None):
             data.pop(field_name, None)
         if field_name.endswith("_set"):
             data.pop(field_name, None)
@@ -35,8 +35,15 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
 
 
 @dataclass
+class BlueprintEntryState:
+    """State of a single instance"""
+
+    instance: Optional[Model] = None
+
+
+@dataclass
 class BlueprintEntry:
-    """Single entry of a bundle"""
+    """Single entry of a blueprint"""
 
     identifiers: dict[str, Any]
     model: str
@@ -45,11 +52,11 @@ class BlueprintEntry:
     # pylint: disable=invalid-name
     id: Optional[str] = None
 
-    _instance: Optional[Model] = None
+    _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)
 
     @staticmethod
     def from_model(model: SerializerModel, *extra_identifier_names: str) -> "BlueprintEntry":
-        """Convert a SerializerModel instance to a Bundle Entry"""
+        """Convert a SerializerModel instance to a blueprint Entry"""
         identifiers = {
             "pk": model.pk,
         }
@@ -123,15 +130,15 @@ class KeyOf(YAMLTag):
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         for _entry in blueprint.entries:
-            if _entry.id == self.id_from and _entry._instance:
+            if _entry.id == self.id_from and _entry._state.instance:
                 # Special handling for PolicyBindingModels, as they'll have a different PK
                 # which is used when creating policy bindings
                 if (
-                    isinstance(_entry._instance, PolicyBindingModel)
+                    isinstance(_entry._state.instance, PolicyBindingModel)
                     and entry.model.lower() == "authentik_policies.policybinding"
                 ):
-                    return _entry._instance.pbm_uuid
-                return _entry._instance.pk
+                    return _entry._state.instance.pbm_uuid
+                return _entry._state.instance.pk
         raise ValueError(
             f"KeyOf: failed to find entry with `id` of `{self.id_from}` and a model instance"
         )
