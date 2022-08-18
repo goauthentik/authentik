@@ -17,6 +17,7 @@ from authentik.blueprints.v1.common import (
 from authentik.blueprints.v1.importer import is_model_allowed
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_GENERATED
 from authentik.flows.models import Flow, FlowStageBinding, Stage
+from authentik.lib.models import SerializerModel
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.stages.prompt.models import PromptStage
 
@@ -35,6 +36,8 @@ class Exporter:
             if not is_model_allowed(model):
                 continue
             if model in self.excluded_models:
+                continue
+            if SerializerModel not in model.__mro__:
                 continue
             for obj in model.objects.all():
                 yield BlueprintEntry.from_model(obj)
