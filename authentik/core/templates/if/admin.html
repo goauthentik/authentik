@@ -10,8 +10,8 @@
 <script>
 window.authentik = {};
 window.authentik.locale = "{{ tenant.default_locale }}";
-window.authentik.config = JSON.parse('{{ config_json|safe }}');
-window.authentik.tenant = JSON.parse('{{ tenant_json|safe }}');
+window.authentik.config = JSON.parse('{{ config_json|escapejs }}');
+window.authentik.tenant = JSON.parse('{{ tenant_json|escapejs }}');
 </script>
 {% endblock %}
 
