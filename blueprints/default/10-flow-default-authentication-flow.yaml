@@ -4,7 +4,6 @@ metadata:
 entries:
 - attrs:
     designation: authentication
-    layout: stacked
     name: Welcome to authentik!
     title: Welcome to authentik!
   identifiers:
@@ -12,34 +11,16 @@ entries:
   model: authentik_flows.flow
   id: flow
 - attrs:
-    backends:
-    - authentik.core.auth.InbuiltBackend
-    - authentik.sources.ldap.auth.LDAPBackend
-    - authentik.core.auth.TokenBackend
-    - authentik.core.auth.TokenBackend
     configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
-    failed_attempts_before_cancel: 5
   identifiers:
     name: default-authentication-password
   id: default-authentication-password
   model: authentik_stages_password.passwordstage
-- attrs:
-    device_classes:
-    - static
-    - totp
-    - webauthn
-    - duo
-    - sms
-    not_configured_action: skip
-  identifiers:
+- identifiers:
     name: default-authentication-mfa-validation
   id: default-authentication-mfa-validation
   model: authentik_stages_authenticator_validate.authenticatorvalidatestage
-- attrs:
-    user_fields:
-    - email
-    - username
-  identifiers:
+- identifiers:
     name: default-authentication-identification
   id: default-authentication-identification
   model: authentik_stages_identification.identificationstage

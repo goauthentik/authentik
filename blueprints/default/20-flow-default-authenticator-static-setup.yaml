@@ -5,7 +5,6 @@ entries:
 - attrs:
     designation: stage_configuration
     name: default-authenticator-static-setup
-    policy_engine_mode: any
     title: Setup Static OTP Tokens
   identifiers:
     slug: default-authenticator-static-setup

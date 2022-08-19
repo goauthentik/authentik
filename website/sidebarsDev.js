@@ -11,7 +11,12 @@ module.exports = {
                 type: "doc",
                 id: "blueprints/index",
             },
-            items: ["blueprints/v1/structure", "blueprints/v1/tags"],
+            items: [
+                "blueprints/export",
+                "blueprints/v1/structure",
+                "blueprints/v1/tags",
+                "blueprints/v1/example",
+            ],
         },
         {
             type: "category",
@@ -28,7 +33,7 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Setup",
+            label: "Development",
             items: [
                 "setup/full-dev-environment",
                 "setup/frontend-only-dev-environment",

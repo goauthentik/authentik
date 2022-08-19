@@ -5,7 +5,6 @@ entries:
 - attrs:
     designation: stage_configuration
     name: default-authenticator-webauthn-setup
-    policy_engine_mode: any
     title: Setup WebAuthn
   identifiers:
     slug: default-authenticator-webauthn-setup
