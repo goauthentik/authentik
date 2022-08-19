@@ -7,6 +7,7 @@ from django.core.management.base import BaseCommand, no_translations
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.importer import is_model_allowed
+from authentik.lib.models import SerializerModel
 
 LOGGER = get_logger()
 
@@ -30,6 +31,8 @@ class Command(BaseCommand):
         model_names = []
         for model in apps.get_models():
             if not is_model_allowed(model):
+                continue
+            if SerializerModel not in model.__mro__:
                 continue
             model_names.append(f"{model._meta.app_label}.{model._meta.model_name}")
         self.schema["properties"]["entries"]["items"]["properties"]["model"]["enum"] = model_names
