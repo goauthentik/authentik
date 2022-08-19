@@ -183,8 +183,6 @@ class Format(YAMLTag):
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         try:
-            print(self.format_string)
-            print(self.args)
             return self.format_string % tuple(self.args)
         except TypeError as exc:
             raise EntryInvalidError(exc)

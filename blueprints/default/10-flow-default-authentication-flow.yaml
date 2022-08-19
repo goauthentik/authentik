@@ -11,6 +11,10 @@ entries:
   model: authentik_flows.flow
   id: flow
 - attrs:
+    backends:
+    - authentik.core.auth.InbuiltBackend
+    - authentik.sources.ldap.auth.LDAPBackend
+    - authentik.core.auth.TokenBackend
     configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
   identifiers:
     name: default-authentication-password
@@ -20,7 +24,11 @@ entries:
     name: default-authentication-mfa-validation
   id: default-authentication-mfa-validation
   model: authentik_stages_authenticator_validate.authenticatorvalidatestage
-- identifiers:
+- attrs:
+    user_fields:
+    - email
+    - username
+  identifiers:
     name: default-authentication-identification
   id: default-authentication-identification
   model: authentik_stages_identification.identificationstage

@@ -15,7 +15,8 @@ def update_default_backends(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
     if not stages.exists():
         return
     stage = stages.first()
-    stage.backends.append(BACKEND_APP_PASSWORD)
+    if BACKEND_APP_PASSWORD not in stage.backends:
+        stage.backends.append(BACKEND_APP_PASSWORD)
     stage.save()
 
 
