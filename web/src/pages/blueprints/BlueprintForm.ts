@@ -59,7 +59,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     <input
                         type="checkbox"
                         class="pf-c-check__input"
-                        ?checked=${first(this.instance?.enabled, false)}
+                        ?checked=${first(this.instance?.enabled, true)}
                     />
                     <label class="pf-c-check__label"> ${t`Enabled`} </label>
                 </div>
