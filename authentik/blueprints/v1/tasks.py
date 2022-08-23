@@ -125,8 +125,6 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
         )
         instance.save()
     if instance.last_applied_hash != blueprint.hash:
-        instance.metadata = asdict(blueprint.meta) if blueprint.meta else {}
-        instance.save()
         apply_blueprint.delay(instance.pk.hex)
 
 
@@ -160,7 +158,6 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance.status = BlueprintInstanceStatus.SUCCESSFUL
         instance.last_applied_hash = file_hash
         instance.last_applied = now()
-        instance.save()
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
     except (
         DatabaseError,
@@ -170,5 +167,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         BlueprintRetrievalFailed,
     ) as exc:
         instance.status = BlueprintInstanceStatus.ERROR
-        instance.save()
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+    finally:
+        instance.metadata = asdict(importer.blueprint.metadata)
+        instance.save()
