@@ -169,7 +169,9 @@ class Importer:
             serializer_kwargs["instance"] = model_instance
             serializer_kwargs["partial"] = True
         else:
-            self.logger.debug("initialise new instance", model=model, **updated_identifiers)
+            self.logger.debug(
+                "initialised new serializer instance", model=model, **updated_identifiers
+            )
             model_instance = model()
             # pk needs to be set on the model instance otherwise a new one will be generated
             if "pk" in updated_identifiers:
@@ -215,7 +217,7 @@ class Importer:
             try:
                 serializer = self._validate_single(entry)
             except EntryInvalidError as exc:
-                self.logger.warning("entry invalid", entry=entry, error=exc)
+                self.logger.warning(f"entry invalid: {exc}", entry=entry, error=exc)
                 return False
 
             model = serializer.save()
@@ -239,7 +241,7 @@ class Importer:
         ):
             successful = self._apply_models()
             if not successful:
-                self.logger.debug("blueprint validation failed")
+                self.logger.debug("Blueprint validation failed")
         for log in logs:
             self.logger.debug(**log)
         self.__import = orig_import

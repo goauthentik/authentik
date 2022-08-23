@@ -6,6 +6,7 @@ from typing import Optional
 
 from dacite import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
+from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
@@ -134,10 +135,10 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 )
 def apply_blueprint(self: MonitoredTask, instance_pk: str):
     """Apply single blueprint"""
-    self.set_uid(instance_pk)
     self.save_on_success = False
     try:
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
+        self.set_uid(slugify(instance.name))
         if not instance or not instance.enabled:
             return
         blueprint_content = instance.retrieve()
