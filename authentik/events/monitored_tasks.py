@@ -139,9 +139,7 @@ class MonitoredTask(Task):
             return
         if not self._result.uid:
             self._result.uid = self._uid
-        if self._result.status == TaskResultStatus.SUCCESSFUL and not self.save_on_success:
-            return
-        TaskInfo(
+        info = TaskInfo(
             task_name=self.__name__,
             task_description=self.__doc__,
             start_timestamp=self.start,
@@ -152,7 +150,11 @@ class MonitoredTask(Task):
             task_call_func=self.__name__,
             task_call_args=args,
             task_call_kwargs=kwargs,
-        ).save(self.result_timeout_hours)
+        )
+        if self._result.status == TaskResultStatus.SUCCESSFUL and not self.save_on_success:
+            info.delete()
+            return
+        info.save(self.result_timeout_hours)
 
     # pylint: disable=too-many-arguments
     def on_failure(self, exc, task_id, args, kwargs, einfo):
