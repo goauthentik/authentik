@@ -152,8 +152,10 @@ class ConfigLoader:
         """Context manager for unittests to patch a value"""
         original_value = self.y(path)
         self.y_set(path, value)
-        yield
-        self.y_set(path, original_value)
+        try:
+            yield
+        finally:
+            self.y_set(path, original_value)
 
     @property
     def raw(self) -> dict:
