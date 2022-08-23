@@ -144,6 +144,8 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         blueprint_content = instance.retrieve()
         file_hash = sha512(blueprint_content.encode()).hexdigest()
         importer = Importer(blueprint_content, instance.context)
+        if importer.blueprint.metadata:
+            instance.metadata = asdict(importer.blueprint.metadata)
         valid, logs = importer.validate()
         if not valid:
             instance.status = BlueprintInstanceStatus.ERROR
@@ -170,6 +172,4 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance.status = BlueprintInstanceStatus.ERROR
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
     finally:
-        if importer.blueprint.metadata:
-            instance.metadata = asdict(importer.blueprint.metadata)
         instance.save()
