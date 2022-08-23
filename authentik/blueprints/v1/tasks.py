@@ -125,7 +125,7 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
         )
         instance.save()
     if instance.last_applied_hash != blueprint.hash:
-        apply_blueprint.delay(instance.pk.hex)
+        apply_blueprint.delay(str(instance.pk))
 
 
 @CELERY_APP.task(
