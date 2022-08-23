@@ -73,7 +73,7 @@ ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
 @dataclass
 # pylint: disable=too-many-instance-attributes
 class OAuthAuthorizationParams:
-    """Parameteres required to authorize an OAuth Client"""
+    """Parameters required to authorize an OAuth Client"""
 
     client_id: str
     redirect_uri: str

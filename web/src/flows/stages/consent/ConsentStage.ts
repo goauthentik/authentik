@@ -58,7 +58,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                           <p class="pf-u-mb-sm">
                               ${t`Application requires following permissions:`}
                           </p>
-                          <ul class="pf-c-list" id="permmissions">
+                          <ul class="pf-c-list" id="permissions">
                               ${this.renderPermissions(this.challenge.permissions)}
                           </ul>
                       `
@@ -76,7 +76,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                           <p class="pf-u-mb-sm">
                               ${t`Application already has access to the following permissions:`}
                           </p>
-                          <ul class="pf-c-list" id="permmissions">
+                          <ul class="pf-c-list" id="permissions">
                               ${this.renderPermissions(this.challenge.permissions)}
                           </ul>
                       `
@@ -88,7 +88,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                           <strong class="pf-u-mb-sm">
                               ${t`Application requires following new permissions:`}
                           </strong>
-                          <ul class="pf-c-list" id="permmissions">
+                          <ul class="pf-c-list" id="permissions">
                               ${this.renderPermissions(this.challenge.additionalPermissions)}
                           </ul>
                       `
