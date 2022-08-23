@@ -170,5 +170,6 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance.status = BlueprintInstanceStatus.ERROR
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
     finally:
-        instance.metadata = asdict(importer.blueprint.metadata)
+        if importer.blueprint.metadata:
+            instance.metadata = asdict(importer.blueprint.metadata)
         instance.save()
