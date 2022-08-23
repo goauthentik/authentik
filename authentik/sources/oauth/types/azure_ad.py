@@ -31,7 +31,7 @@ class AzureADOAuthCallback(OAuthCallback):
     ) -> dict[str, Any]:
         mail = info.get("mail", None) or info.get("otherMails", [None])[0]
         return {
-            "username": info.get("displayName"),
+            "username": info.get("userPrincipalName"),
             "email": mail,
             "name": info.get("displayName"),
         }
