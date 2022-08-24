@@ -10,29 +10,6 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 import authentik.lib.utils.time
 
 
-def create_default_tenant(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    Flow = apps.get_model("authentik_flows", "Flow")
-    Tenant = apps.get_model("authentik_tenants", "Tenant")
-
-    db_alias = schema_editor.connection.alias
-
-    default_authentication = (
-        Flow.objects.using(db_alias).filter(slug="default-authentication-flow").first()
-    )
-    default_invalidation = (
-        Flow.objects.using(db_alias).filter(slug="default-invalidation-flow").first()
-    )
-
-    tenant, _ = Tenant.objects.using(db_alias).update_or_create(
-        domain="authentik-default",
-        default=True,
-        defaults={
-            "flow_authentication": default_authentication,
-            "flow_invalidation": default_invalidation,
-        },
-    )
-
-
 class Migration(migrations.Migration):
 
     replaces = [
@@ -46,8 +23,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("authentik_flows", "0018_oob_flows"),
-        ("authentik_flows", "0008_default_flows"),
         ("authentik_crypto", "0003_certificatekeypair_managed"),
     ]
 
@@ -114,9 +89,6 @@ class Migration(migrations.Migration):
                 "verbose_name": "Tenant",
                 "verbose_name_plural": "Tenants",
             },
-        ),
-        migrations.RunPython(
-            code=create_default_tenant,
         ),
         migrations.AddField(
             model_name="tenant",
