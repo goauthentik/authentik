@@ -12,8 +12,6 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource
 
-LOGGER = get_logger()
-
 
 class BaseOAuthClient:
     """Base OAuth Client"""
@@ -30,6 +28,7 @@ class BaseOAuthClient:
         self.session = get_http_session()
         self.request = request
         self.callback = callback
+        self.logger = get_logger().bind(source=source.slug)
 
     def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
         """Fetch access token from callback request."""
@@ -44,7 +43,7 @@ class BaseOAuthClient:
             response = self.do_request("get", profile_url, token=token)
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning("Unable to fetch user profile", exc=exc, body=response.text)
+            self.logger.warning("Unable to fetch user profile", exc=exc, body=response.text)
             return None
         else:
             return response.json()
@@ -73,7 +72,7 @@ class BaseOAuthClient:
         # to make additional scopes easier
         args["scope"] = " ".join(sorted(set(args["scope"])))
         params = urlencode(args, quote_via=quote, doseq=True)
-        LOGGER.info("redirect args", **args)
+        self.logger.info("redirect args", **args)
         return urlunparse(parsed_url._replace(query=params))
 
     def parse_raw_token(self, raw_token: str) -> dict[str, Any]:

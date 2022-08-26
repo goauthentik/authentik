@@ -22,6 +22,7 @@ class OAuthCallback(OAuthClientMixin, View):
     "Base OAuth callback view."
 
     source: OAuthSource
+    token: Optional[dict] = None
 
     # pylint: disable=too-many-return-statements
     def dispatch(self, request: HttpRequest, *_, **kwargs) -> HttpResponse:
@@ -36,14 +37,14 @@ class OAuthCallback(OAuthClientMixin, View):
             raise Http404(f"Source {slug} is not enabled.")
         client = self.get_client(self.source, callback=self.get_callback_url(self.source))
         # Fetch access token
-        token = client.get_access_token()
-        if token is None:
+        self.token = client.get_access_token()
+        if self.token is None:
             return self.handle_login_failure("Could not retrieve token.")
-        if "error" in token:
-            return self.handle_login_failure(token["error"])
+        if "error" in self.token:
+            return self.handle_login_failure(self.token["error"])
         # Fetch profile info
         try:
-            raw_info = client.get_profile_info(token)
+            raw_info = client.get_profile_info(self.token)
             if raw_info is None:
                 return self.handle_login_failure("Could not retrieve profile.")
         except JSONDecodeError as exc:
@@ -66,7 +67,7 @@ class OAuthCallback(OAuthClientMixin, View):
         )
         sfm.policy_context = {"oauth_userinfo": raw_info}
         return sfm.get_flow(
-            access_token=token.get("access_token"),
+            access_token=self.token.get("access_token"),
         )
 
     # pylint: disable=unused-argument
