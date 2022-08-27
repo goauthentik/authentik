@@ -4,7 +4,7 @@ import { EVENT_REFRESH } from "@goauthentik/web/constants";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
@@ -51,6 +51,15 @@ export class UserSettingsPage extends LitElement {
             PFFormControl,
             PFStack,
             AKGlobal,
+            css`
+                @media screen and (min-width: 1200px) {
+                    :host {
+                        width: 90rem;
+                        margin-left: auto;
+                        margin-right: auto;
+                    }
+                }
+            `,
         ];
     }
 
