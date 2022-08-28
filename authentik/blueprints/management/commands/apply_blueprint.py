@@ -1,4 +1,6 @@
 """Apply blueprint from commandline"""
+from sys import exit as sys_exit
+
 from django.core.management.base import BaseCommand, no_translations
 from structlog.stdlib import get_logger
 
@@ -20,8 +22,9 @@ class Command(BaseCommand):
             valid, logs = importer.validate()
             if not valid:
                 for log in logs:
-                    LOGGER.debug(**log)
-                raise ValueError("blueprint invalid")
+                    getattr(LOGGER, log.pop("log_level"))(**log)
+                self.stderr.write("blueprint invalid")
+                sys_exit(1)
             importer.apply()
 
     def add_arguments(self, parser):
