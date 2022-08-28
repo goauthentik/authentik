@@ -4,3 +4,7 @@ from django.db import models
 
 class BaseMetaModel(models.Model):
     """Base models"""
+
+    class Meta:
+
+        abstract = True

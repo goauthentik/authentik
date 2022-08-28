@@ -40,3 +40,7 @@ class MetaApplyBlueprint(SerializerModel, BaseMetaModel):
     @property
     def serializer(self) -> ApplyBlueprintMetaSerializer:
         return ApplyBlueprintMetaSerializer
+
+    class Meta:
+
+        abstract = True
