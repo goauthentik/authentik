@@ -2,6 +2,11 @@ version: 1
 metadata:
   name: Default - Authentication flow
 entries:
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Default - Password change flow
+    required: false
 - attrs:
     designation: authentication
     name: Welcome to authentik!

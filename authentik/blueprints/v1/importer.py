@@ -25,6 +25,7 @@ from authentik.blueprints.v1.common import (
     BlueprintLoader,
     EntryInvalidError,
 )
+from authentik.blueprints.v1.meta.base import BaseMetaModel
 from authentik.core.models import (
     AuthenticatedSession,
     PropertyMapping,
@@ -142,8 +143,9 @@ class Importer:
         # Don't use isinstance since we don't want to check for inheritance
         if not is_model_allowed(model):
             raise EntryInvalidError(f"Model {model} not allowed")
-        if entry.identifiers == {}:
-            raise EntryInvalidError("No identifiers")
+        if not isinstance(model(), BaseMetaModel):
+            if entry.identifiers == {}:
+                raise EntryInvalidError("No identifiers")
 
         # If we try to validate without referencing a possible instance
         # we'll get a duplicate error, hence we load the model here and return
@@ -158,7 +160,7 @@ class Importer:
         existing_models = model.objects.filter(self.__query_from_identifier(updated_identifiers))
 
         serializer_kwargs = {}
-        if existing_models.exists():
+        if not isinstance(model(), BaseMetaModel) and existing_models.exists():
             model_instance = existing_models.first()
             self.logger.debug(
                 "initialise serializer with instance",
@@ -243,6 +245,6 @@ class Importer:
             if not successful:
                 self.logger.debug("Blueprint validation failed")
         for log in logs:
-            self.logger.debug(**log)
+            getattr(self.logger, log.get("log_level"))(**log)
         self.__import = orig_import
         return successful, logs

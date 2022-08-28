@@ -41,8 +41,7 @@
                 "$id": "#entry",
                 "type": "object",
                 "required": [
-                    "model",
-                    "identifiers"
+                    "model"
                 ],
                 "properties": {
                     "model": {
@@ -67,6 +66,7 @@
                     },
                     "identifiers": {
                         "type": "object",
+                        "default": {},
                         "properties": {
                             "pk": {
                                 "description": "Commonly available field, may not exist on all models",

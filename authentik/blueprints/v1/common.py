@@ -45,8 +45,8 @@ class BlueprintEntryState:
 class BlueprintEntry:
     """Single entry of a blueprint"""
 
-    identifiers: dict[str, Any]
     model: str
+    identifiers: dict[str, Any] = field(default_factory=dict)
     attrs: Optional[dict[str, Any]] = field(default_factory=dict)
 
     # pylint: disable=invalid-name

@@ -1,4 +1,5 @@
 """Managed Object models"""
+from importlib import import_module
 from pathlib import Path
 from urllib.parse import urlparse
 from uuid import uuid4
@@ -13,6 +14,8 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_http_session
+
+import_module("authentik.blueprints.v1.meta.apply_blueprint")
 
 
 class BlueprintRetrievalFailed(SentryIgnoredException):
