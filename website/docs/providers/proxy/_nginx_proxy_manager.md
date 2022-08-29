@@ -7,6 +7,9 @@ For Nginx Proxy Manager you can use this snippet
 proxy_buffers 8 16k;
 proxy_buffer_size 32k;
 
+# Make sure not to redirect traffic to a port 4443
+port_in_redirect off;
+
 location / {
     # Put your proxy_pass to your application here
     proxy_pass          $forward_scheme://$server:$port;
