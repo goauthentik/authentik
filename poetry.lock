@@ -1930,7 +1930,7 @@ python-versions = ">=2"
 
 [[package]]
 name = "ua-parser"
-version = "0.16.0"
+version = "0.16.1"
 description = "Python port of Browserscope's user agent parser"
 category = "main"
 optional = false
@@ -3618,8 +3618,8 @@ tzdata = [
     {file = "tzdata-2022.2.tar.gz", hash = "sha256:21f4f0d7241572efa7f7a4fdabb052e61b55dc48274e6842697ccdf5253e5451"},
 ]
 ua-parser = [
-    {file = "ua-parser-0.16.0.tar.gz", hash = "sha256:ace314a7c04f89d37282d5c837d1189960314a336270b41f6d6171097c8dfe9a"},
-    {file = "ua_parser-0.16.0-py2.py3-none-any.whl", hash = "sha256:f11dcec514d211be24671da296c491adbe43d76e6866d99972fda966c77b6349"},
+    {file = "ua-parser-0.16.1.tar.gz", hash = "sha256:ed3efc695f475ffe56248c9789b3016247e9c20e3556cfa4d5aadc78ab4b26c6"},
+    {file = "ua_parser-0.16.1-py2.py3-none-any.whl", hash = "sha256:f97126300df8ac0f8f2c9d8559669532d626a1af529265fd253cba56e73ab36e"},
 ]
 uritemplate = [
     {file = "uritemplate-4.1.1-py2.py3-none-any.whl", hash = "sha256:830c08b8d99bdd312ea4ead05994a38e8936266f84b9a7878232db50b044e02e"},
