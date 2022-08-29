@@ -3,10 +3,26 @@ from typing import Optional
 
 from django.apps import apps
 from django.db.models import Model
+from rest_framework.serializers import Serializer
 
 
-class BaseMetaModel:
+class BaseMetaModel(Model):
     """Base models"""
+
+    @staticmethod
+    def serializer() -> Serializer:
+        """Serializer similar to SerializerModel, but as a static method since
+        this is an abstract model"""
+        raise NotImplementedError
+
+    class Meta:
+
+        abstract = True
+
+
+class MetaResult:
+    """Result returned by Meta Models' serializers. Empty class but we can't return none as
+    the framework doesn't allow that"""
 
 
 class MetaModelRegistry:

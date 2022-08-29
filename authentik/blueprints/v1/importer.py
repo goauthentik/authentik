@@ -142,9 +142,15 @@ class Importer:
         # Don't use isinstance since we don't want to check for inheritance
         if not is_model_allowed(model):
             raise EntryInvalidError(f"Model {model} not allowed")
-        if not isinstance(model(), BaseMetaModel):
-            if entry.identifiers == {}:
-                raise EntryInvalidError("No identifiers")
+        if issubclass(model, BaseMetaModel):
+            serializer = model.serializer()(data=entry.get_attrs(self.__import))
+            try:
+                serializer.is_valid(raise_exception=True)
+            except ValidationError as exc:
+                raise EntryInvalidError(f"Serializer errors {serializer.errors}") from exc
+            return serializer
+        if entry.identifiers == {}:
+            raise EntryInvalidError("No identifiers")
 
         # If we try to validate without referencing a possible instance
         # we'll get a duplicate error, hence we load the model here and return
@@ -225,7 +231,7 @@ class Importer:
             if "pk" in entry.identifiers:
                 self.__pk_map[entry.identifiers["pk"]] = model.pk
             entry._state = BlueprintEntryState(model)
-            self.logger.debug("updated model", model=model, pk=model.pk)
+            self.logger.debug("updated model", model=model)
         return True
 
     def validate(self) -> tuple[bool, list[EventDict]]:
