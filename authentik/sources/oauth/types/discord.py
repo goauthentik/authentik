@@ -1,7 +1,7 @@
 """Discord OAuth Views"""
 from typing import Any
 
-from authentik.sources.oauth.types.manager import MANAGER, SourceType
+from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
@@ -30,7 +30,7 @@ class DiscordOAuth2Callback(OAuthCallback):
         }
 
 
-@MANAGER.type()
+@registry.register()
 class DiscordType(SourceType):
     """Discord Type definition"""
 

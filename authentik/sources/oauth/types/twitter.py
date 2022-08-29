@@ -6,7 +6,7 @@ from authentik.sources.oauth.clients.oauth2 import (
     SESSION_KEY_OAUTH_PKCE,
     UserprofileHeaderAuthClient,
 )
-from authentik.sources.oauth.types.manager import MANAGER, SourceType
+from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
@@ -60,7 +60,7 @@ class TwitterOAuthCallback(OAuthCallback):
         }
 
 
-@MANAGER.type()
+@registry.register()
 class TwitterType(SourceType):
     """Twitter Type definition"""
 

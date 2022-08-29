@@ -20,9 +20,8 @@ def model_tester_factory(test_model: type[Stage]) -> Callable:
         try:
             model_class = None
             if test_model._meta.abstract:
-                model_class = test_model.__bases__[0]()
-            else:
-                model_class = test_model()
+                return
+            model_class = test_model()
             self.assertTrue(issubclass(model_class.serializer, BaseSerializer))
         except NotImplementedError:
             pass

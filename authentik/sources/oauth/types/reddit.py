@@ -4,7 +4,7 @@ from typing import Any
 from requests.auth import HTTPBasicAuth
 
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
-from authentik.sources.oauth.types.manager import MANAGER, SourceType
+from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
@@ -45,7 +45,7 @@ class RedditOAuth2Callback(OAuthCallback):
         }
 
 
-@MANAGER.type()
+@registry.register()
 class RedditType(SourceType):
     """Reddit Type definition"""
 

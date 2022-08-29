@@ -55,13 +55,13 @@ class SourceType:
         )
 
 
-class SourceTypeManager:
-    """Manager to hold all Source types."""
+class SourceTypeRegistry:
+    """Registry to hold all Source types."""
 
     def __init__(self) -> None:
         self.__sources: list[type[SourceType]] = []
 
-    def type(self):
+    def register(self):
         """Class decorator to register classes inline."""
 
         def inner_wrapper(cls):
@@ -103,4 +103,4 @@ class SourceTypeManager:
         raise ValueError
 
 
-MANAGER = SourceTypeManager()
+registry = SourceTypeRegistry()

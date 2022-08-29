@@ -6,7 +6,6 @@ from typing import Any, Optional
 from dacite import from_dict
 from dacite.exceptions import DaciteError
 from deepmerge import always_merger
-from django.apps import apps
 from django.db import transaction
 from django.db.models import Model
 from django.db.models.query_utils import Q
@@ -25,6 +24,7 @@ from authentik.blueprints.v1.common import (
     BlueprintLoader,
     EntryInvalidError,
 )
+from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
 from authentik.core.models import (
     AuthenticatedSession,
     PropertyMapping,
@@ -138,10 +138,17 @@ class Importer:
     def _validate_single(self, entry: BlueprintEntry) -> BaseSerializer:
         """Validate a single entry"""
         model_app_label, model_name = entry.model.split(".")
-        model: type[SerializerModel] = apps.get_model(model_app_label, model_name)
+        model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
         # Don't use isinstance since we don't want to check for inheritance
         if not is_model_allowed(model):
             raise EntryInvalidError(f"Model {model} not allowed")
+        if issubclass(model, BaseMetaModel):
+            serializer = model.serializer()(data=entry.get_attrs(self.__import))
+            try:
+                serializer.is_valid(raise_exception=True)
+            except ValidationError as exc:
+                raise EntryInvalidError(f"Serializer errors {serializer.errors}") from exc
+            return serializer
         if entry.identifiers == {}:
             raise EntryInvalidError("No identifiers")
 
@@ -158,7 +165,7 @@ class Importer:
         existing_models = model.objects.filter(self.__query_from_identifier(updated_identifiers))
 
         serializer_kwargs = {}
-        if existing_models.exists():
+        if not isinstance(model(), BaseMetaModel) and existing_models.exists():
             model_instance = existing_models.first()
             self.logger.debug(
                 "initialise serializer with instance",
@@ -207,7 +214,7 @@ class Importer:
         for entry in self.__import.entries:
             model_app_label, model_name = entry.model.split(".")
             try:
-                model: SerializerModel = apps.get_model(model_app_label, model_name)
+                model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
             except LookupError:
                 self.logger.warning(
                     "app or model does not exist", app=model_app_label, model=model_name
@@ -224,7 +231,7 @@ class Importer:
             if "pk" in entry.identifiers:
                 self.__pk_map[entry.identifiers["pk"]] = model.pk
             entry._state = BlueprintEntryState(model)
-            self.logger.debug("updated model", model=model, pk=model.pk)
+            self.logger.debug("updated model", model=model)
         return True
 
     def validate(self) -> tuple[bool, list[EventDict]]:
@@ -243,6 +250,6 @@ class Importer:
             if not successful:
                 self.logger.debug("Blueprint validation failed")
         for log in logs:
-            self.logger.debug(**log)
+            getattr(self.logger, log.get("log_level"))(**log)
         self.__import = orig_import
         return successful, logs

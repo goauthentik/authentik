@@ -3,7 +3,7 @@ from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import get_template
 from structlog.stdlib import get_logger
 
-from authentik.blueprints.manager import ManagedAppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 LOGGER = get_logger()
 

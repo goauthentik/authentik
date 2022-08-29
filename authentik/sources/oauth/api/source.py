@@ -15,7 +15,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.manager import MANAGER, SourceType
+from authentik.sources.oauth.types.registry import SourceType, registry
 
 
 class SourceTypeSerializer(PassiveSerializer):
@@ -33,7 +33,7 @@ class SourceTypeSerializer(PassiveSerializer):
 class OAuthSourceSerializer(SourceSerializer):
     """OAuth Source Serializer"""
 
-    provider_type = ChoiceField(choices=MANAGER.get_name_tuple())
+    provider_type = ChoiceField(choices=registry.get_name_tuple())
     callback_url = SerializerMethodField()
 
     def get_callback_url(self, instance: OAuthSource) -> str:
@@ -81,7 +81,7 @@ class OAuthSourceSerializer(SourceSerializer):
             config = jwks_config.json()
             attrs["oidc_jwks"] = config
 
-        provider_type = MANAGER.find_type(attrs.get("provider_type", ""))
+        provider_type = registry.find_type(attrs.get("provider_type", ""))
         for url in [
             "authorization_url",
             "access_token_url",
@@ -153,10 +153,10 @@ class OAuthSourceViewSet(UsedByMixin, ModelViewSet):
         If <name> isn't found, returns the default type."""
         data = []
         if "name" in request.query_params:
-            source_type = MANAGER.find_type(request.query_params.get("name"))
+            source_type = registry.find_type(request.query_params.get("name"))
             if source_type.__class__ != SourceType:
                 data.append(SourceTypeSerializer(source_type).data)
         else:
-            for source_type in MANAGER.get():
+            for source_type in registry.get():
                 data.append(SourceTypeSerializer(source_type).data)
         return Response(data)

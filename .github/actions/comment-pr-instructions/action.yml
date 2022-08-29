@@ -83,8 +83,6 @@ runs:
             image:
                 repository: ghcr.io/goauthentik/dev-server
                 tag: ${{ inputs.tag }}
-                # pullPolicy: Always to ensure you always get the latest version
-                pullPolicy: Always
             ```
 
             Afterwards, run the upgrade commands from the latest release notes.

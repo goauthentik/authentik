@@ -1,4 +1,4 @@
-"""Managed Object models"""
+"""blueprint models"""
 from pathlib import Path
 from urllib.parse import urlparse
 from uuid import uuid4

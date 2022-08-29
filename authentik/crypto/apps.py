@@ -2,7 +2,7 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
-from authentik.blueprints.manager import ManagedAppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.generators import generate_id
 
 if TYPE_CHECKING:
