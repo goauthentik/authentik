@@ -25,4 +25,4 @@ These are configured with most common LDAP setups.
 
 ## Scope Mapping
 
-Scope Mappings are used by the OAuth2 Provider to map information from authentik to OAuth2/OpenID Claims.
+Scope Mappings are used by the OAuth2 Provider to map information from authentik to OAuth2/OpenID Claims. Values returned by a Scope Mapping are added as custom claims to Access and ID tokens.
