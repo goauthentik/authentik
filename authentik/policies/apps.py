@@ -1,7 +1,7 @@
 """authentik policies app config"""
 from prometheus_client import Gauge, Histogram
 
-from authentik.blueprints.manager import ManagedAppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 GAUGE_POLICIES_CACHED = Gauge(
     "authentik_policies_cached",

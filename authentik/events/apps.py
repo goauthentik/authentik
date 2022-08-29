@@ -1,7 +1,7 @@
 """authentik events app"""
 from prometheus_client import Gauge
 
-from authentik.blueprints.manager import ManagedAppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 GAUGE_TASKS = Gauge(
     "authentik_system_tasks",

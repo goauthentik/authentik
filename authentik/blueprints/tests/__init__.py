@@ -5,7 +5,7 @@ from typing import Callable
 
 from django.apps import apps
 
-from authentik.blueprints.manager import ManagedAppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 from authentik.blueprints.models import BlueprintInstance
 from authentik.lib.config import CONFIG
 
