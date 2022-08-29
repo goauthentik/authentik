@@ -240,4 +240,4 @@ jobs:
         continue-on-error: true
         uses: ./.github/actions/comment-pr-instructions
         with:
-          tag: gh-${{ steps.ev.outputs.branchNameContainer }}
+          tag: gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.sha }}
