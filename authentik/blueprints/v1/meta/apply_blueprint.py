@@ -3,7 +3,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, JSONField
 from structlog.stdlib import get_logger
 
-from authentik.blueprints.v1.meta.base import BaseMetaModel
+from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
 from authentik.core.api.utils import PassiveSerializer, is_dict
 from authentik.lib.models import SerializerModel
 
@@ -34,13 +34,10 @@ class ApplyBlueprintMetaSerializer(PassiveSerializer):
         return MetaApplyBlueprint()
 
 
+@registry.register("meta_apply_blueprint")
 class MetaApplyBlueprint(SerializerModel, BaseMetaModel):
     """Meta model to apply another blueprint"""
 
     @property
     def serializer(self) -> ApplyBlueprintMetaSerializer:
         return ApplyBlueprintMetaSerializer
-
-    class Meta:
-
-        abstract = True

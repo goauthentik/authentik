@@ -15,6 +15,10 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
         """Load v1 tasks"""
         self.import_module("authentik.blueprints.v1.tasks")
 
+    def reconcile_load_blueprints_v1_meta(self):
+        """Load v1 meta models"""
+        self.import_module("authentik.blueprints.v1.meta.apply_blueprint")
+
     def reconcile_blueprints_discover(self):
         """Run blueprint discovery"""
         from authentik.blueprints.v1.tasks import blueprints_discover

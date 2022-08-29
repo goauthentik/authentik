@@ -6,7 +6,6 @@ from typing import Any, Optional
 from dacite import from_dict
 from dacite.exceptions import DaciteError
 from deepmerge import always_merger
-from django.apps import apps
 from django.db import transaction
 from django.db.models import Model
 from django.db.models.query_utils import Q
@@ -25,7 +24,7 @@ from authentik.blueprints.v1.common import (
     BlueprintLoader,
     EntryInvalidError,
 )
-from authentik.blueprints.v1.meta.base import BaseMetaModel
+from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
 from authentik.core.models import (
     AuthenticatedSession,
     PropertyMapping,
@@ -139,7 +138,7 @@ class Importer:
     def _validate_single(self, entry: BlueprintEntry) -> BaseSerializer:
         """Validate a single entry"""
         model_app_label, model_name = entry.model.split(".")
-        model: type[SerializerModel] = apps.get_model(model_app_label, model_name)
+        model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
         # Don't use isinstance since we don't want to check for inheritance
         if not is_model_allowed(model):
             raise EntryInvalidError(f"Model {model} not allowed")
@@ -209,7 +208,7 @@ class Importer:
         for entry in self.__import.entries:
             model_app_label, model_name = entry.model.split(".")
             try:
-                model: SerializerModel = apps.get_model(model_app_label, model_name)
+                model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
             except LookupError:
                 self.logger.warning(
                     "app or model does not exist", app=model_app_label, model=model_name
