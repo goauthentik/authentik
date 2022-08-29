@@ -150,6 +150,7 @@ xmlsec = "*"
 twilio = "*"
 dumb-init = "*"
 flower = "*"
+opencontainers = {extras = ["reggie"],version = "*"}
 
 [tool.poetry.dev-dependencies]
 bandit = "*"
