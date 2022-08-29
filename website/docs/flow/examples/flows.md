@@ -30,7 +30,7 @@ Flow: right-click [here](/blueprints/example/flows-login-2fa.yaml) and save the 
 
 Login flow which follows the default pattern (username/email, then password), but also checks for the user's OTP token, if they have one configured.
 
-You can force two-factor authentication by editing the *Not configured action* in the Authenticator Validation Stage.
+You can force two-factor authentication by editing the _Not configured action_ in the Authenticator Validation Stage.
 
 ## Login with conditional Captcha
 
