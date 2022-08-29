@@ -59,7 +59,7 @@ def is_model_allowed(model: type[Model]) -> bool:
         # Classes that have other dependencies
         AuthenticatedSession,
     )
-    return model not in excluded_models
+    return model not in excluded_models and issubclass(model, (SerializerModel, BaseMetaModel))
 
 
 @contextmanager
