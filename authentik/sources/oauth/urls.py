@@ -2,7 +2,7 @@
 
 from django.urls import path
 
-from authentik.sources.oauth.types.manager import RequestKind
+from authentik.sources.oauth.types.registry import RequestKind
 from authentik.sources.oauth.views.dispatcher import DispatcherView
 
 urlpatterns = [

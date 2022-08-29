@@ -11,7 +11,7 @@ from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
 
 if TYPE_CHECKING:
-    from authentik.sources.oauth.types.manager import SourceType
+    from authentik.sources.oauth.types.registry import SourceType
 
 
 class OAuthSource(Source):
@@ -57,9 +57,9 @@ class OAuthSource(Source):
     @property
     def type(self) -> type["SourceType"]:
         """Return the provider instance for this source"""
-        from authentik.sources.oauth.types.manager import MANAGER
+        from authentik.sources.oauth.types.registry import registry
 
-        return MANAGER.find_type(self.provider_type)
+        return registry.find_type(self.provider_type)
 
     @property
     def component(self) -> str:

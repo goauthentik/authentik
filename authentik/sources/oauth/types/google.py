@@ -1,7 +1,7 @@
 """Google OAuth Views"""
 from typing import Any
 
-from authentik.sources.oauth.types.manager import MANAGER, SourceType
+from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
@@ -28,7 +28,7 @@ class GoogleOAuth2Callback(OAuthCallback):
         }
 
 
-@MANAGER.type()
+@registry.register()
 class GoogleType(SourceType):
     """Google Type definition"""
 

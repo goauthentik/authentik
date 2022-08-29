@@ -4,7 +4,7 @@ from typing import Any, Optional
 from requests.exceptions import RequestException
 
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
-from authentik.sources.oauth.types.manager import MANAGER, SourceType
+from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
@@ -63,7 +63,7 @@ class GitHubOAuth2Callback(OAuthCallback):
         }
 
 
-@MANAGER.type()
+@registry.register()
 class GitHubType(SourceType):
     """GitHub Type definition"""
 
