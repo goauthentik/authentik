@@ -92,7 +92,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
         if ":" in url.path:
             path, _, ref = path.partition(":")
         client = NewClient(
-            f"https://{url.hostname}",
+            f"{url.scheme}://{url.hostname}",
             WithUserAgent(authentik_user_agent()),
             WithUsernamePassword(url.username, url.password),
             WithDefaultName(path),

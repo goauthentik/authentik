@@ -17,7 +17,7 @@ Blueprints are yaml files, whose format is described further in [File structure]
 
 Starting with authentik 2022.8, blueprints are used to manage authentik default flows and other system objects. These blueprints can be disabled/replaced with custom blueprints in certain circumstances.
 
-## Usage
+## Storage - Local
 
 The authentik container by default looks for blueprints in `/blueprints`. Underneath this directory, there are a couple default subdirectories:
 
@@ -28,3 +28,19 @@ The authentik container by default looks for blueprints in `/blueprints`. Undern
 Any additional `.yaml` file in `/blueprints` will be discovered and automatically instantiated, depending on their labels.
 
 To disable existing blueprints, an empty file can be mounted over the existing blueprint.
+
+## Storage - OCI
+
+Blueprints can also be stored in remote [OCI](https://opencontainers.org/) compliant registries. This includes GitHub Container Registry, Docker hub and many other registries.
+
+To download a blueprint via OCI, set the path to `https://ghcr.io/<username>/<package-name>:<ref>`. This will fetch the blueprint from an OCI package hosted on GHCR.
+
+To fetch blueprints from a private registry with authentication, credentials can be embedded into the URL.
+
+Blueprints are re-fetched each execution, so when using changing tags, blueprints will automatically be updated.
+
+To push a blueprint to an OCI-compatible registry, [ORAS](https://oras.land/) can be used with this command
+
+```
+oras push ghcr.io/<username>/blueprint/<blueprint name>:latest <yaml file>:application/vnd.goauthentik.blueprint.v1+yaml
+```
