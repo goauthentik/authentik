@@ -49,7 +49,6 @@
                         "enum": [
                             "authentik_blueprints.blueprintinstance",
                             "authentik_blueprints.metaapplyblueprint",
-                            "authentik_blueprints.metaapplyblueprint",
                             "authentik_core.application",
                             "authentik_core.group",
                             "authentik_core.token",

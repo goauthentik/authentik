@@ -54,8 +54,8 @@ class MetaModelRegistry:
     def get_model(self, app_label: str, model_id: str) -> Optional[type[Model]]:
         """Get model checks if any virtual models are registered, and falls back
         to actual django models"""
-        if app_label == self.virtual_prefix:
-            if model_id in self.models:
+        if app_label.lower() == self.virtual_prefix:
+            if model_id.lower() in self.models:
                 return self.models[model_id]
         return apps.get_model(app_label, model_id)
 
