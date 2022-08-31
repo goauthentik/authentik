@@ -18,7 +18,7 @@ from authentik.blueprints.models import (
     BlueprintInstanceStatus,
     BlueprintRetrievalFailed,
 )
-from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata
+from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata, EntryInvalidError
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.events.monitored_tasks import (
@@ -168,6 +168,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         InternalError,
         IOError,
         BlueprintRetrievalFailed,
+        EntryInvalidError,
     ) as exc:
         instance.status = BlueprintInstanceStatus.ERROR
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
