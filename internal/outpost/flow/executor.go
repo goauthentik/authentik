@@ -213,7 +213,7 @@ func (fe *FlowExecutor) solveFlowChallenge(depth int) (bool, error) {
 
 	switch ch.GetComponent() {
 	case string(StageAccessDenied):
-		return false, errors.New("got ak-stage-access-denied")
+		return false, nil
 	}
 	if ch.GetType() == "redirect" {
 		return true, nil

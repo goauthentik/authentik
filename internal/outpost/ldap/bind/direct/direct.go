@@ -70,6 +70,16 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 		Session: fe.GetSession(),
 	}
 	db.si.SetFlags(req.BindDN, flags)
+	if err != nil {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": db.si.GetOutpostName(),
+			"type":         "bind",
+			"reason":       "flow_error",
+			"app":          db.si.GetAppSlug(),
+		}).Inc()
+		req.Log().WithError(err).Warning("failed to execute flow")
+		return ldap.LDAPResultInvalidCredentials, nil
+	}
 	if !passed {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": db.si.GetOutpostName(),
@@ -79,16 +89,6 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 		}).Inc()
 		req.Log().Info("Invalid credentials")
 		return ldap.LDAPResultInvalidCredentials, nil
-	}
-	if err != nil {
-		metrics.RequestsRejected.With(prometheus.Labels{
-			"outpost_name": db.si.GetOutpostName(),
-			"type":         "bind",
-			"reason":       "flow_error",
-			"app":          db.si.GetAppSlug(),
-		}).Inc()
-		req.Log().WithError(err).Warning("failed to execute flow")
-		return ldap.LDAPResultOperationsError, nil
 	}
 
 	access, err := fe.CheckApplicationAccess(db.si.GetAppSlug())
