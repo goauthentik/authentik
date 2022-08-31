@@ -3,9 +3,11 @@ from typing import Iterator
 from uuid import UUID
 
 from django.apps import apps
-from django.db.models import Q
+from django.contrib.auth import get_user_model
+from django.db.models import Model, Q, QuerySet
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from guardian.shortcuts import get_anonymous_user
 from yaml import dump
 
 from authentik.blueprints.v1.common import (
@@ -16,6 +18,7 @@ from authentik.blueprints.v1.common import (
 )
 from authentik.blueprints.v1.importer import is_model_allowed
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_GENERATED
+from authentik.events.models import Event
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.stages.prompt.models import PromptStage
@@ -24,10 +27,12 @@ from authentik.stages.prompt.models import PromptStage
 class Exporter:
     """Export flow with attached stages into yaml"""
 
-    excluded_models = []
+    excluded_models: list[type[Model]] = []
 
     def __init__(self):
-        self.excluded_models = []
+        self.excluded_models = [
+            Event,
+        ]
 
     def get_entries(self) -> Iterator[BlueprintEntry]:
         """Get blueprint entries"""
@@ -36,8 +41,15 @@ class Exporter:
                 continue
             if model in self.excluded_models:
                 continue
-            for obj in model.objects.all():
+            for obj in self.get_model_instances(model):
                 yield BlueprintEntry.from_model(obj)
+
+    def get_model_instances(self, model: type[Model]) -> QuerySet:
+        """Return a queryset for `model`. Can be used to filter some
+        objects on some models"""
+        if model == get_user_model():
+            return model.objects.exclude(pk=get_anonymous_user().pk)
+        return model.objects.all()
 
     def _pre_export(self, blueprint: Blueprint):
         """Hook to run anything pre-export"""
