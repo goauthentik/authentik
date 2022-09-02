@@ -37,6 +37,15 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		http.Error(rw, "configuration error", http.StatusInternalServerError)
 		return
 	}
+	if strings.EqualFold(fwd.Query().Get(CallbackSignature), "true") {
+		a.log.Debug("handling OAuth Callback from querystring signature")
+		a.handleAuthCallback(rw, r)
+		return
+	} else if strings.EqualFold(fwd.Query().Get(LogoutSignature), "true") {
+		a.log.Debug("handling OAuth Logout from querystring signature")
+		a.handleSignOut(rw, r)
+		return
+	}
 	// Check if we're authenticated, or the request path is on the allowlist
 	claims, err := a.getClaims(r)
 	if claims != nil && err == nil {
@@ -77,6 +86,15 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 			"headers":  cleanseHeaders(r.Header),
 		})
 		http.Error(rw, "configuration error", http.StatusInternalServerError)
+		return
+	}
+	if strings.EqualFold(fwd.Query().Get(CallbackSignature), "true") {
+		a.log.Debug("handling OAuth Callback from querystring signature")
+		a.handleAuthCallback(rw, r)
+		return
+	} else if strings.EqualFold(fwd.Query().Get(LogoutSignature), "true") {
+		a.log.Debug("handling OAuth Logout from querystring signature")
+		a.handleSignOut(rw, r)
 		return
 	}
 	// Check if we're authenticated, or the request path is on the allowlist
