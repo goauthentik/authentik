@@ -112,10 +112,10 @@ export class LibraryPage extends AKElement {
         </div>`;
     }
 
-    getApps(): [string, Application[]][] {
-        return groupBy(
+    filterApps(): Application[] {
+        return (
             this.apps?.results.filter((app) => {
-                if (app.launchUrl) {
+                if (app.launchUrl && app.launchUrl !== "") {
                     // If the launch URL is a full URL, only show with http or https
                     if (app.launchUrl.indexOf("://") !== -1) {
                         return app.launchUrl.startsWith("http");
@@ -124,9 +124,12 @@ export class LibraryPage extends AKElement {
                     return true;
                 }
                 return false;
-            }) || [],
-            (app) => app.group || "",
+            }) || []
         );
+    }
+
+    getApps(): [string, Application[]][] {
+        return groupBy(this.filterApps(), (app) => app.group || "");
     }
 
     renderApps(config: UIConfig): TemplateResult {
@@ -215,9 +218,7 @@ export class LibraryPage extends AKElement {
                     <section class="pf-c-page__main-section">
                         ${loading(
                             this.apps,
-                            html`${(this.apps?.results || []).filter((app) => {
-                                return app.launchUrl !== null;
-                            }).length > 0
+                            html`${this.filterApps().length > 0
                                 ? this.renderApps(config)
                                 : this.renderEmptyState()}`,
                         )}
