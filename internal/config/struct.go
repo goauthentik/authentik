@@ -42,6 +42,7 @@ type ListenConfig struct {
 	HTTPS   string `yaml:"listen_https" env:"AUTHENTIK_LISTEN__HTTPS"`
 	LDAP    string `yaml:"listen_ldap" env:"AUTHENTIK_LISTEN__LDAP"`
 	LDAPS   string `yaml:"listen_ldaps" env:"AUTHENTIK_LISTEN__LDAPS"`
+	Radius  string `yaml:"listen_radius" env:"AUTHENTIK_LISTEN__RADIUS"`
 	Metrics string `yaml:"listen_metrics" env:"AUTHENTIK_LISTEN__METRICS"`
 	Debug   string `yaml:"listen_debug" env:"AUTHENTIK_LISTEN__DEBUG"`
 }

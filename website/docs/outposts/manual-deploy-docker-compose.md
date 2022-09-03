@@ -19,11 +19,8 @@ services:
         # networks:
         #   - foo
         ports:
-            - 4180:4180
-            - 4443:4443
-            # Starting in authentik 2021.9, use the ports below
-            # - 9000:9000
-            # - 9443:9443
+            - 9000:9000
+            - 9443:9443
         environment:
             AUTHENTIK_HOST: https://your-authentik.tld
             AUTHENTIK_INSECURE: "false"

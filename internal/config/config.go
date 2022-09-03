@@ -32,6 +32,7 @@ func defaultConfig() *Config {
 			HTTPS:   "0.0.0.0:9443",
 			LDAP:    "0.0.0.0:3389",
 			LDAPS:   "0.0.0.0:6636",
+			Radius:  "0.0.0.0:1812",
 			Metrics: "0.0.0.0:9300",
 			Debug:   "0.0.0.0:9900",
 		},

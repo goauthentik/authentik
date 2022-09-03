@@ -60,6 +60,7 @@ from authentik.providers.saml.api.property_mapping import SAMLPropertyMappingVie
 from authentik.providers.saml.api.providers import SAMLProviderViewSet
 from authentik.providers.scim.api.property_mapping import SCIMMappingViewSet
 from authentik.providers.scim.api.providers import SCIMProviderViewSet
+from authentik.providers.radius.api import RadiusOutpostConfigViewSet, RadiusProviderViewSet
 from authentik.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from authentik.sources.oauth.api.source import OAuthSourceViewSet
 from authentik.sources.oauth.api.source_connection import UserOAuthSourceConnectionViewSet
@@ -128,6 +129,7 @@ router.register("outposts/service_connections/docker", DockerServiceConnectionVi
 router.register("outposts/service_connections/kubernetes", KubernetesServiceConnectionViewSet)
 router.register("outposts/proxy", ProxyOutpostConfigViewSet)
 router.register("outposts/ldap", LDAPOutpostConfigViewSet)
+router.register("outposts/radius", RadiusOutpostConfigViewSet)
 
 router.register("flows/instances", FlowViewSet)
 router.register("flows/bindings", FlowStageBindingViewSet)
@@ -166,6 +168,7 @@ router.register("providers/proxy", ProxyProviderViewSet)
 router.register("providers/oauth2", OAuth2ProviderViewSet)
 router.register("providers/saml", SAMLProviderViewSet)
 router.register("providers/scim", SCIMProviderViewSet)
+router.register("providers/radius", RadiusProviderViewSet)
 
 router.register("oauth2/authorization_codes", AuthorizationCodeViewSet)
 router.register("oauth2/refresh_tokens", RefreshTokenViewSet)
