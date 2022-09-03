@@ -3,7 +3,7 @@ version: '3.4'
 
 services:
   postgresql:
-    image: postgres:12-alpine
+    image: docker.io/library/postgres:12-alpine
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
@@ -20,7 +20,8 @@ services:
     env_file:
       - .env
   redis:
-    image: redis:alpine
+    image: docker.io/library/redis:alpine
+    command: --save 60 1 --loglevel warning
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
@@ -28,6 +29,8 @@ services:
       interval: 30s
       retries: 5
       timeout: 3s
+    volumes:
+      - redis:/data
   server:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.8.2}
     restart: unless-stopped
@@ -84,6 +87,8 @@ services:
 
 volumes:
   database:
+    driver: local
+  redis:
     driver: local
   geoip:
     driver: local
