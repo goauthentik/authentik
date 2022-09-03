@@ -314,6 +314,40 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             ${t`If set, users are able to configure details of their profile.`}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Device code flow`} name="flowDeviceCode">
+                        <select class="pf-c-form-control">
+                            <option
+                                value=""
+                                ?selected=${this.instance?.flowDeviceCode === undefined}
+                            >
+                                ---------
+                            </option>
+                            ${until(
+                                new FlowsApi(DEFAULT_CONFIG)
+                                    .flowsInstancesList({
+                                        ordering: "slug",
+                                        designation:
+                                            FlowsInstancesListDesignationEnum.Authentication,
+                                    })
+                                    .then((flows) => {
+                                        return flows.results.map((flow) => {
+                                            const selected =
+                                                this.instance?.flowDeviceCode === flow.pk;
+                                            return html`<option
+                                                value=${flow.pk}
+                                                ?selected=${selected}
+                                            >
+                                                ${flow.name} (${flow.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`If set, the OAuth Device Code profile can be used, and the selected flow will be used to enter the code.`}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>

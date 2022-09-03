@@ -3530,6 +3530,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: flow_device_code
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: flow_invalidation
         schema:
           type: string
@@ -26261,6 +26266,8 @@ components:
           type: string
         flow_user_settings:
           type: string
+        flow_device_code:
+          type: string
         default_locale:
           type: string
           readOnly: true
@@ -34205,6 +34212,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
         event_retention:
           type: string
           minLength: 1
@@ -36702,6 +36713,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
         event_retention:
           type: string
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
@@ -36753,6 +36768,10 @@ components:
           format: uuid
           nullable: true
         flow_user_settings:
+          type: string
+          format: uuid
+          nullable: true
+        flow_device_code:
           type: string
           format: uuid
           nullable: true

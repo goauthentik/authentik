@@ -51,6 +51,7 @@ class TenantSerializer(ModelSerializer):
             "flow_recovery",
             "flow_unenrollment",
             "flow_user_settings",
+            "flow_device_code",
             "event_retention",
             "web_certificate",
             "attributes",
@@ -75,6 +76,7 @@ class CurrentTenantSerializer(PassiveSerializer):
     flow_recovery = CharField(source="flow_recovery.slug", required=False)
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
     flow_user_settings = CharField(source="flow_user_settings.slug", required=False)
+    flow_device_code = CharField(source="flow_device_code.slug", required=False)
 
     default_locale = CharField(read_only=True)
 
@@ -101,6 +103,7 @@ class TenantViewSet(UsedByMixin, ModelViewSet):
         "flow_recovery",
         "flow_unenrollment",
         "flow_user_settings",
+        "flow_device_code",
         "event_retention",
         "web_certificate",
     ]

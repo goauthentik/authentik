@@ -69,3 +69,6 @@ class DeviceView(View):
 
 class DeviceEntryView(View):
     """View used to initiate the device-code flow, url entered by endusers"""
+
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
+        pass
