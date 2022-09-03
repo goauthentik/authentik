@@ -7,6 +7,8 @@
 <script src="{% static 'dist/user/UserInterface.js' %}" type="module"></script>
 <meta name="theme-color" content="#151515" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151515" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="{{ tenant.branding_favicon }}">
+<link rel="shortcut icon" href="{{ tenant.branding_favicon }}">
 <script>
 window.authentik = {};
 window.authentik.locale = "{{ tenant.default_locale }}";
