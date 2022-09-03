@@ -91,7 +91,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
     def check_saml_request(self) -> Optional[HttpRequest]:
         """Handle REDIRECT bindings"""
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
-            LOGGER.info("handle_saml_request: SAML payload missing")
+            LOGGER.info("SAML payload missing")
             return bad_request_message(self.request, "The SAML request payload is missing.")
 
         try:
@@ -127,7 +127,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
         if SESSION_KEY_POST in self.request.session:
             payload = self.request.session.pop(SESSION_KEY_POST)
         if REQUEST_KEY_SAML_REQUEST not in payload:
-            LOGGER.info("check_saml_request: SAML payload missing")
+            LOGGER.info("SAML payload missing")
             return bad_request_message(self.request, "The SAML request payload is missing.")
 
         try:
@@ -147,6 +147,6 @@ class SAMLSSOBindingInitView(SAMLSSOView):
 
     def check_saml_request(self) -> Optional[HttpRequest]:
         """Create SAML Response from scratch"""
-        LOGGER.debug("handle_saml_no_request: No SAML Request, using IdP-initiated flow.")
+        LOGGER.debug("No SAML Request, using IdP-initiated flow.")
         auth_n_request = AuthNRequestParser(self.provider).idp_initiated()
         self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request

@@ -8,7 +8,7 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlsplit, urlunsplit
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
-from django.http.response import Http404, HttpResponseBadRequest, HttpResponseRedirect
+from django.http.response import Http404, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -284,7 +284,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
             self.params = OAuthAuthorizationParams.from_request(self.request)
         except AuthorizeError as error:
             LOGGER.warning(error.description, redirect_uri=error.redirect_uri)
-            raise RequestValidationError(HttpResponseRedirect(error.create_uri()))
+            raise RequestValidationError(error.get_response(self.request))
         except OAuth2Error as error:
             LOGGER.warning(error.description)
             raise RequestValidationError(
@@ -301,7 +301,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 self.params.state,
             )
             error.to_event(redirect_uri=error.redirect_uri).from_http(self.request)
-            raise RequestValidationError(HttpResponseRedirect(error.create_uri()))
+            raise RequestValidationError(error.get_response(self.request))
 
     def resolve_provider_application(self):
         client_id = self.request.GET.get("client_id")
@@ -463,7 +463,7 @@ class OAuthFulfillmentStage(StageView):
         except AuthorizeError as error:
             error.to_event(application=self.application).from_http(request)
             self.executor.stage_invalid()
-            return self.redirect(error.create_uri())
+            return error.get_response(self.request)
 
     def create_response_uri(self) -> str:
         """Create a final Response URI the user is redirected to."""
