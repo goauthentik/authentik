@@ -6,7 +6,6 @@ import (
 	"net"
 	"net/http"
 
-	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
@@ -36,7 +35,6 @@ type WebServer struct {
 func NewWebServer(g *gounicorn.GoUnicorn) *WebServer {
 	l := log.WithField("logger", "authentik.router")
 	mainHandler := mux.NewRouter()
-	mainHandler.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	mainHandler.Use(handlers.ProxyHeaders)
 	mainHandler.Use(handlers.CompressHandler)
 	loggingHandler := mainHandler.NewRoute().Subrouter()

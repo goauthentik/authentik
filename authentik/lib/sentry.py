@@ -95,7 +95,7 @@ def traces_sampler(sampling_context: dict) -> float:
     # Ignore all healthcheck routes
     if path.startswith("/-/health") or path.startswith("/-/metrics"):
         return 0
-    return float(CONFIG.y("error_reporting.sample_rate", 0.5))
+    return float(CONFIG.y("error_reporting.sample_rate", 0.1))
 
 
 def before_send(event: dict, hint: dict) -> Optional[dict]:
