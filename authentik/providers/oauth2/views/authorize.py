@@ -8,7 +8,7 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlsplit, urlunsplit
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
-from django.http.response import Http404, HttpResponseBadRequest, HttpResponseRedirect
+from django.http.response import Http404, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.translation import gettext as _
