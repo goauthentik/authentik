@@ -6,7 +6,6 @@ from unittest.case import skipUnless
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
-from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
@@ -44,11 +43,6 @@ class TestProviderSAML(SeleniumTestCase):
             detach=True,
             network_mode="host",
             auto_remove=True,
-            healthcheck=Healthcheck(
-                test=["CMD", "wget", "--spider", "http://localhost:9009/health"],
-                interval=5 * 100 * 1000000,
-                start_period=1 * 100 * 1000000,
-            ),
             environment={
                 "SP_ENTITY_ID": provider.issuer,
                 "SP_SSO_BINDING": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",

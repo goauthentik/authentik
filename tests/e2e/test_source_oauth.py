@@ -106,7 +106,7 @@ class TestSourceOAuth2(SeleniumTestCase):
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
         return {
-            "image": "ghcr.io/dexidp/dex:v2.28.1",
+            "image": "ghcr.io/dexidp/dex:v2.33.0",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,
