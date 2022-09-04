@@ -30,7 +30,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
     def get_container_specs(self) -> Optional[dict[str, Any]]:
         """Setup client grafana container which we test OAuth against"""
         return {
-            "image": "grafana/grafana:9.1.2",
+            "image": "grafana/grafana:7.1.0",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,
