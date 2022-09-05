@@ -15108,12 +15108,6 @@ paths:
           type: string
       tags:
       - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorDuoStageRequest'
-        required: true
       security:
       - authentik: []
       responses:

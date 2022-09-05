@@ -102,6 +102,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
                 name="username", type=OpenApiTypes.STR, location=OpenApiParameter.QUERY
             ),
         ],
+        request=None,
         responses={
             204: OpenApiResponse(description="Enrollment successful"),
             400: OpenApiResponse(description="Device exists already"),
