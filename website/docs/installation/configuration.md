@@ -39,12 +39,12 @@ All of these variables can be set to values, but you can also use a URI-like for
 
 ## Listen Setting
 
--   `AUTHENTIK_LISTEN__HTTP`: Listening port for HTTP (Server and Proxy outpost)
--   `AUTHENTIK_LISTEN__HTTPS`: Listening port for HTTPS (Server and Proxy outpost)
--   `AUTHENTIK_LISTEN__LDAP`: Listening port for LDAP (LDAP outpost)
--   `AUTHENTIK_LISTEN__LDAPS`: Listening port for LDAPS (LDAP outpost)
--   `AUTHENTIK_LISTEN__METRICS`: Listening port for Prometheus metrics (All)
--   `AUTHENTIK_LISTEN__DEBUG`: Listening port for Go Debugging metrics (All)
+-   `AUTHENTIK_LISTEN__HTTP`: Listening address:port (e.g. `0.0.0.0:9000`) for HTTP (Server and Proxy outpost)
+-   `AUTHENTIK_LISTEN__HTTPS`: Listening address:port (e.g. `0.0.0.0:9443`) for HTTPS (Server and Proxy outpost)
+-   `AUTHENTIK_LISTEN__LDAP`: Listening address:port (e.g. `0.0.0.0:3389`) for LDAP (LDAP outpost)
+-   `AUTHENTIK_LISTEN__LDAPS`: Listening address:port (e.g. `0.0.0.0:6636`) for LDAPS (LDAP outpost)
+-   `AUTHENTIK_LISTEN__METRICS`: Listening address:port (e.g. `0.0.0.0:9300`) for Prometheus metrics (All)
+-   `AUTHENTIK_LISTEN__DEBUG`: Listening address:port (e.g. `0.0.0.0:9900`) for Go Debugging metrics (All)
 
 ## authentik Settings
 
