@@ -1785,14 +1785,14 @@ tests = ["coverage[toml]", "freezegun (>=0.2.8)", "pretend", "pytest (>=6.0)", "
 
 [[package]]
 name = "swagger-spec-validator"
-version = "2.7.5"
+version = "2.7.6"
 description = "Validation of Swagger specifications"
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-jsonschema = "<4"
+jsonschema = "*"
 pyyaml = "*"
 six = "*"
 
@@ -3572,8 +3572,8 @@ structlog = [
     {file = "structlog-22.1.0.tar.gz", hash = "sha256:94b29b1d62b2659db154f67a9379ec1770183933d6115d21f21aa25cfc9a7393"},
 ]
 swagger-spec-validator = [
-    {file = "swagger-spec-validator-2.7.5.tar.gz", hash = "sha256:872cf67e29e03d149ef549c11278cc707696c51507c7854830c59421a6a5747c"},
-    {file = "swagger_spec_validator-2.7.5-py2.py3-none-any.whl", hash = "sha256:f0d4e6e67475db4b92fdfa928907a092666c22b60e95b1902dd5150a2d46a51e"},
+    {file = "swagger-spec-validator-2.7.6.tar.gz", hash = "sha256:73f33e631a58f407265f2f813d194f2762a2b86f9aa905e7eee3df9b7f9428d3"},
+    {file = "swagger_spec_validator-2.7.6-py2.py3-none-any.whl", hash = "sha256:ff55d671f4cf8a386e7ecda60267d6cdd2cfbe0b3521a8ccf09b0669cbb72ab6"},
 ]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
