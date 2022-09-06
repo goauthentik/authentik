@@ -3039,6 +3039,7 @@ msgstr "加载服务器"
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowInspector.ts
+#: src/flows/stages/FlowErrorStage.ts
 #: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -3676,6 +3677,7 @@ msgstr "尚未同步。"
 msgid "Not used by any other object."
 msgstr "不被任何其他对象使用。"
 
+#: src/flows/stages/FlowErrorStage.ts
 #: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -5029,6 +5031,7 @@ msgid "Slug"
 msgstr "Slug"
 
 #: src/flows/FlowExecutor.ts
+#: src/flows/stages/FlowErrorStage.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Something went wrong! Please try again later."
 msgstr "发生了某些错误！请稍后重试。"

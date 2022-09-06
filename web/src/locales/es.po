@@ -3055,6 +3055,7 @@ msgstr "Servidores de carga"
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowInspector.ts
+#: src/flows/stages/FlowErrorStage.ts
 #: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -3693,6 +3694,7 @@ msgstr "Aún no se ha sincronizado."
 msgid "Not used by any other object."
 msgstr "No lo usa ningún otro objeto."
 
+#: src/flows/stages/FlowErrorStage.ts
 #: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -5062,6 +5064,7 @@ msgid "Slug"
 msgstr "babosa"
 
 #: src/flows/FlowExecutor.ts
+#: src/flows/stages/FlowErrorStage.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Something went wrong! Please try again later."
 msgstr "¡Algo salió mal! Inténtelo de nuevo más tarde."

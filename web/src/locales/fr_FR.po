@@ -3086,6 +3086,7 @@ msgstr "Charger les serveurs"
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowInspector.ts
+#: src/flows/stages/FlowErrorStage.ts
 #: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -3726,6 +3727,7 @@ msgstr "Pas encore synchronisé."
 msgid "Not used by any other object."
 msgstr "Pas utilisé par un autre objet."
 
+#: src/flows/stages/FlowErrorStage.ts
 #: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -5112,6 +5114,7 @@ msgid "Slug"
 msgstr "Slug"
 
 #: src/flows/FlowExecutor.ts
+#: src/flows/stages/FlowErrorStage.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Something went wrong! Please try again later."
 msgstr "Une erreur s'est produite ! Veuillez réessayer plus tard."

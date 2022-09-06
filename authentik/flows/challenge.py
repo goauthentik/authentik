@@ -1,14 +1,14 @@
 """Challenge helpers"""
 from dataclasses import asdict, is_dataclass
 from enum import Enum
+from traceback import format_tb
 from typing import TYPE_CHECKING, Optional, TypedDict
 from uuid import UUID
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.http import JsonResponse
-from rest_framework.fields import ChoiceField, DictField
-from rest_framework.serializers import CharField
+from rest_framework.fields import CharField, ChoiceField, DictField
 
 from authentik.core.api.utils import PassiveSerializer
 
@@ -88,6 +88,34 @@ class WithUserInfoChallenge(Challenge):
 
     pending_user = CharField(allow_blank=True)
     pending_user_avatar = CharField()
+
+
+class FlowErrorChallenge(WithUserInfoChallenge):
+    """Challenge class when an unhandled error occurs during a stage. Normal users
+    are shown an error message, superusers are shown a full stacktrace."""
+
+    component = CharField(default="xak-flow-error")
+
+    request_id = CharField()
+
+    error = CharField(required=False)
+    traceback = CharField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop("request", None)
+        error = kwargs.pop("error", None)
+        super().__init__(*args, **kwargs)
+        if not request or not error:
+            return
+        self.request_id = request.request_id
+        from authentik.core.models import USER_ATTRIBUTE_DEBUG
+
+        if request.user and request.user.is_authenticated:
+            if request.user.is_superuser or request.user.group_attributes(request).get(
+                USER_ATTRIBUTE_DEBUG, False
+            ):
+                self.error = error
+                self.traceback = "".join(format_tb(self.error.__traceback__))
 
 
 class AccessDeniedChallenge(WithUserInfoChallenge):

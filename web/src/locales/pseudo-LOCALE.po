@@ -3096,6 +3096,7 @@ msgstr ""
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowExecutor.ts
 #: src/flows/FlowInspector.ts
+#: src/flows/stages/FlowErrorStage.ts
 #: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -3737,6 +3738,7 @@ msgstr ""
 msgid "Not used by any other object."
 msgstr ""
 
+#: src/flows/stages/FlowErrorStage.ts
 #: src/flows/stages/access_denied/AccessDeniedStage.ts
 #: src/flows/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flows/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -5138,6 +5140,7 @@ msgid "Slug"
 msgstr ""
 
 #: src/flows/FlowExecutor.ts
+#: src/flows/stages/FlowErrorStage.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Something went wrong! Please try again later."
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-27 18:46+0000\n"
+"POT-Creation-Date: 2022-09-06 16:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,19 +31,19 @@ msgstr ""
 msgid "Validation Error"
 msgstr ""
 
-#: authentik/blueprints/models.py:29
+#: authentik/blueprints/models.py:42
 msgid "Managed by authentik"
 msgstr ""
 
-#: authentik/blueprints/models.py:98
+#: authentik/blueprints/models.py:156
 msgid "Blueprint Instance"
 msgstr ""
 
-#: authentik/blueprints/models.py:99
+#: authentik/blueprints/models.py:157
 msgid "Blueprint Instances"
 msgstr ""
 
-#: authentik/blueprints/v1/exporter.py:53
+#: authentik/blueprints/v1/exporter.py:62
 #, python-format
 msgid "authentik Export - %(date)s"
 msgstr ""
@@ -184,20 +184,17 @@ msgstr ""
 msgid "Successfully linked %(source)s!"
 msgstr ""
 
-#: authentik/core/templates/error/generic.html:27
-msgid "Go to home"
-msgstr ""
-
-#: authentik/core/templates/if/admin.html:24
-#: authentik/core/templates/if/admin.html:30
-#: authentik/core/templates/if/flow.html:38
-#: authentik/core/templates/if/flow.html:44
-#: authentik/core/templates/if/user.html:24
-#: authentik/core/templates/if/user.html:30
+#: authentik/core/templates/if/admin.html:26
+#: authentik/core/templates/if/admin.html:32
+#: authentik/core/templates/if/flow.html:40
+#: authentik/core/templates/if/flow.html:46
+#: authentik/core/templates/if/user.html:26
+#: authentik/core/templates/if/user.html:32
 msgid "Loading..."
 msgstr ""
 
 #: authentik/core/templates/if/end_session.html:7
+#: authentik/core/templates/if/error.html:7
 msgid "End session"
 msgstr ""
 
@@ -232,6 +229,10 @@ msgid ""
 "\n"
 "            Log back into %(application)s\n"
 "        "
+msgstr ""
+
+#: authentik/core/templates/if/error.html:18
+msgid "Go home"
 msgstr ""
 
 #: authentik/core/templates/login/base_full.html:89
@@ -367,7 +368,7 @@ msgstr ""
 msgid "Stage (%(type)s)"
 msgstr ""
 
-#: authentik/flows/api/flows.py:375
+#: authentik/flows/api/flows.py:380
 #, python-format
 msgid "Flow not applicable to current user/request: %(messages)s"
 msgstr ""
@@ -432,14 +433,6 @@ msgstr ""
 
 #: authentik/flows/models.py:292
 msgid "Flow Tokens"
-msgstr ""
-
-#: authentik/flows/templates/flows/error.html:12
-msgid "Whoops!"
-msgstr ""
-
-#: authentik/flows/templates/flows/error.html:17
-msgid "Something went wrong! Please try again later."
 msgstr ""
 
 #: authentik/lib/utils/time.py:27
