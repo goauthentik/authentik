@@ -57,6 +57,18 @@ certs/
 
 Files are checked every 5 minutes, and will trigger an Outpost refresh if the files differ.
 
+#### Manual imports
+
+Starting with authentik 2022.9, you can also import certificates with any folder structure directly. To do this, run the following command within the worker container:
+
+```shell
+ak import_certificate --certificate /certs/mycert.pem --private-key /certs/something.pem --name test
+# --private-key can be omitted to only import a certificate, i.e. to trust other connections
+# ak import_certificate --certificate /certs/othercert.pem --name test2
+```
+
+This will import the certificate into authentik under the given name. This command is idempotent, meaning you can run it via a cron-job and authentik will only update the certificate when it changes.
+
 ## Web certificates
 
 Starting with authentik 2021.12.4, you can configure the certificate authentik uses for its core webserver. For most deployments this will not be relevant and reverse proxies are used, but this can be used to create a very compact and self-contained authentik install.
