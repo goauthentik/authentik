@@ -143,7 +143,7 @@ class Importer:
         if not is_model_allowed(model):
             raise EntryInvalidError(f"Model {model} not allowed")
         if issubclass(model, BaseMetaModel):
-            serializer_class: type[Serializer] = model.serializer
+            serializer_class: type[Serializer] = model.serializer()
             serializer = serializer_class(data=entry.get_attrs(self.__import))
             try:
                 serializer.is_valid(raise_exception=True)

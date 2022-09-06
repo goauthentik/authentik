@@ -198,7 +198,7 @@ class TestProviderLDAP(SeleniumTestCase):
             search_scope=SUBTREE,
             attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
         )
-        response = _connection.response
+        response: dict = _connection.response
         # Remove raw_attributes to make checking easier
         for obj in response:
             del obj["raw_attributes"]

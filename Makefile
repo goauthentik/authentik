@@ -166,7 +166,7 @@ ci-bandit: ci--meta-debug
 	bandit -r $(PY_SOURCES)
 
 ci-pyright: ci--meta-debug
-	npx pyright $(PY_SOURCES)
+	./web/node_modules/.bin/pyright $(PY_SOURCES)
 
 ci-pending-migrations: ci--meta-debug
 	ak makemigrations --check

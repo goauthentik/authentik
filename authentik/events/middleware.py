@@ -34,7 +34,7 @@ def should_log_model(model: Model) -> bool:
     """Return true if operation on `model` should be logged"""
     if model.__module__.startswith("silk"):
         return False
-    return isinstance(model, IGNORED_MODELS)
+    return not isinstance(model, IGNORED_MODELS)
 
 
 class AuditMiddleware:
