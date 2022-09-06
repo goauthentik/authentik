@@ -4,7 +4,7 @@ from glob import glob
 from pathlib import Path
 
 import django.contrib.postgres.fields
-from dacite import from_dict
+from dacite.core import from_dict
 from django.apps.registry import Apps
 from django.conf import settings
 from django.db import migrations, models

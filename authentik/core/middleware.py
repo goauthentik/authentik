@@ -1,6 +1,6 @@
 """authentik admin Middleware to impersonate users"""
 from contextvars import ContextVar
-from typing import Callable
+from typing import Callable, Optional
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
@@ -13,9 +13,9 @@ RESPONSE_HEADER_ID = "X-authentik-id"
 KEY_AUTH_VIA = "auth_via"
 KEY_USER = "user"
 
-CTX_REQUEST_ID = ContextVar(STRUCTLOG_KEY_PREFIX + "request_id", default=None)
-CTX_HOST = ContextVar(STRUCTLOG_KEY_PREFIX + "host", default=None)
-CTX_AUTH_VIA = ContextVar(STRUCTLOG_KEY_PREFIX + KEY_AUTH_VIA, default=None)
+CTX_REQUEST_ID = ContextVar[Optional[str]](STRUCTLOG_KEY_PREFIX + "request_id", default=None)
+CTX_HOST = ContextVar[Optional[str]](STRUCTLOG_KEY_PREFIX + "host", default=None)
+CTX_AUTH_VIA = ContextVar[Optional[str]](STRUCTLOG_KEY_PREFIX + KEY_AUTH_VIA, default=None)
 
 
 class ImpersonateMiddleware:

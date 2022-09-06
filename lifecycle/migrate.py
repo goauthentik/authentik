@@ -62,6 +62,8 @@ if __name__ == "__main__":
     try:
         for migration in Path(__file__).parent.absolute().glob("system_migrations/*.py"):
             spec = spec_from_file_location("lifecycle.system_migrations", migration)
+            if not spec:
+                continue
             mod = module_from_spec(spec)
             # pyright: reportGeneralTypeIssues=false
             spec.loader.exec_module(mod)

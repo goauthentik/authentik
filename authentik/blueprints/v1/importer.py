@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from copy import deepcopy
 from typing import Any, Optional
 
-from dacite import from_dict
+from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from deepmerge import always_merger
 from django.db import transaction
@@ -143,7 +143,8 @@ class Importer:
         if not is_model_allowed(model):
             raise EntryInvalidError(f"Model {model} not allowed")
         if issubclass(model, BaseMetaModel):
-            serializer = model.serializer()(data=entry.get_attrs(self.__import))
+            serializer_class: type[Serializer] = model.serializer
+            serializer = serializer_class(data=entry.get_attrs(self.__import))
             try:
                 serializer.is_valid(raise_exception=True)
             except ValidationError as exc:

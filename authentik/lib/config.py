@@ -20,7 +20,7 @@ ENV_PREFIX = "AUTHENTIK"
 ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
 
 
-def get_path_from_dict(root: dict, path: str, sep=".", default=None):
+def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
     """Recursively walk through `root`, checking each part of `path` split by `sep`.
     If at any point a dict does not exist, return default"""
     for comp in path.split(sep):
@@ -180,7 +180,7 @@ class ConfigLoader:
             # pyright: reportGeneralTypeIssues=false
             if comp not in root:
                 root[comp] = {}
-            root = root.get(comp)
+            root = root.get(comp, {})
         root[path_parts[-1]] = value
 
     def y_bool(self, path: str, default=False) -> bool:

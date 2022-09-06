@@ -26,7 +26,7 @@ from tests.e2e.utils import SeleniumTestCase, retry
 CONFIG_PATH = "/tmp/dex.yml"  # nosec
 
 
-class OAUth1Callback(OAuthCallback):
+class OAuth1Callback(OAuthCallback):
     """OAuth1 Callback with custom getters"""
 
     def get_user_id(self, info: dict[str, str]) -> str:
@@ -47,7 +47,7 @@ class OAUth1Callback(OAuthCallback):
 class OAUth1Type(SourceType):
     """OAuth1 Type definition"""
 
-    callback_view = OAUth1Callback
+    callback_view = OAuth1Callback
     name = "OAuth1"
     slug = "oauth1"
 

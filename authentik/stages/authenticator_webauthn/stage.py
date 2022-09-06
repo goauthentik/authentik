@@ -5,15 +5,19 @@ from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
-from webauthn import generate_registration_options, options_to_json, verify_registration_response
-from webauthn.helpers import bytes_to_base64url
+from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 from webauthn.helpers.exceptions import InvalidRegistrationResponse
+from webauthn.helpers.options_to_json import options_to_json
 from webauthn.helpers.structs import (
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
     RegistrationCredential,
 )
-from webauthn.registration.verify_registration_response import VerifiedRegistration
+from webauthn.registration.generate_registration_options import generate_registration_options
+from webauthn.registration.verify_registration_response import (
+    VerifiedRegistration,
+    verify_registration_response,
+)
 
 from authentik.core.models import User
 from authentik.flows.challenge import (

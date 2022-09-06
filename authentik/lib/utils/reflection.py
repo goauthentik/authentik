@@ -29,10 +29,8 @@ def class_to_path(cls: type) -> str:
     return f"{cls.__module__}.{cls.__name__}"
 
 
-def path_to_class(path: str | None) -> type | None:
+def path_to_class(path: str = "") -> type:
     """Import module and return class"""
-    if not path:
-        return None
     parts = path.split(".")
     package = ".".join(parts[:-1])
     _class = getattr(import_module(package), parts[-1])

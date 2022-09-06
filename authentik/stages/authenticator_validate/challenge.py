@@ -13,9 +13,11 @@ from django_otp.models import Device
 from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
-from webauthn import generate_authentication_options, verify_authentication_response
-from webauthn.helpers import base64url_to_bytes, options_to_json
+from webauthn.authentication.generate_authentication_options import generate_authentication_options
+from webauthn.authentication.verify_authentication_response import verify_authentication_response
+from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse
+from webauthn.helpers.options_to_json import options_to_json
 from webauthn.helpers.structs import AuthenticationCredential
 
 from authentik.core.api.utils import PassiveSerializer

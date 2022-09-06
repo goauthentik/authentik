@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Iterable, Optional
 from uuid import uuid4
 
-from dacite import from_dict
+from dacite.core import from_dict
 from django.contrib.auth.models import Permission
 from django.core.cache import cache
 from django.db import IntegrityError, models, transaction
@@ -74,7 +74,7 @@ class OutpostConfig:
     kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
     kubernetes_service_type: str = field(default="ClusterIP")
     kubernetes_disabled_components: list[str] = field(default_factory=list)
-    kubernetes_image_pull_secrets: Optional[list[str]] = field(default_factory=list)
+    kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
 
 
 class OutpostModel(Model):

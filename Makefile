@@ -148,25 +148,25 @@ website-watch:
 
 # These targets are use by GitHub actions to allow usage of matrix
 # which makes the YAML File a lot smaller
-
+PY_SOURCES=authentik tests lifecycle
 ci--meta-debug:
 	python -V
 	node --version
 
 ci-pylint: ci--meta-debug
-	pylint authentik tests lifecycle
+	pylint $(PY_SOURCES)
 
 ci-black: ci--meta-debug
-	black --check authentik tests lifecycle
+	black --check $(PY_SOURCES)
 
 ci-isort: ci--meta-debug
-	isort --check authentik tests lifecycle
+	isort --check $(PY_SOURCES)
 
 ci-bandit: ci--meta-debug
-	bandit -r authentik tests lifecycle
+	bandit -r $(PY_SOURCES)
 
 ci-pyright: ci--meta-debug
-	pyright e2e lifecycle
+	pyright $(PY_SOURCES)
 
 ci-pending-migrations: ci--meta-debug
 	ak makemigrations --check

@@ -31,7 +31,7 @@ Generally speaking, authentik is a Django application, ran by gunicorn, proxied 
 
 Most functions and classes have type-hints and docstrings, so it is recommended to install a Python Type-checking Extension in your IDE to navigate around the code.
 
-Before committing code, run `make lint` to ensure your code is formatted well. This also requires `pyright@1.1.136`, which can be installed with npm.
+Before committing code, run `make lint` to ensure your code is formatted well. This also requires `pyright`, which is installed in the `web/` folder to make dependency management easier.
 
 Run `make gen` to generate an updated OpenAPI document for any changes you made.
 

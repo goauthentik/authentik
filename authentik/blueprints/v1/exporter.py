@@ -1,5 +1,5 @@
 """Blueprint exporter"""
-from typing import Iterator
+from typing import Iterable
 from uuid import UUID
 
 from django.apps import apps
@@ -34,7 +34,7 @@ class Exporter:
             Event,
         ]
 
-    def get_entries(self) -> Iterator[BlueprintEntry]:
+    def get_entries(self) -> Iterable[BlueprintEntry]:
         """Get blueprint entries"""
         for model in apps.get_models():
             if not is_model_allowed(model):
@@ -96,7 +96,7 @@ class FlowExporter(Exporter):
             "pbm_uuid", flat=True
         )
 
-    def walk_stages(self) -> Iterator[BlueprintEntry]:
+    def walk_stages(self) -> Iterable[BlueprintEntry]:
         """Convert all stages attached to self.flow into BlueprintEntry objects"""
         stages = Stage.objects.filter(flow=self.flow).select_related().select_subclasses()
         for stage in stages:
@@ -104,13 +104,13 @@ class FlowExporter(Exporter):
                 pass
             yield BlueprintEntry.from_model(stage, "name")
 
-    def walk_stage_bindings(self) -> Iterator[BlueprintEntry]:
+    def walk_stage_bindings(self) -> Iterable[BlueprintEntry]:
         """Convert all bindings attached to self.flow into BlueprintEntry objects"""
         bindings = FlowStageBinding.objects.filter(target=self.flow).select_related()
         for binding in bindings:
             yield BlueprintEntry.from_model(binding, "target", "stage", "order")
 
-    def walk_policies(self) -> Iterator[BlueprintEntry]:
+    def walk_policies(self) -> Iterable[BlueprintEntry]:
         """Walk over all policies. This is done at the beginning of the export for stages that have
         a direct foreign key to a policy."""
         # Special case for PromptStage as that has a direct M2M to policy, we have to ensure
@@ -121,21 +121,21 @@ class FlowExporter(Exporter):
         for policy in policies:
             yield BlueprintEntry.from_model(policy)
 
-    def walk_policy_bindings(self) -> Iterator[BlueprintEntry]:
+    def walk_policy_bindings(self) -> Iterable[BlueprintEntry]:
         """Walk over all policybindings relative to us. This is run at the end of the export, as
         we are sure all objects exist now."""
         bindings = PolicyBinding.objects.filter(target__in=self.pbm_uuids).select_related()
         for binding in bindings:
             yield BlueprintEntry.from_model(binding, "policy", "target", "order")
 
-    def walk_stage_prompts(self) -> Iterator[BlueprintEntry]:
+    def walk_stage_prompts(self) -> Iterable[BlueprintEntry]:
         """Walk over all prompts associated with any PromptStages"""
         prompt_stages = PromptStage.objects.filter(flow=self.flow)
         for stage in prompt_stages:
             for prompt in stage.fields.all():
                 yield BlueprintEntry.from_model(prompt)
 
-    def get_entries(self) -> Iterator[BlueprintEntry]:
+    def get_entries(self) -> Iterable[BlueprintEntry]:
         entries = []
         entries.append(BlueprintEntry.from_model(self.flow, "slug"))
         if self.with_stage_prompts:
