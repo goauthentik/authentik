@@ -1,6 +1,4 @@
 """Base models"""
-from typing import Optional
-
 from django.apps import apps
 from django.db.models import Model
 from rest_framework.serializers import Serializer
@@ -51,7 +49,7 @@ class MetaModelRegistry:
             models.append(value)
         return models
 
-    def get_model(self, app_label: str, model_id: str) -> Optional[type[Model]]:
+    def get_model(self, app_label: str, model_id: str) -> type[Model]:
         """Get model checks if any virtual models are registered, and falls back
         to actual django models"""
         if app_label.lower() == self.virtual_prefix:

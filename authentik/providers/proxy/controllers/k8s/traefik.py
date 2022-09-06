@@ -2,7 +2,7 @@
 from dataclasses import asdict, dataclass, field
 from typing import TYPE_CHECKING
 
-from dacite import from_dict
+from dacite.core import from_dict
 from kubernetes.client import ApiextensionsV1Api, CustomObjectsApi
 
 from authentik.outposts.controllers.base import FIELD_MANAGER

@@ -74,10 +74,14 @@ def outpost_service_connection_state(connection_pk: Any):
     )
     if not connection:
         return
+    cls = None
     if isinstance(connection, DockerServiceConnection):
         cls = DockerClient
     if isinstance(connection, KubernetesServiceConnection):
         cls = KubernetesClient
+    if not cls:
+        LOGGER.warning("No class found for service connection", connection=connection)
+        return
     try:
         with cls(connection) as client:
             state = client.fetch_state()

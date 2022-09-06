@@ -11,7 +11,7 @@ from urllib.parse import urlparse, urlunparse
 
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
-from dacite import from_dict
+from dacite.core import from_dict
 from django.db import models
 from django.http import HttpRequest
 from django.utils import dateformat, timezone

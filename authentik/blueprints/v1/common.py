@@ -105,9 +105,9 @@ class Blueprint:
 
     version: int = field(default=1)
     entries: list[BlueprintEntry] = field(default_factory=list)
+    context: dict = field(default_factory=dict)
 
     metadata: Optional[BlueprintMetadata] = field(default=None)
-    context: Optional[dict] = field(default_factory=dict)
 
 
 class YAMLTag:

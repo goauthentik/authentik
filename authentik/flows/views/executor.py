@@ -152,6 +152,7 @@ class FlowExecutorView(APIView):
         token: Optional[FlowToken] = FlowToken.filter_not_expired(key=key).first()
         if not token:
             return None
+        plan = None
         try:
             plan = token.plan
         except (AttributeError, EOFError, ImportError, IndexError) as exc:

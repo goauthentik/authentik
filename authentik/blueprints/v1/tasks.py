@@ -4,7 +4,7 @@ from hashlib import sha512
 from pathlib import Path
 from typing import Optional
 
-from dacite import from_dict
+from dacite.core import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -77,7 +77,9 @@ def blueprints_find():
                 LOGGER.warning("invalid blueprint version", version=version, path=str(path))
                 continue
         file_hash = sha512(path.read_bytes()).hexdigest()
-        blueprint = BlueprintFile(path.relative_to(root), version, file_hash, path.stat().st_mtime)
+        blueprint = BlueprintFile(
+            str(path.relative_to(root)), version, file_hash, int(path.stat().st_mtime)
+        )
         blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
         blueprints.append(blueprint)
         LOGGER.info(
@@ -136,6 +138,7 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 def apply_blueprint(self: MonitoredTask, instance_pk: str):
     """Apply single blueprint"""
     self.save_on_success = False
+    instance: Optional[BlueprintInstance] = None
     try:
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
         self.set_uid(slugify(instance.name))
@@ -170,7 +173,9 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         BlueprintRetrievalFailed,
         EntryInvalidError,
     ) as exc:
-        instance.status = BlueprintInstanceStatus.ERROR
+        if instance:
+            instance.status = BlueprintInstanceStatus.ERROR
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
     finally:
-        instance.save()
+        if instance:
+            instance.save()

@@ -1,5 +1,5 @@
 """GitHub OAuth Views"""
-from typing import Any, Optional
+from typing import Any
 
 from requests.exceptions import RequestException
 
@@ -21,14 +21,14 @@ class GitHubOAuthRedirect(OAuthRedirect):
 class GitHubOAuth2Client(OAuth2Client):
     """GitHub OAuth2 Client"""
 
-    def get_github_emails(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
+    def get_github_emails(self, token: dict[str, str]) -> list[dict[str, Any]]:
         """Get Emails from the GitHub API"""
         profile_url = self.source.type.profile_url or ""
         if self.source.type.urls_customizable and self.source.profile_url:
             profile_url = self.source.profile_url
         profile_url += "/emails"
+        response = self.do_request("get", profile_url, token=token)
         try:
-            response = self.do_request("get", profile_url, token=token)
             response.raise_for_status()
         except RequestException as exc:
             self.logger.warning("Unable to fetch github emails", exc=exc)

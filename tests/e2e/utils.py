@@ -20,7 +20,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.wait import WebDriverWait
 from structlog.stdlib import get_logger
 
 from authentik.core.api.users import UserSerializer
@@ -143,7 +143,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         """same as self.url() but show URL in shell"""
         return f"{self.live_server_url}/if/user/#{view}"
 
-    def get_shadow_root(self, selector: str, container: Optional[WebElement] = None) -> WebElement:
+    def get_shadow_root(
+        self, selector: str, container: Optional[WebElement | WebDriver] = None
+    ) -> WebElement:
         """Get shadow root element's inner shadowRoot"""
         if not container:
             container = self.driver

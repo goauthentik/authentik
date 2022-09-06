@@ -12,5 +12,4 @@ class TestReflectionUtils(TestCase):
 
     def test_path_to_class(self):
         """Test path_to_class"""
-        self.assertIsNone(path_to_class(None))
         self.assertEqual(path_to_class("datetime.datetime"), datetime)
