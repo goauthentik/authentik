@@ -1,4 +1,5 @@
 import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "@goauthentik/web/constants";
+import { getURLParams, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
 
 import { t } from "@lingui/macro";
 
@@ -9,8 +10,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import AKGlobal from "@goauthentik/web/authentik.css";
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
-
-import { getURLParams, updateURLParams } from "./router/RouteMatch";
 
 @customElement("ak-tabs")
 export class Tabs extends LitElement {

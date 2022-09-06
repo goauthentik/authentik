@@ -1,4 +1,5 @@
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { setURLParams } from "@goauthentik/web/elements/router/RouteMatch";
 
 import { t } from "@lingui/macro";
 
@@ -8,8 +9,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import AKGlobal from "@goauthentik/web/authentik.css";
 import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { setURLParams } from "./router/RouteMatch";
 
 export interface TreeViewItem {
     id?: string;

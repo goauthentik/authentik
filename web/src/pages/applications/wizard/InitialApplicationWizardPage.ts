@@ -1,16 +1,16 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { KeyUnknown } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { WizardFormPage } from "@goauthentik/web/elements/wizard/WizardFormPage";
+import { convertToSlug } from "@goauthentik/web/utils";
+
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { TemplateResult, html } from "lit";
 
 import { ApplicationRequest, CoreApi, Provider } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { KeyUnknown } from "../../../elements/forms/Form";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { WizardFormPage } from "../../../elements/wizard/WizardFormPage";
-import { convertToSlug } from "../../../utils";
 
 @customElement("ak-application-wizard-initial")
 export class InitialApplicationWizardPage extends WizardFormPage {

@@ -1,4 +1,9 @@
 import { PFSize } from "@goauthentik/web/elements/Spinner";
+import {
+    Assertion,
+    transformCredentialCreateOptions,
+    transformNewAssertionForServer,
+} from "@goauthentik/web/flows/stages/authenticator_webauthn/utils";
 import { BaseStage } from "@goauthentik/web/flows/stages/base";
 
 import { t } from "@lingui/macro";
@@ -18,12 +23,6 @@ import {
     AuthenticatorWebAuthnChallenge,
     AuthenticatorWebAuthnChallengeResponseRequest,
 } from "@goauthentik/api";
-
-import {
-    Assertion,
-    transformCredentialCreateOptions,
-    transformNewAssertionForServer,
-} from "./utils";
 
 export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;

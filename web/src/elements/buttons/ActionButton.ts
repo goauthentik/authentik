@@ -1,9 +1,8 @@
+import { SpinnerButton } from "@goauthentik/web/elements/buttons/SpinnerButton";
 import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
 import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
 
 import { customElement, property } from "lit/decorators.js";
-
-import { SpinnerButton } from "./SpinnerButton";
 
 @customElement("ak-action-button")
 export class ActionButton extends SpinnerButton {

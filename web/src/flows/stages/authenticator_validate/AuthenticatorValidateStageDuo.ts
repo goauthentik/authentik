@@ -1,6 +1,7 @@
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/elements/forms/FormElement";
 import "@goauthentik/web/flows/FormStatic";
+import { AuthenticatorValidateStage } from "@goauthentik/web/flows/stages/authenticator_validate/AuthenticatorValidateStage";
 import { BaseStage } from "@goauthentik/web/flows/stages/base";
 
 import { t } from "@lingui/macro";
@@ -22,8 +23,6 @@ import {
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallenge,
 } from "@goauthentik/api";
-
-import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
 
 @customElement("ak-stage-authenticator-validate-duo")
 export class AuthenticatorValidateStageWebDuo extends BaseStage<

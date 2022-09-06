@@ -1,8 +1,7 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { activateLocale } from "@goauthentik/web/interfaces/locale";
 
 import { CoreApi, ResponseError, SessionUser } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "./Config";
 
 let globalMePromise: Promise<SessionUser> | undefined;
 

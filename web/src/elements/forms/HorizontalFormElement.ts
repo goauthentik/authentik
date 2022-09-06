@@ -1,3 +1,4 @@
+import { FormGroup } from "@goauthentik/web/elements/forms/FormGroup";
 import { convertToSlug } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
@@ -10,8 +11,6 @@ import AKGlobal from "@goauthentik/web/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { FormGroup } from "./FormGroup";
 
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends LitElement {

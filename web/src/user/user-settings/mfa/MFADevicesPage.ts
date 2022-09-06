@@ -6,6 +6,7 @@ import "@goauthentik/web/elements/buttons/TokenCopyButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
 import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+import "@goauthentik/web/user/user-settings/mfa/MFADeviceForm";
 
 import { t } from "@lingui/macro";
 
@@ -15,8 +16,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
-
-import "./MFADeviceForm";
 
 export function stageToAuthenticatorName(stage: UserSetting): string {
     switch (stage.component) {

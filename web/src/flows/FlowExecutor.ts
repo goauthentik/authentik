@@ -12,6 +12,7 @@ import "@goauthentik/web/flows/stages/access_denied/AccessDeniedStage";
 import "@goauthentik/web/flows/stages/authenticator_validate/AuthenticatorValidateStage";
 import "@goauthentik/web/flows/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import "@goauthentik/web/flows/stages/autosubmit/AutosubmitStage";
+import { StageHost } from "@goauthentik/web/flows/stages/base";
 import "@goauthentik/web/flows/stages/captcha/CaptchaStage";
 import "@goauthentik/web/flows/stages/identification/IdentificationStage";
 import "@goauthentik/web/flows/stages/password/PasswordStage";
@@ -44,8 +45,6 @@ import {
     ResponseError,
     ShellChallenge,
 } from "@goauthentik/api";
-
-import { StageHost } from "./stages/base";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {

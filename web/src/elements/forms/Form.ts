@@ -1,5 +1,6 @@
 import { SearchSelect } from "@goauthentik/web/SearchSelect";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { HorizontalFormElement } from "@goauthentik/web/elements/forms/HorizontalFormElement";
 import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
 import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
 import { camelToSnake, convertToSlug } from "@goauthentik/web/utils";
@@ -20,8 +21,6 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ResponseError, ValidationError } from "@goauthentik/api";
-
-import { HorizontalFormElement } from "./HorizontalFormElement";
 
 export class APIError extends Error {
     constructor(public response: ValidationError) {

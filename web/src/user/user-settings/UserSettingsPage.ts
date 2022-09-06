@@ -1,6 +1,14 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { me } from "@goauthentik/web/api/Users";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/user/SessionList";
+import "@goauthentik/web/elements/user/UserConsentList";
+import "@goauthentik/web/user/user-settings/details/UserPassword";
+import "@goauthentik/web/user/user-settings/details/UserSettingsFlowExecutor";
+import "@goauthentik/web/user/user-settings/mfa/MFADevicesPage";
+import "@goauthentik/web/user/user-settings/sources/SourceSettings";
+import "@goauthentik/web/user/user-settings/tokens/UserTokenList";
 
 import { t } from "@lingui/macro";
 
@@ -24,15 +32,6 @@ import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { StagesApi, UserSetting } from "@goauthentik/api";
-
-import "../../elements/Tabs";
-import "../../elements/user/SessionList";
-import "../../elements/user/UserConsentList";
-import "./details/UserPassword";
-import "./details/UserSettingsFlowExecutor";
-import "./mfa/MFADevicesPage";
-import "./sources/SourceSettings";
-import "./tokens/UserTokenList";
 
 @customElement("ak-user-settings")
 export class UserSettingsPage extends LitElement {

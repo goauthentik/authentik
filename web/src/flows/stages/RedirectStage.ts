@@ -1,3 +1,5 @@
+import { BaseStage } from "@goauthentik/web/flows/stages/base";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -12,8 +14,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
-
-import { BaseStage } from "./base";
 
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {

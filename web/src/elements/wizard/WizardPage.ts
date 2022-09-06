@@ -1,10 +1,10 @@
+import { Wizard } from "@goauthentik/web/elements/wizard/Wizard";
+
 import { CSSResult, LitElement, PropertyDeclaration, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { Wizard } from "./Wizard";
 
 @customElement("ak-wizard-page")
 export class WizardPage extends LitElement {

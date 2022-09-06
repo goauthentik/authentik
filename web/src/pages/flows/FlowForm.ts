@@ -2,6 +2,7 @@ import { DeniedActionEnum } from "@goauthentik/api/dist/models/DeniedActionEnum.
 import { DEFAULT_CONFIG, config } from "@goauthentik/web/api/Config";
 import "@goauthentik/web/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { DesignationToLabel, LayoutToLabel } from "@goauthentik/web/pages/flows/utils";
 import { first } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
@@ -19,8 +20,6 @@ import {
     LayoutEnum,
     PolicyEngineMode,
 } from "@goauthentik/api";
-
-import { DesignationToLabel, LayoutToLabel } from "./utils";
 
 @customElement("ak-flow-form")
 export class FlowForm extends ModelForm<Flow, string> {

@@ -1,7 +1,7 @@
-import { html } from "lit";
+import { Route } from "@goauthentik/web/elements/router/Route";
+import "@goauthentik/web/user/LibraryPage";
 
-import { Route } from "./elements/router/Route";
-import "./user/LibraryPage";
+import { html } from "lit";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops

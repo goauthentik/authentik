@@ -1,8 +1,7 @@
+import { ID_REGEX, Route, SLUG_REGEX, UUID_REGEX } from "@goauthentik/web/elements/router/Route";
 import "@goauthentik/web/pages/admin-overview/AdminOverviewPage";
 
 import { html } from "lit";
-
-import { ID_REGEX, Route, SLUG_REGEX, UUID_REGEX } from "./elements/router/Route";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops

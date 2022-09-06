@@ -1,27 +1,27 @@
+import "@goauthentik/web/elements/wizard/Wizard";
+import "@goauthentik/web/pages/applications/wizard/InitialApplicationWizardPage";
+import "@goauthentik/web/pages/applications/wizard/TypeApplicationWizardPage";
+import "@goauthentik/web/pages/applications/wizard/ldap/TypeLDAPApplicationWizardPage";
+import "@goauthentik/web/pages/applications/wizard/link/TypeLinkApplicationWizardPage";
+import "@goauthentik/web/pages/applications/wizard/oauth/TypeOAuthAPIApplicationWizardPage";
+import "@goauthentik/web/pages/applications/wizard/oauth/TypeOAuthApplicationWizardPage";
+import "@goauthentik/web/pages/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage";
+import "@goauthentik/web/pages/applications/wizard/oauth/TypeOAuthImplicitApplicationWizardPage";
+import "@goauthentik/web/pages/applications/wizard/proxy/TypeProxyApplicationWizardPage";
+import "@goauthentik/web/pages/applications/wizard/saml/TypeSAMLApplicationWizardPage";
+import "@goauthentik/web/pages/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage";
+import "@goauthentik/web/pages/applications/wizard/saml/TypeSAMLImportApplicationWizardPage";
+
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
+import AKGlobal from "@goauthentik/web/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import "../../../elements/wizard/Wizard";
-import "./InitialApplicationWizardPage";
-import "./TypeApplicationWizardPage";
-import "./ldap/TypeLDAPApplicationWizardPage";
-import "./link/TypeLinkApplicationWizardPage";
-import "./oauth/TypeOAuthAPIApplicationWizardPage";
-import "./oauth/TypeOAuthApplicationWizardPage";
-import "./oauth/TypeOAuthCodeApplicationWizardPage";
-import "./oauth/TypeOAuthImplicitApplicationWizardPage";
-import "./proxy/TypeProxyApplicationWizardPage";
-import "./saml/TypeSAMLApplicationWizardPage";
-import "./saml/TypeSAMLConfigApplicationWizardPage";
-import "./saml/TypeSAMLImportApplicationWizardPage";
 
 @customElement("ak-application-wizard")
 export class ApplicationWizard extends LitElement {

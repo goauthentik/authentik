@@ -9,6 +9,7 @@ import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 import "@goauthentik/web/pages/flows/FlowForm";
 import "@goauthentik/web/pages/flows/FlowImportForm";
+import { DesignationToLabel } from "@goauthentik/web/pages/flows/utils";
 import { groupBy } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
@@ -17,8 +18,6 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { Flow, FlowsApi } from "@goauthentik/api";
-
-import { DesignationToLabel } from "./utils";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {

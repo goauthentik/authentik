@@ -2,6 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import "@goauthentik/web/elements/CodeMirror";
 import "@goauthentik/web/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import "@goauthentik/web/pages/users/GroupSelectModal";
 import { first } from "@goauthentik/web/utils";
 import YAML from "yaml";
 
@@ -13,8 +14,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import { CoreApi, Group, User } from "@goauthentik/api";
-
-import "./GroupSelectModal";
 
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {

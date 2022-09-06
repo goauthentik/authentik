@@ -1,4 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import {
+    AdminStatus,
+    AdminStatusCard,
+} from "@goauthentik/web/pages/admin-overview/cards/AdminStatusCard";
 
 import { t } from "@lingui/macro";
 
@@ -6,8 +10,6 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { AdminApi, Version } from "@goauthentik/api";
-
-import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {

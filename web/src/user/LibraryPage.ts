@@ -2,6 +2,7 @@ import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { LayoutType, UIConfig, uiConfig } from "@goauthentik/web/common/config";
 import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import "@goauthentik/web/user/LibraryApplication";
 import { groupBy, loading } from "@goauthentik/web/utils";
 import Fuse from "fuse.js";
 
@@ -21,8 +22,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
-
-import "./LibraryApplication";
 
 @customElement("ak-library")
 export class LibraryPage extends LitElement {

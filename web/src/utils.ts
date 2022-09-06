@@ -1,10 +1,9 @@
+import { SentryIgnoredError } from "@goauthentik/web/common/errors";
 import "@goauthentik/web/elements/EmptyState";
 
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-
-import { SentryIgnoredError } from "./common/errors";
 
 export function getCookie(name: string): string {
     let cookieValue = "";

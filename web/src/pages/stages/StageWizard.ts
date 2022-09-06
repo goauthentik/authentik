@@ -3,6 +3,25 @@ import "@goauthentik/web/elements/forms/ProxyForm";
 import "@goauthentik/web/elements/wizard/FormWizardPage";
 import "@goauthentik/web/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/web/elements/wizard/WizardPage";
+import "@goauthentik/web/pages/stages/authenticator_duo/AuthenticatorDuoStageForm.ts";
+import "@goauthentik/web/pages/stages/authenticator_sms/AuthenticatorSMSStageForm.ts";
+import "@goauthentik/web/pages/stages/authenticator_static/AuthenticatorStaticStageForm.ts";
+import "@goauthentik/web/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts";
+import "@goauthentik/web/pages/stages/authenticator_validate/AuthenticatorValidateStageForm.ts";
+import "@goauthentik/web/pages/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts";
+import "@goauthentik/web/pages/stages/captcha/CaptchaStageForm.ts";
+import "@goauthentik/web/pages/stages/consent/ConsentStageForm.ts";
+import "@goauthentik/web/pages/stages/deny/DenyStageForm.ts";
+import "@goauthentik/web/pages/stages/dummy/DummyStageForm.ts";
+import "@goauthentik/web/pages/stages/email/EmailStageForm.ts";
+import "@goauthentik/web/pages/stages/identification/IdentificationStageForm.ts";
+import "@goauthentik/web/pages/stages/invitation/InvitationStageForm.ts";
+import "@goauthentik/web/pages/stages/password/PasswordStageForm.ts";
+import "@goauthentik/web/pages/stages/prompt/PromptStageForm.ts";
+import "@goauthentik/web/pages/stages/user_delete/UserDeleteStageForm.ts";
+import "@goauthentik/web/pages/stages/user_login/UserLoginStageForm.ts";
+import "@goauthentik/web/pages/stages/user_logout/UserLogoutStageForm.ts";
+import "@goauthentik/web/pages/stages/user_write/UserWriteStageForm.ts";
 
 import { t } from "@lingui/macro";
 
@@ -17,26 +36,6 @@ import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { StagesApi, TypeCreate } from "@goauthentik/api";
-
-import "./authenticator_duo/AuthenticatorDuoStageForm.ts";
-import "./authenticator_sms/AuthenticatorSMSStageForm.ts";
-import "./authenticator_static/AuthenticatorStaticStageForm.ts";
-import "./authenticator_totp/AuthenticatorTOTPStageForm.ts";
-import "./authenticator_validate/AuthenticatorValidateStageForm.ts";
-import "./authenticator_webauthn/AuthenticateWebAuthnStageForm.ts";
-import "./captcha/CaptchaStageForm.ts";
-import "./consent/ConsentStageForm.ts";
-import "./deny/DenyStageForm.ts";
-import "./dummy/DummyStageForm.ts";
-import "./email/EmailStageForm.ts";
-import "./identification/IdentificationStageForm.ts";
-import "./invitation/InvitationStageForm.ts";
-import "./password/PasswordStageForm.ts";
-import "./prompt/PromptStageForm.ts";
-import "./user_delete/UserDeleteStageForm.ts";
-import "./user_login/UserLoginStageForm.ts";
-import "./user_logout/UserLogoutStageForm.ts";
-import "./user_write/UserWriteStageForm.ts";
 
 @customElement("ak-stage-wizard-initial")
 export class InitialStageWizardPage extends WizardPage {

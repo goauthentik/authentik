@@ -1,12 +1,11 @@
+import { config } from "@goauthentik/web/api/Config";
+import { me } from "@goauthentik/web/api/Users";
 import { SentryIgnoredError } from "@goauthentik/web/common/errors";
 import { VERSION } from "@goauthentik/web/constants";
 import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
 
 import { Config, ResponseError } from "@goauthentik/api";
-
-import { config } from "./Config";
-import { me } from "./Users";
 
 export const TAG_SENTRY_COMPONENT = "authentik.component";
 export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";

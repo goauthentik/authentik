@@ -1,3 +1,9 @@
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { KeyUnknown } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { WizardFormPage } from "@goauthentik/web/elements/wizard/WizardFormPage";
+import "@goauthentik/web/elements/wizard/WizardFormPage";
+
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
@@ -12,12 +18,6 @@ import {
     OAuth2ProviderRequest,
     ProvidersApi,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../../api/Config";
-import { KeyUnknown } from "../../../../elements/forms/Form";
-import "../../../../elements/forms/HorizontalFormElement";
-import { WizardFormPage } from "../../../../elements/wizard/WizardFormPage";
-import "../../../../elements/wizard/WizardFormPage";
 
 @customElement("ak-application-wizard-type-oauth-code")
 export class TypeOAuthCodeApplicationWizardPage extends WizardFormPage {

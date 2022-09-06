@@ -2,13 +2,12 @@ import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/LoadingOverlay";
 import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { Form } from "@goauthentik/web/elements/forms/Form";
 
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { Form } from "./Form";
 
 @customElement("ak-forms-modal")
 export class ModalForm extends ModalButton {

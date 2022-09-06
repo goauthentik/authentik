@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { ERROR_CLASS, SECONDARY_CLASS, SUCCESS_CLASS } from "@goauthentik/web/constants";
 import { PFSize } from "@goauthentik/web/elements/Spinner";
+import { ActionButton } from "@goauthentik/web/elements/buttons/ActionButton";
 import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
 import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
 
@@ -8,8 +9,6 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { CoreApi, ResponseError } from "@goauthentik/api";
-
-import { ActionButton } from "./ActionButton";
 
 @customElement("ak-token-copy-button")
 export class TokenCopyButton extends ActionButton {

@@ -1,6 +1,7 @@
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/elements/forms/FormElement";
 import "@goauthentik/web/flows/FormStatic";
+import { AuthenticatorValidateStage } from "@goauthentik/web/flows/stages/authenticator_validate/AuthenticatorValidateStage";
 import { BaseStage } from "@goauthentik/web/flows/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/web/flows/stages/identification/IdentificationStage";
 
@@ -24,8 +25,6 @@ import {
     DeviceChallenge,
     DeviceClassesEnum,
 } from "@goauthentik/api";
-
-import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
 
 @customElement("ak-stage-authenticator-validate-code")
 export class AuthenticatorValidateStageWebCode extends BaseStage<

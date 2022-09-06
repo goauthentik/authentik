@@ -1,3 +1,4 @@
+import { AuthenticatorValidateStage } from "@goauthentik/web/flows/stages/authenticator_validate/AuthenticatorValidateStage";
 import {
     transformAssertionForServer,
     transformCredentialRequestOptions,
@@ -24,8 +25,6 @@ import {
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallenge,
 } from "@goauthentik/api";
-
-import { AuthenticatorValidateStage } from "./AuthenticatorValidateStage";
 
 @customElement("ak-stage-authenticator-validate-webauthn")
 export class AuthenticatorValidateStageWebAuthn extends BaseStage<
