@@ -33,6 +33,7 @@ module.exports = {
                             ],
                         },
                         "services/apache-guacamole/index",
+                        "services/argocd/index",
                         "services/awx-tower/index",
                         "services/fortimanager/index",
                         "services/harbor/index",
