@@ -1,12 +1,14 @@
 """authentik OAuth2 JWKS Views"""
-from base64 import urlsafe_b64encode
+from base64 import b64encode, urlsafe_b64encode
 from typing import Optional
 
+from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.ec import (
     EllipticCurvePrivateKey,
     EllipticCurvePublicKey,
 )
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
+from cryptography.hazmat.primitives.serialization import Encoding
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views import View
@@ -30,12 +32,13 @@ class JWKSView(View):
     def get_jwk_for_key(self, key: CertificateKeyPair) -> Optional[dict]:
         """Convert a certificate-key pair into JWK"""
         private_key = key.private_key
+        key_data = None
         if not private_key:
-            return None
+            return key_data
         if isinstance(private_key, RSAPrivateKey):
             public_key: RSAPublicKey = private_key.public_key()
             public_numbers = public_key.public_numbers()
-            return {
+            key_data = {
                 "kty": "RSA",
                 "alg": JWTAlgorithms.RS256,
                 "use": "sig",
@@ -43,10 +46,10 @@ class JWKSView(View):
                 "n": b64_enc(public_numbers.n),
                 "e": b64_enc(public_numbers.e),
             }
-        if isinstance(private_key, EllipticCurvePrivateKey):
+        elif isinstance(private_key, EllipticCurvePrivateKey):
             public_key: EllipticCurvePublicKey = private_key.public_key()
             public_numbers = public_key.public_numbers()
-            return {
+            key_data = {
                 "kty": "EC",
                 "alg": JWTAlgorithms.ES256,
                 "use": "sig",
@@ -54,7 +57,20 @@ class JWKSView(View):
                 "n": b64_enc(public_numbers.n),
                 "e": b64_enc(public_numbers.e),
             }
-        return None
+        else:
+            return key_data
+        key_data["x5c"] = [b64encode(key.certificate.public_bytes(Encoding.DER)).decode("utf-8")]
+        key_data["x5t"] = (
+            urlsafe_b64encode(key.certificate.fingerprint(hashes.SHA1()))  # nosec
+            .decode("utf-8")
+            .rstrip("=")
+        )
+        key_data["x5t#S256"] = (
+            urlsafe_b64encode(key.certificate.fingerprint(hashes.SHA256()))
+            .decode("utf-8")
+            .rstrip("=")
+        )
+        return key_data
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Show JWK Key data for Provider"""
