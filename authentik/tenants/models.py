@@ -4,11 +4,14 @@ from uuid import uuid4
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
+
+LOGGER = get_logger()
 
 
 class Tenant(SerializerModel):
@@ -75,7 +78,12 @@ class Tenant(SerializerModel):
     @property
     def default_locale(self) -> str:
         """Get default locale"""
-        return self.attributes.get("settings", {}).get("locale", "")
+        try:
+            return self.attributes.get("settings", {}).get("locale", "")
+        # pylint: disable=broad-except
+        except Exception as exc:
+            LOGGER.warning("Failed to get default locale", exc=exc)
+            return ""
 
     def __str__(self) -> str:
         if self.default:
