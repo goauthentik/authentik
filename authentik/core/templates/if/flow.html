@@ -23,7 +23,7 @@ window.authentik.flow = {
 {% endblock %}
 
 {% block head %}
-<script src="{% static 'dist/flow/FlowInterface.js' %}" type="module"></script>
+<script src="{% static 'dist/flow/FlowInterface.js' %}?version={{ version }}" type="module"></script>
 <style>
 :root {
     --ak-flow-background: url("{{ flow.background_url }}");

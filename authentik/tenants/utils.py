@@ -6,6 +6,7 @@ from django.db.models import Value as V
 from django.http.request import HttpRequest
 from sentry_sdk.hub import Hub
 
+from authentik import get_full_version
 from authentik.lib.config import CONFIG
 from authentik.tenants.models import Tenant
 
@@ -37,4 +38,5 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
         "tenant": tenant,
         "footer_links": CONFIG.y("footer_links"),
         "sentry_trace": trace,
+        "version": get_full_version(),
     }
