@@ -90,10 +90,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def output_container_logs(self, container: Optional[Container] = None):
         """Output the container logs to our STDOUT"""
         _container = container or self.container
-        print(f"--------container logs {_container.image.tags[0]}")
         for log in _container.logs().decode().split("\n"):
-            print(log)
-        print(f"--------end container logs {_container.image.tags[0]}")
+            self.logger.info(log, source="container", container=_container.image.tags[0])
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
         """Optionally get container specs which will launched on setup, wait for the container to
