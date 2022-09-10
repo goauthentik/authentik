@@ -253,3 +253,9 @@ class BlueprintLoader(SafeLoader):
 
 class EntryInvalidError(SentryIgnoredException):
     """Error raised when an entry is invalid"""
+
+    serializer_errors: Optional[dict]
+
+    def __init__(self, *args: object, serializer_errors: Optional[dict] = None) -> None:
+        super().__init__(*args)
+        self.serializer_errors = serializer_errors

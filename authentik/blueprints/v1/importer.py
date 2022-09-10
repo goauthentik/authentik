@@ -148,7 +148,9 @@ class Importer:
             try:
                 serializer.is_valid(raise_exception=True)
             except ValidationError as exc:
-                raise EntryInvalidError(f"Serializer errors {serializer.errors}") from exc
+                raise EntryInvalidError(
+                    f"Serializer errors {serializer.errors}", serializer_errors=serializer.errors
+                ) from exc
             return serializer
         if entry.identifiers == {}:
             raise EntryInvalidError("No identifiers")
@@ -193,7 +195,9 @@ class Importer:
         try:
             serializer.is_valid(raise_exception=True)
         except ValidationError as exc:
-            raise EntryInvalidError(f"Serializer errors {serializer.errors}") from exc
+            raise EntryInvalidError(
+                f"Serializer errors {serializer.errors}", serializer_errors=serializer.errors
+            ) from exc
         return serializer
 
     def apply(self) -> bool:
