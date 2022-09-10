@@ -1,10 +1,15 @@
 """Apply Blueprint meta model"""
+from typing import TYPE_CHECKING
+
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, JSONField
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, MetaResult, registry
 from authentik.core.api.utils import PassiveSerializer, is_dict
+
+if TYPE_CHECKING:
+    from authentik.blueprints.models import BlueprintInstance
 
 LOGGER = get_logger()
 
@@ -15,21 +20,28 @@ class ApplyBlueprintMetaSerializer(PassiveSerializer):
     identifiers = JSONField(validators=[is_dict])
     required = BooleanField(default=True)
 
-    def create(self, validated_data: dict) -> MetaResult:
+    instance: "BlueprintInstance"
+
+    def validate(self, attrs):
         from authentik.blueprints.models import BlueprintInstance
+
+        identifiers = attrs["identifiers"]
+        required = attrs["required"]
+        instance = BlueprintInstance.objects.filter(**identifiers).first()
+        if not instance and required:
+            raise ValidationError("Required blueprint does not exist")
+        self.instance = instance
+        return super().validate(attrs)
+
+    def create(self, validated_data: dict) -> MetaResult:
         from authentik.blueprints.v1.tasks import apply_blueprint
 
-        identifiers = validated_data["identifiers"]
-        required = validated_data["required"]
-        instance = BlueprintInstance.objects.filter(**identifiers).first()
-        if not instance:
-            if required:
-                raise ValidationError("Required blueprint does not exist")
+        if not self.instance:
             LOGGER.info("Blueprint does not exist, but not required")
             return MetaResult()
-        LOGGER.debug("Applying blueprint from meta model", blueprint=instance)
+        LOGGER.debug("Applying blueprint from meta model", blueprint=self.instance)
         # pylint: disable=no-value-for-parameter
-        apply_blueprint(str(instance.pk))
+        apply_blueprint(str(self.instance.pk))
         return MetaResult()
 
 

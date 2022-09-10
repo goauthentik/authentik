@@ -98,7 +98,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
             WithDefaultName(path),
             WithDebug(True),
         )
-        LOGGER.debug("Fetching OCI manifests for blueprint", instance=self)
+        LOGGER.info("Fetching OCI manifests for blueprint", instance=self)
         manifest_request = client.NewRequest(
             "GET",
             "/v2/<name>/manifests/<reference>",
@@ -137,7 +137,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
         """Retrieve blueprint contents"""
         full_path = Path(CONFIG.y("blueprints_dir")).joinpath(Path(self.path))
         if full_path.exists():
-            LOGGER.info("Blueprint path exists locally", instance=self)
+            LOGGER.debug("Blueprint path exists locally", instance=self)
             with full_path.open("r", encoding="utf-8") as _file:
                 return _file.read()
         return self.retrieve_oci()
