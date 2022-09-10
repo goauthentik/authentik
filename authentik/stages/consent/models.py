@@ -22,7 +22,7 @@ class ConsentMode(models.TextChoices):
 class ConsentStage(Stage):
     """Prompt the user for confirmation."""
 
-    mode = models.TextField(choices=ConsentMode.choices, default=ConsentMode.ALWAYS_REQUIRE)
+    mode = models.TextField(choices=ConsentMode.choices, default=ConsentMode.EXPIRING)
     consent_expire_in = models.TextField(
         validators=[timedelta_string_validator],
         default="weeks=4",

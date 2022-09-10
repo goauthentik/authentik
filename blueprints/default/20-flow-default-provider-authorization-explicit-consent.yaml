@@ -10,9 +10,11 @@ entries:
     slug: default-provider-authorization-explicit-consent
   model: authentik_flows.flow
   id: flow
-- identifiers:
+- id: default-provider-authorization-consent
+  attrs:
+    mode: expiring
+  identifiers:
     name: default-provider-authorization-consent
-  id: default-provider-authorization-consent
   model: authentik_stages_consent.consentstage
 - identifiers:
     order: 0
