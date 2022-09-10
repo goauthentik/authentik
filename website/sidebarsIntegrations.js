@@ -10,28 +10,8 @@ module.exports = {
             items: [
                 {
                     type: "category",
-                    label: "Monitoring & Infrastructure",
+                    label: "Infrastructure",
                     items: [
-                        {
-                            type: "category",
-                            label: "Hypervisors / Orchestrators",
-                            items: [
-                                "services/portainer/index",
-                                "services/proxmox-ve/index",
-                                "services/rancher/index",
-                                "services/vmware-vcenter/index",
-                            ],
-                        },
-                        {
-                            type: "category",
-                            label: "Monitoring",
-                            items: [
-                                "services/grafana/index",
-                                "services/ubuntu-landscape/index",
-                                "services/uptime-kuma/index",
-                                "services/zabbix/index",
-                            ],
-                        },
                         "services/apache-guacamole/index",
                         "services/awx-tower/index",
                         "services/fortimanager/index",
@@ -43,6 +23,26 @@ module.exports = {
                         "services/pgadmin/index",
                         "services/powerdns-admin/index",
                         "services/veeam-enterprise-manager/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Hypervisors / Orchestrators",
+                    items: [
+                        "services/portainer/index",
+                        "services/proxmox-ve/index",
+                        "services/rancher/index",
+                        "services/vmware-vcenter/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Monitoring",
+                    items: [
+                        "services/grafana/index",
+                        "services/ubuntu-landscape/index",
+                        "services/uptime-kuma/index",
+                        "services/zabbix/index",
                     ],
                 },
                 {
@@ -59,6 +59,7 @@ module.exports = {
                     items: [
                         "services/bookstack/index",
                         "services/hedgedoc/index",
+                        "services/kimai/index",
                         "services/matrix-synapse/index",
                         "services/nextcloud/index",
                         "services/onlyoffice/index",
@@ -98,11 +99,16 @@ module.exports = {
                         "services/gitlab/index",
                     ],
                 },
-                "services/home-assistant/index",
-                "services/node-red/index",
-                "services/kimai/index",
-                "services/sonarr/index",
-                "services/tautulli/index",
+                {
+                    type: "category",
+                    label: "Miscellaneous",
+                    items: [
+                        "services/home-assistant/index",
+                        "services/node-red/index",
+                        "services/sonarr/index",
+                        "services/tautulli/index",
+                    ],
+                },
             ],
         },
         {
