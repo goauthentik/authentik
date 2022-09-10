@@ -39,8 +39,7 @@ export const resources = [
         src: "node_modules/@patternfly/patternfly/assets/*",
         dest: "dist/assets/",
     },
-    { src: "src/assets/*", dest: "dist/assets" },
-    { src: "./icons/*", dest: "dist/assets/icons" },
+    { src: "assets/*", dest: "dist/assets" },
 ];
 
 // eslint-disable-next-line no-undef
@@ -97,7 +96,7 @@ export const defaultOptions = {
 
 // Polyfills (imported first)
 export const POLY = {
-    input: "./poly.ts",
+    input: "./src/polyfill/poly.ts",
     output: [
         {
             format: "iife",
@@ -122,7 +121,7 @@ export default [
     POLY,
     // Flow interface
     {
-        input: "./src/interfaces/FlowInterface.ts",
+        input: "./src/flow/FlowInterface.ts",
         output: [
             {
                 format: "es",
@@ -135,7 +134,7 @@ export default [
     },
     // Admin interface
     {
-        input: "./src/interfaces/AdminInterface.ts",
+        input: "./src/admin/AdminInterface.ts",
         output: [
             {
                 format: "es",
@@ -148,7 +147,7 @@ export default [
     },
     // User interface
     {
-        input: "./src/interfaces/UserInterface.ts",
+        input: "./src/user/UserInterface.ts",
         output: [
             {
                 format: "es",

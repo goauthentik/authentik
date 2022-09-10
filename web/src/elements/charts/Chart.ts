@@ -1,8 +1,8 @@
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import {
     FONT_COLOUR_DARK_MODE,
     FONT_COLOUR_LIGHT_MODE,
-} from "@goauthentik/web/pages/flows/FlowDiagram";
+} from "@goauthentik/web/admin/flows/FlowDiagram";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import { Chart, ChartConfiguration, ChartData, ChartOptions, Plugin, Tick } from "chart.js";
 import { Legend, Tooltip } from "chart.js";
 import { BarController, DoughnutController, LineController } from "chart.js";

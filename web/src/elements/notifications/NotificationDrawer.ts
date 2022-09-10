@@ -1,10 +1,10 @@
+import { ActionToLabel } from "@goauthentik/web/admin/events/utils";
 import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { me } from "@goauthentik/web/api/Users";
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/web/constants";
 import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
 import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
-import { ActionToLabel } from "@goauthentik/web/pages/events/utils";
 
 import { t } from "@lingui/macro";
 

@@ -1,3 +1,4 @@
+import "@goauthentik/web/admin/events/EventInfo";
 import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { EventWithContext } from "@goauthentik/web/api/Events";
@@ -7,7 +8,6 @@ import "@goauthentik/web/elements/buttons/Dropdown";
 import "@goauthentik/web/elements/buttons/ModalButton";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
-import "@goauthentik/web/pages/events/EventInfo";
 
 import { t } from "@lingui/macro";
 

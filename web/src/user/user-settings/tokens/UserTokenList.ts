@@ -1,3 +1,4 @@
+import { IntentToLabel } from "@goauthentik/web/admin/tokens/TokenListPage";
 import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
@@ -8,7 +9,6 @@ import "@goauthentik/web/elements/buttons/TokenCopyButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
 import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
-import { IntentToLabel } from "@goauthentik/web/pages/tokens/TokenListPage";
 import "@goauthentik/web/user/user-settings/tokens/UserTokenForm";
 
 import { t } from "@lingui/macro";

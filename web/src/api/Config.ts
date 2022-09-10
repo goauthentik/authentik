@@ -1,8 +1,8 @@
 import { globalAK } from "@goauthentik/web/api/Global";
+import { activateLocale } from "@goauthentik/web/common/locale";
 import { EVENT_REFRESH, VERSION } from "@goauthentik/web/constants";
 import { MessageMiddleware } from "@goauthentik/web/elements/messages/Middleware";
 import { APIMiddleware } from "@goauthentik/web/elements/notifications/APIDrawer";
-import { activateLocale } from "@goauthentik/web/interfaces/locale";
 import { getCookie } from "@goauthentik/web/utils";
 
 import {
