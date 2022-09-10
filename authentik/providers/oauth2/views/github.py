@@ -1,12 +1,18 @@
 """authentik pretend GitHub Views"""
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.utils.decorators import method_decorator
 from django.utils.text import slugify
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 
+from authentik.providers.oauth2.constants import SCOPE_GITHUB_ORG_READ, SCOPE_GITHUB_USER_EMAIL
 from authentik.providers.oauth2.models import RefreshToken
+from authentik.providers.oauth2.utils import protected_resource_view
 
 
+@method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(protected_resource_view([SCOPE_GITHUB_USER_EMAIL]), name="dispatch")
 class GitHubUserView(View):
     """Emulate GitHub's /user API Endpoint"""
 
@@ -62,6 +68,8 @@ class GitHubUserView(View):
         )
 
 
+@method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(protected_resource_view([SCOPE_GITHUB_ORG_READ]), name="dispatch")
 class GitHubUserTeamsView(View):
     """Emulate GitHub's /user/teams API Endpoint"""
 

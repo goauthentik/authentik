@@ -1,10 +1,7 @@
 """OAuth provider URLs"""
 from django.urls import path
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import RedirectView
 
-from authentik.providers.oauth2.constants import SCOPE_OPENID
-from authentik.providers.oauth2.utils import protected_resource_view
 from authentik.providers.oauth2.views.authorize import AuthorizationFlowInitView
 from authentik.providers.oauth2.views.introspection import TokenIntrospectionView
 from authentik.providers.oauth2.views.jwks import JWKSView
@@ -19,20 +16,20 @@ urlpatterns = [
         AuthorizationFlowInitView.as_view(),
         name="authorize",
     ),
-    path("token/", csrf_exempt(TokenView.as_view()), name="token"),
+    path("token/", TokenView.as_view(), name="token"),
     path(
         "userinfo/",
-        csrf_exempt(protected_resource_view([SCOPE_OPENID])(UserInfoView.as_view())),
+        UserInfoView.as_view(),
         name="userinfo",
     ),
     path(
         "introspect/",
-        csrf_exempt(TokenIntrospectionView.as_view()),
+        TokenIntrospectionView.as_view(),
         name="token-introspection",
     ),
     path(
         "revoke/",
-        csrf_exempt(TokenRevokeView.as_view()),
+        TokenRevokeView.as_view(),
         name="token-revoke",
     ),
     path(
