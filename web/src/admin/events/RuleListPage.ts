@@ -2,7 +2,7 @@ import "@goauthentik/web/admin/events/RuleForm";
 import "@goauthentik/web/admin/policies/BoundPoliciesList";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
-import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/e@goauthentik/web/common/ui/config;
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";

@@ -4,7 +4,7 @@ import "@goauthentik/web/admin/policies/PolicyWizard";
 import "@goauthentik/web/admin/users/UserForm";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
-import { PFColor } from "@goauthentik/web/elements/Label";
+import { PFColor } from "@@goauthentik/web/common/ui/config";
 import { PFSize } from "@goauthentik/web/elements/Spinner";
 import "@goauthentik/web/elements/Tabs";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";

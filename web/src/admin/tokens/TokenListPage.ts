@@ -1,7 +1,7 @@
 import "@goauthentik/web/admin/tokens/TokenForm";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
-import { PFColor } from "@goauthentik/web/elements/Label";
+import { PFColor } from "@@goauthentik/web/common/ui/config";
 import "@goauthentik/web/elements/buttons/Dropdown";
 import "@goauthentik/web/elements/buttons/TokenCopyButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";

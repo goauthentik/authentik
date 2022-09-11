@@ -6,7 +6,7 @@ import "@goauthentik/web/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG, config, tenant } from "@goauthentik/web/api/Config";
 import { me } from "@goauthentik/web/api/Users";
 import { uiConfig } from "@goauthentik/web/common/config";
-import { PFColor } from "@goauthentik/web/elements/Label";
+import { PFColor } from "@@goauthentik/web/common/ui/config";
 import "@goauthentik/web/elements/buttons/ActionButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";

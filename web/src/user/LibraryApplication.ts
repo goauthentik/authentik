@@ -1,5 +1,5 @@
 import { me } from "@goauthentik/web/api/Users";
-import { uiConfig } from "@goauthentik/web/common/config";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
 import { truncate } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";

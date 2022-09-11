@@ -1,7 +1,7 @@
 import { ROUTES } from "@goauthentik/web/admin/Routes";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { me } from "@goauthentik/web/api/Users";
-import "@goauthentik/web/common/locale";
+import "@goauthentik/web/common/ui/locale";
 import { WebsocketClient } from "@goauthentik/web/common/ws";
 import {
     EVENT_API_DRAWER_TOGGLE,

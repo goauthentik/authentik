@@ -4,7 +4,7 @@ import "@goauthentik/web/admin/outposts/ServiceConnectionKubernetesForm";
 import "@goauthentik/web/admin/outposts/ServiceConnectionWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
-import { PFColor } from "@goauthentik/web/elements/Label";
+import { PFColor } from "@@goauthentik/web/common/ui/config";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";

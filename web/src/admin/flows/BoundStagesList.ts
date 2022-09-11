@@ -3,7 +3,7 @@ import "@goauthentik/web/admin/policies/BoundPoliciesList";
 import "@goauthentik/web/admin/stages/StageWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
-import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/e@goauthentik/web/common/ui/config
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
 import "@goauthentik/web/elements/forms/ProxyForm";

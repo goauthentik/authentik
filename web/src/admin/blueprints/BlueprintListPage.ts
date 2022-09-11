@@ -1,7 +1,7 @@
 import "@goauthentik/web/admin/blueprints/BlueprintForm";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { EVENT_REFRESH } f@goauthentik/web/common/ui/configs";
 import { PFColor } from "@goauthentik/web/elements/Label";
 import "@goauthentik/web/elements/buttons/ActionButton";
 import "@goauthentik/web/elements/buttons/SpinnerButton";

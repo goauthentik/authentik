@@ -1,4 +1,4 @@
-import { LOCALES } from "@goauthentik/web/common/locale";
+import { LOCALES } from "@goauthentik/web/common/ui/locale";
 import "@goauthentik/web/elements/Divider";
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/elements/forms/FormElement";

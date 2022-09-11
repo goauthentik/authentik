@@ -2,7 +2,7 @@ import MDApplication from "@goauthentik/docs/core/applications.md";
 import "@goauthentik/web/admin/applications/ApplicationForm";
 import "@goauthentik/web/admin/applications/wizard/ApplicationWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import { uiConfig } from "@goauthentik/web/common/config";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
 import "@goauthentik/web/elements/Markdown";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
