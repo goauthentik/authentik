@@ -18,13 +18,13 @@ class AppSerializer(PassiveSerializer):
 
 
 class AppsViewSet(ViewSet):
-    """Read-only view set list all installed apps"""
+    """Read-only view list all installed apps"""
 
     permission_classes = [IsAdminUser]
 
     @extend_schema(responses={200: AppSerializer(many=True)})
     def list(self, request: Request) -> Response:
-        """List current messages and pass into Serializer"""
+        """Read-only view list all installed apps"""
         data = []
         for app in sorted(get_apps(), key=lambda app: app.name):
             data.append({"name": app.name, "label": app.verbose_name})

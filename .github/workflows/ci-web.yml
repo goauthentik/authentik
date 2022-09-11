@@ -23,7 +23,7 @@ jobs:
       - working-directory: web/
         run: npm ci
       - name: Generate API
-        run: make gen-client-web
+        run: make gen-client-ts
       - name: Eslint
         working-directory: web/
         run: npm run lint
@@ -39,7 +39,7 @@ jobs:
       - working-directory: web/
         run: npm ci
       - name: Generate API
-        run: make gen-client-web
+        run: make gen-client-ts
       - name: prettier
         working-directory: web/
         run: npm run prettier-check
@@ -60,7 +60,7 @@ jobs:
           cd node_modules/@goauthentik
           ln -s ../../src/ web
       - name: Generate API
-        run: make gen-client-web
+        run: make gen-client-ts
       - name: lit-analyse
         working-directory: web/
         run: npm run lit-analyse
@@ -86,7 +86,7 @@ jobs:
       - working-directory: web/
         run: npm ci
       - name: Generate API
-        run: make gen-client-web
+        run: make gen-client-ts
       - name: build
         working-directory: web/
         run: npm run build
