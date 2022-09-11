@@ -11,7 +11,7 @@ slug: "xxxx.x"
 
 ## API Changes
 
-*Insert output of `make gen-diff` here*
+_Insert output of `make gen-diff` here_
 
 ## Upgrading
 
