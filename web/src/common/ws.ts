@@ -1,6 +1,6 @@
-import { EVENT_WS_MESSAGE } from "@goauthentik/web/common/constants";
-import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
-import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { EVENT_WS_MESSAGE } from "@goauthentik/common/constants";
+import { MessageLevel } from "@goauthentik/elements/messages/Message";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { t } from "@lingui/macro";
 

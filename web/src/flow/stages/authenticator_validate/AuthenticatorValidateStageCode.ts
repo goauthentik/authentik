@@ -1,9 +1,9 @@
-import "@goauthentik/web/elements/EmptyState";
-import "@goauthentik/web/elements/forms/FormElement";
-import "@goauthentik/web/flow/FormStatic";
-import { AuthenticatorValidateStage } from "@goauthentik/web/flow/stages/authenticator_validate/AuthenticatorValidateStage";
-import { BaseStage } from "@goauthentik/web/flow/stages/base";
-import { PasswordManagerPrefill } from "@goauthentik/web/flow/stages/identification/IdentificationStage";
+import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/forms/FormElement";
+import "@goauthentik/flow/FormStatic";
+import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
+import { BaseStage } from "@goauthentik/flow/stages/base";
+import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { t } from "@lingui/macro";
 
@@ -11,7 +11,7 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";

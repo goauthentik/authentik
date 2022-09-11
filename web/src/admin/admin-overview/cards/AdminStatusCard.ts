@@ -1,6 +1,6 @@
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import { PFSize } from "@goauthentik/web/elements/Spinner";
-import { AggregateCard } from "@goauthentik/web/elements/cards/AggregateCard";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { PFSize } from "@goauthentik/elements/Spinner";
+import { AggregateCard } from "@goauthentik/elements/cards/AggregateCard";
 
 import { TemplateResult, html } from "lit";
 import { until } from "lit/directives/until.js";

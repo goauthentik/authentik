@@ -1,8 +1,8 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { first } from "@goauthentik/web/common/utils";
-import "@goauthentik/web/elements/CodeMirror";
-import "@goauthentik/web/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import YAML from "yaml";
 
 import { t } from "@lingui/macro";

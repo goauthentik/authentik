@@ -1,10 +1,10 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import { refreshMe } from "@goauthentik/web/common/users";
-import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
-import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
-import { StageHost } from "@goauthentik/web/flows/stages/base";
-import "@goauthentik/web/user/user-settings/details/stages/prompt/PromptStage";
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { refreshMe } from "@goauthentik/common/users";
+import { MessageLevel } from "@goauthentik/elements/messages/Message";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { StageHost } from "@goauthentik/flows/stages/base";
+import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
 
 import { t } from "@lingui/macro";
 
@@ -12,7 +12,7 @@ import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";

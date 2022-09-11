@@ -1,12 +1,12 @@
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import "@goauthentik/web/elements/buttons/Dropdown";
-import "@goauthentik/web/elements/buttons/ModalButton";
-import "@goauthentik/web/elements/buttons/TokenCopyButton";
-import "@goauthentik/web/elements/forms/DeleteBulkForm";
-import "@goauthentik/web/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
-import "@goauthentik/web/user/user-settings/mfa/MFADeviceForm";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/buttons/Dropdown";
+import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/buttons/TokenCopyButton";
+import "@goauthentik/elements/forms/DeleteBulkForm";
+import "@goauthentik/elements/forms/ModalForm";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "@goauthentik/user/user-settings/mfa/MFADeviceForm";
 
 import { t } from "@lingui/macro";
 

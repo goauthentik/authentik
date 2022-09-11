@@ -1,13 +1,13 @@
-import "@goauthentik/web/admin/property-mappings/PropertyMappingLDAPForm";
-import "@goauthentik/web/admin/property-mappings/PropertyMappingNotification";
-import "@goauthentik/web/admin/property-mappings/PropertyMappingSAMLForm";
-import "@goauthentik/web/admin/property-mappings/PropertyMappingScopeForm";
-import "@goauthentik/web/admin/property-mappings/PropertyMappingTestForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import "@goauthentik/web/elements/forms/ProxyForm";
-import "@goauthentik/web/elements/wizard/FormWizardPage";
-import "@goauthentik/web/elements/wizard/Wizard";
-import { WizardPage } from "@goauthentik/web/elements/wizard/WizardPage";
+import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
+import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/forms/ProxyForm";
+import "@goauthentik/elements/wizard/FormWizardPage";
+import "@goauthentik/elements/wizard/Wizard";
+import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { t } from "@lingui/macro";
 
@@ -15,7 +15,7 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";

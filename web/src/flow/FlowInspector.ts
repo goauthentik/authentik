@@ -1,13 +1,13 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { EVENT_FLOW_ADVANCE } from "@goauthentik/web/common/constants";
-import "@goauthentik/web/elements/Expand";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_FLOW_ADVANCE } from "@goauthentik/common/constants";
+import "@goauthentik/elements/Expand";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";

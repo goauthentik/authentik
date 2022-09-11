@@ -1,10 +1,10 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import { PlexAPIClient, popupCenterScreen } from "@goauthentik/web/common/helpers/plex";
-import "@goauthentik/web/elements/Spinner";
-import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
-import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
-import { BaseUserSettings } from "@goauthentik/web/user/user-settings/BaseUserSettings";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { PlexAPIClient, popupCenterScreen } from "@goauthentik/common/helpers/plex";
+import "@goauthentik/elements/Spinner";
+import { MessageLevel } from "@goauthentik/elements/messages/Message";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { BaseUserSettings } from "@goauthentik/user/user-settings/BaseUserSettings";
 
 import { t } from "@lingui/macro";
 

@@ -1,9 +1,9 @@
-import { EVENT_REFRESH, VERSION } from "@goauthentik/web/common/constants";
-import { globalAK } from "@goauthentik/web/common/global";
-import { activateLocale } from "@goauthentik/web/common/ui/locale";
-import { getCookie } from "@goauthentik/web/common/utils";
-import { MessageMiddleware } from "@goauthentik/web/elements/messages/Middleware";
-import { APIMiddleware } from "@goauthentik/web/elements/notifications/APIDrawer";
+import { EVENT_REFRESH, VERSION } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
+import { activateLocale } from "@goauthentik/common/ui/locale";
+import { getCookie } from "@goauthentik/common/utils";
+import { MessageMiddleware } from "@goauthentik/elements/messages/Middleware";
+import { APIMiddleware } from "@goauthentik/elements/notifications/APIDrawer";
 
 import {
     Config,

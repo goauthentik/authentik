@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 
 import { t } from "@lingui/macro";
 
@@ -6,7 +6,7 @@ import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";

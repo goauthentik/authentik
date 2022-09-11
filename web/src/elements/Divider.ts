@@ -1,7 +1,7 @@
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-divider")

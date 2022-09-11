@@ -1,4 +1,4 @@
-import { Form } from "@goauthentik/web/elements/forms/Form";
+import { Form } from "@goauthentik/elements/forms/Form";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";

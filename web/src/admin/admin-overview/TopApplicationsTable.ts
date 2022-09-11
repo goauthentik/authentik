@@ -1,12 +1,12 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import "@goauthentik/web/elements/Spinner";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/Spinner";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
 import { EventTopPerUser, EventsApi } from "@goauthentik/api";

@@ -1,3 +1,3 @@
-import "@goauthentik/web/common/ui/locale";
-import "@goauthentik/web/elements/messages/MessageContainer";
-import "@goauthentik/web/flow/FlowExecutor";
+import "@goauthentik/common/ui/locale";
+import "@goauthentik/elements/messages/MessageContainer";
+import "@goauthentik/flow/FlowExecutor";

@@ -1,19 +1,19 @@
-import "@goauthentik/web/admin/admin-overview/TopApplicationsTable";
-import "@goauthentik/web/admin/admin-overview/cards/AdminStatusCard";
-import "@goauthentik/web/admin/admin-overview/cards/SystemStatusCard";
-import "@goauthentik/web/admin/admin-overview/cards/VersionStatusCard";
-import "@goauthentik/web/admin/admin-overview/cards/WorkerStatusCard";
-import "@goauthentik/web/admin/admin-overview/charts/FlowStatusChart";
-import "@goauthentik/web/admin/admin-overview/charts/GroupCountStatusChart";
-import "@goauthentik/web/admin/admin-overview/charts/LDAPSyncStatusChart";
-import "@goauthentik/web/admin/admin-overview/charts/OutpostStatusChart";
-import "@goauthentik/web/admin/admin-overview/charts/PolicyStatusChart";
-import "@goauthentik/web/admin/admin-overview/charts/UserCountStatusChart";
-import { me } from "@goauthentik/web/common/users";
-import "@goauthentik/web/elements/PageHeader";
-import "@goauthentik/web/elements/cards/AggregatePromiseCard";
-import "@goauthentik/web/elements/charts/AdminLoginsChart";
-import { paramURL } from "@goauthentik/web/elements/router/RouterOutlet";
+import "@goauthentik/admin/admin-overview/TopApplicationsTable";
+import "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
+import "@goauthentik/admin/admin-overview/cards/SystemStatusCard";
+import "@goauthentik/admin/admin-overview/cards/VersionStatusCard";
+import "@goauthentik/admin/admin-overview/cards/WorkerStatusCard";
+import "@goauthentik/admin/admin-overview/charts/FlowStatusChart";
+import "@goauthentik/admin/admin-overview/charts/GroupCountStatusChart";
+import "@goauthentik/admin/admin-overview/charts/LDAPSyncStatusChart";
+import "@goauthentik/admin/admin-overview/charts/OutpostStatusChart";
+import "@goauthentik/admin/admin-overview/charts/PolicyStatusChart";
+import "@goauthentik/admin/admin-overview/charts/UserCountStatusChart";
+import { me } from "@goauthentik/common/users";
+import "@goauthentik/elements/PageHeader";
+import "@goauthentik/elements/cards/AggregatePromiseCard";
+import "@goauthentik/elements/charts/AdminLoginsChart";
+import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
 import { t } from "@lingui/macro";
 
@@ -21,7 +21,7 @@ import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";

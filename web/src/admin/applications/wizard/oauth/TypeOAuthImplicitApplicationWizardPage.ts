@@ -1,5 +1,5 @@
-import "@goauthentik/web/elements/forms/HorizontalFormElement";
-import { WizardFormPage } from "@goauthentik/web/elements/wizard/WizardFormPage";
+import "@goauthentik/elements/forms/HorizontalFormElement";
+import { WizardFormPage } from "@goauthentik/elements/wizard/WizardFormPage";
 
 import { t } from "@lingui/macro";
 

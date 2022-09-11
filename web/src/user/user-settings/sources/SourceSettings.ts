@@ -1,8 +1,8 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import "@goauthentik/web/elements/EmptyState";
-import "@goauthentik/web/user/user-settings/sources/SourceSettingsOAuth";
-import "@goauthentik/web/user/user-settings/sources/SourceSettingsPlex";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "@goauthentik/elements/EmptyState";
+import "@goauthentik/user/user-settings/sources/SourceSettingsOAuth";
+import "@goauthentik/user/user-settings/sources/SourceSettingsPlex";
 
 import { t } from "@lingui/macro";
 
@@ -11,7 +11,7 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 

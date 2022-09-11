@@ -1,9 +1,9 @@
-import "@goauthentik/web/admin/stages/prompt/PromptForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import "@goauthentik/web/elements/forms/FormGroup";
-import "@goauthentik/web/elements/forms/HorizontalFormElement";
-import "@goauthentik/web/elements/forms/ModalForm";
-import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import "@goauthentik/admin/stages/prompt/PromptForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/forms/FormGroup";
+import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/forms/ModalForm";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { t } from "@lingui/macro";
 

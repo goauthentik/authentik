@@ -1,22 +1,22 @@
-import { ROUTES } from "@goauthentik/web/admin/Routes";
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { ROUTES } from "@goauthentik/admin/Routes";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_SIDEBAR_TOGGLE,
     VERSION,
-} from "@goauthentik/web/common/constants";
-import "@goauthentik/web/common/ui/locale";
-import { me } from "@goauthentik/web/common/users";
-import { WebsocketClient } from "@goauthentik/web/common/ws";
-import "@goauthentik/web/elements/messages/MessageContainer";
-import "@goauthentik/web/elements/messages/MessageContainer";
-import "@goauthentik/web/elements/notifications/NotificationDrawer";
-import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/web/elements/router/Route";
-import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
-import "@goauthentik/web/elements/router/RouterOutlet";
-import "@goauthentik/web/elements/sidebar/Sidebar";
-import "@goauthentik/web/elements/sidebar/SidebarItem";
+} from "@goauthentik/common/constants";
+import "@goauthentik/common/ui/locale";
+import { me } from "@goauthentik/common/users";
+import { WebsocketClient } from "@goauthentik/common/ws";
+import "@goauthentik/elements/messages/MessageContainer";
+import "@goauthentik/elements/messages/MessageContainer";
+import "@goauthentik/elements/notifications/NotificationDrawer";
+import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
+import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import "@goauthentik/elements/router/RouterOutlet";
+import "@goauthentik/elements/sidebar/Sidebar";
+import "@goauthentik/elements/sidebar/SidebarItem";
 
 import { t } from "@lingui/macro";
 
@@ -24,7 +24,7 @@ import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";

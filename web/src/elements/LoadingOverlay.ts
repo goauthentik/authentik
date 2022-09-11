@@ -1,4 +1,4 @@
-import { PFSize } from "@goauthentik/web/elements/Spinner";
+import { PFSize } from "@goauthentik/elements/Spinner";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";

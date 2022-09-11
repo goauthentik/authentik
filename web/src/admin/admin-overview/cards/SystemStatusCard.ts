@@ -1,8 +1,8 @@
 import {
     AdminStatus,
     AdminStatusCard,
-} from "@goauthentik/web/admin/admin-overview/cards/AdminStatusCard";
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+} from "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 
 import { t } from "@lingui/macro";
 

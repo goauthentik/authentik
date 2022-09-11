@@ -1,5 +1,5 @@
-import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
-import "@goauthentik/web/elements/buttons/TokenCopyButton";
+import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/buttons/TokenCopyButton";
 
 import { t } from "@lingui/macro";
 

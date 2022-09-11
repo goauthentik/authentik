@@ -1,8 +1,8 @@
-import { LOCALES } from "@goauthentik/web/common/ui/locale";
-import "@goauthentik/web/elements/Divider";
-import "@goauthentik/web/elements/EmptyState";
-import "@goauthentik/web/elements/forms/FormElement";
-import { BaseStage } from "@goauthentik/web/flow/stages/base";
+import { LOCALES } from "@goauthentik/common/ui/locale";
+import "@goauthentik/elements/Divider";
+import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/forms/FormElement";
+import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { t } from "@lingui/macro";
 
@@ -10,7 +10,7 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";

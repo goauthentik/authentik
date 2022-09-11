@@ -1,3 +1,8 @@
+import "@goauthentik/admin/providers/RelatedApplicationButton";
+import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { convertToSlug } from "@goauthentik/common/utils";
 import MDCaddyStandalone from "@goauthentik/docs/providers/proxy/_caddy_standalone.md";
 import MDNginxIngress from "@goauthentik/docs/providers/proxy/_nginx_ingress.md";
 import MDNginxPM from "@goauthentik/docs/providers/proxy/_nginx_proxy_manager.md";
@@ -5,26 +10,21 @@ import MDNginxStandalone from "@goauthentik/docs/providers/proxy/_nginx_standalo
 import MDTraefikCompose from "@goauthentik/docs/providers/proxy/_traefik_compose.md";
 import MDTraefikIngress from "@goauthentik/docs/providers/proxy/_traefik_ingress.md";
 import MDTraefikStandalone from "@goauthentik/docs/providers/proxy/_traefik_standalone.md";
-import "@goauthentik/web/admin/providers/RelatedApplicationButton";
-import "@goauthentik/web/admin/providers/proxy/ProxyProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import { convertToSlug } from "@goauthentik/web/common/utils";
-import "@goauthentik/web/elements/CodeMirror";
-import { PFColor } from "@goauthentik/web/elements/Label";
-import { MarkdownDocument } from "@goauthentik/web/elements/Markdown";
-import "@goauthentik/web/elements/Markdown";
-import "@goauthentik/web/elements/Tabs";
-import "@goauthentik/web/elements/buttons/ModalButton";
-import "@goauthentik/web/elements/buttons/SpinnerButton";
-import "@goauthentik/web/elements/events/ObjectChangelog";
+import "@goauthentik/elements/CodeMirror";
+import { PFColor } from "@goauthentik/elements/Label";
+import { MarkdownDocument } from "@goauthentik/elements/Markdown";
+import "@goauthentik/elements/Markdown";
+import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/events/ObjectChangelog";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";

@@ -1,22 +1,22 @@
-import "@goauthentik/web/admin/groups/GroupForm";
-import "@goauthentik/web/admin/users/RelatedUserList";
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import "@goauthentik/web/elements/CodeMirror";
-import { PFColor } from "@goauthentik/web/elements/Label";
-import "@goauthentik/web/elements/PageHeader";
-import "@goauthentik/web/elements/Tabs";
-import "@goauthentik/web/elements/buttons/ActionButton";
-import "@goauthentik/web/elements/buttons/SpinnerButton";
-import "@goauthentik/web/elements/events/ObjectChangelog";
-import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/admin/groups/GroupForm";
+import "@goauthentik/admin/users/RelatedUserList";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "@goauthentik/elements/CodeMirror";
+import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/elements/PageHeader";
+import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/buttons/ActionButton";
+import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/events/ObjectChangelog";
+import "@goauthentik/elements/forms/ModalForm";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";

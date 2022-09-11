@@ -1,13 +1,13 @@
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import { WizardAction } from "@goauthentik/web/elements/wizard/Wizard";
-import { WizardPage } from "@goauthentik/web/elements/wizard/WizardPage";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { WizardAction } from "@goauthentik/elements/wizard/Wizard";
+import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";

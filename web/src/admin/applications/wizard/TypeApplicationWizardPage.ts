@@ -1,11 +1,11 @@
-import { WizardPage } from "@goauthentik/web/elements/wizard/WizardPage";
+import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";

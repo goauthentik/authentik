@@ -1,14 +1,14 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import { PFColor } from "@goauthentik/web/elements/Label";
-import "@goauthentik/web/elements/Spinner";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/elements/Spinner";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { OutpostHealth, OutpostsApi } from "@goauthentik/api";

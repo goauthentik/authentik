@@ -1,13 +1,13 @@
-import "@goauthentik/web/admin/providers/RelatedApplicationButton";
-import "@goauthentik/web/admin/providers/saml/SAMLProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import "@goauthentik/web/elements/CodeMirror";
-import "@goauthentik/web/elements/Tabs";
-import "@goauthentik/web/elements/buttons/ActionButton";
-import "@goauthentik/web/elements/buttons/ModalButton";
-import "@goauthentik/web/elements/buttons/SpinnerButton";
-import "@goauthentik/web/elements/events/ObjectChangelog";
+import "@goauthentik/admin/providers/RelatedApplicationButton";
+import "@goauthentik/admin/providers/saml/SAMLProviderForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/buttons/ActionButton";
+import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/events/ObjectChangelog";
 
 import { t } from "@lingui/macro";
 
@@ -16,7 +16,7 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";

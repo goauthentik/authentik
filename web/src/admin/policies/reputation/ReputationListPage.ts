@@ -1,12 +1,12 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { uiConfig } from "@goauthentik/web/common/ui/config";
-import "@goauthentik/web/elements/buttons/ModalButton";
-import "@goauthentik/web/elements/buttons/SpinnerButton";
-import "@goauthentik/web/elements/forms/DeleteBulkForm";
-import "@goauthentik/web/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
-import { TableColumn } from "@goauthentik/web/elements/table/Table";
-import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/forms/DeleteBulkForm";
+import "@goauthentik/elements/forms/ModalForm";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { TableColumn } from "@goauthentik/elements/table/Table";
+import { TablePage } from "@goauthentik/elements/table/TablePage";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { t } from "@lingui/macro";

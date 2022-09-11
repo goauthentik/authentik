@@ -1,17 +1,17 @@
-import "@goauthentik/web/admin/groups/GroupForm";
-import "@goauthentik/web/admin/policies/PolicyBindingForm";
-import "@goauthentik/web/admin/policies/PolicyWizard";
-import "@goauthentik/web/admin/users/UserForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { uiConfig } from "@goauthentik/web/common/ui/config";
-import { PFColor } from "@goauthentik/web/elements/Label";
-import { PFSize } from "@goauthentik/web/elements/Spinner";
-import "@goauthentik/web/elements/Tabs";
-import "@goauthentik/web/elements/forms/DeleteBulkForm";
-import "@goauthentik/web/elements/forms/ModalForm";
-import "@goauthentik/web/elements/forms/ProxyForm";
-import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+import "@goauthentik/admin/groups/GroupForm";
+import "@goauthentik/admin/policies/PolicyBindingForm";
+import "@goauthentik/admin/policies/PolicyWizard";
+import "@goauthentik/admin/users/UserForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { uiConfig } from "@goauthentik/common/ui/config";
+import { PFColor } from "@goauthentik/elements/Label";
+import { PFSize } from "@goauthentik/elements/Spinner";
+import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/forms/DeleteBulkForm";
+import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/forms/ProxyForm";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { t } from "@lingui/macro";
 

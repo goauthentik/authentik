@@ -1,8 +1,8 @@
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
-import "@goauthentik/web/elements/buttons/SpinnerButton";
-import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
-import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/buttons/SpinnerButton";
+import { MessageLevel } from "@goauthentik/elements/messages/Message";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { t } from "@lingui/macro";
 

@@ -1,11 +1,11 @@
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import { PFSize } from "@goauthentik/web/elements/Spinner";
-import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
-import "@goauthentik/web/elements/buttons/SpinnerButton";
-import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
-import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
-import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { PFSize } from "@goauthentik/elements/Spinner";
+import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/buttons/SpinnerButton";
+import { MessageLevel } from "@goauthentik/elements/messages/Message";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { t } from "@lingui/macro";
 

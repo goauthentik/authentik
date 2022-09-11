@@ -1,6 +1,6 @@
-import { PFSize } from "@goauthentik/web/elements/Spinner";
-import "@goauthentik/web/elements/Spinner";
-import { AggregateCard } from "@goauthentik/web/elements/cards/AggregateCard";
+import { PFSize } from "@goauthentik/elements/Spinner";
+import "@goauthentik/elements/Spinner";
+import { AggregateCard } from "@goauthentik/elements/cards/AggregateCard";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";

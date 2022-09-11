@@ -1,11 +1,11 @@
-import "@goauthentik/web/admin/providers/ldap/LDAPProviderViewPage";
-import "@goauthentik/web/admin/providers/oauth2/OAuth2ProviderViewPage";
-import "@goauthentik/web/admin/providers/proxy/ProxyProviderViewPage";
-import "@goauthentik/web/admin/providers/saml/SAMLProviderViewPage";
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import "@goauthentik/web/elements/EmptyState";
-import "@goauthentik/web/elements/PageHeader";
-import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/admin/providers/ldap/LDAPProviderViewPage";
+import "@goauthentik/admin/providers/oauth2/OAuth2ProviderViewPage";
+import "@goauthentik/admin/providers/proxy/ProxyProviderViewPage";
+import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/PageHeader";
+import "@goauthentik/elements/buttons/SpinnerButton";
 
 import { t } from "@lingui/macro";
 
@@ -13,7 +13,7 @@ import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";

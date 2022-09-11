@@ -1,10 +1,10 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { LayoutType, UIConfig, uiConfig } from "@goauthentik/web/common/ui/config";
-import { groupBy } from "@goauthentik/web/common/utils";
-import "@goauthentik/web/elements/EmptyState";
-import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
-import "@goauthentik/web/user/LibraryApplication";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { LayoutType, UIConfig, uiConfig } from "@goauthentik/common/ui/config";
+import { groupBy } from "@goauthentik/common/utils";
+import "@goauthentik/elements/EmptyState";
+import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import "@goauthentik/user/LibraryApplication";
 import Fuse from "fuse.js";
 
 import { t } from "@lingui/macro";
@@ -13,7 +13,7 @@ import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";

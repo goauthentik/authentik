@@ -1,6 +1,6 @@
-import "@goauthentik/web/admin/applications/ApplicationForm";
-import "@goauthentik/web/elements/Spinner";
-import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/admin/applications/ApplicationForm";
+import "@goauthentik/elements/Spinner";
+import "@goauthentik/elements/forms/ModalForm";
 
 import { t } from "@lingui/macro";
 

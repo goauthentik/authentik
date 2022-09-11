@@ -1,16 +1,16 @@
-import "@goauthentik/web/admin/flows/FlowForm";
-import "@goauthentik/web/admin/flows/FlowImportForm";
-import { DesignationToLabel } from "@goauthentik/web/admin/flows/utils";
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { uiConfig } from "@goauthentik/web/common/ui/config";
-import { groupBy } from "@goauthentik/web/common/utils";
-import "@goauthentik/web/elements/buttons/SpinnerButton";
-import "@goauthentik/web/elements/forms/ConfirmationForm";
-import "@goauthentik/web/elements/forms/DeleteBulkForm";
-import "@goauthentik/web/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
-import { TableColumn } from "@goauthentik/web/elements/table/Table";
-import { TablePage } from "@goauthentik/web/elements/table/TablePage";
+import "@goauthentik/admin/flows/FlowForm";
+import "@goauthentik/admin/flows/FlowImportForm";
+import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { uiConfig } from "@goauthentik/common/ui/config";
+import { groupBy } from "@goauthentik/common/utils";
+import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/forms/ConfirmationForm";
+import "@goauthentik/elements/forms/DeleteBulkForm";
+import "@goauthentik/elements/forms/ModalForm";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { TableColumn } from "@goauthentik/elements/table/Table";
+import { TablePage } from "@goauthentik/elements/table/TablePage";
 
 import { t } from "@lingui/macro";
 

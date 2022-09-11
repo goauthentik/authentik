@@ -1,5 +1,5 @@
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import { Form } from "@goauthentik/web/elements/forms/Form";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { Form } from "@goauthentik/elements/forms/Form";
 
 import { TemplateResult } from "lit";
 import { property } from "lit/decorators.js";

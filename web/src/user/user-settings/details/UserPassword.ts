@@ -1,4 +1,4 @@
-import { AndNext } from "@goauthentik/web/common/api/config";
+import { AndNext } from "@goauthentik/common/api/config";
 
 import { t } from "@lingui/macro";
 
@@ -8,7 +8,7 @@ import { customElement } from "lit/decorators.js";
 import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";

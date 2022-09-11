@@ -1,22 +1,22 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/common/api/config";
-import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "@goauthentik/web/common/constants";
-import { globalAK } from "@goauthentik/web/common/global";
-import { configureSentry } from "@goauthentik/web/common/sentry";
-import { first } from "@goauthentik/web/common/utils";
-import { WebsocketClient } from "@goauthentik/web/common/ws";
-import "@goauthentik/web/elements/LoadingOverlay";
-import "@goauthentik/web/flow/stages/RedirectStage";
-import "@goauthentik/web/flow/stages/access_denied/AccessDeniedStage";
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
+import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
+import { configureSentry } from "@goauthentik/common/sentry";
+import { first } from "@goauthentik/common/utils";
+import { WebsocketClient } from "@goauthentik/common/ws";
+import "@goauthentik/elements/LoadingOverlay";
+import "@goauthentik/flow/stages/RedirectStage";
+import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";
 // Import webauthn-related stages to prevent issues on safari
 // Which is overly sensitive to allowing things only in the context of a
 // user interaction
-import "@goauthentik/web/flow/stages/authenticator_validate/AuthenticatorValidateStage";
-import "@goauthentik/web/flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
-import "@goauthentik/web/flow/stages/autosubmit/AutosubmitStage";
-import { StageHost } from "@goauthentik/web/flow/stages/base";
-import "@goauthentik/web/flow/stages/captcha/CaptchaStage";
-import "@goauthentik/web/flow/stages/identification/IdentificationStage";
-import "@goauthentik/web/flow/stages/password/PasswordStage";
+import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
+import "@goauthentik/flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
+import "@goauthentik/flow/stages/autosubmit/AutosubmitStage";
+import { StageHost } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/stages/captcha/CaptchaStage";
+import "@goauthentik/flow/stages/identification/IdentificationStage";
+import "@goauthentik/flow/stages/password/PasswordStage";
 
 import { t } from "@lingui/macro";
 
@@ -25,7 +25,7 @@ import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -291,19 +291,19 @@ export class FlowExecutor extends LitElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-captcha>`;
             case "ak-stage-consent":
-                await import("@goauthentik/web/flow/stages/consent/ConsentStage");
+                await import("@goauthentik/flow/stages/consent/ConsentStage");
                 return html`<ak-stage-consent
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-consent>`;
             case "ak-stage-dummy":
-                await import("@goauthentik/web/flow/stages/dummy/DummyStage");
+                await import("@goauthentik/flow/stages/dummy/DummyStage");
                 return html`<ak-stage-dummy
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-dummy>`;
             case "ak-stage-email":
-                await import("@goauthentik/web/flow/stages/email/EmailStage");
+                await import("@goauthentik/flow/stages/email/EmailStage");
                 return html`<ak-stage-email
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -315,30 +315,26 @@ export class FlowExecutor extends LitElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-autosubmit>`;
             case "ak-stage-prompt":
-                await import("@goauthentik/web/flow/stages/prompt/PromptStage");
+                await import("@goauthentik/flow/stages/prompt/PromptStage");
                 return html`<ak-stage-prompt
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-prompt>`;
             case "ak-stage-authenticator-totp":
-                await import(
-                    "@goauthentik/web/flow/stages/authenticator_totp/AuthenticatorTOTPStage"
-                );
+                await import("@goauthentik/flow/stages/authenticator_totp/AuthenticatorTOTPStage");
                 return html`<ak-stage-authenticator-totp
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-totp>`;
             case "ak-stage-authenticator-duo":
-                await import(
-                    "@goauthentik/web/flow/stages/authenticator_duo/AuthenticatorDuoStage"
-                );
+                await import("@goauthentik/flow/stages/authenticator_duo/AuthenticatorDuoStage");
                 return html`<ak-stage-authenticator-duo
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-duo>`;
             case "ak-stage-authenticator-static":
                 await import(
-                    "@goauthentik/web/flow/stages/authenticator_static/AuthenticatorStaticStage"
+                    "@goauthentik/flow/stages/authenticator_static/AuthenticatorStaticStage"
                 );
                 return html`<ak-stage-authenticator-static
                     .host=${this as StageHost}
@@ -350,9 +346,7 @@ export class FlowExecutor extends LitElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-webauthn>`;
             case "ak-stage-authenticator-sms":
-                await import(
-                    "@goauthentik/web/flow/stages/authenticator_sms/AuthenticatorSMSStage"
-                );
+                await import("@goauthentik/flow/stages/authenticator_sms/AuthenticatorSMSStage");
                 return html`<ak-stage-authenticator-sms
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -363,13 +357,13 @@ export class FlowExecutor extends LitElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-validate>`;
             case "ak-flow-sources-plex":
-                await import("@goauthentik/web/flow/sources/plex/PlexLoginInit");
+                await import("@goauthentik/flow/sources/plex/PlexLoginInit");
                 return html`<ak-flow-sources-plex
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-flow-sources-plex>`;
             case "ak-flow-sources-oauth-apple":
-                await import("@goauthentik/web/flow/sources/apple/AppleLoginInit");
+                await import("@goauthentik/flow/sources/apple/AppleLoginInit");
                 return html`<ak-flow-sources-oauth-apple
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -420,7 +414,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         if (!this.inspectorOpen) {
             return html``;
         }
-        await import("@goauthentik/web/flow/FlowInspector");
+        await import("@goauthentik/flow/FlowInspector");
         return html`<ak-flow-inspector
             class="pf-c-drawer__panel pf-m-width-33"
         ></ak-flow-inspector>`;

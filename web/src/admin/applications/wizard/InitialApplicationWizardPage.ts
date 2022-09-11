@@ -1,9 +1,9 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { convertToSlug } from "@goauthentik/web/common/utils";
-import { KeyUnknown } from "@goauthentik/web/elements/forms/Form";
-import "@goauthentik/web/elements/forms/FormGroup";
-import "@goauthentik/web/elements/forms/HorizontalFormElement";
-import { WizardFormPage } from "@goauthentik/web/elements/wizard/WizardFormPage";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { convertToSlug } from "@goauthentik/common/utils";
+import { KeyUnknown } from "@goauthentik/elements/forms/Form";
+import "@goauthentik/elements/forms/FormGroup";
+import "@goauthentik/elements/forms/HorizontalFormElement";
+import { WizardFormPage } from "@goauthentik/elements/wizard/WizardFormPage";
 
 import { t } from "@lingui/macro";
 
