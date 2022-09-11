@@ -3,7 +3,6 @@ import "@goauthentik/web/admin/users/UserActiveForm";
 import "@goauthentik/web/admin/users/UserForm";
 import "@goauthentik/web/admin/users/UserPasswordForm";
 import "@goauthentik/web/admin/users/UserResetEmailForm";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG, config, tenant } from "@goauthentik/web/api/Config";
 import { me } from "@goauthentik/web/api/Users";
 import { uiConfig } from "@goauthentik/web/common/config";
@@ -16,6 +15,7 @@ import "@goauthentik/web/elements/forms/ModalForm";
 import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
 import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
 import { getURLParam } from "@goauthentik/web/elements/router/RouteMatch";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 import { first } from "@goauthentik/web/utils";
@@ -61,7 +61,7 @@ export class UserListPage extends TablePage<User> {
         return super.styles.concat(PFDescriptionList, PFCard, PFAlert, AKGlobal);
     }
 
-    async apiEndpoint(page: number): Promise<AKResponse<User>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<User>> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ordering: this.order,
             page: page,

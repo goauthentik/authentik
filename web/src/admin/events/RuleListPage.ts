@@ -1,11 +1,11 @@
 import "@goauthentik/web/admin/events/RuleForm";
 import "@goauthentik/web/admin/policies/BoundPoliciesList";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
@@ -37,7 +37,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<AKResponse<NotificationRule>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<NotificationRule>> {
         return new EventsApi(DEFAULT_CONFIG).eventsRulesList({
             ordering: this.order,
             page: page,

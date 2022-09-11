@@ -1,10 +1,10 @@
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import { PFSize } from "@goauthentik/web/elements/Spinner";
 import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
 import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
 
 import { t } from "@lingui/macro";
@@ -41,7 +41,7 @@ export class DeleteObjectsTable<T> extends Table<T> {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async apiEndpoint(page: number): Promise<AKResponse<T>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<T>> {
         return Promise.resolve({
             pagination: {
                 count: this.objects.length,

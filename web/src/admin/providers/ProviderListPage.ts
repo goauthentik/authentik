@@ -3,13 +3,13 @@ import "@goauthentik/web/admin/providers/ldap/LDAPProviderForm";
 import "@goauthentik/web/admin/providers/oauth2/OAuth2ProviderForm";
 import "@goauthentik/web/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/web/admin/providers/saml/SAMLProviderForm";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
 import "@goauthentik/web/elements/forms/ProxyForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
@@ -40,7 +40,7 @@ export class ProviderListPage extends TablePage<Provider> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<AKResponse<Provider>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList({
             ordering: this.order,
             page: page,

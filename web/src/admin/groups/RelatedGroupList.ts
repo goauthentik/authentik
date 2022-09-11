@@ -1,11 +1,11 @@
 import "@goauthentik/web/admin/groups/GroupForm";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import { PFColor } from "@goauthentik/web/elements/Label";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
 
 import { t } from "@lingui/macro";
@@ -28,7 +28,7 @@ export class RelatedGroupList extends Table<Group> {
     @property({ type: Number })
     targetUser?: number;
 
-    async apiEndpoint(page: number): Promise<AKResponse<Group>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ordering: this.order,
             page: page,

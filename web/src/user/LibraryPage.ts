@@ -1,7 +1,7 @@
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { LayoutType, UIConfig, uiConfig } from "@goauthentik/web/common/config";
 import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import "@goauthentik/web/user/LibraryApplication";
 import { groupBy, loading } from "@goauthentik/web/utils";
 import Fuse from "fuse.js";
@@ -26,7 +26,7 @@ import { Application, CoreApi } from "@goauthentik/api";
 @customElement("ak-library")
 export class LibraryPage extends LitElement {
     @property({ attribute: false })
-    apps?: AKResponse<Application>;
+    apps?: PaginatedResponse<Application>;
 
     @property({ attribute: false })
     selectedApp?: Application;

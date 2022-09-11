@@ -1,7 +1,6 @@
 import MDApplication from "@goauthentik/docs/core/applications.md";
 import "@goauthentik/web/admin/applications/ApplicationForm";
 import "@goauthentik/web/admin/applications/wizard/ApplicationWizard";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import "@goauthentik/web/elements/Markdown";
@@ -9,6 +8,7 @@ import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
 import { getURLParam } from "@goauthentik/web/elements/router/RouteMatch";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
@@ -44,7 +44,7 @@ export class ApplicationListPage extends TablePage<Application> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<AKResponse<Application>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
             ordering: this.order,
             page: page,

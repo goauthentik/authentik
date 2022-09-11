@@ -1,5 +1,4 @@
 import "@goauthentik/web/admin/tokens/TokenForm";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import { PFColor } from "@goauthentik/web/elements/Label";
@@ -7,6 +6,7 @@ import "@goauthentik/web/elements/buttons/Dropdown";
 import "@goauthentik/web/elements/buttons/TokenCopyButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
@@ -50,7 +50,7 @@ export class TokenListPage extends TablePage<Token> {
     @property()
     order = "expires";
 
-    async apiEndpoint(page: number): Promise<AKResponse<Token>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Token>> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensList({
             ordering: this.order,
             page: page,

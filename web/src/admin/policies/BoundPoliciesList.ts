@@ -2,7 +2,6 @@ import "@goauthentik/web/admin/groups/GroupForm";
 import "@goauthentik/web/admin/policies/PolicyBindingForm";
 import "@goauthentik/web/admin/policies/PolicyWizard";
 import "@goauthentik/web/admin/users/UserForm";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import { PFColor } from "@goauthentik/web/elements/Label";
@@ -11,6 +10,7 @@ import "@goauthentik/web/elements/Tabs";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
 import "@goauthentik/web/elements/forms/ProxyForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
 
 import { t } from "@lingui/macro";
@@ -31,7 +31,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     checkbox = true;
 
-    async apiEndpoint(page: number): Promise<AKResponse<PolicyBinding>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
             target: this.target || "",
             ordering: "order",

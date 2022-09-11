@@ -18,12 +18,12 @@ import "@goauthentik/web/admin/stages/user_delete/UserDeleteStageForm";
 import "@goauthentik/web/admin/stages/user_login/UserLoginStageForm";
 import "@goauthentik/web/admin/stages/user_logout/UserLogoutStageForm";
 import "@goauthentik/web/admin/stages/user_write/UserWriteStageForm";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
 import "@goauthentik/web/elements/forms/ProxyForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 import { groupBy } from "@goauthentik/web/utils";
@@ -56,7 +56,7 @@ export class StageListPage extends TablePage<Stage> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<AKResponse<Stage>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Stage>> {
         return new StagesApi(DEFAULT_CONFIG).stagesAllList({
             ordering: this.order,
             page: page,

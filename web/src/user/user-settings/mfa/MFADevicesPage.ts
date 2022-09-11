@@ -1,10 +1,10 @@
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import "@goauthentik/web/elements/buttons/Dropdown";
 import "@goauthentik/web/elements/buttons/ModalButton";
 import "@goauthentik/web/elements/buttons/TokenCopyButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
 import "@goauthentik/web/user/user-settings/mfa/MFADeviceForm";
 
@@ -52,7 +52,7 @@ export class MFADevicesPage extends Table<Device> {
     checkbox = true;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async apiEndpoint(page: number): Promise<AKResponse<Device>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
         return {
             pagination: {

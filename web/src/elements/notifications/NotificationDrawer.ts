@@ -1,10 +1,10 @@
 import { ActionToLabel } from "@goauthentik/web/admin/events/utils";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { me } from "@goauthentik/web/api/Users";
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/web/constants";
 import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
 import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 
 import { t } from "@lingui/macro";
 
@@ -23,7 +23,7 @@ import { EventsApi, Notification } from "@goauthentik/api";
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends LitElement {
     @property({ attribute: false })
-    notifications?: AKResponse<Notification>;
+    notifications?: PaginatedResponse<Notification>;
 
     @property({ type: Number })
     unread = 0;

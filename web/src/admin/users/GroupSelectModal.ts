@@ -1,8 +1,8 @@
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import { PFColor } from "@goauthentik/web/elements/Label";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TableModal } from "@goauthentik/web/elements/table/TableModal";
 
@@ -27,7 +27,7 @@ export class GroupSelectModal extends TableModal<Group> {
 
     order = "name";
 
-    async apiEndpoint(page: number): Promise<AKResponse<Group>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ordering: this.order,
             page: page,

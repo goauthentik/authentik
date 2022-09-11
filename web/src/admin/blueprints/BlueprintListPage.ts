@@ -1,5 +1,4 @@
 import "@goauthentik/web/admin/blueprints/BlueprintForm";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
@@ -8,6 +7,7 @@ import "@goauthentik/web/elements/buttons/ActionButton";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
@@ -53,7 +53,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<AKResponse<BlueprintInstance>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<BlueprintInstance>> {
         return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList({
             ordering: this.order,
             page: page,

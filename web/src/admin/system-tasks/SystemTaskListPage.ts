@@ -1,9 +1,9 @@
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import { PFColor } from "@goauthentik/web/elements/Label";
 import "@goauthentik/web/elements/buttons/ActionButton";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
@@ -40,7 +40,7 @@ export class SystemTaskListPage extends TablePage<Task> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<AKResponse<Task>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Task>> {
         return new AdminApi(DEFAULT_CONFIG).adminSystemTasksList().then((tasks) => {
             return {
                 pagination: {

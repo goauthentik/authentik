@@ -3,12 +3,12 @@ import "@goauthentik/web/admin/sources/ldap/LDAPSourceForm";
 import "@goauthentik/web/admin/sources/oauth/OAuthSourceForm";
 import "@goauthentik/web/admin/sources/plex/PlexSourceForm";
 import "@goauthentik/web/admin/sources/saml/SAMLSourceForm";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
 import "@goauthentik/web/elements/forms/ProxyForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
@@ -40,7 +40,7 @@ export class SourceListPage extends TablePage<Source> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<AKResponse<Source>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Source>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesAllList({
             ordering: this.order,
             page: page,

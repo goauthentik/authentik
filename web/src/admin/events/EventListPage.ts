@@ -1,9 +1,9 @@
 import "@goauthentik/web/admin/events/EventInfo";
 import { ActionToLabel } from "@goauthentik/web/admin/events/utils";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { EventWithContext } from "@goauthentik/web/api/Events";
 import { uiConfig } from "@goauthentik/web/common/config";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
@@ -34,7 +34,7 @@ export class EventListPage extends TablePage<Event> {
     @property()
     order = "-created";
 
-    async apiEndpoint(page: number): Promise<AKResponse<Event>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             ordering: this.order,
             page: page,

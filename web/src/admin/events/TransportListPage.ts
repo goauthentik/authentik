@@ -1,11 +1,11 @@
 import "@goauthentik/web/admin/events/TransportForm";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import "@goauthentik/web/elements/buttons/ActionButton";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
@@ -36,7 +36,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<AKResponse<NotificationTransport>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<NotificationTransport>> {
         return new EventsApi(DEFAULT_CONFIG).eventsTransportsList({
             ordering: this.order,
             page: page,

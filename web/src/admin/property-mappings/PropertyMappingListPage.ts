@@ -4,13 +4,13 @@ import "@goauthentik/web/admin/property-mappings/PropertyMappingSAMLForm";
 import "@goauthentik/web/admin/property-mappings/PropertyMappingScopeForm";
 import "@goauthentik/web/admin/property-mappings/PropertyMappingTestForm";
 import "@goauthentik/web/admin/property-mappings/PropertyMappingWizard";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
 import "@goauthentik/web/elements/forms/ProxyForm";
 import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 import { groupBy } from "@goauthentik/web/utils";
@@ -46,7 +46,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     @property({ type: Boolean })
     hideManaged = getURLParam<boolean>("hideManaged", true);
 
-    async apiEndpoint(page: number): Promise<AKResponse<PropertyMapping>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<PropertyMapping>> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({
             ordering: this.order,
             page: page,

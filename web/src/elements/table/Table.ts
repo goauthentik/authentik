@@ -1,4 +1,3 @@
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
@@ -6,6 +5,7 @@ import "@goauthentik/web/elements/chips/Chip";
 import "@goauthentik/web/elements/chips/ChipGroup";
 import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
 import "@goauthentik/web/elements/table/TablePagination";
+import { Pagination } from "@goauthentik/web/elements/table/TablePagination";
 import "@goauthentik/web/elements/table/TableSearch";
 import { groupBy } from "@goauthentik/web/utils";
 
@@ -88,8 +88,14 @@ export class TableColumn {
     }
 }
 
+export interface PaginatedResponse<T> {
+    pagination: Pagination;
+
+    results: Array<T>;
+}
+
 export abstract class Table<T> extends LitElement {
-    abstract apiEndpoint(page: number): Promise<AKResponse<T>>;
+    abstract apiEndpoint(page: number): Promise<PaginatedResponse<T>>;
     abstract columns(): TableColumn[];
     abstract row(item: T): TemplateResult[];
 
@@ -108,7 +114,7 @@ export abstract class Table<T> extends LitElement {
     }
 
     @property({ attribute: false })
-    data?: AKResponse<T>;
+    data?: PaginatedResponse<T>;
 
     @property({ type: Number })
     page = 1;

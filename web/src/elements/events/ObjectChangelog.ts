@@ -1,5 +1,4 @@
 import "@goauthentik/web/admin/events/EventInfo";
-import { AKResponse } from "@goauthentik/web/api/Client";
 import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
 import { EventWithContext } from "@goauthentik/web/api/Events";
 import { uiConfig } from "@goauthentik/web/common/config";
@@ -7,6 +6,7 @@ import "@goauthentik/web/elements/Tabs";
 import "@goauthentik/web/elements/buttons/Dropdown";
 import "@goauthentik/web/elements/buttons/ModalButton";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
 
 import { t } from "@lingui/macro";
@@ -41,7 +41,7 @@ export class ObjectChangelog extends Table<Event> {
         return this._targetModelName;
     }
 
-    async apiEndpoint(page: number): Promise<AKResponse<Event>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
         let modelName = this._targetModelName;
         let appName = this.targetModelApp;
         if (this._targetModelName.indexOf(".") !== -1) {
