@@ -378,7 +378,12 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option
+                                    value="${ifDefined(this.instance?.webCertificate)}"
+                                    ?selected=${this.instance?.webCertificate !== undefined}
+                                >
+                                    ${t`Loading...`}
+                                </option>`,
                             )}
                         </select>
                     </ak-form-element-horizontal>
