@@ -68,10 +68,6 @@ class Challenge(PassiveSerializer):
         child=ErrorDetailSerializer(many=True), allow_empty=True, required=False
     )
 
-    def __init__(self, instance=None, data=..., **kwargs):
-        super().__init__(instance, data, **kwargs)
-        self.fields["component"].required = True
-
 
 class RedirectChallenge(Challenge):
     """Challenge type to redirect the client"""
@@ -152,7 +148,6 @@ class ChallengeResponse(PassiveSerializer):
     def __init__(self, instance=None, data=None, **kwargs):
         self.stage = kwargs.pop("stage", None)
         super().__init__(instance=instance, data=data, **kwargs)
-        self.fields["component"].required = True
 
 
 class AutosubmitChallenge(Challenge):
