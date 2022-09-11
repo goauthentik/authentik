@@ -95,7 +95,7 @@ export class PlexAPIClient {
                     setTimeout(executePoll, 500, resolve, reject);
                 }
             } catch (e) {
-                reject(e);
+                reject(e as Error);
             }
         };
 

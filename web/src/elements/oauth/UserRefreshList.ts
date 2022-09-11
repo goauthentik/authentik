@@ -1,6 +1,6 @@
+import { PFColor } from "@@goauthentik/web/common/ui/config";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { uiConfig } from "@goauthentik/web/common/config";
-import { PFColor } from "@@goauthentik/web/common/ui/config";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";

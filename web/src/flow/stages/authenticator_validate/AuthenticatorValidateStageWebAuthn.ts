@@ -1,8 +1,8 @@
-import { AuthenticatorValidateStage } from "@goauthentik/web/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 import {
     transformAssertionForServer,
     transformCredentialRequestOptions,
-} from "@goauthentik/web/flow/stages/authenticator_webauthn/utils";
+} from "@goauthentik/web/common/helpers/webauthn";
+import { AuthenticatorValidateStage } from "@goauthentik/web/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 import { BaseStage } from "@goauthentik/web/flow/stages/base";
 
 import { t } from "@lingui/macro";

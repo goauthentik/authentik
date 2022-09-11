@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { PlexAPIClient, popupCenterScreen } from "@goauthentik/web/api/Plex";
+import { PlexAPIClient, popupCenterScreen } from "@goauthentik/web/common/helpers/plex";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/Spinner";
 import { MessageLevel } from "@goauthentik/web/elements/messages/Message";

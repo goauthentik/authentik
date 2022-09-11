@@ -1,5 +1,5 @@
-import { config } from "@goauthentik/web/common/api/config";
 import { me } from "@goauthentik/web/api/Users";
+import { config } from "@goauthentik/web/common/api/config";
 import { SentryIgnoredError } from "@goauthentik/web/common/errors";
 import { VERSION } from "@goauthentik/web/constants";
 import * as Sentry from "@sentry/browser";

@@ -1,6 +1,6 @@
 import { ROUTES } from "@goauthentik/web/admin/Routes";
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { me } from "@goauthentik/web/api/Users";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/common/ui/locale";
 import { WebsocketClient } from "@goauthentik/web/common/ws";
 import {

@@ -1,9 +1,9 @@
-import { PFSize } from "@goauthentik/web/elements/Spinner";
 import {
     Assertion,
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
-} from "@goauthentik/web/flow/stages/authenticator_webauthn/utils";
+} from "@goauthentik/web/common/helpers/webauthn";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
 import { BaseStage } from "@goauthentik/web/flow/stages/base";
 
 import { t } from "@lingui/macro";
