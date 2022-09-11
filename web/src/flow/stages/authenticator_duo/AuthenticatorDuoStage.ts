@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/elements/forms/FormElement";
 import "@goauthentik/web/flow/FormStatic";

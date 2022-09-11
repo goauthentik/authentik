@@ -1,5 +1,5 @@
 import { IntentToLabel } from "@goauthentik/web/admin/tokens/TokenListPage";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import { PFColor } from "@@goauthentik/web/common/ui/config";
 import "@goauthentik/web/elements/buttons/Dropdown";

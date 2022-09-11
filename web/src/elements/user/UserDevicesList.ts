@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/config";
+import "@goauthentik/web/element@goauthentik/web/common/api/config
 import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import {

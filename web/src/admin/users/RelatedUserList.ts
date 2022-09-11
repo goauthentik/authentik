@@ -3,7 +3,7 @@ import "@goauthentik/web/admin/users/UserActiveForm";
 import "@goauthentik/web/admin/users/UserForm";
 import "@goauthentik/web/admin/users/UserPasswordForm";
 import "@goauthentik/web/admin/users/UserResetEmailForm";
-import { DEFAULT_CONFIG, config, tenant } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG, config, tenant } from "@goauthentik/web/common/api/config";
 import { me } from "@goauthentik/web/api/Users";
 import { uiConfig } from "@goauthentik/web/common/config";
 import { PFColor } from "@@goauthentik/web/common/ui/config";

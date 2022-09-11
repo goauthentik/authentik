@@ -1,6 +1,6 @@
 import "@goauthentik/web/admin/events/EventInfo";
 import { ActionToLabel } from "@goauthentik/web/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { EventWithContext @goauthentik/web/common/ui/configvents";
 import { uiConfig } from "@goauthentik/web/common/config";
 import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";

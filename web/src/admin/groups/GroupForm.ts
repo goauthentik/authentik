@@ -1,5 +1,5 @@
 import "@goauthentik/web/admin/groups/MemberSelectModal";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/CodeMirror";
 import "@goauthentik/web/elements/chips/Chip";
 import "@goauthentik/web/elements/chips/ChipGroup";

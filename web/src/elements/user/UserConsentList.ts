@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import "@goauthentik/web/e@goauthentik/web/common/ui/config
 import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";

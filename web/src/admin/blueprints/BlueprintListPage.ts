@@ -1,5 +1,5 @@
 import "@goauthentik/web/admin/blueprints/BlueprintForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import { EVENT_REFRESH } f@goauthentik/web/common/ui/configs";
 import { PFColor } from "@goauthentik/web/elements/Label";

@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { ERROR_CLASS, SECONDARY_CLASS, SUCCESS_CLASS } from "@goauthentik/web/constants";
 import { PFSize } from "@goauthentik/web/elements/Spinner";
 import { ActionButton } from "@goauthentik/web/elements/buttons/ActionButton";

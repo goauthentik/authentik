@@ -2,7 +2,7 @@ import "@goauthentik/web/admin/flows/BoundStagesList";
 import "@goauthentik/web/admin/flows/FlowDiagram";
 import "@goauthentik/web/admin/flows/FlowForm";
 import "@goauthentik/web/admin/policies/BoundPoliciesList";
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/PageHeader";
 import "@goauthentik/web/elements/Tabs";
 import "@goauthentik/web/elements/buttons/SpinnerButton";

@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { PlexAPIClient, popupCenterScreen } from "@goauthentik/web/api/Plex";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/Spinner";

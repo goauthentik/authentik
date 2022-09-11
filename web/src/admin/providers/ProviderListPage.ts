@@ -3,7 +3,7 @@ import "@goauthentik/web/admin/providers/ldap/LDAPProviderForm";
 import "@goauthentik/web/admin/providers/oauth2/OAuth2ProviderForm";
 import "@goauthentik/web/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/web/admin/providers/saml/SAMLProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import "@goauthentik/web/e@goauthentik/web/common/ui/config;
 import "@goauthentik/web/elements/forms/DeleteBulkForm";

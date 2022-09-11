@@ -2,7 +2,7 @@ import "@goauthentik/web/admin/sources/ldap/LDAPSourceViewPage";
 import "@goauthentik/web/admin/sources/oauth/OAuthSourceViewPage";
 import "@goauthentik/web/admin/sources/plex/PlexSourceViewPage";
 import "@goauthentik/web/admin/sources/saml/SAMLSourceViewPage";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/elements/PageHeader";
 import "@goauthentik/web/elements/buttons/SpinnerButton";

@@ -1,6 +1,6 @@
 import "@goauthentik/web/admin/policies/BoundPoliciesList";
 import "@goauthentik/web/admin/sources/saml/SAMLSourceForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/CodeMirror";
 import "@goauthentik/web/elements/Tabs";

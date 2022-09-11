@@ -1,4 +1,4 @@
-import { tenant } from "@goauthentik/web/api/Config";
+import { tenant } from "@goauthentik/web/common/api/config";
 import { configureSentry } from "@goauthentik/web/api/Sentry";
 import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/web/constants";
 import { first } from "@goauthentik/web/utils";

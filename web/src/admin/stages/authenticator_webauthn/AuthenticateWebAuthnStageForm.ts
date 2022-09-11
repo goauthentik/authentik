@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
 

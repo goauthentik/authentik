@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/common/api/config";
 import { refreshMe } from "@goauthentik/web/api/Users";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import { MessageLevel } from "@goauthentik/web/elements/messages/Message";

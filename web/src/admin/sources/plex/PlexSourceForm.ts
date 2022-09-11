@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/web/api/Plex";
 import "@goauthentik/web/elements/forms/FormGroup";
 import "@goauthentik/web/elements/forms/HorizontalFormElement";

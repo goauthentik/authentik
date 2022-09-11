@@ -2,7 +2,7 @@ import "@goauthentik/web/admin/groups/RelatedGroupList";
 import "@goauthentik/web/admin/users/UserActiveForm";
 import "@goauthentik/web/admin/users/UserForm";
 import "@goauthentik/web/admin/users/UserPasswordForm";
-import { DEFAULT_CONFIG, config } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG, config } from "@goauthentik/web/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/CodeMirror";
 import { PFColor } from "@goauthentik/web/elements/Label";

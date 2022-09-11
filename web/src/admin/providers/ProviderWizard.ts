@@ -3,7 +3,7 @@ import "@goauthentik/web/admin/providers/oauth2/OAuth2ProviderForm";
 import "@goauthentik/web/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/web/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/web/admin/providers/saml/SAMLProviderImportForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/forms/ProxyForm";
 import { paramURL } from "@goauthentik/web/elements/router/RouterOutlet";
 import "@goauthentik/web/elements/wizard/FormWizardPage";

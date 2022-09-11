@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { EventContext, EventModel, EventWithContext } from "@goauthentik/web/api/Events";
 import { VERSION } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/Expand";

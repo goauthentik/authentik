@@ -1,5 +1,5 @@
 import "@goauthentik/web/admin/events/EventInfo";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { EventWithContext } from "@goauthentik/web/api/Events";
 import "@goauthentik/web/elements/PageHeader";
 

@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/common/api/config";
 import { currentInterface } from "@goauthentik/web/api/Sentry";
 import { me } from "@goauthentik/web/api/Users";
 import {

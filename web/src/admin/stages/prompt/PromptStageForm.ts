@@ -1,5 +1,5 @@
 import "@goauthentik/web/admin/stages/prompt/PromptForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/forms/FormGroup";
 import "@goauthentik/web/elements/forms/HorizontalFormElement";
 import "@goauthentik/web/elements/forms/ModalForm";

@@ -2,7 +2,7 @@ import "@goauthentik/web/admin/sources/ldap/LDAPSourceForm";
 import "@goauthentik/web/admin/sources/oauth/OAuthSourceForm";
 import "@goauthentik/web/admin/sources/plex/PlexSourceForm";
 import "@goauthentik/web/admin/sources/saml/SAMLSourceForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/forms/ProxyForm";
 import "@goauthentik/web/elements/wizard/FormWizardPage";
 import "@goauthentik/web/elements/wizard/Wizard";

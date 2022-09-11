@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/common/api/config";
 import { globalAK } from "@goauthentik/web/api/Global";
 import { configureSentry } from "@goauthentik/web/api/Sentry";
 import { WebsocketClient } from "@goauthentik/web/common/ws";

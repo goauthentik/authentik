@@ -1,6 +1,6 @@
 import "@goauthentik/web/admin/groups/GroupForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import { uiConfig } from "@goauthentik/web/common/config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
 import { PFColor } from "@goauthentik/web/elements/Label";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";

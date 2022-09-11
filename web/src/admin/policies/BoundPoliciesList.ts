@@ -2,7 +2,7 @@ import "@goauthentik/web/admin/groups/GroupForm";
 import "@goauthentik/web/admin/policies/PolicyBindingForm";
 import "@goauthentik/web/admin/policies/PolicyWizard";
 import "@goauthentik/web/admin/users/UserForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import { PFColor } from "@@goauthentik/web/common/ui/config";
 import { PFSize } from "@goauthentik/web/elements/Spinner";

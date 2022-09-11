@@ -1,7 +1,7 @@
 import "@goauthentik/web/admin/flows/StageBindingForm";
 import "@goauthentik/web/admin/policies/BoundPoliciesList";
 import "@goauthentik/web/admin/stages/StageWizard";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import "@goauthentik/web/e@goauthentik/web/common/ui/config
 import "@goauthentik/web/elements/forms/DeleteBulkForm";

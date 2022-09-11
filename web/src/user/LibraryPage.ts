@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { LayoutType, UIConfig, uiConfig } from "@goauthentik/web/common/config";
 import { getURLParam, updateURLParams } from "@g@goauthentik/web/common/ui/config/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";

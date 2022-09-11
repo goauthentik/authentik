@@ -1,4 +1,4 @@
-import { AndNext } from "@goauthentik/web/api/Config";
+import { AndNext } from "@goauthentik/web/common/api/config";
 
 import { t } from "@lingui/macro";
 

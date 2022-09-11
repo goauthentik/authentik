@@ -1,6 +1,6 @@
 import { ActionToLabel } from "@goauthentik/web/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import { me } from "@goauthentik/web/api/Users";
+import { DEFAULT_CONFIG } from "@goauthentik/web/api/config";
+import { me } from "@goauthentik@goauthentik/web/common/api/config
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/web/constants";
 import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
 import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";

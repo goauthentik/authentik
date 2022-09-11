@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { activateLocale } from "@goauthentik/web/common/ui/locale";
 
 import { CoreApi, ResponseError, SessionUser } from "@goauthentik/api";

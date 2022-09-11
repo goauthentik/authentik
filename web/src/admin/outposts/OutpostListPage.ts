@@ -2,7 +2,7 @@ import "@goauthentik/web/admin/outposts/OutpostDeploymentModal";
 import "@goauthentik/web/admin/outposts/OutpostForm";
 import "@goauthentik/web/admin/outposts/OutpostHealth";
 import "@goauthentik/web/admin/outposts/OutpostHealthSimple";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { uiConfig } from "@goauthentik/web/common/config";
 import { PFSize } from "@g@goauthentik/web/common/ui/configr";
 import "@goauthentik/web/elements/buttons/SpinnerButton";

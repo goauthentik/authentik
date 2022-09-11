@@ -7,7 +7,7 @@ import MDTraefikIngress from "@goauthentik/docs/providers/proxy/_traefik_ingress
 import MDTraefikStandalone from "@goauthentik/docs/providers/proxy/_traefik_standalone.md";
 import "@goauthentik/web/admin/providers/RelatedApplicationButton";
 import "@goauthentik/web/admin/providers/proxy/ProxyProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/CodeMirror";
 import { PFColor } from "@goauthentik/web/elements/Label";

@@ -1,6 +1,6 @@
 import "@goauthentik/web/admin/providers/RelatedApplicationButton";
 import "@goauthentik/web/admin/providers/oauth2/OAuth2ProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/CodeMirror";
 import "@goauthentik/web/elements/Tabs";

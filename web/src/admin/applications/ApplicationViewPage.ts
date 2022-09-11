@@ -1,7 +1,7 @@
 import "@goauthentik/web/admin/applications/ApplicationCheckAccessForm";
 import "@goauthentik/web/admin/applications/ApplicationForm";
 import "@goauthentik/web/admin/policies/BoundPoliciesList";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/elements/PageHeader";
 import "@goauthentik/web/elements/Tabs";

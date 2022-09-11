@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { EVENT_FLOW_ADVANCE } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/Expand";
 

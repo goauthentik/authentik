@@ -17,7 +17,7 @@ import "@goauthentik/web/admin/stages/user_delete/UserDeleteStageForm.ts";
 import "@goauthentik/web/admin/stages/user_login/UserLoginStageForm.ts";
 import "@goauthentik/web/admin/stages/user_logout/UserLogoutStageForm.ts";
 import "@goauthentik/web/admin/stages/user_write/UserWriteStageForm.ts";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/forms/ProxyForm";
 import "@goauthentik/web/elements/wizard/FormWizardPage";
 import "@goauthentik/web/elements/wizard/Wizard";

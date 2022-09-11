@@ -2,7 +2,7 @@ import "@goauthentik/web/admin/providers/ldap/LDAPProviderViewPage";
 import "@goauthentik/web/admin/providers/oauth2/OAuth2ProviderViewPage";
 import "@goauthentik/web/admin/providers/proxy/ProxyProviderViewPage";
 import "@goauthentik/web/admin/providers/saml/SAMLProviderViewPage";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/elements/PageHeader";
 import "@goauthentik/web/elements/buttons/SpinnerButton";

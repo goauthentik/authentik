@@ -1,4 +1,4 @@
-import { config } from "@goauthentik/web/api/Config";
+import { config } from "@goauthentik/web/common/api/config";
 import { me } from "@goauthentik/web/api/Users";
 import { SentryIgnoredError } from "@goauthentik/web/common/errors";
 import { VERSION } from "@goauthentik/web/constants";

@@ -5,7 +5,7 @@ import "@goauthentik/web/admin/policies/expression/ExpressionPolicyForm";
 import "@goauthentik/web/admin/policies/hibp/HaveIBeenPwnedPolicyForm";
 import "@goauthentik/web/admin/policies/password/PasswordPolicyForm";
 import "@goauthentik/web/admin/policies/reputation/ReputationPolicyForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/forms/ProxyForm";
 import "@goauthentik/web/elements/wizard/FormWizardPage";
 import "@goauthentik/web/elements/wizard/Wizard";

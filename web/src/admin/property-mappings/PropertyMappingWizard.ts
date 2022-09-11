@@ -3,7 +3,7 @@ import "@goauthentik/web/admin/property-mappings/PropertyMappingNotification";
 import "@goauthentik/web/admin/property-mappings/PropertyMappingSAMLForm";
 import "@goauthentik/web/admin/property-mappings/PropertyMappingScopeForm";
 import "@goauthentik/web/admin/property-mappings/PropertyMappingTestForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import "@goauthentik/web/elements/forms/ProxyForm";
 import "@goauthentik/web/elements/wizard/FormWizardPage";
 import "@goauthentik/web/elements/wizard/Wizard";
