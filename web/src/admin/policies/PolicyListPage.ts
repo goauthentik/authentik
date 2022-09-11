@@ -9,6 +9,7 @@ import "@goauthentik/web/admin/policies/password/PasswordPolicyForm";
 import "@goauthentik/web/admin/policies/reputation/ReputationPolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { uiConfig } from "@goauthentik/web/common/ui/config";
+import { groupBy } from "@goauthentik/web/common/utils";
 import "@goauthentik/web/e@goauthentik/web/common/ui/config";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
@@ -16,7 +17,6 @@ import "@goauthentik/web/elements/forms/ProxyForm";
 import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
-import { groupBy } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
 

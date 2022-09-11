@@ -1,4 +1,4 @@
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
 import { PFSize } from "@goauthentik/web/elements/Spinner";
 import { AggregateCard } from "@goauthentik/web/elements/cards/AggregateCard";
 

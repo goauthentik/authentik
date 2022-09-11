@@ -1,5 +1,5 @@
+import { convertToSlug } from "@goauthentik/web/common/utils";
 import { FormGroup } from "@goauthentik/web/elements/forms/FormGroup";
-import { convertToSlug } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
 
@@ -7,7 +7,7 @@ import { CSSResult, LitElement, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";

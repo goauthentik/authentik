@@ -1,4 +1,4 @@
-import { ROUTE_SEPARATOR } from "@goauthentik/web/constants";
+import { ROUTE_SEPARATOR } from "@goauthentik/web/common/constants";
 import { Route } from "@goauthentik/web/elements/router/Route";
 
 import { TemplateResult } from "lit";

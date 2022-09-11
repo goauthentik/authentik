@@ -1,7 +1,7 @@
 import "@goauthentik/web/admin/policies/BoundPoliciesList";
 import "@goauthentik/web/admin/sources/oauth/OAuthSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
 import "@goauthentik/web/elements/CodeMirror";
 import "@goauthentik/web/elements/Tabs";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
@@ -13,7 +13,7 @@ import { t } from "@lingui/macro";
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";

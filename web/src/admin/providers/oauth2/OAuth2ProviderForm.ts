@@ -1,9 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { first, randomString } from "@goauthentik/web/common/utils";
 import "@goauthentik/web/elements/forms/FormGroup";
 import "@goauthentik/web/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
 import "@goauthentik/web/elements/utils/TimeDeltaHelp";
-import { first, randomString } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
 

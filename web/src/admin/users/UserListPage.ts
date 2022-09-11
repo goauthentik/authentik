@@ -6,6 +6,7 @@ import "@goauthentik/web/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG, config, tenant } from "@goauthentik/web/common/api/config";
 import { uiConfig } from "@goauthentik/web/common/ui/config";
 import { me } from "@goauthentik/web/common/users";
+import { first } from "@goauthentik/web/common/utils";
 import { PFColor } from "@goauthentik/web/elements/Label";
 import { PFSize } from "@goauthentik/web/elements/Spinner";
 import "@goauthentik/web/elements/TreeView";
@@ -18,7 +19,6 @@ import { getURLParam } from "@goauthentik/web/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
-import { first } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
 
@@ -26,7 +26,7 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";

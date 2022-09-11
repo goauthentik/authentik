@@ -5,7 +5,7 @@ import { t } from "@lingui/macro";
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";

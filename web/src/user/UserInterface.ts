@@ -1,14 +1,15 @@
 import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/common/api/config";
-import { configureSentry } from "@goauthentik/web/common/sentry";
-import { UserDisplay, uiConfig } from "@goauthentik/web/common/ui/config";
-import "@goauthentik/web/common/ui/locale";
-import { me } from "@goauthentik/web/common/users";
-import { WebsocketClient } from "@goauthentik/web/common/ws";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
-} from "@goauthentik/web/constants";
+} from "@goauthentik/web/common/constants";
+import { configureSentry } from "@goauthentik/web/common/sentry";
+import { UserDisplay, uiConfig } from "@goauthentik/web/common/ui/config";
+import "@goauthentik/web/common/ui/locale";
+import { me } from "@goauthentik/web/common/users";
+import { first } from "@goauthentik/web/common/utils";
+import { WebsocketClient } from "@goauthentik/web/common/ws";
 import "@goauthentik/web/elements/messages/MessageContainer";
 import "@goauthentik/web/elements/messages/MessageContainer";
 import "@goauthentik/web/elements/notifications/NotificationDrawer";
@@ -18,7 +19,6 @@ import "@goauthentik/web/elements/sidebar/Sidebar";
 import { DefaultTenant } from "@goauthentik/web/elements/sidebar/SidebarBrand";
 import "@goauthentik/web/elements/sidebar/SidebarItem";
 import { ROUTES } from "@goauthentik/web/user/Routes";
-import { first } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
 
@@ -26,7 +26,7 @@ import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";

@@ -1,8 +1,9 @@
 import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/common/api/config";
+import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "@goauthentik/web/common/constants";
 import { globalAK } from "@goauthentik/web/common/global";
 import { configureSentry } from "@goauthentik/web/common/sentry";
+import { first } from "@goauthentik/web/common/utils";
 import { WebsocketClient } from "@goauthentik/web/common/ws";
-import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/LoadingOverlay";
 import "@goauthentik/web/flow/stages/RedirectStage";
 import "@goauthentik/web/flow/stages/access_denied/AccessDeniedStage";
@@ -16,7 +17,6 @@ import { StageHost } from "@goauthentik/web/flow/stages/base";
 import "@goauthentik/web/flow/stages/captcha/CaptchaStage";
 import "@goauthentik/web/flow/stages/identification/IdentificationStage";
 import "@goauthentik/web/flow/stages/password/PasswordStage";
-import { first } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
 
@@ -25,7 +25,7 @@ import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";

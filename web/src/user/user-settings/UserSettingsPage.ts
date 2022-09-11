@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
 import { me } from "@goauthentik/web/common/users";
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/Tabs";
 import "@goauthentik/web/elements/user/SessionList";
 import "@goauthentik/web/elements/user/UserConsentList";
@@ -17,7 +17,7 @@ import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";

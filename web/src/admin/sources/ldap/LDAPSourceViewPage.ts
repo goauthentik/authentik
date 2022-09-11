@@ -1,6 +1,6 @@
 import "@goauthentik/web/admin/sources/ldap/LDAPSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
 import "@goauthentik/web/elements/CodeMirror";
 import "@goauthentik/web/elements/Tabs";
 import "@goauthentik/web/elements/buttons/ActionButton";
@@ -14,7 +14,7 @@ import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";

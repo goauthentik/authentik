@@ -1,4 +1,5 @@
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
+import { groupBy } from "@goauthentik/web/common/utils";
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/chips/Chip";
@@ -7,7 +8,6 @@ import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/R
 import "@goauthentik/web/elements/table/TablePagination";
 import { Pagination } from "@goauthentik/web/elements/table/TablePagination";
 import "@goauthentik/web/elements/table/TableSearch";
-import { groupBy } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
 
@@ -15,7 +15,7 @@ import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";

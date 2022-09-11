@@ -1,9 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { first, groupBy } from "@goauthentik/web/common/utils";
 import "@goauthentik/web/elements/SearchSelect";
 import "@goauthentik/web/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
 import { UserOption } from "@goauthentik/web/elements/user/utils";
-import { first, groupBy } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
 

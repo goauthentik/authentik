@@ -1,6 +1,6 @@
+import { EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "@goauthentik/web/common/constants";
 import { SentryIgnoredError } from "@goauthentik/web/common/errors";
 import { WSMessage } from "@goauthentik/web/common/ws";
-import { EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/messages/Message";
 import { APIMessage } from "@goauthentik/web/elements/messages/Message";
 

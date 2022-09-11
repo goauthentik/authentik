@@ -1,9 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { convertToSlug } from "@goauthentik/web/common/utils";
 import { KeyUnknown } from "@goauthentik/web/elements/forms/Form";
 import "@goauthentik/web/elements/forms/FormGroup";
 import "@goauthentik/web/elements/forms/HorizontalFormElement";
 import { WizardFormPage } from "@goauthentik/web/elements/wizard/WizardFormPage";
-import { convertToSlug } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
 

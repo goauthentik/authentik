@@ -1,6 +1,6 @@
 import { uiConfig } from "@goauthentik/web/common/ui/config";
 import { me } from "@goauthentik/web/common/users";
-import { truncate } from "@goauthentik/web/utils";
+import { truncate } from "@goauthentik/web/common/utils";
 
 import { t } from "@lingui/macro";
 
@@ -9,7 +9,7 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";

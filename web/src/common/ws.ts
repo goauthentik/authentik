@@ -1,4 +1,4 @@
-import { EVENT_WS_MESSAGE } from "@goauthentik/web/constants";
+import { EVENT_WS_MESSAGE } from "@goauthentik/web/common/constants";
 import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
 import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
 

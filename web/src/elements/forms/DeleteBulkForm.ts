@@ -1,4 +1,4 @@
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
 import { PFSize } from "@goauthentik/web/elements/Spinner";
 import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
 import "@goauthentik/web/elements/buttons/SpinnerButton";

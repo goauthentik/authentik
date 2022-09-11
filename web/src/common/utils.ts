@@ -1,9 +1,4 @@
 import { SentryIgnoredError } from "@goauthentik/web/common/errors";
-import "@goauthentik/web/elements/EmptyState";
-
-import { t } from "@lingui/macro";
-
-import { TemplateResult, html } from "lit";
 
 export function getCookie(name: string): string {
     let cookieValue = "";
@@ -40,13 +35,6 @@ export function truncate(input?: string, max = 10): string {
     const ellipsis = array.length > max ? "..." : "";
 
     return array.slice(0, max).join(" ") + ellipsis;
-}
-
-export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
-    if (!v) {
-        return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
-    }
-    return actual;
 }
 
 export function camelToSnake(key: string): string {

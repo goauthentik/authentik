@@ -1,9 +1,10 @@
 import { getURLParam, updateURLParams } from "@g@goauthentik/web/common/ui/config/RouteMatch";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { LayoutType, UIConfig, uiConfig } from "@goauthentik/web/common/config";
+import { groupBy } from "@goauthentik/web/common/utils";
+import "@goauthentik/web/elements/EmptyState";
 import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import "@goauthentik/web/user/LibraryApplication";
-import { groupBy, loading } from "@goauthentik/web/utils";
 import Fuse from "fuse.js";
 
 import { t } from "@lingui/macro";
@@ -12,7 +13,7 @@ import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -22,6 +23,13 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
+
+export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
+    if (!v) {
+        return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+    }
+    return actual;
+}
 
 @customElement("ak-library")
 export class LibraryPage extends LitElement {

@@ -1,4 +1,4 @@
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
 import { Form } from "@goauthentik/web/elements/forms/Form";
 
 import { TemplateResult } from "lit";

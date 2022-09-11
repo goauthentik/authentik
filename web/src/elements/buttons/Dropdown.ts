@@ -1,4 +1,4 @@
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
 
 import { LitElement, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";

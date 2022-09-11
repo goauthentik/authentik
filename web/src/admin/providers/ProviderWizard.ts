@@ -16,7 +16,7 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { CSSResult, LitElement, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFHint from "@patternfly/patternfly/components/Hint/hint.css";

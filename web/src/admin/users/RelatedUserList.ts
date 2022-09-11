@@ -6,6 +6,7 @@ import "@goauthentik/web/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG, config, tenant } from "@goauthentik/web/common/api/config";
 import { uiConfig } from "@goauthentik/web/common/ui/config";
 import { me } from "@goauthentik/web/common/users";
+import { first } from "@goauthentik/web/common/utils";
 import { PFColor } from "@goauthentik/web/elements/Label";
 import "@goauthentik/web/elements/buttons/ActionButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
@@ -15,7 +16,6 @@ import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer
 import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
-import { first } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
 

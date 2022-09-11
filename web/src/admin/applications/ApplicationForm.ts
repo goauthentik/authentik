@@ -1,11 +1,11 @@
 import "@goauthentik/web/admin/providers/ProviderWizard";
 import { DEFAULT_CONFIG, config } from "@goauthentik/web/common/api/config";
+import { first } from "@goauthentik/web/common/utils";
 import "@goauthentik/web/elements/forms/FormGroup";
 import "@goauthentik/web/elements/forms/HorizontalFormElement";
 import "@goauthentik/web/elements/forms/ModalForm";
 import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
 import "@goauthentik/web/elements/forms/ProxyForm";
-import { first } from "@goauthentik/web/utils";
 
 import { t } from "@lingui/macro";
 

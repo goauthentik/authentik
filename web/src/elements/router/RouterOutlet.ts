@@ -1,4 +1,4 @@
-import { ROUTE_SEPARATOR } from "@goauthentik/web/constants";
+import { ROUTE_SEPARATOR } from "@goauthentik/web/common/constants";
 import { Route } from "@goauthentik/web/elements/router/Route";
 import { RouteMatch } from "@goauthentik/web/elements/router/RouteMatch";
 import "@goauthentik/web/elements/router/Router404";
@@ -6,7 +6,7 @@ import "@goauthentik/web/elements/router/Router404";
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 
 // Poliyfill for hashchange.newURL,
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange

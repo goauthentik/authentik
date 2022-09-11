@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { VERSION } from "@goauthentik/web/common/constants";
 import { EventContext, EventModel, EventWithContext } from "@goauthentik/web/common/events";
-import { VERSION } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/Expand";
 import "@goauthentik/web/elements/Spinner";
 import { PFSize } from "@goauthentik/web/elements/Spinner";
