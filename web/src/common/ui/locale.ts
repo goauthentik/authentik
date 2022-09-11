@@ -1,4 +1,4 @@
-import { globalAK } from "@goauthentik/web/api/Global";
+import { globalAK } from "@goauthentik/web/common/global";
 
 import { Messages, i18n } from "@lingui/core";
 import { detect, fromNavigator, fromUrl } from "@lingui/detect-locale";

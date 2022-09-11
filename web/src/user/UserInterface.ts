@@ -1,4 +1,4 @@
-import { configureSentry } from "@goauthentik/web/api/Sentry";
+import { configureSentry } from "@goauthentik/web/common/sentry";
 import { me } from "@goauthentik/web/api/Users";
 import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/common/api/config";
 import { UserDisplay, uiConfig } from "@goauthentik/web/common/ui/config";

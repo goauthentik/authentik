@@ -1,4 +1,4 @@
-import { globalAK } from "@goauthentik/web/api/Global";
+import { globalAK } from "@goauthentik/web/common/global";
 import { activateLocale } from "@goauthentik/web/common/ui/locale";
 import { EVENT_REFRESH, VERSION } from "@goauthentik/web/constants";
 import { MessageMiddleware } from "@goauthentik/web/elements/messages/Middleware";

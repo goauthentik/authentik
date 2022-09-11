@@ -1,7 +1,7 @@
 import "@goauthentik/web/admin/events/EventInfo";
 import "@goauthentik/web/admin/events/EventInfo";
-import { EventWithContext } from "@goauthentik/web/api/Events";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { EventWithContext } from "@goauthentik/web/common/events";
 import { uiConfig } from "@goauthentik/web/common/ui/config";
 import "@goauthentik/web/elements/Tabs";
 import "@goauthentik/web/elements/buttons/Dropdown";

@@ -1,6 +1,6 @@
 import "@goauthentik/web/admin/events/EventInfo";
-import { EventWithContext } from "@goauthentik/web/api/Events";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { EventWithContext } from "@goauthentik/web/common/events";
 import "@goauthentik/web/elements/PageHeader";
 
 import { t } from "@lingui/macro";

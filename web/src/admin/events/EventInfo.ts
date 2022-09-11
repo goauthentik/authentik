@@ -1,5 +1,5 @@
-import { EventContext, EventModel, EventWithContext } from "@goauthentik/web/api/Events";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { EventContext, EventModel, EventWithContext } from "@goauthentik/web/common/events";
 import { VERSION } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/Expand";
 import "@goauthentik/web/elements/Spinner";

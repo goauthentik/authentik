@@ -1,6 +1,6 @@
-import { globalAK } from "@goauthentik/web/api/Global";
-import { configureSentry } from "@goauthentik/web/api/Sentry";
+import { configureSentry } from "@goauthentik/web/common/sentry";
 import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/common/api/config";
+import { globalAK } from "@goauthentik/web/common/global";
 import { WebsocketClient } from "@goauthentik/web/common/ws";
 import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/LoadingOverlay";
