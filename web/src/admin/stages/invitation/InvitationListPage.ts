@@ -1,8 +1,8 @@
 import "@goauthentik/web/admin/stages/invitation/InvitationForm";
 import "@goauthentik/web/admin/stages/invitation/InvitationListLink";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { uiConfig } from "@goauthentik/web/common/config";
-import "@goauthentik/web/e@goauthentik/web/common/ui/config
+import { uiConfig } from "@goauthentik/web/common/ui/config";
+import "@goauthentik/web/elements/buttons/ModalButton";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";

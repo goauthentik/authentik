@@ -1,5 +1,5 @@
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/api/config";
-import "@goauthentik/web/elements/buttons@goauthentik/web/common/api/config
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import "@goauthentik/web/elements/buttons/Dropdown";
 import "@goauthentik/web/elements/buttons/ModalButton";
 import "@goauthentik/web/elements/buttons/TokenCopyButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";

@@ -1,10 +1,10 @@
-import { PFColor } from "@@goauthentik/web/common/ui/config";
 import "@goauthentik/web/admin/groups/GroupForm";
 import "@goauthentik/web/admin/policies/PolicyBindingForm";
 import "@goauthentik/web/admin/policies/PolicyWizard";
 import "@goauthentik/web/admin/users/UserForm";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { uiConfig } from "@goauthentik/web/common/config";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
 import { PFSize } from "@goauthentik/web/elements/Spinner";
 import "@goauthentik/web/elements/Tabs";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";

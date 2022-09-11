@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/config";
-import { EVENT_REFRESH } from "@@goauthentik/web/common/api/config
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import { PFColor } from "@goauthentik/web/elements/Label";
 import "@goauthentik/web/elements/buttons/ActionButton";
 import "@goauthentik/web/elements/buttons/SpinnerButton";

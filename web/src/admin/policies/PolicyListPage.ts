@@ -8,7 +8,7 @@ import "@goauthentik/web/admin/policies/hibp/HaveIBeenPwnedPolicyForm";
 import "@goauthentik/web/admin/policies/password/PasswordPolicyForm";
 import "@goauthentik/web/admin/policies/reputation/ReputationPolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { uiConfig } from "@goauthentik/web/common/config";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
 import "@goauthentik/web/e@goauthentik/web/common/ui/config";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";

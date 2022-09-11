@@ -5,8 +5,8 @@ import "@goauthentik/web/admin/property-mappings/PropertyMappingScopeForm";
 import "@goauthentik/web/admin/property-mappings/PropertyMappingTestForm";
 import "@goauthentik/web/admin/property-mappings/PropertyMappingWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { uiConfig } from "@goauthentik/web/common/config";
-import "@goauthentik/web/e@goauthentik/web/common/ui/config
+import { uiConfig } from "@goauthentik/web/common/ui/config";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
 import "@goauthentik/web/elements/forms/ModalForm";
 import "@goauthentik/web/elements/forms/ProxyForm";
 import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";

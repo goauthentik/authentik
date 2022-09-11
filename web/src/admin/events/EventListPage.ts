@@ -1,8 +1,8 @@
 import "@goauthentik/web/admin/events/EventInfo";
 import { ActionToLabel } from "@goauthentik/web/admin/events/utils";
+import { EventWithContext } from "@goauthentik/web/api/Events";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { EventWithContext @goauthentik/web/common/ui/configvents";
-import { uiConfig } from "@goauthentik/web/common/config";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
 import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import { TableColumn } from "@goauthentik/web/elements/table/Table";
 import { TablePage } from "@goauthentik/web/elements/table/TablePage";
