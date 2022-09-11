@@ -1,8 +1,8 @@
-import { getURLParam, updateURLParams } from "@g@goauthentik/web/common/ui/config/RouteMatch";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { LayoutType, UIConfig, uiConfig } from "@goauthentik/web/common/config";
+import { LayoutType, UIConfig, uiConfig } from "@goauthentik/web/common/ui/config";
 import { groupBy } from "@goauthentik/web/common/utils";
 import "@goauthentik/web/elements/EmptyState";
+import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 import "@goauthentik/web/user/LibraryApplication";
 import Fuse from "fuse.js";
