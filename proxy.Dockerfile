@@ -30,7 +30,6 @@ COPY --from=builder /go/proxy /
 COPY --from=web-builder /static/robots.txt /web/robots.txt
 COPY --from=web-builder /static/security.txt /web/security.txt
 COPY --from=web-builder /static/dist/ /web/dist/
-COPY --from=web-builder /static/authentik/ /web/authentik/
 
 HEALTHCHECK CMD [ "wget", "--spider", "http://localhost:9300/outpost.goauthentik.io/ping" ]
 
