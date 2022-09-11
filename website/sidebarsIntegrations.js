@@ -107,6 +107,7 @@ module.exports = {
                         "services/node-red/index",
                         "services/sonarr/index",
                         "services/tautulli/index",
+                        "services/jellyfin/index",
                     ],
                 },
             ],
