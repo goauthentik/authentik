@@ -9,6 +9,10 @@ slug: "xxxx.x"
 
 ## Minor changes/fixes
 
+## API Changes
+
+*Insert output of `make gen-diff` here*
+
 ## Upgrading
 
 This release does not introduce any new requirements.
