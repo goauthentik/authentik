@@ -1,4 +1,5 @@
 """AuthenticatorDuoStage API Views"""
+from django.http import Http404
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
@@ -81,7 +82,9 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
     # pylint: disable=invalid-name,unused-argument
     def enrollment_status(self, request: Request, pk: str) -> Response:
         """Check enrollment status of user details in current session"""
-        stage: AuthenticatorDuoStage = self.get_object()
+        stage: AuthenticatorDuoStage = AuthenticatorDuoStage.objects.filter(pk=pk).first()
+        if not stage:
+            raise Http404
         client = stage.client
         user_id = self.request.session.get(SESSION_KEY_DUO_USER_ID)
         activation_code = self.request.session.get(SESSION_KEY_DUO_ACTIVATION_CODE)
