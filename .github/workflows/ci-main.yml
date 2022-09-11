@@ -139,7 +139,7 @@ jobs:
         working-directory: web
         run: |
           npm ci
-          make -C .. gen-client-web
+          make -C .. gen-client-ts
           npm run build
       - name: run e2e
         run: |
@@ -173,7 +173,7 @@ jobs:
         working-directory: web/
         run: |
           npm ci
-          make -C .. gen-client-web
+          make -C .. gen-client-ts
           npm run build
       - name: run e2e
         run: |

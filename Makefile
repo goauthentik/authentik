@@ -49,24 +49,44 @@ lint:
 	bandit -r authentik tests lifecycle -x node_modules
 	golangci-lint run -v
 
+migrate:
+	python -m lifecycle.migrate
+
+run:
+	go run -v cmd/server/main.go
+
 i18n-extract: i18n-extract-core web-extract
 
 i18n-extract-core:
 	ak makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
 
+#########################
+## API Schema
+#########################
+
 gen-build:
 	AUTHENTIK_DEBUG=true ak make_blueprint_schema > blueprints/schema.json
 	AUTHENTIK_DEBUG=true ak spectacular --file schema.yml
+
+gen-diff:
+	git show $(shell git tag -l | tail -n 1):schema.yml > old_schema.yml
+	docker run \
+		--rm -v ${PWD}:/local \
+		--user ${UID}:${GID} \
+		docker.io/openapitools/openapi-diff:2.0.1 \
+		--markdown /local/diff.md \
+		/local/old_schema.yml /local/schema.yml
+	rm old_schema.yml
 
 gen-clean:
 	rm -rf web/api/src/
 	rm -rf api/
 
-gen-client-web:
+gen-client-ts:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		openapitools/openapi-generator-cli:v6.0.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v6.0.0 generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/gen-ts-api \
@@ -84,7 +104,7 @@ gen-client-go:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		openapitools/openapi-generator-cli:v6.0.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v6.0.0 generate \
 		-i /local/schema.yml \
 		-g go \
 		-o /local/gen-go-api \
@@ -95,13 +115,7 @@ gen-client-go:
 gen-dev-config:
 	python -m scripts.generate_config
 
-gen: gen-build gen-clean gen-client-web
-
-migrate:
-	python -m lifecycle.migrate
-
-run:
-	go run -v cmd/server/main.go
+gen: gen-build gen-clean gen-client-ts
 
 #########################
 ## Web

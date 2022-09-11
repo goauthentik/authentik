@@ -60,8 +60,28 @@ def postprocess_schema_responses(result, generator, **kwargs):  # noqa: W0613
 
     for path in result["paths"].values():
         for method in path.values():
-            method["responses"].setdefault("400", validation_error.ref)
-            method["responses"].setdefault("403", generic_error.ref)
+            method["responses"].setdefault(
+                "400",
+                {
+                    "content": {
+                        "application/json": {
+                            "schema": validation_error.ref,
+                        }
+                    },
+                    "description": "",
+                },
+            )
+            method["responses"].setdefault(
+                "403",
+                {
+                    "content": {
+                        "application/json": {
+                            "schema": generic_error.ref,
+                        }
+                    },
+                    "description": "",
+                },
+            )
 
     result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
 
