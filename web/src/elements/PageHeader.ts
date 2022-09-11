@@ -1,6 +1,6 @@
-import { currentInterface } from "@goauthentik/web/common/sentry";
-import { me } from "@goauthentik/web/api/Users";
 import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/common/api/config";
+import { currentInterface } from "@goauthentik/web/common/sentry";
+import { me } from "@goauthentik/web/common/users";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,

@@ -1,7 +1,7 @@
 import "@goauthentik/web/admin/providers/RelatedApplicationButton";
 import "@goauthentik/web/admin/providers/ldap/LDAPProviderForm";
-import { me } from "@goauthentik/web/api/Users";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { me } from "@goauthentik/web/common/users";
 import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import "@goauthentik/web/elements/CodeMirror";
 import "@goauthentik/web/elements/Tabs";

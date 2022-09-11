@@ -1,5 +1,5 @@
-import { configureSentry } from "@goauthentik/web/common/sentry";
 import { tenant } from "@goauthentik/web/common/api/config";
+import { configureSentry } from "@goauthentik/web/common/sentry";
 import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/web/constants";
 import { first } from "@goauthentik/web/utils";
 

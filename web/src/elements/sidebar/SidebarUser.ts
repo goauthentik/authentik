@@ -1,4 +1,4 @@
-import { me } from "@goauthentik/web/api/Users";
+import { me } from "@goauthentik/web/common/users";
 
 import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";

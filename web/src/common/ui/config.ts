@@ -1,4 +1,4 @@
-import { me } from "@goauthentik/web/api/Users";
+import { me } from "@goauthentik/web/common/users";
 
 import { UserSelf } from "@goauthentik/api";
 

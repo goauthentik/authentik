@@ -1,8 +1,8 @@
-import { configureSentry } from "@goauthentik/web/common/sentry";
-import { me } from "@goauthentik/web/api/Users";
 import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/common/api/config";
+import { configureSentry } from "@goauthentik/web/common/sentry";
 import { UserDisplay, uiConfig } from "@goauthentik/web/common/ui/config";
 import "@goauthentik/web/common/ui/locale";
+import { me } from "@goauthentik/web/common/users";
 import { WebsocketClient } from "@goauthentik/web/common/ws";
 import {
     EVENT_API_DRAWER_TOGGLE,

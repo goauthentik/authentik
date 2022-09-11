@@ -9,7 +9,7 @@ import "@goauthentik/web/admin/admin-overview/charts/LDAPSyncStatusChart";
 import "@goauthentik/web/admin/admin-overview/charts/OutpostStatusChart";
 import "@goauthentik/web/admin/admin-overview/charts/PolicyStatusChart";
 import "@goauthentik/web/admin/admin-overview/charts/UserCountStatusChart";
-import { me } from "@goauthentik/web/api/Users";
+import { me } from "@goauthentik/web/common/users";
 import "@goauthentik/web/elements/PageHeader";
 import "@goauthentik/web/elements/cards/AggregatePromiseCard";
 import "@goauthentik/web/elements/charts/AdminLoginsChart";
