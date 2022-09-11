@@ -21,8 +21,10 @@ func (ws *WebServer) configureStatic() {
 	fs := http.FileServer(http.Dir(config.Get().Paths.Media))
 	distFs := http.FileServer(http.Dir("./web/dist"))
 	distHandler := http.StripPrefix("/static/dist/", distFs)
+	authentikHandler := http.StripPrefix("/static/authentik/", http.FileServer(http.Dir("./web/authentik")))
 	helpHandler := http.FileServer(http.Dir("./website/help/"))
 	indexLessRouter.PathPrefix("/static/dist/").Handler(distHandler)
+	indexLessRouter.PathPrefix("/static/authentik/").Handler(authentikHandler)
 
 	// Prevent font-loading issues on safari, which loads fonts relatively to the URL the browser is on
 	indexLessRouter.PathPrefix("/if/flow/{flow_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {

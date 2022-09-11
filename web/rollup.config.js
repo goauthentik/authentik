@@ -39,7 +39,8 @@ export const resources = [
         src: "node_modules/@patternfly/patternfly/assets/*",
         dest: "dist/assets/",
     },
-    { src: "assets/*", dest: "dist/assets" },
+    { src: "src/assets/*", dest: "dist/assets" },
+    { src: "./icons/*", dest: "dist/assets/icons" },
 ];
 
 // eslint-disable-next-line no-undef
