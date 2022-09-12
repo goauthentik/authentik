@@ -1,8 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ERROR_CLASS, SECONDARY_CLASS, SUCCESS_CLASS } from "@goauthentik/common/constants";
+import { MessageLevel } from "@goauthentik/common/messages";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import { ActionButton } from "@goauthentik/elements/buttons/ActionButton";
-import { MessageLevel } from "@goauthentik/elements/messages/Message";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { TemplateResult, html } from "lit";

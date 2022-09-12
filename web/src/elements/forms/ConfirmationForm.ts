@@ -1,7 +1,7 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { MessageLevel } from "@goauthentik/common/messages";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import { MessageLevel } from "@goauthentik/elements/messages/Message";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { t } from "@lingui/macro";

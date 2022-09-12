@@ -1,4 +1,4 @@
-import "@goauthentik/elements/../elements/PageHeader";
+import "@goauthentik/elements/PageHeader";
 import { updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { Table } from "@goauthentik/elements/table/Table";
 

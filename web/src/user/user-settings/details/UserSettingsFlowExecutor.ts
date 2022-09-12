@@ -1,8 +1,8 @@
 import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { MessageLevel } from "@goauthentik/common/messages";
 import { refreshMe } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
-import { MessageLevel } from "@goauthentik/elements/messages/Message";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { StageHost } from "@goauthentik/flow/stages/base";
 import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";

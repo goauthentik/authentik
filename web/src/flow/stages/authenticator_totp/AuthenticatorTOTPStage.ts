@@ -1,6 +1,6 @@
+import { MessageLevel } from "@goauthentik/common/messages";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
-import { MessageLevel } from "@goauthentik/elements/messages/Message";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";

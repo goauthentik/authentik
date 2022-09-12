@@ -1,4 +1,8 @@
-import { EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "@goauthentik/common/constants";
+import {
+    EVENT_MESSAGE,
+    EVENT_WS_MESSAGE,
+    WS_MSG_TYPE_MESSAGE,
+} from "@goauthentik/common/constants";
 import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { WSMessage } from "@goauthentik/common/ws";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -43,6 +47,9 @@ export class MessageContainer extends AKElement {
         this.addEventListener(EVENT_WS_MESSAGE, ((e: CustomEvent<WSMessage>) => {
             if (e.detail.message_type !== WS_MSG_TYPE_MESSAGE) return;
             this.addMessage(e.detail as unknown as APIMessage);
+        }) as EventListener);
+        this.addEventListener(EVENT_MESSAGE, ((e: CustomEvent<APIMessage>) => {
+            this.addMessage(e.detail);
         }) as EventListener);
     }
 

@@ -1,4 +1,4 @@
-import { MessageLevel } from "@goauthentik/elements/messages/Message";
+import { MessageLevel } from "@goauthentik/common/messages";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { t } from "@lingui/macro";

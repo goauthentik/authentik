@@ -1,9 +1,11 @@
+import {
+    CSRFMiddleware,
+    EventMiddleware,
+    LoggingMiddleware,
+} from "@goauthentik/common/api/middleware";
 import { EVENT_REFRESH, VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { activateLocale } from "@goauthentik/common/ui/locale";
-import { getCookie } from "@goauthentik/common/utils";
-import { MessageMiddleware } from "@goauthentik/elements/messages/Middleware";
-import { APIMiddleware } from "@goauthentik/elements/notifications/APIDrawer";
 
 import {
     Config,
@@ -12,23 +14,8 @@ import {
     CoreApi,
     CurrentTenant,
     CurrentTenantFromJSON,
-    FetchParams,
-    Middleware,
-    RequestContext,
-    ResponseContext,
     RootApi,
 } from "@goauthentik/api";
-
-export class LoggingMiddleware implements Middleware {
-    post(context: ResponseContext): Promise<Response | void> {
-        tenant().then((tenant) => {
-            let msg = `authentik/api[${tenant.matchedDomain}]: `;
-            msg += `${context.response.status} ${context.init.method} ${context.url}`;
-            console.debug(msg);
-        });
-        return Promise.resolve(context.response);
-    }
-}
 
 let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(
     ConfigFromJSON(globalAK()?.config),
@@ -81,14 +68,6 @@ export function tenant(): Promise<CurrentTenant> {
     return globalTenantPromise;
 }
 
-export class CSRFMiddleware implements Middleware {
-    pre?(context: RequestContext): Promise<FetchParams | void> {
-        // @ts-ignore
-        context.init.headers["X-authentik-CSRF"] = getCookie("authentik_csrf");
-        return Promise.resolve(context);
-    }
-}
-
 export function getMetaContent(key: string): string {
     const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
     if (!metaEl) return "";
@@ -102,9 +81,8 @@ export const DEFAULT_CONFIG = new Configuration({
     },
     middleware: [
         new CSRFMiddleware(),
-        new APIMiddleware(),
-        new MessageMiddleware(),
-        new LoggingMiddleware(),
+        new EventMiddleware(),
+        new LoggingMiddleware(CurrentTenantFromJSON(globalAK()?.tenant)),
     ],
 });
 

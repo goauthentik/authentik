@@ -1,3 +1,4 @@
+import { MessageLevel } from "@goauthentik/common/messages";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -7,13 +8,6 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-export enum MessageLevel {
-    error = "error",
-    warning = "warning",
-    success = "success",
-    info = "info",
-}
 
 export interface APIMessage {
     level: MessageLevel;
