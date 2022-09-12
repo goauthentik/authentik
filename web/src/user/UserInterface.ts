@@ -10,6 +10,7 @@ import "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
@@ -22,7 +23,7 @@ import { ROUTES } from "@goauthentik/user/Routes";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -40,7 +41,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import { CurrentTenant, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-interface-user")
-export class UserInterface extends LitElement {
+export class UserInterface extends AKElement {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 

@@ -9,6 +9,7 @@ import {
 import "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
@@ -20,7 +21,7 @@ import "@goauthentik/elements/sidebar/SidebarItem";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -33,7 +34,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { AdminApi, Version } from "@goauthentik/api";
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends LitElement {
+export class AdminInterface extends AKElement {
     @property({ type: Boolean })
     sidebarOpen = true;
 

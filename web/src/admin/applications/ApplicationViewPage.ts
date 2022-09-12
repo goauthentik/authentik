@@ -2,6 +2,7 @@ import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
 import "@goauthentik/admin/applications/ApplicationForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
@@ -11,7 +12,7 @@ import "@goauthentik/elements/events/ObjectChangelog";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -28,7 +29,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { Application, CoreApi, OutpostsApi } from "@goauthentik/api";
 
 @customElement("ak-application-view")
-export class ApplicationViewPage extends LitElement {
+export class ApplicationViewPage extends AKElement {
     @property()
     set applicationSlug(value: string) {
         new CoreApi(DEFAULT_CONFIG)

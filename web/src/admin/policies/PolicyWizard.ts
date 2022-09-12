@@ -6,6 +6,7 @@ import "@goauthentik/admin/policies/hibp/HaveIBeenPwnedPolicyForm";
 import "@goauthentik/admin/policies/password/PasswordPolicyForm";
 import "@goauthentik/admin/policies/reputation/ReputationPolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
@@ -14,7 +15,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -63,7 +64,7 @@ export class InitialPolicyWizardPage extends WizardPage {
 }
 
 @customElement("ak-policy-wizard")
-export class PolicyWizard extends LitElement {
+export class PolicyWizard extends AKElement {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, AKGlobal, PFRadio];
     }

@@ -1,4 +1,6 @@
-import { CSSResult, LitElement } from "lit";
+import { AKElement } from "@goauthentik/elements/Base";
+
+import { CSSResult } from "lit";
 import { property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -7,7 +9,7 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-export abstract class BaseUserSettings extends LitElement {
+export abstract class BaseUserSettings extends AKElement {
     @property()
     objectId!: string;
 

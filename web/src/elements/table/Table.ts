@@ -1,5 +1,6 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { groupBy } from "@goauthentik/common/utils";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/chips/Chip";
@@ -11,7 +12,7 @@ import "@goauthentik/elements/table/TableSearch";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -94,7 +95,7 @@ export interface PaginatedResponse<T> {
     results: Array<T>;
 }
 
-export abstract class Table<T> extends LitElement {
+export abstract class Table<T> extends AKElement {
     abstract apiEndpoint(page: number): Promise<PaginatedResponse<T>>;
     abstract columns(): TableColumn[];
     abstract row(item: T): TemplateResult[];

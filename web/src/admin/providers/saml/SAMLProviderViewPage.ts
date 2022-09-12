@@ -2,6 +2,7 @@ import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -11,7 +12,7 @@ import "@goauthentik/elements/events/ObjectChangelog";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
@@ -31,7 +32,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { CryptoApi, ProvidersApi, SAMLProvider } from "@goauthentik/api";
 
 @customElement("ak-provider-saml-view")
-export class SAMLProviderViewPage extends LitElement {
+export class SAMLProviderViewPage extends AKElement {
     @property()
     set args(value: { [key: string]: number }) {
         this.providerID = value.id;

@@ -4,6 +4,7 @@ import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/PageHeader";
@@ -24,7 +25,7 @@ import "@goauthentik/elements/user/UserDevicesList";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -43,7 +44,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 import { CapabilitiesEnum, CoreApi, User } from "@goauthentik/api";
 
 @customElement("ak-user-view")
-export class UserViewPage extends LitElement {
+export class UserViewPage extends AKElement {
     @property({ type: Number })
     set userId(id: number) {
         new CoreApi(DEFAULT_CONFIG)

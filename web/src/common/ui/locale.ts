@@ -1,10 +1,9 @@
+import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 
 import { Messages, i18n } from "@lingui/core";
 import { detect, fromNavigator, fromUrl } from "@lingui/detect-locale";
 import { t } from "@lingui/macro";
-
-import { LitElement } from "lit";
 
 interface Locale {
     locale: Messages;
@@ -165,13 +164,12 @@ export function activateLocale(code: string) {
         i18n.loadLocaleData(locale.code, { plurals: localeData.plurals });
         i18n.load(locale.code, localeData.locale);
         i18n.activate(locale.code);
-        document.querySelectorAll("[data-refresh-on-locale=true]").forEach((el) => {
-            try {
-                (el as LitElement).requestUpdate();
-            } catch {
-                console.debug(`authentik/locale: failed to update element ${el}`);
-            }
-        });
+        window.dispatchEvent(
+            new CustomEvent(EVENT_LOCALE_CHANGE, {
+                bubbles: true,
+                composed: true,
+            }),
+        );
     });
 }
 autoDetectLanguage();

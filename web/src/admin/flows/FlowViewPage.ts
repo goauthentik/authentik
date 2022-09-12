@@ -3,6 +3,7 @@ import "@goauthentik/admin/flows/FlowDiagram";
 import "@goauthentik/admin/flows/FlowForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -10,7 +11,7 @@ import "@goauthentik/elements/events/ObjectChangelog";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -25,7 +26,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { Flow, FlowsApi, ResponseError } from "@goauthentik/api";
 
 @customElement("ak-flow-view")
-export class FlowViewPage extends LitElement {
+export class FlowViewPage extends AKElement {
     @property()
     set flowSlug(value: string) {
         new FlowsApi(DEFAULT_CONFIG)

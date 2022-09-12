@@ -3,13 +3,14 @@ import "@goauthentik/admin/providers/oauth2/OAuth2ProviderViewPage";
 import "@goauthentik/admin/providers/proxy/ProxyProviderViewPage";
 import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -19,7 +20,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
 @customElement("ak-provider-view")
-export class ProviderViewPage extends LitElement {
+export class ProviderViewPage extends AKElement {
     @property({ type: Number })
     set providerID(value: number) {
         new ProvidersApi(DEFAULT_CONFIG)

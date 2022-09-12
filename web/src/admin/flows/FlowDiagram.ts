@@ -1,9 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import FlowChart from "flowchart.js";
 
-import { LitElement, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { FlowsApi } from "@goauthentik/api";
@@ -14,7 +15,7 @@ export const FILL_DARK_MODE = "#18191a";
 export const FILL_LIGHT_MODE = "#f0f0f0";
 
 @customElement("ak-flow-diagram")
-export class FlowDiagram extends LitElement {
+export class FlowDiagram extends AKElement {
     _flowSlug?: string;
 
     @property()

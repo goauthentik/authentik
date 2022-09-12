@@ -2,13 +2,14 @@ import { ActionToLabel } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
+import { AKElement } from "@goauthentik/elements/Base";
 import { MessageLevel } from "@goauthentik/elements/messages/Message";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -21,7 +22,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { EventsApi, Notification } from "@goauthentik/api";
 
 @customElement("ak-notification-drawer")
-export class NotificationDrawer extends LitElement {
+export class NotificationDrawer extends AKElement {
     @property({ attribute: false })
     notifications?: PaginatedResponse<Notification>;
 

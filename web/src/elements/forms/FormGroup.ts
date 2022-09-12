@@ -1,4 +1,6 @@
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { AKElement } from "@goauthentik/elements/Base";
+
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -8,7 +10,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-form-group")
-export class FormGroup extends LitElement {
+export class FormGroup extends AKElement {
     @property({ type: Boolean })
     expanded = false;
 

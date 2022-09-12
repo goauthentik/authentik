@@ -10,12 +10,13 @@ import "@goauthentik/admin/applications/wizard/proxy/TypeProxyApplicationWizardP
 import "@goauthentik/admin/applications/wizard/saml/TypeSAMLApplicationWizardPage";
 import "@goauthentik/admin/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage";
 import "@goauthentik/admin/applications/wizard/saml/TypeSAMLImportApplicationWizardPage";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/wizard/Wizard";
 
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -24,7 +25,7 @@ import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-application-wizard")
-export class ApplicationWizard extends LitElement {
+export class ApplicationWizard extends AKElement {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, AKGlobal, PFRadio];
     }

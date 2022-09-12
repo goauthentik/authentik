@@ -1,9 +1,10 @@
 import { convertToSlug } from "@goauthentik/common/utils";
+import { AKElement } from "@goauthentik/elements/Base";
 import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, css } from "lit";
+import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -13,7 +14,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-form-element-horizontal")
-export class HorizontalFormElement extends LitElement {
+export class HorizontalFormElement extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,

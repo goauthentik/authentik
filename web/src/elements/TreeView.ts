@@ -1,9 +1,10 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 import { setURLParams } from "@goauthentik/elements/router/RouteMatch";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -19,7 +20,7 @@ export interface TreeViewItem {
 }
 
 @customElement("ak-treeview-node")
-export class TreeViewNode extends LitElement {
+export class TreeViewNode extends AKElement {
     @property({ attribute: false })
     item?: TreeViewItem;
 
@@ -136,7 +137,7 @@ export class TreeViewNode extends LitElement {
 }
 
 @customElement("ak-treeview")
-export class TreeView extends LitElement {
+export class TreeView extends AKElement {
     static get styles(): CSSResult[] {
         return [PFBase, PFTreeView, AKGlobal];
     }

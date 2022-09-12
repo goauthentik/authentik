@@ -4,6 +4,7 @@ import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/flow/stages/RedirectStage";
 import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";
@@ -20,7 +21,7 @@ import "@goauthentik/flow/stages/password/PasswordStage";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -47,7 +48,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-flow-executor")
-export class FlowExecutor extends LitElement implements StageHost {
+export class FlowExecutor extends AKElement implements StageHost {
     flowSlug?: string;
 
     private _challenge?: ChallengeTypes;

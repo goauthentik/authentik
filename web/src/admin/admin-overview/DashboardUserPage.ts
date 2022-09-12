@@ -1,10 +1,11 @@
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/cards/AggregatePromiseCard";
 import "@goauthentik/elements/charts/AdminModelPerDay";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -16,7 +17,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import { EventActions } from "@goauthentik/api";
 
 @customElement("ak-admin-dashboard-users")
-export class DashboardUserPage extends LitElement {
+export class DashboardUserPage extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFGrid,

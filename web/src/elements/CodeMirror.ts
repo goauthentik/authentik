@@ -12,13 +12,13 @@ import {
 import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { EditorView, keymap, lineNumbers } from "@codemirror/view";
+import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
 
-import { LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-codemirror")
-export class CodeMirrorTextarea extends LitElement {
+export class CodeMirrorTextarea extends AKElement {
     @property({ type: Boolean })
     readOnly = false;
 

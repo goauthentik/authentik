@@ -3,18 +3,19 @@ import "@goauthentik/admin/sources/oauth/OAuthSourceViewPage";
 import "@goauthentik/admin/sources/plex/PlexSourceViewPage";
 import "@goauthentik/admin/sources/saml/SAMLSourceViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
-import { LitElement, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { Source, SourcesApi } from "@goauthentik/api";
 
 @customElement("ak-source-view")
-export class SourceViewPage extends LitElement {
+export class SourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
         new SourcesApi(DEFAULT_CONFIG)

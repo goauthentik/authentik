@@ -1,4 +1,6 @@
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { AKElement } from "@goauthentik/elements/Base";
+
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -13,7 +15,7 @@ export interface MarkdownDocument {
 }
 
 @customElement("ak-markdown")
-export class Markdown extends LitElement {
+export class Markdown extends AKElement {
     @property({ attribute: false })
     md?: MarkdownDocument;
 

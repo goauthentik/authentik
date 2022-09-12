@@ -1,9 +1,10 @@
 import { AndNext } from "@goauthentik/common/api/config";
+import { AKElement } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { CSSResult, LitElement } from "lit";
+import { CSSResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -16,7 +17,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-user-settings-password")
-export class UserSettingsPassword extends LitElement {
+export class UserSettingsPassword extends AKElement {
     @property()
     configureUrl?: string;
 

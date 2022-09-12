@@ -1,6 +1,7 @@
 import { SearchSelect } from "@goauthentik/SearchSelect";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { camelToSnake, convertToSlug } from "@goauthentik/common/utils";
+import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { MessageLevel } from "@goauthentik/elements/messages/Message";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
@@ -8,7 +9,7 @@ import "@polymer/iron-form/iron-form";
 import { IronFormElement } from "@polymer/iron-form/iron-form";
 import "@polymer/paper-input/paper-input";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -33,7 +34,7 @@ export interface KeyUnknown {
 }
 
 @customElement("ak-form")
-export class Form<T> extends LitElement {
+export class Form<T> extends AKElement {
     viewportCheck = true;
 
     @property()

@@ -1,6 +1,8 @@
+import { AKElement } from "@goauthentik/elements/Base";
+
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -12,7 +14,7 @@ import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-table-search")
-export class TableSearch extends LitElement {
+export class TableSearch extends AKElement {
     @property()
     value?: string;
 

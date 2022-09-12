@@ -1,4 +1,6 @@
-import { LitElement, TemplateResult, html } from "lit";
+import { AKElement } from "@goauthentik/elements/Base";
+
+import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import { CurrentTenant, ErrorDetail } from "@goauthentik/api";
@@ -27,7 +29,7 @@ export type KeyUnknown = {
     [key: string]: unknown;
 };
 
-export class BaseStage<Tin, Tout> extends LitElement {
+export class BaseStage<Tin, Tout> extends AKElement {
     host!: StageHost;
 
     @property({ attribute: false })

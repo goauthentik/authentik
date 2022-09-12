@@ -1,13 +1,15 @@
+import { AKElement } from "@goauthentik/elements/Base";
+
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
 @customElement("ak-form-static")
-export class FormStatic extends LitElement {
+export class FormStatic extends AKElement {
     @property()
     userAvatar?: string;
 

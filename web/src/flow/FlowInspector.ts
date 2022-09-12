@@ -1,10 +1,11 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_FLOW_ADVANCE } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -18,7 +19,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
 
 @customElement("ak-flow-inspector")
-export class FlowInspector extends LitElement {
+export class FlowInspector extends AKElement {
     flowSlug: string;
 
     @property({ attribute: false })

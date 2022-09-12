@@ -1,9 +1,10 @@
+import { AKElement } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -12,7 +13,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { OutpostHealth } from "@goauthentik/api";
 
 @customElement("ak-outpost-health")
-export class OutpostHealthElement extends LitElement {
+export class OutpostHealthElement extends AKElement {
     @property({ attribute: false })
     outpostHealth?: OutpostHealth;
 

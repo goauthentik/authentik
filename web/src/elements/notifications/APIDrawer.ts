@@ -1,8 +1,9 @@
 import { EVENT_API_DRAWER_REFRESH, EVENT_API_DRAWER_TOGGLE } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -39,7 +40,7 @@ export class APIMiddleware implements Middleware {
 }
 
 @customElement("ak-api-drawer")
-export class APIDrawer extends LitElement {
+export class APIDrawer extends AKElement {
     @property({ attribute: false })
     requests: RequestInfo[] = [];
 

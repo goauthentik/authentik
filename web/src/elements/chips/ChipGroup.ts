@@ -1,6 +1,7 @@
+import { AKElement } from "@goauthentik/elements/Base";
 import { Chip } from "@goauthentik/elements/chips/Chip";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -10,7 +11,7 @@ import PFChipGroup from "@patternfly/patternfly/components/ChipGroup/chip-group.
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-chip-group")
-export class ChipGroup extends LitElement {
+export class ChipGroup extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,

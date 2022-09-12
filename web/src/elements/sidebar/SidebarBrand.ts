@@ -2,8 +2,9 @@ import { tenant } from "@goauthentik/common/api/config";
 import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
+import { AKElement } from "@goauthentik/elements/Base";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -24,10 +25,11 @@ export const DefaultTenant: CurrentTenant = {
     brandingTitle: "authentik",
     uiFooterLinks: [],
     matchedDomain: "",
+    defaultLocale: "",
 };
 
 @customElement("ak-sidebar-brand")
-export class SidebarBrand extends LitElement {
+export class SidebarBrand extends AKElement {
     @property({ attribute: false })
     tenant: CurrentTenant = DefaultTenant;
 

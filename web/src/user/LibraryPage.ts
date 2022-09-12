@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { LayoutType, UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { groupBy } from "@goauthentik/common/utils";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
@@ -9,7 +10,7 @@ import Fuse from "fuse.js";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -32,7 +33,7 @@ export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
 }
 
 @customElement("ak-library")
-export class LibraryPage extends LitElement {
+export class LibraryPage extends AKElement {
     @property({ attribute: false })
     apps?: PaginatedResponse<Application>;
 

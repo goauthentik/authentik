@@ -1,4 +1,6 @@
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { AKElement } from "@goauthentik/elements/Base";
+
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -27,7 +29,7 @@ const LEVEL_ICON_MAP: { [key: string]: string } = {
 };
 
 @customElement("ak-message")
-export class Message extends LitElement {
+export class Message extends AKElement {
     @property({ attribute: false })
     message?: APIMessage;
 

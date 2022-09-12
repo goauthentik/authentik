@@ -3,6 +3,7 @@ import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
@@ -11,7 +12,7 @@ import "@goauthentik/elements/events/ObjectChangelog";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { until } from "lit-html/directives/until.js";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -32,7 +33,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { LDAPProvider, ProvidersApi } from "@goauthentik/api";
 
 @customElement("ak-provider-ldap-view")
-export class LDAPProviderViewPage extends LitElement {
+export class LDAPProviderViewPage extends AKElement {
     @property()
     set args(value: { [key: string]: number }) {
         this.providerID = value.id;

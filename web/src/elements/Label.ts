@@ -1,4 +1,6 @@
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { AKElement } from "@goauthentik/elements/Base";
+
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -13,7 +15,7 @@ export enum PFColor {
 }
 
 @customElement("ak-label")
-export class Label extends LitElement {
+export class Label extends AKElement {
     @property()
     color: PFColor = PFColor.Grey;
 

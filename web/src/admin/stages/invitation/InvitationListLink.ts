@@ -1,8 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { AKElement } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -16,7 +17,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-invitation-list-link")
-export class InvitationListLink extends LitElement {
+export class InvitationListLink extends AKElement {
     @property()
     invitation?: string;
 

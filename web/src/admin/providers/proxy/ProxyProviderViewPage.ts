@@ -10,6 +10,7 @@ import MDNginxStandalone from "@goauthentik/docs/providers/proxy/_nginx_standalo
 import MDTraefikCompose from "@goauthentik/docs/providers/proxy/_traefik_compose.md";
 import MDTraefikIngress from "@goauthentik/docs/providers/proxy/_traefik_ingress.md";
 import MDTraefikStandalone from "@goauthentik/docs/providers/proxy/_traefik_standalone.md";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { PFColor } from "@goauthentik/elements/Label";
 import { MarkdownDocument } from "@goauthentik/elements/Markdown";
@@ -21,7 +22,7 @@ import "@goauthentik/elements/events/ObjectChangelog";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -61,7 +62,7 @@ export function isForward(mode: ProxyMode): boolean {
 }
 
 @customElement("ak-provider-proxy-view")
-export class ProxyProviderViewPage extends LitElement {
+export class ProxyProviderViewPage extends AKElement {
     @property()
     set args(value: { [key: string]: number }) {
         this.providerID = value.id;

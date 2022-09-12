@@ -8,10 +8,11 @@ import {
 } from "@goauthentik/common/constants";
 import { currentInterface } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
+import { AKElement } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -23,7 +24,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { EventsApi } from "@goauthentik/api";
 
 @customElement("ak-page-header")
-export class PageHeader extends LitElement {
+export class PageHeader extends AKElement {
     @property()
     icon?: string;
 

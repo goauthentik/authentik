@@ -1,9 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Spinner";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -12,7 +13,7 @@ import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import { EventTopPerUser, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-top-applications-table")
-export class TopApplicationsTable extends LitElement {
+export class TopApplicationsTable extends AKElement {
     @property({ attribute: false })
     topN?: EventTopPerUser[];
 

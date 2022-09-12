@@ -3,6 +3,7 @@ import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { convertToTitle } from "@goauthentik/common/utils";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
@@ -11,7 +12,7 @@ import "@goauthentik/elements/events/ObjectChangelog";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -29,7 +30,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { OAuth2Provider, OAuth2ProviderSetupURLs, ProvidersApi } from "@goauthentik/api";
 
 @customElement("ak-provider-oauth2-view")
-export class OAuth2ProviderViewPage extends LitElement {
+export class OAuth2ProviderViewPage extends AKElement {
     @property({ type: Number })
     set providerID(value: number) {
         const api = new ProvidersApi(DEFAULT_CONFIG);

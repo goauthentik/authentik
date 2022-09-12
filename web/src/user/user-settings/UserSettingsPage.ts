@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
@@ -12,7 +13,7 @@ import "@goauthentik/user/user-settings/tokens/UserTokenList";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
@@ -34,7 +35,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
 @customElement("ak-user-settings")
-export class UserSettingsPage extends LitElement {
+export class UserSettingsPage extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,

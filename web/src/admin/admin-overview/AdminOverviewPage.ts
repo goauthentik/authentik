@@ -10,6 +10,7 @@ import "@goauthentik/admin/admin-overview/charts/OutpostStatusChart";
 import "@goauthentik/admin/admin-overview/charts/PolicyStatusChart";
 import "@goauthentik/admin/admin-overview/charts/UserCountStatusChart";
 import { me } from "@goauthentik/common/users";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/cards/AggregatePromiseCard";
 import "@goauthentik/elements/charts/AdminLoginsChart";
@@ -17,7 +18,7 @@ import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -28,7 +29,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-admin-overview")
-export class AdminOverviewPage extends LitElement {
+export class AdminOverviewPage extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFGrid,

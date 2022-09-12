@@ -2,6 +2,7 @@ import "@goauthentik/admin/groups/GroupForm";
 import "@goauthentik/admin/users/RelatedUserList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/PageHeader";
@@ -13,7 +14,7 @@ import "@goauthentik/elements/forms/ModalForm";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -31,7 +32,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 import { CoreApi, Group } from "@goauthentik/api";
 
 @customElement("ak-group-view")
-export class GroupViewPage extends LitElement {
+export class GroupViewPage extends AKElement {
     @property({ type: String })
     set groupId(id: string) {
         new CoreApi(DEFAULT_CONFIG)

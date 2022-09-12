@@ -4,6 +4,7 @@ import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
@@ -12,7 +13,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -61,7 +62,7 @@ export class InitialPropertyMappingWizardPage extends WizardPage {
 }
 
 @customElement("ak-property-mapping-wizard")
-export class PropertyMappingWizard extends LitElement {
+export class PropertyMappingWizard extends AKElement {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, AKGlobal, PFRadio];
     }

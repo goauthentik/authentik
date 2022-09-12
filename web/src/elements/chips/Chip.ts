@@ -1,4 +1,6 @@
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { AKElement } from "@goauthentik/elements/Base";
+
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -7,7 +9,7 @@ import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-chip")
-export class Chip extends LitElement {
+export class Chip extends AKElement {
     @property()
     value?: number | string;
 

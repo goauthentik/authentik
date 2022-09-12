@@ -1,6 +1,8 @@
+import { AKElement } from "@goauthentik/elements/Base";
+
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -21,7 +23,7 @@ export interface Pagination {
 }
 
 @customElement("ak-table-pagination")
-export class TablePagination extends LitElement {
+export class TablePagination extends AKElement {
     @property({ attribute: false })
     pages?: Pagination;
 

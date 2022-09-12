@@ -1,6 +1,7 @@
 import "@goauthentik/admin/outposts/ServiceConnectionDockerForm";
 import "@goauthentik/admin/outposts/ServiceConnectionKubernetesForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
@@ -9,7 +10,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -58,7 +59,7 @@ export class InitialServiceConnectionWizardPage extends WizardPage {
 }
 
 @customElement("ak-service-connection-wizard")
-export class ServiceConnectionWizard extends LitElement {
+export class ServiceConnectionWizard extends AKElement {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, AKGlobal, PFRadio];
     }

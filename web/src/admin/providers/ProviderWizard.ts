@@ -4,6 +4,7 @@ import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderImportForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/wizard/FormWizardPage";
@@ -13,7 +14,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -77,7 +78,7 @@ export class InitialProviderWizardPage extends WizardPage {
 }
 
 @customElement("ak-provider-wizard")
-export class ProviderWizard extends LitElement {
+export class ProviderWizard extends AKElement {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, AKGlobal, PFRadio];
     }

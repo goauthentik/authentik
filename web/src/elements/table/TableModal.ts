@@ -1,8 +1,9 @@
+import { AKElement } from "@goauthentik/elements/Base";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import { MODAL_BUTTON_STYLES } from "@goauthentik/elements/buttons/ModalButton";
 import { Table } from "@goauthentik/elements/table/Table";
 
-import { CSSResult, LitElement } from "lit";
+import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
@@ -56,7 +57,7 @@ export abstract class TableModal<T> extends Table<T> {
         this.open = true;
         this.querySelectorAll("*").forEach((child) => {
             if ("requestUpdate" in child) {
-                (child as LitElement).requestUpdate();
+                (child as AKElement).requestUpdate();
             }
         });
     }

@@ -1,13 +1,14 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { VERSION } from "@goauthentik/common/constants";
 import { EventContext, EventModel, EventWithContext } from "@goauthentik/common/events";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 import "@goauthentik/elements/Spinner";
 import { PFSize } from "@goauthentik/elements/Spinner";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -20,7 +21,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { EventActions, FlowsApi } from "@goauthentik/api";
 
 @customElement("ak-event-info")
-export class EventInfo extends LitElement {
+export class EventInfo extends AKElement {
     @property({ attribute: false })
     event!: EventWithContext;
 
