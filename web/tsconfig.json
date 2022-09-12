@@ -8,6 +8,7 @@
             "@goauthentik/flow/*": ["src/flow/*"],
             "@goauthentik/polyfill/*": ["src/polyfill/*"],
             "@goauthentik/user/*": ["src/user/*"],
+            "@goauthentik/locales/*": ["src/locales/*"],
             "@goauthentik/docs/*": ["../website/docs/*"]
         },
         "baseUrl": ".",
