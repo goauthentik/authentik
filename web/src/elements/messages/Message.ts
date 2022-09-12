@@ -14,6 +14,7 @@ export enum MessageLevel {
     success = "success",
     info = "info",
 }
+
 export interface APIMessage {
     level: MessageLevel;
     tags?: string;

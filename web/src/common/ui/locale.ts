@@ -172,4 +172,3 @@ export function activateLocale(code: string) {
         );
     });
 }
-autoDetectLanguage();

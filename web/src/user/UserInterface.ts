@@ -6,7 +6,7 @@ import {
 } from "@goauthentik/common/constants";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
-import "@goauthentik/common/ui/locale";
+import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -39,6 +39,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { CurrentTenant, EventsApi } from "@goauthentik/api";
+
+autoDetectLanguage();
 
 @customElement("ak-interface-user")
 export class UserInterface extends AKElement {

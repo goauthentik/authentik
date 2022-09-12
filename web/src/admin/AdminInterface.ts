@@ -6,7 +6,7 @@ import {
     EVENT_SIDEBAR_TOGGLE,
     VERSION,
 } from "@goauthentik/common/constants";
-import "@goauthentik/common/ui/locale";
+import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -32,6 +32,8 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AdminApi, Version } from "@goauthentik/api";
+
+autoDetectLanguage();
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends AKElement {
