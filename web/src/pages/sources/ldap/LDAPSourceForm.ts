@@ -174,7 +174,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                                         });
                                     }),
                                 html`<option
-                                    value=${ifDefined(this.instance?.peerCertificate)}
+                                    value=${ifDefined(this.instance?.peerCertificate || undefined)}
                                     ?selected=${this.instance?.peerCertificate !== undefined}
                                 >
                                     ${t`Loading...`}

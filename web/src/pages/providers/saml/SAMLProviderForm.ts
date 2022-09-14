@@ -170,7 +170,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                                         });
                                     }),
                                 html`<option
-                                    value=${ifDefined(this.instance?.signingKp)}
+                                    value=${ifDefined(this.instance?.signingKp || undefined)}
                                     ?selected=${this.instance?.signingKp !== undefined}
                                 >
                                     ${t`Loading...`}
@@ -209,7 +209,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                                         });
                                     }),
                                 html`<option
-                                    value=${ifDefined(this.instance?.verificationKp)}
+                                    value=${ifDefined(this.instance?.verificationKp || undefined)}
                                     ?selected=${this.instance?.verificationKp !== undefined}
                                 >
                                     ${t`Loading...`}

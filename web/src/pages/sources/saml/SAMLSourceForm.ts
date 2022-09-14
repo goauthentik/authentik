@@ -163,7 +163,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                                         });
                                     }),
                                 html`<option
-                                    value=${ifDefined(this.instance?.signingKp)}
+                                    value=${ifDefined(this.instance?.signingKp || undefined)}
                                     ?selected=${this.instance?.signingKp !== undefined}
                                 >
                                     ${t`Loading...`}

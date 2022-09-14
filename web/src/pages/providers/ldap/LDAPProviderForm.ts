@@ -194,7 +194,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                                         });
                                     }),
                                 html`<option
-                                    value=${ifDefined(this.instance?.certificate)}
+                                    value=${ifDefined(this.instance?.certificate || undefined)}
                                     ?selected=${this.instance?.certificate !== undefined}
                                 >
                                     ${t`Loading...`}

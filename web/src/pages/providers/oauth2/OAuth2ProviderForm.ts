@@ -205,7 +205,7 @@ ${this.instance?.redirectUris}</textarea
                                         });
                                     }),
                                 html`<option
-                                    value=${ifDefined(this.instance?.signingKey)}
+                                    value=${ifDefined(this.instance?.signingKey || undefined)}
                                     ?selected=${this.instance?.signingKey !== undefined}
                                 >
                                     ${t`Loading...`}

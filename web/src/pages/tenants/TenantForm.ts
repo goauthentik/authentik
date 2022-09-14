@@ -379,7 +379,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                         });
                                     }),
                                 html`<option
-                                    value=${ifDefined(this.instance?.webCertificate)}
+                                    value=${ifDefined(this.instance?.webCertificate || undefined)}
                                     ?selected=${this.instance?.webCertificate !== undefined}
                                 >
                                     ${t`Loading...`}
