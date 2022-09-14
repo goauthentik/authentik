@@ -162,7 +162,12 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option
+                                    value=${ifDefined(this.instance?.signingKp || undefined)}
+                                    ?selected=${this.instance?.signingKp !== undefined}
+                                >
+                                    ${t`Loading...`}
+                                </option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">

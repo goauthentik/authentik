@@ -98,7 +98,12 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                                     </option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option
+                            value=${ifDefined(this.instance?.tlsVerification || undefined)}
+                            ?selected=${this.instance?.tlsVerification !== undefined}
+                        >
+                            ${t`Loading...`}
+                        </option>`,
                     )}
                 </select>
                 <p class="pf-c-form__helper-text">
@@ -128,7 +133,12 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                                     </option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option
+                            value=${ifDefined(this.instance?.tlsAuthentication || undefined)}
+                            ?selected=${this.instance?.tlsAuthentication !== undefined}
+                        >
+                            ${t`Loading...`}
+                        </option>`,
                     )}
                 </select>
                 <p class="pf-c-form__helper-text">

@@ -204,7 +204,12 @@ ${this.instance?.redirectUris}</textarea
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option
+                                    value=${ifDefined(this.instance?.signingKey || undefined)}
+                                    ?selected=${this.instance?.signingKey !== undefined}
+                                >
+                                    ${t`Loading...`}
+                                </option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">${t`Key used to sign the tokens.`}</p>

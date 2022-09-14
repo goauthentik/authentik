@@ -169,7 +169,12 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option
+                                    value=${ifDefined(this.instance?.signingKp || undefined)}
+                                    ?selected=${this.instance?.signingKp !== undefined}
+                                >
+                                    ${t`Loading...`}
+                                </option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
@@ -203,7 +208,12 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option
+                                    value=${ifDefined(this.instance?.verificationKp || undefined)}
+                                    ?selected=${this.instance?.verificationKp !== undefined}
+                                >
+                                    ${t`Loading...`}
+                                </option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">

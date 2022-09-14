@@ -173,7 +173,12 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option
+                                    value=${ifDefined(this.instance?.peerCertificate || undefined)}
+                                    ?selected=${this.instance?.peerCertificate !== undefined}
+                                >
+                                    ${t`Loading...`}
+                                </option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">

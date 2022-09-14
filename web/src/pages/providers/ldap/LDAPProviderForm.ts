@@ -193,7 +193,12 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option
+                                    value=${ifDefined(this.instance?.certificate || undefined)}
+                                    ?selected=${this.instance?.certificate !== undefined}
+                                >
+                                    ${t`Loading...`}
+                                </option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
