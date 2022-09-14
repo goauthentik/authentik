@@ -90,7 +90,7 @@ export const defaultOptions = {
     watch: {
         clearScreen: false,
     },
-    preserveEntrySignatures: false,
+    preserveEntrySignatures: "strict",
     cache: true,
     context: "window",
 };

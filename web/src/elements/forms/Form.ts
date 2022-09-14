@@ -1,8 +1,8 @@
-import { SearchSelect } from "@goauthentik/SearchSelect";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { camelToSnake, convertToSlug } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
+import { SearchSelect } from "@goauthentik/elements/SearchSelect";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import "@polymer/iron-form/iron-form";

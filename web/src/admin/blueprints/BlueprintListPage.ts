@@ -25,13 +25,12 @@ export function BlueprintStatus(blueprint?: BlueprintInstance): string {
             return t`Successful`;
         case BlueprintInstanceStatusEnum.Orphaned:
             return t`Orphaned`;
-        case BlueprintInstanceStatusEnum.Unknown:
-            return t`Unknown`;
         case BlueprintInstanceStatusEnum.Warning:
             return t`Warning`;
         case BlueprintInstanceStatusEnum.Error:
             return t`Error`;
     }
+    return t`Unknown`;
 }
 @customElement("ak-blueprint-list")
 export class BlueprintListPage extends TablePage<BlueprintInstance> {

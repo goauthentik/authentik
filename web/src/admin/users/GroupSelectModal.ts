@@ -52,7 +52,7 @@ export class GroupSelectModal extends TableModal<Group> {
             html` <ak-label color=${item.isSuperuser ? PFColor.Green : PFColor.Grey}>
                 ${item.isSuperuser ? t`Yes` : t`No`}
             </ak-label>`,
-            html`${item.users.length}`,
+            html`${(item.users || []).length}`,
         ];
     }
 
