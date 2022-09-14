@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-06 16:46+0000\n"
+"POT-Creation-Date: 2022-09-14 08:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: authentik/admin/api/tasks.py:99
+#: authentik/admin/api/tasks.py:115
 #, python-format
 msgid "Successfully re-scheduled Task %(name)s!"
 msgstr ""
@@ -48,7 +48,7 @@ msgstr ""
 msgid "authentik Export - %(date)s"
 msgstr ""
 
-#: authentik/blueprints/v1/tasks.py:104 authentik/crypto/tasks.py:93
+#: authentik/blueprints/v1/tasks.py:106 authentik/crypto/tasks.py:93
 #, python-format
 msgid "Successfully imported %(count)d files."
 msgstr ""
@@ -246,25 +246,25 @@ msgstr ""
 msgid "You're about to sign into %(application)s."
 msgstr ""
 
-#: authentik/crypto/api.py:143
+#: authentik/crypto/api.py:144
 msgid "Subject-alt name"
 msgstr ""
 
-#: authentik/crypto/models.py:35
+#: authentik/crypto/models.py:30
 msgid "PEM-encoded Certificate data"
 msgstr ""
 
-#: authentik/crypto/models.py:38
+#: authentik/crypto/models.py:33
 msgid ""
 "Optional Private Key. If this is set, you can use this keypair for "
 "encryption."
 msgstr ""
 
-#: authentik/crypto/models.py:107
+#: authentik/crypto/models.py:102
 msgid "Certificate-Key Pair"
 msgstr ""
 
-#: authentik/crypto/models.py:108
+#: authentik/crypto/models.py:103
 msgid "Certificate-Key Pairs"
 msgstr ""
 
@@ -859,20 +859,20 @@ msgstr ""
 msgid "Redirecting to %(app)s..."
 msgstr ""
 
-#: authentik/providers/oauth2/views/userinfo.py:41
-#: authentik/providers/oauth2/views/userinfo.py:42
+#: authentik/providers/oauth2/views/userinfo.py:46
+#: authentik/providers/oauth2/views/userinfo.py:47
 msgid "GitHub Compatibility: Access your User Information"
 msgstr ""
 
-#: authentik/providers/oauth2/views/userinfo.py:43
+#: authentik/providers/oauth2/views/userinfo.py:48
 msgid "GitHub Compatibility: Access you Email addresses"
 msgstr ""
 
-#: authentik/providers/oauth2/views/userinfo.py:44
+#: authentik/providers/oauth2/views/userinfo.py:49
 msgid "GitHub Compatibility: Access your Groups"
 msgstr ""
 
-#: authentik/providers/oauth2/views/userinfo.py:45
+#: authentik/providers/oauth2/views/userinfo.py:50
 msgid "authentik API Access on behalf of your user"
 msgstr ""
 
@@ -1401,7 +1401,7 @@ msgstr ""
 msgid "TOTP Authenticator Setup Stages"
 msgstr ""
 
-#: authentik/stages/authenticator_validate/challenge.py:115
+#: authentik/stages/authenticator_validate/challenge.py:117
 msgid "Invalid Token"
 msgstr ""
 
@@ -1647,8 +1647,12 @@ msgstr ""
 msgid "Identification Stages"
 msgstr ""
 
-#: authentik/stages/identification/stage.py:173
+#: authentik/stages/identification/stage.py:172
 msgid "Log in"
+msgstr ""
+
+#: authentik/stages/identification/stage.py:173
+msgid "Continue"
 msgstr ""
 
 #: authentik/stages/invitation/models.py:47
@@ -1823,16 +1827,16 @@ msgstr ""
 msgid "No Pending data."
 msgstr ""
 
-#: authentik/tenants/models.py:20
+#: authentik/tenants/models.py:23
 msgid ""
 "Domain that activates this tenant. Can be a superset, i.e. `a.b` for `aa.b` "
 "and `ba.b`"
 msgstr ""
 
-#: authentik/tenants/models.py:87
+#: authentik/tenants/models.py:95
 msgid "Tenant"
 msgstr ""
 
-#: authentik/tenants/models.py:88
+#: authentik/tenants/models.py:96
 msgid "Tenants"
 msgstr ""

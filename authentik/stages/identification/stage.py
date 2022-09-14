@@ -21,6 +21,7 @@ from authentik.flows.challenge import (
     ChallengeTypes,
     RedirectChallenge,
 )
+from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_GET
@@ -165,12 +166,18 @@ class IdentificationStageView(ChallengeStageView):
             return user
         return None
 
+    def get_primary_action(self) -> str:
+        """Get the primary action label for this stage"""
+        if self.executor.flow.designation == FlowDesignation.AUTHENTICATION:
+            return _("Log in")
+        return _("Continue")
+
     def get_challenge(self) -> Challenge:
         current_stage: IdentificationStage = self.executor.current_stage
         challenge = IdentificationChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "primary_action": _("Log in"),
+                "primary_action": self.get_primary_action(),
                 "component": "ak-stage-identification",
                 "user_fields": current_stage.user_fields,
                 "password_fields": bool(current_stage.password_stage),
