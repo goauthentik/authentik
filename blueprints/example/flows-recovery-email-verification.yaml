@@ -22,7 +22,6 @@ entries:
       required: true
       placeholder: Password
       order: 0
-      sub_text: ""
       placeholder_expression: false
   - identifiers:
       field_key: password_repeat
@@ -34,7 +33,6 @@ entries:
       required: true
       placeholder: Password (repeat)
       order: 1
-      sub_text: ""
       placeholder_expression: false
   - identifiers:
       name: default-recovery-skip-if-restored

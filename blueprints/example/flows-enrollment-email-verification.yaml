@@ -21,6 +21,7 @@ entries:
       type: username
       required: true
       placeholder: Username
+      placeholder_expression: false
       order: 0
   - identifiers:
       field_key: password
@@ -31,6 +32,7 @@ entries:
       type: password
       required: true
       placeholder: Password
+      placeholder_expression: false
       order: 0
   - identifiers:
       field_key: password_repeat
@@ -41,6 +43,7 @@ entries:
       type: password
       required: true
       placeholder: Password (repeat)
+      placeholder_expression: false
       order: 1
   - identifiers:
       field_key: name
@@ -51,6 +54,7 @@ entries:
       type: text
       required: true
       placeholder: Name
+      placeholder_expression: false
       order: 0
   - identifiers:
       field_key: email
@@ -61,6 +65,7 @@ entries:
       type: email
       required: true
       placeholder: Email
+      placeholder_expression: false
       order: 1
   - identifiers:
       name: default-enrollment-email-verification
