@@ -617,10 +617,9 @@ class PropertyMapping(SerializerModel, ManagedModel):
 
     def evaluate(self, user: Optional[User], request: Optional[HttpRequest], **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
-        from authentik.core.expression import PropertyMappingEvaluator
+        from authentik.core.expression.evaluator import PropertyMappingEvaluator
 
-        evaluator = PropertyMappingEvaluator()
-        evaluator.set_context(user, request, self, **kwargs)
+        evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
         try:
             return evaluator.evaluate(self.expression)
         except Exception as exc:

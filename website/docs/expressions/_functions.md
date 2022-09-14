@@ -51,6 +51,45 @@ Example:
 other_user = ak_user_by(username="other_user")
 ```
 
+### `ak_user_has_authenticator(user: User, device_type: Optional[str] = None) -> bool` (2021.9+)
+
+:::info
+Only available in property mappings with authentik 2022.9 and newer
+:::
+
+Check if a user has any authenticator devices. Only fully validated devices are counted.
+
+Optionally, you can filter a specific device type. The following options are valid:
+
+-   `totp`
+-   `duo`
+-   `static`
+-   `webauthn`
+
+Example:
+
+```python
+return ak_user_has_authenticator(request.user)
+```
+
+### `ak_create_event(action: str, **kwargs) -> None`
+
+:::info
+Requires authentik 2022.9
+:::
+
+Create a new event with the action set to `action`. Any additional key-word parameters will be saved in the event context. Additionally, `context` will be set to the context in which this function is called.
+
+Before saving, any data-structure which are not representable in JSON are flattened, and credentials are removed.
+
+The event is saved automatically
+
+Example:
+
+```python
+ak_create_event("my_custom_event", foo=request.user)
+```
+
 ## Comparing IP Addresses
 
 To compare IP Addresses or check if an IP Address is within a given subnet, you can use the functions `ip_address('192.0.2.1')` and `ip_network('192.0.2.0/24')`. With these objects you can do [arithmetic operations](https://docs.python.org/3/library/ipaddress.html#operators).

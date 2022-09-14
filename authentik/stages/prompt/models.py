@@ -22,7 +22,7 @@ from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
-from authentik.core.expression import PropertyMappingEvaluator
+from authentik.core.expression.evaluator import PropertyMappingEvaluator
 from authentik.core.models import User
 from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
@@ -124,8 +124,7 @@ class Prompt(SerializerModel):
             return prompt_context[self.field_key]
 
         if self.placeholder_expression:
-            evaluator = PropertyMappingEvaluator()
-            evaluator.set_context(user, request, self, prompt_context=prompt_context)
+            evaluator = PropertyMappingEvaluator(self, user, request, prompt_context=prompt_context)
             try:
                 return evaluator.evaluate(self.placeholder)
             except Exception as exc:  # pylint:disable=broad-except

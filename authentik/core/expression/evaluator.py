@@ -2,28 +2,33 @@
 from traceback import format_tb
 from typing import Optional
 
+from django.db.models import Model
 from django.http import HttpRequest
 from guardian.utils import get_anonymous_user
 
-from authentik.core.models import PropertyMapping, User
+from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.policies.types import PolicyRequest
 
 
 class PropertyMappingEvaluator(BaseEvaluator):
-    """Custom Evalautor that adds some different context variables."""
+    """Custom Evaluator that adds some different context variables."""
 
-    def set_context(
+    def __init__(
         self,
-        user: Optional[User],
-        request: Optional[HttpRequest],
-        mapping: PropertyMapping,
+        model: Model,
+        user: Optional[User] = None,
+        request: Optional[HttpRequest] = None,
         **kwargs,
     ):
-        """Update context with context from PropertyMapping's evaluate"""
+        if hasattr(model, "name"):
+            _filename = model.name
+        else:
+            _filename = str(model)
+        super().__init__(filename=_filename)
         req = PolicyRequest(user=get_anonymous_user())
-        req.obj = mapping
+        req.obj = model
         if user:
             req.user = user
             self._context["user"] = user
