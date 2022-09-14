@@ -358,7 +358,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                                         });
                                     }),
                                 html`<option
-                                    value="${ifDefined(this.instance?.certificate)}"
+                                    value=${ifDefined(this.instance?.certificate)}
                                     ?selected=${this.instance?.certificate !== undefined}
                                 >
                                     ${t`Loading...`}

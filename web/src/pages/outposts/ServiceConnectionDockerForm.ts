@@ -99,7 +99,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                                 });
                             }),
                         html`<option
-                            value="${ifDefined(this.instance?.tlsVerification)}"
+                            value=${ifDefined(this.instance?.tlsVerification)}
                             ?selected=${this.instance?.tlsVerification !== undefined}
                         >
                             ${t`Loading...`}
@@ -134,7 +134,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                                 });
                             }),
                         html`<option
-                            value="${ifDefined(this.instance?.tlsAuthentication)}"
+                            value=${ifDefined(this.instance?.tlsAuthentication)}
                             ?selected=${this.instance?.tlsAuthentication !== undefined}
                         >
                             ${t`Loading...`}
