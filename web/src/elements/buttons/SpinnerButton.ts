@@ -1,16 +1,17 @@
-import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "@goauthentik/web/constants";
-import { PFSize } from "@goauthentik/web/elements/Spinner";
+import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
+import { PFSize } from "@goauthentik/elements/Spinner";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-spinner-button")
-export class SpinnerButton extends LitElement {
+export class SpinnerButton extends AKElement {
     @property({ type: Boolean })
     isRunning = false;
 

@@ -1,15 +1,16 @@
-import { PFSize } from "@goauthentik/web/elements/Spinner";
+import { AKElement } from "@goauthentik/elements/Base";
+import { PFSize } from "@goauthentik/elements/Spinner";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-empty-state")
-export class EmptyState extends LitElement {
+export class EmptyState extends AKElement {
     @property({ type: String })
     icon = "";
 

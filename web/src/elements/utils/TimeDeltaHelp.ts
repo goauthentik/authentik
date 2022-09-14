@@ -1,17 +1,18 @@
-import "@goauthentik/web/elements/Tooltip";
+import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/Tooltip";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-utils-time-delta-help")
-export class TimeDeltaHelp extends LitElement {
+export class TimeDeltaHelp extends AKElement {
     @property({ type: Boolean })
     negative = false;
 

@@ -1,8 +1,8 @@
-import { AKResponse } from "@goauthentik/web/api/Client";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import { uiConfig } from "@goauthentik/web/common/config";
-import "@goauthentik/web/elements/forms/DeleteBulkForm";
-import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/elements/forms/DeleteBulkForm";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { t } from "@lingui/macro";
 
@@ -16,7 +16,7 @@ export class UserConsentList extends Table<UserConsent> {
     @property({ type: Number })
     userId?: number;
 
-    async apiEndpoint(page: number): Promise<AKResponse<UserConsent>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<UserConsent>> {
         return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({
             user: this.userId,
             ordering: this.order,

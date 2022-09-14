@@ -1,19 +1,31 @@
-import { AKPagination } from "@goauthentik/web/api/Client";
+import { AKElement } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export interface Pagination {
+    next?: number;
+    previous?: number;
+
+    count: number;
+    current: number;
+    totalPages: number;
+
+    startIndex: number;
+    endIndex: number;
+}
+
 @customElement("ak-table-pagination")
-export class TablePagination extends LitElement {
+export class TablePagination extends AKElement {
     @property({ attribute: false })
-    pages?: AKPagination;
+    pages?: Pagination;
 
     @property({ attribute: false })
     // eslint-disable-next-line

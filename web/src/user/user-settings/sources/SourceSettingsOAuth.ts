@@ -1,9 +1,9 @@
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
-import "@goauthentik/web/elements/Spinner";
-import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
-import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
-import { BaseUserSettings } from "@goauthentik/web/user/user-settings/BaseUserSettings";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { MessageLevel } from "@goauthentik/common/messages";
+import "@goauthentik/elements/Spinner";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { BaseUserSettings } from "@goauthentik/user/user-settings/BaseUserSettings";
 
 import { t } from "@lingui/macro";
 

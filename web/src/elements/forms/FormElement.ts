@@ -1,4 +1,6 @@
-import { CSSResult, LitElement } from "lit";
+import { AKElement } from "@goauthentik/elements/Base";
+
+import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -8,7 +10,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import { ErrorDetail } from "@goauthentik/api";
 
 @customElement("ak-form-element")
-export class FormElement extends LitElement {
+export class FormElement extends AKElement {
     static get styles(): CSSResult[] {
         return [PFForm, PFFormControl];
     }

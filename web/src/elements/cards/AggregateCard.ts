@@ -1,14 +1,16 @@
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { AKElement } from "@goauthentik/elements/Base";
+
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-aggregate-card")
-export class AggregateCard extends LitElement {
+export class AggregateCard extends AKElement {
     @property()
     icon?: string;
 

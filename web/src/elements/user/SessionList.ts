@@ -1,8 +1,8 @@
-import { AKResponse } from "@goauthentik/web/api/Client";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import { uiConfig } from "@goauthentik/web/common/config";
-import "@goauthentik/web/elements/forms/DeleteBulkForm";
-import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/elements/forms/DeleteBulkForm";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { t } from "@lingui/macro";
 
@@ -16,7 +16,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     @property()
     targetUser!: string;
 
-    async apiEndpoint(page: number): Promise<AKResponse<AuthenticatedSession>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<AuthenticatedSession>> {
         return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsList({
             userUsername: this.targetUser,
             ordering: this.order,

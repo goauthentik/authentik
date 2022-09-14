@@ -1,8 +1,9 @@
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
 import {
     FONT_COLOUR_DARK_MODE,
     FONT_COLOUR_LIGHT_MODE,
-} from "@goauthentik/web/pages/flows/FlowDiagram";
+} from "@goauthentik/admin/flows/FlowDiagram";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 import { Chart, ChartConfiguration, ChartData, ChartOptions, Plugin, Tick } from "chart.js";
 import { Legend, Tooltip } from "chart.js";
 import { BarController, DoughnutController, LineController } from "chart.js";
@@ -12,7 +13,7 @@ import "chartjs-adapter-moment";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { property } from "lit/decorators.js";
 
 Chart.register(Legend, Tooltip);
@@ -20,7 +21,7 @@ Chart.register(LineController, BarController, DoughnutController);
 Chart.register(ArcElement, BarElement);
 Chart.register(TimeScale, LinearScale);
 
-export abstract class AKChart<T> extends LitElement {
+export abstract class AKChart<T> extends AKElement {
     abstract apiRequest(): Promise<T>;
     abstract getChartData(data: T): ChartData;
 

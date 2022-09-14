@@ -1,6 +1,7 @@
-import { me } from "@goauthentik/web/api/Users";
+import { me } from "@goauthentik/common/users";
+import { AKElement } from "@goauthentik/elements/Base";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
@@ -10,7 +11,7 @@ import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-sidebar-user")
-export class SidebarUser extends LitElement {
+export class SidebarUser extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,

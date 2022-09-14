@@ -1,45 +1,21 @@
-import { EVENT_API_DRAWER_REFRESH, EVENT_API_DRAWER_TOGGLE } from "@goauthentik/web/constants";
+import { RequestInfo } from "@goauthentik/common/api/middleware";
+import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Middleware, ResponseContext } from "@goauthentik/api";
-
-export interface RequestInfo {
-    method: string;
-    path: string;
-    status: number;
-}
-
-export class APIMiddleware implements Middleware {
-    post?(context: ResponseContext): Promise<Response | void> {
-        const request: RequestInfo = {
-            method: (context.init.method || "GET").toUpperCase(),
-            path: context.url,
-            status: context.response.status,
-        };
-        window.dispatchEvent(
-            new CustomEvent(EVENT_API_DRAWER_REFRESH, {
-                bubbles: true,
-                composed: true,
-                detail: request,
-            }),
-        );
-        return Promise.resolve(context.response);
-    }
-}
-
 @customElement("ak-api-drawer")
-export class APIDrawer extends LitElement {
+export class APIDrawer extends AKElement {
     @property({ attribute: false })
     requests: RequestInfo[] = [];
 
@@ -71,7 +47,7 @@ export class APIDrawer extends LitElement {
 
     constructor() {
         super();
-        window.addEventListener(EVENT_API_DRAWER_REFRESH, ((e: CustomEvent<RequestInfo>) => {
+        window.addEventListener(EVENT_REQUEST_POST, ((e: CustomEvent<RequestInfo>) => {
             this.requests.splice(0, 0, e.detail);
             if (this.requests.length > 50) {
                 this.requests.shift();

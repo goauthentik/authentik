@@ -1,6 +1,6 @@
-import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
-import "@goauthentik/web/elements/wizard/ActionWizardPage";
-import { WizardPage } from "@goauthentik/web/elements/wizard/WizardPage";
+import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/wizard/ActionWizardPage";
+import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { t } from "@lingui/macro";
 

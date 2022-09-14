@@ -1,10 +1,11 @@
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 
-import { LitElement, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-dropdown")
-export class DropdownButton extends LitElement {
+export class DropdownButton extends AKElement {
     menu: HTMLElement | null;
 
     constructor() {

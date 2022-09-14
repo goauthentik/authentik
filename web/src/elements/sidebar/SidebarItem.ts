@@ -1,17 +1,18 @@
-import { ROUTE_SEPARATOR } from "@goauthentik/web/constants";
+import { ROUTE_SEPARATOR } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 
-import { CSSResult, LitElement, css } from "lit";
+import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-sidebar-item")
-export class SidebarItem extends LitElement {
+export class SidebarItem extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,

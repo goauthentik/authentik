@@ -1,6 +1,6 @@
-import "@goauthentik/web/elements/../elements/PageHeader";
-import { updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
-import { Table } from "@goauthentik/web/elements/table/Table";
+import "@goauthentik/elements/PageHeader";
+import { updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { Table } from "@goauthentik/elements/table/Table";
 
 import { t } from "@lingui/macro";
 

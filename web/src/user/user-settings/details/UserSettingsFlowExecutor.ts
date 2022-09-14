@@ -1,18 +1,19 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/api/Config";
-import { refreshMe } from "@goauthentik/web/api/Users";
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
-import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
-import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
-import { StageHost } from "@goauthentik/web/flows/stages/base";
-import "@goauthentik/web/user/user-settings/details/stages/prompt/PromptStage";
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { MessageLevel } from "@goauthentik/common/messages";
+import { refreshMe } from "@goauthentik/common/users";
+import { AKElement } from "@goauthentik/elements/Base";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { StageHost } from "@goauthentik/flow/stages/base";
+import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -31,7 +32,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-user-settings-flow-executor")
-export class UserSettingsFlowExecutor extends LitElement implements StageHost {
+export class UserSettingsFlowExecutor extends AKElement implements StageHost {
     @property()
     flowSlug?: string;
 
@@ -161,7 +162,7 @@ export class UserSettingsFlowExecutor extends LitElement implements StageHost {
             );
             try {
                 document.querySelectorAll("ak-interface-user").forEach((int) => {
-                    (int as LitElement).requestUpdate();
+                    (int as AKElement).requestUpdate();
                 });
             } catch {
                 console.debug("authentik/user/flows: failed to find interface to refresh");

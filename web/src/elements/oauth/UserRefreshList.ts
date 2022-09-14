@@ -1,9 +1,9 @@
-import { AKResponse } from "@goauthentik/web/api/Client";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import { uiConfig } from "@goauthentik/web/common/config";
-import { PFColor } from "@goauthentik/web/elements/Label";
-import "@goauthentik/web/elements/forms/DeleteBulkForm";
-import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { uiConfig } from "@goauthentik/common/ui/config";
+import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/elements/forms/DeleteBulkForm";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { t } from "@lingui/macro";
 
@@ -25,7 +25,7 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
         return super.styles.concat(PFFlex);
     }
 
-    async apiEndpoint(page: number): Promise<AKResponse<RefreshTokenModel>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<RefreshTokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensList({
             user: this.userId,
             ordering: "expires",
