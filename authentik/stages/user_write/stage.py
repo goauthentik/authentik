@@ -91,7 +91,7 @@ class UserWriteStageView(StageView):
             # `attribute_`, to prevent accidentally saving values
             else:
                 if not key.startswith("attributes.") and not key.startswith("attributes_"):
-                    self.logger.debug("discarding key", key=key)
+                    self.logger.warning("discarding key", key=key)
                     continue
                 UserWriteStageView.write_attribute(user, key, value)
         # Check if we're writing from a source, and save the source to the attributes
