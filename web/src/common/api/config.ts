@@ -102,4 +102,4 @@ window.addEventListener(EVENT_REFRESH, () => {
     tenant();
 });
 
-console.debug(`authentik(early): version ${VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`);
+console.debug(`authentik(early): version ${VERSION()}, apiBase ${DEFAULT_CONFIG.basePath}`);

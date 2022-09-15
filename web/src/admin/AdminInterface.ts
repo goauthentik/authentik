@@ -161,7 +161,7 @@ export class AdminInterface extends AKElement {
         return html`
             ${until(
                 this.version.then((version) => {
-                    if (version.versionCurrent !== VERSION) {
+                    if (version.versionCurrent !== VERSION()) {
                         return html`<ak-sidebar-item ?highlight=${true}>
                             <span slot="label"
                                 >${t`A newer version of the frontend is available.`}</span

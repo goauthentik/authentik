@@ -1,7 +1,6 @@
 {
-    "name": "authentik-web",
-    "version": "0.0.0",
-    "private": true,
+    "name": "@goauthentik/web",
+    "version": "2022.8.2",
     "license": "GNU GPLv3",
     "scripts": {
         "extract": "lingui extract",
@@ -61,6 +60,7 @@
         "@lingui/cli": "^3.14.0",
         "@rollup/plugin-babel": "^5.3.1",
         "@rollup/plugin-commonjs": "^22.0.2",
+        "@rollup/plugin-json": "^4.1.0",
         "@rollup/plugin-node-resolve": "^14.1.0",
         "@rollup/plugin-replace": "^4.0.0",
         "@rollup/plugin-typescript": "^8.5.0",

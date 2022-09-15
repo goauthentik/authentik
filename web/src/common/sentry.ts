@@ -25,7 +25,7 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
                 // Seems to be an issue in Safari and Firefox
                 /MutationObserver.observe/gi,
             ],
-            release: `authentik@${VERSION}`,
+            release: `authentik@${VERSION()}`,
             tunnel: "/api/v3/sentry/",
             integrations: [
                 new Integrations.BrowserTracing({

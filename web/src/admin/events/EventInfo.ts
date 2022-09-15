@@ -183,7 +183,7 @@ ${context.message as string}
 
 
 **Version and Deployment (please complete the following information):**
-- authentik version: ${VERSION}
+- authentik version: ${VERSION()}
 - Deployment: [e.g. docker-compose, helm]
 
 **Additional context**

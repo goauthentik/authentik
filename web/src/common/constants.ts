@@ -1,9 +1,10 @@
+import { version } from "../../package.json";
+
 export const SECONDARY_CLASS = "pf-m-secondary";
 export const SUCCESS_CLASS = "pf-m-success";
 export const ERROR_CLASS = "pf-m-danger";
 export const PROGRESS_CLASS = "pf-m-in-progress";
 export const CURRENT_CLASS = "pf-m-current";
-export const VERSION = "2022.8.2";
 export const TITLE_DEFAULT = "authentik";
 export const ROUTE_SEPARATOR = ";";
 
@@ -19,3 +20,7 @@ export const EVENT_MESSAGE = "ak-message";
 
 export const WS_MSG_TYPE_MESSAGE = "message";
 export const WS_MSG_TYPE_REFRESH = "refresh";
+
+export function VERSION(): string {
+    return version;
+}

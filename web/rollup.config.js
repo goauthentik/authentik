@@ -1,6 +1,7 @@
 import markdown from "@jackfranklin/rollup-plugin-markdown";
 import babel from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import copy from "rollup-plugin-copy";
@@ -73,6 +74,7 @@ export const defaultOptions = {
     plugins: [
         cssimport(),
         markdown(),
+        json(),
         nodeResolve({ extensions, browser: true }),
         commonjs(),
         babel({
