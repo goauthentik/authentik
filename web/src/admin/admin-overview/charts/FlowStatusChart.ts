@@ -15,7 +15,7 @@ interface FlowMetrics {
 }
 
 @customElement("ak-admin-status-chart-flow")
-export class PolicyStatusChart extends AKChart<FlowMetrics> {
+export class FlowStatusChart extends AKChart<FlowMetrics> {
     getChartType(): string {
         return "doughnut";
     }

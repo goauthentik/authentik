@@ -15,7 +15,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-application-wizard-type-saml")
-export class TypeOAuthApplicationWizardPage extends WizardPage {
+export class TypeSAMLApplicationWizardPage extends WizardPage {
     applicationTypes: TypeCreate[] = [
         {
             component: "ak-application-wizard-type-saml-import",

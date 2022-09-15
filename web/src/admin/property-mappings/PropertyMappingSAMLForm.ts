@@ -12,7 +12,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { PropertymappingsApi, SAMLPropertyMapping } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-saml-form")
-export class PropertyMappingLDAPForm extends ModelForm<SAMLPropertyMapping, string> {
+export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, string> {
     loadInstance(pk: string): Promise<SAMLPropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlRetrieve({
             pmUuid: pk,

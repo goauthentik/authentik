@@ -10,7 +10,7 @@ import { customElement } from "lit/decorators.js";
 import { CertificateGenerationRequest, CertificateKeyPair, CryptoApi } from "@goauthentik/api";
 
 @customElement("ak-crypto-certificate-generate-form")
-export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
+export class CertificateGenerateForm extends Form<CertificateGenerationRequest> {
     getSuccessMessage(): string {
         return t`Successfully generated certificate-key pair.`;
     }

@@ -22,7 +22,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-test-form")
-export class PolicyTestForm extends Form<PolicyTestRequest> {
+export class PropertyMappingTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false })
     mapping?: PropertyMapping;
 

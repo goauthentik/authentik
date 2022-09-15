@@ -11,7 +11,7 @@ import { TemplateResult, html } from "lit";
 import { FlowDesignationEnum, FlowsApi, ProvidersApi, SAMLProviderRequest } from "@goauthentik/api";
 
 @customElement("ak-application-wizard-type-saml-config")
-export class TypeSAMLApplicationWizardPage extends WizardFormPage {
+export class TypeSAMLConfigApplicationWizardPage extends WizardFormPage {
     sidebarLabel = () => t`SAML details`;
 
     nextDataCallback = async (data: KeyUnknown): Promise<boolean> => {
