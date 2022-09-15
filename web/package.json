@@ -2,6 +2,9 @@
     "name": "@goauthentik/web",
     "version": "2022.8.2",
     "license": "GNU GPLv3",
+    "main": "./dist/package/index.js",
+    "typings": "./dist/package/index.d.ts",
+    "sideEffects": false,
     "scripts": {
         "extract": "lingui extract",
         "build": "lingui compile && rollup -c ./rollup.config.js",

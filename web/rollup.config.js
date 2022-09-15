@@ -8,7 +8,7 @@ import copy from "rollup-plugin-copy";
 import cssimport from "rollup-plugin-cssimport";
 import { terser } from "rollup-plugin-terser";
 
-const extensions = [".js", ".jsx", ".ts", ".tsx"];
+export const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
 export const resources = [
     { src: "node_modules/rapidoc/dist/rapidoc-min.js", dest: "dist/" },

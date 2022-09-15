@@ -1,3 +1,3 @@
 import { POLY } from "./rollup.config";
 
-export default [POLY];
+export default POLY;
