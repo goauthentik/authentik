@@ -27,7 +27,7 @@ class InvitationStage(Stage):
     )
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.invitation.api import InvitationStageSerializer
 
         return InvitationStageSerializer

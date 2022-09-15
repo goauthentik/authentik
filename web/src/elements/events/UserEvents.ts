@@ -1,13 +1,14 @@
-import { AKResponse } from "@goauthentik/web/api/Client";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import { EventWithContext } from "@goauthentik/web/api/Events";
-import { uiConfig } from "@goauthentik/web/common/config";
-import "@goauthentik/web/elements/../pages/events/EventInfo";
-import "@goauthentik/web/elements/Tabs";
-import "@goauthentik/web/elements/buttons/Dropdown";
-import "@goauthentik/web/elements/buttons/ModalButton";
-import "@goauthentik/web/elements/buttons/SpinnerButton";
-import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+import "@goauthentik/admin/events/EventInfo";
+import "@goauthentik/admin/events/EventInfo";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EventWithContext } from "@goauthentik/common/events";
+import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/buttons/Dropdown";
+import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/buttons/SpinnerButton";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { t } from "@lingui/macro";
 
@@ -26,7 +27,7 @@ export class ObjectChangelog extends Table<Event> {
     @property()
     targetUser!: string;
 
-    async apiEndpoint(page: number): Promise<AKResponse<Event>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             page: page,
             ordering: this.order,

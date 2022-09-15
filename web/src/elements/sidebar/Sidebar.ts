@@ -1,16 +1,17 @@
-import "@goauthentik/web/elements/sidebar/SidebarBrand";
-import "@goauthentik/web/elements/sidebar/SidebarUser";
+import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/sidebar/SidebarBrand";
+import "@goauthentik/elements/sidebar/SidebarUser";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-sidebar")
-export class Sidebar extends LitElement {
+export class Sidebar extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,

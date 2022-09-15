@@ -139,9 +139,9 @@ class LDAPSource(Source):
             receive_timeout=LDAP_TIMEOUT,
         )
 
-        connection.bind()
         if self.start_tls:
-            connection.start_tls()
+            connection.start_tls(read_server_info=False)
+        connection.bind()
         return connection
 
     class Meta:

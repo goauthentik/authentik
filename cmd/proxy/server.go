@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/url"
 	"os"
-	"strconv"
 
 	log "github.com/sirupsen/logrus"
 
@@ -22,8 +21,7 @@ Required environment variables:
 - AUTHENTIK_INSECURE: Skip SSL Certificate verification
 
 Optionally, you can set these:
-- AUTHENTIK_HOST_BROWSER: URL to use in the browser, when it differs from AUTHENTIK_HOST
-- AUTHENTIK_PORT_OFFSET: Offset to add to the listening ports, i.e. value of 100 makes proxy listen on 9100`
+- AUTHENTIK_HOST_BROWSER: URL to use in the browser, when it differs from AUTHENTIK_HOST`
 
 func main() {
 	log.SetLevel(log.DebugLevel)
@@ -47,15 +45,6 @@ func main() {
 		fmt.Println(helpMessage)
 		os.Exit(1)
 	}
-	portOffset := 0
-	portOffsetS := os.Getenv("AUTHENTIK_PORT_OFFSET")
-	if portOffsetS != "" {
-		v, err := strconv.Atoi(portOffsetS)
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-		portOffset = v
-	}
 
 	akURLActual, err := url.Parse(akURL)
 	if err != nil {
@@ -66,13 +55,20 @@ func main() {
 
 	ex := common.Init()
 	defer common.Defer()
+	go func() {
+		for {
+			<-ex
+			os.Exit(0)
+		}
+	}()
 
 	ac := ak.NewAPIController(*akURLActual, akToken)
 	if ac == nil {
 		os.Exit(1)
 	}
+	defer ac.Shutdown()
 
-	ac.Server = proxyv2.NewProxyServer(ac, portOffset)
+	ac.Server = proxyv2.NewProxyServer(ac)
 
 	err = ac.Start()
 	if err != nil {
@@ -81,7 +77,5 @@ func main() {
 
 	for {
 		<-ex
-		ac.Shutdown()
-		os.Exit(0)
 	}
 }

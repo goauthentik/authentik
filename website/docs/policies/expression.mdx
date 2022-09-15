@@ -29,23 +29,6 @@ ak_message("Access denied")
 return False
 ```
 
-### `ak_user_has_authenticator(user: User, device_type: Optional[str] = None) -> bool` (2021.9+)
-
-Check if a user has any authenticator devices. Only fully validated devices are counted.
-
-Optionally, you can filter a specific device type. The following options are valid:
-
--   `totp`
--   `duo`
--   `static`
--   `webauthn`
-
-Example:
-
-```python
-return ak_user_has_authenticator(request.user)
-```
-
 ### `ak_call_policy(name: str, **kwargs) -> PolicyResult` (2021.12+)
 
 Call another policy with the name _name_. Current request is passed to policy. Key-word arguments
@@ -74,10 +57,19 @@ import Objects from "../expressions/_objects.md";
 <Objects />
 
 -   `request`: A PolicyRequest object, which has the following properties:
+
     -   `request.user`: The current user, against which the policy is applied. See [User](../user-group/user.md#object-attributes)
+
+        :::warning
+        When a policy is executed in the context of a flow, this will be set to the previously authenticated user, i.e. when used with an authentication flow this will be set to _AnonymousUser_.
+
+        In flows, `context['pending_user']` should be used instead.
+        :::
+
     -   `request.http_request`: The Django HTTP Request. See ([Django documentation](https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects))
     -   `request.obj`: A Django Model instance. This is only set if the policy is ran against an object.
     -   `request.context`: A dictionary with dynamic data. This depends on the origin of the execution.
+
 -   `geoip`: GeoIP object, which is added when GeoIP is enabled. See [GeoIP](https://geoip2.readthedocs.io/en/latest/#geoip2.models.City)
 -   `ak_is_sso_flow`: Boolean which is true if request was initiated by authenticating through an external provider.
 -   `ak_client_ip`: Client's IP Address or 255.255.255.255 if no IP Address could be extracted. Can be [compared](#comparing-ip-addresses), for example

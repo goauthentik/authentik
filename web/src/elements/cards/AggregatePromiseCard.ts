@@ -1,11 +1,10 @@
-import { PFSize } from "@goauthentik/web/elements/Spinner";
-import "@goauthentik/web/elements/Spinner";
+import { PFSize } from "@goauthentik/elements/Spinner";
+import "@goauthentik/elements/Spinner";
+import { AggregateCard } from "@goauthentik/elements/cards/AggregateCard";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
-
-import { AggregateCard } from "./AggregateCard";
 
 @customElement("ak-aggregate-card-promise")
 export class AggregatePromiseCard extends AggregateCard {

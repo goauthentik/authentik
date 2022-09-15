@@ -27,5 +27,8 @@
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",
     "typescript.tsdk": "./web/node_modules/typescript/lib",
-    "typescript.enablePromptUseWorkspaceTsdk": true
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "yaml.schemas": {
+        "./blueprints/schema.json": "blueprints/**/*.yaml"
+    }
 }

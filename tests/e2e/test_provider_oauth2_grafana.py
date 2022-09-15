@@ -67,15 +67,15 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
-        "blueprints/system/providers-oauth2.yaml",
+        "system/providers-oauth2.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_redirect_uri_error(self):
@@ -116,15 +116,15 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
-        "blueprints/system/providers-oauth2.yaml",
+        "system/providers-oauth2.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_authorization_consent_implied(self):
@@ -178,15 +178,15 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
-        "blueprints/system/providers-oauth2.yaml",
+        "system/providers-oauth2.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_authorization_logout(self):
@@ -249,15 +249,15 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
-        "blueprints/system/providers-oauth2.yaml",
+        "system/providers-oauth2.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_authorization_consent_explicit(self):
@@ -329,15 +329,15 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
-        "blueprints/system/providers-oauth2.yaml",
+        "system/providers-oauth2.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_authorization_denied(self):

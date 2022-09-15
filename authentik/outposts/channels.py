@@ -5,7 +5,7 @@ from enum import IntEnum
 from typing import Any, Optional
 
 from channels.exceptions import DenyConnection
-from dacite import from_dict
+from dacite.core import from_dict
 from dacite.data import Data
 from guardian.shortcuts import get_objects_for_user
 from structlog.stdlib import BoundLogger, get_logger

@@ -138,7 +138,7 @@ jobs:
           docker-compose pull -q
           docker-compose up --no-start
           docker-compose start postgresql redis
-          docker-compose run -u root server test
+          docker-compose run -u root server test-all
   sentry-release:
     needs:
       - build-server
@@ -157,6 +157,7 @@ jobs:
           docker cp ${container}:web/ .
       - name: Create a Sentry.io release
         uses: getsentry/action-release@v1
+        continue-on-error: true
         if: ${{ github.event_name == 'release' }}
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

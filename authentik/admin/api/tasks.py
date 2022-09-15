@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.http.response import Http404
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField, DateTimeField, ListField
 from rest_framework.permissions import IsAdminUser
@@ -58,7 +58,15 @@ class TaskViewSet(ViewSet):
         responses={
             200: TaskSerializer(many=False),
             404: OpenApiResponse(description="Task not found"),
-        }
+        },
+        parameters=[
+            OpenApiParameter(
+                "id",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                required=True,
+            ),
+        ],
     )
     # pylint: disable=invalid-name
     def retrieve(self, request: Request, pk=None) -> Response:
@@ -81,6 +89,14 @@ class TaskViewSet(ViewSet):
             404: OpenApiResponse(description="Task not found"),
             500: OpenApiResponse(description="Failed to retry task"),
         },
+        parameters=[
+            OpenApiParameter(
+                "id",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                required=True,
+            ),
+        ],
     )
     @action(detail=True, methods=["post"])
     # pylint: disable=invalid-name

@@ -1,5 +1,6 @@
-import "@goauthentik/web/elements/../elements/PageHeader";
-import { updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import "@goauthentik/elements/PageHeader";
+import { updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { Table } from "@goauthentik/elements/table/Table";
 
 import { t } from "@lingui/macro";
 
@@ -10,8 +11,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
-
-import { Table } from "./Table";
 
 export abstract class TablePage<T> extends Table<T> {
     abstract pageTitle(): string;

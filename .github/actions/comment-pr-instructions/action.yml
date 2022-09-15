@@ -11,38 +11,7 @@ runs:
   steps:
     - name: Generate config
       id: ev
-      shell: python
-      run: |
-        """Helper script to get the actual branch name, docker safe"""
-        import os
-        from time import time
-
-        env_pr_branch = "GITHUB_HEAD_REF"
-        default_branch = "GITHUB_REF"
-        sha = "GITHUB_SHA"
-
-        branch_name = os.environ[default_branch]
-        if os.environ.get(env_pr_branch, "") != "":
-            branch_name = os.environ[env_pr_branch]
-
-        should_build = str(os.environ.get("DOCKER_USERNAME", "") != "").lower()
-
-        print("##[set-output name=branchName]%s" % branch_name)
-        print(
-            "##[set-output name=branchNameContainer]%s"
-            % branch_name.replace("refs/heads/", "").replace("/", "-")
-        )
-        print("##[set-output name=timestamp]%s" % int(time()))
-        print("##[set-output name=sha]%s" % os.environ[sha])
-        print("##[set-output name=shouldBuild]%s" % should_build)
-
-        import configparser
-        parser = configparser.ConfigParser()
-        parser.read(".bumpversion.cfg")
-        version = parser.get("bumpversion", "current_version")
-        version_family = ".".join(version.split(".")[:-1])
-        print("##[set-output name=version]%s" % version)
-        print("##[set-output name=versionFamily]%s" % version_family)
+      uses: ./.github/actions/docker-push-variables
     - name: Find Comment
       uses: peter-evans/find-comment@v2
       id: fc
@@ -83,8 +52,6 @@ runs:
             image:
                 repository: ghcr.io/goauthentik/dev-server
                 tag: ${{ inputs.tag }}
-                # pullPolicy: Always to ensure you always get the latest version
-                pullPolicy: Always
             ```
 
             Afterwards, run the upgrade commands from the latest release notes.

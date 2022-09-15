@@ -66,12 +66,12 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_redirect_uri_error(self):
@@ -112,15 +112,15 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
     @reconcile_app("authentik_crypto")
-    @apply_blueprint("blueprints/system/providers-oauth2.yaml")
+    @apply_blueprint("system/providers-oauth2.yaml")
     def test_authorization_consent_implied(self):
         """test OpenID Provider flow (default authorization flow with implied consent)"""
         sleep(1)
@@ -162,15 +162,15 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
     @reconcile_app("authentik_crypto")
-    @apply_blueprint("blueprints/system/providers-oauth2.yaml")
+    @apply_blueprint("system/providers-oauth2.yaml")
     def test_authorization_consent_explicit(self):
         """test OpenID Provider flow (default authorization flow with explicit consent)"""
         sleep(1)
@@ -228,12 +228,12 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_authorization_denied(self):

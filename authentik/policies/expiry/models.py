@@ -21,7 +21,7 @@ class PasswordExpiryPolicy(Policy):
     days = models.IntegerField()
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.policies.expiry.api import PasswordExpiryPolicySerializer
 
         return PasswordExpiryPolicySerializer

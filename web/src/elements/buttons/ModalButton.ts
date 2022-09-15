@@ -1,9 +1,10 @@
-import { PFSize } from "@goauthentik/web/elements/Spinner";
+import { AKElement } from "@goauthentik/elements/Base";
+import { PFSize } from "@goauthentik/elements/Spinner";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -34,7 +35,7 @@ export const MODAL_BUTTON_STYLES = css`
 `;
 
 @customElement("ak-modal-button")
-export class ModalButton extends LitElement {
+export class ModalButton extends AKElement {
     @property()
     size: PFSize = PFSize.Large;
 
@@ -99,7 +100,7 @@ export class ModalButton extends LitElement {
         this.open = true;
         this.querySelectorAll("*").forEach((child) => {
             if ("requestUpdate" in child) {
-                (child as LitElement).requestUpdate();
+                (child as AKElement).requestUpdate();
             }
         });
     }

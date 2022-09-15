@@ -14,7 +14,7 @@ class ExpressionPolicy(Policy):
     expression = models.TextField()
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.policies.expression.api import ExpressionPolicySerializer
 
         return ExpressionPolicySerializer

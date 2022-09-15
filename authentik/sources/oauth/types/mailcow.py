@@ -5,7 +5,7 @@ from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
-from authentik.sources.oauth.types.manager import MANAGER, SourceType
+from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
@@ -29,11 +29,11 @@ class MailcowOAuth2Client(OAuth2Client):
         profile_url = self.source.type.profile_url or ""
         if self.source.type.urls_customizable and self.source.profile_url:
             profile_url = self.source.profile_url
+        response = self.session.request(
+            "get",
+            f"{profile_url}?access_token={token['access_token']}",
+        )
         try:
-            response = self.session.request(
-                "get",
-                f"{profile_url}?access_token={token['access_token']}",
-            )
             response.raise_for_status()
         except RequestException as exc:
             LOGGER.warning("Unable to fetch user profile", exc=exc, body=response.text)
@@ -58,7 +58,7 @@ class MailcowOAuth2Callback(OAuthCallback):
         }
 
 
-@MANAGER.type()
+@registry.register()
 class MailcowType(SourceType):
     """Mailcow Type definition"""
 

@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   chrome:
-    image: selenium/standalone-chrome:94.0-chromedriver-94.0-grid-4.0.0-20211013
+    image: selenium/standalone-chrome:103.0-chromedriver-103.0
     volumes:
       - /dev/shm:/dev/shm
     network_mode: host

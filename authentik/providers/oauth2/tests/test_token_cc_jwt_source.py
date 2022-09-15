@@ -26,7 +26,7 @@ from authentik.sources.oauth.models import OAuthSource
 class TestTokenClientCredentialsJWTSource(OAuthTestCase):
     """Test token (client_credentials, with JWT) view"""
 
-    @apply_blueprint("blueprints/system/providers-oauth2.yaml")
+    @apply_blueprint("system/providers-oauth2.yaml")
     def setUp(self) -> None:
         super().setUp()
         self.factory = RequestFactory()

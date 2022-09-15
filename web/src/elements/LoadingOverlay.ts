@@ -1,12 +1,13 @@
-import { PFSize } from "@goauthentik/web/elements/Spinner";
+import { AKElement } from "@goauthentik/elements/Base";
+import { PFSize } from "@goauthentik/elements/Spinner";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-loading-overlay")
-export class LoadingOverlay extends LitElement {
+export class LoadingOverlay extends AKElement {
     @property({ type: Boolean })
     topMost = false;
 

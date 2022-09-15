@@ -1,6 +1,5 @@
 """outpost tasks"""
 from os import R_OK, access
-from os.path import expanduser
 from pathlib import Path
 from socket import gethostname
 from typing import Any, Optional
@@ -75,10 +74,14 @@ def outpost_service_connection_state(connection_pk: Any):
     )
     if not connection:
         return
+    cls = None
     if isinstance(connection, DockerServiceConnection):
         cls = DockerClient
     if isinstance(connection, KubernetesServiceConnection):
         cls = KubernetesClient
+    if not cls:
+        LOGGER.warning("No class found for service connection", connection=connection)
+        return
     try:
         with cls(connection) as client:
             state = client.fetch_state()
@@ -240,25 +243,25 @@ def _outpost_single_update(outpost: Outpost, layer=None):
 def outpost_local_connection():
     """Checks the local environment and create Service connections."""
     if not CONFIG.y_bool("outposts.discover"):
-        LOGGER.debug("Outpost integration discovery is disabled")
+        LOGGER.info("Outpost integration discovery is disabled")
         return
     # Explicitly check against token filename, as that's
     # only present when the integration is enabled
     if Path(SERVICE_TOKEN_FILENAME).exists():
-        LOGGER.debug("Detected in-cluster Kubernetes Config")
+        LOGGER.info("Detected in-cluster Kubernetes Config")
         if not KubernetesServiceConnection.objects.filter(local=True).exists():
             LOGGER.debug("Created Service Connection for in-cluster")
             KubernetesServiceConnection.objects.create(
                 name="Local Kubernetes Cluster", local=True, kubeconfig={}
             )
     # For development, check for the existence of a kubeconfig file
-    kubeconfig_path = expanduser(KUBE_CONFIG_DEFAULT_LOCATION)
-    if Path(kubeconfig_path).exists():
-        LOGGER.debug("Detected kubeconfig")
+    kubeconfig_path = Path(KUBE_CONFIG_DEFAULT_LOCATION).expanduser()
+    if kubeconfig_path.exists():
+        LOGGER.info("Detected kubeconfig")
         kubeconfig_local_name = f"k8s-{gethostname()}"
         if not KubernetesServiceConnection.objects.filter(name=kubeconfig_local_name).exists():
             LOGGER.debug("Creating kubeconfig Service Connection")
-            with open(kubeconfig_path, "r", encoding="utf8") as _kubeconfig:
+            with kubeconfig_path.open("r", encoding="utf8") as _kubeconfig:
                 KubernetesServiceConnection.objects.create(
                     name=kubeconfig_local_name,
                     kubeconfig=yaml.safe_load(_kubeconfig),
@@ -266,7 +269,7 @@ def outpost_local_connection():
     unix_socket_path = urlparse(DEFAULT_UNIX_SOCKET).path
     socket = Path(unix_socket_path)
     if socket.exists() and access(socket, R_OK):
-        LOGGER.debug("Detected local docker socket")
+        LOGGER.info("Detected local docker socket")
         if len(DockerServiceConnection.objects.filter(local=True)) == 0:
             LOGGER.debug("Created Service Connection for docker")
             DockerServiceConnection.objects.create(

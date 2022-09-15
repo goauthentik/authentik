@@ -7,6 +7,9 @@ For Nginx Proxy Manager you can use this snippet
 proxy_buffers 8 16k;
 proxy_buffer_size 32k;
 
+# Make sure not to redirect traffic to a port 4443
+port_in_redirect off;
+
 location / {
     # Put your proxy_pass to your application here
     proxy_pass          $forward_scheme://$server:$port;
@@ -16,6 +19,10 @@ location / {
     error_page          401 = @goauthentik_proxy_signin;
     auth_request_set $auth_cookie $upstream_http_set_cookie;
     add_header Set-Cookie $auth_cookie;
+
+    # pass original hostname and url to Nginx Proxy Manager, it might be needed for some apps to work
+    # proxy_set_header    Host $host;
+    # proxy_set_header    X-Original-URL $scheme://$http_host$request_uri;
 
     # translate headers from the outposts back to the actual upstream
     auth_request_set $authentik_username $upstream_http_x_authentik_username;

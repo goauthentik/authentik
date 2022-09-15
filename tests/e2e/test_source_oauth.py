@@ -1,5 +1,5 @@
 """test OAuth Source"""
-from os.path import abspath
+from pathlib import Path
 from sys import platform
 from time import sleep
 from typing import Any, Optional
@@ -18,7 +18,7 @@ from authentik.core.models import User
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.manager import MANAGER, SourceType
+from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, retry
@@ -26,7 +26,7 @@ from tests.e2e.utils import SeleniumTestCase, retry
 CONFIG_PATH = "/tmp/dex.yml"  # nosec
 
 
-class OAUth1Callback(OAuthCallback):
+class OAuth1Callback(OAuthCallback):
     """OAuth1 Callback with custom getters"""
 
     def get_user_id(self, info: dict[str, str]) -> str:
@@ -43,11 +43,11 @@ class OAUth1Callback(OAuthCallback):
         }
 
 
-@MANAGER.type()
+@registry.register()
 class OAUth1Type(SourceType):
     """OAuth1 Type definition"""
 
-    callback_view = OAUth1Callback
+    callback_view = OAuth1Callback
     name = "OAuth1"
     slug = "oauth1"
 
@@ -116,7 +116,7 @@ class TestSourceOAuth2(SeleniumTestCase):
                 interval=5 * 100 * 1000000,
                 start_period=1 * 100 * 1000000,
             ),
-            "volumes": {abspath(CONFIG_PATH): {"bind": "/config.yml", "mode": "ro"}},
+            "volumes": {str(Path(CONFIG_PATH).absolute()): {"bind": "/config.yml", "mode": "ro"}},
         }
 
     def create_objects(self):
@@ -143,17 +143,17 @@ class TestSourceOAuth2(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-source-authentication.yaml",
-        "blueprints/default/20-flow-default-source-enrollment.yaml",
-        "blueprints/default/20-flow-default-source-pre-authentication.yaml",
+        "default/20-flow-default-source-authentication.yaml",
+        "default/20-flow-default-source-enrollment.yaml",
+        "default/20-flow-default-source-pre-authentication.yaml",
     )
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""
@@ -200,12 +200,12 @@ class TestSourceOAuth2(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "blueprints/default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
     )
     def test_oauth_enroll_auth(self):
         """test OAuth Source With With OIDC (enroll and authenticate again)"""
@@ -292,13 +292,13 @@ class TestSourceOAuth1(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "blueprints/default/20-flow-default-source-authentication.yaml",
-        "blueprints/default/20-flow-default-source-enrollment.yaml",
-        "blueprints/default/20-flow-default-source-pre-authentication.yaml",
+        "default/20-flow-default-source-authentication.yaml",
+        "default/20-flow-default-source-enrollment.yaml",
+        "default/20-flow-default-source-pre-authentication.yaml",
     )
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""

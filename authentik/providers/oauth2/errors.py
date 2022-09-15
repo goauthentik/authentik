@@ -1,9 +1,12 @@
 """OAuth errors"""
 from typing import Optional
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
+
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.views import bad_request_message
 from authentik.providers.oauth2.models import GrantTypes
 
 
@@ -149,6 +152,14 @@ class AuthorizeError(OAuth2Error):
         self.redirect_uri = redirect_uri
         self.grant_type = grant_type
         self.state = state
+
+    def get_response(self, request: HttpRequest) -> HttpResponse:
+        """Wrapper around `self.create_uri()` that checks if the resulting URI is valid
+        (we might not have self.redirect_uri set), and returns a valid HTTP Response"""
+        uri = self.create_uri()
+        if urlparse(uri).scheme != "":
+            return HttpResponseRedirect(uri)
+        return bad_request_message(request, self.description, title=self.error)
 
     def create_uri(self) -> str:
         """Get a redirect URI with the error message"""

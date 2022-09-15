@@ -1,7 +1,7 @@
 package web
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -43,21 +43,16 @@ func RunMetricsServer() {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
-		bm, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			l.WithError(err).Warning("failed to get upstream metrics")
-			return
-		}
-		_, err = rw.Write(bm)
+		_, err = io.Copy(rw, res.Body)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
 	})
-	l.WithField("listen", config.Get().Web.ListenMetrics).Info("Starting Metrics server")
-	err := http.ListenAndServe(config.Get().Web.ListenMetrics, m)
+	l.WithField("listen", config.Get().Listen.Metrics).Info("Starting Metrics server")
+	err := http.ListenAndServe(config.Get().Listen.Metrics, m)
 	if err != nil {
 		l.WithError(err).Warning("Failed to start metrics server")
 	}
-	l.WithField("listen", config.Get().Web.ListenMetrics).Info("Stopping Metrics server")
+	l.WithField("listen", config.Get().Listen.Metrics).Info("Stopping Metrics server")
 }

@@ -20,7 +20,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
-from rest_framework.serializers import BaseSerializer, Serializer
+from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
@@ -82,6 +82,7 @@ class Group(SerializerModel):
         "Group",
         blank=True,
         null=True,
+        default=None,
         on_delete=models.SET_NULL,
         related_name="children",
     )
@@ -227,9 +228,9 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
             return DEFAULT_AVATAR
         if mode.startswith("attributes."):
             return get_path_from_dict(self.attributes, mode[11:], default=DEFAULT_AVATAR)
+        # gravatar uses md5 for their URLs, so md5 can't be avoided
         mail_hash = md5(self.email.lower().encode("utf-8")).hexdigest()  # nosec
         if mode == "gravatar":
-            # gravatar uses md5 for their URLs, so md5 can't be avoided
             parameters = [
                 ("s", "158"),
                 ("r", "g"),
@@ -481,7 +482,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
     objects = InheritanceManager()
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[Serializer]:
         """Get serializer for this model"""
         raise NotImplementedError
 
@@ -552,7 +553,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
     description = models.TextField(default="", blank=True)
 
     @property
-    def serializer(self) -> Serializer:
+    def serializer(self) -> type[Serializer]:
         from authentik.core.api.tokens import TokenSerializer
 
         return TokenSerializer
@@ -616,10 +617,9 @@ class PropertyMapping(SerializerModel, ManagedModel):
 
     def evaluate(self, user: Optional[User], request: Optional[HttpRequest], **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
-        from authentik.core.expression import PropertyMappingEvaluator
+        from authentik.core.expression.evaluator import PropertyMappingEvaluator
 
-        evaluator = PropertyMappingEvaluator()
-        evaluator.set_context(user, request, self, **kwargs)
+        evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
         try:
             return evaluator.evaluate(self.expression)
         except Exception as exc:

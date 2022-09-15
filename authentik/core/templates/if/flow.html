@@ -6,14 +6,16 @@
 {% block head_before %}
 {{ block.super }}
 <link rel="prefetch" href="{{ flow.background_url }}" />
+<link rel="icon" href="{{ tenant.branding_favicon }}">
+<link rel="shortcut icon" href="{{ tenant.branding_favicon }}">
 {% if flow.compatibility_mode and not inspector %}
 <script>ShadyDOM = { force: !navigator.webdriver };</script>
 {% endif %}
 <script>
 window.authentik = {};
 window.authentik.locale = "{{ tenant.default_locale }}";
-window.authentik.config = JSON.parse( '{{ config_json|safe }}');
-window.authentik.tenant = JSON.parse('{{ tenant_json|safe }}');
+window.authentik.config = JSON.parse('{{ config_json|escapejs }}');
+window.authentik.tenant = JSON.parse('{{ tenant_json|escapejs }}');
 window.authentik.flow = {
     "layout": "{{ flow.layout }}",
 };
@@ -21,7 +23,7 @@ window.authentik.flow = {
 {% endblock %}
 
 {% block head %}
-<script src="{% static 'dist/flow/FlowInterface.js' %}" type="module"></script>
+<script src="{% static 'dist/flow/FlowInterface.js' %}?version={{ version }}" type="module"></script>
 <style>
 :root {
     --ak-flow-background: url("{{ flow.background_url }}");

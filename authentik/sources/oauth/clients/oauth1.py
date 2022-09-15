@@ -21,7 +21,7 @@ class OAuthClient(BaseOAuthClient):
     }
 
     def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
-        "Fetch access token from callback request."
+        """Fetch access token from callback request."""
         raw_token = self.request.session.get(self.session_key, None)
         verifier = self.request.GET.get("oauth_verifier", None)
         callback = self.request.build_absolute_uri(self.callback)
@@ -48,7 +48,7 @@ class OAuthClient(BaseOAuthClient):
         return None
 
     def get_request_token(self) -> str:
-        "Fetch the OAuth request token. Only required for OAuth 1.0."
+        """Fetch the OAuth request token. Only required for OAuth 1.0."""
         callback = self.request.build_absolute_uri(self.callback)
         try:
             request_token_url = self.source.type.request_token_url or ""
@@ -67,7 +67,7 @@ class OAuthClient(BaseOAuthClient):
             return response.text
 
     def get_redirect_args(self) -> dict[str, Any]:
-        "Get request parameters for redirect url."
+        """Get request parameters for redirect url."""
         callback = self.request.build_absolute_uri(self.callback)
         raw_token = self.get_request_token()
         token = self.parse_raw_token(raw_token)
@@ -78,11 +78,11 @@ class OAuthClient(BaseOAuthClient):
         }
 
     def parse_raw_token(self, raw_token: str) -> dict[str, Any]:
-        "Parse token and secret from raw token response."
+        """Parse token and secret from raw token response."""
         return dict(parse_qsl(raw_token))
 
     def do_request(self, method: str, url: str, **kwargs) -> Response:
-        "Build remote url request. Constructs necessary auth."
+        """Build remote url request. Constructs necessary auth."""
         resource_owner_key = None
         resource_owner_secret = None
         if "token" in kwargs:

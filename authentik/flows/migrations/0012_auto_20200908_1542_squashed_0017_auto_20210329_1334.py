@@ -19,25 +19,6 @@ def update_flow_designation(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
             flow.save()
 
 
-# First stage for default-source-enrollment flow (prompt stage)
-# needs to have its policy re-evaluated
-def update_default_source_enrollment_flow_binding(
-    apps: Apps, schema_editor: BaseDatabaseSchemaEditor
-):
-    Flow = apps.get_model("authentik_flows", "Flow")
-    FlowStageBinding = apps.get_model("authentik_flows", "FlowStageBinding")
-    db_alias = schema_editor.connection.alias
-
-    flows = Flow.objects.using(db_alias).filter(slug="default-source-enrollment")
-    if not flows.exists():
-        return
-    flow = flows.first()
-
-    binding = FlowStageBinding.objects.get(target=flow, order=0)
-    binding.re_evaluate_policies = True
-    binding.save()
-
-
 class Migration(migrations.Migration):
 
     replaces = [
@@ -100,9 +81,6 @@ class Migration(migrations.Migration):
                 default=False,
                 help_text="When this option is enabled, the planner will re-evaluate policies bound to this binding.",
             ),
-        ),
-        migrations.RunPython(
-            code=update_default_source_enrollment_flow_binding,
         ),
         migrations.AlterField(
             model_name="flowstagebinding",

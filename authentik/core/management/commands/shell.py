@@ -9,7 +9,7 @@ from django.db.models.signals import post_save, pre_delete
 
 from authentik import __version__
 from authentik.core.models import User
-from authentik.events.middleware import IGNORED_MODELS
+from authentik.events.middleware import should_log_model
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
 
@@ -50,7 +50,7 @@ class Command(BaseCommand):
     # pylint: disable=unused-argument
     def post_save_handler(sender, instance: Model, created: bool, **_):
         """Signal handler for all object's post_save"""
-        if isinstance(instance, IGNORED_MODELS):
+        if not should_log_model(instance):
             return
 
         action = EventAction.MODEL_CREATED if created else EventAction.MODEL_UPDATED
@@ -66,7 +66,7 @@ class Command(BaseCommand):
     # pylint: disable=unused-argument
     def pre_delete_handler(sender, instance: Model, **_):
         """Signal handler for all object's pre_delete"""
-        if isinstance(instance, IGNORED_MODELS):  # pragma: no cover
+        if not should_log_model(instance):  # pragma: no cover
             return
 
         Event.new(EventAction.MODEL_DELETED, model=model_to_dict(instance)).set_user(

@@ -1,6 +1,5 @@
-import { EVENT_WS_MESSAGE } from "@goauthentik/web/constants";
-import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
-import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { EVENT_MESSAGE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants";
+import { MessageLevel } from "@goauthentik/common/messages";
 
 import { t } from "@lingui/macro";
 
@@ -33,12 +32,15 @@ export class WebsocketClient {
         this.messageSocket.addEventListener("close", (e) => {
             console.debug(`authentik/ws: closed ws connection: ${e}`);
             if (this.retryDelay > 6000) {
-                showMessage(
-                    {
-                        level: MessageLevel.error,
-                        message: t`Connection error, reconnecting...`,
-                    },
-                    true,
+                window.dispatchEvent(
+                    new CustomEvent(EVENT_MESSAGE, {
+                        bubbles: true,
+                        composed: true,
+                        detail: {
+                            level: MessageLevel.error,
+                            message: t`Connection error, reconnecting...`,
+                        },
+                    }),
                 );
             }
             setTimeout(() => {

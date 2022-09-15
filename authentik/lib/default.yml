@@ -7,11 +7,10 @@ postgresql:
   port: 5432
   password: 'env://POSTGRES_PASSWORD'
 
-web:
-  listen: 0.0.0.0:9000
-  listen_tls: 0.0.0.0:9443
+listen:
+  listen_http: 0.0.0.0:9000
+  listen_https: 0.0.0.0:9443
   listen_metrics: 0.0.0.0:9300
-  outpost_port_offset: 0
 
 redis:
   host: localhost
@@ -37,7 +36,7 @@ error_reporting:
   enabled: false
   environment: customer
   send_pii: false
-  sample_rate: 0.3
+  sample_rate: 0.1
 
 # Global email settings
 email:
@@ -57,6 +56,7 @@ outposts:
   # %(build_hash)s: Build hash if you're running a beta version
   container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
   discover: true
+  disable_embedded_outpost: false
 
 ldap:
   tls:

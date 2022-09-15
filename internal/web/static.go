@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-http-utils/etag"
 	"github.com/gorilla/mux"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
@@ -58,10 +59,11 @@ func (ws *WebServer) configureStatic() {
 }
 
 func (ws *WebServer) staticHeaderMiddleware(h http.Handler) http.Handler {
+	etagHandler := etag.Handler(h, false)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "\"public, no-transform\"")
 		w.Header().Set("X-authentik-version", constants.VERSION)
-		w.Header().Set("Vary", "X-authentik-version")
-		h.ServeHTTP(w, r)
+		w.Header().Set("Vary", "X-authentik-version, Etag")
+		etagHandler.ServeHTTP(w, r)
 	})
 }

@@ -1,10 +1,15 @@
-import { SentryIgnoredError } from "@goauthentik/web/common/errors";
-import { WSMessage } from "@goauthentik/web/common/ws";
-import { EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "@goauthentik/web/constants";
-import "@goauthentik/web/elements/messages/Message";
-import { APIMessage } from "@goauthentik/web/elements/messages/Message";
+import {
+    EVENT_MESSAGE,
+    EVENT_WS_MESSAGE,
+    WS_MSG_TYPE_MESSAGE,
+} from "@goauthentik/common/constants";
+import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { WSMessage } from "@goauthentik/common/ws";
+import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/messages/Message";
+import { APIMessage } from "@goauthentik/elements/messages/Message";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
@@ -20,7 +25,7 @@ export function showMessage(message: APIMessage, unique = false): void {
 }
 
 @customElement("ak-message-container")
-export class MessageContainer extends LitElement {
+export class MessageContainer extends AKElement {
     @property({ attribute: false })
     messages: APIMessage[] = [];
 
@@ -42,6 +47,9 @@ export class MessageContainer extends LitElement {
         this.addEventListener(EVENT_WS_MESSAGE, ((e: CustomEvent<WSMessage>) => {
             if (e.detail.message_type !== WS_MSG_TYPE_MESSAGE) return;
             this.addMessage(e.detail as unknown as APIMessage);
+        }) as EventListener);
+        this.addEventListener(EVENT_MESSAGE, ((e: CustomEvent<APIMessage>) => {
+            this.addMessage(e.detail);
         }) as EventListener);
     }
 

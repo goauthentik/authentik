@@ -1,8 +1,7 @@
 """Serializer mixin for managed models"""
-from dataclasses import asdict
-
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, DateTimeField, JSONField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
@@ -11,8 +10,8 @@ from rest_framework.serializers import ListSerializer, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.decorators import permission_required
-from authentik.blueprints.models import BlueprintInstance
-from authentik.blueprints.v1.tasks import BlueprintFile, apply_blueprint, blueprints_find
+from authentik.blueprints.models import BlueprintInstance, BlueprintRetrievalFailed
+from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 
@@ -32,6 +31,14 @@ class MetadataSerializer(PassiveSerializer):
 
 class BlueprintInstanceSerializer(ModelSerializer):
     """Info about a single blueprint instance file"""
+
+    def validate_path(self, path: str) -> str:
+        """Ensure the path specified is retrievable"""
+        try:
+            BlueprintInstance(path=path).retrieve()
+        except BlueprintRetrievalFailed as exc:
+            raise ValidationError(exc) from exc
+        return path
 
     class Meta:
 
@@ -84,8 +91,8 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, pagination_class=None, filter_backends=[])
     def available(self, request: Request) -> Response:
         """Get blueprints"""
-        files: list[BlueprintFile] = blueprints_find.delay().get()
-        return Response([asdict(file) for file in files])
+        files: list[dict] = blueprints_find_dict.delay().get()
+        return Response(files)
 
     @permission_required("authentik_blueprints.view_blueprintinstance")
     @extend_schema(

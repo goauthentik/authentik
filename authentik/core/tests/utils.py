@@ -52,5 +52,5 @@ def create_test_cert() -> CertificateKeyPair:
         subject_alt_names=["goauthentik.io"],
         validity_days=360,
     )
-    builder.name = generate_id()
+    builder.common_name = generate_id()
     return builder.save()

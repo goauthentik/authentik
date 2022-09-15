@@ -1,26 +1,30 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
-import "@goauthentik/web/elements/EmptyState";
-import "@goauthentik/web/user/user-settings/sources/SourceSettingsOAuth";
-import "@goauthentik/web/user/user-settings/sources/SourceSettingsPlex";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/EmptyState";
+import "@goauthentik/user/user-settings/sources/SourceSettingsOAuth";
+import "@goauthentik/user/user-settings/sources/SourceSettingsPlex";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
-import { SourcesApi, UserSetting } from "@goauthentik/api";
+import { PaginatedUserSourceConnectionList, SourcesApi, UserSetting } from "@goauthentik/api";
 
 @customElement("ak-user-settings-source")
-export class UserSourceSettingsPage extends LitElement {
+export class UserSourceSettingsPage extends AKElement {
     @property({ attribute: false })
     sourceSettings?: Promise<UserSetting[]>;
+
+    @property({ attribute: false })
+    connections?: PaginatedUserSourceConnectionList;
 
     static get styles(): CSSResult[] {
         return [
@@ -55,15 +59,30 @@ export class UserSourceSettingsPage extends LitElement {
 
     firstUpdated(): void {
         this.sourceSettings = new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList();
+        new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsAllList().then((connections) => {
+            this.connections = connections;
+        });
     }
 
     renderSourceSettings(source: UserSetting): TemplateResult {
+        let connectionPk = -1;
+        if (this.connections) {
+            const connections = this.connections.results.filter(
+                (con) => con.source.slug === source.objectUid,
+            );
+            if (connections.length > 0) {
+                connectionPk = connections[0].pk;
+            } else {
+                connectionPk = 0;
+            }
+        }
         switch (source.component) {
             case "ak-user-settings-source-oauth":
                 return html`<ak-user-settings-source-oauth
                     class="pf-c-data-list__item-row"
                     objectId=${source.objectUid}
                     title=${source.title}
+                    connectionPk=${connectionPk}
                     .configureUrl=${source.configureUrl}
                 >
                 </ak-user-settings-source-oauth>`;
@@ -72,6 +91,7 @@ export class UserSourceSettingsPage extends LitElement {
                     class="pf-c-data-list__item-row"
                     objectId=${source.objectUid}
                     title=${source.title}
+                    connectionPk=${connectionPk}
                     .configureUrl=${source.configureUrl}
                 >
                 </ak-user-settings-source-plex>`;

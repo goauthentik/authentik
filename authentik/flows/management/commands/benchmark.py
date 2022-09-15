@@ -32,7 +32,7 @@ class FlowPlanProcess(PROCESS_CLASS):  # pragma: no cover
 
     def run(self):
         """Execute 1000 flow plans"""
-        print(f"Proc {self.index} Running")
+        LOGGER.info(f"Proc {self.index} Running")
 
         def test_inner():
             planner = FlowPlanner(self.flow)

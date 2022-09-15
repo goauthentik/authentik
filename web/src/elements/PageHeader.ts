@@ -1,20 +1,21 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/api/Config";
-import { currentInterface } from "@goauthentik/web/api/Sentry";
-import { me } from "@goauthentik/web/api/Users";
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_SIDEBAR_TOGGLE,
     EVENT_WS_MESSAGE,
     TITLE_DEFAULT,
-} from "@goauthentik/web/constants";
+} from "@goauthentik/common/constants";
+import { currentInterface } from "@goauthentik/common/sentry";
+import { me } from "@goauthentik/common/users";
+import { AKElement } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -23,7 +24,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { EventsApi } from "@goauthentik/api";
 
 @customElement("ak-page-header")
-export class PageHeader extends LitElement {
+export class PageHeader extends AKElement {
     @property()
     icon?: string;
 

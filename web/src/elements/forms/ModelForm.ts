@@ -1,9 +1,8 @@
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { Form } from "@goauthentik/elements/forms/Form";
 
 import { TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
-
-import { Form } from "./Form";
 
 export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
     abstract loadInstance(pk: PKT): Promise<T>;

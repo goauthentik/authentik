@@ -32,7 +32,7 @@ export const resources = [
         src: "node_modules/@patternfly/patternfly/components/Spinner/spinner.css",
         dest: "dist/",
     },
-    { src: "src/authentik.css", dest: "dist/" },
+    { src: "src/common/styles/authentik.css", dest: "dist/" },
     { src: "src/custom.css", dest: "dist/" },
 
     {
@@ -90,14 +90,14 @@ export const defaultOptions = {
     watch: {
         clearScreen: false,
     },
-    preserveEntrySignatures: false,
+    preserveEntrySignatures: "strict",
     cache: true,
     context: "window",
 };
 
 // Polyfills (imported first)
 export const POLY = {
-    input: "./poly.ts",
+    input: "./src/polyfill/poly.ts",
     output: [
         {
             format: "iife",
@@ -122,7 +122,7 @@ export default [
     POLY,
     // Flow interface
     {
-        input: "./src/interfaces/FlowInterface.ts",
+        input: "./src/flow/FlowInterface.ts",
         output: [
             {
                 format: "es",
@@ -135,7 +135,7 @@ export default [
     },
     // Admin interface
     {
-        input: "./src/interfaces/AdminInterface.ts",
+        input: "./src/admin/AdminInterface.ts",
         output: [
             {
                 format: "es",
@@ -148,7 +148,7 @@ export default [
     },
     // User interface
     {
-        input: "./src/interfaces/UserInterface.ts",
+        input: "./src/user/UserInterface.ts",
         output: [
             {
                 format: "es",

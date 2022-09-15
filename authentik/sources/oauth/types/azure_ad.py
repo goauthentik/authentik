@@ -4,7 +4,7 @@ from typing import Any
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
-from authentik.sources.oauth.types.manager import MANAGER, SourceType
+from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
@@ -31,13 +31,13 @@ class AzureADOAuthCallback(OAuthCallback):
     ) -> dict[str, Any]:
         mail = info.get("mail", None) or info.get("otherMails", [None])[0]
         return {
-            "username": info.get("displayName"),
+            "username": info.get("userPrincipalName"),
             "email": mail,
             "name": info.get("displayName"),
         }
 
 
-@MANAGER.type()
+@registry.register()
 class AzureADType(SourceType):
     """Azure AD Type definition"""
 

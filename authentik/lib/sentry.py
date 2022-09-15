@@ -87,10 +87,6 @@ def sentry_init(**sentry_init_kwargs):
     set_tag("authentik.build_hash", get_build_hash("tagged"))
     set_tag("authentik.env", get_env())
     set_tag("authentik.component", "backend")
-    LOGGER.info(
-        "Error reporting is enabled",
-        env=kwargs["environment"],
-    )
 
 
 def traces_sampler(sampling_context: dict) -> float:
@@ -99,7 +95,7 @@ def traces_sampler(sampling_context: dict) -> float:
     # Ignore all healthcheck routes
     if path.startswith("/-/health") or path.startswith("/-/metrics"):
         return 0
-    return float(CONFIG.y("error_reporting.sample_rate", 0.5))
+    return float(CONFIG.y("error_reporting.sample_rate", 0.1))
 
 
 def before_send(event: dict, hint: dict) -> Optional[dict]:

@@ -1,11 +1,11 @@
 """Blueprint importer"""
 from contextlib import contextmanager
 from copy import deepcopy
-from typing import Any
+from typing import Any, Optional
 
-from dacite import from_dict
+from dacite.core import from_dict
 from dacite.exceptions import DaciteError
-from django.apps import apps
+from deepmerge import always_merger
 from django.db import transaction
 from django.db.models import Model
 from django.db.models.query_utils import Q
@@ -20,9 +20,11 @@ from yaml import load
 from authentik.blueprints.v1.common import (
     Blueprint,
     BlueprintEntry,
+    BlueprintEntryState,
     BlueprintLoader,
     EntryInvalidError,
 )
+from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
 from authentik.core.models import (
     AuthenticatedSession,
     PropertyMapping,
@@ -35,19 +37,29 @@ from authentik.lib.models import SerializerModel
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 
-EXCLUDED_MODELS = (
-    # Base classes
-    Provider,
-    Source,
-    PropertyMapping,
-    UserSourceConnection,
-    Stage,
-    OutpostServiceConnection,
-    Policy,
-    PolicyBindingModel,
-    # Classes that have other dependencies
-    AuthenticatedSession,
-)
+
+def is_model_allowed(model: type[Model]) -> bool:
+    """Check if model is allowed"""
+    # pylint: disable=imported-auth-user
+    from django.contrib.auth.models import Group as DjangoGroup
+    from django.contrib.auth.models import User as DjangoUser
+
+    excluded_models = (
+        DjangoUser,
+        DjangoGroup,
+        # Base classes
+        Provider,
+        Source,
+        PropertyMapping,
+        UserSourceConnection,
+        Stage,
+        OutpostServiceConnection,
+        Policy,
+        PolicyBindingModel,
+        # Classes that have other dependencies
+        AuthenticatedSession,
+    )
+    return model not in excluded_models and issubclass(model, (SerializerModel, BaseMetaModel))
 
 
 @contextmanager
@@ -65,7 +77,7 @@ class Importer:
 
     logger: BoundLogger
 
-    def __init__(self, yaml_input: str):
+    def __init__(self, yaml_input: str, context: Optional[dict] = None):
         self.__pk_map: dict[Any, Model] = {}
         self.logger = get_logger()
         import_dict = load(yaml_input, BlueprintLoader)
@@ -73,6 +85,11 @@ class Importer:
             self.__import = from_dict(Blueprint, import_dict)
         except DaciteError as exc:
             raise EntryInvalidError from exc
+        context = {}
+        always_merger.merge(context, self.__import.context)
+        if context:
+            always_merger.merge(context, context)
+        self.__import.context = context
 
     @property
     def blueprint(self) -> Blueprint:
@@ -121,10 +138,22 @@ class Importer:
     def _validate_single(self, entry: BlueprintEntry) -> BaseSerializer:
         """Validate a single entry"""
         model_app_label, model_name = entry.model.split(".")
-        model: type[SerializerModel] = apps.get_model(model_app_label, model_name)
+        model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
         # Don't use isinstance since we don't want to check for inheritance
-        if model in EXCLUDED_MODELS:
+        if not is_model_allowed(model):
             raise EntryInvalidError(f"Model {model} not allowed")
+        if issubclass(model, BaseMetaModel):
+            serializer_class: type[Serializer] = model.serializer()
+            serializer = serializer_class(data=entry.get_attrs(self.__import))
+            try:
+                serializer.is_valid(raise_exception=True)
+            except ValidationError as exc:
+                raise EntryInvalidError(
+                    f"Serializer errors {serializer.errors}", serializer_errors=serializer.errors
+                ) from exc
+            return serializer
+        if entry.identifiers == {}:
+            raise EntryInvalidError("No identifiers")
 
         # If we try to validate without referencing a possible instance
         # we'll get a duplicate error, hence we load the model here and return
@@ -139,7 +168,7 @@ class Importer:
         existing_models = model.objects.filter(self.__query_from_identifier(updated_identifiers))
 
         serializer_kwargs = {}
-        if existing_models.exists():
+        if not isinstance(model(), BaseMetaModel) and existing_models.exists():
             model_instance = existing_models.first()
             self.logger.debug(
                 "initialise serializer with instance",
@@ -148,8 +177,11 @@ class Importer:
                 pk=model_instance.pk,
             )
             serializer_kwargs["instance"] = model_instance
+            serializer_kwargs["partial"] = True
         else:
-            self.logger.debug("initialise new instance", model=model, **updated_identifiers)
+            self.logger.debug(
+                "initialised new serializer instance", model=model, **updated_identifiers
+            )
             model_instance = model()
             # pk needs to be set on the model instance otherwise a new one will be generated
             if "pk" in updated_identifiers:
@@ -163,7 +195,9 @@ class Importer:
         try:
             serializer.is_valid(raise_exception=True)
         except ValidationError as exc:
-            raise EntryInvalidError(f"Serializer errors {serializer.errors}") from exc
+            raise EntryInvalidError(
+                f"Serializer errors {serializer.errors}", serializer_errors=serializer.errors
+            ) from exc
         return serializer
 
     def apply(self) -> bool:
@@ -185,7 +219,7 @@ class Importer:
         for entry in self.__import.entries:
             model_app_label, model_name = entry.model.split(".")
             try:
-                model: SerializerModel = apps.get_model(model_app_label, model_name)
+                model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
             except LookupError:
                 self.logger.warning(
                     "app or model does not exist", app=model_app_label, model=model_name
@@ -195,14 +229,14 @@ class Importer:
             try:
                 serializer = self._validate_single(entry)
             except EntryInvalidError as exc:
-                self.logger.warning("entry invalid", entry=entry, error=exc)
+                self.logger.warning(f"entry invalid: {exc}", entry=entry, error=exc)
                 return False
 
             model = serializer.save()
             if "pk" in entry.identifiers:
                 self.__pk_map[entry.identifiers["pk"]] = model.pk
-            entry._instance = model
-            self.logger.debug("updated model", model=model, pk=model.pk)
+            entry._state = BlueprintEntryState(model)
+            self.logger.debug("updated model", model=model)
         return True
 
     def validate(self) -> tuple[bool, list[EventDict]]:
@@ -211,7 +245,7 @@ class Importer:
         self.logger.debug("Starting blueprint import validation")
         orig_import = deepcopy(self.__import)
         if self.__import.version != 1:
-            self.logger.warning("Invalid bundle version")
+            self.logger.warning("Invalid blueprint version")
             return False, []
         with (
             transaction_rollback(),
@@ -219,8 +253,8 @@ class Importer:
         ):
             successful = self._apply_models()
             if not successful:
-                self.logger.debug("blueprint validation failed")
+                self.logger.debug("Blueprint validation failed")
         for log in logs:
-            self.logger.debug(**log)
+            getattr(self.logger, log.get("log_level"))(**log)
         self.__import = orig_import
         return successful, logs

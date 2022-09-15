@@ -27,7 +27,7 @@ runs:
         docker-compose -f .github/actions/setup/docker-compose.yml up -d
         poetry env use python3.10
         poetry install
-        npm install -g pyright@1.1.136
+        cd web && npm ci
     - name: Generate config
       shell: poetry run python {0}
       run: |

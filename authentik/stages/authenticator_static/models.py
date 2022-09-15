@@ -16,7 +16,7 @@ class AuthenticatorStaticStage(ConfigurableStage, Stage):
     token_count = models.IntegerField(default=6)
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.authenticator_static.api import AuthenticatorStaticStageSerializer
 
         return AuthenticatorStaticStageSerializer

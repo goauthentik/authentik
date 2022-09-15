@@ -11,7 +11,7 @@ class UserLogoutStage(Stage):
     """Resets the users current session."""
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.user_logout.api import UserLogoutStageSerializer
 
         return UserLogoutStageSerializer

@@ -49,27 +49,50 @@ lint:
 	bandit -r authentik tests lifecycle -x node_modules
 	golangci-lint run -v
 
+migrate:
+	python -m lifecycle.migrate
+
+run:
+	go run -v cmd/server/main.go
+
 i18n-extract: i18n-extract-core web-extract
 
 i18n-extract-core:
-	./manage.py makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
+	ak makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
+
+#########################
+## API Schema
+#########################
 
 gen-build:
-	AUTHENTIK_DEBUG=true ./manage.py spectacular --file schema.yml
+	AUTHENTIK_DEBUG=true ak make_blueprint_schema > blueprints/schema.json
+	AUTHENTIK_DEBUG=true ak spectacular --file schema.yml
+
+gen-diff:
+	git show $(shell git tag -l | tail -n 1):schema.yml > old_schema.yml
+	docker run \
+		--rm -v ${PWD}:/local \
+		--user ${UID}:${GID} \
+		docker.io/openapitools/openapi-diff:2.0.1 \
+		--markdown /local/diff.md \
+		/local/old_schema.yml /local/schema.yml
+	rm old_schema.yml
 
 gen-clean:
 	rm -rf web/api/src/
 	rm -rf api/
 
-gen-client-web:
+gen-client-ts:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		openapitools/openapi-generator-cli:v6.0.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v6.0.0 generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/gen-ts-api \
-		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${NPM_VERSION}
+		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${NPM_VERSION} \
+		--git-repo-id authentik \
+		--git-user-id goauthentik
 	mkdir -p web/node_modules/@goauthentik/api
 	\cp -fv scripts/web_api_readme.md gen-ts-api/README.md
 	cd gen-ts-api && npm i
@@ -83,7 +106,7 @@ gen-client-go:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		openapitools/openapi-generator-cli:v6.0.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v6.0.0 generate \
 		-i /local/schema.yml \
 		-g go \
 		-o /local/gen-go-api \
@@ -94,13 +117,7 @@ gen-client-go:
 gen-dev-config:
 	python -m scripts.generate_config
 
-gen: gen-build gen-clean gen-client-web
-
-migrate:
-	python -m lifecycle.migrate
-
-run:
-	go run -v cmd/server/main.go
+gen: gen-build gen-clean gen-client-ts
 
 #########################
 ## Web
@@ -147,28 +164,28 @@ website-watch:
 
 # These targets are use by GitHub actions to allow usage of matrix
 # which makes the YAML File a lot smaller
-
+PY_SOURCES=authentik tests lifecycle
 ci--meta-debug:
 	python -V
 	node --version
 
 ci-pylint: ci--meta-debug
-	pylint authentik tests lifecycle
+	pylint $(PY_SOURCES)
 
 ci-black: ci--meta-debug
-	black --check authentik tests lifecycle
+	black --check $(PY_SOURCES)
 
 ci-isort: ci--meta-debug
-	isort --check authentik tests lifecycle
+	isort --check $(PY_SOURCES)
 
 ci-bandit: ci--meta-debug
-	bandit -r authentik tests lifecycle
+	bandit -r $(PY_SOURCES)
 
 ci-pyright: ci--meta-debug
-	pyright e2e lifecycle
+	./web/node_modules/.bin/pyright $(PY_SOURCES)
 
 ci-pending-migrations: ci--meta-debug
-	./manage.py makemigrations --check
+	ak makemigrations --check
 
 install: web-install website-install
 	poetry install

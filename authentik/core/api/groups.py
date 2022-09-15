@@ -62,6 +62,11 @@ class GroupSerializer(ModelSerializer):
             "attributes",
             "users_obj",
         ]
+        extra_kwargs = {
+            "users": {
+                "default": list,
+            }
+        }
 
 
 class GroupFilter(FilterSet):

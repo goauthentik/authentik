@@ -1,29 +1,37 @@
 """v1 blueprints tasks"""
 from dataclasses import asdict, dataclass, field
-from glob import glob
 from hashlib import sha512
 from pathlib import Path
 from typing import Optional
 
-from dacite import from_dict
+from dacite.core import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
+from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from structlog.stdlib import get_logger
 from yaml import load
 from yaml.error import YAMLError
 
-from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
-from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata
+from authentik.blueprints.models import (
+    BlueprintInstance,
+    BlueprintInstanceStatus,
+    BlueprintRetrievalFailed,
+)
+from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata, EntryInvalidError
 from authentik.blueprints.v1.importer import Importer
-from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_EXAMPLE
+from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.events.monitored_tasks import (
     MonitoredTask,
     TaskResult,
     TaskResultStatus,
     prefill_task,
 )
+from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
+
+LOGGER = get_logger()
 
 
 @dataclass
@@ -40,31 +48,45 @@ class BlueprintFile:
 @CELERY_APP.task(
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
+def blueprints_find_dict():
+    """Find blueprints as `blueprints_find` does, but return a safe dict"""
+    blueprints = []
+    for blueprint in blueprints_find():
+        blueprints.append(sanitize_dict(asdict(blueprint)))
+    return blueprints
+
+
 def blueprints_find():
     """Find blueprints and return valid ones"""
     blueprints = []
-    for file in glob(f"{CONFIG.y('blueprints_dir')}/**/*.yaml", recursive=True):
+    root = Path(CONFIG.y("blueprints_dir"))
+    for file in root.glob("**/*.yaml"):
         path = Path(file)
+        LOGGER.debug("found blueprint", path=str(path))
         with open(path, "r", encoding="utf-8") as blueprint_file:
             try:
                 raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
-            except YAMLError:
+            except YAMLError as exc:
                 raw_blueprint = None
+                LOGGER.warning("failed to parse blueprint", exc=exc, path=str(path))
             if not raw_blueprint:
                 continue
             metadata = raw_blueprint.get("metadata", None)
             version = raw_blueprint.get("version", 1)
             if version != 1:
+                LOGGER.warning("invalid blueprint version", version=version, path=str(path))
                 continue
         file_hash = sha512(path.read_bytes()).hexdigest()
-        blueprint = BlueprintFile(str(path), version, file_hash, path.stat().st_mtime)
+        blueprint = BlueprintFile(
+            str(path.relative_to(root)), version, file_hash, int(path.stat().st_mtime)
+        )
         blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
-        if (
-            blueprint.meta
-            and blueprint.meta.labels.get(LABEL_AUTHENTIK_EXAMPLE, "").lower() == "true"
-        ):
-            continue
         blueprints.append(blueprint)
+        LOGGER.info(
+            "parsed & loaded blueprint",
+            hash=file_hash,
+            path=str(path),
+        )
     return blueprints
 
 
@@ -88,11 +110,15 @@ def blueprints_discover(self: MonitoredTask):
 
 def check_blueprint_v1_file(blueprint: BlueprintFile):
     """Check if blueprint should be imported"""
-    rel_path = Path(blueprint.path).relative_to(Path(CONFIG.y("blueprints_dir")))
     instance: BlueprintInstance = BlueprintInstance.objects.filter(path=blueprint.path).first()
+    if (
+        blueprint.meta
+        and blueprint.meta.labels.get(LABEL_AUTHENTIK_INSTANTIATE, "").lower() == "false"
+    ):
+        return
     if not instance:
         instance = BlueprintInstance(
-            name=blueprint.meta.name if blueprint.meta else str(rel_path),
+            name=blueprint.meta.name if blueprint.meta else str(blueprint.path),
             path=blueprint.path,
             context={},
             status=BlueprintInstanceStatus.UNKNOWN,
@@ -102,9 +128,7 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
         )
         instance.save()
     if instance.last_applied_hash != blueprint.hash:
-        instance.metadata = asdict(blueprint.meta) if blueprint.meta else {}
-        instance.save()
-        apply_blueprint.delay(instance.pk.hex)
+        apply_blueprint.delay(str(instance.pk))
 
 
 @CELERY_APP.task(
@@ -113,15 +137,18 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 )
 def apply_blueprint(self: MonitoredTask, instance_pk: str):
     """Apply single blueprint"""
-    self.set_uid(instance_pk)
     self.save_on_success = False
+    instance: Optional[BlueprintInstance] = None
     try:
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
+        self.set_uid(slugify(instance.name))
         if not instance or not instance.enabled:
             return
-        file_hash = sha512(Path(instance.path).read_bytes()).hexdigest()
-        with open(instance.path, "r", encoding="utf-8") as blueprint_file:
-            importer = Importer(blueprint_file.read())
+        blueprint_content = instance.retrieve()
+        file_hash = sha512(blueprint_content.encode()).hexdigest()
+        importer = Importer(blueprint_content, instance.context)
+        if importer.blueprint.metadata:
+            instance.metadata = asdict(importer.blueprint.metadata)
         valid, logs = importer.validate()
         if not valid:
             instance.status = BlueprintInstanceStatus.ERROR
@@ -137,9 +164,18 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance.status = BlueprintInstanceStatus.SUCCESSFUL
         instance.last_applied_hash = file_hash
         instance.last_applied = now()
-        instance.save()
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
-    except (DatabaseError, ProgrammingError, InternalError, IOError) as exc:
-        instance.status = BlueprintInstanceStatus.ERROR
-        instance.save()
+    except (
+        DatabaseError,
+        ProgrammingError,
+        InternalError,
+        IOError,
+        BlueprintRetrievalFailed,
+        EntryInvalidError,
+    ) as exc:
+        if instance:
+            instance.status = BlueprintInstanceStatus.ERROR
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+    finally:
+        if instance:
+            instance.save()

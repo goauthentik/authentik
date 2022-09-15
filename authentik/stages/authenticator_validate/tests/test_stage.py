@@ -58,7 +58,7 @@ class AuthenticatorValidateStageTests(FlowTestCase):
             flow,
             component="ak-stage-identification",
             password_fields=False,
-            primary_action="Log in",
+            primary_action="Continue",
             user_fields=["username"],
             sources=[],
             show_source_labels=False,

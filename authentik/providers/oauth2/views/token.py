@@ -7,8 +7,10 @@ from re import fullmatch
 from typing import Any, Optional
 
 from django.http import HttpRequest, HttpResponse
+from django.utils.decorators import method_decorator
 from django.utils.timezone import datetime, now
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from jwt import PyJWK, PyJWTError, decode
 from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
@@ -364,6 +366,7 @@ class TokenParams:
             self.user.save()
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class TokenView(View):
     """Generate tokens for clients"""
 

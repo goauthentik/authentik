@@ -1,7 +1,7 @@
 version: 1
 metadata:
   labels:
-    blueprints.goauthentik.io/example: "true"
+    blueprints.goauthentik.io/instantiate: "false"
   name: Example - Two-factor Login
 entries:
   - identifiers:
@@ -17,7 +17,6 @@ entries:
     id: test-not-app-password
     model: authentik_policies_expression.expressionpolicy
     attrs:
-      execution_logging: false
       expression: |
         return context["auth_method"] != "app_password"
   - identifiers:
@@ -35,13 +34,10 @@ entries:
         - email
         - username
       template: stages/identification/login.html
-      enrollment_flow: null
-      recovery_flow: null
   - identifiers:
       name: default-authentication-flow-mfa
     id: default-authentication-flow-mfa
-    model: authentik_stages_authenticator_validate.AuthenticatorValidateStage
-    attrs: {}
+    model: authentik_stages_authenticator_validate.authenticatorvalidatestage
   - identifiers:
       name: default-authentication-password
     id: default-authentication-password
@@ -56,15 +52,11 @@ entries:
       stage: !KeyOf default-authentication-identification
       order: 10
     model: authentik_flows.flowstagebinding
-    attrs:
-      re_evaluate_policies: false
   - identifiers:
       target: !KeyOf flow
       stage: !KeyOf default-authentication-password
       order: 20
     model: authentik_flows.flowstagebinding
-    attrs:
-      re_evaluate_policies: false
   - identifiers:
       target: !KeyOf flow
       stage: !KeyOf default-authentication-flow-mfa
@@ -72,23 +64,14 @@ entries:
     model: authentik_flows.flowstagebinding
     id: flow-binding-mfa
     attrs:
-      evaluate_on_plan: false
       re_evaluate_policies: true
-      policy_engine_mode: any
-      invalid_response_action: retry
   - identifiers:
       target: !KeyOf flow
       stage: !KeyOf default-authentication-login
       order: 100
     model: authentik_flows.flowstagebinding
-    attrs:
-      re_evaluate_policies: false
   - identifiers:
       policy: !KeyOf test-not-app-password
       target: !KeyOf flow-binding-mfa
       order: 0
     model: authentik_policies.policybinding
-    attrs:
-      negate: false
-      enabled: true
-      timeout: 30

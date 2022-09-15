@@ -1,8 +1,9 @@
 package web
 
 import (
+	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 
@@ -19,13 +20,14 @@ func (ws *WebServer) APISentryProxy(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fullBody, err := ioutil.ReadAll(r.Body)
+	fb := &bytes.Buffer{}
+	_, err := io.Copy(fb, r.Body)
 	if err != nil {
 		ws.log.Debug("failed to read body")
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	lines := strings.Split(string(fullBody), "\n")
+	lines := strings.Split(fb.String(), "\n")
 	if len(lines) < 1 {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
@@ -42,7 +44,7 @@ func (ws *WebServer) APISentryProxy(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	res, err := http.DefaultClient.Post("https://sentry.beryju.org/api/8/envelope/", "application/octet-stream", strings.NewReader(string(fullBody)))
+	res, err := http.DefaultClient.Post("https://sentry.beryju.org/api/8/envelope/", "application/octet-stream", fb)
 	if err != nil {
 		ws.log.WithError(err).Warning("failed to proxy sentry")
 		rw.WriteHeader(http.StatusBadRequest)

@@ -1,10 +1,13 @@
 """Blueprint helpers"""
 from functools import wraps
+from pathlib import Path
 from typing import Callable
 
 from django.apps import apps
 
-from authentik.blueprints.manager import ManagedAppConfig
+from authentik.blueprints.apps import ManagedAppConfig
+from authentik.blueprints.models import BlueprintInstance
+from authentik.lib.config import CONFIG
 
 
 def apply_blueprint(*files: str):
@@ -18,8 +21,8 @@ def apply_blueprint(*files: str):
         @wraps(func)
         def wrapper(*args, **kwargs):
             for file in files:
-                with open(file, "r+", encoding="utf-8") as _file:
-                    Importer(_file.read()).apply()
+                content = BlueprintInstance(path=file).retrieve()
+                Importer(content).apply()
             return func(*args, **kwargs)
 
         return wrapper

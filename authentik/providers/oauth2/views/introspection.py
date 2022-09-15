@@ -2,7 +2,9 @@
 from dataclasses import dataclass, field
 
 from django.http import HttpRequest, HttpResponse
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenIntrospectionError
@@ -59,6 +61,7 @@ class TokenIntrospectionParams:
         return TokenIntrospectionParams(token=token, provider=provider)
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class TokenIntrospectionView(View):
     """Token Introspection
     https://tools.ietf.org/html/rfc7662"""

@@ -85,16 +85,18 @@ class NotificationTransportViewSet(UsedByMixin, ModelViewSet):
         """Send example notification using selected transport. Requires
         Modify permissions."""
         transport: NotificationTransport = self.get_object()
+        event = Event.new(
+            action="notification_test",
+            user=get_user(request.user),
+            app=self.__class__.__module__,
+            context={"foo": "bar"},
+        )
+        event.save()
         notification = Notification(
             severity=NotificationSeverity.NOTICE,
             body=f"Test Notification from transport {transport.name}",
             user=request.user,
-            event=Event(
-                action="Test",
-                user=get_user(request.user),
-                app=self.__class__.__module__,
-                context={"foo": "bar"},
-            ),
+            event=event,
         )
         try:
             response = NotificationTransportTestSerializer(

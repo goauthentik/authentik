@@ -4,8 +4,10 @@ from typing import Any, Optional
 from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
@@ -17,13 +19,16 @@ from authentik.providers.oauth2.constants import (
     SCOPE_GITHUB_USER,
     SCOPE_GITHUB_USER_EMAIL,
     SCOPE_GITHUB_USER_READ,
+    SCOPE_OPENID,
 )
 from authentik.providers.oauth2.models import RefreshToken, ScopeMapping
-from authentik.providers.oauth2.utils import TokenResponse, cors_allow
+from authentik.providers.oauth2.utils import TokenResponse, cors_allow, protected_resource_view
 
 LOGGER = get_logger()
 
 
+@method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(protected_resource_view([SCOPE_OPENID]), name="dispatch")
 class UserInfoView(View):
     """Create a dictionary with all the requested claims about the End-User.
     See: http://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse"""
@@ -34,8 +39,6 @@ class UserInfoView(View):
         """Get a list of all Scopes's descriptions"""
         scope_descriptions = []
         for scope in ScopeMapping.objects.filter(scope_name__in=scopes).order_by("scope_name"):
-            if scope.description == "":
-                continue
             scope_descriptions.append(PermissionDict(id=scope.scope_name, name=scope.description))
         # GitHub Compatibility Scopes are handled differently, since they required custom paths
         # Hence they don't exist as Scope objects

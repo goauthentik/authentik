@@ -1,7 +1,6 @@
 """authentik multi-stage authentication engine"""
 from copy import deepcopy
-from traceback import format_tb
-from typing import Any, Optional
+from typing import Optional
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -23,12 +22,12 @@ from sentry_sdk.api import set_tag
 from sentry_sdk.hub import Hub
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.models import USER_ATTRIBUTE_DEBUG
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
+    FlowErrorChallenge,
     HttpChallengeResponse,
     RedirectChallenge,
     ShellChallenge,
@@ -153,6 +152,7 @@ class FlowExecutorView(APIView):
         token: Optional[FlowToken] = FlowToken.filter_not_expired(key=key).first()
         if not token:
             return None
+        plan = None
         try:
             plan = token.plan
         except (AttributeError, EOFError, ImportError, IndexError) as exc:
@@ -253,7 +253,9 @@ class FlowExecutorView(APIView):
             action=EventAction.SYSTEM_EXCEPTION,
             message=exception_to_string(exc),
         ).from_http(self.request)
-        return to_stage_response(self.request, FlowErrorResponse(self.request, exc))
+        return to_stage_response(
+            self.request, HttpChallengeResponse(FlowErrorChallenge(self.request, exc))
+        )
 
     @extend_schema(
         responses={
@@ -438,30 +440,6 @@ class FlowExecutorView(APIView):
         for key in keys_to_delete:
             if key in self.request.session:
                 del self.request.session[key]
-
-
-class FlowErrorResponse(TemplateResponse):
-    """Response class when an unhandled error occurs during a stage. Normal users
-    are shown an error message, superusers are shown a full stacktrace."""
-
-    error: Exception
-
-    def __init__(self, request: HttpRequest, error: Exception) -> None:
-        # For some reason pyright complains about keyword argument usage here
-        # pyright: reportGeneralTypeIssues=false
-        super().__init__(request=request, template="flows/error.html")
-        self.error = error
-
-    def resolve_context(self, context: Optional[dict[str, Any]]) -> Optional[dict[str, Any]]:
-        if not context:
-            context = {}
-        context["error"] = self.error
-        if self._request.user and self._request.user.is_authenticated:
-            if self._request.user.is_superuser or self._request.user.group_attributes(
-                self._request
-            ).get(USER_ATTRIBUTE_DEBUG, False):
-                context["tb"] = "".join(format_tb(self.error.__traceback__))
-        return context
 
 
 class CancelView(View):

@@ -1,7 +1,7 @@
+import { Form } from "@goauthentik/elements/forms/Form";
+
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { Form } from "./Form";
 
 @customElement("ak-proxy-form")
 export class ProxyForm extends Form<unknown> {

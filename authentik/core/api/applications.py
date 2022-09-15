@@ -50,7 +50,9 @@ class ApplicationSerializer(ModelSerializer):
 
     def get_launch_url(self, app: Application) -> Optional[str]:
         """Allow formatting of launch URL"""
-        user = self.context["request"].user
+        user = None
+        if "request" in self.context:
+            user = self.context["request"].user
         return app.get_launch_url(user)
 
     class Meta:

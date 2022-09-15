@@ -2,7 +2,13 @@
     "compilerOptions": {
         "strict": true,
         "paths": {
-            "@goauthentik/web/*": ["src/*"],
+            "@goauthentik/admin/*": ["src/admin/*"],
+            "@goauthentik/common/*": ["src/common/*"],
+            "@goauthentik/elements/*": ["src/elements/*"],
+            "@goauthentik/flow/*": ["src/flow/*"],
+            "@goauthentik/polyfill/*": ["src/polyfill/*"],
+            "@goauthentik/user/*": ["src/user/*"],
+            "@goauthentik/locales/*": ["src/locales/*"],
             "@goauthentik/docs/*": ["../website/docs/*"]
         },
         "baseUrl": ".",
@@ -30,7 +36,10 @@
         "plugins": [
             {
                 "name": "ts-lit-plugin",
-                "strict": true
+                "strict": true,
+                "rules": {
+                    "no-unknown-tag-name": "off"
+                }
             }
         ]
     }

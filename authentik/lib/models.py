@@ -12,7 +12,7 @@ class SerializerModel(models.Model):
     """Base Abstract Model which has a serializer"""
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         """Get serializer for this model"""
         raise NotImplementedError
 

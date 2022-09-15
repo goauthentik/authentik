@@ -1,12 +1,14 @@
+import { AKElement } from "@goauthentik/elements/Base";
+
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
 
 @customElement("ak-expand")
-export class Expand extends LitElement {
+export class Expand extends AKElement {
     @property({ type: Boolean })
     expanded = false;
 

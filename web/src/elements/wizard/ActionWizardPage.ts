@@ -1,9 +1,13 @@
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { WizardAction } from "@goauthentik/elements/wizard/Wizard";
+import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
@@ -11,10 +15,6 @@ import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ResponseError } from "@goauthentik/api";
-
-import { EVENT_REFRESH } from "../../constants";
-import { WizardAction } from "./Wizard";
-import { WizardPage } from "./WizardPage";
 
 export enum ActionState {
     pending = "pending",

@@ -82,7 +82,7 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
     )
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.authenticator_webauthn.api import AuthenticateWebAuthnStageSerializer
 
         return AuthenticateWebAuthnStageSerializer

@@ -20,7 +20,7 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
-from authentik.blueprints.v1.exporter import Exporter
+from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
@@ -198,7 +198,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     def export(self, request: Request, slug: str) -> Response:
         """Export flow to .yaml file"""
         flow = self.get_object()
-        exporter = Exporter(flow)
+        exporter = FlowExporter(flow)
         response = HttpResponse(content=exporter.export_to_string())
         response["Content-Disposition"] = f'attachment; filename="{flow.slug}.yaml"'
         return response
@@ -277,11 +277,16 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
                 if element.type == "condition":
                     # Policy passes, link policy yes to next stage
                     footer.append(f"{element.identifier}(yes, right)->{body[index + 1].identifier}")
-                    # Policy doesn't pass, go to stage after next stage
-                    no_element = body[index + 1]
-                    if no_element.type != "end":
-                        no_element = body[index + 2]
-                    footer.append(f"{element.identifier}(no, bottom)->{no_element.identifier}")
+                    # For policies bound to the flow itself, if they deny,
+                    # the flow doesn't get executed, hence directly to the end
+                    if element.identifier.startswith("flow_policy_"):
+                        footer.append(f"{element.identifier}(no, bottom)->e")
+                    else:
+                        # Policy doesn't pass, go to stage after next stage
+                        no_element = body[index + 1]
+                        if no_element.type != "end":
+                            no_element = body[index + 2]
+                        footer.append(f"{element.identifier}(no, bottom)->{no_element.identifier}")
                 elif element.type == "operation":
                     footer.append(f"{element.identifier}(bottom)->{body[index + 1].identifier}")
         diagram = "\n".join([str(x) for x in header + body + footer])

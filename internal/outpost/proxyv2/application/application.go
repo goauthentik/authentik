@@ -148,8 +148,12 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if _, set := r.URL.Query()[CallbackSignature]; set {
+			if strings.EqualFold(r.URL.Query().Get(CallbackSignature), "true") {
+				a.log.Debug("handling OAuth Callback from querystring signature")
 				a.handleAuthCallback(w, r)
+			} else if strings.EqualFold(r.URL.Query().Get(LogoutSignature), "true") {
+				a.log.Debug("handling OAuth Logout from querystring signature")
+				a.handleSignOut(w, r)
 			} else {
 				inner.ServeHTTP(w, r)
 			}
@@ -197,6 +201,16 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 
 func (a *Application) Mode() api.ProxyMode {
 	return *a.proxyConfig.Mode.Get()
+}
+
+func (a *Application) HasQuerySignature(r *http.Request) bool {
+	if strings.EqualFold(r.URL.Query().Get(CallbackSignature), "true") {
+		return true
+	}
+	if strings.EqualFold(r.URL.Query().Get(LogoutSignature), "true") {
+		return true
+	}
+	return false
 }
 
 func (a *Application) ProxyConfig() api.ProxyOutpostConfig {

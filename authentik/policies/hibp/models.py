@@ -26,7 +26,7 @@ class HaveIBeenPwendPolicy(Policy):
     allowed_count = models.IntegerField(default=0)
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.policies.hibp.api import HaveIBeenPwendPolicySerializer
 
         return HaveIBeenPwendPolicySerializer

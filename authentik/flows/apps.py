@@ -1,7 +1,7 @@
 """authentik flows app config"""
 from prometheus_client import Gauge, Histogram
 
-from authentik.blueprints.manager import ManagedAppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.utils.reflection import all_subclasses
 
 GAUGE_FLOWS_CACHED = Gauge(
@@ -28,7 +28,7 @@ class AuthentikFlowsConfig(ManagedAppConfig):
         """Load flows signals"""
         self.import_module("authentik.flows.signals")
 
-    def reconcile_stages_loaded(self):
+    def reconcile_load_stages(self):
         """Ensure all stages are loaded"""
         from authentik.flows.models import Stage
 

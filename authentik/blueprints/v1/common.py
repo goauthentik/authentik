@@ -27,7 +27,7 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
             continue
         if _field.read_only:
             data.pop(field_name, None)
-        if _field.default == data.get(field_name, None):
+        if _field.get_initial() == data.get(field_name, None):
             data.pop(field_name, None)
         if field_name.endswith("_set"):
             data.pop(field_name, None)
@@ -35,21 +35,28 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
 
 
 @dataclass
-class BlueprintEntry:
-    """Single entry of a bundle"""
+class BlueprintEntryState:
+    """State of a single instance"""
 
-    identifiers: dict[str, Any]
+    instance: Optional[Model] = None
+
+
+@dataclass
+class BlueprintEntry:
+    """Single entry of a blueprint"""
+
     model: str
-    attrs: dict[str, Any]
+    identifiers: dict[str, Any] = field(default_factory=dict)
+    attrs: Optional[dict[str, Any]] = field(default_factory=dict)
 
     # pylint: disable=invalid-name
     id: Optional[str] = None
 
-    _instance: Optional[Model] = None
+    _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)
 
     @staticmethod
     def from_model(model: SerializerModel, *extra_identifier_names: str) -> "BlueprintEntry":
-        """Convert a SerializerModel instance to a Bundle Entry"""
+        """Convert a SerializerModel instance to a blueprint Entry"""
         identifiers = {
             "pk": model.pk,
         }
@@ -98,6 +105,7 @@ class Blueprint:
 
     version: int = field(default=1)
     entries: list[BlueprintEntry] = field(default_factory=list)
+    context: dict = field(default_factory=dict)
 
     metadata: Optional[BlueprintMetadata] = field(default=None)
 
@@ -122,18 +130,62 @@ class KeyOf(YAMLTag):
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         for _entry in blueprint.entries:
-            if _entry.id == self.id_from and _entry._instance:
+            if _entry.id == self.id_from and _entry._state.instance:
                 # Special handling for PolicyBindingModels, as they'll have a different PK
                 # which is used when creating policy bindings
                 if (
-                    isinstance(_entry._instance, PolicyBindingModel)
+                    isinstance(_entry._state.instance, PolicyBindingModel)
                     and entry.model.lower() == "authentik_policies.policybinding"
                 ):
-                    return _entry._instance.pbm_uuid
-                return _entry._instance.pk
+                    return _entry._state.instance.pbm_uuid
+                return _entry._state.instance.pk
         raise ValueError(
             f"KeyOf: failed to find entry with `id` of `{self.id_from}` and a model instance"
         )
+
+
+class Context(YAMLTag):
+    """Lookup key from instance context"""
+
+    key: str
+    default: Optional[Any]
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
+        super().__init__()
+        self.default = None
+        if isinstance(node, ScalarNode):
+            self.key = node.value
+        if isinstance(node, SequenceNode):
+            self.key = node.value[0].value
+            self.default = node.value[1].value
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        value = self.default
+        if self.key in blueprint.context:
+            value = blueprint.context[self.key]
+        return value
+
+
+class Format(YAMLTag):
+    """Format a string"""
+
+    format_string: str
+    args: list[Any]
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
+        super().__init__()
+        self.format_string = node.value[0].value
+        self.args = []
+        for raw_node in node.value[1:]:
+            self.args.append(raw_node.value)
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        try:
+            return self.format_string % tuple(self.args)
+        except TypeError as exc:
+            raise EntryInvalidError(exc)
 
 
 class Find(YAMLTag):
@@ -178,7 +230,13 @@ class BlueprintDumper(SafeDumper):
 
     def represent(self, data) -> None:
         if is_dataclass(data):
-            data = asdict(data)
+
+            def factory(items):
+                final_dict = dict(items)
+                final_dict.pop("_state", None)
+                return final_dict
+
+            data = asdict(data, dict_factory=factory)
         return super().represent(data)
 
 
@@ -189,7 +247,15 @@ class BlueprintLoader(SafeLoader):
         super().__init__(*args, **kwargs)
         self.add_constructor("!KeyOf", KeyOf)
         self.add_constructor("!Find", Find)
+        self.add_constructor("!Context", Context)
+        self.add_constructor("!Format", Format)
 
 
 class EntryInvalidError(SentryIgnoredException):
     """Error raised when an entry is invalid"""
+
+    serializer_errors: Optional[dict]
+
+    def __init__(self, *args: object, serializer_errors: Optional[dict] = None) -> None:
+        super().__init__(*args)
+        self.serializer_errors = serializer_errors

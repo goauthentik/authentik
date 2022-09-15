@@ -1,16 +1,18 @@
-import { SearchSelect } from "@goauthentik/web/SearchSelect";
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
-import { MessageLevel } from "@goauthentik/web/elements/messages/Message";
-import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
-import { camelToSnake, convertToSlug } from "@goauthentik/web/utils";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { MessageLevel } from "@goauthentik/common/messages";
+import { camelToSnake, convertToSlug } from "@goauthentik/common/utils";
+import { AKElement } from "@goauthentik/elements/Base";
+import { SearchSelect } from "@goauthentik/elements/SearchSelect";
+import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import "@polymer/iron-form/iron-form";
 import { IronFormElement } from "@polymer/iron-form/iron-form";
 import "@polymer/paper-input/paper-input";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -20,8 +22,6 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ResponseError, ValidationError } from "@goauthentik/api";
-
-import { HorizontalFormElement } from "./HorizontalFormElement";
 
 export class APIError extends Error {
     constructor(public response: ValidationError) {
@@ -34,7 +34,7 @@ export interface KeyUnknown {
 }
 
 @customElement("ak-form")
-export class Form<T> extends LitElement {
+export class Form<T> extends AKElement {
     viewportCheck = true;
 
     @property()
@@ -75,24 +75,28 @@ export class Form<T> extends LitElement {
 
     updated(): void {
         this.shadowRoot
-            ?.querySelectorAll<HTMLInputElement>("input[name=name]")
+            ?.querySelectorAll("ak-form-element-horizontal[name=name]")
             .forEach((nameInput) => {
+                const input = nameInput.firstElementChild as HTMLInputElement;
                 const form = nameInput.closest("form");
                 if (form === null) {
                     return;
                 }
-                const slugField = form.querySelector<HTMLInputElement>("input[name=slug]");
-                if (!slugField) {
+                const slugFieldWrapper = form.querySelector(
+                    "ak-form-element-horizontal[name=slug]",
+                );
+                if (!slugFieldWrapper) {
                     return;
                 }
+                const slugField = slugFieldWrapper.firstElementChild as HTMLInputElement;
                 // Only attach handler if the slug is already equal to the name
                 // if not, they are probably completely different and shouldn't update
                 // each other
-                if (convertToSlug(nameInput.value) !== slugField.value) {
+                if (convertToSlug(input.value) !== slugField.value) {
                     return;
                 }
                 nameInput.addEventListener("input", () => {
-                    slugField.value = convertToSlug(nameInput.value);
+                    slugField.value = convertToSlug(input.value);
                 });
             });
     }

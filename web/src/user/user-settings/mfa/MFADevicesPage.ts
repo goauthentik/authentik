@@ -1,11 +1,12 @@
-import { AKResponse } from "@goauthentik/web/api/Client";
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import "@goauthentik/web/elements/buttons/Dropdown";
-import "@goauthentik/web/elements/buttons/ModalButton";
-import "@goauthentik/web/elements/buttons/TokenCopyButton";
-import "@goauthentik/web/elements/forms/DeleteBulkForm";
-import "@goauthentik/web/elements/forms/ModalForm";
-import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/buttons/Dropdown";
+import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/buttons/TokenCopyButton";
+import "@goauthentik/elements/forms/DeleteBulkForm";
+import "@goauthentik/elements/forms/ModalForm";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "@goauthentik/user/user-settings/mfa/MFADeviceForm";
 
 import { t } from "@lingui/macro";
 
@@ -15,8 +16,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
-
-import "./MFADeviceForm";
 
 export function stageToAuthenticatorName(stage: UserSetting): string {
     switch (stage.component) {
@@ -53,7 +52,7 @@ export class MFADevicesPage extends Table<Device> {
     checkbox = true;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async apiEndpoint(page: number): Promise<AKResponse<Device>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
         return {
             pagination: {

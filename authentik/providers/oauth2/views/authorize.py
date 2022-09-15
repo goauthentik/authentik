@@ -8,7 +8,7 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlsplit, urlunsplit
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
-from django.http.response import Http404, HttpResponseBadRequest, HttpResponseRedirect
+from django.http.response import Http404, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -24,12 +24,7 @@ from authentik.flows.challenge import (
     HttpChallengeResponse,
 )
 from authentik.flows.models import in_memory_stage
-from authentik.flows.planner import (
-    PLAN_CONTEXT_APPLICATION,
-    PLAN_CONTEXT_SSO,
-    FlowPlan,
-    FlowPlanner,
-)
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
@@ -78,7 +73,7 @@ ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
 @dataclass
 # pylint: disable=too-many-instance-attributes
 class OAuthAuthorizationParams:
-    """Parameteres required to authorize an OAuth Client"""
+    """Parameters required to authorize an OAuth Client"""
 
     client_id: str
     redirect_uri: str
@@ -289,7 +284,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
             self.params = OAuthAuthorizationParams.from_request(self.request)
         except AuthorizeError as error:
             LOGGER.warning(error.description, redirect_uri=error.redirect_uri)
-            raise RequestValidationError(HttpResponseRedirect(error.create_uri()))
+            raise RequestValidationError(error.get_response(self.request))
         except OAuth2Error as error:
             LOGGER.warning(error.description)
             raise RequestValidationError(
@@ -306,7 +301,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 self.params.state,
             )
             error.to_event(redirect_uri=error.redirect_uri).from_http(self.request)
-            raise RequestValidationError(HttpResponseRedirect(error.create_uri()))
+            raise RequestValidationError(error.get_response(self.request))
 
     def resolve_provider_application(self):
         client_id = self.request.GET.get("client_id")
@@ -353,7 +348,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # planner.use_cache = False
         planner.allow_empty_flows = True
         scope_descriptions = UserInfoView().get_scope_descriptions(self.params.scope)
-        plan: FlowPlan = planner.plan(
+        plan = planner.plan(
             self.request,
             {
                 PLAN_CONTEXT_SSO: True,
@@ -457,7 +452,7 @@ class OAuthFulfillmentStage(StageView):
                 EventAction.AUTHORIZE_APPLICATION,
                 authorized_application=self.application,
                 flow=self.executor.plan.flow_pk,
-                scopes=", ".join(self.params.scope),
+                scopes=" ".join(self.params.scope),
             ).from_http(self.request)
             return self.redirect(self.create_response_uri())
         except (ClientIdError, RedirectUriError) as error:
@@ -468,7 +463,7 @@ class OAuthFulfillmentStage(StageView):
         except AuthorizeError as error:
             error.to_event(application=self.application).from_http(request)
             self.executor.stage_invalid()
-            return self.redirect(error.create_uri())
+            return error.get_response(self.request)
 
     def create_response_uri(self) -> str:
         """Create a final Response URI the user is redirected to."""
@@ -482,7 +477,7 @@ class OAuthFulfillmentStage(StageView):
                 GrantTypes.HYBRID,
             ]:
                 code = self.params.create_code(self.request)
-                code.save(force_insert=True)
+                code.save()
 
             if self.params.response_mode == ResponseMode.QUERY:
                 query_params = parse_qs(uri.query)

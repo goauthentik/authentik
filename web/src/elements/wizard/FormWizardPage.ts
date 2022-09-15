@@ -1,10 +1,9 @@
-import { Form } from "@goauthentik/web/elements/forms/Form";
+import { Form } from "@goauthentik/elements/forms/Form";
+import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { t } from "@lingui/macro";
 
 import { customElement } from "lit/decorators.js";
-
-import { WizardPage } from "./WizardPage";
 
 /**
  * This Wizard page is used for proxy forms with the older-style

@@ -19,7 +19,7 @@ from authentik.flows.models import FlowToken
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 
-IGNORED_MODELS = [
+IGNORED_MODELS = (
     Event,
     Notification,
     UserObjectPermission,
@@ -27,12 +27,14 @@ IGNORED_MODELS = [
     StaticToken,
     Session,
     FlowToken,
-]
-if settings.DEBUG:
-    from silk.models import Request, Response, SQLQuery
+)
 
-    IGNORED_MODELS += [Request, Response, SQLQuery]
-IGNORED_MODELS = tuple(IGNORED_MODELS)
+
+def should_log_model(model: Model) -> bool:
+    """Return true if operation on `model` should be logged"""
+    if model.__module__.startswith("silk"):
+        return False
+    return not isinstance(model, IGNORED_MODELS)
 
 
 class AuditMiddleware:
@@ -109,7 +111,7 @@ class AuditMiddleware:
         user: User, request: HttpRequest, sender, instance: Model, created: bool, **_
     ):
         """Signal handler for all object's post_save"""
-        if isinstance(instance, IGNORED_MODELS):
+        if not should_log_model(instance):
             return
 
         action = EventAction.MODEL_CREATED if created else EventAction.MODEL_UPDATED
@@ -119,7 +121,7 @@ class AuditMiddleware:
     # pylint: disable=unused-argument
     def pre_delete_handler(user: User, request: HttpRequest, sender, instance: Model, **_):
         """Signal handler for all object's pre_delete"""
-        if isinstance(instance, IGNORED_MODELS):  # pragma: no cover
+        if not should_log_model(instance):  # pragma: no cover
             return
 
         EventNewThread(

@@ -2,7 +2,7 @@
 from base64 import b64decode
 
 from django.urls import reverse
-from webauthn.helpers import bytes_to_base64url
+from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker

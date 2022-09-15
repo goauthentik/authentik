@@ -1,4 +1,7 @@
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { MessageLevel } from "@goauthentik/common/messages";
+import { AKElement } from "@goauthentik/elements/Base";
+
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -6,12 +9,6 @@ import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-gro
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-export enum MessageLevel {
-    error = "error",
-    warning = "warning",
-    success = "success",
-    info = "info",
-}
 export interface APIMessage {
     level: MessageLevel;
     tags?: string;
@@ -27,7 +24,7 @@ const LEVEL_ICON_MAP: { [key: string]: string } = {
 };
 
 @customElement("ak-message")
-export class Message extends LitElement {
+export class Message extends AKElement {
     @property({ attribute: false })
     message?: APIMessage;
 

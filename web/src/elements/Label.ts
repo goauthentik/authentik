@@ -1,7 +1,9 @@
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { AKElement } from "@goauthentik/elements/Base";
+
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -13,7 +15,7 @@ export enum PFColor {
 }
 
 @customElement("ak-label")
-export class Label extends LitElement {
+export class Label extends AKElement {
     @property()
     color: PFColor = PFColor.Grey;
 

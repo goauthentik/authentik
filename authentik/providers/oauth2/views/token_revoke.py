@@ -2,7 +2,9 @@
 from dataclasses import dataclass
 
 from django.http import Http404, HttpRequest, HttpResponse
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenRevocationError
@@ -43,6 +45,7 @@ class TokenRevocationParams:
         return TokenRevocationParams(token=token, provider=provider)
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class TokenRevokeView(View):
     """Token revoke endpoint
     https://datatracker.ietf.org/doc/html/rfc7009"""

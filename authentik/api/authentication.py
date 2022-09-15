@@ -16,7 +16,7 @@ from authentik.providers.oauth2.models import RefreshToken
 LOGGER = get_logger()
 
 
-def validate_auth(header: bytes) -> str:
+def validate_auth(header: bytes) -> Optional[str]:
     """Validate that the header is in a correct format,
     returns type and credentials"""
     auth_credentials = header.decode().strip()

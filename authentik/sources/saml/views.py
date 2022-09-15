@@ -1,5 +1,5 @@
 """saml sp views"""
-from urllib.parse import ParseResult, parse_qsl, urlparse, urlunparse
+from urllib.parse import parse_qsl, urlparse, urlunparse
 
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -112,17 +112,8 @@ class InitiateView(View):
             url_kwargs = dict(parse_qsl(sso_url.query))
             # ... and update it with the SAML args
             url_kwargs.update(auth_n_req.build_auth_n_detached())
-            # Encode it back into a string
-            res = ParseResult(
-                scheme=sso_url.scheme,
-                netloc=sso_url.netloc,
-                path=sso_url.path,
-                params=sso_url.params,
-                query=urlencode(url_kwargs),
-                fragment=sso_url.fragment,
-            )
-            # and merge it back into a URL
-            final_url = urlunparse(res)
+            # Update the url
+            final_url = urlunparse(sso_url._replace(query=urlencode(url_kwargs)))
             return redirect(final_url)
         # As POST Binding we show a form
         try:

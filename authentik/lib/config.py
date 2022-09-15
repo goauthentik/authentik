@@ -20,7 +20,7 @@ ENV_PREFIX = "AUTHENTIK"
 ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
 
 
-def get_path_from_dict(root: dict, path: str, sep=".", default=None):
+def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
     """Recursively walk through `root`, checking each part of `path` split by `sep`.
     If at any point a dict does not exist, return default"""
     for comp in path.split(sep):
@@ -62,7 +62,7 @@ class ConfigLoader:
                         self.update_from_file(env_file)
         self.update_from_env()
 
-    def _log(self, level: str, message: str, **kwargs):
+    def log(self, level: str, message: str, **kwargs):
         """Custom Log method, we want to ensure ConfigLoader always logs JSON even when
         'structlog' or 'logging' hasn't been configured yet."""
         output = {
@@ -95,7 +95,7 @@ class ConfigLoader:
                 with open(url.path, "r", encoding="utf8") as _file:
                     value = _file.read()
             except OSError as exc:
-                self._log("error", f"Failed to read config value from {url.path}: {exc}")
+                self.log("error", f"Failed to read config value from {url.path}: {exc}")
                 value = url.query
         return value
 
@@ -105,12 +105,12 @@ class ConfigLoader:
             with open(path, encoding="utf8") as file:
                 try:
                     self.update(self.__config, yaml.safe_load(file))
-                    self._log("debug", "Loaded config", file=path)
+                    self.log("debug", "Loaded config", file=path)
                     self.loaded_file.append(path)
                 except yaml.YAMLError as exc:
                     raise ImproperlyConfigured from exc
         except PermissionError as exc:
-            self._log(
+            self.log(
                 "warning",
                 "Permission denied while reading file",
                 path=path,
@@ -144,7 +144,7 @@ class ConfigLoader:
             current_obj[dot_parts[-1]] = value
             idx += 1
         if idx > 0:
-            self._log("debug", "Loaded environment variables", count=idx)
+            self.log("debug", "Loaded environment variables", count=idx)
             self.update(self.__config, outer)
 
     @contextmanager
@@ -152,8 +152,10 @@ class ConfigLoader:
         """Context manager for unittests to patch a value"""
         original_value = self.y(path)
         self.y_set(path, value)
-        yield
-        self.y_set(path, original_value)
+        try:
+            yield
+        finally:
+            self.y_set(path, original_value)
 
     @property
     def raw(self) -> dict:
@@ -178,7 +180,7 @@ class ConfigLoader:
             # pyright: reportGeneralTypeIssues=false
             if comp not in root:
                 root[comp] = {}
-            root = root.get(comp)
+            root = root.get(comp, {})
         root[path_parts[-1]] = value
 
     def y_bool(self, path: str, default=False) -> bool:

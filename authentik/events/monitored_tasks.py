@@ -134,26 +134,31 @@ class MonitoredTask(Task):
 
     # pylint: disable=too-many-arguments
     def after_return(self, status, retval, task_id, args: list[Any], kwargs: dict[str, Any], einfo):
-        if self._result:
-            if not self._result.uid:
-                self._result.uid = self._uid
-            if self.save_on_success:
-                TaskInfo(
-                    task_name=self.__name__,
-                    task_description=self.__doc__,
-                    start_timestamp=self.start,
-                    finish_timestamp=default_timer(),
-                    finish_time=datetime.now(),
-                    result=self._result,
-                    task_call_module=self.__module__,
-                    task_call_func=self.__name__,
-                    task_call_args=args,
-                    task_call_kwargs=kwargs,
-                ).save(self.result_timeout_hours)
-        return super().after_return(status, retval, task_id, args, kwargs, einfo=einfo)
+        super().after_return(status, retval, task_id, args, kwargs, einfo=einfo)
+        if not self._result:
+            return
+        if not self._result.uid:
+            self._result.uid = self._uid
+        info = TaskInfo(
+            task_name=self.__name__,
+            task_description=self.__doc__,
+            start_timestamp=self.start,
+            finish_timestamp=default_timer(),
+            finish_time=datetime.now(),
+            result=self._result,
+            task_call_module=self.__module__,
+            task_call_func=self.__name__,
+            task_call_args=args,
+            task_call_kwargs=kwargs,
+        )
+        if self._result.status == TaskResultStatus.SUCCESSFUL and not self.save_on_success:
+            info.delete()
+            return
+        info.save(self.result_timeout_hours)
 
     # pylint: disable=too-many-arguments
     def on_failure(self, exc, task_id, args, kwargs, einfo):
+        super().on_failure(exc, task_id, args, kwargs, einfo=einfo)
         if not self._result:
             self._result = TaskResult(status=TaskResultStatus.ERROR, messages=[str(exc)])
         if not self._result.uid:
@@ -174,7 +179,6 @@ class MonitoredTask(Task):
             EventAction.SYSTEM_TASK_EXCEPTION,
             message=(f"Task {self.__name__} encountered an error: {exception_to_string(exc)}"),
         ).save()
-        return super().on_failure(exc, task_id, args, kwargs, einfo=einfo)
 
     def run(self, *args, **kwargs):
         raise NotImplementedError

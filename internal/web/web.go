@@ -6,7 +6,6 @@ import (
 	"net"
 	"net/http"
 
-	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
@@ -36,7 +35,6 @@ type WebServer struct {
 func NewWebServer(g *gounicorn.GoUnicorn) *WebServer {
 	l := log.WithField("logger", "authentik.router")
 	mainHandler := mux.NewRouter()
-	mainHandler.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	mainHandler.Use(handlers.ProxyHeaders)
 	mainHandler.Use(handlers.CompressHandler)
 	loggingHandler := mainHandler.NewRoute().Subrouter()
@@ -68,16 +66,16 @@ func (ws *WebServer) Shutdown() {
 }
 
 func (ws *WebServer) listenPlain() {
-	ln, err := net.Listen("tcp", config.Get().Web.Listen)
+	ln, err := net.Listen("tcp", config.Get().Listen.HTTP)
 	if err != nil {
 		ws.log.WithError(err).Fatal("failed to listen")
 	}
 	proxyListener := &proxyproto.Listener{Listener: ln}
 	defer proxyListener.Close()
 
-	ws.log.WithField("listen", config.Get().Web.Listen).Info("Starting HTTP server")
+	ws.log.WithField("listen", config.Get().Listen.HTTP).Info("Starting HTTP server")
 	ws.serve(proxyListener)
-	ws.log.WithField("listen", config.Get().Web.Listen).Info("Stopping HTTP server")
+	ws.log.WithField("listen", config.Get().Listen.HTTP).Info("Stopping HTTP server")
 }
 
 func (ws *WebServer) serve(listener net.Listener) {

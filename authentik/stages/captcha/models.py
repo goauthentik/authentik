@@ -19,7 +19,7 @@ class CaptchaStage(Stage):
     )
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.captcha.api import CaptchaStageSerializer
 
         return CaptchaStageSerializer

@@ -1,0 +1,97 @@
+version: 1
+metadata:
+  name: Default - Events Transport & Rules
+entries:
+- model: authentik_events.notificationtransport
+  id: default-email-transport
+  attrs:
+    mode: email
+  identifiers:
+    name: default-email-transport
+- model: authentik_events.notificationtransport
+  id: default-local-transport
+  attrs:
+    mode: local
+  identifiers:
+    name: default-local-transport
+- model: authentik_core.group
+  id: group
+  identifiers:
+    name: authentik Admins
+
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-configuration-error
+  attrs:
+    action: configuration_error
+  identifiers:
+    name: default-match-configuration-error
+- model: authentik_events.notificationrule
+  id: default-notify-configuration-error
+  identifiers:
+    name: default-notify-configuration-error
+  attrs:
+    severity: alert
+    group: !KeyOf group
+    transports:
+      - !KeyOf default-email-transport
+      - !KeyOf default-local-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-configuration-error
+    target: !KeyOf default-notify-configuration-error
+
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-update
+  attrs:
+    action: update_available
+  identifiers:
+    name: default-match-update
+- model: authentik_events.notificationrule
+  id: default-notify-update
+  identifiers:
+    name: default-notify-update
+  attrs:
+    severity: alert
+    group: !KeyOf group
+    transports:
+      - !KeyOf default-email-transport
+      - !KeyOf default-local-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-update
+    target: !KeyOf default-notify-update
+
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-policy-exception
+  attrs:
+    action: policy_exception
+  identifiers:
+    name: default-match-policy-exception
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-property-mapping-exception
+  attrs:
+    action: property_mapping_exception
+  identifiers:
+    name: default-match-property-mapping-exception
+- model: authentik_events.notificationrule
+  id: default-notify-exception
+  identifiers:
+    name: default-notify-exception
+  attrs:
+    severity: alert
+    group: !KeyOf group
+    transports:
+      - !KeyOf default-email-transport
+      - !KeyOf default-local-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-policy-exception
+    target: !KeyOf default-notify-exception
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 1
+    policy: !KeyOf default-match-property-mapping-exception
+    target: !KeyOf default-notify-exception

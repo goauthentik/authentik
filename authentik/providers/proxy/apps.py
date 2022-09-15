@@ -1,10 +1,11 @@
 """authentik Proxy app"""
-from django.apps import AppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 
-class AuthentikProviderProxyConfig(AppConfig):
+class AuthentikProviderProxyConfig(ManagedAppConfig):
     """authentik proxy app"""
 
     name = "authentik.providers.proxy"
     label = "authentik_providers_proxy"
     verbose_name = "authentik Providers.Proxy"
+    default = True

@@ -1,13 +1,13 @@
-import { ROUTE_SEPARATOR } from "@goauthentik/web/constants";
-import "@goauthentik/web/elements/router/Router404";
+import { ROUTE_SEPARATOR } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
+import { Route } from "@goauthentik/elements/router/Route";
+import { RouteMatch } from "@goauthentik/elements/router/RouteMatch";
+import "@goauthentik/elements/router/Router404";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
-
-import { Route } from "./Route";
-import { RouteMatch } from "./RouteMatch";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 
 // Poliyfill for hashchange.newURL,
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange
@@ -45,7 +45,7 @@ export function navigate(url: string, params?: { [key: string]: unknown }): void
 }
 
 @customElement("ak-router-outlet")
-export class RouterOutlet extends LitElement {
+export class RouterOutlet extends AKElement {
     @property({ attribute: false })
     current?: RouteMatch;
 

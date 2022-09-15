@@ -16,7 +16,7 @@ class PytestTestRunner:  # pragma: no cover
         self.failfast = failfast
         self.keepdb = keepdb
 
-        self.args = ["-vv", "-s"]
+        self.args = ["-vv"]
         if self.failfast:
             self.args.append("--exitfirst")
         if self.keepdb:
@@ -29,6 +29,7 @@ class PytestTestRunner:  # pragma: no cover
         settings.CELERY_TASK_ALWAYS_EAGER = True
         CONFIG.y_set("avatars", "none")
         CONFIG.y_set("geoip", "tests/GeoLite2-City-Test.mmdb")
+        CONFIG.y_set("blueprints_dir", "./blueprints")
         CONFIG.y_set(
             "outposts.container_image_base",
             f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",

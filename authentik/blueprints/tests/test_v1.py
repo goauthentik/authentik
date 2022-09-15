@@ -1,7 +1,7 @@
 """Test blueprints v1"""
 from django.test import TransactionTestCase
 
-from authentik.blueprints.v1.exporter import Exporter
+from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.lib.generators import generate_id
@@ -22,6 +22,18 @@ entries:
     required: true
     placeholder: Username
     order: 0
+"""
+
+YAML_TAG_TESTS = """version: 1
+context:
+    foo: bar
+entries:
+- attrs:
+    expression: return True
+  identifiers:
+    name: !Format [foo-%s-%s, !Context foo, !Context bar]
+  id: default-source-enrollment-if-username
+  model: authentik_policies_expression.expressionpolicy
 """
 
 
@@ -58,7 +70,7 @@ class TestBlueprintsV1(TransactionTestCase):
                 order=0,
             )
 
-            exporter = Exporter(flow)
+            exporter = FlowExporter(flow)
             export = exporter.export()
             self.assertEqual(len(export.entries), 3)
             export_yaml = exporter.export_to_string()
@@ -85,6 +97,14 @@ class TestBlueprintsV1(TransactionTestCase):
 
         self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
 
+    def test_import_yaml_tags(self):
+        """Test some yaml tags"""
+        ExpressionPolicy.objects.filter(name="foo-foo-bar").delete()
+        importer = Importer(YAML_TAG_TESTS, {"bar": "baz"})
+        self.assertTrue(importer.validate()[0])
+        self.assertTrue(importer.apply())
+        self.assertTrue(ExpressionPolicy.objects.filter(name="foo-foo-bar"))
+
     def test_export_validate_import_policies(self):
         """Test export and validate it"""
         flow_slug = generate_id()
@@ -106,7 +126,7 @@ class TestBlueprintsV1(TransactionTestCase):
             fsb = FlowStageBinding.objects.create(target=flow, stage=user_login, order=0)
             PolicyBinding.objects.create(policy=flow_policy, target=fsb, order=0)
 
-            exporter = Exporter(flow)
+            exporter = FlowExporter(flow)
             export_yaml = exporter.export_to_string()
 
         importer = Importer(export_yaml)
@@ -149,7 +169,7 @@ class TestBlueprintsV1(TransactionTestCase):
 
             FlowStageBinding.objects.create(target=flow, stage=first_stage, order=0)
 
-            exporter = Exporter(flow)
+            exporter = FlowExporter(flow)
             export_yaml = exporter.export_to_string()
 
         importer = Importer(export_yaml)

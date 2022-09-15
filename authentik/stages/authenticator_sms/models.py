@@ -127,7 +127,7 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
             raise
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.authenticator_sms.api import AuthenticatorSMSStageSerializer
 
         return AuthenticatorSMSStageSerializer
@@ -186,7 +186,7 @@ class SMSDevice(SerializerModel, SideChannelDevice):
         return self.phone_number.startswith("hash:")
 
     @property
-    def serializer(self) -> BaseSerializer:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.authenticator_sms.api import SMSDeviceSerializer
 
         return SMSDeviceSerializer

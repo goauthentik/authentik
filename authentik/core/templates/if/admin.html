@@ -4,14 +4,16 @@
 {% load i18n %}
 
 {% block head %}
-<script src="{% static 'dist/admin/AdminInterface.js' %}" type="module"></script>
+<script src="{% static 'dist/admin/AdminInterface.js' %}?version={{ version }}" type="module"></script>
 <meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<link rel="icon" href="{{ tenant.branding_favicon }}">
+<link rel="shortcut icon" href="{{ tenant.branding_favicon }}">
 <script>
 window.authentik = {};
 window.authentik.locale = "{{ tenant.default_locale }}";
-window.authentik.config = JSON.parse('{{ config_json|safe }}');
-window.authentik.tenant = JSON.parse('{{ tenant_json|safe }}');
+window.authentik.config = JSON.parse('{{ config_json|escapejs }}');
+window.authentik.tenant = JSON.parse('{{ tenant_json|escapejs }}');
 </script>
 {% endblock %}
 

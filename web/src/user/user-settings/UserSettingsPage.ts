@@ -1,15 +1,24 @@
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import { me } from "@goauthentik/web/api/Users";
-import { EVENT_REFRESH } from "@goauthentik/web/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { me } from "@goauthentik/common/users";
+import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/user/SessionList";
+import "@goauthentik/elements/user/UserConsentList";
+import "@goauthentik/user/user-settings/details/UserPassword";
+import "@goauthentik/user/user-settings/details/UserSettingsFlowExecutor";
+import "@goauthentik/user/user-settings/mfa/MFADevicesPage";
+import "@goauthentik/user/user-settings/sources/SourceSettings";
+import "@goauthentik/user/user-settings/tokens/UserTokenList";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -25,17 +34,8 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
-import "../../elements/Tabs";
-import "../../elements/user/SessionList";
-import "../../elements/user/UserConsentList";
-import "./details/UserPassword";
-import "./details/UserSettingsFlowExecutor";
-import "./mfa/MFADevicesPage";
-import "./sources/SourceSettings";
-import "./tokens/UserTokenList";
-
 @customElement("ak-user-settings")
-export class UserSettingsPage extends LitElement {
+export class UserSettingsPage extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -51,6 +51,15 @@ export class UserSettingsPage extends LitElement {
             PFFormControl,
             PFStack,
             AKGlobal,
+            css`
+                @media screen and (min-width: 1200px) {
+                    :host {
+                        width: 90rem;
+                        margin-left: auto;
+                        margin-right: auto;
+                    }
+                }
+            `,
         ];
     }
 

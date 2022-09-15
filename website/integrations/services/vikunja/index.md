@@ -34,7 +34,6 @@ Only settings that have been modified from default have been listed.
 **Protocol Settings**
 
 -   Name: Vikunja
--   Client type: Confidential
 -   Client ID: Copy and Save this for Later
 -   Client Secret: Copy and Save this for later
 -   Redirect URIs/Origins:
@@ -68,7 +67,7 @@ auth:
   # Take a look at the [default config file](https://github.com/go-vikunja/api/blob/main/config.yml.sample) for more information about how to configure openid authentication.
   openid:
     # Enable or disable OpenID Connect authentication
-    enabled: truefo
+    enabled: true
     # A list of enabled providers
     providers:
       # The name of the provider as it will appear in the frontend.

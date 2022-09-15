@@ -6,9 +6,27 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Using the API",
+            label: "Blueprints",
+            link: {
+                type: "doc",
+                id: "blueprints/index",
+            },
             items: [
-                "api/api",
+                "blueprints/export",
+                "blueprints/v1/structure",
+                "blueprints/v1/tags",
+                "blueprints/v1/example",
+                "blueprints/v1/meta",
+            ],
+        },
+        {
+            type: "category",
+            label: "API",
+            link: {
+                type: "doc",
+                id: "api/api",
+            },
+            items: [
                 "api/flow-executor",
                 "api/making-schema-changes",
                 "api/websocket",
@@ -16,7 +34,7 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Setup",
+            label: "Development",
             items: [
                 "setup/full-dev-environment",
                 "setup/frontend-only-dev-environment",

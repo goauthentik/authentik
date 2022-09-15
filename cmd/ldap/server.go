@@ -52,11 +52,18 @@ func main() {
 
 	ex := common.Init()
 	defer common.Defer()
+	go func() {
+		for {
+			<-ex
+			os.Exit(0)
+		}
+	}()
 
 	ac := ak.NewAPIController(*akURLActual, akToken)
 	if ac == nil {
 		os.Exit(1)
 	}
+	defer ac.Shutdown()
 
 	ac.Server = ldap.NewServer(ac)
 
@@ -67,7 +74,5 @@ func main() {
 
 	for {
 		<-ex
-		ac.Shutdown()
-		os.Exit(0)
 	}
 }

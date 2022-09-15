@@ -3,11 +3,12 @@ package config
 type Config struct {
 	Debug          bool                 `yaml:"debug" env:"AUTHENTIK_DEBUG"`
 	SecretKey      string               `yaml:"secret_key" env:"AUTHENTIK_SECRET_KEY"`
-	Web            WebConfig            `yaml:"web"`
+	Listen         ListenConfig         `yaml:"listen"`
 	Paths          PathsConfig          `yaml:"paths"`
 	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL"`
 	ErrorReporting ErrorReportingConfig `yaml:"error_reporting"`
 	Redis          RedisConfig          `yaml:"redis"`
+	Outposts       OutpostConfig        `yaml:"outposts" `
 }
 
 type RedisConfig struct {
@@ -26,11 +27,13 @@ type RedisConfig struct {
 	CacheTimeoutReputation int    `yaml:"cache_timeout_reputation" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION"`
 }
 
-type WebConfig struct {
-	Listen                 string `yaml:"listen"`
-	ListenTLS              string `yaml:"listen_tls"`
-	ListenMetrics          string `yaml:"listen_metrics"`
-	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"AUTHENTIK_WEB__DISABLE_EMBEDDED_OUTPOST"`
+type ListenConfig struct {
+	HTTP    string `yaml:"listen_http" env:"AUTHENTIK_LISTEN__HTTP"`
+	HTTPS   string `yaml:"listen_https" env:"AUTHENTIK_LISTEN__HTTPS"`
+	LDAP    string `yaml:"listen_ldap" env:"AUTHENTIK_LISTEN__LDAP"`
+	LDAPS   string `yaml:"listen_ldaps" env:"AUTHENTIK_LISTEN__LDAPS"`
+	Metrics string `yaml:"listen_metrics" env:"AUTHENTIK_LISTEN__METRICS"`
+	Debug   string `yaml:"listen_debug" env:"AUTHENTIK_LISTEN__DEBUG"`
 }
 
 type PathsConfig struct {
@@ -43,4 +46,10 @@ type ErrorReportingConfig struct {
 	SendPII     bool   `yaml:"send_pii" env:"AUTHENTIK_ERROR_REPORTING__SEND_PII"`
 	DSN         string
 	SampleRate  float64 `yaml:"sample_rate" env:"AUTHENTIK_ERROR_REPORTING__SAMPLE_RATE"`
+}
+
+type OutpostConfig struct {
+	ContainerImageBase     string `yaml:"container_image_base" env:"AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE"`
+	Discover               bool   `yaml:"discover" env:"AUTHENTIK_OUTPOSTS__DISCOVER"`
+	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST"`
 }

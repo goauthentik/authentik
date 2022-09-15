@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 """This file needs to be run from the root of the project to correctly
 import authentik. This is done by the dockerfile."""
-from json import dumps
 from sys import exit as sysexit
-from sys import stderr
-from time import sleep, time
+from time import sleep
 from urllib.parse import quote_plus
 
 from psycopg2 import OperationalError, connect
@@ -13,27 +11,13 @@ from redis.exceptions import RedisError
 
 from authentik.lib.config import CONFIG
 
-
-def j_print(event: str, log_level: str = "info", **kwargs):
-    """Print event in the same format as structlog with JSON.
-    Used before structlog is configured."""
-    data = {
-        "event": event,
-        "level": log_level,
-        "logger": __name__,
-        "timestamp": time(),
-    }
-    data.update(**kwargs)
-    print(dumps(data), file=stderr)
-
-
-j_print("Starting authentik bootstrap")
+CONFIG.log("info", "Starting authentik bootstrap")
 
 # Sanity check, ensure SECRET_KEY is set before we even check for database connectivity
 if CONFIG.y("secret_key") is None or len(CONFIG.y("secret_key")) == 0:
-    j_print("----------------------------------------------------------------------")
-    j_print("Secret key missing, check https://goauthentik.io/docs/installation/.")
-    j_print("----------------------------------------------------------------------")
+    CONFIG.log("info", "----------------------------------------------------------------------")
+    CONFIG.log("info", "Secret key missing, check https://goauthentik.io/docs/installation/.")
+    CONFIG.log("info", "----------------------------------------------------------------------")
     sysexit(1)
 
 
@@ -50,8 +34,8 @@ while True:
         break
     except OperationalError as exc:
         sleep(1)
-        j_print(f"PostgreSQL connection failed, retrying... ({exc})")
-    j_print("PostgreSQL connection successful")
+        CONFIG.log("info", f"PostgreSQL connection failed, retrying... ({exc})")
+    CONFIG.log("info", "PostgreSQL connection successful")
 
 REDIS_PROTOCOL_PREFIX = "redis://"
 if CONFIG.y_bool("redis.tls", False):
@@ -68,7 +52,7 @@ while True:
         break
     except RedisError as exc:
         sleep(1)
-        j_print(f"Redis Connection failed, retrying... ({exc})", redis_url=REDIS_URL)
-    j_print("Redis Connection successful")
+        CONFIG.log("info", f"Redis Connection failed, retrying... ({exc})", redis_url=REDIS_URL)
+    CONFIG.log("info", "Redis Connection successful")
 
-j_print("Finished authentik bootstrap")
+CONFIG.log("info", "Finished authentik bootstrap")

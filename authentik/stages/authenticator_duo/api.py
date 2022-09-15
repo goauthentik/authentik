@@ -1,10 +1,17 @@
 """AuthenticatorDuoStage API Views"""
+from django.http import Http404
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    inline_serializer,
+)
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.fields import ChoiceField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
@@ -57,24 +64,34 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         request=OpenApiTypes.NONE,
         responses={
-            204: OpenApiResponse(description="Enrollment successful"),
-            420: OpenApiResponse(description="Enrollment pending/failed"),
+            200: inline_serializer(
+                "DuoDeviceEnrollmentStatusSerializer",
+                {
+                    "duo_response": ChoiceField(
+                        (
+                            ("success", "Success"),
+                            ("waiting", "Waiting"),
+                            ("invalid", "Invalid"),
+                        )
+                    )
+                },
+            ),
         },
     )
     @action(methods=["POST"], detail=True, permission_classes=[])
     # pylint: disable=invalid-name,unused-argument
     def enrollment_status(self, request: Request, pk: str) -> Response:
         """Check enrollment status of user details in current session"""
-        stage: AuthenticatorDuoStage = self.get_object()
+        stage: AuthenticatorDuoStage = AuthenticatorDuoStage.objects.filter(pk=pk).first()
+        if not stage:
+            raise Http404
         client = stage.client
         user_id = self.request.session.get(SESSION_KEY_DUO_USER_ID)
         activation_code = self.request.session.get(SESSION_KEY_DUO_ACTIVATION_CODE)
         if not user_id or not activation_code:
-            return Response(status=420)
+            return Response(status=400)
         status = client.enroll_status(user_id, activation_code)
-        if status == "success":
-            return Response(status=204)
-        return Response(status=420)
+        return Response({"duo_response": status})
 
     @permission_required(
         "", ["authentik_stages_authenticator_duo.add_duodevice", "authentik_core.view_user"]
@@ -88,6 +105,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
                 name="username", type=OpenApiTypes.STR, location=OpenApiParameter.QUERY
             ),
         ],
+        request=None,
         responses={
             204: OpenApiResponse(description="Enrollment successful"),
             400: OpenApiResponse(description="Device exists already"),

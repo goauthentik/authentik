@@ -10,7 +10,6 @@ from django_otp.models import Device
 from jwt import PyJWTError, decode, encode
 from rest_framework.fields import CharField, IntegerField, JSONField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
-from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
@@ -35,8 +34,6 @@ from authentik.stages.authenticator_validate.challenge import (
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
-
-LOGGER = get_logger()
 
 COOKIE_NAME_MFA = "authentik_mfa"
 
@@ -128,7 +125,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         stages = self.stage.request.session.get(SESSION_KEY_STAGES, [])
         if not any(str(stage.pk) == stage_pk for stage in stages):
             raise ValidationError("Selected stage is invalid")
-        LOGGER.debug("Setting selected stage to ", stage=stage_pk)
+        self.stage.logger.debug("Setting selected stage to ", stage=stage_pk)
         self.stage.request.session[SESSION_KEY_SELECTED_STAGE] = stage_pk
         return stage_pk
 
@@ -167,7 +164,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 self.logger.debug("device class not allowed", device_class=device_class)
                 continue
             if isinstance(device, SMSDevice) and device.is_hashed:
-                LOGGER.debug("Hashed SMS device, skipping")
+                self.logger.debug("Hashed SMS device, skipping")
                 continue
             allowed_devices.append(device)
             # Ensure only one challenge per device class
@@ -363,7 +360,6 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             cookie,
             expires=expiry,
             path="/",
-            max_age=delta,
             domain=settings.SESSION_COOKIE_DOMAIN,
             samesite="Lax",
         )

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
@@ -19,6 +20,11 @@ func (a *Application) redeemCallback(r *http.Request, states []string) (*Claims,
 			found = true
 		}
 	}
+	a.log.WithFields(log.Fields{
+		"states":   states,
+		"expected": state,
+		"found":    found,
+	}).Trace("tracing states")
 	if !found {
 		return nil, fmt.Errorf("invalid state")
 	}

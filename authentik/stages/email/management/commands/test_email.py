@@ -18,7 +18,7 @@ class Command(BaseCommand):
         if options["stage"]:
             stages = EmailStage.objects.filter(name=options["stage"])
             if not stages.exists():
-                print(f"Stage '{options['stage']}' does not exist")
+                self.stderr.write(f"Stage '{options['stage']}' does not exist")
                 return
             stage = stages.first()
         else:

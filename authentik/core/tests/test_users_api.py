@@ -159,7 +159,6 @@ class TestUsersAPI(APITestCase):
         response = self.client.get(
             reverse("authentik_api:user-paths"),
         )
-        print(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content.decode(), {"paths": ["users"]})
 

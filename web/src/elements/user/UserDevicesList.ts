@@ -1,11 +1,8 @@
-import { AKResponse } from "@goauthentik/web/api/Client";
-import { DEFAULT_CONFIG } from "@goauthentik/web/api/Config";
-import "@goauthentik/web/elements/forms/DeleteBulkForm";
-import { TableColumn } from "@goauthentik/web/elements/table/Table";
-import {
-    MFADevicesPage,
-    deviceTypeName,
-} from "@goauthentik/web/user/user-settings/mfa/MFADevicesPage";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/forms/DeleteBulkForm";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { TableColumn } from "@goauthentik/elements/table/Table";
+import { MFADevicesPage, deviceTypeName } from "@goauthentik/user/user-settings/mfa/MFADevicesPage";
 
 import { t } from "@lingui/macro";
 
@@ -20,7 +17,7 @@ export class UserDeviceList extends MFADevicesPage {
     userId?: number;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async apiEndpoint(page: number): Promise<AKResponse<Device>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Device>> {
         return new AuthenticatorsApi(DEFAULT_CONFIG)
             .authenticatorsAdminAllList({
                 user: this.userId,

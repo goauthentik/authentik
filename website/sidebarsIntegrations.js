@@ -10,28 +10,8 @@ module.exports = {
             items: [
                 {
                     type: "category",
-                    label: "Monitoring & Infrastructure",
+                    label: "Infrastructure",
                     items: [
-                        {
-                            type: "category",
-                            label: "Hypervisors / Orchestrators",
-                            items: [
-                                "services/portainer/index",
-                                "services/proxmox-ve/index",
-                                "services/rancher/index",
-                                "services/vmware-vcenter/index",
-                            ],
-                        },
-                        {
-                            type: "category",
-                            label: "Monitoring",
-                            items: [
-                                "services/grafana/index",
-                                "services/ubuntu-landscape/index",
-                                "services/uptime-kuma/index",
-                                "services/zabbix/index",
-                            ],
-                        },
                         "services/apache-guacamole/index",
                         "services/awx-tower/index",
                         "services/fortimanager/index",
@@ -47,8 +27,31 @@ module.exports = {
                 },
                 {
                     type: "category",
+                    label: "Hypervisors / Orchestrators",
+                    items: [
+                        "services/portainer/index",
+                        "services/proxmox-ve/index",
+                        "services/rancher/index",
+                        "services/vmware-vcenter/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Monitoring",
+                    items: [
+                        "services/grafana/index",
+                        "services/ubuntu-landscape/index",
+                        "services/uptime-kuma/index",
+                        "services/zabbix/index",
+                    ],
+                },
+                {
+                    type: "category",
                     label: "Cloud Providers",
-                    items: ["services/aws/index"],
+                    items: [
+                        "services/aws/index",
+                        "services/oracle-cloud/index",
+                    ],
                 },
                 {
                     type: "category",
@@ -56,6 +59,7 @@ module.exports = {
                     items: [
                         "services/bookstack/index",
                         "services/hedgedoc/index",
+                        "services/kimai/index",
                         "services/matrix-synapse/index",
                         "services/nextcloud/index",
                         "services/onlyoffice/index",
@@ -80,18 +84,31 @@ module.exports = {
                     type: "category",
                     label: "Developer tools",
                     items: [
-                        "services/gitea/index",
-                        "services/gitlab/index",
                         "services/sentry/index",
                         "services/sssd/index",
                         "services/weblate/index",
                     ],
                 },
-                "services/home-assistant/index",
-                "services/node-red/index",
-                "services/kimai/index",
-                "services/sonarr/index",
-                "services/tautulli/index",
+                {
+                    type: "category",
+                    label: "Version Control Systems",
+                    items: [
+                        "services/gitea/index",
+                        "services/github-enterprise-cloud/index",
+                        "services/github-organization/index",
+                        "services/gitlab/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Miscellaneous",
+                    items: [
+                        "services/home-assistant/index",
+                        "services/node-red/index",
+                        "services/sonarr/index",
+                        "services/tautulli/index",
+                    ],
+                },
             ],
         },
         {

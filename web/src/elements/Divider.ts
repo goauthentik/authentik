@@ -1,11 +1,13 @@
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { AKElement } from "@goauthentik/elements/Base";
+
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-divider")
-export class Divider extends LitElement {
+export class Divider extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,

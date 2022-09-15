@@ -1,13 +1,14 @@
-import { CSSResult, LitElement, PropertyDeclaration, TemplateResult, html } from "lit";
+import { AKElement } from "@goauthentik/elements/Base";
+import { Wizard } from "@goauthentik/elements/wizard/Wizard";
+
+import { CSSResult, PropertyDeclaration, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Wizard } from "./Wizard";
-
 @customElement("ak-wizard-page")
-export class WizardPage extends LitElement {
+export class WizardPage extends AKElement {
     static get styles(): CSSResult[] {
         return [PFBase, AKGlobal];
     }
@@ -37,7 +38,7 @@ export class WizardPage extends LitElement {
     ): void {
         this.querySelectorAll("*").forEach((el) => {
             if ("requestUpdate" in el) {
-                (el as LitElement).requestUpdate();
+                (el as AKElement).requestUpdate();
             }
         });
         return super.requestUpdate(name, oldValue, options);

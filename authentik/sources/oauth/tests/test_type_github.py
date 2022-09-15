@@ -1,6 +1,10 @@
 """GitHub Type tests"""
-from django.test import TestCase
+from copy import copy
 
+from django.test import RequestFactory, TestCase
+from requests_mock import Mocker
+
+from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.github import GitHubOAuth2Callback
 
@@ -55,15 +59,40 @@ class TestTypeGitHub(TestCase):
         self.source = OAuthSource.objects.create(
             name="test",
             slug="test",
-            provider_type="openidconnect",
-            authorization_url="",
-            profile_url="",
-            consumer_key="",
+            provider_type="github",
         )
+        self.factory = RequestFactory()
 
     def test_enroll_context(self):
         """Test GitHub Enrollment context"""
         ak_context = GitHubOAuth2Callback().get_user_enroll_context(GITHUB_USER)
         self.assertEqual(ak_context["username"], GITHUB_USER["login"])
         self.assertEqual(ak_context["email"], GITHUB_USER["email"])
+        self.assertEqual(ak_context["name"], GITHUB_USER["name"])
+
+    def test_enroll_context_email(self):
+        """Test GitHub Enrollment context"""
+        email = generate_id()
+        user = copy(GITHUB_USER)
+        del user["email"]
+        with Mocker() as mocker:
+            mocker.get(
+                "https://api.github.com/user/emails",
+                json=[
+                    {
+                        "primary": True,
+                        "email": email,
+                    }
+                ],
+            )
+            ak_context = GitHubOAuth2Callback(
+                source=self.source,
+                request=self.factory.get("/"),
+                token={
+                    "access_token": generate_id(),
+                    "token_type": generate_id(),
+                },
+            ).get_user_enroll_context(user)
+        self.assertEqual(ak_context["username"], GITHUB_USER["login"])
+        self.assertEqual(ak_context["email"], email)
         self.assertEqual(ak_context["name"], GITHUB_USER["name"])

@@ -1,19 +1,19 @@
-import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "@goauthentik/web/constants";
+import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
+import { getURLParams, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/authentik.css";
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 
-import { getURLParams, updateURLParams } from "./router/RouteMatch";
-
 @customElement("ak-tabs")
-export class Tabs extends LitElement {
+export class Tabs extends AKElement {
     @property()
     pageIdentifier = "page";
 

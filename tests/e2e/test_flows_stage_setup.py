@@ -18,10 +18,10 @@ class TestFlowsStageSetup(SeleniumTestCase):
     """test stage setup flows"""
 
     @retry()
-    @apply_blueprint("blueprints/default/0-flow-password-change.yaml")
+    @apply_blueprint("default/0-flow-password-change.yaml")
     @apply_blueprint(
-        "blueprints/default/10-flow-default-authentication-flow.yaml",
-        "blueprints/default/10-flow-default-invalidation-flow.yaml",
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
     )
     def test_password_change(self):
         """test password change flow"""

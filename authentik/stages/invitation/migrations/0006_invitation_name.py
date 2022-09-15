@@ -11,7 +11,7 @@ def migrate_add_name(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Invitation = apps.get_model("authentik_stages_invitation", "invitation")
 
     for invite in Invitation.objects.using(db_alias).all():
-        invite.name = invite.pk.hex
+        invite.name = str(invite.pk)
         invite.save()
 
 
