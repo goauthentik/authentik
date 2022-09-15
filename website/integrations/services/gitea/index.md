@@ -69,3 +69,55 @@ Change the following fields
 ![](./gitea1.png)
 
 `Add Authentication Source` and you should be done. Your Gitea login page should now have a `Sign in With` followed by the authentik logo which you can click on to sign-in to Gitea with Authentik creds.
+
+## Helm Chart Configuration
+
+authentik can be configured automatically in Gitea Kubernetes deployments via it's [Helm Chart](https://gitea.com/gitea/helm-chart/).
+
+:::note
+This is based on authentik 2022.8.2, Gitea v17.2, and Gitea Helm Chart v6.0.1. Instructions may differ between versions.
+:::
+
+Add the following to the Gitea Helm Chart `values.yaml` file:
+
+```yaml
+gitea:
+    oauth:
+        - name: "authentik"
+          provider: "openidConnect"
+          key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
+          secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
+          autoDiscoveryUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+          iconUrl: "https://goauthentik.io/img/icon.png"
+          scopes: "email profile"
+```
+
+### Kubernetes Secret
+
+Alternatively you can use a Kubernetes secret to set the `key` and `secret` values.
+
+Create a Kubernetes secret with the following:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+    name: gitea-authentik-secret
+type: Opaque
+stringData:
+    key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
+    secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
+```
+
+Add the following to the Gitea Helm Chart `values.yaml` file:
+
+```yaml
+gitea:
+    oauth:
+        - name: "authentik"
+          provider: "openidConnect"
+          existingSecret: gitea-authentik-secret
+          autoDiscoveryUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+          iconUrl: "https://goauthentik.io/img/icon.png"
+          scopes: "email profile"
+```
