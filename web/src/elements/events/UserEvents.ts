@@ -18,7 +18,7 @@ import { customElement, property } from "lit/decorators.js";
 import { Event, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-events-user")
-export class ObjectChangelog extends Table<Event> {
+export class UserEvents extends Table<Event> {
     expandable = true;
 
     @property()
