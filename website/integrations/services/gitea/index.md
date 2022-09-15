@@ -72,24 +72,24 @@ Change the following fields
 
 ## Helm Chart Configuration
 
-Authentik can be configured automatically in Gitea Kubernetes deployments via it's [Helm Chart](https://gitea.com/gitea/helm-chart/).
+authentik can be configured automatically in Gitea Kubernetes deployments via it's [Helm Chart](https://gitea.com/gitea/helm-chart/).
 
 :::note
-This is based on Authentik 2022.8.2, Gitea v17.2, and Gitea Helm Chart v6.0.1. Instructions may differ between versions.
+This is based on authentik 2022.8.2, Gitea v17.2, and Gitea Helm Chart v6.0.1. Instructions may differ between versions.
 :::
 
 Add the following to the Gitea Helm Chart `values.yaml` file:
 
 ```yaml
 gitea:
-  oauth:
-    - name: 'Authentik'
-      provider: 'openidConnect'
-      key: 'CLIENT_ID_FROM_AUTHENTIK' #Step 1
-      secret: 'CLIENT_SECRET_FROM_AUTHENTIK' #Step 1
-      autoDiscoveryUrl: 'https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration'
-      iconUrl: 'https://goauthentik.io/img/icon.png'
-      scopes: 'email profile'
+    oauth:
+        - name: "authentik"
+          provider: "openidConnect"
+          key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
+          secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
+          autoDiscoveryUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+          iconUrl: "https://goauthentik.io/img/icon.png"
+          scopes: "email profile"
 ```
 
 ### Kubernetes Secret
@@ -102,22 +102,22 @@ Create a Kubernetes secret with the following:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: gitea-authentik-secret
+    name: gitea-authentik-secret
 type: Opaque
 stringData:
-  key: 'CLIENT_ID_FROM_AUTHENTIK' #Step 1
-  secret: 'CLIENT_SECRET_FROM_AUTHENTIK' #Step 1
+    key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
+    secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
 ```
 
 Add the following to the Gitea Helm Chart `values.yaml` file:
 
 ```yaml
 gitea:
-  oauth:
-    - name: 'Authentik'
-      provider: 'openidConnect'
-      existingSecret: gitea-authentik-secret
-      autoDiscoveryUrl: 'https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration'
-      iconUrl: 'https://goauthentik.io/img/icon.png'
-      scopes: 'email profile'
+    oauth:
+        - name: "authentik"
+          provider: "openidConnect"
+          existingSecret: gitea-authentik-secret
+          autoDiscoveryUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+          iconUrl: "https://goauthentik.io/img/icon.png"
+          scopes: "email profile"
 ```
