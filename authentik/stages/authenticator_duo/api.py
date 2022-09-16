@@ -41,9 +41,12 @@ class AuthenticatorDuoStageSerializer(StageSerializer):
             "client_id",
             "client_secret",
             "api_hostname",
+            "admin_integration_key",
+            "admin_secret_key",
         ]
         extra_kwargs = {
             "client_secret": {"write_only": True},
+            "admin_secret_key": {"write_only": True},
         }
 
 
@@ -85,7 +88,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         stage: AuthenticatorDuoStage = AuthenticatorDuoStage.objects.filter(pk=pk).first()
         if not stage:
             raise Http404
-        client = stage.client
+        client = stage.auth_client()
         user_id = self.request.session.get(SESSION_KEY_DUO_USER_ID)
         activation_code = self.request.session.get(SESSION_KEY_DUO_ACTIVATION_CODE)
         if not user_id or not activation_code:

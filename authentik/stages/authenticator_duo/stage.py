@@ -43,7 +43,7 @@ class AuthenticatorDuoStageView(ChallengeStageView):
         user = self.get_pending_user()
         stage: AuthenticatorDuoStage = self.executor.current_stage
         try:
-            enroll = stage.client.enroll(user.username)
+            enroll = stage.auth_client().enroll(user.username)
         except RuntimeError as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
@@ -75,7 +75,7 @@ class AuthenticatorDuoStageView(ChallengeStageView):
         stage: AuthenticatorDuoStage = self.executor.current_stage
         user_id = self.request.session.get(SESSION_KEY_DUO_USER_ID)
         activation_code = self.request.session.get(SESSION_KEY_DUO_ACTIVATION_CODE)
-        enroll_status = stage.client.enroll_status(user_id, activation_code)
+        enroll_status = stage.auth_client().enroll_status(user_id, activation_code)
         if enroll_status != "success":
             return HttpResponse(status=420)
         existing_device = DuoDevice.objects.filter(duo_user_id=user_id).first()

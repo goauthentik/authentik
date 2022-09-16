@@ -24983,6 +24983,8 @@ components:
           type: string
         api_hostname:
           type: string
+        admin_integration_key:
+          type: string
       required:
       - api_hostname
       - client_id
@@ -25019,6 +25021,11 @@ components:
         api_hostname:
           type: string
           minLength: 1
+        admin_integration_key:
+          type: string
+        admin_secret_key:
+          type: string
+          writeOnly: true
       required:
       - api_hostname
       - client_id
@@ -32518,6 +32525,11 @@ components:
         api_hostname:
           type: string
           minLength: 1
+        admin_integration_key:
+          type: string
+        admin_secret_key:
+          type: string
+          writeOnly: true
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer
