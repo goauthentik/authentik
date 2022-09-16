@@ -33,6 +33,7 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
 import { Stage, StagesApi } from "@goauthentik/api";
 
@@ -99,6 +100,22 @@ export class StageListPage extends TablePage<Stage> {
         </ak-forms-delete-bulk>`;
     }
 
+    async renderStageActions(stage: Stage): Promise<TemplateResult> {
+        if (stage.component === "ak-stage-authenticator-duo-form") {
+            await import("@goauthentik/admin/stages/authenticator_duo/DuoDeviceImportForm");
+            return html`<ak-forms-modal>
+                <span slot="submit">${t`Import`}</span>
+                <span slot="header">${t`Import Duo device`}</span>
+                <ak-stage-authenticator-duo-device-import-form slot="form" stageUuid=${stage.pk}>
+                </ak-stage-authenticator-duo-device-import-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <i class="fas fa-file-import"></i>
+                </button>
+            </ak-forms-modal>`;
+        }
+        return html``;
+    }
+
     row(item: Stage): TemplateResult[] {
         return [
             html`<div>
@@ -114,21 +131,22 @@ export class StageListPage extends TablePage<Stage> {
                     </li>`;
                 })}
             </ul>`,
-            html` <ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update ${item.verboseName}`} </span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
-                        instancePk: item.pk,
-                    }}
-                    type=${ifDefined(item.component)}
-                >
-                </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <i class="fas fa-edit"></i>
-                </button>
-            </ak-forms-modal>`,
+            html`<ak-forms-modal>
+                    <span slot="submit"> ${t`Update`} </span>
+                    <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                    <ak-proxy-form
+                        slot="form"
+                        .args=${{
+                            instancePk: item.pk,
+                        }}
+                        type=${ifDefined(item.component)}
+                    >
+                    </ak-proxy-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </ak-forms-modal>
+                ${until(this.renderStageActions(item))}`,
         ];
     }
 

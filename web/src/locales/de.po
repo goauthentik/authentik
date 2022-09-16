@@ -832,6 +832,10 @@ msgstr ""
 msgid "Callback URL"
 msgstr "Callback URL"
 
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Can be either the username (found in the Users list) or the ID (can be found in the URL after clicking on a user)."
+msgstr ""
+
 #~ msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
 #~ msgstr "Kann das Format \"unix://\" haben, wenn eine Verbindung zu einem lokalen Docker-Daemon besteht, oder \"https://:2376\", wenn eine Verbindung zu einem entfernten System besteht."
 
@@ -1841,6 +1845,10 @@ msgstr "Dummy-Stage zum Testen verwendet. Zeigt eine einfache Schaltfläche zum 
 msgid "Duo Authenticators"
 msgstr "Duo-Authentifikatoren"
 
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Duo User ID"
+msgstr ""
+
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Duo activation"
 msgstr "Duo-Aktivierung"
@@ -2772,8 +2780,15 @@ msgstr "Identitätswechsel gestarted"
 
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/flows/FlowListPage.ts
+#: src/admin/stages/StageListPage.ts
+#: src/admin/stages/StageListPage.ts
 msgid "Import"
 msgstr "Importieren"
+
+#: src/admin/stages/StageListPage.ts
+#: src/admin/stages/StageListPage.ts
+msgid "Import Duo device"
+msgstr ""
 
 #: src/admin/flows/FlowListPage.ts
 msgid "Import Flow"
@@ -3138,6 +3153,7 @@ msgstr "Wird geladen"
 #: src/admin/sources/saml/SAMLSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/admin/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
@@ -5438,6 +5454,10 @@ msgstr "Zertifikat-Schlüsselpaar erfolgreich generiert."
 msgid "Successfully generated recovery link"
 msgstr "Erfolgreich generierter Wiederherstellungslink"
 
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Successfully imported device."
+msgstr ""
+
 #: src/admin/flows/FlowImportForm.ts
 msgid "Successfully imported flow."
 msgstr "Ablauf erfolgreich importiert."
@@ -5825,6 +5845,14 @@ msgstr "Der Anfang für gidNumbers, diese Zahl wird zu einer aus der group.Pk ge
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber"
 msgstr "Der Anfang für uidNumbers, diese Zahl wird zu user.Pk hinzugefügt, um sicherzustellen, dass die Zahlen für POSIX-Benutzer nicht zu niedrig sind. Standardwert ist 2000, um sicherzustellen, dass wir nicht mit lokalen uidNumbers der Benutzer kollidieren"
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "The user ID in Duo."
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "The user in authentik this device will be assigned to."
+msgstr ""
 
 #: src/admin/flows/BoundStagesList.ts
 msgid "These bindings control if this stage will be applied to the flow."
@@ -6430,6 +6458,7 @@ msgstr "Nutze diese Umgebung für jede Domain, die keine eigene Umgebung hat."
 #: src/admin/policies/PolicyBindingForm.ts
 #: src/admin/policies/PolicyTestForm.ts
 #: src/admin/property-mappings/PropertyMappingTestForm.ts
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
 #: src/admin/tokens/TokenForm.ts
 #: src/admin/tokens/TokenListPage.ts
 #: src/admin/users/RelatedUserList.ts
