@@ -104,21 +104,13 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         "", ["authentik_stages_authenticator_duo.add_duodevice", "authentik_core.view_user"]
     )
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="duo_user_id",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.QUERY,
-                required=True,
-            ),
-            OpenApiParameter(
-                name="username",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.QUERY,
-                required=True,
-            ),
-        ],
-        request=None,
+        request=inline_serializer(
+            "AuthenticatorDuoStageManualDeviceImport",
+            {
+                "duo_user_id": CharField(required=True),
+                "username": CharField(required=True),
+            },
+        ),
         responses={
             204: OpenApiResponse(description="Enrollment successful"),
             400: OpenApiResponse(description="Bad request"),
@@ -131,18 +123,18 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         stage: AuthenticatorDuoStage = self.get_object()
         user = (
             get_objects_for_user(request.user, "authentik_core.view_user")
-            .filter(username=request.query_params.get("username", ""))
+            .filter(username=request.data.get("username", ""))
             .first()
         )
         if not user:
             return Response(data={"non_field_errors": ["user does not exist"]}, status=400)
         device = DuoDevice.objects.filter(
-            duo_user_id=request.query_params.get("duo_user_id"), user=user, stage=stage
+            duo_user_id=request.data.get("duo_user_id"), user=user, stage=stage
         ).first()
         if device:
             return Response(data={"non_field_errors": ["device exists already"]}, status=400)
         DuoDevice.objects.create(
-            duo_user_id=request.query_params.get("duo_user_id"),
+            duo_user_id=request.data.get("duo_user_id"),
             user=user,
             stage=stage,
             name="Imported Duo Authenticator",

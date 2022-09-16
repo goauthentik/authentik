@@ -20,9 +20,10 @@ from authentik.lib.utils.http import authentik_user_agent
 class AuthenticatorDuoStage(ConfigurableStage, Stage):
     """Setup Duo authenticator devices"""
 
+    api_hostname = models.TextField()
+
     client_id = models.TextField()
     client_secret = models.TextField()
-    api_hostname = models.TextField()
 
     admin_integration_key = models.TextField(blank=True, default="")
     admin_secret_key = models.TextField(blank=True, default="")

@@ -18655,11 +18655,6 @@ paths:
       operationId: stages_authenticator_duo_import_device_manual_create
       description: Import duo devices into authentik
       parameters:
-      - in: query
-        name: duo_user_id
-        schema:
-          type: string
-        required: true
       - in: path
         name: stage_uuid
         schema:
@@ -18667,13 +18662,14 @@ paths:
           format: uuid
         description: A UUID string identifying this Duo Authenticator Setup Stage.
         required: true
-      - in: query
-        name: username
-        schema:
-          type: string
-        required: true
       tags:
       - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageManualDeviceImportRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25039,6 +25035,18 @@ components:
       required:
       - count
       - error
+    AuthenticatorDuoStageManualDeviceImportRequest:
+      type: object
+      properties:
+        duo_user_id:
+          type: string
+          minLength: 1
+        username:
+          type: string
+          minLength: 1
+      required:
+      - duo_user_id
+      - username
     AuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer
