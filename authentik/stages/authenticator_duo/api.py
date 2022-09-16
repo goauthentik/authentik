@@ -11,13 +11,14 @@ from drf_spectacular.utils import (
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.fields import ChoiceField
+from rest_framework.fields import CharField, ChoiceField, IntegerField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from structlog.stdlib import get_logger
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.api.decorators import permission_required
@@ -28,6 +29,9 @@ from authentik.stages.authenticator_duo.stage import (
     SESSION_KEY_DUO_ACTIVATION_CODE,
     SESSION_KEY_DUO_USER_ID,
 )
+from authentik.stages.authenticator_duo.tasks import duo_import_devices
+
+LOGGER = get_logger()
 
 
 class AuthenticatorDuoStageSerializer(StageSerializer):
@@ -117,12 +121,12 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         request=None,
         responses={
             204: OpenApiResponse(description="Enrollment successful"),
-            400: OpenApiResponse(description="Device exists already"),
+            400: OpenApiResponse(description="Bad request"),
         },
     )
     @action(methods=["POST"], detail=True)
     # pylint: disable=invalid-name,unused-argument
-    def import_devices(self, request: Request, pk: str) -> Response:
+    def import_device_manual(self, request: Request, pk: str) -> Response:
         """Import duo devices into authentik"""
         stage: AuthenticatorDuoStage = self.get_object()
         user = (
@@ -144,6 +148,42 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
             name="Imported Duo Authenticator",
         )
         return Response(status=204)
+
+    @permission_required(
+        "", ["authentik_stages_authenticator_duo.add_duodevice", "authentik_core.view_user"]
+    )
+    @extend_schema(
+        request=None,
+        responses={
+            204: inline_serializer(
+                "AuthenticatorDuoStageDeviceImportResponse",
+                fields={
+                    "count": IntegerField(read_only=True),
+                    "error": CharField(read_only=True),
+                },
+            ),
+            400: OpenApiResponse(description="Bad request"),
+        },
+    )
+    @action(methods=["POST"], detail=True)
+    # pylint: disable=invalid-name,unused-argument
+    def import_devices_automatic(self, request: Request, pk: str) -> Response:
+        """Import duo devices into authentik"""
+        stage: AuthenticatorDuoStage = self.get_object()
+        if stage.admin_integration_key == "":
+            return Response(
+                data={
+                    "non_field_errors": [
+                        (
+                            "Stage does not have Admin API configured, "
+                            "which is required for automatic imports."
+                        )
+                    ]
+                },
+                status=400,
+            )
+        result = duo_import_devices.delay().get()
+        return Response(data=result, status=204)
 
 
 class DuoDeviceSerializer(ModelSerializer):

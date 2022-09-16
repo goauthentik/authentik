@@ -18650,9 +18650,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /stages/authenticator/duo/{stage_uuid}/import_devices/:
+  /stages/authenticator/duo/{stage_uuid}/import_device_manual/:
     post:
-      operationId: stages_authenticator_duo_import_devices_create
+      operationId: stages_authenticator_duo_import_device_manual_create
       description: Import duo devices into authentik
       parameters:
       - in: query
@@ -18680,7 +18680,38 @@ paths:
         '204':
           description: Enrollment successful
         '400':
-          description: Device exists already
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/duo/{stage_uuid}/import_devices_automatic/:
+    post:
+      operationId: stages_authenticator_duo_import_devices_automatic_create
+      description: Import duo devices into authentik
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorDuoStageDeviceImportResponse'
+          description: ''
+        '400':
+          description: Bad request
         '403':
           content:
             application/json:
@@ -24996,6 +25027,18 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    AuthenticatorDuoStageDeviceImportResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          readOnly: true
+        error:
+          type: string
+          readOnly: true
+      required:
+      - count
+      - error
     AuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer

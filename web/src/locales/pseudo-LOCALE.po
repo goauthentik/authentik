@@ -1853,6 +1853,14 @@ msgstr ""
 #~ msgid "Duo"
 #~ msgstr ""
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Admin API (optional)"
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Auth API"
+msgstr ""
+
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Duo Authenticators"
 msgstr ""
@@ -2865,6 +2873,7 @@ msgstr ""
 msgid "Integration"
 msgstr ""
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Integration key"
 msgstr ""
@@ -4832,6 +4841,7 @@ msgstr ""
 msgid "Search..."
 msgstr ""
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Secret key"
 msgstr ""
@@ -6970,6 +6980,12 @@ msgstr ""
 
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid ""
+"When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.\n"
+"This will allow authentik to import devices automatically."
 msgstr ""
 
 #: src/admin/tenants/TenantForm.ts

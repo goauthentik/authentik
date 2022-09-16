@@ -1832,6 +1832,14 @@ msgstr "Test için kullanılan kukla aşama. Basit bir devam düğmesi gösterir
 #~ msgid "Duo"
 #~ msgstr "İkili"
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Admin API (optional)"
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Auth API"
+msgstr ""
+
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Duo Authenticators"
 msgstr "Duo Kimlik Doğrulayıcıları"
@@ -2828,6 +2836,7 @@ msgstr "İd_token'a hak taleplerini dahil et"
 msgid "Integration"
 msgstr "Entegrasyon"
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Integration key"
 msgstr "Entegrasyon anahtarı"
@@ -4767,6 +4776,7 @@ msgstr "Arama modu"
 msgid "Search..."
 msgstr "Ara..."
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Secret key"
 msgstr "Gizli anahtar"
@@ -6869,6 +6879,12 @@ msgstr "Bu seçenek etkinleştirildiğinde, bu ilkenin tüm yürütmeleri günl�
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
 msgstr "Kullanıcı Yazma aşaması ile birlikte kullanıldığında, öznitelikleri yazmak için attributes.foo kullanın."
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid ""
+"When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.\n"
+"This will allow authentik to import devices automatically."
+msgstr ""
 
 #: src/admin/tenants/TenantForm.ts
 msgid "When using an external logging solution for archiving, this can be set to \"minutes=5\"."

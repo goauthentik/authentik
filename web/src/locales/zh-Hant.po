@@ -1828,6 +1828,14 @@ msgstr "用于测试的虚拟阶段。显示一个简单的 “继续” 按钮�
 #~ msgid "Duo"
 #~ msgstr "Duo"
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Admin API (optional)"
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Auth API"
+msgstr ""
+
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Duo Authenticators"
 msgstr "Duo 身份验证器"
@@ -2815,6 +2823,7 @@ msgstr "在 id_token 中包含声明"
 msgid "Integration"
 msgstr "整合"
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Integration key"
 msgstr "集成密钥"
@@ -4739,6 +4748,7 @@ msgstr "搜索模式"
 msgid "Search..."
 msgstr "搜索..."
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Secret key"
 msgstr "密钥"
@@ -6841,6 +6851,12 @@ msgstr "启用此选项后，将记录此策略的所有执行。默认情况下
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
 msgstr "当与用户写入阶段结合使用时，请使用 attributes.foo 来编写属性。"
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid ""
+"When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.\n"
+"This will allow authentik to import devices automatically."
+msgstr ""
 
 #: src/admin/tenants/TenantForm.ts
 msgid "When using an external logging solution for archiving, this can be set to \"minutes=5\"."

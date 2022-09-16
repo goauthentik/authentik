@@ -61,8 +61,20 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
                     required
                 />
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`API Hostname`}
+                ?required=${true}
+                name="apiHostname"
+            >
+                <input
+                    type="text"
+                    value="${first(this.instance?.apiHostname, "")}"
+                    class="pf-c-form-control"
+                    required
+                />
+            </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${t`Duo Auth API`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${t`Integration key`}
@@ -84,18 +96,37 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
                     >
                         <input type="text" value="" class="pf-c-form-control" required />
                     </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group>
+                <span slot="header">${t`Duo Admin API (optional)`}</span>
+                <span slot="description">
+                    ${t`When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.
+                    This will allow authentik to import devices automatically.`}
+                </span>
+                <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`API Hostname`}
-                        ?required=${true}
-                        name="apiHostname"
+                        label=${t`Integration key`}
+                        name="adminIntegrationKey"
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.apiHostname, "")}"
+                            value="${first(this.instance?.adminIntegrationKey, "")}"
                             class="pf-c-form-control"
-                            required
                         />
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Secret key`}
+                        ?writeOnly=${this.instance !== undefined}
+                        name="adminSecretKey"
+                    >
+                        <input type="text" value="" class="pf-c-form-control" />
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group .expanded=${true}>
+                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
                         <select class="pf-c-form-control">
                             <option

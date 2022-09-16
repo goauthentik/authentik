@@ -106,7 +106,7 @@ export class StageListPage extends TablePage<Stage> {
             return html`<ak-forms-modal>
                 <span slot="submit">${t`Import`}</span>
                 <span slot="header">${t`Import Duo device`}</span>
-                <ak-stage-authenticator-duo-device-import-form slot="form" stageUuid=${stage.pk}>
+                <ak-stage-authenticator-duo-device-import-form slot="form" .instancePk=${stage.pk}>
                 </ak-stage-authenticator-duo-device-import-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <i class="fas fa-file-import"></i>

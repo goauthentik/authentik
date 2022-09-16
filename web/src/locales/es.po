@@ -1832,6 +1832,14 @@ msgstr "Escenario ficticio utilizado para las pruebas. Muestra un botón de cont
 #~ msgid "Duo"
 #~ msgstr "Dúo"
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Admin API (optional)"
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Auth API"
+msgstr ""
+
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Duo Authenticators"
 msgstr "Autenticadores duo"
@@ -2827,6 +2835,7 @@ msgstr "Incluir reclamos en id_token"
 msgid "Integration"
 msgstr "Integración"
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Integration key"
 msgstr "Clave de integración"
@@ -4765,6 +4774,7 @@ msgstr "Modo de búsqueda"
 msgid "Search..."
 msgstr "Buscar..."
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Secret key"
 msgstr "Clave secreta"
@@ -6867,6 +6877,12 @@ msgstr "Cuando se habilita esta opción, se registrarán todas las ejecuciones d
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
 msgstr "Cuando se usa junto con una etapa User Write, use attribues.foo para escribir atributos."
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid ""
+"When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.\n"
+"This will allow authentik to import devices automatically."
+msgstr ""
 
 #: src/admin/tenants/TenantForm.ts
 msgid "When using an external logging solution for archiving, this can be set to \"minutes=5\"."

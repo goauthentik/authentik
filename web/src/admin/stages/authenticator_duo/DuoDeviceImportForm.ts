@@ -1,35 +1,49 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import { UserOption } from "@goauthentik/elements/user/utils";
 
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
 import {
+    AuthenticatorDuoStage,
     CoreApi,
     StagesApi,
-    StagesAuthenticatorDuoImportDevicesCreateRequest,
+    StagesAuthenticatorDuoImportDeviceManualCreateRequest,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-duo-device-import-form")
-export class DuoDeviceImportForm extends Form<StagesAuthenticatorDuoImportDevicesCreateRequest> {
-    @property()
-    stageUuid?: string;
+export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string> {
+    loadInstance(pk: string): Promise<AuthenticatorDuoStage> {
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoRetrieve({
+            stageUuid: pk,
+        });
+    }
 
     getSuccessMessage(): string {
         return t`Successfully imported device.`;
     }
 
-    send = (data: StagesAuthenticatorDuoImportDevicesCreateRequest): Promise<void> => {
-        data.stageUuid = this.stageUuid || "";
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoImportDevicesCreate(data);
+    send = (data: AuthenticatorDuoStage): Promise<void> => {
+        const importData = data as unknown as StagesAuthenticatorDuoImportDeviceManualCreateRequest;
+        importData.stageUuid = this.instance?.pk || "";
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoImportDeviceManualCreate(
+            importData,
+        );
     };
 
     renderForm(): TemplateResult {
+        if (this.instance?.adminIntegrationKey !== "") {
+            return this.renderFormAutomatic();
+        }
+        return this.renderFormManual();
+    }
+
+    renderFormManual(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${t`User`} ?required=${true} name="username">
                 <select class="pf-c-form-control">
@@ -60,5 +74,9 @@ export class DuoDeviceImportForm extends Form<StagesAuthenticatorDuoImportDevice
                 </p>
             </ak-form-element-horizontal>
         </form>`;
+    }
+
+    renderFormAutomatic(): TemplateResult {
+        return html``;
     }
 }
