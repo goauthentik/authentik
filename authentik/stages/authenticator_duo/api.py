@@ -102,10 +102,16 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         parameters=[
             OpenApiParameter(
-                name="duo_user_id", type=OpenApiTypes.STR, location=OpenApiParameter.QUERY
+                name="duo_user_id",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                required=True,
             ),
             OpenApiParameter(
-                name="username", type=OpenApiTypes.STR, location=OpenApiParameter.QUERY
+                name="username",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                required=True,
             ),
         ],
         request=None,

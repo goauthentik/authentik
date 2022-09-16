@@ -18659,6 +18659,7 @@ paths:
         name: duo_user_id
         schema:
           type: string
+        required: true
       - in: path
         name: stage_uuid
         schema:
@@ -18670,6 +18671,7 @@ paths:
         name: username
         schema:
           type: string
+        required: true
       tags:
       - stages
       security:
