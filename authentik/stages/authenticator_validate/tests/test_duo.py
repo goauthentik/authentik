@@ -44,14 +44,18 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
             stage=stage,
         )
         with patch(
-            "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.client",
+            "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.auth_client",
             MagicMock(
-                auth=MagicMock(
-                    return_value={
-                        "result": "allow",
-                        "status": "allow",
-                        "status_msg": "Success. Logging you in...",
-                    }
+                MagicMock(
+                    return_value=MagicMock(
+                        auth=MagicMock(
+                            return_value={
+                                "result": "allow",
+                                "status": "allow",
+                                "status_msg": "Success. Logging you in...",
+                            }
+                        )
+                    )
                 )
             ),
         ):
@@ -70,8 +74,8 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
                 ),
             )
         with patch(
-            "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.client",
-            MagicMock(auth=MagicMock(return_value={"result": "deny"})),
+            "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.auth_client",
+            MagicMock(return_value=MagicMock(auth=MagicMock(return_value={"result": "deny"}))),
         ):
             with self.assertRaises(ValidationError):
                 validate_challenge_duo(

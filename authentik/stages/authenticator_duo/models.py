@@ -50,7 +50,7 @@ class AuthenticatorDuoStage(ConfigurableStage, Stage):
 
     def admin_client(self) -> Admin:
         """Get an API Client to talk to duo"""
-        if self.admin_integration_key == "" or self.admin_secret_key == "":
+        if self.admin_integration_key == "" or self.admin_secret_key == "":  # nosec
             raise ValueError("Admin credentials not configured")
         client = Admin(
             self.admin_integration_key,
