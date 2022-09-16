@@ -8,19 +8,19 @@ from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, Duo
 LOGGER = get_logger()
 
 
-@CELERY_APP.task(bind=True)
+@CELERY_APP.task()
 def duo_import_devices(stage_pk: str):
     """Import duo devices"""
+    created = 0
     stage: AuthenticatorDuoStage = AuthenticatorDuoStage.objects.filter(pk=stage_pk).first()
     if not stage:
         LOGGER.info("No stage found", pk=stage_pk)
-        return
+        return {"error": "No stage found", "count": created}
     if stage.admin_integration_key == "":
         LOGGER.info("Stage does not have admin integration configured", stage=stage)
-        return
+        return {"error": "Stage does not have admin integration configured", "count": created}
     client = stage.admin_client()
     try:
-        created = 0
         for duo_user in client.get_users_iterator():
             user_id = duo_user.get("user_id")
             username = duo_user.get("username")
@@ -43,4 +43,4 @@ def duo_import_devices(stage_pk: str):
         return {"error": "", "count": created}
     except RuntimeError as exc:
         LOGGER.warning("failed to get users from duo", exc=exc)
-        return {"error": str(exc), "count": 0}
+        return {"error": str(exc), "count": created}

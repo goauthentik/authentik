@@ -155,7 +155,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         request=None,
         responses={
-            204: inline_serializer(
+            200: inline_serializer(
                 "AuthenticatorDuoStageDeviceImportResponse",
                 fields={
                     "count": IntegerField(read_only=True),
@@ -182,8 +182,8 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
                 },
                 status=400,
             )
-        result = duo_import_devices.delay().get()
-        return Response(data=result, status=204)
+        result = duo_import_devices.delay(str(stage.pk)).get()
+        return Response(data=result, status=200 if result["error"] == "" else 400)
 
 
 class DuoDeviceSerializer(ModelSerializer):

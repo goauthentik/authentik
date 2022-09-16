@@ -1,6 +1,11 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { MessageLevel } from "@goauthentik/common/messages";
+import "@goauthentik/elements/Divider";
+import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { UserOption } from "@goauthentik/elements/user/utils";
 
 import { t } from "@lingui/macro";
@@ -30,17 +35,17 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
 
     send = (data: AuthenticatorDuoStage): Promise<void> => {
         const importData = data as unknown as StagesAuthenticatorDuoImportDeviceManualCreateRequest;
-        importData.stageUuid = this.instance?.pk || "";
+        importData.stageUuid = this.instancePk;
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoImportDeviceManualCreate(
             importData,
         );
     };
 
     renderForm(): TemplateResult {
-        if (this.instance?.adminIntegrationKey !== "") {
-            return this.renderFormAutomatic();
-        }
-        return this.renderFormManual();
+        return html`${this.instance?.adminIntegrationKey !== ""
+            ? this.renderFormAutomatic()
+            : html``}
+        ${this.renderFormManual()}`;
     }
 
     renderFormManual(): TemplateResult {
@@ -77,6 +82,32 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     }
 
     renderFormAutomatic(): TemplateResult {
-        return html``;
+        return html`
+            <form class="pf-c-form pf-m-horizontal">
+                <ak-form-element-horizontal label=${t`Automatic import`}>
+                    <ak-action-button
+                        class="pf-m-primary"
+                        .apiRequest=${() => {
+                            return new StagesApi(DEFAULT_CONFIG)
+                                .stagesAuthenticatorDuoImportDevicesAutomaticCreate({
+                                    stageUuid: this.instance?.pk || "",
+                                })
+                                .then((res) => {
+                                    showMessage({
+                                        level: MessageLevel.info,
+                                        message: t`Successfully imported ${res.count} devices.`,
+                                    });
+                                    const modal = this.parentElement as ModalForm;
+                                    modal.open = false;
+                                });
+                        }}
+                    >
+                        ${t`Start automatic import`}
+                    </ak-action-button>
+                </ak-form-element-horizontal>
+            </form>
+            <ak-divider>${t`Or manually import`}</ak-divider>
+            <br />
+        `;
     }
 }
