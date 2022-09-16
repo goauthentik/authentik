@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 08:12+0000\n"
+"POT-Creation-Date: 2022-09-16 15:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -153,19 +153,19 @@ msgstr ""
 msgid "Tokens"
 msgstr ""
 
-#: authentik/core/models.py:634
+#: authentik/core/models.py:633
 msgid "Property Mapping"
 msgstr ""
 
-#: authentik/core/models.py:635
+#: authentik/core/models.py:634
 msgid "Property Mappings"
 msgstr ""
 
-#: authentik/core/models.py:671
+#: authentik/core/models.py:670
 msgid "Authenticated Session"
 msgstr ""
 
-#: authentik/core/models.py:672
+#: authentik/core/models.py:671
 msgid "Authenticated Sessions"
 msgstr ""
 
@@ -1745,19 +1745,19 @@ msgstr ""
 msgid "Name of the form field, also used to store the value"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:198
+#: authentik/stages/prompt/models.py:197
 msgid "Prompt"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:199
+#: authentik/stages/prompt/models.py:198
 msgid "Prompts"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:227
+#: authentik/stages/prompt/models.py:226
 msgid "Prompt Stage"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:228
+#: authentik/stages/prompt/models.py:227
 msgid "Prompt Stages"
 msgstr ""
 
