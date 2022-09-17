@@ -322,13 +322,17 @@ export class FlowExecutor extends AKElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-prompt>`;
             case "ak-stage-authenticator-totp":
-                await import("@goauthentik/web/flow/stages/authenticator_totp/AuthenticatorTOTPStage");
+                await import(
+                    "@goauthentik/web/flow/stages/authenticator_totp/AuthenticatorTOTPStage"
+                );
                 return html`<ak-stage-authenticator-totp
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-totp>`;
             case "ak-stage-authenticator-duo":
-                await import("@goauthentik/web/flow/stages/authenticator_duo/AuthenticatorDuoStage");
+                await import(
+                    "@goauthentik/web/flow/stages/authenticator_duo/AuthenticatorDuoStage"
+                );
                 return html`<ak-stage-authenticator-duo
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -347,7 +351,9 @@ export class FlowExecutor extends AKElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-webauthn>`;
             case "ak-stage-authenticator-sms":
-                await import("@goauthentik/web/flow/stages/authenticator_sms/AuthenticatorSMSStage");
+                await import(
+                    "@goauthentik/web/flow/stages/authenticator_sms/AuthenticatorSMSStage"
+                );
                 return html`<ak-stage-authenticator-sms
                     .host=${this as StageHost}
                     .challenge=${this.challenge}

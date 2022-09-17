@@ -1,8 +1,3 @@
-import "@goauthentik/web/admin/providers/RelatedApplicationButton";
-import "@goauthentik/web/admin/providers/proxy/ProxyProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
-import { convertToSlug } from "@goauthentik/web/common/utils";
 import MDCaddyStandalone from "@goauthentik/docs/providers/proxy/_caddy_standalone.md";
 import MDNginxIngress from "@goauthentik/docs/providers/proxy/_nginx_ingress.md";
 import MDNginxPM from "@goauthentik/docs/providers/proxy/_nginx_proxy_manager.md";
@@ -10,6 +5,11 @@ import MDNginxStandalone from "@goauthentik/docs/providers/proxy/_nginx_standalo
 import MDTraefikCompose from "@goauthentik/docs/providers/proxy/_traefik_compose.md";
 import MDTraefikIngress from "@goauthentik/docs/providers/proxy/_traefik_ingress.md";
 import MDTraefikStandalone from "@goauthentik/docs/providers/proxy/_traefik_standalone.md";
+import "@goauthentik/web/admin/providers/RelatedApplicationButton";
+import "@goauthentik/web/admin/providers/proxy/ProxyProviderForm";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
+import { convertToSlug } from "@goauthentik/web/common/utils";
 import { AKElement } from "@goauthentik/web/elements/Base";
 import "@goauthentik/web/elements/CodeMirror";
 import { PFColor } from "@goauthentik/web/elements/Label";

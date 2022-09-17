@@ -12,7 +12,7 @@ import { terser } from "rollup-plugin-terser";
 import { apiBasePath, extensions, isProdBuild, resources } from "./rollup.config.js";
 
 export default {
-    input: "./index.ts",
+    input: "./src/package/index.ts",
     output: [
         {
             format: "es",
