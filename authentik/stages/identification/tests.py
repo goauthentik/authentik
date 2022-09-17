@@ -168,7 +168,7 @@ class TestIdentificationStage(FlowTestCase):
             password_fields=False,
             enroll_url=reverse(
                 "authentik_core:if-flow",
-                kwargs={"flow_slug": "unique-enrollment-string"},
+                kwargs={"flow_slug": flow.slug},
             ),
             show_source_labels=False,
             primary_action="Log in",
@@ -206,7 +206,7 @@ class TestIdentificationStage(FlowTestCase):
             password_fields=False,
             recovery_url=reverse(
                 "authentik_core:if-flow",
-                kwargs={"flow_slug": "unique-recovery-string"},
+                kwargs={"flow_slug": flow.slug},
             ),
             show_source_labels=False,
             primary_action="Log in",
