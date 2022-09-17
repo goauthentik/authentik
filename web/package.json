@@ -1,10 +1,16 @@
 {
     "name": "@goauthentik/web",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "license": "GNU GPLv3",
     "main": "./dist/package/index.js",
     "typings": "./dist/package/index.d.ts",
     "sideEffects": false,
+    "files": [
+        "dist/",
+        "src/",
+        "authentik/",
+        "icons"
+    ],
     "scripts": {
         "extract": "lingui extract",
         "build": "lingui compile && rollup -c ./rollup.config.js",
