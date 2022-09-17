@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/web",
-    "version": "2022.8.2",
+    "version": "0.0.1",
     "license": "GNU GPLv3",
     "main": "./dist/package/index.js",
     "typings": "./dist/package/index.d.ts",

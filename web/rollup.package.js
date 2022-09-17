@@ -26,11 +26,6 @@ export default {
         json(),
         nodeResolve({ extensions, browser: true }),
         commonjs(),
-        babel({
-            extensions,
-            babelHelpers: "runtime",
-            include: ["src/**/*"],
-        }),
         replace({
             "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
             "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
@@ -38,6 +33,44 @@ export default {
         }),
         typescript({
             compilerOptions: {
+                rootDir: "src",
+                strict: true,
+                paths: {
+                    "@goauthentik/web/*": ["src/*"],
+                    "@goauthentik/docs/*": ["../website/docs/*"],
+                },
+                baseUrl: ".",
+                esModuleInterop: true,
+                skipLibCheck: true,
+                forceConsistentCasingInFileNames: true,
+                experimentalDecorators: true,
+                resolveJsonModule: true,
+                sourceMap: true,
+                target: "esnext",
+                module: "esnext",
+                moduleResolution: "node",
+                lib: [
+                    "ES5",
+                    "ES2015",
+                    "ES2016",
+                    "ES2017",
+                    "ES2018",
+                    "ES2019",
+                    "ES2020",
+                    "ESNext",
+                    "DOM",
+                    "DOM.Iterable",
+                    "WebWorker",
+                ],
+                plugins: [
+                    {
+                        name: "ts-lit-plugin",
+                        strict: true,
+                        rules: {
+                            "no-unknown-tag-name": "off",
+                        },
+                    },
+                ],
                 declaration: true,
                 emitDeclarationOnly: true,
                 outDir: "dist/package",
