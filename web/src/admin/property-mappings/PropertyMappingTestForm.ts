@@ -6,8 +6,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { UserOption } from "@goauthentik/elements/user/utils";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -33,7 +32,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     request?: PolicyTestRequest;
 
     getSuccessMessage(): string {
-        return t`Successfully sent test-request.`;
+        return msg("Successfully sent test-request.");
     }
 
     send = (data: PolicyTestRequest): Promise<PropertyMappingTestResult> => {
@@ -48,7 +47,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     };
 
     renderResult(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${t`Result`}>
+        return html`<ak-form-element-horizontal label=${msg("Result")}>
             ${this.result?.successful
                 ? html`<ak-codemirror
                       mode="javascript"
@@ -66,7 +65,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`User`} ?required=${true} name="user">
+            <ak-form-element-horizontal label=${msg("User")} ?required=${true} name="user">
                 <select class="pf-c-form-control">
                     ${until(
                         new CoreApi(DEFAULT_CONFIG)
@@ -84,11 +83,11 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                                     </option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Context`} name="context">
+            <ak-form-element-horizontal label=${msg("Context")} name="context">
                 <ak-codemirror mode="yaml" value=${YAML.stringify(first(this.request?.context, {}))}
                     >>
                 </ak-codemirror>

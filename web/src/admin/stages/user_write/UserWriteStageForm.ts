@@ -5,8 +5,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -23,9 +22,9 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated stage.`;
+            return msg("Successfully updated stage.");
         } else {
-            return t`Successfully created stage.`;
+            return msg("Successfully created stage.");
         }
     }
 
@@ -45,10 +44,10 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
-                is pending, a new user is created, and data is written to them.`}
+                ${msg(`Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
+                is pending, a new user is created, and data is written to them.`)}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -57,7 +56,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="createUsersAsInactive">
                         <div class="pf-c-check">
@@ -67,15 +66,15 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                                 ?checked=${first(this.instance?.createUsersAsInactive, true)}
                             />
                             <label class="pf-c-check__label">
-                                ${t`Create users as inactive`}
+                                ${msg("Create users as inactive")}
                             </label>
                         </div>
                         <p class="pf-c-form__helper-text">
-                            ${t`Mark newly created users as inactive.`}
+                            ${msg("Mark newly created users as inactive.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`User path template`}
+                        label=${msg("User path template")}
                         name="userPathTemplate"
                     >
                         <input
@@ -85,10 +84,12 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Path new users will be created under. If left blank, the default path will be used.`}
+                            ${msg(
+                                "Path new users will be created under. If left blank, the default path will be used.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Group`} name="createUsersGroup">
+                    <ak-form-element-horizontal label=${msg("Group")} name="createUsersGroup">
                         <!-- @ts-ignore -->
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
@@ -116,7 +117,9 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Newly created users are added to this group, if a group is selected.`}
+                            ${msg(
+                                "Newly created users are added to this group, if a group is selected.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

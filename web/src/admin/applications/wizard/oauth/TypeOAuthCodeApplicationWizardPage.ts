@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { WizardFormPage } from "@goauthentik/elements/wizard/WizardFormPage";
 import "@goauthentik/elements/wizard/WizardFormPage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -21,10 +20,10 @@ import {
 
 @customElement("ak-application-wizard-type-oauth-code")
 export class TypeOAuthCodeApplicationWizardPage extends WizardFormPage {
-    sidebarLabel = () => t`Method details`;
+    sidebarLabel = () => msg("Method details");
 
     nextDataCallback = async (data: KeyUnknown): Promise<boolean> => {
-        this.host.addActionBefore(t`Create provider`, async (): Promise<boolean> => {
+        this.host.addActionBefore(msg("Create provider"), async (): Promise<boolean> => {
             const req: OAuth2ProviderRequest = {
                 name: this.host.state["name"] as string,
                 clientType: ClientTypeEnum.Confidential,
@@ -42,7 +41,7 @@ export class TypeOAuthCodeApplicationWizardPage extends WizardFormPage {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${t`Authorization flow`}
+                label=${msg("Authorization flow")}
                 ?required=${true}
                 name="authorizationFlow"
             >
@@ -60,11 +59,11 @@ export class TypeOAuthCodeApplicationWizardPage extends WizardFormPage {
                                     </option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Flow used when users access this application.`}
+                    ${msg("Flow used when users access this application.")}
                 </p>
             </ak-form-element-horizontal>
         </form>`;

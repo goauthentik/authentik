@@ -4,8 +4,7 @@ import { MessageLevel } from "@goauthentik/common/messages";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -65,7 +64,7 @@ export class PlexLoginInit extends BaseStage<
 
     render(): TemplateResult {
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${t`Authenticating with Plex...`}</h1>
+                <h1 class="pf-c-title pf-m-3xl">${msg("Authenticating with Plex...")}</h1>
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">

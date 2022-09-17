@@ -5,8 +5,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import { UserOption } from "@goauthentik/elements/user/utils";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -65,9 +64,9 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated binding.`;
+            return msg("Successfully updated binding.");
         } else {
-            return t`Successfully created binding.`;
+            return msg("Successfully created binding.");
         }
     }
 
@@ -139,7 +138,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                         this.policyGroupUser = target.policy;
                     }}
                 >
-                    <span class="pf-c-toggle-group__text">${t`Policy`}</span>
+                    <span class="pf-c-toggle-group__text">${msg("Policy")}</span>
                 </button>
             </div>
             <div class="pf-c-divider pf-m-vertical" role="separator"></div>
@@ -153,7 +152,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                         this.policyGroupUser = target.group;
                     }}
                 >
-                    <span class="pf-c-toggle-group__text">${t`Group`}</span>
+                    <span class="pf-c-toggle-group__text">${msg("Group")}</span>
                 </button>
             </div>
             <div class="pf-c-divider pf-m-vertical" role="separator"></div>
@@ -167,7 +166,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                         this.policyGroupUser = target.user;
                     }}
                 >
-                    <span class="pf-c-toggle-group__text">${t`User`}</span>
+                    <span class="pf-c-toggle-group__text">${msg("User")}</span>
                 </button>
             </div>`;
     }
@@ -180,7 +179,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                 </div>
                 <div class="pf-c-card__footer">
                     <ak-form-element-horizontal
-                        label=${t`Policy`}
+                        label=${msg("Policy")}
                         name="policy"
                         ?hidden=${this.policyGroupUser !== target.policy}
                     >
@@ -196,12 +195,12 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                                     .then((policies) => {
                                         return this.groupPolicies(policies.results);
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Group`}
+                        label=${msg("Group")}
                         name="group"
                         ?hidden=${this.policyGroupUser !== target.group}
                     >
@@ -233,12 +232,14 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                         </ak-search-select>
                         ${this.policyOnly
                             ? html`<p class="pf-c-form__helper-text">
-                                  ${t`Group mappings can only be checked if a user is already logged in when trying to access this source.`}
+                                  ${msg(
+                                      "Group mappings can only be checked if a user is already logged in when trying to access this source.",
+                                  )}
                               </p>`
                             : html``}
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`User`}
+                        label=${msg("User")}
                         name="user"
                         ?hidden=${this.policyGroupUser !== target.user}
                     >
@@ -268,7 +269,9 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                         </ak-search-select>
                         ${this.policyOnly
                             ? html`<p class="pf-c-form__helper-text">
-                                  ${t`User mappings can only be checked if a user is already logged in when trying to access this source.`}
+                                  ${msg(
+                                      "User mappings can only be checked if a user is already logged in when trying to access this source.",
+                                  )}
                               </p>`
                             : html``}
                     </ak-form-element-horizontal>
@@ -287,7 +290,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.enabled, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Enabled`} </label>
+                    <label class="pf-c-check__label"> ${msg("Enabled")} </label>
                 </div>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="negate">
@@ -297,13 +300,13 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.negate, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Negate result`} </label>
+                    <label class="pf-c-check__label"> ${msg("Negate result")} </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`Negates the outcome of the binding. Messages are unaffected.`}
+                    ${msg("Negates the outcome of the binding. Messages are unaffected.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Order`} ?required=${true} name="order">
+            <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
                 <!-- @ts-ignore -->
                 <input
                     type="number"
@@ -312,7 +315,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Timeout`} ?required=${true} name="timeout">
+            <ak-form-element-horizontal label=${msg("Timeout")} ?required=${true} name="timeout">
                 <input
                     type="number"
                     value="${first(this.instance?.timeout, 30)}"

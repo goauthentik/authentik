@@ -7,8 +7,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TableModal } from "@goauthentik/elements/table/TableModal";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -39,9 +38,9 @@ export class MemberSelectTable extends TableModal<User> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "username"),
-            new TableColumn(t`Active`, "active"),
-            new TableColumn(t`Last login`, "last_login"),
+            new TableColumn(msg("Name"), "username"),
+            new TableColumn(msg("Active"), "active"),
+            new TableColumn(msg("Last login"), "last_login"),
         ];
     }
 
@@ -52,9 +51,9 @@ export class MemberSelectTable extends TableModal<User> {
                 <small>${item.name}</small>
             </div>`,
             html` <ak-label color=${item.isActive ? PFColor.Green : PFColor.Orange}>
-                ${item.isActive ? t`Yes` : t`No`}
+                ${item.isActive ? msg("Yes") : msg("No")}
             </ak-label>`,
-            html`${first(item.lastLogin?.toLocaleString(), t`-`)}`,
+            html`${first(item.lastLogin?.toLocaleString(), msg("-"))}`,
         ];
     }
 
@@ -65,7 +64,7 @@ export class MemberSelectTable extends TableModal<User> {
     renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">${t`Select users to add`}</h1>
+                    <h1 class="pf-c-title pf-m-2xl">${msg("Select users to add")}</h1>
                 </div>
             </section>
             <section class="pf-c-modal-box__body pf-c-page__main-section pf-m-light">
@@ -80,7 +79,7 @@ export class MemberSelectTable extends TableModal<User> {
                     }}
                     class="pf-m-primary"
                 >
-                    ${t`Add`} </ak-spinner-button
+                    ${msg("Add")} </ak-spinner-button
                 >&nbsp;
                 <ak-spinner-button
                     .callAction=${async () => {
@@ -88,7 +87,7 @@ export class MemberSelectTable extends TableModal<User> {
                     }}
                     class="pf-m-secondary"
                 >
-                    ${t`Cancel`}
+                    ${msg("Cancel")}
                 </ak-spinner-button>
             </footer>`;
     }

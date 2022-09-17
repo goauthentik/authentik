@@ -5,8 +5,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -48,9 +47,9 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated source.`;
+            return msg("Successfully updated source.");
         } else {
-            return t`Successfully created source.`;
+            return msg("Successfully created source.");
         }
     }
 
@@ -94,7 +93,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                     this.doAuth();
                 }}
             >
-                ${t`Load servers`}
+                ${msg("Load servers")}
             </button>`;
         }
         return html` <button
@@ -104,7 +103,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                     this.doAuth();
                 }}
             >
-                ${t`Re-authenticate with plex`}
+                ${msg("Re-authenticate with plex")}
             </button>
             <ak-form-element-horizontal name="allowFriends">
                 <div class="pf-c-check">
@@ -114,12 +113,14 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         ?checked=${first(this.instance?.allowFriends, true)}
                     />
                     <label class="pf-c-check__label">
-                        ${t`Allow friends to authenticate via Plex, even if you don't share any servers`}
+                        ${msg(
+                            "Allow friends to authenticate via Plex, even if you don't share any servers",
+                        )}
                     </label>
                 </div>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Allowed servers`}
+                label=${msg("Allowed servers")}
                 ?required=${true}
                 name="allowedServers"
             >
@@ -136,17 +137,19 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                     })}
                 </select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Select which server a user has to be a member of to be allowed to authenticate.`}
+                    ${msg(
+                        "Select which server a user has to be a member of to be allowed to authenticate.",
+                    )}
                 </p>
                 <p class="pf-c-form__helper-text">
-                    ${t`Hold control/command to select multiple items.`}
+                    ${msg("Hold control/command to select multiple items.")}
                 </p>
             </ak-form-element-horizontal>`;
     }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -154,7 +157,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Slug`} ?required=${true} name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
@@ -169,11 +172,11 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.enabled, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Enabled`} </label>
+                    <label class="pf-c-check__label"> ${msg("Enabled")} </label>
                 </div>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`User matching mode`}
+                label=${msg("User matching mode")}
                 ?required=${true}
                 name="userMatchingMode"
             >
@@ -183,39 +186,47 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.Identifier}
                     >
-                        ${t`Link users on unique identifier`}
+                        ${msg("Link users on unique identifier")}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailLink}
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.EmailLink}
                     >
-                        ${t`Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses`}
+                        ${msg(
+                            "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses",
+                        )}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailDeny}
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.EmailDeny}
                     >
-                        ${t`Use the user's email address, but deny enrollment when the email address already exists.`}
+                        ${msg(
+                            "Use the user's email address, but deny enrollment when the email address already exists.",
+                        )}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameLink}
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.UsernameLink}
                     >
-                        ${t`Link to a user with identical username. Can have security implications when a username is used with another source.`}
+                        ${msg(
+                            "Link to a user with identical username. Can have security implications when a username is used with another source.",
+                        )}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.UsernameDeny}
                     >
-                        ${t`Use the user's username, but deny enrollment when the username already exists.`}
+                        ${msg(
+                            "Use the user's username, but deny enrollment when the username already exists.",
+                        )}
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`User path`} name="userPathTemplate">
+            <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                 <input
                     type="text"
                     value="${first(
@@ -225,15 +236,17 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Path template for users created. Use placeholders like \`%(slug)s\` to insert the source slug.`}
+                    ${msg(
+                        "Path template for users created. Use placeholders like `%(slug)s` to insert the source slug.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Protocol settings`} </span>
+                <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Client ID`}
+                        label=${msg("Client ID")}
                         ?required=${true}
                         name="clientId"
                     >
@@ -248,10 +261,10 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header"> ${t`Flow settings`} </span>
+                <span slot="header"> ${msg("Flow settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Authentication flow`}
+                        label=${msg("Authentication flow")}
                         ?required=${true}
                         name="authenticationFlow"
                     >
@@ -282,15 +295,15 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow to use when authenticating existing users.`}
+                            ${msg("Flow to use when authenticating existing users.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Enrollment flow`}
+                        label=${msg("Enrollment flow")}
                         ?required=${true}
                         name="enrollmentFlow"
                     >
@@ -320,11 +333,11 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow to use when enrolling new users.`}
+                            ${msg("Flow to use when enrolling new users.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -34,9 +33,9 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated outpost.`;
+            return msg("Successfully updated outpost.");
         } else {
-            return t`Successfully created outpost.`;
+            return msg("Successfully created outpost.");
         }
     }
 
@@ -102,7 +101,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -110,7 +109,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Type`} ?required=${true} name="type">
+            <ak-form-element-horizontal label=${msg("Type")} ?required=${true} name="type">
                 <select
                     class="pf-c-form-control"
                     @change=${(ev: Event) => {
@@ -122,17 +121,17 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         value=${OutpostTypeEnum.Proxy}
                         ?selected=${this.instance?.type === OutpostTypeEnum.Proxy}
                     >
-                        ${t`Proxy`}
+                        ${msg("Proxy")}
                     </option>
                     <option
                         value=${OutpostTypeEnum.Ldap}
                         ?selected=${this.instance?.type === OutpostTypeEnum.Ldap}
                     >
-                        ${t`LDAP`}
+                        ${msg("LDAP")}
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Integration`} name="serviceConnection">
+            <ak-form-element-horizontal label=${msg("Integration")} name="serviceConnection">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.serviceConnection === undefined}>
                         ---------
@@ -156,11 +155,13 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                                     </option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Selecting an integration enables the management of the outpost by authentik.`}
+                    ${msg(
+                        "Selecting an integration enables the management of the outpost by authentik.",
+                    )}
                 </p>
                 <p class="pf-c-form__helper-text">
                     See
@@ -172,21 +173,21 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Applications`}
+                label=${msg("Applications")}
                 ?required=${!this.embedded}
                 name="providers"
             >
                 <select class="pf-c-form-control" multiple>
-                    ${until(this.renderProviders(), html`<option>${t`Loading...`}</option>`)}
+                    ${until(this.renderProviders(), html`<option>${msg("Loading...")}</option>`)}
                 </select>
                 <p class="pf-c-form__helper-text">
-                    ${t`You can only select providers that match the type of the outpost.`}
+                    ${msg("You can only select providers that match the type of the outpost.")}
                 </p>
                 <p class="pf-c-form__helper-text">
-                    ${t`Hold control/command to select multiple items.`}
+                    ${msg("Hold control/command to select multiple items.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Configuration`} name="config">
+            <ak-form-element-horizontal label=${msg("Configuration")} name="config">
                 <!-- @ts-ignore -->
                 <ak-codemirror
                     mode="yaml"
@@ -203,7 +204,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     )}"
                 ></ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Set custom attributes using YAML or JSON.`}
+                    ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
                 <p class="pf-c-form__helper-text">
                     See

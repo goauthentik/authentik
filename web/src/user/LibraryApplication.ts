@@ -3,8 +3,7 @@ import { me } from "@goauthentik/common/users";
 import { truncate } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -72,7 +71,7 @@ export class LibraryApplication extends AKElement {
             return html`<img
                 class="app-icon pf-c-avatar"
                 src="${ifDefined(this.application.metaIcon)}"
-                alt="${t`Application Icon`}"
+                alt="${msg("Application Icon")}"
             />`;
         }
         return html`<i class="fas fa-share-square"></i>`;

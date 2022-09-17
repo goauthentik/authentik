@@ -4,8 +4,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -117,7 +116,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
             case PromptTypeEnum.AkLocale:
                 return `<select class="pf-c-form-control">
                     <option value="" ${prompt.placeholder === "" ? "selected" : ""}>
-                        ${t`Auto-detect (based on your browser)`}
+                        ${msg("Auto-detect (based on your browser)")}
                     </option>
                     ${LOCALES.map((locale) => {
                         return `<option
@@ -165,7 +164,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                 />
                 <label class="pf-c-check__label">${prompt.label}</label>
                 ${prompt.required
-                    ? html`<p class="pf-c-form__helper-text">${t`Required.`}</p>`
+                    ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
                     : html``}
                 <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
@@ -188,14 +187,15 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
     renderContinue(): TemplateResult {
         return html` <div class="pf-c-form__group pf-m-action">
             <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                ${t`Continue`}
+                ${msg("Continue")}
             </button>
         </div>`;
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>

@@ -13,8 +13,7 @@ import "@goauthentik/admin/applications/wizard/saml/TypeSAMLImportApplicationWiz
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/wizard/Wizard";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
@@ -34,7 +33,7 @@ export class ApplicationWizard extends AKElement {
     open = false;
 
     @property()
-    createText = t`Create`;
+    createText = msg("Create");
 
     @property({ type: Boolean })
     showButton = true;
@@ -49,8 +48,8 @@ export class ApplicationWizard extends AKElement {
             <ak-wizard
                 .open=${this.open}
                 .steps=${["ak-application-wizard-initial", "ak-application-wizard-type"]}
-                header=${t`New application`}
-                description=${t`Create a new application.`}
+                header=${msg("New application")}
+                description=${msg("Create a new application.")}
                 .finalHandler=${() => {
                     return this.finalHandler();
                 }}

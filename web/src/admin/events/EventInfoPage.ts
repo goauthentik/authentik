@@ -4,8 +4,7 @@ import { EventWithContext } from "@goauthentik/common/events";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -40,12 +39,12 @@ export class EventInfoPage extends AKElement {
     render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-catalog"
-                header=${t`Event ${this.event?.pk || ""}`}
+                header=${msg(str`Event ${this.event?.pk || ""}`)}
             >
             </ak-page-header>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-card">
-                    <div class="pf-c-card__title">${t`Event info`}</div>
+                    <div class="pf-c-card__title">${msg("Event info")}</div>
                     <div class="pf-c-card__body">
                         <ak-event-info .event=${this.event}></ak-event-info>
                     </div>

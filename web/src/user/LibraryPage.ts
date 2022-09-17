@@ -8,8 +8,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import "@goauthentik/user/LibraryApplication";
 import Fuse from "fuse.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -27,7 +26,7 @@ import { Application, CoreApi } from "@goauthentik/api";
 
 export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
     if (!v) {
-        return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+        return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
     }
     return actual;
 }
@@ -60,7 +59,7 @@ export class LibraryPage extends AKElement {
     }
 
     pageTitle(): string {
-        return t`My Applications`;
+        return msg("My Applications");
     }
 
     static get styles(): CSSResult[] {
@@ -104,9 +103,9 @@ export class LibraryPage extends AKElement {
         return html` <div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
                 <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
-                <h1 class="pf-c-title pf-m-lg">${t`No Applications available.`}</h1>
+                <h1 class="pf-c-title pf-m-lg">${msg("No Applications available.")}</h1>
                 <div class="pf-c-empty-state__body">
-                    ${t`Either no applications are defined, or you don't have access to any.`}
+                    ${msg("Either no applications are defined, or you don't have access to any.")}
                 </div>
             </div>
         </div>`;
@@ -180,7 +179,7 @@ export class LibraryPage extends AKElement {
                     id="main-content"
                 >
                     <div class="pf-c-content header">
-                        <h1>${t`My applications`}</h1>
+                        <h1>${msg("My applications")}</h1>
                         ${config.enabledFeatures.search
                             ? html`<input
                                   @input=${(ev: InputEvent) => {
@@ -208,7 +207,7 @@ export class LibraryPage extends AKElement {
                                   type="text"
                                   class="pf-u-display-none pf-u-display-block-on-md"
                                   autofocus
-                                  placeholder=${t`Search...`}
+                                  placeholder=${msg("Search...")}
                               />`
                             : html``}
                     </div>

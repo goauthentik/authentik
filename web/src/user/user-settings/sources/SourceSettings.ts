@@ -5,8 +5,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/user/user-settings/sources/SourceSettingsOAuth";
 import "@goauthentik/user/user-settings/sources/SourceSettingsPlex";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -96,14 +95,18 @@ export class UserSourceSettingsPage extends AKElement {
                 >
                 </ak-user-settings-source-plex>`;
             default:
-                return html`<p>${t`Error: unsupported source settings: ${source.component}`}</p>`;
+                return html`<p>
+                    ${msg(str`Error: unsupported source settings: ${source.component}`)}
+                </p>`;
         }
     }
 
     render(): TemplateResult {
         return html` <div class="pf-c-content">
                 <p>
-                    ${t`Connect your user account to the services listed below, to allow you to login using the service instead of traditional credentials.`}
+                    ${msg(
+                        "Connect your user account to the services listed below, to allow you to login using the service instead of traditional credentials.",
+                    )}
                 </p>
             </div>
             <ul class="pf-c-data-list" role="list">
@@ -111,7 +114,7 @@ export class UserSourceSettingsPage extends AKElement {
                     this.sourceSettings?.then((source) => {
                         if (source.length < 1) {
                             return html`<ak-empty-state
-                                header=${t`No services available.`}
+                                header=${msg("No services available.")}
                             ></ak-empty-state>`;
                         }
                         return source.map((stage) => {
@@ -128,7 +131,7 @@ export class UserSourceSettingsPage extends AKElement {
                             </li>`;
                         });
                     }),
-                    html`<ak-empty-state ?loading="${true}" header=${t`Loading`}>
+                    html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
                     </ak-empty-state>`,
                 )}
             </ul>`;

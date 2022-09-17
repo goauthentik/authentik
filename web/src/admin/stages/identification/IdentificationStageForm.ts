@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -30,9 +29,9 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated stage.`;
+            return msg("Successfully updated stage.");
         } else {
-            return t`Successfully created stage.`;
+            return msg("Successfully created stage.");
         }
     }
 
@@ -60,9 +59,9 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Let the user identify themselves with their username or Email address.`}
+                ${msg("Let the user identify themselves with their username or Email address.")}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -71,37 +70,39 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                 />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`User fields`} name="userFields">
+                    <ak-form-element-horizontal label=${msg("User fields")} name="userFields">
                         <select name="users" class="pf-c-form-control" multiple>
                             <option
                                 value=${UserFieldsEnum.Username}
                                 ?selected=${this.isUserFieldSelected(UserFieldsEnum.Username)}
                             >
-                                ${t`Username`}
+                                ${msg("Username")}
                             </option>
                             <option
                                 value=${UserFieldsEnum.Email}
                                 ?selected=${this.isUserFieldSelected(UserFieldsEnum.Email)}
                             >
-                                ${t`Email`}
+                                ${msg("Email")}
                             </option>
                             <option
                                 value=${UserFieldsEnum.Upn}
                                 ?selected=${this.isUserFieldSelected(UserFieldsEnum.Upn)}
                             >
-                                ${t`UPN`}
+                                ${msg("UPN")}
                             </option>
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.`}
+                            ${msg(
+                                "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.",
+                            )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Password stage`} name="passwordStage">
+                    <ak-form-element-horizontal label=${msg("Password stage")} name="passwordStage">
                         <select class="pf-c-form-control">
                             <option
                                 value=""
@@ -126,11 +127,13 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks.`}
+                            ${msg(
+                                "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="caseInsensitiveMatching">
@@ -141,15 +144,17 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                 ?checked=${first(this.instance?.caseInsensitiveMatching, true)}
                             />
                             <label class="pf-c-check__label">
-                                ${t`Case insensitive matching`}
+                                ${msg("Case insensitive matching")}
                             </label>
                         </div>
                         <p class="pf-c-form__helper-text">
-                            ${t`When enabled, user fields are matched regardless of their casing.`}
+                            ${msg(
+                                "When enabled, user fields are matched regardless of their casing.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Sources`}
+                        label=${msg("Sources")}
                         ?required=${true}
                         name="sources"
                     >
@@ -181,14 +186,16 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP.`}
+                            ${msg(
+                                "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP.",
+                            )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="showSourceLabels">
@@ -198,10 +205,14 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                 class="pf-c-check__input"
                                 ?checked=${first(this.instance?.showSourceLabels, false)}
                             />
-                            <label class="pf-c-check__label"> ${t`Show sources' labels`} </label>
+                            <label class="pf-c-check__label">
+                                ${msg("Show sources' labels")}
+                            </label>
                         </div>
                         <p class="pf-c-form__helper-text">
-                            ${t`By default, only icons are shown for sources. Enable this to show their full names.`}
+                            ${msg(
+                                "By default, only icons are shown for sources. Enable this to show their full names.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="showMatchedUser">
@@ -211,19 +222,21 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                 class="pf-c-check__input"
                                 ?checked=${first(this.instance?.showMatchedUser, true)}
                             />
-                            <label class="pf-c-check__label"> ${t`Show matched user`} </label>
+                            <label class="pf-c-check__label"> ${msg("Show matched user")} </label>
                         </div>
                         <p class="pf-c-form__helper-text">
-                            ${t`When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.`}
+                            ${msg(
+                                "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header">${t`Flow settings`}</span>
+                <span slot="header">${msg("Flow settings")}</span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Passwordless flow`}
+                        label=${msg("Passwordless flow")}
                         name="passwordlessFlow"
                     >
                         <select class="pf-c-form-control">
@@ -252,14 +265,19 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Optional passwordless flow, which is linked at the bottom of the page. When configured, users can use this flow to authenticate with a WebAuthn authenticator, without entering any details.`}
+                            ${msg(
+                                "Optional passwordless flow, which is linked at the bottom of the page. When configured, users can use this flow to authenticate with a WebAuthn authenticator, without entering any details.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Enrollment flow`} name="enrollmentFlow">
+                    <ak-form-element-horizontal
+                        label=${msg("Enrollment flow")}
+                        name="enrollmentFlow"
+                    >
                         <select class="pf-c-form-control">
                             <option
                                 value=""
@@ -285,14 +303,16 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Optional enrollment flow, which is linked at the bottom of the page.`}
+                            ${msg(
+                                "Optional enrollment flow, which is linked at the bottom of the page.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Recovery flow`} name="recoveryFlow">
+                    <ak-form-element-horizontal label=${msg("Recovery flow")} name="recoveryFlow">
                         <select class="pf-c-form-control">
                             <option value="" ?selected=${this.instance?.recoveryFlow === undefined}>
                                 ---------
@@ -315,11 +335,13 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Optional recovery flow, which is linked at the bottom of the page.`}
+                            ${msg(
+                                "Optional recovery flow, which is linked at the bottom of the page.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

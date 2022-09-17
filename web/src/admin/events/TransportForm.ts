@@ -3,8 +3,7 @@ import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -35,9 +34,9 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated transport.`;
+            return msg("Successfully updated transport.");
         } else {
-            return t`Successfully created transport.`;
+            return msg("Successfully created transport.");
         }
     }
 
@@ -60,25 +59,25 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 value=${NotificationTransportModeEnum.Local}
                 ?selected=${this.instance?.mode === NotificationTransportModeEnum.Local}
             >
-                ${t`Local (notifications will be created within authentik)`}
+                ${msg("Local (notifications will be created within authentik)")}
             </option>
             <option
                 value=${NotificationTransportModeEnum.Email}
                 ?selected=${this.instance?.mode === NotificationTransportModeEnum.Email}
             >
-                ${t`Email`}
+                ${msg("Email")}
             </option>
             <option
                 value=${NotificationTransportModeEnum.Webhook}
                 ?selected=${this.instance?.mode === NotificationTransportModeEnum.Webhook}
             >
-                ${t`Webhook (generic)`}
+                ${msg("Webhook (generic)")}
             </option>
             <option
                 value=${NotificationTransportModeEnum.WebhookSlack}
                 ?selected=${this.instance?.mode === NotificationTransportModeEnum.WebhookSlack}
             >
-                ${t`Webhook (Slack/Discord)`}
+                ${msg("Webhook (Slack/Discord)")}
             </option>
         `;
     }
@@ -96,7 +95,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -104,7 +103,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Mode`} ?required=${true} name="mode">
+            <ak-form-element-horizontal label=${msg("Mode")} ?required=${true} name="mode">
                 <select
                     class="pf-c-form-control"
                     @change=${(ev: Event) => {
@@ -117,7 +116,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
-                label=${t`Webhook URL`}
+                label=${msg("Webhook URL")}
                 name="webhookUrl"
                 ?required=${true}
             >
@@ -129,7 +128,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
-                label=${t`Webhook Mapping`}
+                label=${msg("Webhook Mapping")}
                 name="webhookMapping"
             >
                 <select class="pf-c-form-control">
@@ -149,7 +148,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                                     </option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
             </ak-form-element-horizontal>
@@ -160,10 +159,12 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.sendOnce, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Send once`} </label>
+                    <label class="pf-c-check__label"> ${msg("Send once")} </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`Only send notification once, for example when sending a webhook into a chat channel.`}
+                    ${msg(
+                        "Only send notification once, for example when sending a webhook into a chat channel.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
         </form>`;

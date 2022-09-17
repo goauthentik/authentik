@@ -13,8 +13,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -50,11 +49,11 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Type`),
-            new TableColumn(t`Local`, "local"),
-            new TableColumn(t`State`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Type")),
+            new TableColumn(msg("Local"), "local"),
+            new TableColumn(msg("State")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
@@ -66,7 +65,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             html`${item.name}`,
             html`${item.verboseName}`,
             html`<ak-label color=${item.local ? PFColor.Grey : PFColor.Green}>
-                ${item.local ? t`Yes` : t`No`}
+                ${item.local ? msg("Yes") : msg("No")}
             </ak-label>`,
             html`${until(
                 new OutpostsApi(DEFAULT_CONFIG)
@@ -79,13 +78,13 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                                 >${ifDefined(state.version)}</ak-label
                             >`;
                         }
-                        return html`<ak-label color=${PFColor.Red}>${t`Unhealthy`}</ak-label>`;
+                        return html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`;
                     }),
                 html`<ak-spinner></ak-spinner>`,
             )}`,
             html` <ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                <span slot="submit"> ${msg("Update")} </span>
+                <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
                 <ak-proxy-form
                     slot="form"
                     .args=${{
@@ -104,7 +103,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Outpost integration(s)`}
+            objectLabel=${msg("Outpost integration(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ServiceConnection) => {
                 return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllUsedByList({
@@ -118,7 +117,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }

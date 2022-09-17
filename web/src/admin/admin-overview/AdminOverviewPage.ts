@@ -16,8 +16,7 @@ import "@goauthentik/elements/cards/AggregatePromiseCard";
 import "@goauthentik/elements/charts/AdminLoginsChart";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -56,7 +55,7 @@ export class AdminOverviewPage extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<ak-page-header icon="" header="" description=${t`General system status`}>
+        return html`<ak-page-header icon="" header="" description=${msg("General system status")}>
                 <span slot="header">
                     ${until(
                         me().then((user) => {
@@ -64,7 +63,7 @@ export class AdminOverviewPage extends AKElement {
                             if (user.user.name !== "") {
                                 name = user.user.name;
                             }
-                            return t`Welcome, ${name}.`;
+                            return msg(str`Welcome, ${name}.`);
                         }),
                     )}
                 </span>
@@ -77,7 +76,7 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-aggregate-card
                             icon="fa fa-share"
-                            header=${t`Quick actions`}
+                            header=${msg("Quick actions")}
                             .isCenter=${false}
                         >
                             <ul class="pf-c-list">
@@ -87,12 +86,12 @@ export class AdminOverviewPage extends AKElement {
                                         href=${paramURL("/core/applications", {
                                             createForm: true,
                                         })}
-                                        >${t`Create a new application`}</a
+                                        >${msg("Create a new application")}</a
                                     >
                                 </li>
                                 <li>
                                     <a class="pf-u-mb-xl" href=${paramURL("/events/log")}
-                                        >${t`Check the logs`}</a
+                                        >${msg("Check the logs")}</a
                                     >
                                 </li>
                                 <li>
@@ -100,7 +99,7 @@ export class AdminOverviewPage extends AKElement {
                                         class="pf-u-mb-xl"
                                         target="_blank"
                                         href="https://goauthentik.io/integrations/"
-                                        >${t`Explore integrations`}</a
+                                        >${msg("Explore integrations")}</a
                                     >
                                 </li>
                             </ul>
@@ -111,7 +110,7 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-process-automation"
-                            header=${t`Flows`}
+                            header=${msg("Flows")}
                             headerLink="#/flow/flows"
                         >
                             <ak-admin-status-chart-flow></ak-admin-status-chart-flow>
@@ -122,7 +121,7 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-zone"
-                            header=${t`Outpost status`}
+                            header=${msg("Outpost status")}
                             headerLink="#/outpost/outposts"
                         >
                             <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
@@ -133,7 +132,7 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-user"
-                            header=${t`Users`}
+                            header=${msg("Users")}
                             headerLink="#/identity/users"
                         >
                             <ak-admin-status-chart-user-count></ak-admin-status-chart-user-count>
@@ -144,7 +143,7 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-users"
-                            header=${t`Groups`}
+                            header=${msg("Groups")}
                             headerLink="#/identity/groups"
                         >
                             <ak-admin-status-chart-group-count></ak-admin-status-chart-group-count>
@@ -155,7 +154,7 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-aggregate-card
                             icon="fa fa-sync-alt"
-                            header=${t`LDAP Sync status`}
+                            header=${msg("LDAP Sync status")}
                             headerLink="#/core/sources"
                         >
                             <ak-admin-status-chart-ldap-sync></ak-admin-status-chart-ldap-sync>
@@ -170,7 +169,7 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-admin-status-system
                             icon="pf-icon pf-icon-server"
-                            header=${t`System status`}
+                            header=${msg("System status")}
                         >
                         </ak-admin-status-system>
                     </div>
@@ -179,7 +178,7 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-admin-status-version
                             icon="pf-icon pf-icon-bundle"
-                            header=${t`Version`}
+                            header=${msg("Version")}
                             headerLink="https://github.com/goauthentik/authentik/releases"
                         >
                         </ak-admin-status-version>
@@ -189,7 +188,7 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-admin-status-card-workers
                             icon="pf-icon pf-icon-server"
-                            header=${t`Workers`}
+                            header=${msg("Workers")}
                         >
                         </ak-admin-status-card-workers>
                     </div>
@@ -202,7 +201,7 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-server"
-                            header=${t`Logins over the last 24 hours`}
+                            header=${msg("Logins over the last 24 hours")}
                         >
                             <ak-charts-admin-login></ak-charts-admin-login>
                         </ak-aggregate-card>
@@ -212,7 +211,7 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-server"
-                            header=${t`Apps with most usage`}
+                            header=${msg("Apps with most usage")}
                         >
                             <ak-top-applications-table></ak-top-applications-table>
                         </ak-aggregate-card>

@@ -21,8 +21,7 @@ import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarItem";
 import { ROUTES } from "@goauthentik/user/Routes";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -186,7 +185,7 @@ export class UserInterface extends AKElement {
                                           <button
                                               class="pf-c-button pf-m-plain"
                                               type="button"
-                                              aria-label="${t`Unread notifications`}"
+                                              aria-label="${msg("Unread notifications")}"
                                               @click=${() => {
                                                   this.notificationDrawerOpen =
                                                       !this.notificationDrawerOpen;
@@ -237,7 +236,7 @@ export class UserInterface extends AKElement {
                                                 class="pf-c-button pf-m-primary pf-m-small pf-u-display-none pf-u-display-block-on-md"
                                                 href="/if/admin"
                                             >
-                                                ${t`Admin interface`}
+                                                ${msg("Admin interface")}
                                             </a>
                                         `;
                                     }),
@@ -254,7 +253,7 @@ export class UserInterface extends AKElement {
                                                         `${window.location.pathname}#${window.location.hash}`,
                                                     )}`}
                                                 >
-                                                    ${t`Stop impersonation`}
+                                                    ${msg("Stop impersonation")}
                                                 </a>
                                             </div>
                                         </div>`;
@@ -287,7 +286,7 @@ export class UserInterface extends AKElement {
                                     return html`<img
                                         class="pf-c-avatar"
                                         src=${me.user.avatar}
-                                        alt="${t`Avatar image`}"
+                                        alt="${msg("Avatar image")}"
                                     />`;
                                 }),
                             )}

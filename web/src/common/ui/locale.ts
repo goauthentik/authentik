@@ -1,174 +1,113 @@
-import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { sourceLocale, targetLocales } from "@goauthentik/locales/generated/index";
 
-import { Messages, i18n } from "@lingui/core";
-import { detect, fromNavigator, fromUrl } from "@lingui/detect-locale";
-import { t } from "@lingui/macro";
+import { LocaleModule, configureLocalization, msg } from "@lit/localize";
 
-interface Locale {
-    locale: Messages;
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    plurals: Function;
-}
+export const FALLBACK_LOCALE = {
+    code: "en",
+    label: msg("English"),
+    locale: async () => {
+        return await import("@goauthentik/locales/generated/en");
+    },
+};
 
 export const LOCALES: {
     code: string;
     label: string;
-    locale: () => Promise<Locale>;
+    locale: () => Promise<LocaleModule>;
 }[] = [
-    {
-        code: "en",
-        label: t`English`,
-        locale: async () => {
-            return {
-                locale: (await import("@goauthentik/locales/en")).messages,
-                plurals: (await import("make-plural/plurals")).en,
-            };
-        },
-    },
-    {
-        code: "debug",
-        label: t`Debug`,
-        locale: async () => {
-            return {
-                locale: (await import("@goauthentik/locales/pseudo-LOCALE")).messages,
-                plurals: (await import("make-plural/plurals")).en,
-            };
-        },
-    },
+    FALLBACK_LOCALE,
     {
         code: "fr",
-        label: t`French`,
+        label: msg("French"),
         locale: async () => {
-            return {
-                locale: (await import("@goauthentik/locales/fr_FR")).messages,
-                plurals: (await import("make-plural/plurals")).fr,
-            };
+            return await import("@goauthentik/locales/generated/fr_FR");
         },
     },
     {
         code: "tr",
-        label: t`Turkish`,
+        label: msg("Turkish"),
         locale: async () => {
-            return {
-                locale: (await import("@goauthentik/locales/tr")).messages,
-                plurals: (await import("make-plural/plurals")).tr,
-            };
+            return await import("@goauthentik/locales/generated/tr");
         },
     },
     {
         code: "es",
-        label: t`Spanish`,
+        label: msg("Spanish"),
         locale: async () => {
-            return {
-                locale: (await import("@goauthentik/locales/es")).messages,
-                plurals: (await import("make-plural/plurals")).es,
-            };
+            return await import("@goauthentik/locales/generated/es");
         },
     },
     {
         code: "pl",
-        label: t`Polish`,
+        label: msg("Polish"),
         locale: async () => {
-            return {
-                locale: (await import("@goauthentik/locales/pl")).messages,
-                plurals: (await import("make-plural/plurals")).pl,
-            };
+            return await import("@goauthentik/locales/generated/pl");
         },
     },
     {
         code: "zh_TW",
-        label: t`Taiwanese Mandarin`,
+        label: msg("Taiwanese Mandarin"),
         locale: async () => {
-            return {
-                locale: (await import("@goauthentik/locales/zh_TW")).messages,
-                plurals: (await import("make-plural/plurals")).zh,
-            };
+            return await import("@goauthentik/locales/generated/zh_TW");
         },
     },
     {
         code: "zh-CN",
-        label: t`Chinese (simplified)`,
+        label: msg("Chinese (simplified)"),
         locale: async () => {
-            return {
-                locale: (await import("@goauthentik/locales/zh-Hans")).messages,
-                plurals: (await import("make-plural/plurals")).zh,
-            };
+            return await import("@goauthentik/locales/generated/zh-Hans");
         },
     },
     {
         code: "zh-HK",
-        label: t`Chinese (traditional)`,
+        label: msg("Chinese (traditional)"),
         locale: async () => {
-            return {
-                locale: (await import("@goauthentik/locales/zh-Hant")).messages,
-                plurals: (await import("make-plural/plurals")).zh,
-            };
+            return await import("@goauthentik/locales/generated/zh-Hant");
         },
     },
     {
         code: "de",
-        label: t`German`,
+        label: msg("German"),
         locale: async () => {
-            return {
-                locale: (await import("@goauthentik/locales/de")).messages,
-                plurals: (await import("make-plural/plurals")).de,
-            };
+            return await import("@goauthentik/locales/generated/de");
         },
     },
 ];
 
-const DEFAULT_FALLBACK = () => "en";
+export const { getLocale, setLocale } = configureLocalization({
+    sourceLocale,
+    targetLocales,
+    loadLocale: async (code: string) => {
+        let locale = LOCALES.find((locale) => locale.code === code);
+        if (!locale) {
+            locale = FALLBACK_LOCALE;
+        }
+        return await locale?.locale();
+    },
+});
 
 export function autoDetectLanguage() {
-    const detected =
-        detect(
-            () => {
-                return globalAK()?.locale;
-            },
-            fromUrl("locale"),
-            fromNavigator(),
-            DEFAULT_FALLBACK,
-        ) || DEFAULT_FALLBACK();
-    const locales = [detected];
-    // For now we only care about the first locale part
-    if (detected.includes("_")) {
-        locales.push(detected.split("_")[0]);
-    }
-    if (detected.includes("-")) {
-        locales.push(detected.split("-")[0]);
-    }
-    for (const tryLocale of locales) {
+    const detected = [globalAK()?.locale, ...navigator.languages, "en"].filter((l) => l);
+    detected.map((locale) => {
+        if (!locale) return;
+        // For now we only care about the first locale part
+        if (locale.includes("_")) {
+            detected.push(locale.split("_")[0]);
+        }
+        if (locale.includes("-")) {
+            detected.push(locale.split("-")[0]);
+        }
+    });
+    for (const tryLocale of detected) {
         if (LOCALES.find((locale) => locale.code === tryLocale)) {
             console.debug(`authentik/locale: Activating detected locale '${tryLocale}'`);
-            activateLocale(tryLocale);
+            setLocale(tryLocale as string);
             return;
         } else {
             console.debug(`authentik/locale: No matching locale for ${tryLocale}`);
         }
     }
-    console.debug(`authentik/locale: No locale for '${locales}', falling back to en`);
-    activateLocale(DEFAULT_FALLBACK());
-}
-export function activateLocale(code: string) {
-    const urlLocale = fromUrl("locale");
-    if (urlLocale !== null && urlLocale !== "") {
-        code = urlLocale;
-    }
-    const locale = LOCALES.find((locale) => locale.code == code);
-    if (!locale) {
-        console.warn(`authentik/locale: failed to find locale for code ${code}`);
-        return;
-    }
-    locale.locale().then((localeData) => {
-        i18n.loadLocaleData(locale.code, { plurals: localeData.plurals });
-        i18n.load(locale.code, localeData.locale);
-        i18n.activate(locale.code);
-        window.dispatchEvent(
-            new CustomEvent(EVENT_LOCALE_CHANGE, {
-                bubbles: true,
-                composed: true,
-            }),
-        );
-    });
+    console.debug(`authentik/locale: No locale for '${detected}', falling back to en`);
+    setLocale("en");
 }

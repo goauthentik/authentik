@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -22,9 +21,9 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated policy.`;
+            return msg("Successfully updated policy.");
         } else {
-            return t`Successfully created policy.`;
+            return msg("Successfully created policy.");
         }
     }
 
@@ -44,18 +43,18 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Allows/denys requests based on the users and/or the IPs reputation.`}
+                ${msg("Allows/denys requests based on the users and/or the IPs reputation.")}
             </div>
             <div class="form-help-text">
-                ${t`Invalid login attempts will decrease the score for the client's IP, and the
-                username they are attempting to login as, by one.`}
+                ${msg(`Invalid login attempts will decrease the score for the client's IP, and the
+                username they are attempting to login as, by one.`)}
             </div>
             <div class="form-help-text">
-                ${t`The policy passes when the reputation score is below the threshold, and
+                ${msg(`The policy passes when the reputation score is below the threshold, and
                 doesn't pass when either or both of the selected options are equal or above the
-                threshold.`}
+                threshold.`)}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -70,14 +69,16 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.executionLogging, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Execution logging`} </label>
+                    <label class="pf-c-check__label"> ${msg("Execution logging")} </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
+                    ${msg(
+                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Policy-specific settings`} </span>
+                <span slot="header"> ${msg("Policy-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="checkIp">
                         <div class="pf-c-check">
@@ -86,7 +87,7 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
                                 class="pf-c-check__input"
                                 ?checked=${first(this.instance?.checkIp, false)}
                             />
-                            <label class="pf-c-check__label"> ${t`Check IP`} </label>
+                            <label class="pf-c-check__label"> ${msg("Check IP")} </label>
                         </div>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="checkUsername">
@@ -96,11 +97,11 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
                                 class="pf-c-check__input"
                                 ?checked=${first(this.instance?.checkUsername, false)}
                             />
-                            <label class="pf-c-check__label"> ${t`Check Username`} </label>
+                            <label class="pf-c-check__label"> ${msg("Check Username")} </label>
                         </div>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Threshold`}
+                        label=${msg("Threshold")}
                         ?required=${true}
                         name="threshold"
                     >

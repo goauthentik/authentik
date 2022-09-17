@@ -24,8 +24,7 @@ import "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
@@ -42,7 +41,7 @@ import { StagesApi, TypeCreate } from "@goauthentik/api";
 export class InitialStageWizardPage extends WizardPage {
     @property({ attribute: false })
     stageTypes: TypeCreate[] = [];
-    sidebarLabel = () => t`Select type`;
+    sidebarLabel = () => msg("Select type");
 
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFButton, AKGlobal, PFRadio];
@@ -82,7 +81,7 @@ export class StageWizard extends AKElement {
     }
 
     @property()
-    createText = t`Create`;
+    createText = msg("Create");
 
     @property({ attribute: false })
     stageTypes: TypeCreate[] = [];
@@ -97,8 +96,8 @@ export class StageWizard extends AKElement {
         return html`
             <ak-wizard
                 .steps=${["initial"]}
-                header=${t`New stage`}
-                description=${t`Create a new stage.`}
+                header=${msg("New stage")}
+                description=${msg("Create a new stage.")}
             >
                 <ak-stage-wizard-initial slot="initial" .stageTypes=${this.stageTypes}>
                 </ak-stage-wizard-initial>
@@ -106,7 +105,7 @@ export class StageWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => t`Create ${type.name}`}
+                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form type=${type.component}></ak-proxy-form>
                         </ak-wizard-page-form>

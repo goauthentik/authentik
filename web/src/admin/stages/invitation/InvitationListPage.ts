@@ -10,8 +10,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -28,10 +27,12 @@ export class InvitationListPage extends TablePage<Invitation> {
         return true;
     }
     pageTitle(): string {
-        return t`Invitations`;
+        return msg("Invitations");
     }
     pageDescription(): string {
-        return t`Create Invitation Links to enroll Users, and optionally force specific attributes of their account.`;
+        return msg(
+            "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
+        );
     }
     pageIcon(): string {
         return "pf-icon pf-icon-migration";
@@ -65,17 +66,17 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Created by`, "created_by"),
-            new TableColumn(t`Expiry`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Created by"), "created_by"),
+            new TableColumn(msg("Expiry")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Invitation(s)`}
+            objectLabel=${msg("Invitation(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Invitation) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUsedByList({
@@ -89,7 +90,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -98,10 +99,10 @@ export class InvitationListPage extends TablePage<Invitation> {
         return [
             html`${item.name}`,
             html`${item.createdBy?.username}`,
-            html`${item.expires?.toLocaleString() || t`-`}`,
+            html`${item.expires?.toLocaleString() || msg("-")}`,
             html` <ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update Invitation`} </span>
+                <span slot="submit"> ${msg("Update")} </span>
+                <span slot="header"> ${msg("Update Invitation")} </span>
                 <ak-invitation-form slot="form" .instancePk=${item.pk}> </ak-invitation-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <i class="fas fa-edit"></i>
@@ -126,10 +127,10 @@ export class InvitationListPage extends TablePage<Invitation> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Invitation`} </span>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Invitation")} </span>
                 <ak-invitation-form slot="form"> </ak-invitation-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
     }
@@ -145,7 +146,9 @@ export class InvitationListPage extends TablePage<Invitation> {
                 ? html``
                 : html`
                       <div class="pf-c-banner pf-m-warning">
-                          ${t`Warning: No invitation stage is bound to any flow. Invitations will not work as expected.`}
+                          ${msg(
+                              "Warning: No invitation stage is bound to any flow. Invitations will not work as expected.",
+                          )}
                       </div>
                   `}
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">

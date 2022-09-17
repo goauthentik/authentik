@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -22,9 +21,9 @@ export class HaveIBeenPwnedPolicyForm extends ModelForm<HaveIBeenPwendPolicy, st
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated policy.`;
+            return msg("Successfully updated policy.");
         } else {
-            return t`Successfully created policy.`;
+            return msg("Successfully created policy.");
         }
     }
 
@@ -44,10 +43,10 @@ export class HaveIBeenPwnedPolicyForm extends ModelForm<HaveIBeenPwendPolicy, st
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.
-                Note that only a part of the hash of the password is sent, the full comparison is done clientside.`}
+                ${msg(`Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.
+                Note that only a part of the hash of the password is sent, the full comparison is done clientside.`)}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -62,17 +61,19 @@ export class HaveIBeenPwnedPolicyForm extends ModelForm<HaveIBeenPwendPolicy, st
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.executionLogging, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Execution logging`} </label>
+                    <label class="pf-c-check__label"> ${msg("Execution logging")} </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
+                    ${msg(
+                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Policy-specific settings`} </span>
+                <span slot="header"> ${msg("Policy-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Password field`}
+                        label=${msg("Password field")}
                         ?required=${true}
                         name="passwordField"
                     >
@@ -83,11 +84,13 @@ export class HaveIBeenPwnedPolicyForm extends ModelForm<HaveIBeenPwendPolicy, st
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Field key to check, field keys defined in Prompt stages are available.`}
+                            ${msg(
+                                "Field key to check, field keys defined in Prompt stages are available.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Allowed count`}
+                        label=${msg("Allowed count")}
                         ?required=${true}
                         name="allowedCount"
                     >
@@ -98,7 +101,7 @@ export class HaveIBeenPwnedPolicyForm extends ModelForm<HaveIBeenPwendPolicy, st
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Allow up to N occurrences in the HIBP database.`}
+                            ${msg("Allow up to N occurrences in the HIBP database.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

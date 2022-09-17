@@ -4,8 +4,7 @@ import {
 } from "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -22,7 +21,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",
                 message: html`
-                    ${t`Build hash: `}
+                    ${msg("Build hash: ")}
                     <a
                         href="https://github.com/goauthentik/authentik/commit/${value.buildHash}"
                         target="_blank"
@@ -35,12 +34,12 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         if (value.outdated) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: html`${t`${value.versionLatest} is available!`}`,
+                message: html`${msg(str`${value.versionLatest} is available!`)}`,
             });
         }
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
-            message: html`${t`Up-to-date!`}`,
+            message: html`${msg("Up-to-date!")}`,
         });
     }
 

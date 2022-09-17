@@ -11,8 +11,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -22,15 +21,15 @@ export function BlueprintStatus(blueprint?: BlueprintInstance): string {
     if (!blueprint) return "";
     switch (blueprint.status) {
         case BlueprintInstanceStatusEnum.Successful:
-            return t`Successful`;
+            return msg("Successful");
         case BlueprintInstanceStatusEnum.Orphaned:
-            return t`Orphaned`;
+            return msg("Orphaned");
         case BlueprintInstanceStatusEnum.Warning:
-            return t`Warning`;
+            return msg("Warning");
         case BlueprintInstanceStatusEnum.Error:
-            return t`Error`;
+            return msg("Error");
     }
-    return t`Unknown`;
+    return msg("Unknown");
 }
 @customElement("ak-blueprint-list")
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
@@ -38,10 +37,10 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         return true;
     }
     pageTitle(): string {
-        return t`Blueprints`;
+        return msg("Blueprints");
     }
     pageDescription(): string {
-        return t`Automate and template configuration within authentik.`;
+        return msg("Automate and template configuration within authentik.");
     }
     pageIcon(): string {
         return "pf-icon pf-icon-blueprint";
@@ -63,21 +62,21 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Status`, "status"),
-            new TableColumn(t`Last applied`, "last_applied"),
-            new TableColumn(t`Enabled`, "enabled"),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Status"), "status"),
+            new TableColumn(msg("Last applied"), "last_applied"),
+            new TableColumn(msg("Enabled"), "enabled"),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Blueprint(s)`}
+            objectLabel=${msg("Blueprint(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: BlueprintInstance) => {
-                return [{ key: t`Name`, value: item.name }];
+                return [{ key: msg("Name"), value: item.name }];
             }}
             .usedBy=${(item: BlueprintInstance) => {
                 return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsUsedByList({
@@ -91,7 +90,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -102,7 +101,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             html`${BlueprintStatus(item)}`,
             html`${item.lastApplied.toLocaleString()}`,
             html`<ak-label color=${item.enabled ? PFColor.Green : PFColor.Red}>
-                ${item.enabled ? t`Yes` : t`No`}
+                ${item.enabled ? msg("Yes") : msg("No")}
             </ak-label>`,
             html`<ak-action-button
                     class="pf-m-plain"
@@ -124,8 +123,8 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                     <i class="fas fa-play" aria-hidden="true"></i>
                 </ak-action-button>
                 <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update Blueprint`} </span>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update Blueprint")} </span>
                     <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <i class="fas fa-edit"></i>
@@ -137,10 +136,10 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Blueprint Instance`} </span>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Blueprint Instance")} </span>
                 <ak-blueprint-form slot="form"> </ak-blueprint-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
     }

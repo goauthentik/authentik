@@ -2,8 +2,7 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { WizardAction } from "@goauthentik/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -57,7 +56,7 @@ export class ActionWizardPage extends WizardPage {
         this.host.isValid = true;
     };
 
-    sidebarLabel = () => t`Apply changes`;
+    sidebarLabel = () => msg("Apply changes");
 
     async run(): Promise<void> {
         this.currentStep = this.states[0];

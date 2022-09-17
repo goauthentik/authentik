@@ -10,8 +10,7 @@ import "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
@@ -32,7 +31,7 @@ export class InitialPropertyMappingWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFButton, AKGlobal, PFRadio];
     }
-    sidebarLabel = () => t`Select type`;
+    sidebarLabel = () => msg("Select type");
 
     render(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
@@ -80,8 +79,8 @@ export class PropertyMappingWizard extends AKElement {
         return html`
             <ak-wizard
                 .steps=${["initial"]}
-                header=${t`New property mapping`}
-                description=${t`Create a new property mapping.`}
+                header=${msg("New property mapping")}
+                description=${msg("Create a new property mapping.")}
             >
                 <ak-property-mapping-wizard-initial
                     slot="initial"
@@ -92,13 +91,13 @@ export class PropertyMappingWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => t`Create ${type.name}`}
+                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form type=${type.component}></ak-proxy-form>
                         </ak-wizard-page-form>
                     `;
                 })}
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-wizard>
         `;
     }

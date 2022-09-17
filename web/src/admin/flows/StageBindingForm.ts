@@ -3,8 +3,7 @@ import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -32,9 +31,9 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated binding.`;
+            return msg("Successfully updated binding.");
         } else {
-            return t`Successfully created binding.`;
+            return msg("Successfully created binding.");
         }
     }
 
@@ -95,7 +94,11 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 />
             `;
         }
-        return html`<ak-form-element-horizontal label=${t`Target`} ?required=${true} name="target">
+        return html`<ak-form-element-horizontal
+            label=${msg("Target")}
+            ?required=${true}
+            name="target"
+        >
             <select class="pf-c-form-control">
                 ${until(
                     new FlowsApi(DEFAULT_CONFIG)
@@ -110,7 +113,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                                 </option>`;
                             });
                         }),
-                    html`<option>${t`Loading...`}</option>`,
+                    html`<option>${msg("Loading...")}</option>`,
                 )}
             </select>
         </ak-form-element-horizontal>`;
@@ -119,7 +122,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             ${this.renderTarget()}
-            <ak-form-element-horizontal label=${t`Stage`} ?required=${true} name="stage">
+            <ak-form-element-horizontal label=${msg("Stage")} ?required=${true} name="stage">
                 <select class="pf-c-form-control">
                     ${until(
                         new StagesApi(DEFAULT_CONFIG)
@@ -129,11 +132,11 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                             .then((stages) => {
                                 return this.groupStages(stages.results);
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Order`} ?required=${true} name="order">
+            <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
                 <!-- @ts-ignore -->
                 <input
                     type="number"
@@ -149,10 +152,12 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.evaluateOnPlan, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Evaluate on plan`} </label>
+                    <label class="pf-c-check__label"> ${msg("Evaluate on plan")} </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated.`}
+                    ${msg(
+                        "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="reEvaluatePolicies">
@@ -162,14 +167,14 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.reEvaluatePolicies, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Re-evaluate policies`} </label>
+                    <label class="pf-c-check__label"> ${msg("Re-evaluate policies")} </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`Evaluate policies before the Stage is present to the user.`}
+                    ${msg("Evaluate policies before the Stage is present to the user.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Invalid response action`}
+                label=${msg("Invalid response action")}
                 ?required=${true}
                 name="invalidResponseAction"
             >
@@ -179,29 +184,35 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                         ?selected=${this.instance?.invalidResponseAction ===
                         InvalidResponseActionEnum.Retry}
                     >
-                        ${t`RETRY returns the error message and a similar challenge to the executor.`}
+                        ${msg(
+                            "RETRY returns the error message and a similar challenge to the executor.",
+                        )}
                     </option>
                     <option
                         value=${InvalidResponseActionEnum.Restart}
                         ?selected=${this.instance?.invalidResponseAction ===
                         InvalidResponseActionEnum.Restart}
                     >
-                        ${t`RESTART restarts the flow from the beginning.`}
+                        ${msg("RESTART restarts the flow from the beginning.")}
                     </option>
                     <option
                         value=${InvalidResponseActionEnum.RestartWithContext}
                         ?selected=${this.instance?.invalidResponseAction ===
                         InvalidResponseActionEnum.RestartWithContext}
                     >
-                        ${t`RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context.`}
+                        ${msg(
+                            "RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context.",
+                        )}
                     </option>
                 </select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Configure how the flow executor should handle an invalid response to a challenge.`}
+                    ${msg(
+                        "Configure how the flow executor should handle an invalid response to a challenge.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Policy engine mode`}
+                label=${msg("Policy engine mode")}
                 ?required=${true}
                 name="policyEngineMode"
             >
@@ -210,13 +221,13 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                         value=${PolicyEngineMode.Any}
                         ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.Any}
                     >
-                        ${t`ANY, any policy must match to include this stage access.`}
+                        ${msg("ANY, any policy must match to include this stage access.")}
                     </option>
                     <option
                         value=${PolicyEngineMode.All}
                         ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.All}
                     >
-                        ${t`ALL, all policies must match to include this stage access.`}
+                        ${msg("ALL, all policies must match to include this stage access.")}
                     </option>
                 </select>
             </ak-form-element-horizontal>

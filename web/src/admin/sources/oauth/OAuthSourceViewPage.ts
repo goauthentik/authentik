@@ -9,8 +9,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
 import "@goauthentik/elements/forms/ModalForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -43,7 +42,7 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
         case ProviderTypeEnum.Mailcow:
             return "Mailcow";
         case ProviderTypeEnum.Openidconnect:
-            return t`Generic OpenID Connect`;
+            return msg("Generic OpenID Connect");
         case ProviderTypeEnum.Okta:
             return "Okta";
         case ProviderTypeEnum.Reddit:
@@ -88,7 +87,7 @@ export class OAuthSourceViewPage extends AKElement {
         return html`<ak-tabs>
             <section
                 slot="page-overview"
-                data-tab-title="${t`Overview`}"
+                data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -97,7 +96,9 @@ export class OAuthSourceViewPage extends AKElement {
                             <dl class="pf-c-description-list pf-m-2-col-on-lg">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`Name`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Name")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -108,7 +109,7 @@ export class OAuthSourceViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Provider Type`}</span
+                                            >${msg("Provider Type")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -120,7 +121,7 @@ export class OAuthSourceViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Callback URL`}</span
+                                            >${msg("Callback URL")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -132,7 +133,7 @@ export class OAuthSourceViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Access Key`}</span
+                                            >${msg("Access Key")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -144,7 +145,7 @@ export class OAuthSourceViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Authorization URL`}</span
+                                            >${msg("Authorization URL")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -157,7 +158,7 @@ export class OAuthSourceViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Token URL`}</span
+                                            >${msg("Token URL")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -171,12 +172,12 @@ export class OAuthSourceViewPage extends AKElement {
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-forms-modal>
-                                <span slot="submit"> ${t`Update`} </span>
-                                <span slot="header"> ${t`Update OAuth Source`} </span>
+                                <span slot="submit"> ${msg("Update")} </span>
+                                <span slot="header"> ${msg("Update OAuth Source")} </span>
                                 <ak-source-oauth-form slot="form" .instancePk=${this.source.slug}>
                                 </ak-source-oauth-form>
                                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                                    ${t`Edit`}
+                                    ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
                         </div>
@@ -185,7 +186,7 @@ export class OAuthSourceViewPage extends AKElement {
             </section>
             <section
                 slot="page-changelog"
-                data-tab-title="${t`Changelog`}"
+                data-tab-title="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -203,14 +204,14 @@ export class OAuthSourceViewPage extends AKElement {
             </section>
             <div
                 slot="page-policy-binding"
-                data-tab-title="${t`Policy Bindings`}"
+                data-tab-title="${msg("Policy Bindings")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__title">
-                            ${t`These bindings control which users can access this source.
-                            You can only use policies here as access is checked before the user is authenticated.`}
+                            ${msg(`These bindings control which users can access this source.
+                            You can only use policies here as access is checked before the user is authenticated.`)}
                         </div>
                         <div class="pf-c-card__body">
                             <ak-bound-policies-list .target=${this.source.pk} ?policyOnly=${true}>

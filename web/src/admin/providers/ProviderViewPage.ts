@@ -8,8 +8,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -71,12 +70,12 @@ export class ProviderViewPage extends AKElement {
             >
             </ak-page-header>
             <ak-tabs>
-                <section slot="page-overview" data-tab-title="${t`Overview`}">
+                <section slot="page-overview" data-tab-title="${msg("Overview")}">
                     ${this.renderProvider()}
                 </section>
                 <section
                     slot="page-changelog"
-                    data-tab-title="${t`Changelog`}"
+                    data-tab-title="${msg("Changelog")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">

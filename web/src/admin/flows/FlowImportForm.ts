@@ -3,8 +3,7 @@ import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -13,7 +12,7 @@ import { Flow, FlowsApi } from "@goauthentik/api";
 @customElement("ak-flow-import-form")
 export class FlowImportForm extends Form<Flow> {
     getSuccessMessage(): string {
-        return t`Successfully imported flow.`;
+        return msg("Successfully imported flow.");
     }
 
     // eslint-disable-next-line
@@ -29,10 +28,12 @@ export class FlowImportForm extends Form<Flow> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Flow`} name="flow">
+            <ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <input type="file" value="" class="pf-c-form-control" />
                 <p class="pf-c-form__helper-text">
-                    ${t`.yaml files, which can be found on goauthentik.io and can be exported by authentik.`}
+                    ${msg(
+                        ".yaml files, which can be found on goauthentik.io and can be exported by authentik.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
         </form>`;

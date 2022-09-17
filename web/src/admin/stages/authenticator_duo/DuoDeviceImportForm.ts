@@ -8,8 +8,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { UserOption } from "@goauthentik/elements/user/utils";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -30,7 +29,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     }
 
     getSuccessMessage(): string {
-        return t`Successfully imported device.`;
+        return msg("Successfully imported device.");
     }
 
     send = (data: AuthenticatorDuoStage): Promise<void> => {
@@ -50,7 +49,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
 
     renderFormManual(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`User`} ?required=${true} name="username">
+            <ak-form-element-horizontal label=${msg("User")} ?required=${true} name="username">
                 <select class="pf-c-form-control">
                     ${until(
                         new CoreApi(DEFAULT_CONFIG)
@@ -64,18 +63,24 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                                     </option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
                 <p class="pf-c-form__helper-text">
-                    ${t`The user in authentik this device will be assigned to.`}
+                    ${msg("The user in authentik this device will be assigned to.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Duo User ID`} ?required=${true} name="duoUserId">
+            <ak-form-element-horizontal
+                label=${msg("Duo User ID")}
+                ?required=${true}
+                name="duoUserId"
+            >
                 <input type="text" class="pf-c-form-control" required />
                 <p class="pf-c-form__helper-text">
-                    ${t`The user ID in Duo.`}
-                    ${t`Can be either the username (found in the Users list) or the ID (can be found in the URL after clicking on a user).`}
+                    ${msg("The user ID in Duo.")}
+                    ${msg(
+                        "Can be either the username (found in the Users list) or the ID (can be found in the URL after clicking on a user).",
+                    )}
                 </p>
             </ak-form-element-horizontal>
         </form>`;
@@ -84,7 +89,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     renderFormAutomatic(): TemplateResult {
         return html`
             <form class="pf-c-form pf-m-horizontal">
-                <ak-form-element-horizontal label=${t`Automatic import`}>
+                <ak-form-element-horizontal label=${msg("Automatic import")}>
                     <ak-action-button
                         class="pf-m-primary"
                         .apiRequest=${() => {
@@ -95,18 +100,20 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                                 .then((res) => {
                                     showMessage({
                                         level: MessageLevel.info,
-                                        message: t`Successfully imported ${res.count} devices.`,
+                                        message: msg(
+                                            str`Successfully imported ${res.count} devices.`,
+                                        ),
                                     });
                                     const modal = this.parentElement as ModalForm;
                                     modal.open = false;
                                 });
                         }}
                     >
-                        ${t`Start automatic import`}
+                        ${msg("Start automatic import")}
                     </ak-action-button>
                 </ak-form-element-horizontal>
             </form>
-            <ak-divider>${t`Or manually import`}</ak-divider>
+            <ak-divider>${msg("Or manually import")}</ak-divider>
             <br />
         `;
     }

@@ -9,8 +9,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -22,10 +21,10 @@ export class TenantListPage extends TablePage<Tenant> {
         return true;
     }
     pageTitle(): string {
-        return t`Tenants`;
+        return msg("Tenants");
     }
     pageDescription(): string {
-        return t`Configure visual settings and defaults for different domains.`;
+        return msg("Configure visual settings and defaults for different domains.");
     }
     pageIcon(): string {
         return "pf-icon pf-icon-tenant";
@@ -47,19 +46,19 @@ export class TenantListPage extends TablePage<Tenant> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Domain`, "domain"),
-            new TableColumn(t`Default?`, "default"),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Domain"), "domain"),
+            new TableColumn(msg("Default?"), "default"),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Tenant(s)`}
+            objectLabel=${msg("Tenant(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Tenant) => {
-                return [{ key: t`Domain`, value: item.domain }];
+                return [{ key: msg("Domain"), value: item.domain }];
             }}
             .usedBy=${(item: Tenant) => {
                 return new CoreApi(DEFAULT_CONFIG).coreTenantsUsedByList({
@@ -73,7 +72,7 @@ export class TenantListPage extends TablePage<Tenant> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -82,11 +81,11 @@ export class TenantListPage extends TablePage<Tenant> {
         return [
             html`${item.domain}`,
             html`<ak-label color=${item._default ? PFColor.Green : PFColor.Red}>
-                ${item._default ? t`Yes` : t`No`}
+                ${item._default ? msg("Yes") : msg("No")}
             </ak-label>`,
             html`<ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update Tenant`} </span>
+                <span slot="submit"> ${msg("Update")} </span>
+                <span slot="header"> ${msg("Update Tenant")} </span>
                 <ak-tenant-form slot="form" .instancePk=${item.tenantUuid}> </ak-tenant-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <i class="fas fa-edit"></i>
@@ -98,10 +97,10 @@ export class TenantListPage extends TablePage<Tenant> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Tenant`} </span>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Tenant")} </span>
                 <ak-tenant-form slot="form"> </ak-tenant-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
     }

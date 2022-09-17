@@ -3,8 +3,7 @@ import { AKChart } from "@goauthentik/elements/charts/Chart";
 import "@goauthentik/elements/forms/ConfirmationForm";
 import { ChartData, ChartOptions } from "chart.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
 import { FlowsApi } from "@goauthentik/api";
@@ -48,7 +47,7 @@ export class PolicyStatusChart extends AKChart<FlowMetrics> {
 
     getChartData(data: FlowMetrics): ChartData {
         return {
-            labels: [t`Total flows`, t`Cached flows`],
+            labels: [msg("Total flows"), msg("Cached flows")],
             datasets: [
                 {
                     backgroundColor: ["#2b9af3", "#3e8635"],

@@ -1,7 +1,9 @@
 import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
 
+import { localized } from "@lit/localize";
 import { LitElement } from "lit";
 
+@localized()
 export class AKElement extends LitElement {
     constructor() {
         super();

@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -29,9 +28,9 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated stage.`;
+            return msg("Successfully updated stage.");
         } else {
-            return t`Successfully created stage.`;
+            return msg("Successfully created stage.");
         }
     }
 
@@ -62,9 +61,9 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Validate the user's password against the selected backend(s).`}
+                ${msg("Validate the user's password against the selected backend(s).")}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -73,10 +72,10 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Backends`}
+                        label=${msg("Backends")}
                         ?required=${true}
                         name="backends"
                     >
@@ -87,7 +86,7 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                                     BackendsEnum.CoreAuthInbuiltBackend,
                                 )}
                             >
-                                ${t`User database + standard password`}
+                                ${msg("User database + standard password")}
                             </option>
                             <option
                                 value=${BackendsEnum.CoreAuthTokenBackend}
@@ -95,7 +94,7 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                                     BackendsEnum.CoreAuthTokenBackend,
                                 )}
                             >
-                                ${t`User database + app passwords`}
+                                ${msg("User database + app passwords")}
                             </option>
                             <option
                                 value=${BackendsEnum.SourcesLdapAuthLdapBackend}
@@ -103,18 +102,18 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                                     BackendsEnum.SourcesLdapAuthLdapBackend,
                                 )}
                             >
-                                ${t`User database + LDAP password`}
+                                ${msg("User database + LDAP password")}
                             </option>
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Selection of backends to test the password against.`}
+                            ${msg("Selection of backends to test the password against.")}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Configuration flow`}
+                        label=${msg("Configuration flow")}
                         ?required=${true}
                         name="configureFlow"
                     >
@@ -150,15 +149,17 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password.`}
+                            ${msg(
+                                "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Failed attempts before cancel`}
+                        label=${msg("Failed attempts before cancel")}
                         ?required=${true}
                         name="failedAttemptsBeforeCancel"
                     >
@@ -169,7 +170,9 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.`}
+                            ${msg(
+                                "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

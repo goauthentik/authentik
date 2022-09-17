@@ -19,8 +19,7 @@ import "@goauthentik/flow/stages/captcha/CaptchaStage";
 import "@goauthentik/flow/stages/identification/IdentificationStage";
 import "@goauthentik/flow/stages/password/PasswordStage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -246,18 +245,18 @@ export class FlowExecutor extends AKElement implements StageHost {
             type: ChallengeChoices.Shell,
             body: `<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">
-                    ${t`Whoops!`}
+                    ${msg("Whoops!")}
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <h3>${t`Something went wrong! Please try again later.`}</h3>
+                <h3>${msg("Something went wrong! Please try again later.")}</h3>
                 <pre class="ak-exception">${body}</pre>
             </div>
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links">
                     <li class="pf-c-login__main-footer-links-item">
                         <a class="pf-c-button pf-m-primary pf-m-block" href="/">
-                            ${t`Return`}
+                            ${msg("Return")}
                         </a>
                     </li>
                 </ul>
@@ -372,7 +371,7 @@ export class FlowExecutor extends AKElement implements StageHost {
             default:
                 break;
         }
-        return html`Invalid native challenge element`;
+        return html`Invalid native challenge`;
     }
 
     async renderChallenge(): Promise<TemplateResult> {
@@ -388,7 +387,7 @@ export class FlowExecutor extends AKElement implements StageHost {
                     >
                     </ak-stage-redirect>`;
                 }
-                return html`<ak-empty-state ?loading=${true} header=${t`Loading`}>
+                return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
                 </ak-empty-state>`;
             case ChallengeChoices.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
@@ -403,7 +402,8 @@ export class FlowExecutor extends AKElement implements StageHost {
 
     renderChallengeWrapper(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading=${true} header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`
             ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : html``}
@@ -506,7 +506,7 @@ export class FlowExecutor extends AKElement implements StageHost {
                                                 <li>
                                                     <a
                                                         href="https://goauthentik.io?utm_source=authentik&amp;utm_medium=flow"
-                                                        >${t`Powered by authentik`}</a
+                                                        >${msg("Powered by authentik")}</a
                                                     >
                                                 </li>
                                                 ${this.challenge?.flowInfo?.background?.startsWith(
@@ -516,7 +516,7 @@ export class FlowExecutor extends AKElement implements StageHost {
                                                           <li>
                                                               <a
                                                                   href="https://unsplash.com/@impatrickt"
-                                                                  >${t`Background image`}</a
+                                                                  >${msg("Background image")}</a
                                                               >
                                                           </li>
                                                       `

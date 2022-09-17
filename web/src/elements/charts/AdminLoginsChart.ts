@@ -2,8 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
 import { ChartData } from "chart.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
 import { AdminApi, LoginMetrics } from "@goauthentik/api";
@@ -18,7 +17,7 @@ export class AdminLoginsChart extends AKChart<LoginMetrics> {
         return {
             datasets: [
                 {
-                    label: t`Failed Logins`,
+                    label: msg("Failed Logins"),
                     backgroundColor: "rgba(201, 25, 11, .5)",
                     spanGaps: true,
                     data:
@@ -30,7 +29,7 @@ export class AdminLoginsChart extends AKChart<LoginMetrics> {
                         }) || [],
                 },
                 {
-                    label: t`Successful Logins`,
+                    label: msg("Successful Logins"),
                     backgroundColor: "rgba(189, 229, 184, .5)",
                     spanGaps: true,
                     data:

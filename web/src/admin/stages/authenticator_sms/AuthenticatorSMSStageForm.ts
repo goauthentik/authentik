@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -42,9 +41,9 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated stage.`;
+            return msg("Successfully updated stage.");
         } else {
-            return t`Successfully created stage.`;
+            return msg("Successfully created stage.");
         }
     }
 
@@ -63,7 +62,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
 
     renderProviderTwillio(): TemplateResult {
         return html` <ak-form-element-horizontal
-                label=${t`Twilio Account SID`}
+                label=${msg("Twilio Account SID")}
                 ?required=${true}
                 name="accountSid"
             >
@@ -74,10 +73,14 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Get this value from https://console.twilio.com`}
+                    ${msg("Get this value from https://console.twilio.com")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Twilio Auth Token`} ?required=${true} name="auth">
+            <ak-form-element-horizontal
+                label=${msg("Twilio Auth Token")}
+                ?required=${true}
+                name="auth"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.auth || "")}"
@@ -85,14 +88,14 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Get this value from https://console.twilio.com`}
+                    ${msg("Get this value from https://console.twilio.com")}
                 </p>
             </ak-form-element-horizontal>`;
     }
 
     renderProviderGeneric(): TemplateResult {
         return html` <ak-form-element-horizontal
-                label=${t`Authentication Type`}
+                label=${msg("Authentication Type")}
                 @change=${(ev: Event) => {
                     const current = (ev.target as HTMLInputElement).value;
                     this.authType = current as AuthTypeEnum;
@@ -105,18 +108,18 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                         value="${AuthTypeEnum.Basic}"
                         ?selected=${this.instance?.authType === AuthTypeEnum.Basic}
                     >
-                        ${t`Basic Auth`}
+                        ${msg("Basic Auth")}
                     </option>
                     <option
                         value="${AuthTypeEnum.Bearer}"
                         ?selected=${this.instance?.authType === AuthTypeEnum.Bearer}
                     >
-                        ${t`Bearer Token`}
+                        ${msg("Bearer Token")}
                     </option>
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`External API URL`}
+                label=${msg("External API URL")}
                 ?required=${true}
                 name="accountSid"
             >
@@ -127,21 +130,27 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`This is the full endpoint to send POST requests to.`}
+                    ${msg("This is the full endpoint to send POST requests to.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`API Auth Username`} ?required=${true} name="auth">
+            <ak-form-element-horizontal
+                label=${msg("API Auth Username")}
+                ?required=${true}
+                name="auth"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.auth || "")}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`This is the username to be used with basic auth or the token when used with bearer token`}
+                    ${msg(
+                        "This is the username to be used with basic auth or the token when used with bearer token",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`API Auth password`}
+                label=${msg("API Auth password")}
                 ?required=${false}
                 name="authPassword"
             >
@@ -151,7 +160,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`This is the password to be used with basic auth`}
+                    ${msg("This is the password to be used with basic auth")}
                 </p>
             </ak-form-element-horizontal>`;
     }
@@ -159,9 +168,9 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Stage used to configure an SMS-based TOTP authenticator.`}
+                ${msg("Stage used to configure an SMS-based TOTP authenticator.")}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -170,10 +179,10 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                 />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Provider`}
+                        label=${msg("Provider")}
                         ?required=${true}
                         name="provider"
                     >
@@ -188,18 +197,18 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                                 value="${ProviderEnum.Twilio}"
                                 ?selected=${this.instance?.provider === ProviderEnum.Twilio}
                             >
-                                ${t`Twilio`}
+                                ${msg("Twilio")}
                             </option>
                             <option
                                 value="${ProviderEnum.Generic}"
                                 ?selected=${this.instance?.provider === ProviderEnum.Generic}
                             >
-                                ${t`Generic`}
+                                ${msg("Generic")}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`From number`}
+                        label=${msg("From number")}
                         ?required=${true}
                         name="fromNumber"
                     >
@@ -210,7 +219,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Number the SMS will be sent from.`}
+                            ${msg("Number the SMS will be sent from.")}
                         </p>
                     </ak-form-element-horizontal>
                     ${this.provider === ProviderEnum.Generic
@@ -223,13 +232,18 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                                 class="pf-c-check__input"
                                 ?checked=${first(this.instance?.verifyOnly, false)}
                             />
-                            <label class="pf-c-check__label">${t`Hash phone number`}</label>
+                            <label class="pf-c-check__label">${msg("Hash phone number")}</label>
                         </div>
                         <p class="pf-c-form__helper-text">
-                            ${t`If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons.Devices created from a stage with this enabled cannot be used with the authenticator validation stage.`}
+                            ${msg(
+                                "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons.Devices created from a stage with this enabled cannot be used with the authenticator validation stage.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
+                    <ak-form-element-horizontal
+                        label=${msg("Configuration flow")}
+                        name="configureFlow"
+                    >
                         <select class="pf-c-form-control">
                             <option
                                 value=""
@@ -262,11 +276,13 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.`}
+                            ${msg(
+                                "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

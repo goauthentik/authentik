@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -23,9 +22,9 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated policy.`;
+            return msg("Successfully updated policy.");
         } else {
-            return t`Successfully created policy.`;
+            return msg("Successfully created policy.");
         }
     }
 
@@ -45,9 +44,11 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Matches an event against a set of criteria. If any of the configured values match, the policy passes.`}
+                ${msg(
+                    "Matches an event against a set of criteria. If any of the configured values match, the policy passes.",
+                )}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -62,16 +63,18 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.executionLogging, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Execution logging`} </label>
+                    <label class="pf-c-check__label"> ${msg("Execution logging")} </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
+                    ${msg(
+                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Policy-specific settings`} </span>
+                <span slot="header"> ${msg("Policy-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`Action`} name="action">
+                    <ak-form-element-horizontal label=${msg("Action")} name="action">
                         <select class="pf-c-form-control">
                             <option value="" ?selected=${this.instance?.action === undefined}>
                                 ---------
@@ -90,24 +93,28 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Match created events with this action type. When left empty, all action types will be matched.`}
+                            ${msg(
+                                "Match created events with this action type. When left empty, all action types will be matched.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Client IP`} name="clientIp">
+                    <ak-form-element-horizontal label=${msg("Client IP")} name="clientIp">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.clientIp || "")}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Matches Event's Client IP (strict matching, for network matching use an Expression Policy.`}
+                            ${msg(
+                                "Matches Event's Client IP (strict matching, for network matching use an Expression Policy.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`App`} name="app">
+                    <ak-form-element-horizontal label=${msg("App")} name="app">
                         <select class="pf-c-form-control">
                             <option value="" ?selected=${this.instance?.app === undefined}>
                                 ---------
@@ -123,11 +130,13 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                                         </option>`;
                                     });
                                 }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Match events created by selected application. When left empty, all applications are matched.`}
+                            ${msg(
+                                "Match events created by selected application. When left empty, all applications are matched.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

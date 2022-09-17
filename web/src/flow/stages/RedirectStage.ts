@@ -1,7 +1,6 @@
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -30,12 +29,12 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
 
     render(): TemplateResult {
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${t`Redirect`}</h1>
+                <h1 class="pf-c-title pf-m-3xl">${msg("Redirect")}</h1>
             </header>
             <div class="pf-c-login__main-body">
                 <form method="POST" class="pf-c-form">
                     <div class="pf-c-form__group">
-                        <p>${t`You're about to be redirect to the following URL.`}</p>
+                        <p>${msg("You're about to be redirect to the following URL.")}</p>
                         <pre>${this.renderURL()}</pre>
                     </div>
                     <div class="pf-c-form__group pf-m-action">
@@ -44,7 +43,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                             class="pf-c-button pf-m-primary pf-m-block"
                             href=${this.challenge.to}
                         >
-                            ${t`Follow redirect`}
+                            ${msg("Follow redirect")}
                         </a>
                     </div>
                 </form>

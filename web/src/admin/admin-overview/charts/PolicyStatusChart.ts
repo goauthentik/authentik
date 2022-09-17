@@ -3,8 +3,7 @@ import { AKChart } from "@goauthentik/elements/charts/Chart";
 import "@goauthentik/elements/forms/ConfirmationForm";
 import { ChartData, ChartOptions } from "chart.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
 import { PoliciesApi } from "@goauthentik/api";
@@ -58,7 +57,7 @@ export class PolicyStatusChart extends AKChart<PolicyMetrics> {
 
     getChartData(data: PolicyMetrics): ChartData {
         return {
-            labels: [t`Total policies`, t`Cached policies`, t`Unbound policies`],
+            labels: [msg("Total policies"), msg("Cached policies"), msg("Unbound policies")],
             datasets: [
                 {
                     backgroundColor: ["#2b9af3", "#3e8635", "#f0ab00"],

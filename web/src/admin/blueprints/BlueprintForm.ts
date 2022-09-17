@@ -6,8 +6,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -25,9 +24,9 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated instance.`;
+            return msg("Successfully updated instance.");
         } else {
-            return t`Successfully created instance.`;
+            return msg("Successfully created instance.");
         }
     }
 
@@ -46,7 +45,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -61,11 +60,13 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.enabled, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Enabled`} </label>
+                    <label class="pf-c-check__label"> ${msg("Enabled")} </label>
                 </div>
-                <p class="pf-c-form__helper-text">${t`Disabled blueprints are never applied.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Disabled blueprints are never applied.")}
+                </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Path`} name="path">
+            <ak-form-element-horizontal label=${msg("Path")} name="path">
                 <select class="pf-c-form-control">
                     ${until(
                         new ManagedApi(DEFAULT_CONFIG)
@@ -82,21 +83,21 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                     </option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
             </ak-form-element-horizontal>
             <ak-form-group>
-                <span slot="header">${t`Additional settings`}</span>
+                <span slot="header">${msg("Additional settings")}</span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`Context`} name="context">
+                    <ak-form-element-horizontal label=${msg("Context")} name="context">
                         <ak-codemirror
                             mode="yaml"
                             value="${YAML.stringify(first(this.instance?.context, {}))}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">
-                            ${t`Configure the blueprint context, used for templating.`}
+                            ${msg("Configure the blueprint context, used for templating.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

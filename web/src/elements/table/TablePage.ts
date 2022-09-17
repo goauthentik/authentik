@@ -2,8 +2,7 @@ import "@goauthentik/elements/PageHeader";
 import { updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { Table } from "@goauthentik/elements/table/Table";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -33,7 +32,7 @@ export abstract class TablePage<T> extends Table<T> {
         return super.renderEmpty(html`
             ${inner
                 ? inner
-                : html`<ak-empty-state icon=${this.pageIcon()} header="${t`No objects found.`}">
+                : html`<ak-empty-state icon=${this.pageIcon()} header="${msg("No objects found.")}">
                       <div slot="body">
                           ${this.searchEnabled() ? this.renderEmptyClearSearch() : html``}
                       </div>
@@ -57,7 +56,7 @@ export abstract class TablePage<T> extends Table<T> {
             }}
             class="pf-c-button pf-m-link"
         >
-            ${t`Clear search`}
+            ${msg("Clear search")}
         </button>`;
     }
 

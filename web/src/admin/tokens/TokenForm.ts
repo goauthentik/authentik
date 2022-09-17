@@ -5,8 +5,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import { UserOption } from "@goauthentik/elements/user/utils";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -23,9 +22,9 @@ export class TokenForm extends ModelForm<Token, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated token.`;
+            return msg("Successfully updated token.");
         } else {
-            return t`Successfully created token.`;
+            return msg("Successfully created token.");
         }
     }
 
@@ -44,7 +43,11 @@ export class TokenForm extends ModelForm<Token, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Identifier`} name="identifier" ?required=${true}>
+            <ak-form-element-horizontal
+                label=${msg("Identifier")}
+                name="identifier"
+                ?required=${true}
+            >
                 <input
                     type="text"
                     value="${first(this.instance?.identifier, "")}"
@@ -52,10 +55,10 @@ export class TokenForm extends ModelForm<Token, string> {
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Unique identifier the token is referenced by.`}
+                    ${msg("Unique identifier the token is referenced by.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`User`} ?required=${true} name="user">
+            <ak-form-element-horizontal label=${msg("User")} ?required=${true} name="user">
                 <select class="pf-c-form-control">
                     ${until(
                         new CoreApi(DEFAULT_CONFIG)
@@ -72,27 +75,27 @@ export class TokenForm extends ModelForm<Token, string> {
                                     </option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Intent`} ?required=${true} name="intent">
+            <ak-form-element-horizontal label=${msg("Intent")} ?required=${true} name="intent">
                 <select class="pf-c-form-control">
                     <option
                         value=${IntentEnum.Api}
                         ?selected=${this.instance?.intent === IntentEnum.Api}
                     >
-                        ${t`API Token (can be used to access the API programmatically)`}
+                        ${msg("API Token (can be used to access the API programmatically)")}
                     </option>
                     <option
                         value=${IntentEnum.AppPassword}
                         ?selected=${this.instance?.intent === IntentEnum.AppPassword}
                     >
-                        ${t`App password (can be used to login using a flow executor)`}
+                        ${msg("App password (can be used to login using a flow executor)")}
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Description`} name="description">
+            <ak-form-element-horizontal label=${msg("Description")} name="description">
                 <input
                     type="text"
                     value="${first(this.instance?.description, "")}"
@@ -106,13 +109,15 @@ export class TokenForm extends ModelForm<Token, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.expiring, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Expiring?`} </label>
+                    <label class="pf-c-check__label"> ${msg("Expiring?")} </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`If this is selected, the token will expire. Upon expiration, the token will be rotated.`}
+                    ${msg(
+                        "If this is selected, the token will expire. Upon expiration, the token will be rotated.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Expires on`} name="expires">
+            <ak-form-element-horizontal label=${msg("Expires on")} name="expires">
                 <input
                     type="datetime-local"
                     data-type="datetime-local"

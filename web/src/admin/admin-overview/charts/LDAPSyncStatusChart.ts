@@ -3,8 +3,7 @@ import { AKChart } from "@goauthentik/elements/charts/Chart";
 import "@goauthentik/elements/forms/ConfirmationForm";
 import { ChartData, ChartOptions } from "chart.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
 import { SourcesApi, TaskStatusEnum } from "@goauthentik/api";
@@ -75,7 +74,7 @@ export class LDAPSyncStatusChart extends AKChart<LDAPSyncStats> {
 
     getChartData(data: LDAPSyncStats): ChartData {
         return {
-            labels: [t`Healthy sources`, t`Failed sources`, t`Unsynced sources`],
+            labels: [msg("Healthy sources"), msg("Failed sources"), msg("Unsynced sources")],
             datasets: [
                 {
                     backgroundColor: ["#3e8635", "#C9190B", "#2b9af3"],

@@ -2,8 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -16,7 +15,7 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailRetrieveReque
     user!: User;
 
     getSuccessMessage(): string {
-        return t`Successfully sent email.`;
+        return msg("Successfully sent email.");
     }
 
     send = (data: CoreUsersRecoveryEmailRetrieveRequest): Promise<void> => {
@@ -26,7 +25,11 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailRetrieveReque
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Email stage`} ?required=${true} name="emailStage">
+            <ak-form-element-horizontal
+                label=${msg("Email stage")}
+                ?required=${true}
+                name="emailStage"
+            >
                 <select class="pf-c-form-control">
                     ${until(
                         new StagesApi(DEFAULT_CONFIG)
@@ -38,7 +41,7 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailRetrieveReque
                                     return html`<option value=${stage.pk}>${stage.name}</option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
             </ak-form-element-horizontal>

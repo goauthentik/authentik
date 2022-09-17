@@ -5,8 +5,7 @@ import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticat
 import { BaseStage } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -43,7 +42,8 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<div class="pf-c-login__main-body">
                 <form
@@ -59,17 +59,17 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                     >
                         <div slot="link">
                             <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${t`Not you?`}</a
+                                >${msg("Not you?")}</a
                             >
                         </div>
                     </ak-form-static>
                     ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms
-                        ? html`<p>${t`A code has been sent to you via SMS.`}</p>`
+                        ? html`<p>${msg("A code has been sent to you via SMS.")}</p>`
                         : html``}
                     <ak-form-element
                         label="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
-                            ? t`Static token`
-                            : t`Code`}"
+                            ? msg("Static token")
+                            : msg("Code")}"
                         ?required="${true}"
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["code"]}
@@ -86,7 +86,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                             DeviceClassesEnum.Static
                                 ? "[0-9a-zA-Z]*"
                                 : "[0-9]*"}"
-                            placeholder="${t`Please enter your Code`}"
+                            placeholder="${msg("Please enter your Code")}"
                             autofocus=""
                             autocomplete="one-time-code"
                             class="pf-c-form-control"
@@ -97,7 +97,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${t`Continue`}
+                            ${msg("Continue")}
                         </button>
                     </div>
                 </form>
@@ -115,7 +115,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                                       ).selectedDeviceChallenge = undefined;
                                   }}
                               >
-                                  ${t`Return to device picker`}
+                                  ${msg("Return to device picker")}
                               </button>
                           </li>`
                         : html``}

@@ -8,8 +8,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -40,17 +39,17 @@ export class RelatedGroupList extends Table<Group> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Parent`, "parent"),
-            new TableColumn(t`Superuser privileges?`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Parent"), "parent"),
+            new TableColumn(msg("Superuser privileges?")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Group(s)`}
+            objectLabel=${msg("Group(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Group) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
@@ -64,7 +63,7 @@ export class RelatedGroupList extends Table<Group> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -72,13 +71,13 @@ export class RelatedGroupList extends Table<Group> {
     row(item: Group): TemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
-            html`${item.parentName || t`-`}`,
+            html`${item.parentName || msg("-")}`,
             html`<ak-label color=${item.isSuperuser ? PFColor.Green : PFColor.Grey}>
-                ${item.isSuperuser ? t`Yes` : t`No`}
+                ${item.isSuperuser ? msg("Yes") : msg("No")}
             </ak-label>`,
             html` <ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update Group`} </span>
+                <span slot="submit"> ${msg("Update")} </span>
+                <span slot="header"> ${msg("Update Group")} </span>
                 <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <i class="fas fa-edit"></i>

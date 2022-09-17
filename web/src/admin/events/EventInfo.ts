@@ -6,8 +6,7 @@ import "@goauthentik/elements/Expand";
 import "@goauthentik/elements/Spinner";
 import { PFSize } from "@goauthentik/elements/Spinner";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -58,7 +57,7 @@ export class EventInfo extends AKElement {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`UID`}</span>
+                    <span class="pf-c-description-list__text">${msg("UID")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">${context.pk}</div>
@@ -66,7 +65,7 @@ export class EventInfo extends AKElement {
             </div>
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`Name`}</span>
+                    <span class="pf-c-description-list__text">${msg("Name")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">${context.name}</div>
@@ -74,7 +73,7 @@ export class EventInfo extends AKElement {
             </div>
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`App`}</span>
+                    <span class="pf-c-description-list__text">${msg("App")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">${context.app}</div>
@@ -82,7 +81,7 @@ export class EventInfo extends AKElement {
             </div>
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`Model Name`}</span>
+                    <span class="pf-c-description-list__text">${msg("Model Name")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">${context.model_name}</div>
@@ -98,7 +97,7 @@ export class EventInfo extends AKElement {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`Message`}</span>
+                    <span class="pf-c-description-list__text">${msg("Message")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">${context.message}</div>
@@ -106,7 +105,7 @@ export class EventInfo extends AKElement {
             </div>
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`Subject`}</span>
+                    <span class="pf-c-description-list__text">${msg("Subject")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">${context.subject}</div>
@@ -114,7 +113,7 @@ export class EventInfo extends AKElement {
             </div>
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`From`}</span>
+                    <span class="pf-c-description-list__text">${msg("From")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">${context.from_email}</div>
@@ -122,7 +121,7 @@ export class EventInfo extends AKElement {
             </div>
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`To`}</span>
+                    <span class="pf-c-description-list__text">${msg("To")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
@@ -138,11 +137,11 @@ export class EventInfo extends AKElement {
     defaultResponse(): TemplateResult {
         return html`<div class="pf-l-flex">
             <div class="pf-l-flex__item">
-                <h3>${t`Context`}</h3>
+                <h3>${msg("Context")}</h3>
                 <code>${JSON.stringify(this.event?.context, null, 4)}</code>
             </div>
             <div class="pf-l-flex__item">
-                <h3>${t`User`}</h3>
+                <h3>${msg("User")}</h3>
                 <code>${JSON.stringify(this.event?.user, null, 4)}</code>
             </div>
         </div>`;
@@ -203,19 +202,19 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
             case EventActions.ModelUpdated:
             case EventActions.ModelDeleted:
                 return html`
-                    <h3>${t`Affected model:`}</h3>
+                    <h3>${msg("Affected model:")}</h3>
                     ${this.getModelInfo(this.event.context?.model as EventModel)}
                 `;
             case EventActions.AuthorizeApplication:
                 return html`<div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <h3>${t`Authorized application:`}</h3>
+                            <h3>${msg("Authorized application:")}</h3>
                             ${this.getModelInfo(
                                 this.event.context.authorized_application as EventModel,
                             )}
                         </div>
                         <div class="pf-l-flex__item">
-                            <h3>${t`Using flow`}</h3>
+                            <h3>${msg("Using flow")}</h3>
                             <span
                                 >${until(
                                     new FlowsApi(DEFAULT_CONFIG)
@@ -235,13 +234,13 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                     </div>
                     <ak-expand>${this.defaultResponse()}</ak-expand>`;
             case EventActions.EmailSent:
-                return html`<h3>${t`Email info:`}</h3>
+                return html`<h3>${msg("Email info:")}</h3>
                     ${this.getEmailInfo(this.event.context)}
                     <ak-expand>
                         <iframe srcdoc=${this.event.context.body}></iframe>
                     </ak-expand>`;
             case EventActions.SecretView:
-                return html` <h3>${t`Secret:`}</h3>
+                return html` <h3>${msg("Secret:")}</h3>
                     ${this.getModelInfo(this.event.context.secret as EventModel)}`;
             case EventActions.SystemException:
                 return html` <a
@@ -249,11 +248,11 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                         target="_blank"
                         href=${this.buildGitHubIssueUrl(this.event.context)}
                     >
-                        ${t`Open issue on GitHub...`}
+                        ${msg("Open issue on GitHub...")}
                     </a>
                     <div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <h3>${t`Exception`}</h3>
+                            <h3>${msg("Exception")}</h3>
                             <code>${this.event.context.message}</code>
                         </div>
                     </div>
@@ -261,11 +260,11 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
             case EventActions.PropertyMappingException:
                 return html`<div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <h3>${t`Exception`}</h3>
+                            <h3>${msg("Exception")}</h3>
                             <code>${this.event.context.message || this.event.context.error}</code>
                         </div>
                         <div class="pf-l-flex__item">
-                            <h3>${t`Expression`}</h3>
+                            <h3>${msg("Expression")}</h3>
                             <code>${this.event.context.expression}</code>
                         </div>
                     </div>
@@ -273,14 +272,14 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
             case EventActions.PolicyException:
                 return html`<div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <h3>${t`Binding`}</h3>
+                            <h3>${msg("Binding")}</h3>
                             ${this.getModelInfo(this.event.context.binding as EventModel)}
                         </div>
                         <div class="pf-l-flex__item">
-                            <h3>${t`Request`}</h3>
+                            <h3>${msg("Request")}</h3>
                             <ul class="pf-c-list">
                                 <li>
-                                    ${t`Object`}:
+                                    ${msg("Object")}:
                                     ${this.getModelInfo(
                                         (this.event.context.request as EventContext)
                                             .obj as EventModel,
@@ -288,7 +287,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                                 </li>
                                 <li>
                                     <span
-                                        >${t`Context`}:
+                                        >${msg("Context")}:
                                         <code
                                             >${JSON.stringify(
                                                 (this.event.context.request as EventContext)
@@ -302,7 +301,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                             </ul>
                         </div>
                         <div class="pf-l-flex__item">
-                            <h3>${t`Exception`}</h3>
+                            <h3>${msg("Exception")}</h3>
                             <code>${this.event.context.message || this.event.context.error}</code>
                         </div>
                     </div>
@@ -310,14 +309,14 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
             case EventActions.PolicyExecution:
                 return html`<div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <h3>${t`Binding`}</h3>
+                            <h3>${msg("Binding")}</h3>
                             ${this.getModelInfo(this.event.context.binding as EventModel)}
                         </div>
                         <div class="pf-l-flex__item">
-                            <h3>${t`Request`}</h3>
+                            <h3>${msg("Request")}</h3>
                             <ul class="pf-c-list">
                                 <li>
-                                    ${t`Object`}:
+                                    ${msg("Object")}:
                                     ${this.getModelInfo(
                                         (this.event.context.request as EventContext)
                                             .obj as EventModel,
@@ -325,7 +324,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                                 </li>
                                 <li>
                                     <span
-                                        >${t`Context`}:
+                                        >${msg("Context")}:
                                         <code
                                             >${JSON.stringify(
                                                 (this.event.context.request as EventContext)
@@ -339,14 +338,14 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                             </ul>
                         </div>
                         <div class="pf-l-flex__item">
-                            <h3>${t`Result`}</h3>
+                            <h3>${msg("Result")}</h3>
                             <ul class="pf-c-list">
                                 <li>
-                                    ${t`Passing`}:
+                                    ${msg("Passing")}:
                                     ${(this.event.context.result as EventContext).passing}
                                 </li>
                                 <li>
-                                    ${t`Messages`}:
+                                    ${msg("Messages")}:
                                     <ul class="pf-c-list">
                                         ${(
                                             (this.event.context.result as EventContext)
@@ -364,7 +363,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                 return html`<h3>${this.event.context.message}</h3>
                     <ak-expand>${this.defaultResponse()}</ak-expand>`;
             case EventActions.UpdateAvailable:
-                return html`<h3>${t`New version available!`}</h3>
+                return html`<h3>${msg("New version available!")}</h3>
                     <a
                         target="_blank"
                         href="https://github.com/goauthentik/authentik/releases/tag/version%2F${this
@@ -378,18 +377,20 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                 if ("using_source" in this.event.context) {
                     return html`<div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <h3>${t`Using source`}</h3>
+                            <h3>${msg("Using source")}</h3>
                             ${this.getModelInfo(this.event.context.using_source as EventModel)}
                         </div>
                     </div>`;
                 }
                 return this.defaultResponse();
             case EventActions.LoginFailed:
-                return html` <h3>${t`Attempted to log in as ${this.event.context.username}`}</h3>
+                return html` <h3>
+                        ${msg(str`Attempted to log in as ${this.event.context.username}`)}
+                    </h3>
                     <ak-expand>${this.defaultResponse()}</ak-expand>`;
             case EventActions.Logout:
                 if (Object.keys(this.event.context).length === 0) {
-                    return html`<span>${t`No additional data available.`}</span>`;
+                    return html`<span>${msg("No additional data available.")}</span>`;
                 }
                 return this.defaultResponse();
             default:

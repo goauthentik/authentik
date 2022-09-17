@@ -10,8 +10,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -82,13 +81,13 @@ export class SAMLProviderViewPage extends AKElement {
             kpUuid: this.provider.signingKp,
         });
         return html` <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-            <div class="pf-c-card__title">${t`Related objects`}</div>
+            <div class="pf-c-card__title">${msg("Related objects")}</div>
             <div class="pf-c-card__body">
                 <dl class="pf-c-description-list pf-m-2-col">
                     <div class="pf-c-description-list__group">
                         <dt class="pf-c-description-list__term">
                             <span class="pf-c-description-list__text"
-                                >${t`Download signing certificate`}</span
+                                >${msg("Download signing certificate")}</span
                             >
                         </dt>
                         <dd class="pf-c-description-list__description">
@@ -96,7 +95,7 @@ export class SAMLProviderViewPage extends AKElement {
                                 <a
                                     class="pf-c-button pf-m-primary"
                                     href=${kp.certificateDownloadUrl}
-                                    >${t`Download`}</a
+                                    >${msg("Download")}</a
                                 >
                             </div>
                         </dd>
@@ -114,7 +113,7 @@ export class SAMLProviderViewPage extends AKElement {
             this.provider?.assignedApplicationName
                 ? html``
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${t`Warning: Provider is not used by an Application.`}
+                      ${msg("Warning: Provider is not used by an Application.")}
                   </div>`
         }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
@@ -123,7 +122,7 @@ export class SAMLProviderViewPage extends AKElement {
                         <dl class="pf-c-description-list pf-m-3-col-on-lg">
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${t`Name`}</span>
+                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -134,7 +133,7 @@ export class SAMLProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${t`Assigned to application`}</span
+                                        >${msg("Assigned to application")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
@@ -147,7 +146,9 @@ export class SAMLProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${t`ACS URL`}</span>
+                                    <span class="pf-c-description-list__text">${msg(
+                                        "ACS URL",
+                                    )}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -157,7 +158,9 @@ export class SAMLProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${t`Audience`}</span>
+                                    <span class="pf-c-description-list__text">${msg(
+                                        "Audience",
+                                    )}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -167,7 +170,9 @@ export class SAMLProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${t`Issuer`}</span>
+                                    <span class="pf-c-description-list__text">${msg(
+                                        "Issuer",
+                                    )}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -179,12 +184,12 @@ export class SAMLProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit"> ${t`Update`} </span>
-                            <span slot="header"> ${t`Update SAML Provider`} </span>
+                            <span slot="submit"> ${msg("Update")} </span>
+                            <span slot="header"> ${msg("Update SAML Provider")} </span>
                             <ak-provider-saml-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-saml-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${t`Edit`}
+                                ${msg("Edit")}
                             </button>
                         </ak-forms-modal>
                     </div>
@@ -193,13 +198,13 @@ export class SAMLProviderViewPage extends AKElement {
                 ${
                     this.provider.assignedApplicationName
                         ? html` <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                                  <div class="pf-c-card__title">${t`SAML Configuration`}</div>
+                                  <div class="pf-c-card__title">${msg("SAML Configuration")}</div>
                                   <div class="pf-c-card__body">
                                       <form class="pf-c-form">
                                           <div class="pf-c-form__group">
                                               <label class="pf-c-form__label">
                                                   <span class="pf-c-form__label-text"
-                                                      >${t`EntityID/Issuer`}</span
+                                                      >${msg("EntityID/Issuer")}</span
                                                   >
                                               </label>
                                               <input
@@ -212,7 +217,7 @@ export class SAMLProviderViewPage extends AKElement {
                                           <div class="pf-c-form__group">
                                               <label class="pf-c-form__label">
                                                   <span class="pf-c-form__label-text"
-                                                      >${t`SSO URL (Post)`}</span
+                                                      >${msg("SSO URL (Post)")}</span
                                                   >
                                               </label>
                                               <input
@@ -225,7 +230,7 @@ export class SAMLProviderViewPage extends AKElement {
                                           <div class="pf-c-form__group">
                                               <label class="pf-c-form__label">
                                                   <span class="pf-c-form__label-text"
-                                                      >${t`SSO URL (Redirect)`}</span
+                                                      >${msg("SSO URL (Redirect)")}</span
                                                   >
                                               </label>
                                               <input
@@ -238,7 +243,7 @@ export class SAMLProviderViewPage extends AKElement {
                                           <div class="pf-c-form__group">
                                               <label class="pf-c-form__label">
                                                   <span class="pf-c-form__label-text"
-                                                      >${t`SSO URL (IdP-initiated Login)`}</span
+                                                      >${msg("SSO URL (IdP-initiated Login)")}</span
                                                   >
                                               </label>
                                               <input
@@ -252,7 +257,7 @@ export class SAMLProviderViewPage extends AKElement {
                                   </div>
                               </div>
                               <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                                  <div class="pf-c-card__title">${t`SAML Metadata`}</div>
+                                  <div class="pf-c-card__title">${msg("SAML Metadata")}</div>
                                   <div class="pf-c-card__body">
                                       ${until(
                                           new ProvidersApi(DEFAULT_CONFIG)
@@ -274,7 +279,7 @@ export class SAMLProviderViewPage extends AKElement {
                                           target="_blank"
                                           href=${this.provider.urlDownloadMetadata}
                                       >
-                                          ${t`Download`}
+                                          ${msg("Download")}
                                       </a>
                                       <ak-action-button
                                           class="pf-m-secondary"
@@ -284,7 +289,7 @@ export class SAMLProviderViewPage extends AKElement {
                                               );
                                           }}
                                       >
-                                          ${t`Copy download URL`}
+                                          ${msg("Copy download URL")}
                                       </ak-action-button>
                                   </div>
                               </div>`

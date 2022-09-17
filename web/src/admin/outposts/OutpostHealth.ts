@@ -2,8 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -43,16 +42,18 @@ export class OutpostHealthElement extends AKElement {
         return html` <ul>
             <li>
                 <ak-label color=${PFColor.Green}>
-                    ${t`Last seen: ${this.outpostHealth.lastSeen?.toLocaleTimeString()}`}
+                    ${msg(str`Last seen: ${this.outpostHealth.lastSeen?.toLocaleTimeString()}`)}
                 </ak-label>
             </li>
             <li>
                 ${this.outpostHealth.versionOutdated
                     ? html`<ak-label color=${PFColor.Red}
-                          >${t`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`}
+                          >${msg(
+                              str`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`,
+                          )}
                       </ak-label>`
                     : html`<ak-label color=${PFColor.Green}
-                          >${t`Version: ${versionString}`}
+                          >${msg(str`Version: ${versionString}`)}
                       </ak-label>`}
             </li>
         </ul>`;

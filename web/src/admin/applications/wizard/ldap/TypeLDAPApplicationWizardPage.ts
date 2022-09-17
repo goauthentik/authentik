@@ -3,8 +3,7 @@ import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { WizardFormPage } from "@goauthentik/elements/wizard/WizardFormPage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { TemplateResult, html } from "lit";
 
@@ -19,7 +18,7 @@ import {
 
 @customElement("ak-application-wizard-type-ldap")
 export class TypeLDAPApplicationWizardPage extends WizardFormPage {
-    sidebarLabel = () => t`LDAP details`;
+    sidebarLabel = () => msg("LDAP details");
 
     nextDataCallback = async (data: KeyUnknown): Promise<boolean> => {
         let name = this.host.state["name"] as string;
@@ -30,7 +29,7 @@ export class TypeLDAPApplicationWizardPage extends WizardFormPage {
         if (providers.results.filter((provider) => provider.name == name)) {
             name += "-1";
         }
-        this.host.addActionBefore(t`Create service account`, async (): Promise<boolean> => {
+        this.host.addActionBefore(msg("Create service account"), async (): Promise<boolean> => {
             const serviceAccount = await new CoreApi(DEFAULT_CONFIG).coreUsersServiceAccountCreate({
                 userServiceAccountRequest: {
                     name: name,
@@ -40,7 +39,7 @@ export class TypeLDAPApplicationWizardPage extends WizardFormPage {
             this.host.state["serviceAccount"] = serviceAccount;
             return true;
         });
-        this.host.addActionBefore(t`Create provider`, async (): Promise<boolean> => {
+        this.host.addActionBefore(msg("Create provider"), async (): Promise<boolean> => {
             // Get all flows and default to the implicit authorization
             const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                 designation: FlowDesignationEnum.Authorization,
@@ -66,7 +65,7 @@ export class TypeLDAPApplicationWizardPage extends WizardFormPage {
         const domainParts = window.location.hostname.split(".");
         const defaultBaseDN = domainParts.map((part) => `dc=${part}`).join(",");
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Base DN`} name="baseDN" ?required=${true}>
+            <ak-form-element-horizontal label=${msg("Base DN")} name="baseDN" ?required=${true}>
                 <input type="text" value="${defaultBaseDN}" class="pf-c-form-control" required />
             </ak-form-element-horizontal>
         </form> `;

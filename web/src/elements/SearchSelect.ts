@@ -1,7 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -32,7 +31,7 @@ export class SearchSelect<T> extends AKElement {
     blankable = false;
 
     @property()
-    placeholder: string = t`Select an object.`;
+    placeholder: string = msg("Select an object.");
 
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFFormControl, PFSelect, AKGlobal];

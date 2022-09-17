@@ -1,7 +1,7 @@
 import { EVENT_MESSAGE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 
-import { t } from "@lingui/macro";
+import { msg } from "@lit/localize";
 
 export interface WSMessage {
     message_type: string;
@@ -38,7 +38,7 @@ export class WebsocketClient {
                         composed: true,
                         detail: {
                             level: MessageLevel.error,
-                            message: t`Connection error, reconnecting...`,
+                            message: msg("Connection error, reconnecting..."),
                         },
                     }),
                 );

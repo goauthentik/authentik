@@ -6,8 +6,7 @@ import {
 import { PFSize } from "@goauthentik/elements/Spinner";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -59,7 +58,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                 throw new Error("Credential is empty");
             }
         } catch (err) {
-            throw new Error(t`Error creating credential: ${err}`);
+            throw new Error(msg(str`Error creating credential: ${err}`));
         }
 
         // we now have a new credential! We now need to encode the byte arrays
@@ -73,7 +72,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                 response: newAssertionForServer,
             });
         } catch (err) {
-            throw new Error(t`Server validation of credential failed: ${err}`);
+            throw new Error(msg(str`Server validation of credential failed: ${err}`));
         }
     }
 
@@ -131,7 +130,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                                       this.registerWrapper();
                                   }}
                               >
-                                  ${t`Register device`}
+                                  ${msg("Register device")}
                               </button>
                           </div>`
                 }

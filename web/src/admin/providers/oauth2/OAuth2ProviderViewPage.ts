@@ -10,8 +10,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -84,7 +83,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             this.provider?.assignedApplicationName
                 ? html``
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${t`Warning: Provider is not used by an Application.`}
+                      ${msg("Warning: Provider is not used by an Application.")}
                   </div>`
         }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
@@ -95,7 +94,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
                                                 <span class="pf-c-description-list__text"
-                                                    >${t`Name`}</span
+                                                    >${msg("Name")}</span
                                                 >
                                             </dt>
                                             <dd class="pf-c-description-list__description">
@@ -107,7 +106,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
                                                 <span class="pf-c-description-list__text"
-                                                    >${t`Assigned to application`}</span
+                                                    >${msg("Assigned to application")}</span
                                                 >
                                             </dt>
                                             <dd class="pf-c-description-list__description">
@@ -121,7 +120,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
                                                 <span class="pf-c-description-list__text"
-                                                    >${t`Client type`}</span
+                                                    >${msg("Client type")}</span
                                                 >
                                             </dt>
                                             <dd class="pf-c-description-list__description">
@@ -135,7 +134,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
                                                 <span class="pf-c-description-list__text"
-                                                    >${t`Client ID`}</span
+                                                    >${msg("Client ID")}</span
                                                 >
                                             </dt>
                                             <dd class="pf-c-description-list__description">
@@ -147,7 +146,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
                                                 <span class="pf-c-description-list__text"
-                                                    >${t`Redirect URIs`}</span
+                                                    >${msg("Redirect URIs")}</span
                                                 >
                                             </dt>
                                             <dd class="pf-c-description-list__description">
@@ -160,15 +159,17 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 </div>
                                 <div class="pf-c-card__footer">
                                     <ak-forms-modal>
-                                        <span slot="submit"> ${t`Update`} </span>
-                                        <span slot="header"> ${t`Update OAuth2 Provider`} </span>
+                                        <span slot="submit"> ${msg("Update")} </span>
+                                        <span slot="header"> ${msg(
+                                            "Update OAuth2 Provider",
+                                        )} </span>
                                         <ak-provider-oauth2-form
                                             slot="form"
                                             .instancePk=${this.provider.pk || 0}
                                         >
                                         </ak-provider-oauth2-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
-                                            ${t`Edit`}
+                                            ${msg("Edit")}
                                         </button>
                                     </ak-forms-modal>
                                 </div>
@@ -181,93 +182,95 @@ export class OAuth2ProviderViewPage extends AKElement {
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
-                                                    >${t`OpenID Configuration URL`}</span
+                                                    >${msg("OpenID Configuration URL")}</span
                                                 >
                                             </label>
                                             <input
                                                 class="pf-c-form-control"
                                                 readonly
                                                 type="text"
-                                                value="${this.providerUrls?.providerInfo || t`-`}"
+                                                value="${
+                                                    this.providerUrls?.providerInfo || msg("-")
+                                                }"
                                             />
                                         </div>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
-                                                    >${t`OpenID Configuration Issuer`}</span
+                                                    >${msg("OpenID Configuration Issuer")}</span
                                                 >
                                             </label>
                                             <input
                                                 class="pf-c-form-control"
                                                 readonly
                                                 type="text"
-                                                value="${this.providerUrls?.issuer || t`-`}"
+                                                value="${this.providerUrls?.issuer || msg("-")}"
                                             />
                                         </div>
                                         <hr />
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
-                                                    >${t`Authorize URL`}</span
+                                                    >${msg("Authorize URL")}</span
                                                 >
                                             </label>
                                             <input
                                                 class="pf-c-form-control"
                                                 readonly
                                                 type="text"
-                                                value="${this.providerUrls?.authorize || t`-`}"
+                                                value="${this.providerUrls?.authorize || msg("-")}"
                                             />
                                         </div>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
-                                                    >${t`Token URL`}</span
+                                                    >${msg("Token URL")}</span
                                                 >
                                             </label>
                                             <input
                                                 class="pf-c-form-control"
                                                 readonly
                                                 type="text"
-                                                value="${this.providerUrls?.token || t`-`}"
+                                                value="${this.providerUrls?.token || msg("-")}"
                                             />
                                         </div>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
-                                                    >${t`Userinfo URL`}</span
+                                                    >${msg("Userinfo URL")}</span
                                                 >
                                             </label>
                                             <input
                                                 class="pf-c-form-control"
                                                 readonly
                                                 type="text"
-                                                value="${this.providerUrls?.userInfo || t`-`}"
+                                                value="${this.providerUrls?.userInfo || msg("-")}"
                                             />
                                         </div>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
-                                                    >${t`Logout URL`}</span
+                                                    >${msg("Logout URL")}</span
                                                 >
                                             </label>
                                             <input
                                                 class="pf-c-form-control"
                                                 readonly
                                                 type="text"
-                                                value="${this.providerUrls?.logout || t`-`}"
+                                                value="${this.providerUrls?.logout || msg("-")}"
                                             />
                                         </div>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label">
                                                 <span class="pf-c-form__label-text"
-                                                    >${t`JWKS URL`}</span
+                                                    >${msg("JWKS URL")}</span
                                                 >
                                             </label>
                                             <input
                                                 class="pf-c-form-control"
                                                 readonly
                                                 type="text"
-                                                value="${this.providerUrls?.jwks || t`-`}"
+                                                value="${this.providerUrls?.jwks || msg("-")}"
                                             />
                                         </div>
                                     </form>

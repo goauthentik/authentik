@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { msg } from "@lit/localize";
 
 import { EventActions } from "@goauthentik/api";
 
@@ -6,57 +6,57 @@ export function ActionToLabel(action?: EventActions): string {
     if (!action) return "";
     switch (action) {
         case EventActions.Login:
-            return t`Login`;
+            return msg("Login");
         case EventActions.LoginFailed:
-            return t`Failed login`;
+            return msg("Failed login");
         case EventActions.Logout:
-            return t`Logout`;
+            return msg("Logout");
         case EventActions.UserWrite:
-            return t`User was written to`;
+            return msg("User was written to");
         case EventActions.SuspiciousRequest:
-            return t`Suspicious request`;
+            return msg("Suspicious request");
         case EventActions.PasswordSet:
-            return t`Password set`;
+            return msg("Password set");
         case EventActions.SecretView:
-            return t`Secret was viewed`;
+            return msg("Secret was viewed");
         case EventActions.SecretRotate:
-            return t`Secret was rotated`;
+            return msg("Secret was rotated");
         case EventActions.InvitationUsed:
-            return t`Invitation used`;
+            return msg("Invitation used");
         case EventActions.AuthorizeApplication:
-            return t`Application authorized`;
+            return msg("Application authorized");
         case EventActions.SourceLinked:
-            return t`Source linked`;
+            return msg("Source linked");
         case EventActions.ImpersonationStarted:
-            return t`Impersonation started`;
+            return msg("Impersonation started");
         case EventActions.ImpersonationEnded:
-            return t`Impersonation ended`;
+            return msg("Impersonation ended");
         case EventActions.FlowExecution:
-            return t`Flow execution`;
+            return msg("Flow execution");
         case EventActions.PolicyExecution:
-            return t`Policy execution`;
+            return msg("Policy execution");
         case EventActions.PolicyException:
-            return t`Policy exception`;
+            return msg("Policy exception");
         case EventActions.PropertyMappingException:
-            return t`Property Mapping exception`;
+            return msg("Property Mapping exception");
         case EventActions.SystemTaskExecution:
-            return t`System task execution`;
+            return msg("System task execution");
         case EventActions.SystemTaskException:
-            return t`System task exception`;
+            return msg("System task exception");
         case EventActions.SystemException:
-            return t`General system exception`;
+            return msg("General system exception");
         case EventActions.ConfigurationError:
-            return t`Configuration error`;
+            return msg("Configuration error");
         case EventActions.ModelCreated:
-            return t`Model created`;
+            return msg("Model created");
         case EventActions.ModelUpdated:
-            return t`Model updated`;
+            return msg("Model updated");
         case EventActions.ModelDeleted:
-            return t`Model deleted`;
+            return msg("Model deleted");
         case EventActions.EmailSent:
-            return t`Email sent`;
+            return msg("Email sent");
         case EventActions.UpdateAvailable:
-            return t`Update available`;
+            return msg("Update available");
         default:
             return action;
     }

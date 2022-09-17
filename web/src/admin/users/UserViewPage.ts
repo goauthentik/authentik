@@ -23,8 +23,7 @@ import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 import "@goauthentik/elements/user/UserDevicesList";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -86,7 +85,7 @@ export class UserViewPage extends AKElement {
     render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-user"
-                header=${t`User ${this.user?.username || ""}`}
+                header=${msg(str`User ${this.user?.username || ""}`)}
                 description=${this.user?.name || ""}
             >
             </ak-page-header>
@@ -100,20 +99,20 @@ export class UserViewPage extends AKElement {
         return html`<ak-tabs>
             <section
                 slot="page-overview"
-                data-tab-title="${t`Overview`}"
+                data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`User Info`}</div>
+                        <div class="pf-c-card__title">${msg("User Info")}</div>
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list pf-m-2-col">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Username`}</span
+                                            >${msg("Username")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -124,7 +123,9 @@ export class UserViewPage extends AKElement {
                                 </div>
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`Name`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Name")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -134,7 +135,9 @@ export class UserViewPage extends AKElement {
                                 </div>
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`Email`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Email")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -145,7 +148,7 @@ export class UserViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Last login`}</span
+                                            >${msg("Last login")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -157,7 +160,7 @@ export class UserViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Active`}</span
+                                            >${msg("Active")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -173,7 +176,7 @@ export class UserViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Superuser`}</span
+                                            >${msg("Superuser")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -190,12 +193,12 @@ export class UserViewPage extends AKElement {
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-forms-modal>
-                                <span slot="submit"> ${t`Update`} </span>
-                                <span slot="header"> ${t`Update User`} </span>
+                                <span slot="submit"> ${msg("Update")} </span>
+                                <span slot="header"> ${msg("Update User")} </span>
                                 <ak-user-form slot="form" .instancePk=${this.user.pk}>
                                 </ak-user-form>
                                 <button slot="trigger" class="pf-m-primary pf-c-button">
-                                    ${t`Edit`}
+                                    ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
                         </div>
@@ -207,7 +210,7 @@ export class UserViewPage extends AKElement {
                                             class="pf-c-button pf-m-tertiary"
                                             href="${`/-/impersonation/${this.user?.pk}/`}"
                                         >
-                                            ${t`Impersonate`}
+                                            ${msg("Impersonate")}
                                         </a>
                                     </div>`;
                                 }
@@ -217,7 +220,7 @@ export class UserViewPage extends AKElement {
                         <div class="pf-c-card__footer">
                             <ak-user-active-form
                                 .obj=${this.user}
-                                objectLabel=${t`User`}
+                                objectLabel=${msg("User")}
                                 .delete=${() => {
                                     return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                                         id: this.user?.pk || 0,
@@ -228,7 +231,7 @@ export class UserViewPage extends AKElement {
                                 }}
                             >
                                 <button slot="trigger" class="pf-c-button pf-m-warning">
-                                    ${this.user.isActive ? t`Deactivate` : t`Activate`}
+                                    ${this.user.isActive ? msg("Deactivate") : msg("Activate")}
                                 </button>
                             </ak-user-active-form>
                         </div>
@@ -243,32 +246,36 @@ export class UserViewPage extends AKElement {
                                         .then((rec) => {
                                             showMessage({
                                                 level: MessageLevel.success,
-                                                message: t`Successfully generated recovery link`,
+                                                message: msg(
+                                                    "Successfully generated recovery link",
+                                                ),
                                                 description: rec.link,
                                             });
                                         })
                                         .catch(() => {
                                             showMessage({
                                                 level: MessageLevel.error,
-                                                message: t`To create a recovery link, the current tenant needs to have a recovery flow configured.`,
+                                                message: msg(
+                                                    "To create a recovery link, the current tenant needs to have a recovery flow configured.",
+                                                ),
                                                 description: "",
                                             });
                                         });
                                 }}
                             >
-                                ${t`Reset Password`}
+                                ${msg("Reset Password")}
                             </ak-action-button>
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-forms-modal size=${PFSize.Medium}>
-                                <span slot="submit">${t`Update password`}</span>
-                                <span slot="header">${t`Update password`}</span>
+                                <span slot="submit">${msg("Update password")}</span>
+                                <span slot="header">${msg("Update password")}</span>
                                 <ak-user-password-form
                                     slot="form"
                                     .instancePk=${this.user?.pk}
                                 ></ak-user-password-form>
                                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                    ${t`Set password`}
+                                    ${msg("Set password")}
                                 </button>
                             </ak-forms-modal>
                         </div>
@@ -276,7 +283,7 @@ export class UserViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Actions over the last 24 hours`}</div>
+                        <div class="pf-c-card__title">${msg("Actions over the last 24 hours")}</div>
                         <div class="pf-c-card__body">
                             <ak-charts-user userId=${this.user.pk || 0}> </ak-charts-user>
                         </div>
@@ -284,7 +291,7 @@ export class UserViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Changelog`}</div>
+                        <div class="pf-c-card__title">${msg("Changelog")}</div>
                         <div class="pf-c-card__body">
                             <ak-object-changelog
                                 targetModelPk=${this.user.pk}
@@ -298,7 +305,7 @@ export class UserViewPage extends AKElement {
             </section>
             <section
                 slot="page-sessions"
-                data-tab-title="${t`Sessions`}"
+                data-tab-title="${msg("Sessions")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -310,7 +317,7 @@ export class UserViewPage extends AKElement {
             </section>
             <section
                 slot="page-groups"
-                data-tab-title="${t`Groups`}"
+                data-tab-title="${msg("Groups")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -321,7 +328,7 @@ export class UserViewPage extends AKElement {
             </section>
             <section
                 slot="page-events"
-                data-tab-title="${t`User events`}"
+                data-tab-title="${msg("User events")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -332,7 +339,7 @@ export class UserViewPage extends AKElement {
             </section>
             <section
                 slot="page-consent"
-                data-tab-title="${t`Explicit Consent`}"
+                data-tab-title="${msg("Explicit Consent")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -343,7 +350,7 @@ export class UserViewPage extends AKElement {
             </section>
             <section
                 slot="page-oauth-refresh"
-                data-tab-title="${t`OAuth Refresh Codes`}"
+                data-tab-title="${msg("OAuth Refresh Codes")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -355,7 +362,7 @@ export class UserViewPage extends AKElement {
             </section>
             <section
                 slot="page-mfa-authenticators"
-                data-tab-title="${t`MFA Authenticators`}"
+                data-tab-title="${msg("MFA Authenticators")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">

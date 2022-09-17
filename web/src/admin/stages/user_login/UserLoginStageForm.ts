@@ -5,8 +5,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -22,9 +21,9 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated stage.`;
+            return msg("Successfully updated stage.");
         } else {
-            return t`Successfully created stage.`;
+            return msg("Successfully created stage.");
         }
     }
 
@@ -43,8 +42,8 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">${t`Log the currently pending user in.`}</div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <div class="form-help-text">${msg("Log the currently pending user in.")}</div>
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${first(this.instance?.name, "")}"
@@ -53,10 +52,10 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Session duration`}
+                        label=${msg("Session duration")}
                         ?required=${true}
                         name="sessionDuration"
                     >
@@ -67,7 +66,9 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed.`}
+                            ${msg(
+                                "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed.",
+                            )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>

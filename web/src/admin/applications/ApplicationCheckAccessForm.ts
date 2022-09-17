@@ -4,8 +4,7 @@ import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { UserOption } from "@goauthentik/elements/user/utils";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -26,7 +25,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
     request?: number;
 
     getSuccessMessage(): string {
-        return t`Successfully sent test-request.`;
+        return msg("Successfully sent test-request.");
     }
 
     send = (data: { forUser: number }): Promise<PolicyTestResult> => {
@@ -50,18 +49,18 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
 
     renderResult(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${t`Passing`}>
+            <ak-form-element-horizontal label=${msg("Passing")}>
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <span class="pf-c-form__label-text">
                             <ak-label color=${this.result?.passing ? PFColor.Green : PFColor.Red}>
-                                ${this.result?.passing ? t`Yes` : t`No`}
+                                ${this.result?.passing ? msg("Yes") : msg("No")}
                             </ak-label>
                         </span>
                     </div>
                 </div>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Messages`}>
+            <ak-form-element-horizontal label=${msg("Messages")}>
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <ul>
@@ -78,7 +77,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                     </div>
                 </div>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Log messages`}>
+            <ak-form-element-horizontal label=${msg("Log messages")}>
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <dl class="pf-c-description-list pf-m-horizontal">
@@ -100,7 +99,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                                 : html`<div class="pf-c-description-list__group">
                                       <dt class="pf-c-description-list__term">
                                           <span class="pf-c-description-list__text"
-                                              >${t`No log messages.`}</span
+                                              >${msg("No log messages.")}</span
                                           >
                                       </dt>
                                   </div>`}
@@ -113,7 +112,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`User`} ?required=${true} name="forUser">
+            <ak-form-element-horizontal label=${msg("User")} ?required=${true} name="forUser">
                 <select class="pf-c-form-control">
                     ${until(
                         new CoreApi(DEFAULT_CONFIG)
@@ -130,7 +129,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                                     </option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
             </ak-form-element-horizontal>

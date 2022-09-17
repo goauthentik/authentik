@@ -2,8 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -21,9 +20,9 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated rule.`;
+            return msg("Successfully updated rule.");
         } else {
-            return t`Successfully created rule.`;
+            return msg("Successfully created rule.");
         }
     }
 
@@ -46,26 +45,26 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 value=${SeverityEnum.Alert}
                 ?selected=${this.instance?.severity === SeverityEnum.Alert}
             >
-                ${t`Alert`}
+                ${msg("Alert")}
             </option>
             <option
                 value=${SeverityEnum.Warning}
                 ?selected=${this.instance?.severity === SeverityEnum.Warning}
             >
-                ${t`Warning`}
+                ${msg("Warning")}
             </option>
             <option
                 value=${SeverityEnum.Notice}
                 ?selected=${this.instance?.severity === SeverityEnum.Notice}
             >
-                ${t`Notice`}
+                ${msg("Notice")}
             </option>
         `;
     }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -73,7 +72,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Group`} name="group">
+            <ak-form-element-horizontal label=${msg("Group")} name="group">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.group === undefined}>
                         ---------
@@ -89,11 +88,15 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                                 </option>`;
                             });
                         }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Transports`} ?required=${true} name="transports">
+            <ak-form-element-horizontal
+                label=${msg("Transports")}
+                ?required=${true}
+                name="transports"
+            >
                 <select name="users" class="pf-c-form-control" multiple>
                     ${until(
                         new EventsApi(DEFAULT_CONFIG)
@@ -113,17 +116,19 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                                     </option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.`}
+                    ${msg(
+                        "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.",
+                    )}
                 </p>
                 <p class="pf-c-form__helper-text">
-                    ${t`Hold control/command to select multiple items.`}
+                    ${msg("Hold control/command to select multiple items.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Severity`} ?required=${true} name="severity">
+            <ak-form-element-horizontal label=${msg("Severity")} ?required=${true} name="severity">
                 <select class="pf-c-form-control">
                     ${this.renderSeverity()}
                 </select>

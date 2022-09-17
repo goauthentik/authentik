@@ -9,8 +9,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import { UserOption } from "@goauthentik/elements/user/utils";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -39,9 +38,9 @@ export class GroupForm extends ModelForm<Group, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated group.`;
+            return msg("Successfully updated group.");
         } else {
-            return t`Successfully created group.`;
+            return msg("Successfully created group.");
         }
     }
 
@@ -61,7 +60,7 @@ export class GroupForm extends ModelForm<Group, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -76,13 +75,13 @@ export class GroupForm extends ModelForm<Group, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.isSuperuser, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Is superuser`} </label>
+                    <label class="pf-c-check__label"> ${msg("Is superuser")} </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`Users added to this group will be superusers.`}
+                    ${msg("Users added to this group will be superusers.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Parent`} name="parent">
+            <ak-form-element-horizontal label=${msg("Parent")} name="parent">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.parent === undefined}>
                         ---------
@@ -98,11 +97,11 @@ export class GroupForm extends ModelForm<Group, string> {
                                 </option>`;
                             });
                         }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Members`} name="users">
+            <ak-form-element-horizontal label=${msg("Members")} name="users">
                 <div class="pf-c-input-group">
                     <ak-group-member-select-table
                         .confirm=${(items: User[]) => {
@@ -153,20 +152,24 @@ export class GroupForm extends ModelForm<Group, string> {
                                             </ak-chip>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </ak-chip-group>
                     </div>
                 </div>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Attributes`} ?required=${true} name="attributes">
+            <ak-form-element-horizontal
+                label=${msg("Attributes")}
+                ?required=${true}
+                name="attributes"
+            >
                 <ak-codemirror
                     mode="yaml"
                     value="${YAML.stringify(first(this.instance?.attributes, {}))}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Set custom attributes using YAML or JSON.`}
+                    ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>
         </form>`;

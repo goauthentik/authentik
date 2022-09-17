@@ -2,8 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
 import { ChartData, ChartOptions } from "chart.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
 import { CoreApi } from "@goauthentik/api";
@@ -51,7 +50,7 @@ export class GroupCountStatusChart extends AKChart<GroupMetrics> {
 
     getChartData(data: GroupMetrics): ChartData {
         return {
-            labels: [t`Total groups`, t`Superuser-groups`],
+            labels: [msg("Total groups"), msg("Superuser-groups")],
             datasets: [
                 {
                     backgroundColor: ["#2b9af3", "#3e8635"],

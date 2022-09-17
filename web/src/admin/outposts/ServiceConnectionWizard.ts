@@ -7,8 +7,7 @@ import "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
@@ -29,7 +28,7 @@ export class InitialServiceConnectionWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFButton, AKGlobal, PFRadio];
     }
-    sidebarLabel = () => t`Select type`;
+    sidebarLabel = () => msg("Select type");
 
     render(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
@@ -65,7 +64,7 @@ export class ServiceConnectionWizard extends AKElement {
     }
 
     @property()
-    createText = t`Create`;
+    createText = msg("Create");
 
     @property({ attribute: false })
     connectionTypes: TypeCreate[] = [];
@@ -80,8 +79,8 @@ export class ServiceConnectionWizard extends AKElement {
         return html`
             <ak-wizard
                 .steps=${["initial"]}
-                header=${t`New outpost integration`}
-                description=${t`Create a new outpost integration.`}
+                header=${msg("New outpost integration")}
+                description=${msg("Create a new outpost integration.")}
             >
                 <ak-service-connection-wizard-initial
                     slot="initial"
@@ -92,7 +91,7 @@ export class ServiceConnectionWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => t`Create ${type.name}`}
+                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form type=${type.component}></ak-proxy-form>
                         </ak-wizard-page-form>

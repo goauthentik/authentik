@@ -10,8 +10,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/charts/ApplicationAuthorizeChart";
 import "@goauthentik/elements/events/ObjectChangelog";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -82,7 +81,7 @@ export class ApplicationViewPage extends AKElement {
     render(): TemplateResult {
         return html`<ak-page-header
                 icon=${this.application?.metaIcon || ""}
-                header=${this.application?.name || t`Loading`}
+                header=${this.application?.name || msg("Loading")}
                 description=${ifDefined(this.application?.metaPublisher)}
                 .iconImage=${true}
             >
@@ -92,31 +91,32 @@ export class ApplicationViewPage extends AKElement {
 
     renderApp(): TemplateResult {
         if (!this.application) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<ak-tabs>
             ${this.missingOutpost
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${t`Warning: Application is not used by any Outpost.`}
+                      ${msg("Warning: Application is not used by any Outpost.")}
                   </div>`
                 : html``}
             <section
                 slot="page-overview"
-                data-tab-title="${t`Overview`}"
+                data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Related`}</div>
+                        <div class="pf-c-card__title">${msg("Related")}</div>
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list">
                                 ${this.application.providerObj
                                     ? html`<div class="pf-c-description-list__group">
                                           <dt class="pf-c-description-list__term">
                                               <span class="pf-c-description-list__text"
-                                                  >${t`Provider`}</span
+                                                  >${msg("Provider")}</span
                                               >
                                           </dt>
                                           <dd class="pf-c-description-list__description">
@@ -135,7 +135,7 @@ export class ApplicationViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Policy engine mode`}</span
+                                            >${msg("Policy engine mode")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -146,14 +146,16 @@ export class ApplicationViewPage extends AKElement {
                                 </div>
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`Edit`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Edit")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
                                             <ak-forms-modal>
-                                                <span slot="submit"> ${t`Update`} </span>
+                                                <span slot="submit"> ${msg("Update")} </span>
                                                 <span slot="header">
-                                                    ${t`Update Application`}
+                                                    ${msg("Update Application")}
                                                 </span>
                                                 <ak-application-form
                                                     slot="form"
@@ -164,7 +166,7 @@ export class ApplicationViewPage extends AKElement {
                                                     slot="trigger"
                                                     class="pf-c-button pf-m-secondary"
                                                 >
-                                                    ${t`Edit`}
+                                                    ${msg("Edit")}
                                                 </button>
                                             </ak-forms-modal>
                                         </div>
@@ -173,15 +175,15 @@ export class ApplicationViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Check access`}</span
+                                            >${msg("Check access")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
                                             <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                                                <span slot="submit"> ${t`Check`} </span>
+                                                <span slot="submit"> ${msg("Check")} </span>
                                                 <span slot="header">
-                                                    ${t`Check Application access`}
+                                                    ${msg("Check Application access")}
                                                 </span>
                                                 <ak-application-check-access-form
                                                     slot="form"
@@ -192,7 +194,7 @@ export class ApplicationViewPage extends AKElement {
                                                     slot="trigger"
                                                     class="pf-c-button pf-m-secondary"
                                                 >
-                                                    ${t`Test`}
+                                                    ${msg("Test")}
                                                 </button>
                                             </ak-forms-modal>
                                         </div>
@@ -202,7 +204,7 @@ export class ApplicationViewPage extends AKElement {
                                     ? html`<div class="pf-c-description-list__group">
                                           <dt class="pf-c-description-list__term">
                                               <span class="pf-c-description-list__text"
-                                                  >${t`Launch`}</span
+                                                  >${msg("Launch")}</span
                                               >
                                           </dt>
                                           <dd class="pf-c-description-list__description">
@@ -213,7 +215,7 @@ export class ApplicationViewPage extends AKElement {
                                                       slot="trigger"
                                                       class="pf-c-button pf-m-secondary"
                                                   >
-                                                      ${t`Launch`}
+                                                      ${msg("Launch")}
                                                   </a>
                                               </div>
                                           </dd>
@@ -225,7 +227,7 @@ export class ApplicationViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Logins over the last 24 hours`}</div>
+                        <div class="pf-c-card__title">${msg("Logins over the last 24 hours")}</div>
                         <div class="pf-c-card__body">
                             ${this.application &&
                             html` <ak-charts-application-authorize
@@ -235,7 +237,7 @@ export class ApplicationViewPage extends AKElement {
                         </div>
                     </div>
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">${t`Changelog`}</div>
+                        <div class="pf-c-card__title">${msg("Changelog")}</div>
                         <div class="pf-c-card__body">
                             <ak-object-changelog
                                 targetModelPk=${this.application.pk || ""}
@@ -249,12 +251,12 @@ export class ApplicationViewPage extends AKElement {
             </section>
             <section
                 slot="page-policy-bindings"
-                data-tab-title="${t`Policy / Group / User Bindings`}"
+                data-tab-title="${msg("Policy / Group / User Bindings")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
                     <div class="pf-c-card__title">
-                        ${t`These policies control which users can access this application.`}
+                        ${msg("These policies control which users can access this application.")}
                     </div>
                     <ak-bound-policies-list .target=${this.application.pk}>
                     </ak-bound-policies-list>

@@ -5,8 +5,7 @@ import "@goauthentik/elements/Spinner";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { BaseUserSettings } from "@goauthentik/user/user-settings/BaseUserSettings";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -36,13 +35,13 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                         .then(() => {
                             showMessage({
                                 level: MessageLevel.info,
-                                message: t`Successfully disconnected source`,
+                                message: msg("Successfully disconnected source"),
                             });
                         })
                         .catch((exc) => {
                             showMessage({
                                 level: MessageLevel.error,
-                                message: t`Failed to disconnected source: ${exc}`,
+                                message: msg(str`Failed to disconnected source: ${exc}`),
                             });
                         })
                         .finally(() => {
@@ -55,7 +54,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                         });
                 }}
             >
-                ${t`Disconnect`}
+                ${msg("Disconnect")}
             </button>`;
         }
         return html`<a
@@ -64,7 +63,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                 `/if/user/#/settings;${JSON.stringify({ page: "page-sources" })}`,
             )}"
         >
-            ${t`Connect`}
+            ${msg("Connect")}
         </a>`;
     }
 }

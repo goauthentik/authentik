@@ -2,8 +2,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -25,7 +24,8 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -39,7 +39,7 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
                     >
                         <div slot="link">
                             <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${t`Not you?`}</a
+                                >${msg("Not you?")}</a
                             >
                         </div>
                     </ak-form-static>
@@ -47,7 +47,7 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
                         <p>
                             ${this.challenge?.error
                                 ? this.challenge.error
-                                : t`Something went wrong! Please try again later.`}
+                                : msg("Something went wrong! Please try again later.")}
                         </p>
                         ${this.challenge?.traceback
                             ? html`<pre class="ak-exception">

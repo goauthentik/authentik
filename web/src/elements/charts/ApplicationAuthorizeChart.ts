@@ -2,8 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
 import { ChartData } from "chart.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";
 
 import { Coordinate, CoreApi } from "@goauthentik/api";
@@ -23,7 +22,7 @@ export class ApplicationAuthorizeChart extends AKChart<Coordinate[]> {
         return {
             datasets: [
                 {
-                    label: t`Authorizations`,
+                    label: msg("Authorizations"),
                     backgroundColor: "rgba(189, 229, 184, .5)",
                     spanGaps: true,
                     data:

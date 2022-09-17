@@ -7,8 +7,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/ProxyForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -39,9 +38,9 @@ export class ApplicationForm extends ModelForm<Application, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated application.`;
+            return msg("Successfully updated application.");
         } else {
-            return t`Successfully created application.`;
+            return msg("Successfully created application.");
         }
     }
 
@@ -103,35 +102,39 @@ export class ApplicationForm extends ModelForm<Application, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
                 />
-                <p class="pf-c-form__helper-text">${t`Application's display Name.`}</p>
+                <p class="pf-c-form__helper-text">${msg("Application's display Name.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Slug`} ?required=${true} name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
                     class="pf-c-form-control"
                     required
                 />
-                <p class="pf-c-form__helper-text">${t`Internal application name, used in URLs.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Internal application name, used in URLs.")}
+                </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Group`} name="group">
+            <ak-form-element-horizontal label=${msg("Group")} name="group">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.group)}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Optionally enter a group name. Applications with identical groups are shown grouped together.`}
+                    ${msg(
+                        "Optionally enter a group name. Applications with identical groups are shown grouped together.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Provider`} name="provider">
+            <ak-form-element-horizontal label=${msg("Provider")} name="provider">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.provider === undefined}>
                         ---------
@@ -140,22 +143,24 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         new ProvidersApi(DEFAULT_CONFIG).providersAllList({}).then((providers) => {
                             return this.groupProviders(providers.results);
                         }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Select a provider that this application should use. Alternatively, create a new provider.`}
+                    ${msg(
+                        "Select a provider that this application should use. Alternatively, create a new provider.",
+                    )}
                 </p>
                 <ak-provider-wizard
                     .finalHandler=${async () => {
                         this.requestUpdate();
                     }}
-                    createText=${t`Create provider`}
+                    createText=${msg("Create provider")}
                 >
                 </ak-provider-wizard>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Policy engine mode`}
+                label=${msg("Policy engine mode")}
                 ?required=${true}
                 name="policyEngineMode"
             >
@@ -164,47 +169,51 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         value=${PolicyEngineMode.Any}
                         ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.Any}
                     >
-                        ${t`ANY, any policy must match to grant access.`}
+                        ${msg("ANY, any policy must match to grant access.")}
                     </option>
                     <option
                         value=${PolicyEngineMode.All}
                         ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.All}
                     >
-                        ${t`ALL, all policies must match to grant access.`}
+                        ${msg("ALL, all policies must match to grant access.")}
                     </option>
                 </select>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`UI settings`} </span>
+                <span slot="header"> ${msg("UI settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`Launch URL`} name="metaLaunchUrl">
+                    <ak-form-element-horizontal label=${msg("Launch URL")} name="metaLaunchUrl">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.metaLaunchUrl)}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`If left empty, authentik will try to extract the launch URL based on the selected provider.`}
+                            ${msg(
+                                "If left empty, authentik will try to extract the launch URL based on the selected provider.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Open in new tab`} name="openInNewTab">
+                    <ak-form-element-horizontal label=${msg("Open in new tab")} name="openInNewTab">
                         <input type="checkbox" ?checked=${this.instance?.openInNewTab} />
                         <p class="pf-c-form__helper-text">
-                            ${t`If checked, the launch URL will open in a new browser tab or window from the user's application library.`}
+                            ${msg(
+                                "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     ${until(
                         config().then((c) => {
                             if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
                                 return html`<ak-form-element-horizontal
-                                        label=${t`Icon`}
+                                        label=${msg("Icon")}
                                         name="metaIcon"
                                     >
                                         <input type="file" value="" class="pf-c-form-control" />
                                         ${this.instance?.metaIcon
                                             ? html`
                                                   <p class="pf-c-form__helper-text">
-                                                      ${t`Currently set to:`}
+                                                      ${msg("Currently set to:")}
                                                       ${this.instance?.metaIcon}
                                                   </p>
                                               `
@@ -224,18 +233,18 @@ export class ApplicationForm extends ModelForm<Application, string> {
                                                           }}
                                                       />
                                                       <label class="pf-c-check__label">
-                                                          ${t`Clear icon`}
+                                                          ${msg("Clear icon")}
                                                       </label>
                                                   </div>
                                                   <p class="pf-c-form__helper-text">
-                                                      ${t`Delete currently set icon.`}
+                                                      ${msg("Delete currently set icon.")}
                                                   </p>
                                               </ak-form-element-horizontal>
                                           `
                                         : html``}`;
                             }
                             return html`<ak-form-element-horizontal
-                                label=${t`Icon`}
+                                label=${msg("Icon")}
                                 name="metaIcon"
                             >
                                 <input
@@ -244,19 +253,21 @@ export class ApplicationForm extends ModelForm<Application, string> {
                                     class="pf-c-form-control"
                                 />
                                 <p class="pf-c-form__helper-text">
-                                    ${t`Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".`}
+                                    ${msg(
+                                        "Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon \"fa-test\".",
+                                    )}
                                 </p>
                             </ak-form-element-horizontal>`;
                         }),
                     )}
-                    <ak-form-element-horizontal label=${t`Publisher`} name="metaPublisher">
+                    <ak-form-element-horizontal label=${msg("Publisher")} name="metaPublisher">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.metaPublisher)}"
                             class="pf-c-form-control"
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Description`} name="metaDescription">
+                    <ak-form-element-horizontal label=${msg("Description")} name="metaDescription">
                         <textarea class="pf-c-form-control">
 ${ifDefined(this.instance?.metaDescription)}</textarea
                         >

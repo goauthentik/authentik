@@ -5,8 +5,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -22,9 +21,9 @@ export class InvitationForm extends ModelForm<Invitation, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated invitation.`;
+            return msg("Successfully updated invitation.");
         } else {
-            return t`Successfully created invitation.`;
+            return msg("Successfully created invitation.");
         }
     }
 
@@ -45,7 +44,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
                 ?slugMode=${true}
-                label=${t`Name`}
+                label=${msg("Name")}
                 ?required=${true}
                 name="name"
             >
@@ -57,7 +56,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     data-ak-slug="true"
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Expires`} ?required=${true} name="expires">
+            <ak-form-element-horizontal label=${msg("Expires")} ?required=${true} name="expires">
                 <input
                     type="datetime-local"
                     data-type="datetime-local"
@@ -66,14 +65,16 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Attributes`} name="fixedData">
+            <ak-form-element-horizontal label=${msg("Attributes")} name="fixedData">
                 <ak-codemirror
                     mode="yaml"
                     value="${YAML.stringify(first(this.instance?.fixedData, {}))}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.`}
+                    ${msg(
+                        "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="singleUse">
@@ -83,10 +84,10 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.singleUse, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Single use`} </label>
+                    <label class="pf-c-check__label"> ${msg("Single use")} </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`When enabled, the invitation will be deleted after usage.`}
+                    ${msg("When enabled, the invitation will be deleted after usage.")}
                 </p>
             </ak-form-element-horizontal>
         </form>`;

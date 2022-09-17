@@ -7,8 +7,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -143,8 +142,10 @@ export class NotificationDrawer extends AKElement {
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header">
                     <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">${t`Notifications`}</h1>
-                        <span> ${t`${this.unread} unread`} </span>
+                        <h1 class="pf-c-notification-drawer__header-title">
+                            ${msg("Notifications")}
+                        </h1>
+                        <span> ${msg(str`${this.unread} unread`)} </span>
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
                         <div class="pf-c-notification-drawer__header-action-close">
@@ -159,7 +160,7 @@ export class NotificationDrawer extends AKElement {
                                 }}
                                 class="pf-c-button pf-m-plain"
                                 type="button"
-                                aria-label=${t`Close`}
+                                aria-label=${msg("Close")}
                             >
                                 <i class="fas fa-times" aria-hidden="true"></i>
                             </button>
@@ -179,7 +180,7 @@ export class NotificationDrawer extends AKElement {
                                 .then(() => {
                                     showMessage({
                                         level: MessageLevel.success,
-                                        message: t`Successfully cleared notifications`,
+                                        message: msg("Successfully cleared notifications"),
                                     });
                                     this.firstUpdated();
                                     this.dispatchEvent(
@@ -198,9 +199,9 @@ export class NotificationDrawer extends AKElement {
                         }}
                         class="pf-c-button pf-m-primary pf-m-block"
                         type="button"
-                        aria-label=${t`Clear all`}
+                        aria-label=${msg("Clear all")}
                     >
-                        ${t`Clear all`}
+                        ${msg("Clear all")}
                     </button>
                 </div>
             </div>

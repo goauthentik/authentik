@@ -7,8 +7,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -32,9 +31,9 @@ export class TenantForm extends ModelForm<Tenant, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated tenant.`;
+            return msg("Successfully updated tenant.");
         } else {
-            return t`Successfully created tenant.`;
+            return msg("Successfully created tenant.");
         }
     }
 
@@ -53,7 +52,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Domain`} ?required=${true} name="domain">
+            <ak-form-element-horizontal label=${msg("Domain")} ?required=${true} name="domain">
                 <input
                     type="text"
                     value="${first(this.instance?.domain, window.location.host)}"
@@ -61,7 +60,9 @@ export class TenantForm extends ModelForm<Tenant, string> {
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match.`}
+                    ${msg(
+                        "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="_default">
@@ -71,18 +72,18 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?._default, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Default`} </label>
+                    <label class="pf-c-check__label"> ${msg("Default")} </label>
                 </div>
                 <p class="pf-c-form__helper-text">
-                    ${t`Use this tenant for each domain that doesn't have a dedicated tenant.`}
+                    ${msg("Use this tenant for each domain that doesn't have a dedicated tenant.")}
                 </p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Branding settings`} </span>
+                <span slot="header"> ${msg("Branding settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Title`}
+                        label=${msg("Title")}
                         ?required=${true}
                         name="brandingTitle"
                     >
@@ -96,11 +97,11 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Branding shown in page title and several other places.`}
+                            ${msg("Branding shown in page title and several other places.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Logo`}
+                        label=${msg("Logo")}
                         ?required=${true}
                         name="brandingLogo"
                     >
@@ -114,11 +115,11 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Icon shown in sidebar/header and flow executor.`}
+                            ${msg("Icon shown in sidebar/header and flow executor.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Favicon`}
+                        label=${msg("Favicon")}
                         ?required=${true}
                         name="brandingFavicon"
                     >
@@ -131,15 +132,17 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             class="pf-c-form-control"
                             required
                         />
-                        <p class="pf-c-form__helper-text">${t`Icon shown in the browser tab.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Icon shown in the browser tab.")}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header"> ${t`Default flows`} </span>
+                <span slot="header"> ${msg("Default flows")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Authentication flow`}
+                        label=${msg("Authentication flow")}
                         name="flowAuthentication"
                     >
                         <select class="pf-c-form-control">
@@ -168,15 +171,17 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.`}
+                            ${msg(
+                                "Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Invalidation flow`}
+                        label=${msg("Invalidation flow")}
                         name="flowInvalidation"
                     >
                         <select class="pf-c-form-control">
@@ -204,14 +209,16 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow used to logout. If left empty, the first applicable flow sorted by the slug is used.`}
+                            ${msg(
+                                "Flow used to logout. If left empty, the first applicable flow sorted by the slug is used.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Recovery flow`} name="flowRecovery">
+                    <ak-form-element-horizontal label=${msg("Recovery flow")} name="flowRecovery">
                         <select class="pf-c-form-control">
                             <option value="" ?selected=${this.instance?.flowRecovery === undefined}>
                                 ---------
@@ -234,15 +241,17 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Recovery flow. If left empty, the first applicable flow sorted by the slug is used.`}
+                            ${msg(
+                                "Recovery flow. If left empty, the first applicable flow sorted by the slug is used.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Unenrollment flow`}
+                        label=${msg("Unenrollment flow")}
                         name="flowUnenrollment"
                     >
                         <select class="pf-c-form-control">
@@ -270,15 +279,17 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.`}
+                            ${msg(
+                                "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`User settings flow`}
+                        label=${msg("User settings flow")}
                         name="flowUserSettings"
                     >
                         <select class="pf-c-form-control">
@@ -307,20 +318,20 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                             </option>`;
                                         });
                                     }),
-                                html`<option>${t`Loading...`}</option>`,
+                                html`<option>${msg("Loading...")}</option>`,
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`If set, users are able to configure details of their profile.`}
+                            ${msg("If set, users are able to configure details of their profile.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header"> ${t`Other global settings`} </span>
+                <span slot="header"> ${msg("Other global settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Event retention`}
+                        label=${msg("Event retention")}
                         ?required=${true}
                         name="eventRetention"
                     >
@@ -331,29 +342,38 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Duration after which events will be deleted from the database.`}
+                            ${msg("Duration after which events will be deleted from the database.")}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`When using an external logging solution for archiving, this can be set to "minutes=5".`}
+                            ${msg(
+                                'When using an external logging solution for archiving, this can be set to "minutes=5".',
+                            )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`This setting only affects new Events, as the expiration is saved per-event.`}
+                            ${msg(
+                                "This setting only affects new Events, as the expiration is saved per-event.",
+                            )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`Format: "weeks=3;days=2;hours=3,seconds=2".`}
+                            ${msg('Format: "weeks=3;days=2;hours=3,seconds=2".')}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Attributes`} name="attributes">
+                    <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                         <ak-codemirror
                             mode="yaml"
                             value="${YAML.stringify(first(this.instance?.attributes, {}))}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">
-                            ${t`Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant.`}
+                            ${msg(
+                                "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Web Certificate`} name="webCertificate">
+                    <ak-form-element-horizontal
+                        label=${msg("Web Certificate")}
+                        name="webCertificate"
+                    >
                         <select class="pf-c-form-control">
                             <option
                                 value=""
@@ -382,7 +402,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                     value=${ifDefined(this.instance?.webCertificate || undefined)}
                                     ?selected=${this.instance?.webCertificate !== undefined}
                                 >
-                                    ${t`Loading...`}
+                                    ${msg("Loading...")}
                                 </option>`,
                             )}
                         </select>

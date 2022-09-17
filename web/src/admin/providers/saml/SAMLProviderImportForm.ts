@@ -3,8 +3,7 @@ import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -19,7 +18,7 @@ import {
 @customElement("ak-provider-saml-import-form")
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
     getSuccessMessage(): string {
-        return t`Successfully imported provider.`;
+        return msg("Successfully imported provider.");
     }
 
     // eslint-disable-next-line
@@ -37,11 +36,11 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input type="text" class="pf-c-form-control" required />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Authorization flow`}
+                label=${msg("Authorization flow")}
                 ?required=${true}
                 name="authorizationFlow"
             >
@@ -59,15 +58,15 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                                     </option>`;
                                 });
                             }),
-                        html`<option>${t`Loading...`}</option>`,
+                        html`<option>${msg("Loading...")}</option>`,
                     )}
                 </select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Flow used when authorizing this provider.`}
+                    ${msg("Flow used when authorizing this provider.")}
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-element-horizontal label=${t`Metadata`} name="metadata">
+            <ak-form-element-horizontal label=${msg("Metadata")} name="metadata">
                 <input type="file" value="" class="pf-c-form-control" />
             </ak-form-element-horizontal>
         </form>`;
