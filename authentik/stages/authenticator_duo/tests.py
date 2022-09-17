@@ -1,4 +1,4 @@
-"""Test validator stage"""
+"""Test duo stage"""
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
@@ -9,10 +9,7 @@ from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_duo.stage import (
-    SESSION_KEY_DUO_ACTIVATION_CODE,
-    SESSION_KEY_DUO_USER_ID,
-)
+from authentik.stages.authenticator_duo.stage import SESSION_KEY_DUO_ENROLL
 
 
 class AuthenticatorDuoStageTests(FlowTestCase):
@@ -70,8 +67,7 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         self.assertEqual(response.status_code, 400)
 
         session = self.client.session
-        session[SESSION_KEY_DUO_USER_ID] = "foo"
-        session[SESSION_KEY_DUO_ACTIVATION_CODE] = "bar"
+        session[SESSION_KEY_DUO_ENROLL] = {"user_id": "foo", "activation_code": "bar"}
         session.save()
 
         with patch("duo_client.auth.Auth.enroll_status", MagicMock(return_value="foo")):

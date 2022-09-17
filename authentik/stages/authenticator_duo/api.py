@@ -20,10 +20,7 @@ from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_duo.stage import (
-    SESSION_KEY_DUO_ACTIVATION_CODE,
-    SESSION_KEY_DUO_USER_ID,
-)
+from authentik.stages.authenticator_duo.stage import SESSION_KEY_DUO_ENROLL
 from authentik.stages.authenticator_duo.tasks import duo_import_devices
 
 LOGGER = get_logger()
@@ -88,11 +85,10 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         if not stage:
             raise Http404
         client = stage.auth_client()
-        user_id = self.request.session.get(SESSION_KEY_DUO_USER_ID)
-        activation_code = self.request.session.get(SESSION_KEY_DUO_ACTIVATION_CODE)
-        if not user_id or not activation_code:
+        enroll = self.request.session.get(SESSION_KEY_DUO_ENROLL)
+        if not enroll:
             return Response(status=400)
-        status = client.enroll_status(user_id, activation_code)
+        status = client.enroll_status(enroll["user_id"], enroll["activation_code"])
         return Response({"duo_response": status})
 
     @permission_required(
