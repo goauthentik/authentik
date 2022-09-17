@@ -22,14 +22,20 @@ from django.utils.translation import gettext as _
 from requests import RequestException
 from structlog.stdlib import get_logger
 
-from authentik import __version__
+from authentik import get_full_version
 from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
 from authentik.events.geo import GEOIP_READER
-from authentik.events.utils import cleanse_dict, get_user, model_to_dict, sanitize_dict
+from authentik.events.utils import (
+    cleanse_dict,
+    get_user,
+    model_to_dict,
+    sanitize_dict,
+    sanitize_item,
+)
 from authentik.lib.models import DomainlessURLValidator, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_client_ip, get_http_session
@@ -355,10 +361,12 @@ class NotificationTransport(SerializerModel):
             "user_username": notification.user.username,
         }
         if self.webhook_mapping:
-            default_body = self.webhook_mapping.evaluate(
-                user=notification.user,
-                request=None,
-                notification=notification,
+            default_body = sanitize_item(
+                self.webhook_mapping.evaluate(
+                    user=notification.user,
+                    request=None,
+                    notification=notification,
+                )
             )
         try:
             response = get_http_session().post(
@@ -406,7 +414,7 @@ class NotificationTransport(SerializerModel):
                     "title": notification.body,
                     "color": "#fd4b2d",
                     "fields": fields,
-                    "footer": f"authentik v{__version__}",
+                    "footer": f"authentik {get_full_version()}",
                 }
             ],
         }
