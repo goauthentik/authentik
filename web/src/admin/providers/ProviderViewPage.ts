@@ -14,7 +14,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
@@ -34,7 +33,7 @@ export class ProviderViewPage extends AKElement {
     provider?: Provider;
 
     static get styles(): CSSResult[] {
-        return [PFPage, AKGlobal];
+        return [PFPage, AKElement.GlobalStyle];
     }
 
     renderProvider(): TemplateResult {

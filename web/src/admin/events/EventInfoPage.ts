@@ -9,7 +9,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -34,7 +33,7 @@ export class EventInfoPage extends AKElement {
     event!: EventWithContext;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFContent, PFCard, AKGlobal];
+        return [PFBase, PFPage, PFContent, PFCard, AKElement.GlobalStyle];
     }
 
     render(): TemplateResult {

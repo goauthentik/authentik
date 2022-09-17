@@ -3,6 +3,7 @@ import "@goauthentik/web/admin/applications/ApplicationForm";
 import "@goauthentik/web/admin/applications/wizard/ApplicationWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { uiConfig } from "@goauthentik/web/common/ui/config";
+import { AKElement } from "@goauthentik/web/elements/Base";
 import "@goauthentik/web/elements/Markdown";
 import "@goauthentik/web/elements/buttons/SpinnerButton";
 import "@goauthentik/web/elements/forms/DeleteBulkForm";
@@ -18,7 +19,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
@@ -58,7 +58,7 @@ export class ApplicationListPage extends TablePage<Application> {
         return super.styles.concat(
             PFAvatar,
             PFCard,
-            AKGlobal,
+            AKElement.GlobalStyle,
             css`
                 tr td:first-child {
                     width: auto;

@@ -15,7 +15,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -53,7 +52,7 @@ export class LDAPSourceViewPage extends AKElement {
             PFCard,
             PFDescriptionList,
             PFList,
-            AKGlobal,
+            AKElement.GlobalStyle,
         ];
     }
 

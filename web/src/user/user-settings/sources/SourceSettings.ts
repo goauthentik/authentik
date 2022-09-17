@@ -12,7 +12,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
@@ -30,7 +29,7 @@ export class UserSourceSettingsPage extends AKElement {
         return [
             PFDataList,
             PFContent,
-            AKGlobal,
+            AKElement.GlobalStyle,
             css`
                 .pf-c-data-list__cell {
                     display: flex;

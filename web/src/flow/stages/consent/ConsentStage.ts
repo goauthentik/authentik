@@ -1,3 +1,4 @@
+import { AKElement } from "@goauthentik/web/elements/Base";
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/flow/FormStatic";
 import { BaseStage } from "@goauthentik/web/flow/stages/base";
@@ -8,7 +9,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -32,7 +32,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
             PFFormControl,
             PFTitle,
             PFButton,
-            AKGlobal,
+            AKElement.GlobalStyle,
         ];
     }
 

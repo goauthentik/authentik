@@ -4,7 +4,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
@@ -20,7 +19,7 @@ export class Markdown extends AKElement {
     md?: MarkdownDocument;
 
     static get styles(): CSSResult[] {
-        return [PFList, PFContent, AKGlobal];
+        return [PFList, PFContent, AKElement.GlobalStyle];
     }
 
     render(): TemplateResult {

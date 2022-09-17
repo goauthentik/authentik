@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
 import { PlexAPIClient, popupCenterScreen } from "@goauthentik/web/common/helpers/plex";
 import { MessageLevel } from "@goauthentik/web/common/messages";
+import { AKElement } from "@goauthentik/web/elements/Base";
 import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
 import { BaseStage } from "@goauthentik/web/flow/stages/base";
 
@@ -10,7 +11,6 @@ import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -31,7 +31,7 @@ export class PlexLoginInit extends BaseStage<
     PlexAuthenticationChallengeResponseRequest
 > {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, AKGlobal];
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, AKElement.GlobalStyle];
     }
 
     async firstUpdated(): Promise<void> {

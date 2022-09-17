@@ -15,7 +15,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -64,7 +63,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             PFForm,
             PFFormControl,
             PFBanner,
-            AKGlobal,
+            AKElement.GlobalStyle,
         ];
     }
 

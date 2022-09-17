@@ -7,7 +7,6 @@ import { AKElement } from "@goauthentik/web/elements/Base";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
@@ -39,7 +38,7 @@ export class SidebarBrand extends AKElement {
             PFGlobal,
             PFPage,
             PFButton,
-            AKGlobal,
+            AKElement.GlobalStyle,
             css`
                 :host {
                     display: flex;

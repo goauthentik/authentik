@@ -7,7 +7,6 @@ import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
@@ -30,7 +29,7 @@ export abstract class TableModal<T> extends Table<T> {
             PFBackdrop,
             PFPage,
             PFStack,
-            AKGlobal,
+            AKElement.GlobalStyle,
             MODAL_BUTTON_STYLES,
         );
     }

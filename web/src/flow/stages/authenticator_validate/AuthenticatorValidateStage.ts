@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { AKElement } from "@goauthentik/web/elements/Base";
 import "@goauthentik/web/flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
 import "@goauthentik/web/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
 import "@goauthentik/web/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
@@ -11,7 +12,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -78,7 +78,8 @@ export class AuthenticatorValidateStage
     }
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal].concat(css`
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKElement.GlobalStyle]
+            .concat(css`
             ul {
                 padding-top: 1rem;
             }

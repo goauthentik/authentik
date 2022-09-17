@@ -1,10 +1,10 @@
+import { AKElement } from "@goauthentik/web/elements/Base";
 import { Form, KeyUnknown } from "@goauthentik/web/elements/forms/Form";
 import { WizardPage } from "@goauthentik/web/elements/wizard/WizardPage";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -33,7 +33,16 @@ export class WizardForm extends Form<KeyUnknown> {
 
 export class WizardFormPage extends WizardPage {
     static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFButton, PFForm, PFAlert, PFInputGroup, PFFormControl, AKGlobal];
+        return [
+            PFBase,
+            PFCard,
+            PFButton,
+            PFForm,
+            PFAlert,
+            PFInputGroup,
+            PFFormControl,
+            AKElement.GlobalStyle,
+        ];
     }
 
     inputCallback(): void {

@@ -17,7 +17,6 @@ import { until } from "lit-html/directives/until.js";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -64,7 +63,7 @@ export class LDAPProviderViewPage extends AKElement {
             PFContent,
             PFCard,
             PFDescriptionList,
-            AKGlobal,
+            AKElement.GlobalStyle,
         ];
     }
 

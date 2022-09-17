@@ -5,7 +5,6 @@ import "@goauthentik/web/elements/sidebar/SidebarUser";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -17,7 +16,7 @@ export class Sidebar extends AKElement {
             PFBase,
             PFPage,
             PFNav,
-            AKGlobal,
+            AKElement.GlobalStyle,
             css`
                 :host {
                     z-index: 100;

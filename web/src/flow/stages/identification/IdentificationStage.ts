@@ -1,3 +1,4 @@
+import { AKElement } from "@goauthentik/web/elements/Base";
 import "@goauthentik/web/elements/Divider";
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/elements/forms/FormElement";
@@ -8,7 +9,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -53,7 +53,7 @@ export class IdentificationStage extends BaseStage<
             PFFormControl,
             PFTitle,
             PFButton,
-            AKGlobal,
+            AKElement.GlobalStyle,
         ].concat(
             css`
                 /* login page's icons */

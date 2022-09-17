@@ -1,4 +1,5 @@
 import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
+import { AKElement } from "@goauthentik/web/elements/Base";
 import { WizardAction } from "@goauthentik/web/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/web/elements/wizard/WizardPage";
 
@@ -7,7 +8,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
@@ -32,7 +32,14 @@ export interface ActionStateBundle {
 @customElement("ak-wizard-page-action")
 export class ActionWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
-        return [PFBase, PFBullseye, PFEmptyState, PFTitle, PFProgressStepper, AKGlobal];
+        return [
+            PFBase,
+            PFBullseye,
+            PFEmptyState,
+            PFTitle,
+            PFProgressStepper,
+            AKElement.GlobalStyle,
+        ];
     }
 
     @property({ attribute: false })

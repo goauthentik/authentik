@@ -1,3 +1,4 @@
+import { AKElement } from "@goauthentik/web/elements/Base";
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/flow/FormStatic";
 import { BaseStage } from "@goauthentik/web/flow/stages/base";
@@ -7,7 +8,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -20,7 +20,7 @@ import { DummyChallenge, DummyChallengeResponseRequest } from "@goauthentik/api"
 @customElement("ak-stage-dummy")
 export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKElement.GlobalStyle];
     }
 
     render(): TemplateResult {

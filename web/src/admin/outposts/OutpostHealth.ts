@@ -7,7 +7,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { OutpostHealth } from "@goauthentik/api";
@@ -20,7 +19,7 @@ export class OutpostHealthElement extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,
-            AKGlobal,
+            AKElement.GlobalStyle,
             css`
                 li {
                     margin: 5px 0;

@@ -3,6 +3,7 @@ import {
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
 } from "@goauthentik/web/common/helpers/webauthn";
+import { AKElement } from "@goauthentik/web/elements/Base";
 import { PFSize } from "@goauthentik/web/elements/Spinner";
 import { BaseStage } from "@goauthentik/web/flow/stages/base";
 
@@ -11,7 +12,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -42,7 +42,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFFormControl, PFForm, PFTitle, PFButton, AKGlobal];
+        return [PFBase, PFLogin, PFFormControl, PFForm, PFTitle, PFButton, AKElement.GlobalStyle];
     }
 
     async register(): Promise<void> {

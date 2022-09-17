@@ -3,7 +3,6 @@ import { AKElement } from "@goauthentik/web/elements/Base";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFTooltip from "@patternfly/patternfly/components/Tooltip/tooltip.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -16,7 +15,7 @@ export class Tooltip extends AKElement {
         return [
             PFBase,
             PFTooltip,
-            AKGlobal,
+            AKElement.GlobalStyle,
             css`
                 .pf-c-tooltip__content {
                     text-align: inherit;

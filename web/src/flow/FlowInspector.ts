@@ -8,7 +8,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
@@ -36,7 +35,7 @@ export class FlowInspector extends AKElement {
             PFNotificationDrawer,
             PFDescriptionList,
             PFProgressStepper,
-            AKGlobal,
+            AKElement.GlobalStyle,
             css`
                 code.break {
                     word-break: break-all;

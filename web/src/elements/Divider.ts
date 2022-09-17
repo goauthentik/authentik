@@ -3,7 +3,6 @@ import { AKElement } from "@goauthentik/web/elements/Base";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-divider")
@@ -11,7 +10,7 @@ export class Divider extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,
-            AKGlobal,
+            AKElement.GlobalStyle,
             css`
                 .separator {
                     display: flex;

@@ -2,6 +2,7 @@ import {
     transformAssertionForServer,
     transformCredentialRequestOptions,
 } from "@goauthentik/web/common/helpers/webauthn";
+import { AKElement } from "@goauthentik/web/elements/Base";
 import { AuthenticatorValidateStage } from "@goauthentik/web/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 import { BaseStage } from "@goauthentik/web/flow/stages/base";
 
@@ -10,7 +11,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -52,7 +52,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
             PFFormControl,
             PFTitle,
             PFButton,
-            AKGlobal,
+            AKElement.GlobalStyle,
         ];
     }
 

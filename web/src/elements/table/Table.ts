@@ -16,7 +16,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
@@ -156,7 +155,7 @@ export abstract class Table<T> extends AKElement {
             PFToolbar,
             PFDropdown,
             PFPagination,
-            AKGlobal,
+            AKElement.GlobalStyle,
         ];
     }
 

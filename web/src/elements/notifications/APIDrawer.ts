@@ -7,7 +7,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -26,7 +25,7 @@ export class APIDrawer extends AKElement {
             PFButton,
             PFContent,
             PFDropdown,
-            AKGlobal,
+            AKElement.GlobalStyle,
             css`
                 .pf-c-notification-drawer__header {
                     height: 114px;

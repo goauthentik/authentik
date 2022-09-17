@@ -4,7 +4,6 @@ import { PFSize } from "@goauthentik/web/elements/Spinner";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -60,7 +59,7 @@ export class ModalButton extends AKElement {
             PFPage,
             PFCard,
             PFContent,
-            AKGlobal,
+            AKElement.GlobalStyle,
             MODAL_BUTTON_STYLES,
             css`
                 .locked {

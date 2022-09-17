@@ -5,7 +5,6 @@ import { PFSize } from "@goauthentik/web/elements/Spinner";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -23,7 +22,7 @@ export class SpinnerButton extends AKElement {
             PFBase,
             PFButton,
             PFSpinner,
-            AKGlobal,
+            AKElement.GlobalStyle,
             css`
                 button {
                     /* Have to use !important here, as buttons with pf-m-progress have transition already */

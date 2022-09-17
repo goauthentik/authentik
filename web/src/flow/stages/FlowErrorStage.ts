@@ -1,3 +1,4 @@
+import { AKElement } from "@goauthentik/web/elements/Base";
 import "@goauthentik/web/elements/EmptyState";
 import "@goauthentik/web/flow/FormStatic";
 import { BaseStage } from "@goauthentik/web/flow/stages/base";
@@ -8,7 +9,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -20,7 +20,7 @@ import { FlowChallengeResponseRequest, FlowErrorChallenge } from "@goauthentik/a
 @customElement("ak-stage-flow-error")
 export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, AKGlobal];
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, AKElement.GlobalStyle];
     }
 
     render(): TemplateResult {
