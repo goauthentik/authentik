@@ -48,11 +48,11 @@ class ReadyView(View):
         try:
             db_conn = connections["default"]
             _ = db_conn.cursor()
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             return HttpResponse(status=503)
         try:
             redis_conn = get_redis_connection()
             redis_conn.ping()
-        except RedisError:
+        except RedisError:  # pragma: no cover
             return HttpResponse(status=503)
         return HttpResponse(status=204)

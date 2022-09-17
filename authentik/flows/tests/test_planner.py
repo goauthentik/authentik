@@ -11,7 +11,7 @@ from authentik.core.models import User
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
 from authentik.lib.tests.utils import dummy_get_response
 from authentik.policies.dummy.models import DummyPolicy
@@ -62,7 +62,7 @@ class TestFlowPlanner(TestCase):
     @patch("authentik.flows.planner.cache", CACHE_MOCK)
     def test_planner_cache(self):
         """Test planner cache"""
-        flow = create_test_flow()
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         FlowStageBinding.objects.create(
             target=flow, stage=DummyStage.objects.create(name="dummy"), order=0
         )
