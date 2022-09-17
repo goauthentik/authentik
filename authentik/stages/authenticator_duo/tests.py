@@ -5,11 +5,13 @@ from uuid import uuid4
 from django.test.client import RequestFactory
 from django.urls import reverse
 
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_duo.stage import SESSION_KEY_DUO_ENROLL
+from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
 class AuthenticatorDuoStageTests(FlowTestCase):
@@ -221,3 +223,68 @@ class AuthenticatorDuoStageTests(FlowTestCase):
             )
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.content.decode(), '{"error":"","count":1}')
+
+    def test_stage_enroll_basic(self):
+        """Test stage"""
+        conf_stage = IdentificationStage.objects.create(
+            name=generate_id(),
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+        )
+        flow = create_test_flow()
+        FlowStageBinding.objects.create(target=flow, stage=conf_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {"uid_field": self.user.username},
+        )
+        self.assertEqual(response.status_code, 302)
+
+        enroll_mock = MagicMock(
+            return_value={
+                "user_id": "foo",
+                "activation_barcode": "bar",
+                "activation_code": "bar",
+            }
+        )
+        with patch("duo_client.auth.Auth.enroll", enroll_mock):
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+                follow=True,
+            )
+            self.assertStageResponse(
+                response,
+                flow,
+                component="ak-stage-authenticator-duo",
+                pending_user=self.user.username,
+                activation_barcode="bar",
+                activation_code="bar",
+            )
+
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+                follow=True,
+            )
+            self.assertStageResponse(
+                response,
+                flow,
+                component="ak-stage-authenticator-duo",
+                pending_user=self.user.username,
+                activation_barcode="bar",
+                activation_code="bar",
+            )
+            self.assertEqual(enroll_mock.call_count, 1)
+
+            with patch("duo_client.auth.Auth.enroll_status", MagicMock(return_value="success")):
+                response = self.client.post(
+                    reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}), {}
+                )
+                self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
