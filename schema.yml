@@ -18650,15 +18650,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /stages/authenticator/duo/{stage_uuid}/import_devices/:
+  /stages/authenticator/duo/{stage_uuid}/import_device_manual/:
     post:
-      operationId: stages_authenticator_duo_import_devices_create
+      operationId: stages_authenticator_duo_import_device_manual_create
       description: Import duo devices into authentik
       parameters:
-      - in: query
-        name: duo_user_id
-        schema:
-          type: string
       - in: path
         name: stage_uuid
         schema:
@@ -18666,19 +18662,52 @@ paths:
           format: uuid
         description: A UUID string identifying this Duo Authenticator Setup Stage.
         required: true
-      - in: query
-        name: username
-        schema:
-          type: string
       tags:
       - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorDuoStageManualDeviceImportRequest'
+        required: true
       security:
       - authentik: []
       responses:
         '204':
           description: Enrollment successful
         '400':
-          description: Device exists already
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/duo/{stage_uuid}/import_devices_automatic/:
+    post:
+      operationId: stages_authenticator_duo_import_devices_automatic_create
+      description: Import duo devices into authentik
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorDuoStageDeviceImportResponse'
+          description: ''
+        '400':
+          description: Bad request
         '403':
           content:
             application/json:
@@ -24983,6 +25012,8 @@ components:
           type: string
         api_hostname:
           type: string
+        admin_integration_key:
+          type: string
       required:
       - api_hostname
       - client_id
@@ -24992,6 +25023,30 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    AuthenticatorDuoStageDeviceImportResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          readOnly: true
+        error:
+          type: string
+          readOnly: true
+      required:
+      - count
+      - error
+    AuthenticatorDuoStageManualDeviceImportRequest:
+      type: object
+      properties:
+        duo_user_id:
+          type: string
+          minLength: 1
+        username:
+          type: string
+          minLength: 1
+      required:
+      - duo_user_id
+      - username
     AuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer
@@ -25019,6 +25074,11 @@ components:
         api_hostname:
           type: string
           minLength: 1
+        admin_integration_key:
+          type: string
+        admin_secret_key:
+          type: string
+          writeOnly: true
       required:
       - api_hostname
       - client_id
@@ -32518,6 +32578,11 @@ components:
         api_hostname:
           type: string
           minLength: 1
+        admin_integration_key:
+          type: string
+        admin_secret_key:
+          type: string
+          writeOnly: true
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer

@@ -141,8 +141,10 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Context`} name="context">
-                <ak-codemirror mode="yaml" value=${YAML.stringify(first(this.request?.context, {}))}
-                    >>
+                <ak-codemirror
+                    mode="yaml"
+                    value=${YAML.stringify(first(this.request?.context, {}))}
+                >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${t`Set custom attributes using YAML or JSON.`}

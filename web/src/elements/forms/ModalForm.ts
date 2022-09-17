@@ -23,7 +23,7 @@ export class ModalForm extends ModalButton {
     @property({ type: String })
     cancelText = t`Cancel`;
 
-    confirm(): Promise<void> {
+    async confirm(): Promise<void> {
         const form = this.querySelector<Form<unknown>>("[slot=form]");
         if (!form) {
             return Promise.reject(t`No form found`);

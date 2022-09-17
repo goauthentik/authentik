@@ -175,7 +175,7 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
         ).name
 
     try:
-        response = stage.client.auth(
+        response = stage.auth_client().auth(
             "auto",
             user_id=device.duo_user_id,
             ipaddr=get_client_ip(stage_view.request),

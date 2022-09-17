@@ -821,6 +821,10 @@ msgstr ""
 msgid "Callback URL"
 msgstr ""
 
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Can be either the username (found in the Users list) or the ID (can be found in the URL after clicking on a user)."
+msgstr ""
+
 #: src/pages/outposts/ServiceConnectionDockerForm.ts
 #~ msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
 #~ msgstr ""
@@ -1849,8 +1853,20 @@ msgstr ""
 #~ msgid "Duo"
 #~ msgstr ""
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Admin API (optional)"
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Auth API"
+msgstr ""
+
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Duo Authenticators"
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Duo User ID"
 msgstr ""
 
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
@@ -2801,7 +2817,14 @@ msgstr ""
 
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/flows/FlowListPage.ts
+#: src/admin/stages/StageListPage.ts
+#: src/admin/stages/StageListPage.ts
 msgid "Import"
+msgstr ""
+
+#: src/admin/stages/StageListPage.ts
+#: src/admin/stages/StageListPage.ts
+msgid "Import Duo device"
 msgstr ""
 
 #: src/admin/flows/FlowListPage.ts
@@ -2850,6 +2873,7 @@ msgstr ""
 msgid "Integration"
 msgstr ""
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Integration key"
 msgstr ""
@@ -3172,6 +3196,7 @@ msgstr ""
 #: src/admin/sources/saml/SAMLSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/admin/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
@@ -4817,6 +4842,7 @@ msgid "Search..."
 msgstr ""
 
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Secret key"
 msgstr ""
 
@@ -5524,6 +5550,10 @@ msgstr ""
 msgid "Successfully generated recovery link"
 msgstr ""
 
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Successfully imported device."
+msgstr ""
+
 #: src/admin/flows/FlowImportForm.ts
 msgid "Successfully imported flow."
 msgstr ""
@@ -5914,6 +5944,14 @@ msgstr ""
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber"
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "The user ID in Duo."
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "The user in authentik this device will be assigned to."
 msgstr ""
 
 #: src/admin/flows/BoundStagesList.ts
@@ -6521,6 +6559,7 @@ msgstr ""
 #: src/admin/policies/PolicyBindingForm.ts
 #: src/admin/policies/PolicyTestForm.ts
 #: src/admin/property-mappings/PropertyMappingTestForm.ts
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
 #: src/admin/tokens/TokenForm.ts
 #: src/admin/tokens/TokenListPage.ts
 #: src/admin/users/RelatedUserList.ts
@@ -6941,6 +6980,12 @@ msgstr ""
 
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid ""
+"When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.\n"
+"This will allow authentik to import devices automatically."
 msgstr ""
 
 #: src/admin/tenants/TenantForm.ts

@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django_otp.models import Device
+from duo_client.admin import Admin
 from duo_client.auth import Auth
 from rest_framework.serializers import BaseSerializer, Serializer
 
@@ -13,14 +14,19 @@ from authentik import __version__
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
 from authentik.lib.models import SerializerModel
+from authentik.lib.utils.http import authentik_user_agent
 
 
 class AuthenticatorDuoStage(ConfigurableStage, Stage):
     """Setup Duo authenticator devices"""
 
+    api_hostname = models.TextField()
+
     client_id = models.TextField()
     client_secret = models.TextField()
-    api_hostname = models.TextField()
+
+    admin_integration_key = models.TextField(blank=True, default="")
+    admin_secret_key = models.TextField(blank=True, default="")
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -34,14 +40,24 @@ class AuthenticatorDuoStage(ConfigurableStage, Stage):
 
         return AuthenticatorDuoStageView
 
-    @property
-    def client(self) -> Auth:
+    def auth_client(self) -> Auth:
         """Get an API Client to talk to duo"""
-        client = Auth(
+        return Auth(
             self.client_id,
             self.client_secret,
             self.api_hostname,
-            user_agent=f"authentik {__version__}",
+            user_agent=authentik_user_agent(),
+        )
+
+    def admin_client(self) -> Admin:
+        """Get an API Client to talk to duo"""
+        if self.admin_integration_key == "" or self.admin_secret_key == "":  # nosec
+            raise ValueError("Admin credentials not configured")
+        client = Admin(
+            self.admin_integration_key,
+            self.admin_secret_key,
+            self.api_hostname,
+            user_agent=authentik_user_agent(),
         )
         return client
 

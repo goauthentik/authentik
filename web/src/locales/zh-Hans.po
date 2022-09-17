@@ -817,6 +817,10 @@ msgstr ""
 msgid "Callback URL"
 msgstr "回调 URL"
 
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Can be either the username (found in the Users list) or the ID (can be found in the URL after clicking on a user)."
+msgstr ""
+
 #~ msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
 #~ msgstr "连接到本地 Docker 守护进程时可以采用 'unix://' 格式，或者在连接到远程系统时采用 'https://:2376' 格式。"
 
@@ -1821,9 +1825,21 @@ msgstr "用于测试的虚拟阶段。显示一个简单的“继续”按钮，
 #~ msgid "Duo"
 #~ msgstr "Duo"
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Admin API (optional)"
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Auth API"
+msgstr ""
+
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Duo Authenticators"
 msgstr "Duo 身份验证器"
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Duo User ID"
+msgstr ""
 
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Duo activation"
@@ -2748,8 +2764,15 @@ msgstr "已开始模拟身份"
 
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/flows/FlowListPage.ts
+#: src/admin/stages/StageListPage.ts
+#: src/admin/stages/StageListPage.ts
 msgid "Import"
 msgstr "导入"
+
+#: src/admin/stages/StageListPage.ts
+#: src/admin/stages/StageListPage.ts
+msgid "Import Duo device"
+msgstr ""
 
 #: src/admin/flows/FlowListPage.ts
 msgid "Import Flow"
@@ -2797,6 +2820,7 @@ msgstr "在 id_token 中包含声明"
 msgid "Integration"
 msgstr "集成"
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Integration key"
 msgstr "集成密钥"
@@ -3115,6 +3139,7 @@ msgstr "正在加载"
 #: src/admin/sources/saml/SAMLSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/admin/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
@@ -4718,6 +4743,7 @@ msgid "Search..."
 msgstr "搜索..."
 
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 msgid "Secret key"
 msgstr "Secret 密钥"
 
@@ -5398,6 +5424,10 @@ msgstr "已成功生成证书密钥对。"
 msgid "Successfully generated recovery link"
 msgstr "已成功生成恢复链接"
 
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Successfully imported device."
+msgstr ""
+
 #: src/admin/flows/FlowImportForm.ts
 msgid "Successfully imported flow."
 msgstr "已成功导入流程。"
@@ -5784,6 +5814,14 @@ msgstr "起始 gidNumbers，这个数字会被添加到从 group.Pk 生成的数
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber"
 msgstr "起始 uidNumbers，这个数字会被添加到 user.Pk 中，以确保对于 POSIX 用户来说，这个数字不会太低。默认值为 2000，以确保我们不会与本地用户的 uidNumber 发生冲突"
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "The user ID in Duo."
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "The user in authentik this device will be assigned to."
+msgstr ""
 
 #: src/admin/flows/BoundStagesList.ts
 msgid "These bindings control if this stage will be applied to the flow."
@@ -6387,6 +6425,7 @@ msgstr "所有未设置专用租户的域名都将使用此租户。"
 #: src/admin/policies/PolicyBindingForm.ts
 #: src/admin/policies/PolicyTestForm.ts
 #: src/admin/property-mappings/PropertyMappingTestForm.ts
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
 #: src/admin/tokens/TokenForm.ts
 #: src/admin/tokens/TokenListPage.ts
 #: src/admin/users/RelatedUserList.ts
@@ -6802,6 +6841,12 @@ msgstr "启用此选项后，将记录此策略的所有执行日志。默认情
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
 msgstr "当与用户写入阶段结合使用时，请使用 attributes.foo 来编写属性。"
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid ""
+"When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.\n"
+"This will allow authentik to import devices automatically."
+msgstr ""
 
 #: src/admin/tenants/TenantForm.ts
 msgid "When using an external logging solution for archiving, this can be set to \"minutes=5\"."
