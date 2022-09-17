@@ -4,8 +4,8 @@ from django.test.client import RequestFactory
 from django.urls.base import reverse
 from rest_framework.exceptions import ValidationError
 
-from authentik.core.tests.utils import create_test_admin_user
-from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
@@ -40,7 +40,7 @@ class AuthenticatorValidateStageTests(FlowTestCase):
             not_configured_action=NotConfiguredAction.CONFIGURE,
         )
         stage.configuration_stages.set([conf_stage])
-        flow = Flow.objects.create(name="test", slug="test", title="test")
+        flow = create_test_flow()
         FlowStageBinding.objects.create(target=flow, stage=conf_stage, order=0)
         FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
 

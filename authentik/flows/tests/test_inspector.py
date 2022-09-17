@@ -6,10 +6,9 @@ from django.test.client import RequestFactory
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.challenge import ChallengeTypes
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, InvalidResponseAction
-from authentik.lib.generators import generate_id
+from authentik.flows.models import FlowStageBinding, InvalidResponseAction
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
@@ -24,11 +23,7 @@ class TestFlowInspector(APITestCase):
 
     def test(self):
         """test inspector"""
-        flow = Flow.objects.create(
-            name=generate_id(),
-            slug=generate_id(),
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        flow = create_test_flow()
 
         # Stage 1 is an identification stage
         ident_stage = IdentificationStage.objects.create(

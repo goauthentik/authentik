@@ -5,9 +5,9 @@ from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework.exceptions import ErrorDetail, ValidationError
 
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -24,11 +24,7 @@ class TestPromptStage(FlowTestCase):
         super().setUp()
         self.user = create_test_admin_user()
         self.factory = RequestFactory()
-        self.flow = Flow.objects.create(
-            name="test-prompt",
-            slug="test-prompt",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.flow = create_test_flow()
         username_prompt = Prompt.objects.create(
             field_key="username_prompt",
             label="USERNAME_LABEL",

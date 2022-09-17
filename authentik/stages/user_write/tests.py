@@ -7,9 +7,9 @@ from django.urls import reverse
 
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, Group, Source, User, UserSourceConnection
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
@@ -24,11 +24,7 @@ class TestUserWriteStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
-        self.flow = Flow.objects.create(
-            name="test-write",
-            slug="test-write",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        self.flow = create_test_flow()
         self.group = Group.objects.create(name="test-group")
         self.other_group = Group.objects.create(name="other-group")
         self.stage = UserWriteStage.objects.create(

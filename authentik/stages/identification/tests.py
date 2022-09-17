@@ -3,7 +3,7 @@ from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.challenge import ChallengeTypes
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage, UserFields
@@ -148,12 +148,7 @@ class TestIdentificationStage(FlowTestCase):
 
     def test_enrollment_flow(self):
         """Test that enrollment flow is linked correctly"""
-        flow = Flow.objects.create(
-            name="enroll-test",
-            slug="unique-enrollment-string",
-            title="unique-enrollment-string",
-            designation=FlowDesignation.ENROLLMENT,
-        )
+        flow = create_test_flow()
         self.stage.enrollment_flow = flow
         self.stage.save()
         FlowStageBinding.objects.create(
@@ -192,11 +187,7 @@ class TestIdentificationStage(FlowTestCase):
 
     def test_recovery_flow(self):
         """Test that recovery flow is linked correctly"""
-        flow = Flow.objects.create(
-            name="recovery-test",
-            slug="unique-recovery-string",
-            designation=FlowDesignation.RECOVERY,
-        )
+        flow = create_test_flow()
         self.stage.recovery_flow = flow
         self.stage.save()
         FlowStageBinding.objects.create(

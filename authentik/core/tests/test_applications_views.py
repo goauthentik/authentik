@@ -4,8 +4,7 @@ from unittest.mock import MagicMock, patch
 from django.urls import reverse
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_tenant
-from authentik.flows.models import Flow, FlowDesignation
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.tests import FlowTestCase
 from authentik.tenants.models import Tenant
 
@@ -21,11 +20,7 @@ class TestApplicationsViews(FlowTestCase):
 
     def test_check_redirect(self):
         """Test redirect"""
-        empty_flow = Flow.objects.create(
-            name="foo",
-            slug="foo",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        empty_flow = create_test_flow()
         tenant: Tenant = create_test_tenant()
         tenant.flow_authentication = empty_flow
         tenant.save()
@@ -49,11 +44,7 @@ class TestApplicationsViews(FlowTestCase):
     def test_check_redirect_auth(self):
         """Test redirect"""
         self.client.force_login(self.user)
-        empty_flow = Flow.objects.create(
-            name="foo",
-            slug="foo",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        empty_flow = create_test_flow()
         tenant: Tenant = create_test_tenant()
         tenant.flow_authentication = empty_flow
         tenant.save()

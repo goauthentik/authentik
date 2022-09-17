@@ -10,8 +10,8 @@ from docker.models.containers import Container
 from docker.types.healthcheck import Healthcheck
 
 from authentik import __version__
+from authentik.core.tests.utils import create_test_flow
 from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.models import Flow, FlowDesignation
 from authentik.outposts.models import (
     DockerServiceConnection,
     Outpost,
@@ -64,9 +64,7 @@ class TestProxyDocker(ChannelsLiveServerTestCase):
             name="test",
             internal_host="http://localhost",
             external_host="http://localhost",
-            authorization_flow=Flow.objects.create(
-                name="foo", slug="foo", designation=FlowDesignation.AUTHORIZATION
-            ),
+            authorization_flow=create_test_flow(),
         )
         authentication_kp = CertificateKeyPair.objects.create(
             name="docker-authentication",

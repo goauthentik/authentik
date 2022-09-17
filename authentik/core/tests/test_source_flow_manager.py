@@ -6,7 +6,7 @@ from guardian.utils import get_anonymous_user
 
 from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
-from authentik.flows.models import Flow, FlowDesignation
+from authentik.core.tests.utils import create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import get_request
 from authentik.policies.denied import AccessDeniedResponse
@@ -152,9 +152,7 @@ class TestSourceFlowManager(TestCase):
         """Test error handling when a source selected flow is non-applicable due to a policy"""
         self.source.user_matching_mode = SourceUserMatchingModes.USERNAME_LINK
 
-        flow = Flow.objects.create(
-            name="test", slug="test", title="test", designation=FlowDesignation.ENROLLMENT
-        )
+        flow = create_test_flow()
         policy = ExpressionPolicy.objects.create(
             name="false", expression="""ak_message("foo");return False"""
         )
