@@ -1,5 +1,5 @@
-import { MessageLevel } from "@goauthentik/common/messages";
-import { AKElement } from "@goauthentik/elements/Base";
+import { MessageLevel } from "@goauthentik/web/common/messages";
+import { AKElement } from "@goauthentik/web/elements/Base";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";

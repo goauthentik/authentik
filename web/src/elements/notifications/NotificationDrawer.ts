@@ -1,18 +1,18 @@
-import { ActionToLabel } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { me } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { ActionToLabel } from "@goauthentik/web/admin/events/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/web/common/constants";
+import { MessageLevel } from "@goauthentik/web/common/messages";
+import { me } from "@goauthentik/web/common/users";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";

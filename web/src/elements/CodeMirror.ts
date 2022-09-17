@@ -12,7 +12,7 @@ import {
 import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { EditorView, keymap, lineNumbers } from "@codemirror/view";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/web/elements/Base";
 import YAML from "yaml";
 
 import { customElement, property } from "lit/decorators.js";

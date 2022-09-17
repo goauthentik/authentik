@@ -1,9 +1,9 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
-import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
-import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
-import { BaseStage, StageHost } from "@goauthentik/flow/stages/base";
-import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import "@goauthentik/web/flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
+import "@goauthentik/web/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
+import "@goauthentik/web/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
+import { BaseStage, StageHost } from "@goauthentik/web/flow/stages/base";
+import { PasswordManagerPrefill } from "@goauthentik/web/flow/stages/identification/IdentificationStage";
 
 import { t } from "@lingui/macro";
 
@@ -11,7 +11,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";

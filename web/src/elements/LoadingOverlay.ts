@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { PFSize } from "@goauthentik/elements/Spinner";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";

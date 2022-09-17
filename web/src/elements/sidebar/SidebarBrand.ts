@@ -1,13 +1,13 @@
-import { tenant } from "@goauthentik/common/api/config";
-import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
-import { configureSentry } from "@goauthentik/common/sentry";
-import { first } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
+import { tenant } from "@goauthentik/web/common/api/config";
+import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/web/common/constants";
+import { configureSentry } from "@goauthentik/web/common/sentry";
+import { first } from "@goauthentik/web/common/utils";
+import { AKElement } from "@goauthentik/web/elements/Base";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";

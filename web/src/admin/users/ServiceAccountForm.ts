@@ -1,7 +1,7 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { Form } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModalForm } from "@goauthentik/web/elements/forms/ModalForm";
 
 import { t } from "@lingui/macro";
 

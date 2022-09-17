@@ -1,17 +1,17 @@
-import "@goauthentik/admin/outposts/OutpostDeploymentModal";
-import "@goauthentik/admin/outposts/OutpostDeploymentModal";
-import "@goauthentik/admin/outposts/OutpostForm";
-import "@goauthentik/admin/outposts/OutpostHealth";
-import "@goauthentik/admin/outposts/OutpostHealthSimple";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { PFSize } from "@goauthentik/elements/Spinner";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@goauthentik/web/admin/outposts/OutpostDeploymentModal";
+import "@goauthentik/web/admin/outposts/OutpostDeploymentModal";
+import "@goauthentik/web/admin/outposts/OutpostForm";
+import "@goauthentik/web/admin/outposts/OutpostHealth";
+import "@goauthentik/web/admin/outposts/OutpostHealthSimple";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
 import { t } from "@lingui/macro";
 

@@ -1,7 +1,7 @@
-import { config } from "@goauthentik/common/api/config";
-import { VERSION } from "@goauthentik/common/constants";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
-import { me } from "@goauthentik/common/users";
+import { config } from "@goauthentik/web/common/api/config";
+import { VERSION } from "@goauthentik/web/common/constants";
+import { SentryIgnoredError } from "@goauthentik/web/common/errors";
+import { me } from "@goauthentik/web/common/users";
 import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
 

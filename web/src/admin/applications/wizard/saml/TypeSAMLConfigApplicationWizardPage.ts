@@ -1,7 +1,7 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { KeyUnknown } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { WizardFormPage } from "@goauthentik/elements/wizard/WizardFormPage";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { KeyUnknown } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { WizardFormPage } from "@goauthentik/web/elements/wizard/WizardFormPage";
 
 import { t } from "@lingui/macro";
 

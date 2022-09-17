@@ -1,5 +1,5 @@
-import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
-import "@goauthentik/elements/messages/MessageContainer";
-import "@goauthentik/flow/FlowExecutor";
+import { autoDetectLanguage } from "@goauthentik/web/common/ui/locale";
+import "@goauthentik/web/elements/messages/MessageContainer";
+import "@goauthentik/web/flow/FlowExecutor";
 
 autoDetectLanguage();

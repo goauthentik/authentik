@@ -1,9 +1,9 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
+import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
 
 import { t } from "@lingui/macro";
 

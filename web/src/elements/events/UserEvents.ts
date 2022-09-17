@@ -1,14 +1,14 @@
-import "@goauthentik/admin/events/EventInfo";
-import "@goauthentik/admin/events/EventInfo";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "@goauthentik/web/admin/events/EventInfo";
+import "@goauthentik/web/admin/events/EventInfo";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { EventWithContext } from "@goauthentik/web/common/events";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/Dropdown";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
+import { Table, TableColumn } from "@goauthentik/web/elements/table/Table";
 
 import { t } from "@lingui/macro";
 

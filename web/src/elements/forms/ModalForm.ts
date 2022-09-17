@@ -1,8 +1,8 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/elements/LoadingOverlay";
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { Form } from "@goauthentik/elements/forms/Form";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
+import "@goauthentik/web/elements/LoadingOverlay";
+import { ModalButton } from "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { Form } from "@goauthentik/web/elements/forms/Form";
 
 import { t } from "@lingui/macro";
 

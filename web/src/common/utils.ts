@@ -1,4 +1,4 @@
-import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { SentryIgnoredError } from "@goauthentik/web/common/errors";
 
 export function getCookie(name: string): string {
     let cookieValue = "";

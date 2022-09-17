@@ -1,7 +1,7 @@
-import { MessageLevel } from "@goauthentik/common/messages";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { DeleteForm } from "@goauthentik/elements/forms/DeleteForm";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { MessageLevel } from "@goauthentik/web/common/messages";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { DeleteForm } from "@goauthentik/web/elements/forms/DeleteForm";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
 
 import { t } from "@lingui/macro";
 

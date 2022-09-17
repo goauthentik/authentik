@@ -1,10 +1,10 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { Wizard } from "@goauthentik/elements/wizard/Wizard";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import { Wizard } from "@goauthentik/web/elements/wizard/Wizard";
 
 import { CSSResult, PropertyDeclaration, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-wizard-page")

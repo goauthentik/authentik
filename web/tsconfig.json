@@ -2,13 +2,7 @@
     "compilerOptions": {
         "strict": true,
         "paths": {
-            "@goauthentik/admin/*": ["src/admin/*"],
-            "@goauthentik/common/*": ["src/common/*"],
-            "@goauthentik/elements/*": ["src/elements/*"],
-            "@goauthentik/flow/*": ["src/flow/*"],
-            "@goauthentik/polyfill/*": ["src/polyfill/*"],
-            "@goauthentik/user/*": ["src/user/*"],
-            "@goauthentik/locales/*": ["src/locales/*"],
+            "@goauthentik/web/*": ["src/*"],
             "@goauthentik/docs/*": ["../website/docs/*"]
         },
         "baseUrl": ".",

@@ -1,10 +1,10 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/web/elements/Base";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 

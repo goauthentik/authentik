@@ -2,16 +2,16 @@ import {
     Assertion,
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
-} from "@goauthentik/common/helpers/webauthn";
-import { PFSize } from "@goauthentik/elements/Spinner";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+} from "@goauthentik/web/common/helpers/webauthn";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import { BaseStage } from "@goauthentik/web/flow/stages/base";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";

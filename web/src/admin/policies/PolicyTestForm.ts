@@ -1,10 +1,10 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/CodeMirror";
-import { PFColor } from "@goauthentik/elements/Label";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { UserOption } from "@goauthentik/elements/user/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { first } from "@goauthentik/web/common/utils";
+import "@goauthentik/web/elements/CodeMirror";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import { Form } from "@goauthentik/web/elements/forms/Form";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { UserOption } from "@goauthentik/web/elements/user/utils";
 import YAML from "yaml";
 
 import { t } from "@lingui/macro";

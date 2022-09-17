@@ -1,5 +1,5 @@
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { PromptStage } from "@goauthentik/web/flow/stages/prompt/PromptStage";
 
 import { t } from "@lingui/macro";
 

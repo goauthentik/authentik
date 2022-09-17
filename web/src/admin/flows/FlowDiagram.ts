@@ -1,7 +1,7 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import "@goauthentik/web/elements/EmptyState";
 import FlowChart from "flowchart.js";
 
 import { TemplateResult, html } from "lit";

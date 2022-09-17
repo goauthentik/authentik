@@ -1,12 +1,12 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { MessageLevel } from "@goauthentik/common/messages";
-import "@goauthentik/elements/Divider";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { UserOption } from "@goauthentik/elements/user/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { MessageLevel } from "@goauthentik/web/common/messages";
+import "@goauthentik/web/elements/Divider";
+import "@goauthentik/web/elements/buttons/ActionButton";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModalForm } from "@goauthentik/web/elements/forms/ModalForm";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import { UserOption } from "@goauthentik/web/elements/user/utils";
 
 import { t } from "@lingui/macro";
 

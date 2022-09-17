@@ -1,11 +1,11 @@
-import "@goauthentik/admin/events/EventInfo";
-import { ActionToLabel } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@goauthentik/web/admin/events/EventInfo";
+import { ActionToLabel } from "@goauthentik/web/admin/events/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { EventWithContext } from "@goauthentik/web/common/events";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
 import { t } from "@lingui/macro";
 

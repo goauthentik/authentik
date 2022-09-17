@@ -1,14 +1,14 @@
-import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
-import "@goauthentik/admin/applications/ApplicationForm";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/charts/ApplicationAuthorizeChart";
-import "@goauthentik/elements/events/ObjectChangelog";
+import "@goauthentik/web/admin/applications/ApplicationCheckAccessForm";
+import "@goauthentik/web/admin/applications/ApplicationForm";
+import "@goauthentik/web/admin/policies/BoundPoliciesList";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/PageHeader";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/charts/ApplicationAuthorizeChart";
+import "@goauthentik/web/elements/events/ObjectChangelog";
 
 import { t } from "@lingui/macro";
 
@@ -16,7 +16,7 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";

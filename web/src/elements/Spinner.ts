@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/web/elements/Base";
 
 import { t } from "@lingui/macro";
 

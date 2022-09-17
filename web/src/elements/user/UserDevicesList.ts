@@ -1,8 +1,8 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { MFADevicesPage, deviceTypeName } from "@goauthentik/user/user-settings/mfa/MFADevicesPage";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { MFADevicesPage, deviceTypeName } from "@goauthentik/web/user/user-settings/mfa/MFADevicesPage";
 
 import { t } from "@lingui/macro";
 

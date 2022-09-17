@@ -1,14 +1,14 @@
-import "@goauthentik/admin/tokens/TokenForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/buttons/TokenCopyButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@goauthentik/web/admin/tokens/TokenForm";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/buttons/Dropdown";
+import "@goauthentik/web/elements/buttons/TokenCopyButton";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
 import { t } from "@lingui/macro";
 

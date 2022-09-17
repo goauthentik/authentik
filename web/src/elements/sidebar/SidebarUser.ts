@@ -1,5 +1,5 @@
-import { me } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
+import { me } from "@goauthentik/web/common/users";
+import { AKElement } from "@goauthentik/web/elements/Base";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";

@@ -1,10 +1,10 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { PFSize } from "@goauthentik/elements/Spinner";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";

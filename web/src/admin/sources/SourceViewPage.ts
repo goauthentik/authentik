@@ -1,12 +1,12 @@
-import "@goauthentik/admin/sources/ldap/LDAPSourceViewPage";
-import "@goauthentik/admin/sources/oauth/OAuthSourceViewPage";
-import "@goauthentik/admin/sources/plex/PlexSourceViewPage";
-import "@goauthentik/admin/sources/saml/SAMLSourceViewPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/web/admin/sources/ldap/LDAPSourceViewPage";
+import "@goauthentik/web/admin/sources/oauth/OAuthSourceViewPage";
+import "@goauthentik/web/admin/sources/plex/PlexSourceViewPage";
+import "@goauthentik/web/admin/sources/saml/SAMLSourceViewPage";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/PageHeader";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";

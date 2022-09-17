@@ -1,13 +1,13 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { PFSize } from "@goauthentik/elements/Spinner";
-import { MODAL_BUTTON_STYLES } from "@goauthentik/elements/buttons/ModalButton";
-import { Table } from "@goauthentik/elements/table/Table";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
+import { MODAL_BUTTON_STYLES } from "@goauthentik/web/elements/buttons/ModalButton";
+import { Table } from "@goauthentik/web/elements/table/Table";
 
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";

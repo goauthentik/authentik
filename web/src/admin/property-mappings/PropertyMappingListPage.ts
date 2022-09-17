@@ -1,19 +1,19 @@
-import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
-import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingWizard";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@goauthentik/web/admin/property-mappings/PropertyMappingLDAPForm";
+import "@goauthentik/web/admin/property-mappings/PropertyMappingNotification";
+import "@goauthentik/web/admin/property-mappings/PropertyMappingSAMLForm";
+import "@goauthentik/web/admin/property-mappings/PropertyMappingScopeForm";
+import "@goauthentik/web/admin/property-mappings/PropertyMappingTestForm";
+import "@goauthentik/web/admin/property-mappings/PropertyMappingWizard";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
+import { groupBy } from "@goauthentik/web/common/utils";
+import "@goauthentik/web/elements/forms/DeleteBulkForm";
+import "@goauthentik/web/elements/forms/ModalForm";
+import "@goauthentik/web/elements/forms/ProxyForm";
+import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TablePage } from "@goauthentik/web/elements/table/TablePage";
 
 import { t } from "@lingui/macro";
 

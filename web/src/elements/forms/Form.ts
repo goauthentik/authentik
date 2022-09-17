@@ -1,10 +1,10 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { camelToSnake, convertToSlug } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
-import { SearchSelect } from "@goauthentik/elements/SearchSelect";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
+import { MessageLevel } from "@goauthentik/web/common/messages";
+import { camelToSnake, convertToSlug } from "@goauthentik/web/common/utils";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import { SearchSelect } from "@goauthentik/web/elements/SearchSelect";
+import { HorizontalFormElement } from "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
 import "@polymer/iron-form/iron-form";
 import { IronFormElement } from "@polymer/iron-form/iron-form";
 import "@polymer/paper-input/paper-input";
@@ -12,7 +12,7 @@ import "@polymer/paper-input/paper-input";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";

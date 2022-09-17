@@ -1,13 +1,13 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/Spinner";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/Spinner";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { OutpostHealth } from "@goauthentik/api";

@@ -1,9 +1,9 @@
-import { MessageLevel } from "@goauthentik/common/messages";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/forms/FormElement";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import { MessageLevel } from "@goauthentik/web/common/messages";
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/forms/FormElement";
+import { showMessage } from "@goauthentik/web/elements/messages/MessageContainer";
+import "@goauthentik/web/flow/FormStatic";
+import { BaseStage } from "@goauthentik/web/flow/stages/base";
 import "webcomponent-qr-code";
 
 import { t } from "@lingui/macro";
@@ -12,7 +12,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";

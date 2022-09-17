@@ -1,9 +1,9 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/web/elements/Base";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";

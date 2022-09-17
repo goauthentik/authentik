@@ -1,5 +1,5 @@
-import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+import { EVENT_LOCALE_CHANGE } from "@goauthentik/web/common/constants";
+import { globalAK } from "@goauthentik/web/common/global";
 
 import { Messages, i18n } from "@lingui/core";
 import { detect, fromNavigator, fromUrl } from "@lingui/detect-locale";
@@ -21,7 +21,7 @@ export const LOCALES: {
         label: t`English`,
         locale: async () => {
             return {
-                locale: (await import("@goauthentik/locales/en")).messages,
+                locale: (await import("@goauthentik/web/locales/en")).messages,
                 plurals: (await import("make-plural/plurals")).en,
             };
         },
@@ -31,7 +31,7 @@ export const LOCALES: {
         label: t`Debug`,
         locale: async () => {
             return {
-                locale: (await import("@goauthentik/locales/pseudo-LOCALE")).messages,
+                locale: (await import("@goauthentik/web/locales/pseudo-LOCALE")).messages,
                 plurals: (await import("make-plural/plurals")).en,
             };
         },
@@ -41,7 +41,7 @@ export const LOCALES: {
         label: t`French`,
         locale: async () => {
             return {
-                locale: (await import("@goauthentik/locales/fr_FR")).messages,
+                locale: (await import("@goauthentik/web/locales/fr_FR")).messages,
                 plurals: (await import("make-plural/plurals")).fr,
             };
         },
@@ -51,7 +51,7 @@ export const LOCALES: {
         label: t`Turkish`,
         locale: async () => {
             return {
-                locale: (await import("@goauthentik/locales/tr")).messages,
+                locale: (await import("@goauthentik/web/locales/tr")).messages,
                 plurals: (await import("make-plural/plurals")).tr,
             };
         },
@@ -61,7 +61,7 @@ export const LOCALES: {
         label: t`Spanish`,
         locale: async () => {
             return {
-                locale: (await import("@goauthentik/locales/es")).messages,
+                locale: (await import("@goauthentik/web/locales/es")).messages,
                 plurals: (await import("make-plural/plurals")).es,
             };
         },
@@ -71,7 +71,7 @@ export const LOCALES: {
         label: t`Polish`,
         locale: async () => {
             return {
-                locale: (await import("@goauthentik/locales/pl")).messages,
+                locale: (await import("@goauthentik/web/locales/pl")).messages,
                 plurals: (await import("make-plural/plurals")).pl,
             };
         },
@@ -81,7 +81,7 @@ export const LOCALES: {
         label: t`Taiwanese Mandarin`,
         locale: async () => {
             return {
-                locale: (await import("@goauthentik/locales/zh_TW")).messages,
+                locale: (await import("@goauthentik/web/locales/zh_TW")).messages,
                 plurals: (await import("make-plural/plurals")).zh,
             };
         },
@@ -91,7 +91,7 @@ export const LOCALES: {
         label: t`Chinese (simplified)`,
         locale: async () => {
             return {
-                locale: (await import("@goauthentik/locales/zh-Hans")).messages,
+                locale: (await import("@goauthentik/web/locales/zh-Hans")).messages,
                 plurals: (await import("make-plural/plurals")).zh,
             };
         },
@@ -101,7 +101,7 @@ export const LOCALES: {
         label: t`Chinese (traditional)`,
         locale: async () => {
             return {
-                locale: (await import("@goauthentik/locales/zh-Hant")).messages,
+                locale: (await import("@goauthentik/web/locales/zh-Hant")).messages,
                 plurals: (await import("make-plural/plurals")).zh,
             };
         },
@@ -111,7 +111,7 @@ export const LOCALES: {
         label: t`German`,
         locale: async () => {
             return {
-                locale: (await import("@goauthentik/locales/de")).messages,
+                locale: (await import("@goauthentik/web/locales/de")).messages,
                 plurals: (await import("make-plural/plurals")).de,
             };
         },

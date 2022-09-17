@@ -1,5 +1,5 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
+import { AKElement } from "@goauthentik/web/elements/Base";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";

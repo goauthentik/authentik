@@ -1,14 +1,14 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { groupBy } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/chips/Chip";
-import "@goauthentik/elements/chips/ChipGroup";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import "@goauthentik/elements/table/TablePagination";
-import { Pagination } from "@goauthentik/elements/table/TablePagination";
-import "@goauthentik/elements/table/TableSearch";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
+import { groupBy } from "@goauthentik/web/common/utils";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import "@goauthentik/web/elements/EmptyState";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/chips/Chip";
+import "@goauthentik/web/elements/chips/ChipGroup";
+import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import "@goauthentik/web/elements/table/TablePagination";
+import { Pagination } from "@goauthentik/web/elements/table/TablePagination";
+import "@goauthentik/web/elements/table/TableSearch";
 
 import { t } from "@lingui/macro";
 
@@ -16,7 +16,7 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";

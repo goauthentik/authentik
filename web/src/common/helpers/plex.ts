@@ -1,5 +1,5 @@
-import { VERSION } from "@goauthentik/common/constants";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { VERSION } from "@goauthentik/web/common/constants";
+import { SentryIgnoredError } from "@goauthentik/web/common/errors";
 
 export interface PlexPinResponse {
     // Only has the fields we care about

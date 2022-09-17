@@ -1,5 +1,5 @@
-import { EVENT_MESSAGE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
+import { EVENT_MESSAGE, EVENT_WS_MESSAGE } from "@goauthentik/web/common/constants";
+import { MessageLevel } from "@goauthentik/web/common/messages";
 
 import { t } from "@lingui/macro";
 

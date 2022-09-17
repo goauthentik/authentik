@@ -1,6 +1,6 @@
-import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import { getURLParams, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "@goauthentik/web/common/constants";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import { getURLParams, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
 
 import { t } from "@lingui/macro";
 
@@ -8,7 +8,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 

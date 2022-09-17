@@ -1,4 +1,4 @@
-import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
+import { EVENT_LOCALE_CHANGE } from "@goauthentik/web/common/constants";
 
 import { LitElement } from "lit";
 

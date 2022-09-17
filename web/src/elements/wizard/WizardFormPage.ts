@@ -1,10 +1,10 @@
-import { Form, KeyUnknown } from "@goauthentik/elements/forms/Form";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import { Form, KeyUnknown } from "@goauthentik/web/elements/forms/Form";
+import { WizardPage } from "@goauthentik/web/elements/wizard/WizardPage";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";

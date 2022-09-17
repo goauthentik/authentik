@@ -2,12 +2,12 @@ import {
     EVENT_MESSAGE,
     EVENT_WS_MESSAGE,
     WS_MSG_TYPE_MESSAGE,
-} from "@goauthentik/common/constants";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
-import { WSMessage } from "@goauthentik/common/ws";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/messages/Message";
-import { APIMessage } from "@goauthentik/elements/messages/Message";
+} from "@goauthentik/web/common/constants";
+import { SentryIgnoredError } from "@goauthentik/web/common/errors";
+import { WSMessage } from "@goauthentik/web/common/ws";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import "@goauthentik/web/elements/messages/Message";
+import { APIMessage } from "@goauthentik/web/elements/messages/Message";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";

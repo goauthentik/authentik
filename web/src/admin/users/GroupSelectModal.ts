@@ -1,10 +1,10 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TableModal } from "@goauthentik/elements/table/TableModal";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { uiConfig } from "@goauthentik/web/common/ui/config";
+import { PFColor } from "@goauthentik/web/elements/Label";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import { PaginatedResponse } from "@goauthentik/web/elements/table/Table";
+import { TableColumn } from "@goauthentik/web/elements/table/Table";
+import { TableModal } from "@goauthentik/web/elements/table/TableModal";
 
 import { t } from "@lingui/macro";
 

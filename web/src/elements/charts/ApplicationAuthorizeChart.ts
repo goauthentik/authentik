@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart } from "@goauthentik/elements/charts/Chart";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { AKChart } from "@goauthentik/web/elements/charts/Chart";
 import { ChartData } from "chart.js";
 
 import { t } from "@lingui/macro";

@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { KeyUnknown } from "@goauthentik/elements/forms/Form";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import { KeyUnknown } from "@goauthentik/web/elements/forms/Form";
 
 import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";

@@ -1,15 +1,15 @@
-import "@goauthentik/admin/events/EventInfo";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/PageHeader";
+import "@goauthentik/web/admin/events/EventInfo";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { EventWithContext } from "@goauthentik/web/common/events";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import "@goauthentik/web/elements/PageHeader";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";

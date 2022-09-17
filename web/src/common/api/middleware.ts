@@ -1,5 +1,5 @@
-import { EVENT_REQUEST_POST } from "@goauthentik/common/constants";
-import { getCookie } from "@goauthentik/common/utils";
+import { EVENT_REQUEST_POST } from "@goauthentik/web/common/constants";
+import { getCookie } from "@goauthentik/web/common/utils";
 
 import {
     CurrentTenant,

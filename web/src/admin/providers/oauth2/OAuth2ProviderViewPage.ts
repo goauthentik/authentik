@@ -1,21 +1,21 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { convertToTitle } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
+import "@goauthentik/web/admin/providers/RelatedApplicationButton";
+import "@goauthentik/web/admin/providers/oauth2/OAuth2ProviderForm";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/web/common/constants";
+import { convertToTitle } from "@goauthentik/web/common/utils";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import "@goauthentik/web/elements/CodeMirror";
+import "@goauthentik/web/elements/Tabs";
+import "@goauthentik/web/elements/buttons/ModalButton";
+import "@goauthentik/web/elements/buttons/SpinnerButton";
+import "@goauthentik/web/elements/events/ObjectChangelog";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";

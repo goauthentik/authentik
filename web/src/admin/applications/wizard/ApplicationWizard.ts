@@ -1,17 +1,17 @@
-import "@goauthentik/admin/applications/wizard/InitialApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/TypeApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/link/TypeLinkApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/oauth/TypeOAuthAPIApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/oauth/TypeOAuthImplicitApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/proxy/TypeProxyApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/saml/TypeSAMLApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/saml/TypeSAMLImportApplicationWizardPage";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/wizard/Wizard";
+import "@goauthentik/web/admin/applications/wizard/InitialApplicationWizardPage";
+import "@goauthentik/web/admin/applications/wizard/TypeApplicationWizardPage";
+import "@goauthentik/web/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage";
+import "@goauthentik/web/admin/applications/wizard/link/TypeLinkApplicationWizardPage";
+import "@goauthentik/web/admin/applications/wizard/oauth/TypeOAuthAPIApplicationWizardPage";
+import "@goauthentik/web/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage";
+import "@goauthentik/web/admin/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage";
+import "@goauthentik/web/admin/applications/wizard/oauth/TypeOAuthImplicitApplicationWizardPage";
+import "@goauthentik/web/admin/applications/wizard/proxy/TypeProxyApplicationWizardPage";
+import "@goauthentik/web/admin/applications/wizard/saml/TypeSAMLApplicationWizardPage";
+import "@goauthentik/web/admin/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage";
+import "@goauthentik/web/admin/applications/wizard/saml/TypeSAMLImportApplicationWizardPage";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import "@goauthentik/web/elements/wizard/Wizard";
 
 import { t } from "@lingui/macro";
 
@@ -19,7 +19,7 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";

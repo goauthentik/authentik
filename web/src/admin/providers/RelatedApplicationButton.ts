@@ -1,7 +1,7 @@
-import "@goauthentik/admin/applications/ApplicationForm";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Spinner";
-import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/web/admin/applications/ApplicationForm";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import "@goauthentik/web/elements/Spinner";
+import "@goauthentik/web/elements/forms/ModalForm";
 
 import { t } from "@lingui/macro";
 

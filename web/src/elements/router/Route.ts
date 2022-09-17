@@ -1,4 +1,4 @@
-import "@goauthentik/elements/EmptyState";
+import "@goauthentik/web/elements/EmptyState";
 
 import { TemplateResult, html } from "lit";
 import { until } from "lit/directives/until.js";

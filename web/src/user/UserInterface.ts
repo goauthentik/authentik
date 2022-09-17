@@ -1,25 +1,25 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG, tenant } from "@goauthentik/web/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
-} from "@goauthentik/common/constants";
-import { configureSentry } from "@goauthentik/common/sentry";
-import { UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
-import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
-import { me } from "@goauthentik/common/users";
-import { first } from "@goauthentik/common/utils";
-import { WebsocketClient } from "@goauthentik/common/ws";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/messages/MessageContainer";
-import "@goauthentik/elements/messages/MessageContainer";
-import "@goauthentik/elements/notifications/NotificationDrawer";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import "@goauthentik/elements/router/RouterOutlet";
-import "@goauthentik/elements/sidebar/Sidebar";
-import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
-import "@goauthentik/elements/sidebar/SidebarItem";
-import { ROUTES } from "@goauthentik/user/Routes";
+} from "@goauthentik/web/common/constants";
+import { configureSentry } from "@goauthentik/web/common/sentry";
+import { UserDisplay, uiConfig } from "@goauthentik/web/common/ui/config";
+import { autoDetectLanguage } from "@goauthentik/web/common/ui/locale";
+import { me } from "@goauthentik/web/common/users";
+import { first } from "@goauthentik/web/common/utils";
+import { WebsocketClient } from "@goauthentik/web/common/ws";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import "@goauthentik/web/elements/messages/MessageContainer";
+import "@goauthentik/web/elements/messages/MessageContainer";
+import "@goauthentik/web/elements/notifications/NotificationDrawer";
+import { getURLParam, updateURLParams } from "@goauthentik/web/elements/router/RouteMatch";
+import "@goauthentik/web/elements/router/RouterOutlet";
+import "@goauthentik/web/elements/sidebar/Sidebar";
+import { DefaultTenant } from "@goauthentik/web/elements/sidebar/SidebarBrand";
+import "@goauthentik/web/elements/sidebar/SidebarItem";
+import { ROUTES } from "@goauthentik/web/user/Routes";
 
 import { t } from "@lingui/macro";
 
@@ -27,7 +27,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";

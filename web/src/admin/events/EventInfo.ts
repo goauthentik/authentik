@@ -1,10 +1,10 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { VERSION } from "@goauthentik/common/constants";
-import { EventContext, EventModel, EventWithContext } from "@goauthentik/common/events";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Expand";
-import "@goauthentik/elements/Spinner";
-import { PFSize } from "@goauthentik/elements/Spinner";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { VERSION } from "@goauthentik/web/common/constants";
+import { EventContext, EventModel, EventWithContext } from "@goauthentik/web/common/events";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import "@goauthentik/web/elements/Expand";
+import "@goauthentik/web/elements/Spinner";
+import { PFSize } from "@goauthentik/web/elements/Spinner";
 
 import { t } from "@lingui/macro";
 

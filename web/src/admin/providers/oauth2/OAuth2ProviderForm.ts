@@ -1,9 +1,9 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first, randomString } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import { DEFAULT_CONFIG } from "@goauthentik/web/common/api/config";
+import { first, randomString } from "@goauthentik/web/common/utils";
+import "@goauthentik/web/elements/forms/FormGroup";
+import "@goauthentik/web/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/web/elements/forms/ModelForm";
+import "@goauthentik/web/elements/utils/TimeDeltaHelp";
 
 import { t } from "@lingui/macro";
 

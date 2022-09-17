@@ -2,10 +2,10 @@ import {
     CSRFMiddleware,
     EventMiddleware,
     LoggingMiddleware,
-} from "@goauthentik/common/api/middleware";
-import { EVENT_REFRESH, VERSION } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { activateLocale } from "@goauthentik/common/ui/locale";
+} from "@goauthentik/web/common/api/middleware";
+import { EVENT_REFRESH, VERSION } from "@goauthentik/web/common/constants";
+import { globalAK } from "@goauthentik/web/common/global";
+import { activateLocale } from "@goauthentik/web/common/ui/locale";
 
 import {
     Config,

@@ -1,12 +1,12 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Tooltip";
+import { AKElement } from "@goauthentik/web/elements/Base";
+import "@goauthentik/web/elements/Tooltip";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "@goauthentik/web/common/styles/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
