@@ -33,6 +33,7 @@ export default {
         }),
         typescript({
             compilerOptions: {
+                rootDir: ".",
                 strict: true,
                 paths: {
                     "@goauthentik/web/*": ["src/*"],
