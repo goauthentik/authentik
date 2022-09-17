@@ -6,7 +6,7 @@ COPY ./blueprints /work/blueprints/
 
 ENV NODE_ENV=production
 WORKDIR /work/website
-RUN npm ci && npm run build-docs-only
+RUN npm ci --include=dev && npm run build-docs-only
 
 # Stage 2: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:18 as web-builder
@@ -16,7 +16,7 @@ COPY ./website /work/website/
 
 ENV NODE_ENV=production
 WORKDIR /work/web
-RUN npm ci && npm run build
+RUN npm ci --include=dev && npm run build
 
 # Stage 3: Poetry to requirements.txt export
 FROM docker.io/python:3.10.7-slim-bullseye AS poetry-locker

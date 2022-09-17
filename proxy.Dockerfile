@@ -4,7 +4,8 @@ FROM --platform=${BUILDPLATFORM} docker.io/node:18 as web-builder
 COPY ./web /static/
 
 ENV NODE_ENV=production
-RUN cd /static && npm ci && npm run build-proxy
+WORKDIR /static
+RUN npm ci --include=dev && npm run build-proxy
 
 # Stage 2: Build
 FROM docker.io/golang:1.19.1-bullseye AS builder
