@@ -1,5 +1,4 @@
 """Test utils"""
-from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.http import HttpRequest
 from django.test.client import RequestFactory
@@ -19,9 +18,6 @@ def get_request(*args, user=None, **kwargs):
     else:
         request.user = get_anonymous_user()
     middleware = SessionMiddleware(dummy_get_response)
-    middleware.process_request(request)
-    request.session.save()
-    middleware = MessageMiddleware(dummy_get_response)
     middleware.process_request(request)
     request.session.save()
     return request

@@ -3,7 +3,7 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
 
 
-class MessageConsumer(JsonWebsocketConsumer):
+class FrontendConsumer(JsonWebsocketConsumer):
     """Consumer which sends django.contrib.messages Messages over WS.
     channel_name is saved into cache with user_id, and when a add_message is called"""
 
@@ -21,3 +21,19 @@ class MessageConsumer(JsonWebsocketConsumer):
     def event_update(self, event: dict):
         """Event handler which is called by Messages Storage backend"""
         self.send_json(event)
+
+        # prefix = f"user_{self.request.session.session_key}_messages_"
+        # keys = cache.keys(f"{prefix}*")
+        # for key in keys:
+        #     uid = key.replace(prefix, "")
+        #     for message in messages:
+        #         async_to_sync(self.channel.send)(
+        #             uid,
+        #             {
+        #                 "type": "event.update",
+        #                 "message_type": "message",
+        #                 "level": message.level_tag,
+        #                 "tags": message.tags,
+        #                 "message": message.message,
+        #             },
+        #         )
