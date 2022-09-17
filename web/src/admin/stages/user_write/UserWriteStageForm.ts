@@ -85,7 +85,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Path new users will be created under. If left blank, the default path will be used.fo`}
+                            ${t`Path new users will be created under. If left blank, the default path will be used.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Group`} name="createUsersGroup">
