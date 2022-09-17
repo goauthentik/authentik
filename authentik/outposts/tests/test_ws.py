@@ -6,7 +6,7 @@ from channels.testing import WebsocketCommunicator
 from django.test import TransactionTestCase
 
 from authentik import __version__
-from authentik.flows.models import Flow, FlowDesignation
+from authentik.core.tests.utils import create_test_flow
 from authentik.outposts.channels import WebsocketMessage, WebsocketMessageInstruction
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.proxy.models import ProxyProvider
@@ -21,9 +21,7 @@ class TestOutpostWS(TransactionTestCase):
             name="test",
             internal_host="http://localhost",
             external_host="http://localhost",
-            authorization_flow=Flow.objects.create(
-                name="foo", slug="foo", designation=FlowDesignation.AUTHORIZATION
-            ),
+            authorization_flow=create_test_flow(),
         )
         self.outpost: Outpost = Outpost.objects.create(
             name="test",

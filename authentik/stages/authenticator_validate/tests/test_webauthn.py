@@ -8,7 +8,7 @@ from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
+from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
@@ -54,7 +54,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         )
         sleep(1)
         stage.configuration_stages.set([ident_stage])
-        flow = Flow.objects.create(name="test", slug="test", title="test")
+        flow = create_test_flow()
         FlowStageBinding.objects.create(target=flow, stage=ident_stage, order=0)
         FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
 

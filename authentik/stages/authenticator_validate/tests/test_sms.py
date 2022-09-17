@@ -4,8 +4,8 @@ from unittest.mock import MagicMock, patch
 from django.test.client import RequestFactory
 from django.urls.base import reverse
 
-from authentik.core.tests.utils import create_test_admin_user
-from authentik.flows.models import Flow, FlowStageBinding, NotConfiguredAction
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMSDevice, SMSProviders
@@ -47,7 +47,7 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
             device_classes=[DeviceClasses.SMS],
         )
         stage.configuration_stages.set([ident_stage])
-        flow = Flow.objects.create(name="test", slug="test", title="test")
+        flow = create_test_flow()
         FlowStageBinding.objects.create(target=flow, stage=ident_stage, order=0)
         FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
 
@@ -84,7 +84,7 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
             device_classes=[DeviceClasses.SMS],
         )
         stage.configuration_stages.set([ident_stage])
-        flow = Flow.objects.create(name="test", slug="test", title="test")
+        flow = create_test_flow()
         FlowStageBinding.objects.create(target=flow, stage=ident_stage, order=0)
         FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
 
@@ -140,7 +140,7 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
             device_classes=[DeviceClasses.SMS],
         )
         stage.configuration_stages.set([ident_stage])
-        flow = Flow.objects.create(name="test", slug="test", title="test")
+        flow = create_test_flow()
         FlowStageBinding.objects.create(target=flow, stage=ident_stage, order=0)
         FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
 

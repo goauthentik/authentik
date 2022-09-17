@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete
 
-from authentik import __version__
+from authentik import get_full_version
 from authentik.core.models import User
 from authentik.events.middleware import should_log_model
 from authentik.events.models import Event, EventAction
@@ -18,7 +18,7 @@ BANNER_TEXT = """### authentik shell ({authentik})
     node=platform.node(),
     python=platform.python_version(),
     arch=platform.machine(),
-    authentik=__version__,
+    authentik=get_full_version(),
 )
 
 

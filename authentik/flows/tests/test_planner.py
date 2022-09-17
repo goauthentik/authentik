@@ -8,9 +8,10 @@ from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_flow
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
 from authentik.lib.tests.utils import dummy_get_response
 from authentik.policies.dummy.models import DummyPolicy
@@ -32,11 +33,7 @@ class TestFlowPlanner(TestCase):
 
     def test_empty_plan(self):
         """Test that empty plan raises exception"""
-        flow = Flow.objects.create(
-            name="test-empty",
-            slug="test-empty",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        flow = create_test_flow()
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
@@ -52,11 +49,7 @@ class TestFlowPlanner(TestCase):
     )
     def test_non_applicable_plan(self):
         """Test that empty plan raises exception"""
-        flow = Flow.objects.create(
-            name="test-empty",
-            slug="test-empty",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        flow = create_test_flow()
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
@@ -69,11 +62,7 @@ class TestFlowPlanner(TestCase):
     @patch("authentik.flows.planner.cache", CACHE_MOCK)
     def test_planner_cache(self):
         """Test planner cache"""
-        flow = Flow.objects.create(
-            name="test-cache",
-            slug="test-cache",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         FlowStageBinding.objects.create(
             target=flow, stage=DummyStage.objects.create(name="dummy"), order=0
         )
@@ -92,11 +81,7 @@ class TestFlowPlanner(TestCase):
 
     def test_planner_default_context(self):
         """Test planner with default_context"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        flow = create_test_flow()
         FlowStageBinding.objects.create(
             target=flow, stage=DummyStage.objects.create(name="dummy"), order=0
         )
@@ -113,11 +98,7 @@ class TestFlowPlanner(TestCase):
 
     def test_planner_marker_reevaluate(self):
         """Test that the planner creates the proper marker"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        flow = create_test_flow()
 
         FlowStageBinding.objects.create(
             target=flow,
@@ -138,11 +119,7 @@ class TestFlowPlanner(TestCase):
 
     def test_planner_reevaluate_actual(self):
         """Test planner with re-evaluate"""
-        flow = Flow.objects.create(
-            name="test-default-context",
-            slug="test-default-context",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
+        flow = create_test_flow()
         false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
 
         binding = FlowStageBinding.objects.create(

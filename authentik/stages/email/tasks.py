@@ -67,8 +67,7 @@ def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Opti
         try:
             backend = stage.backend
         except ValueError as exc:
-            # pyright: reportGeneralTypeIssues=false
-            LOGGER.warning(exc)
+            LOGGER.warning("failed to get email backend", exc=exc)
             self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
             return
         backend.open()

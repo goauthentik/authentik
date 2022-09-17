@@ -28,7 +28,7 @@ test-docker:
 	rm -f .env
 
 test:
-	coverage run manage.py test authentik
+	coverage run manage.py test --keepdb authentik
 	coverage html
 	coverage report
 

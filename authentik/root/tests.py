@@ -20,3 +20,11 @@ class TestRoot(TestCase):
         auth_headers = {"HTTP_AUTHORIZATION": creds}
         response = self.client.get(reverse("metrics"), **auth_headers)
         self.assertEqual(response.status_code, 200)
+
+    def test_monitoring_live(self):
+        """Test LiveView"""
+        self.assertEqual(self.client.get(reverse("health-live")).status_code, 204)
+
+    def test_monitoring_ready(self):
+        """Test ReadyView"""
+        self.assertEqual(self.client.get(reverse("health-ready")).status_code, 204)
