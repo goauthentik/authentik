@@ -81,25 +81,27 @@ table.comparison tr th.authentik {
 }
 
 table.comparison thead.group tr {
+    border-top: 1px;
     border-bottom: 1px;
     border-bottom-color: var(--ifm-table-head-color);
+    border-top-style: solid;
     border-bottom-style: solid;
 }
 
 table.comparison thead.group th:first-child {
+    padding: 10px;
     text-align: left;
     font-weight: 800;
 }
 
 table.comparison tr td {
-    border-left: 10px solid transparent;
+    padding-left: 10px;
     min-width: 90px;
     text-align: center;
 }
 
 table.comparison tr td:first-child {
     font-weight: bold;
-    padding-left: 0;
     text-align: left;
     white-space: nowrap;
     width: 25%;
