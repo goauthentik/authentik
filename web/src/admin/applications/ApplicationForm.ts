@@ -187,8 +187,15 @@ export class ApplicationForm extends ModelForm<Application, string> {
                             ${t`If left empty, authentik will try to extract the launch URL based on the selected provider.`}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Open in new tab`} name="openInNewTab">
-                        <input type="checkbox" ?checked=${this.instance?.openInNewTab} />
+                    <ak-form-element-horizontal name="openInNewTab">
+                        <div class="pf-c-check">
+                            <input
+                                type="checkbox"
+                                class="pf-c-check__input"
+                                ?checked=${first(this.instance?.openInNewTab, true)}
+                            />
+                            <label class="pf-c-check__label"> ${t`Open in new tab`} </label>
+                        </div>
                         <p class="pf-c-form__helper-text">
                             ${t`If checked, the launch URL will open in a new browser tab or window from the user's application library.`}
                         </p>
