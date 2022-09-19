@@ -3,14 +3,14 @@ package application
 import (
 	"context"
 	"fmt"
-	"net/http"
+	"net/url"
 
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
-func (a *Application) redeemCallback(r *http.Request, states []string) (*Claims, error) {
-	state := r.URL.Query().Get("state")
+func (a *Application) redeemCallback(states []string, u *url.URL, c context.Context) (*Claims, error) {
+	state := u.Query().Get("state")
 	if len(states) < 1 {
 		return nil, fmt.Errorf("no states")
 	}
@@ -29,12 +29,12 @@ func (a *Application) redeemCallback(r *http.Request, states []string) (*Claims,
 		return nil, fmt.Errorf("invalid state")
 	}
 
-	code := r.URL.Query().Get("code")
+	code := u.Query().Get("code")
 	if code == "" {
 		return nil, fmt.Errorf("blank code")
 	}
 
-	ctx := context.WithValue(r.Context(), oauth2.HTTPClient, a.httpClient)
+	ctx := context.WithValue(c, oauth2.HTTPClient, a.httpClient)
 	// Verify state and errors.
 	oauth2Token, err := a.oauthConfig.Exchange(ctx, code)
 	if err != nil {
