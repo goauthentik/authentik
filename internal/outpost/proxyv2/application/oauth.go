@@ -78,7 +78,7 @@ func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request
 		http.Redirect(rw, r, a.proxyConfig.ExternalHost, http.StatusFound)
 		return
 	}
-	claims, err := a.redeemCallback(r, state.([]string))
+	claims, err := a.redeemCallback(state.([]string), r.URL, r.Context())
 	if err != nil {
 		a.log.WithError(err).Warning("failed to redeem code")
 		rw.WriteHeader(400)

@@ -37,9 +37,11 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		http.Error(rw, "configuration error", http.StatusInternalServerError)
 		return
 	}
+	tr := r.Clone(r.Context())
+	tr.URL = fwd
 	if strings.EqualFold(fwd.Query().Get(CallbackSignature), "true") {
 		a.log.Debug("handling OAuth Callback from querystring signature")
-		a.handleAuthCallback(rw, r)
+		a.handleAuthCallback(rw, tr)
 		return
 	} else if strings.EqualFold(fwd.Query().Get(LogoutSignature), "true") {
 		a.log.Debug("handling OAuth Logout from querystring signature")
@@ -57,8 +59,6 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
-	tr := r.Clone(r.Context())
-	tr.URL = fwd
 	a.handleAuthStart(rw, r)
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
@@ -88,9 +88,11 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 		http.Error(rw, "configuration error", http.StatusInternalServerError)
 		return
 	}
+	tr := r.Clone(r.Context())
+	tr.URL = fwd
 	if strings.EqualFold(fwd.Query().Get(CallbackSignature), "true") {
 		a.log.Debug("handling OAuth Callback from querystring signature")
-		a.handleAuthCallback(rw, r)
+		a.handleAuthCallback(rw, tr)
 		return
 	} else if strings.EqualFold(fwd.Query().Get(LogoutSignature), "true") {
 		a.log.Debug("handling OAuth Logout from querystring signature")
@@ -108,8 +110,6 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
-	tr := r.Clone(r.Context())
-	tr.URL = fwd
 	a.handleAuthStart(rw, r)
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
