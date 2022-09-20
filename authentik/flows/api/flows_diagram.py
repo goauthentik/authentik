@@ -106,12 +106,15 @@ class FlowDiagram:
         ):
             stage_policies = self.get_stage_policies(s_index, stage_binding, parent_elements)
             elements.extend(stage_policies)
+            action = ""
+            if len(stage_policies) > 0:
+                action = _("Policy passed")
             element = DiagramElement(
                 f"stage_{s_index}",
                 _("Stage (%(type)s)" % {"type": stage_binding.stage._meta.verbose_name})
                 + "\n"
                 + stage_binding.stage.name,
-                "",
+                action,
                 stage_policies,
             )
             elements.append(element)
@@ -133,6 +136,12 @@ class FlowDiagram:
         if len(flow_policies) > 0:
             all_elements.append(pre_flow_policies_element)
             all_elements.extend(flow_policies)
+            all_elements.append(DiagramElement(
+                "done",
+                _("End of the flow"),
+                _("Policy denied"),
+                flow_policies,
+            ))
 
         flow_element = DiagramElement(
             "flow_start",
