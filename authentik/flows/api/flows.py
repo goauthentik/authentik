@@ -182,7 +182,8 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     def diagram(self, request: Request, slug: str) -> Response:
         """Return diagram for flow with slug `slug`, in the format used by flowchart.js"""
         diagram = FlowDiagram(self.get_object(), request.user)
-        return Response({"diagram": diagram.build()})
+        output = diagram.build()
+        return Response({"diagram": output})
 
     @permission_required("authentik_flows.change_flow")
     @extend_schema(

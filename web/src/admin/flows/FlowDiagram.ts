@@ -2,7 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
-import FlowChart from "flowchart.js";
+import mermaid from "mermaid";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -43,9 +43,9 @@ export class FlowDiagram extends AKElement {
 
     handlerBound = false;
 
-    createRenderRoot(): Element | ShadowRoot {
-        return this;
-    }
+    // createRenderRoot(): Element | ShadowRoot {
+    //     return this;
+    // }
 
     get isInViewport(): boolean {
         const rect = this.getBoundingClientRect();
@@ -54,6 +54,10 @@ export class FlowDiagram extends AKElement {
 
     constructor() {
         super();
+        mermaid.initialize({
+            logLevel: "error",
+            startOnLoad: false,
+        });
         const matcher = window.matchMedia("(prefers-color-scheme: light)");
         const handler = (ev?: MediaQueryListEvent) => {
             if (ev?.matches || matcher.matches) {
@@ -94,15 +98,25 @@ export class FlowDiagram extends AKElement {
             }
         });
         if (this.diagram) {
-            const diagram = FlowChart.parse(this.diagram);
-            diagram.drawSVG(this, {
-                "font-color": this.fontColour,
-                "line-color": "#bebebe",
-                "element-color": "#bebebe",
-                "fill": this.fill,
-                "yes-text": "Policy passes",
-                "no-text": "Policy denies",
-            });
+            mermaid.render(
+                "graph",
+                this.diagram,
+                (svg) => {
+                    if (this.shadowRoot) {
+                        this.shadowRoot.innerHTML = svg;
+                    }
+                },
+                this,
+            );
+            // const diagram = FlowChart.parse(this.diagram);
+            // diagram.drawSVG(this, {
+            //     "font-color": this.fontColour,
+            //     "line-color": "#bebebe",
+            //     "element-color": "#bebebe",
+            //     "fill": this.fill,
+            //     "yes-text": "Policy passes",
+            //     "no-text": "Policy denies",
+            // });
             return html``;
         }
         return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
