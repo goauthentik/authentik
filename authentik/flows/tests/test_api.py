@@ -18,7 +18,7 @@ stage_1_policy_0 --Policy passed--> stage_1["Stage (Dummy Stage)
 dummy2"]
 stage_0 --> stage_1_policy_0["Policy (Dummy Policy)
 dummy2-policy"]
-stage_1_policy_0 --> done["End of the flow"]"""
+stage_1 --> done["End of the flow"]"""
 DIAGRAM_SHORT_EXPECTED = """graph TD
 --> flow_start["Flow
 test-default-context"]
