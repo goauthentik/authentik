@@ -1,6 +1,6 @@
 """Flows Diagram API"""
 from dataclasses import dataclass
-from typing import Iterator, Optional
+from typing import Optional
 
 from django.utils.translation import gettext as _
 from guardian.shortcuts import get_objects_for_user
@@ -123,31 +123,36 @@ class FlowDiagram:
         """Build flowchart"""
         all_elements = [
             "graph TD",
-            DiagramElement(
-                "flow_start",
-                _("Flow") + "\n" + self.flow.name,
-            ),
         ]
-        parent_elements = [all_elements[-1]]
-        # Collect all elements we need
-        flow_policies = self.get_flow_policies(parent_elements)
-        all_elements.extend(flow_policies)
 
-        stages = self.get_stages(flow_policies)
+        pre_flow_policies_element = DiagramElement(
+            "flow_pre",
+            _("Pre-flow policies"),
+        )
+        flow_policies = self.get_flow_policies([pre_flow_policies_element])
+        if len(flow_policies) > 0:
+            all_elements.append(pre_flow_policies_element)
+            all_elements.extend(flow_policies)
+
+        flow_element = DiagramElement(
+            "flow_start",
+            _("Flow") + "\n" + self.flow.name,
+            "",
+            source=flow_policies,
+        )
+        all_elements.append(flow_element)
+
+        stages = self.get_stages([flow_element])
         all_elements.extend(stages)
 
-        connections = []
-        for stage in all_elements:
-            if not isinstance(stage, DiagramElement):
-                continue
-            connections.append(stage.identifier)
-        print(connections)
+        connections = [x for x in all_elements if isinstance(x, DiagramElement)]
+
         all_elements.append(
             DiagramElement(
                 "done",
                 _("End of the flow"),
                 "",
-                [DiagramElement(connections[-1], "")],
+                [connections[-1]],
             ),
         )
         return "\n".join([str(x) for x in all_elements])
