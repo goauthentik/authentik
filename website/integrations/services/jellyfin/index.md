@@ -52,9 +52,9 @@ The following placeholders will be used:
      - If using a certificate issued by a certificate authority Jellyfin trusts, leave this unchecked. 
      - If you're using a self signed certifcate, check this box.
    - ``Allow password change``: Unchecked
-     - Since Authentik already has a frontend for password resets, its not nessessary to include this in Jellyfin, especially since it requires bind user to have privileges.
+     - Since authentik already has a frontend for password resets, its not nessessary to include this in Jellyfin, especially since it requires bind user to have privileges.
    - ``Password Reset URL``: Empty
-   - ``LDAP Bind User``: Set this to a the user you want to bind to in Authentik. By default the path will be ``ou=users,dc=company,dc=com`` so the LDAP Bind user will be ``cn=ldap_bind_user,ou=users,dc=company,dc=com``. 
+   - ``LDAP Bind User``: Set this to a the user you want to bind to in authentik. By default the path will be ``ou=users,dc=company,dc=com`` so the LDAP Bind user will be ``cn=ldap_bind_user,ou=users,dc=company,dc=com``. 
    - ``LDAP Bind User Password``: The Password of the user. If using a Service account, this is the token. 
    - ``LDAP Base DN for Searches``: the base DN for LDAP queries. To query all users set this to ``dc=company,dc=com``. 
      - You can specify an OU if you divide your users up into different OUs and only want to query a specific OU. 
@@ -94,4 +94,4 @@ At this point click ``Save and Test LDAP Filter Settings``. If the settings are 
 
 ## authentik Configuration
 
-No additional Authentik configuration needs to be configured. Follow the LDAP outpost instructions to create an LDAP outpost and configure access via the outpost
+No additional authentik configuration needs to be configured. Follow the LDAP outpost instructions to create an LDAP outpost and configure access via the outpost
