@@ -142,13 +142,13 @@ class FlowDiagram:
                             )
                         )
 
-        if len(elements) > 0:
+        if len(stages) > 0:
             elements.append(
                 DiagramElement(
                     "done",
                     _("End of the flow"),
                     "",
-                    [elements[-1]],
+                    [stages[-1]],
                 ),
             )
         return stages + elements
