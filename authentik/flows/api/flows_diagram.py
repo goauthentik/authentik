@@ -1,5 +1,5 @@
 """Flows Diagram API"""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 from django.utils.translation import gettext as _
@@ -20,8 +20,10 @@ class DiagramElement:
     action: Optional[str] = None
     source: Optional[list["DiagramElement"]] = None
 
+    style: list[str] = field(default_factory=lambda: ["[", "]"])
+
     def __str__(self) -> str:
-        element = f'{self.identifier}["{self.description}"]'
+        element = f'{self.identifier}{self.style[0]}"{self.description}"{self.style[1]}'
         if self.action is not None:
             if self.action != "":
                 element = f"--{self.action}--> {element}"
@@ -67,6 +69,7 @@ class FlowDiagram:
                 + policy_binding.policy.name,
                 _("Binding %(order)d" % {"order": policy_binding.order}),
                 parent_elements,
+                style=["{{", "}}"],
             )
             elements.append(element)
         return elements
@@ -85,15 +88,16 @@ class FlowDiagram:
             .exclude(policy__isnull=True)
             .order_by("order")
         ):
-            elem = DiagramElement(
+            element = DiagramElement(
                 f"stage_{stage_index}_policy_{p_index}",
                 _("Policy (%(type)s)" % {"type": policy_binding.policy._meta.verbose_name})
                 + "\n"
                 + policy_binding.policy.name,
                 "",
                 parent_elements,
+                style=["{{", "}}"],
             )
-            elements.append(elem)
+            elements.append(element)
         return elements
 
     def get_stages(self, parent_elements: list[DiagramElement]) -> list[str | DiagramElement]:
@@ -119,6 +123,7 @@ class FlowDiagram:
                 + stage_binding.stage.name,
                 action,
                 stage_policies,
+                style=["([", "])"],
             )
             stages.append(element)
 
@@ -149,6 +154,7 @@ class FlowDiagram:
                     _("End of the flow"),
                     "",
                     [stages[-1]],
+                    style=["[[", "]]"],
                 ),
             )
         return stages + elements
@@ -160,8 +166,7 @@ class FlowDiagram:
         ]
 
         pre_flow_policies_element = DiagramElement(
-            "flow_pre",
-            _("Pre-flow policies"),
+            "flow_pre", _("Pre-flow policies"), style=["[[", "]]"]
         )
         flow_policies = self.get_flow_policies([pre_flow_policies_element])
         if len(flow_policies) > 0:
@@ -181,6 +186,7 @@ class FlowDiagram:
             _("Flow") + "\n" + self.flow.name,
             "",
             source=flow_policies,
+            style=["[[", "]]"],
         )
         all_elements.append(flow_element)
 
@@ -193,6 +199,7 @@ class FlowDiagram:
                     _("End of the flow"),
                     "",
                     [flow_element],
+                    style=["[[", "]]"],
                 ),
             )
         return "\n".join([str(x) for x in all_elements])
