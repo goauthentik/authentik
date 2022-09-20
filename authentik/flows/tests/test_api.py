@@ -10,17 +10,17 @@ from authentik.policies.models import PolicyBinding
 from authentik.stages.dummy.models import DummyStage
 
 DIAGRAM_EXPECTED = """graph TD
-flow_start["Flow
+--> flow_start["Flow
 test-default-context"]
 --> stage_0["Stage (Dummy Stage)
 dummy1"]
+stage_1_policy_0 --Policy passed--> stage_1["Stage (Dummy Stage)
+dummy2"]
 stage_0 --> stage_1_policy_0["Policy (Dummy Policy)
 dummy2-policy"]
-stage_1_policy_0 --> stage_1["Stage (Dummy Stage)
-dummy2"]
-stage_1 --> done["End of the flow"]"""
+stage_1_policy_0 --> done["End of the flow"]"""
 DIAGRAM_SHORT_EXPECTED = """graph TD
-flow_start["Flow
+--> flow_start["Flow
 test-default-context"]
 flow_start --> done["End of the flow"]"""
 

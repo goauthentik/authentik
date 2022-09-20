@@ -99,6 +99,7 @@ class FlowDiagram:
     def get_stages(self, parent_elements: list[DiagramElement]) -> list[str | DiagramElement]:
         """Collect all stages"""
         elements = []
+        stages = []
         for s_index, stage_binding in enumerate(
             get_objects_for_user(self.user, "authentik_flows.view_flowstagebinding")
             .filter(target=self.flow)
@@ -106,9 +107,11 @@ class FlowDiagram:
         ):
             stage_policies = self.get_stage_policies(s_index, stage_binding, parent_elements)
             elements.extend(stage_policies)
+
             action = ""
             if len(stage_policies) > 0:
                 action = _("Policy passed")
+
             element = DiagramElement(
                 f"stage_{s_index}",
                 _("Stage (%(type)s)" % {"type": stage_binding.stage._meta.verbose_name})
@@ -117,10 +120,38 @@ class FlowDiagram:
                 action,
                 stage_policies,
             )
-            elements.append(element)
+            stages.append(element)
 
             parent_elements = [element]
-        return elements
+
+            # This adds connections for policy denies, but retroactively, as we can't really
+            # look ahead
+            # Check if we have a stage behind us and if it has any sources
+            if s_index > 0:
+                last_stage: DiagramElement = stages[s_index - 1]
+                if len(last_stage.source) > 0:
+                    # If it has any sources, add a connection from each of that stage's sources
+                    # to this stage
+                    for source in last_stage.source:
+                        elements.append(
+                            DiagramElement(
+                                element.identifier,
+                                element.description,
+                                _("Policy denied"),
+                                [source],
+                            )
+                        )
+
+        if len(elements) > 0:
+            elements.append(
+                DiagramElement(
+                    "done",
+                    _("End of the flow"),
+                    "",
+                    [elements[-1]],
+                ),
+            )
+        return stages + elements
 
     def build(self) -> str:
         """Build flowchart"""
@@ -136,12 +167,14 @@ class FlowDiagram:
         if len(flow_policies) > 0:
             all_elements.append(pre_flow_policies_element)
             all_elements.extend(flow_policies)
-            all_elements.append(DiagramElement(
-                "done",
-                _("End of the flow"),
-                _("Policy denied"),
-                flow_policies,
-            ))
+            all_elements.append(
+                DiagramElement(
+                    "done",
+                    _("End of the flow"),
+                    _("Policy denied"),
+                    flow_policies,
+                )
+            )
 
         flow_element = DiagramElement(
             "flow_start",
@@ -153,15 +186,13 @@ class FlowDiagram:
 
         stages = self.get_stages([flow_element])
         all_elements.extend(stages)
-
-        connections = [x for x in all_elements if isinstance(x, DiagramElement)]
-
-        all_elements.append(
-            DiagramElement(
-                "done",
-                _("End of the flow"),
-                "",
-                [connections[-1]],
-            ),
-        )
+        if len(stages) < 1:
+            all_elements.append(
+                DiagramElement(
+                    "done",
+                    _("End of the flow"),
+                    "",
+                    [flow_element],
+                ),
+            )
         return "\n".join([str(x) for x in all_elements])
