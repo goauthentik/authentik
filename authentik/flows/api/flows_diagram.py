@@ -72,7 +72,10 @@ class FlowDiagram:
         return elements
 
     def get_stage_policies(
-        self, stage_index: int, stage_binding: FlowStageBinding, parent_elements: list[DiagramElement]
+        self,
+        stage_index: int,
+        stage_binding: FlowStageBinding,
+        parent_elements: list[DiagramElement],
     ) -> list[DiagramElement]:
         """First all policies bound to stages since they execute before stages"""
         elements = []
@@ -101,11 +104,6 @@ class FlowDiagram:
             .filter(target=self.flow)
             .order_by("order")
         ):
-            elements.append(
-                'subgraph "'
-                + _("Stage policies %(stage)s" % {"stage": stage_binding.stage.name})
-                + '"'
-            )
             stage_policies = self.get_stage_policies(s_index, stage_binding, parent_elements)
             elements.extend(stage_policies)
             element = DiagramElement(
@@ -117,44 +115,39 @@ class FlowDiagram:
                 stage_policies,
             )
             elements.append(element)
-            elements.append("end")
 
             parent_elements = [element]
         return elements
 
     def build(self) -> str:
         """Build flowchart"""
-        header = [
+        all_elements = [
             "graph TD",
             DiagramElement(
                 "flow_start",
                 _("Flow") + "\n" + self.flow.name,
             ),
         ]
-        body: list[DiagramElement] = []
-        footer = []
-        parent_elements = [header[-1]]
+        parent_elements = [all_elements[-1]]
         # Collect all elements we need
         flow_policies = self.get_flow_policies(parent_elements)
-        body.append('subgraph "' + _("Pre-flow execution policies") + '"')
-        body.extend(flow_policies)
-        body.append("end")
+        all_elements.extend(flow_policies)
 
         stages = self.get_stages(flow_policies)
-        body.extend(stages)
+        all_elements.extend(stages)
 
         connections = []
-        for stage in stages:
+        for stage in all_elements:
             if not isinstance(stage, DiagramElement):
                 continue
             connections.append(stage.identifier)
-
-        body.append(
+        print(connections)
+        all_elements.append(
             DiagramElement(
                 "done",
                 _("End of the flow"),
-                "operation",
+                "",
                 [DiagramElement(connections[-1], "")],
             ),
         )
-        return "\n".join([str(x) for x in header + body + footer])
+        return "\n".join([str(x) for x in all_elements])
