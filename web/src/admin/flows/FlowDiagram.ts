@@ -4,7 +4,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import mermaid from "mermaid";
 
-import { TemplateResult, html, CSSResult, css } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -44,12 +44,14 @@ export class FlowDiagram extends AKElement {
     }
 
     static get styles(): CSSResult[] {
-        return [css`
-            :host {
-                display: flex;
-                justify-content: center;
-            }
-        `];
+        return [
+            css`
+                :host {
+                    display: flex;
+                    justify-content: center;
+                }
+            `,
+        ];
     }
 
     constructor() {
