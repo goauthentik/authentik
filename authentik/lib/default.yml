@@ -80,3 +80,8 @@ default_token_length: 128
 impersonation: true
 
 blueprints_dir: /blueprints
+
+web:
+  # No default here as it's set dynamically
+  # workers: 2
+  threads: 4

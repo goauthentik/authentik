@@ -7,6 +7,7 @@ module.exports = {
         {
             type: "category",
             label: "Installation",
+            collapsed: false,
             link: {
                 type: "generated-index",
                 title: "Installation",
