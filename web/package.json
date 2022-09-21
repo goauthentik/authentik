@@ -58,7 +58,7 @@
         "@babel/preset-env": "^7.19.1",
         "@babel/preset-typescript": "^7.18.6",
         "@codemirror/lang-html": "^6.1.1",
-        "@codemirror/lang-javascript": "^6.0.2",
+        "@codemirror/lang-javascript": "^6.1.0",
         "@codemirror/lang-python": "^6.0.1",
         "@codemirror/lang-xml": "^6.0.0",
         "@codemirror/legacy-modes": "^6.1.0",
