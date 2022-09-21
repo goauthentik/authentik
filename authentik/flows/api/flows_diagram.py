@@ -185,7 +185,7 @@ class FlowDiagram:
         flow_element = DiagramElement(
             "flow_start",
             _("Flow") + "\n" + self.flow.name,
-            "",
+            "" if len(flow_policies) > 0 else None,
             source=flow_policies,
             style=["[[", "]]"],
         )
