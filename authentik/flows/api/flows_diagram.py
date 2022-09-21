@@ -134,7 +134,7 @@ class FlowDiagram:
             # Check if we have a stage behind us and if it has any sources
             if s_index > 0:
                 last_stage: DiagramElement = stages[s_index - 1]
-                if len(last_stage.source) > 0:
+                if last_stage.source and len(last_stage.source) > 0:
                     # If it has any sources, add a connection from each of that stage's sources
                     # to this stage
                     for source in last_stage.source:
@@ -144,6 +144,7 @@ class FlowDiagram:
                                 element.description,
                                 _("Policy denied"),
                                 [source],
+                                style=element.style,
                             )
                         )
 

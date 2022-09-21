@@ -4,7 +4,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import mermaid from "mermaid";
 
-import { TemplateResult, html } from "lit";
+import { TemplateResult, html, CSSResult, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -43,6 +43,15 @@ export class FlowDiagram extends AKElement {
         return !(rect.x + rect.y + rect.width + rect.height === 0);
     }
 
+    static get styles(): CSSResult[] {
+        return [css`
+            :host {
+                display: flex;
+                justify-content: center;
+            }
+        `];
+    }
+
     constructor() {
         super();
         const matcher = window.matchMedia("(prefers-color-scheme: light)");
@@ -53,7 +62,7 @@ export class FlowDiagram extends AKElement {
                 startOnLoad: false,
                 theme: ev?.matches || matcher.matches ? "default" : "dark",
                 flowchart: {
-                    curve: "basis",
+                    curve: "linear",
                 },
             });
             this.requestUpdate();
