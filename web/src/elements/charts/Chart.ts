@@ -1,7 +1,3 @@
-import {
-    FONT_COLOUR_DARK_MODE,
-    FONT_COLOUR_LIGHT_MODE,
-} from "@goauthentik/admin/flows/FlowDiagram";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import { Chart, ChartConfiguration, ChartData, ChartOptions, Plugin, Tick } from "chart.js";
@@ -20,6 +16,9 @@ Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
 Chart.register(ArcElement, BarElement);
 Chart.register(TimeScale, LinearScale);
+
+export const FONT_COLOUR_DARK_MODE = "#fafafa";
+export const FONT_COLOUR_LIGHT_MODE = "#151515";
 
 export abstract class AKChart<T> extends AKElement {
     abstract apiRequest(): Promise<T>;

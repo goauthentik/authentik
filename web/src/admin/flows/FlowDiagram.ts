@@ -10,11 +10,6 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import { FlowsApi } from "@goauthentik/api";
 
-export const FONT_COLOUR_DARK_MODE = "#fafafa";
-export const FONT_COLOUR_LIGHT_MODE = "#151515";
-export const FILL_DARK_MODE = "#18191a";
-export const FILL_LIGHT_MODE = "#f0f0f0";
-
 @customElement("ak-flow-diagram")
 export class FlowDiagram extends AKElement {
     _flowSlug?: string;
@@ -58,7 +53,6 @@ export class FlowDiagram extends AKElement {
         super();
         const matcher = window.matchMedia("(prefers-color-scheme: light)");
         const handler = (ev?: MediaQueryListEvent) => {
-            console.log("setting config");
             mermaid.initialize({
                 logLevel: "error",
                 startOnLoad: false,
