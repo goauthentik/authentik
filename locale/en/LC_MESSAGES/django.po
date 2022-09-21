@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-16 21:25+0000\n"
+"POT-Creation-Date: 2022-09-20 22:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -268,89 +268,89 @@ msgstr ""
 msgid "Certificate-Key Pairs"
 msgstr ""
 
-#: authentik/events/models.py:294
+#: authentik/events/models.py:300
 msgid "Event"
 msgstr ""
 
-#: authentik/events/models.py:295
+#: authentik/events/models.py:301
 msgid "Events"
 msgstr ""
 
-#: authentik/events/models.py:301
+#: authentik/events/models.py:307
 msgid "authentik inbuilt notifications"
 msgstr ""
 
-#: authentik/events/models.py:302
+#: authentik/events/models.py:308
 msgid "Generic Webhook"
 msgstr ""
 
-#: authentik/events/models.py:303
+#: authentik/events/models.py:309
 msgid "Slack Webhook (Slack/Discord)"
 msgstr ""
 
-#: authentik/events/models.py:304
+#: authentik/events/models.py:310
 msgid "Email"
 msgstr ""
 
-#: authentik/events/models.py:322
+#: authentik/events/models.py:328
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
 
-#: authentik/events/models.py:380
+#: authentik/events/models.py:388
 msgid "Severity"
 msgstr ""
 
-#: authentik/events/models.py:385
+#: authentik/events/models.py:393
 msgid "Dispatched for user"
 msgstr ""
 
-#: authentik/events/models.py:468
+#: authentik/events/models.py:476
 msgid "Notification Transport"
 msgstr ""
 
-#: authentik/events/models.py:469
+#: authentik/events/models.py:477
 msgid "Notification Transports"
 msgstr ""
 
-#: authentik/events/models.py:475
+#: authentik/events/models.py:483
 msgid "Notice"
 msgstr ""
 
-#: authentik/events/models.py:476
+#: authentik/events/models.py:484
 msgid "Warning"
 msgstr ""
 
-#: authentik/events/models.py:477
+#: authentik/events/models.py:485
 msgid "Alert"
 msgstr ""
 
-#: authentik/events/models.py:503
+#: authentik/events/models.py:511
 msgid "Notification"
 msgstr ""
 
-#: authentik/events/models.py:504
+#: authentik/events/models.py:512
 msgid "Notifications"
 msgstr ""
 
-#: authentik/events/models.py:524
+#: authentik/events/models.py:532
 msgid "Controls which severity level the created notifications will have."
 msgstr ""
 
-#: authentik/events/models.py:550
+#: authentik/events/models.py:558
 msgid "Notification Rule"
 msgstr ""
 
-#: authentik/events/models.py:551
+#: authentik/events/models.py:559
 msgid "Notification Rules"
 msgstr ""
 
-#: authentik/events/models.py:572
+#: authentik/events/models.py:580
 msgid "Notification Webhook Mapping"
 msgstr ""
 
-#: authentik/events/models.py:573
+#: authentik/events/models.py:581
 msgid "Notification Webhook Mappings"
 msgstr ""
 
@@ -358,19 +358,48 @@ msgstr ""
 msgid "Task has not been run yet."
 msgstr ""
 
-#: authentik/flows/api/flows.py:229 authentik/flows/api/flows.py:251
+#: authentik/flows/api/flows.py:273
+#, python-format
+msgid "Flow not applicable to current user/request: %(messages)s"
+msgstr ""
+
+#: authentik/flows/api/flows_diagram.py:67
+#: authentik/flows/api/flows_diagram.py:93
 #, python-format
 msgid "Policy (%(type)s)"
 msgstr ""
 
-#: authentik/flows/api/flows.py:260
+#: authentik/flows/api/flows_diagram.py:70
+#, python-format
+msgid "Binding %(order)d"
+msgstr ""
+
+#: authentik/flows/api/flows_diagram.py:117
+msgid "Policy passed"
+msgstr ""
+
+#: authentik/flows/api/flows_diagram.py:121
 #, python-format
 msgid "Stage (%(type)s)"
 msgstr ""
 
-#: authentik/flows/api/flows.py:380
-#, python-format
-msgid "Flow not applicable to current user/request: %(messages)s"
+#: authentik/flows/api/flows_diagram.py:145
+#: authentik/flows/api/flows_diagram.py:179
+msgid "Policy denied"
+msgstr ""
+
+#: authentik/flows/api/flows_diagram.py:154
+#: authentik/flows/api/flows_diagram.py:178
+#: authentik/flows/api/flows_diagram.py:199
+msgid "End of the flow"
+msgstr ""
+
+#: authentik/flows/api/flows_diagram.py:169
+msgid "Pre-flow policies"
+msgstr ""
+
+#: authentik/flows/api/flows_diagram.py:186 authentik/flows/models.py:178
+msgid "Flow"
 msgstr ""
 
 #: authentik/flows/exceptions.py:17
@@ -397,10 +426,6 @@ msgstr ""
 
 #: authentik/flows/models.py:152
 msgid "Configure what should happen when a flow denies access to a user."
-msgstr ""
-
-#: authentik/flows/models.py:178
-msgid "Flow"
 msgstr ""
 
 #: authentik/flows/models.py:179
@@ -1328,19 +1353,19 @@ msgstr ""
 msgid "SAML Sources"
 msgstr ""
 
-#: authentik/stages/authenticator_duo/models.py:80
+#: authentik/stages/authenticator_duo/models.py:81
 msgid "Duo Authenticator Setup Stage"
 msgstr ""
 
-#: authentik/stages/authenticator_duo/models.py:81
+#: authentik/stages/authenticator_duo/models.py:82
 msgid "Duo Authenticator Setup Stages"
 msgstr ""
 
-#: authentik/stages/authenticator_duo/models.py:105
+#: authentik/stages/authenticator_duo/models.py:106
 msgid "Duo Device"
 msgstr ""
 
-#: authentik/stages/authenticator_duo/models.py:106
+#: authentik/stages/authenticator_duo/models.py:107
 msgid "Duo Devices"
 msgstr ""
 

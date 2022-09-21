@@ -2,10 +2,11 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
-import FlowChart from "flowchart.js";
+import mermaid from "mermaid";
 
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import { FlowsApi } from "@goauthentik/api";
 
@@ -35,34 +36,37 @@ export class FlowDiagram extends AKElement {
     @property({ attribute: false })
     diagram?: string;
 
-    @property()
-    fontColour: string = FONT_COLOUR_DARK_MODE;
-
-    @property()
-    fill: string = FILL_DARK_MODE;
-
     handlerBound = false;
-
-    createRenderRoot(): Element | ShadowRoot {
-        return this;
-    }
 
     get isInViewport(): boolean {
         const rect = this.getBoundingClientRect();
         return !(rect.x + rect.y + rect.width + rect.height === 0);
     }
 
+    static get styles(): CSSResult[] {
+        return [
+            css`
+                :host {
+                    display: flex;
+                    justify-content: center;
+                }
+            `,
+        ];
+    }
+
     constructor() {
         super();
         const matcher = window.matchMedia("(prefers-color-scheme: light)");
         const handler = (ev?: MediaQueryListEvent) => {
-            if (ev?.matches || matcher.matches) {
-                this.fontColour = FONT_COLOUR_LIGHT_MODE;
-                this.fill = FILL_LIGHT_MODE;
-            } else {
-                this.fontColour = FONT_COLOUR_DARK_MODE;
-                this.fill = FILL_DARK_MODE;
-            }
+            console.log("setting config");
+            mermaid.initialize({
+                logLevel: "error",
+                startOnLoad: false,
+                theme: ev?.matches || matcher.matches ? "default" : "dark",
+                flowchart: {
+                    curve: "linear",
+                },
+            });
             this.requestUpdate();
         };
         matcher.addEventListener("change", handler);
@@ -93,18 +97,9 @@ export class FlowDiagram extends AKElement {
                 console.debug(`authentik/flow/diagram: failed to remove element ${el}`);
             }
         });
-        if (this.diagram) {
-            const diagram = FlowChart.parse(this.diagram);
-            diagram.drawSVG(this, {
-                "font-color": this.fontColour,
-                "line-color": "#bebebe",
-                "element-color": "#bebebe",
-                "fill": this.fill,
-                "yes-text": "Policy passes",
-                "no-text": "Policy denies",
-            });
-            return html``;
+        if (!this.diagram) {
+            return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
         }
-        return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
+        return html`${unsafeHTML(mermaid.render("graph", this.diagram))}`;
     }
 }

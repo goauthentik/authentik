@@ -83,7 +83,7 @@ export class FlowViewPage extends AKElement {
                         <div
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl"
                         >
-                            <div class="pf-c-card__title">${t`Related`}</div>
+                            <div class="pf-c-card__title">${t`Related actions`}</div>
                             <div class="pf-c-card__body">
                                 <dl class="pf-c-description-list">
                                     <div class="pf-c-description-list__group">
@@ -104,7 +104,7 @@ export class FlowViewPage extends AKElement {
                                                     </ak-flow-form>
                                                     <button
                                                         slot="trigger"
-                                                        class="pf-c-button pf-m-secondary"
+                                                        class="pf-c-button pf-m-block pf-m-secondary"
                                                     >
                                                         ${t`Edit`}
                                                     </button>
@@ -119,7 +119,7 @@ export class FlowViewPage extends AKElement {
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <button
-                                                    class="pf-c-button pf-m-primary"
+                                                    class="pf-c-button pf-m-block pf-m-primary"
                                                     @click=${() => {
                                                         const finalURL = `${
                                                             window.location.origin
@@ -132,7 +132,7 @@ export class FlowViewPage extends AKElement {
                                                     ${t`Normal`}
                                                 </button>
                                                 <button
-                                                    class="pf-c-button pf-m-secondary"
+                                                    class="pf-c-button pf-m-block pf-m-secondary"
                                                     @click=${() => {
                                                         new FlowsApi(DEFAULT_CONFIG)
                                                             .flowsInstancesExecuteRetrieve({
@@ -151,7 +151,7 @@ export class FlowViewPage extends AKElement {
                                                     ${t`with current user`}
                                                 </button>
                                                 <button
-                                                    class="pf-c-button pf-m-secondary"
+                                                    class="pf-c-button pf-m-block pf-m-secondary"
                                                     @click=${() => {
                                                         new FlowsApi(DEFAULT_CONFIG)
                                                             .flowsInstancesExecuteRetrieve({
@@ -187,7 +187,7 @@ export class FlowViewPage extends AKElement {
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <a
-                                                    class="pf-c-button pf-m-secondary"
+                                                    class="pf-c-button pf-m-block pf-m-secondary"
                                                     href=${this.flow.exportUrl}
                                                 >
                                                     ${t`Export`}

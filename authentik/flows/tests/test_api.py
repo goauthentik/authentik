@@ -9,22 +9,20 @@ from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.stages.dummy.models import DummyStage
 
-DIAGRAM_EXPECTED = """st=>start: Start
-stage_0=>operation: Stage (Dummy Stage)
-dummy1
-stage_1_policy_0=>condition: Policy (Dummy Policy)
-test
-stage_1=>operation: Stage (Dummy Stage)
-dummy2
-e=>end: End|future
-st(right)->stage_0
-stage_0(bottom)->stage_1_policy_0
-stage_1_policy_0(yes, right)->stage_1
-stage_1_policy_0(no, bottom)->e
-stage_1(bottom)->e"""
-DIAGRAM_SHORT_EXPECTED = """st=>start: Start
-e=>end: End|future
-st(right)->e"""
+DIAGRAM_EXPECTED = """graph TD
+--> flow_start[["Flow
+test-default-context"]]
+--> stage_0(["Stage (Dummy Stage)
+dummy1"])
+stage_1_policy_0 --Policy passed--> stage_1(["Stage (Dummy Stage)
+dummy2"])
+stage_0 --> stage_1_policy_0{{"Policy (Dummy Policy)
+dummy2-policy"}}
+stage_1 --> done[["End of the flow"]]"""
+DIAGRAM_SHORT_EXPECTED = """graph TD
+--> flow_start[["Flow
+test-default-context"]]
+flow_start --> done[["End of the flow"]]"""
 
 
 class TestFlowsAPI(APITestCase):
@@ -55,7 +53,9 @@ class TestFlowsAPI(APITestCase):
             slug="test-default-context",
             designation=FlowDesignation.AUTHENTICATION,
         )
-        false_policy = DummyPolicy.objects.create(name="test", result=False, wait_min=1, wait_max=2)
+        false_policy = DummyPolicy.objects.create(
+            name="dummy2-policy", result=False, wait_min=1, wait_max=2
+        )
 
         FlowStageBinding.objects.create(
             target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0

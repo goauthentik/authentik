@@ -640,6 +640,10 @@ msgstr "Automatycznie wykryj (na podstawie Twojej przeglądarki)"
 msgid "Automate and template configuration within authentik."
 msgstr ""
 
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Automatic import"
+msgstr ""
+
 #: src/user/UserInterface.ts
 msgid "Avatar image"
 msgstr "Obraz awatara"
@@ -2424,6 +2428,7 @@ msgid "Forgot username or password?"
 msgstr "Zapomniałeś nazwy użytkownika lub hasła?"
 
 #: src/elements/forms/ModalForm.ts
+#: src/elements/forms/ModalForm.ts
 #: src/elements/wizard/FormWizardPage.ts
 #: src/elements/wizard/FormWizardPage.ts
 msgid "Form didn't return a promise for submitting"
@@ -3632,6 +3637,7 @@ msgid "No additional setup is required."
 msgstr "Nie jest wymagana żadna dodatkowa konfiguracja."
 
 #: src/elements/forms/ModalForm.ts
+#: src/elements/forms/ModalForm.ts
 #: src/elements/wizard/FormWizardPage.ts
 #: src/elements/wizard/FormWizardPage.ts
 msgid "No form found"
@@ -3928,6 +3934,10 @@ msgstr "Opcjonalnie ustaw wartość „FriendlyName” atrybutu asercji."
 msgid "Or"
 msgstr ""
 
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Or manually import"
+msgstr ""
+
 #: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/StageBindingForm.ts
 #: src/admin/policies/BoundPoliciesList.ts
@@ -4078,8 +4088,12 @@ msgid "Path"
 msgstr ""
 
 #: src/admin/stages/user_write/UserWriteStageForm.ts
-msgid "Path new users will be created under. If left blank, the default path will be used.fo"
+msgid "Path new users will be created under. If left blank, the default path will be used."
 msgstr ""
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+#~ msgid "Path new users will be created under. If left blank, the default path will be used.fo"
+#~ msgstr ""
 
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
@@ -4504,9 +4518,12 @@ msgid "Regular user"
 msgstr "Zwykły użytkownik"
 
 #: src/admin/applications/ApplicationViewPage.ts
-#: src/admin/flows/FlowViewPage.ts
 msgid "Related"
 msgstr "Związane z"
+
+#: src/admin/flows/FlowViewPage.ts
+msgid "Related actions"
+msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
@@ -5233,6 +5250,10 @@ msgstr "Etapy to pojedyncze kroki przepływu, przez które prowadzony jest użyt
 msgid "Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
 msgstr ""
 
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Start automatic import"
+msgstr ""
+
 #: src/admin/outposts/ServiceConnectionListPage.ts
 msgid "State"
 msgstr "Stan"
@@ -5466,6 +5487,10 @@ msgstr "Pomyślnie zaimportowano przepływ."
 #: src/admin/providers/saml/SAMLProviderImportForm.ts
 msgid "Successfully imported provider."
 msgstr "Pomyślnie zaimportowano dostawcę."
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Successfully imported {0} devices."
+msgstr ""
 
 #: src/admin/users/UserResetEmailForm.ts
 msgid "Successfully sent email."
