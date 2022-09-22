@@ -80,13 +80,12 @@ dex.config: |
         clientID: <client ID from the Provider above>
         clientSecret: $dex.authentik.clientSecret
         insecureEnableGroups: true
-        insecureSkipEmailVerified: true
         scopes:
           - openid
           - profile
           - email
           - groups
-      name: Authentik
+      name: authentik
       type: oidc
       id: authentik
 ```
