@@ -20,7 +20,7 @@ The following placeholders will be used:
 -   `authentik.company` is the FQDN of the authentik install.
 
 :::note
-In this guide, only modified values are appearing , others are left at their default values.
+Only settings that have been modified from default have been listed.
 :::
 
 ## Authentik Configuration
