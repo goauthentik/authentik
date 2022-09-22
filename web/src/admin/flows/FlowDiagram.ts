@@ -1,99 +1,25 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
+import { Diagram } from "@goauthentik/elements/Diagram";
 import "@goauthentik/elements/EmptyState";
-import mermaid from "mermaid";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import { FlowsApi } from "@goauthentik/api";
 
 @customElement("ak-flow-diagram")
-export class FlowDiagram extends AKElement {
-    _flowSlug?: string;
-
+export class FlowDiagram extends Diagram {
     @property()
-    set flowSlug(value: string) {
-        this._flowSlug = value;
+    flowSlug?: string;
+
+    refreshHandler = (): void => {
         this.diagram = undefined;
         new FlowsApi(DEFAULT_CONFIG)
             .flowsInstancesDiagramRetrieve({
-                slug: value,
+                slug: this.flowSlug || "",
             })
             .then((data) => {
                 this.diagram = data.diagram;
                 this.requestUpdate();
             });
-    }
-
-    @property({ attribute: false })
-    diagram?: string;
-
-    handlerBound = false;
-
-    get isInViewport(): boolean {
-        const rect = this.getBoundingClientRect();
-        return !(rect.x + rect.y + rect.width + rect.height === 0);
-    }
-
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                :host {
-                    display: flex;
-                    justify-content: center;
-                }
-            `,
-        ];
-    }
-
-    constructor() {
-        super();
-        const matcher = window.matchMedia("(prefers-color-scheme: light)");
-        const handler = (ev?: MediaQueryListEvent) => {
-            mermaid.initialize({
-                logLevel: "error",
-                startOnLoad: false,
-                theme: ev?.matches || matcher.matches ? "default" : "dark",
-                flowchart: {
-                    curve: "linear",
-                },
-            });
-            this.requestUpdate();
-        };
-        matcher.addEventListener("change", handler);
-        handler();
-    }
-
-    firstUpdated(): void {
-        if (this.handlerBound) return;
-        window.addEventListener(EVENT_REFRESH, this.refreshHandler);
-        this.handlerBound = true;
-    }
-
-    refreshHandler = (): void => {
-        if (!this._flowSlug) return;
-        this.flowSlug = this._flowSlug;
     };
-
-    disconnectedCallback(): void {
-        super.disconnectedCallback();
-        window.removeEventListener(EVENT_REFRESH, this.refreshHandler);
-    }
-
-    render(): TemplateResult {
-        this.querySelectorAll("*").forEach((el) => {
-            try {
-                el.remove();
-            } catch {
-                console.debug(`authentik/flow/diagram: failed to remove element ${el}`);
-            }
-        });
-        if (!this.diagram) {
-            return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
-        }
-        return html`${unsafeHTML(mermaid.render("graph", this.diagram))}`;
-    }
 }

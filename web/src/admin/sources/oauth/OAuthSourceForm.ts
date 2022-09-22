@@ -1,3 +1,4 @@
+import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
@@ -236,35 +237,35 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.Identifier}
                     >
-                        ${t`Link users on unique identifier`}
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailLink}
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.EmailLink}
                     >
-                        ${t`Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses`}
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailDeny}
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.EmailDeny}
                     >
-                        ${t`Use the user's email address, but deny enrollment when the email address already exists.`}
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameLink}
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.UsernameLink}
                     >
-                        ${t`Link to a user with identical username. Can have security implications when a username is used with another source.`}
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}
                         ?selected=${this.instance?.userMatchingMode ===
                         UserMatchingModeEnum.UsernameDeny}
                     >
-                        ${t`Use the user's username, but deny enrollment when the username already exists.`}
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
                     </option>
                 </select>
             </ak-form-element-horizontal>

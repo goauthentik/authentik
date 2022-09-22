@@ -1,4 +1,5 @@
 import "@goauthentik/admin/policies/BoundPoliciesList";
+import "@goauthentik/admin/sources/oauth/OAuthSourceDiagram";
 import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
@@ -93,6 +94,7 @@ export class OAuthSourceViewPage extends AKElement {
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">${t`Details`}</div>
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list pf-m-2-col-on-lg">
                                 <div class="pf-c-description-list__group">
@@ -179,6 +181,14 @@ export class OAuthSourceViewPage extends AKElement {
                                     ${t`Edit`}
                                 </button>
                             </ak-forms-modal>
+                        </div>
+                    </div>
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">${t`Diagram`}</div>
+                        <div class="pf-c-card__body">
+                            <ak-source-oauth-diagram
+                                .source=${this.source}
+                            ></ak-source-oauth-diagram>
                         </div>
                     </div>
                 </div>

@@ -1703,6 +1703,10 @@ msgstr "指定"
 msgid "Detailed health (one instance per column, data is cached so may be out of data)"
 msgstr "详细运行状况（每列一个实例，数据已缓存，因此可能没有数据）"
 
+#: src/admin/sources/oauth/OAuthSourceViewPage.ts
+msgid "Details"
+msgstr ""
+
 #: src/admin/providers/saml/SAMLProviderForm.ts
 msgid "Determines how authentik sends the response back to the Service Provider."
 msgstr "确定 authentik 如何将响应发送回服务提供商。"
@@ -1731,6 +1735,7 @@ msgid "Device(s)"
 msgstr "设备"
 
 #: src/admin/flows/FlowViewPage.ts
+#: src/admin/sources/oauth/OAuthSourceViewPage.ts
 msgid "Diagram"
 msgstr "示意图"
 
@@ -3044,22 +3049,24 @@ msgstr "让用户使用其用户名或电子邮件地址来标识自己。"
 msgid "Link"
 msgstr ""
 
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/oauth/utils.ts
 msgid "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses"
 msgstr "链接到具有相同电子邮件地址的用户。当源不验证电子邮件地址时，可能会产生安全隐患"
 
+#: src/admin/sources/oauth/utils.ts
+msgid "Link to a user with identical username. Can have security implications when a username is used with another source"
+msgstr ""
+
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
-msgid "Link to a user with identical username. Can have security implications when a username is used with another source."
-msgstr "链接到具有相同用户名的用户。当用户名与其他源一起使用时，可能会产生安全隐患。"
+#~ msgid "Link to a user with identical username. Can have security implications when a username is used with another source."
+#~ msgstr "链接到具有相同用户名的用户。当用户名与其他源一起使用时，可能会产生安全隐患。"
 
 #: src/admin/stages/invitation/InvitationListLink.ts
 msgid "Link to use the invitation."
 msgstr "使用邀请的链接。"
 
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/oauth/utils.ts
 msgid "Link users on unique identifier"
 msgstr "使用唯一标识符链接用户"
 
@@ -3777,6 +3784,10 @@ msgstr "发送短信的来源号码。"
 #: src/admin/users/UserViewPage.ts
 msgid "OAuth Refresh Codes"
 msgstr "OAuth 刷新代码"
+
+#: src/admin/sources/oauth/OAuthSourceDiagram.ts
+msgid "OAuth Source {0}"
+msgstr ""
 
 #~ msgid "OAuth details"
 #~ msgstr "OAuth 详情"
@@ -6426,15 +6437,23 @@ msgstr "使用安全密钥证明您的身份。"
 msgid "Use global settings"
 msgstr "使用全局设置"
 
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-#: src/admin/sources/plex/PlexSourceForm.ts
-msgid "Use the user's email address, but deny enrollment when the email address already exists."
-msgstr "使用用户的电子邮件地址，但在电子邮件地址已存在时拒绝注册。"
+#: src/admin/sources/oauth/utils.ts
+msgid "Use the user's email address, but deny enrollment when the email address already exists"
+msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
-msgid "Use the user's username, but deny enrollment when the username already exists."
-msgstr "使用用户的用户名，但在用户名已存在时拒绝注册。"
+#~ msgid "Use the user's email address, but deny enrollment when the email address already exists."
+#~ msgstr "使用用户的电子邮件地址，但在电子邮件地址已存在时拒绝注册。"
+
+#: src/admin/sources/oauth/utils.ts
+msgid "Use the user's username, but deny enrollment when the username already exists"
+msgstr ""
+
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#~ msgid "Use the user's username, but deny enrollment when the username already exists."
+#~ msgstr "使用用户的用户名，但在用户名已存在时拒绝注册。"
 
 #: src/admin/users/ServiceAccountForm.ts
 msgid "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page."

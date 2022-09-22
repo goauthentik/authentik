@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-20 22:16+0000\n"
+"POT-Creation-Date: 2022-09-22 18:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -384,21 +384,21 @@ msgid "Stage (%(type)s)"
 msgstr ""
 
 #: authentik/flows/api/flows_diagram.py:145
-#: authentik/flows/api/flows_diagram.py:179
+#: authentik/flows/api/flows_diagram.py:180
 msgid "Policy denied"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:154
-#: authentik/flows/api/flows_diagram.py:178
-#: authentik/flows/api/flows_diagram.py:199
+#: authentik/flows/api/flows_diagram.py:155
+#: authentik/flows/api/flows_diagram.py:179
+#: authentik/flows/api/flows_diagram.py:200
 msgid "End of the flow"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:169
+#: authentik/flows/api/flows_diagram.py:170
 msgid "Pre-flow policies"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:186 authentik/flows/models.py:178
+#: authentik/flows/api/flows_diagram.py:187 authentik/flows/models.py:178
 msgid "Flow"
 msgstr ""
 

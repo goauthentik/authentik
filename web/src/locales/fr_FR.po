@@ -1718,6 +1718,10 @@ msgstr "Désignation"
 msgid "Detailed health (one instance per column, data is cached so may be out of data)"
 msgstr "État détaillé (une instance par colonne, les données sont mises en cache et peuvent donc être périmée)"
 
+#: src/admin/sources/oauth/OAuthSourceViewPage.ts
+msgid "Details"
+msgstr ""
+
 #: src/admin/providers/saml/SAMLProviderForm.ts
 msgid "Determines how authentik sends the response back to the Service Provider."
 msgstr "Détermine comment authentik renvoie la réponse au fournisseur de services."
@@ -1747,6 +1751,7 @@ msgid "Device(s)"
 msgstr ""
 
 #: src/admin/flows/FlowViewPage.ts
+#: src/admin/sources/oauth/OAuthSourceViewPage.ts
 msgid "Diagram"
 msgstr ""
 
@@ -3087,22 +3092,24 @@ msgstr "Laisser l'utilisateur s'identifier lui-même avec son nom d'utilisateur 
 msgid "Link"
 msgstr ""
 
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/oauth/utils.ts
 msgid "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses"
 msgstr "Lier à un utilisateur avec la même adresse e-mail. Peut avoir des implications de sécurité lorsqu'une source ne valide pas les adresses e-mail."
 
+#: src/admin/sources/oauth/utils.ts
+msgid "Link to a user with identical username. Can have security implications when a username is used with another source"
+msgstr ""
+
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
-msgid "Link to a user with identical username. Can have security implications when a username is used with another source."
-msgstr "Lien vers un usager ayant un nom d'utilisateur identique. Peut poser des problèmes de sécurité si ce nom d'utilisateur est partagé avec une autre source."
+#~ msgid "Link to a user with identical username. Can have security implications when a username is used with another source."
+#~ msgstr "Lien vers un usager ayant un nom d'utilisateur identique. Peut poser des problèmes de sécurité si ce nom d'utilisateur est partagé avec une autre source."
 
 #: src/admin/stages/invitation/InvitationListLink.ts
 msgid "Link to use the invitation."
 msgstr "Lien pour utiliser l'invitation."
 
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/oauth/utils.ts
 msgid "Link users on unique identifier"
 msgstr "Lier les utilisateurs sur base d'un identifiant unique"
 
@@ -3825,6 +3832,10 @@ msgstr ""
 #: src/admin/users/UserViewPage.ts
 msgid "OAuth Refresh Codes"
 msgstr "Code de rafraîchissement OAuth"
+
+#: src/admin/sources/oauth/OAuthSourceDiagram.ts
+msgid "OAuth Source {0}"
+msgstr ""
 
 #: src/pages/providers/ProviderWizard.ts
 #~ msgid "OAuth details"
@@ -6512,15 +6523,23 @@ msgstr "Utilisez une clé de sécurité pour prouver votre identité."
 msgid "Use global settings"
 msgstr "Utiliser les paramètres globaux"
 
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-#: src/admin/sources/plex/PlexSourceForm.ts
-msgid "Use the user's email address, but deny enrollment when the email address already exists."
-msgstr "Utiliser l'adresse courriel de l'utilisateur, mais refuser l'inscription lorsque celle-ci existe déjà."
+#: src/admin/sources/oauth/utils.ts
+msgid "Use the user's email address, but deny enrollment when the email address already exists"
+msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
-msgid "Use the user's username, but deny enrollment when the username already exists."
-msgstr "Utiliser le nom d'utilisateur, mais refuser l'inscription si celui-ci existe déjà."
+#~ msgid "Use the user's email address, but deny enrollment when the email address already exists."
+#~ msgstr "Utiliser l'adresse courriel de l'utilisateur, mais refuser l'inscription lorsque celle-ci existe déjà."
+
+#: src/admin/sources/oauth/utils.ts
+msgid "Use the user's username, but deny enrollment when the username already exists"
+msgstr ""
+
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#~ msgid "Use the user's username, but deny enrollment when the username already exists."
+#~ msgstr "Utiliser le nom d'utilisateur, mais refuser l'inscription si celui-ci existe déjà."
 
 #: src/admin/users/ServiceAccountForm.ts
 msgid "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page."
