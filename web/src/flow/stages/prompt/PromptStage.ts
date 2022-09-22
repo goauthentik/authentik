@@ -115,7 +115,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
             case PromptTypeEnum.Static:
                 return `<p>${prompt.placeholder}</p>`;
             case PromptTypeEnum.AkLocale:
-                return `<select class="pf-c-form-control">
+                return `<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     <option value="" ${prompt.placeholder === "" ? "selected" : ""}>
                         ${t`Auto-detect (based on your browser)`}
                     </option>
