@@ -25,6 +25,41 @@ func TestProxy_ModifyRequest(t *testing.T) {
 	assert.Equal(t, "frontend", req.Host)
 }
 
+func TestProxy_Redirect(t *testing.T) {
+	a := newTestApplication()
+	_ = a.configureProxy()
+	req, _ := http.NewRequest("GET", "https://ext.t.goauthentik.io/foo", nil)
+	rr := httptest.NewRecorder()
+
+	a.mux.ServeHTTP(rr, req)
+
+	assert.Equal(t, http.StatusFound, rr.Code)
+	loc, _ := rr.Result().Location()
+	assert.Equal(
+		t,
+		"https://ext.t.goauthentik.io/outpost.goauthentik.io/start?rd=https%3A%2F%2Fext.t.goauthentik.io%2Ffoo",
+		loc.String(),
+	)
+}
+
+func TestProxy_Redirect_Subdirectory(t *testing.T) {
+	a := newTestApplication()
+	a.proxyConfig.ExternalHost = a.proxyConfig.ExternalHost + "/subdir"
+	_ = a.configureProxy()
+	req, _ := http.NewRequest("GET", "https://ext.t.goauthentik.io/foo", nil)
+	rr := httptest.NewRecorder()
+
+	a.mux.ServeHTTP(rr, req)
+
+	assert.Equal(t, http.StatusFound, rr.Code)
+	loc, _ := rr.Result().Location()
+	assert.Equal(
+		t,
+		"https://ext.t.goauthentik.io/subdir/outpost.goauthentik.io/start?rd=https%3A%2F%2Fext.t.goauthentik.io%2Ffoo",
+		loc.String(),
+	)
+}
+
 func TestProxy_ModifyRequest_Claims(t *testing.T) {
 	a := newTestApplication()
 	req, _ := http.NewRequest("GET", "http://frontend/foo", nil)

@@ -12,6 +12,15 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 
+func urlPathSet(originalUrl string, newPath string) string {
+	u, err := url.Parse(originalUrl)
+	if err != nil {
+		return originalUrl
+	}
+	u.Path = newPath
+	return u.String()
+}
+
 func urlJoin(originalUrl string, newPath string) string {
 	u, err := url.Parse(originalUrl)
 	if err != nil {
@@ -26,7 +35,9 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		a.log.WithError(err).Warning("failed to decode session")
 	}
-	redirectUrl := urlJoin(a.proxyConfig.ExternalHost, r.URL.Path)
+
+	redirectUrl := urlPathSet(a.proxyConfig.ExternalHost, r.URL.Path)
+
 	if a.Mode() == api.PROXYMODE_FORWARD_DOMAIN {
 		dom := strings.TrimPrefix(*a.proxyConfig.CookieDomain, ".")
 		// In forward_domain we only check that the current URL's host
