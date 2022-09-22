@@ -202,10 +202,8 @@ export class FlowViewPage extends AKElement {
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
                         >
                             <div class="pf-c-card__title">${t`Diagram`}</div>
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__body">
-                                    <ak-flow-diagram flowSlug=${this.flow.slug}> </ak-flow-diagram>
-                                </div>
+                            <div class="pf-c-card__body">
+                                <ak-flow-diagram flowSlug=${this.flow.slug}> </ak-flow-diagram>
                             </div>
                         </div>
                         <div
