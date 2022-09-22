@@ -46,6 +46,7 @@ Create a new _Application_ (under _Applications/Applications_) with these settin
 
 -   Name: ArgoCD
 -   Provider: ArgoCD
+-   Slug: argocd
 
 ### Step 3 - ArgoCD Admin Group creation
 
@@ -76,7 +77,7 @@ In the `argocd-cm` ConfigMap, add the following to the data field :
 dex.config: |
     connectors:
     - config:
-        issuer: http://authentik.company/application/o/argocd/
+        issuer: http://authentik.company/application/o/<application slug defined in step 2>/
         clientID: <client ID from the Provider above>
         clientSecret: $dex.authentik.clientSecret
         insecureEnableGroups: true
