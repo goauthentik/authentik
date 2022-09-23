@@ -108,7 +108,7 @@
         "prettier": "^2.7.1",
         "pyright": "^1.1.272",
         "rapidoc": "^9.3.3",
-        "rollup": "^2.79.0",
+        "rollup": "^2.79.1",
         "rollup-plugin-copy": "^3.4.0",
         "rollup-plugin-cssimport": "^1.0.3",
         "rollup-plugin-minify-html-literals": "^1.2.6",
