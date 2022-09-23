@@ -11,6 +11,12 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 	dn := pi.GetUserDN(u.Username)
 	attrs := utils.AKAttrsToLDAP(u.Attributes)
 
+	if u.IsActive == nil {
+		u.IsActive = api.PtrBool(false)
+	}
+	if u.Email == nil {
+		u.Email = api.PtrString("")
+	}
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
 		"memberOf":                      pi.GroupsForUser(u),
 		"goauthentik.io/ldap/active":    {utils.BoolToString(*u.IsActive)},

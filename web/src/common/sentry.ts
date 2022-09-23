@@ -24,6 +24,7 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
                 /instantSearchSDKJSBridgeClearHighlight/gi,
                 // Seems to be an issue in Safari and Firefox
                 /MutationObserver.observe/gi,
+                /NS_ERROR_FAILURE/gi,
             ],
             release: `authentik@${VERSION}`,
             tunnel: "/api/v3/sentry/",

@@ -51,7 +51,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                     },
                     defaults,
                 )
-            except (IntegrityError, FieldError, TypeError) as exc:
+            except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
                     message=(

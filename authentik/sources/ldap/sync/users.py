@@ -45,7 +45,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 ak_user, created = self.update_or_create_attributes(
                     User, {f"attributes__{LDAP_UNIQUENESS}": uniq}, defaults
                 )
-            except (IntegrityError, FieldError, TypeError) as exc:
+            except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
                     message=(

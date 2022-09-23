@@ -169,7 +169,11 @@ func (fe *FlowExecutor) getInitialChallenge() (*api.ChallengeTypes, error) {
 	if err != nil {
 		return nil, err
 	}
-	ch := challenge.GetActualInstance().(challengeInt)
+	i := challenge.GetActualInstance()
+	if i == nil {
+		return nil, errors.New("response instance was null")
+	}
+	ch := i.(challengeInt)
 	fe.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got challenge")
 	gcsp.SetTag("authentik.flow.challenge", string(ch.GetType()))
 	gcsp.SetTag("authentik.flow.component", ch.GetComponent())
@@ -185,7 +189,11 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 	// Resole challenge
 	scsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.solve_challenge")
 	responseReq := fe.api.FlowsApi.FlowsExecutorSolve(scsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
-	ch := challenge.GetActualInstance().(challengeInt)
+	i := challenge.GetActualInstance()
+	if i == nil {
+		return false, errors.New("response request instance was null")
+	}
+	ch := i.(challengeInt)
 
 	// Check for any validation errors that we might've gotten
 	if len(ch.GetResponseErrors()) > 0 {
@@ -218,7 +226,11 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 	if err != nil {
 		return false, fmt.Errorf("failed to submit challenge %w", err)
 	}
-	ch = response.GetActualInstance().(challengeInt)
+	i = response.GetActualInstance()
+	if i == nil {
+		return false, errors.New("response instance was null")
+	}
+	ch = i.(challengeInt)
 	fe.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got response")
 	scsp.SetTag("authentik.flow.challenge", string(ch.GetType()))
 	scsp.SetTag("authentik.flow.component", ch.GetComponent())

@@ -1,4 +1,5 @@
 """authentik sentry integration"""
+from asyncio.exceptions import CancelledError
 from typing import Any, Optional
 
 from aioredis.errors import ConnectionClosedError, ReplyError
@@ -143,6 +144,8 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         DockerException,
         # End-user errors
         Http404,
+        # AsyncIO
+        CancelledError,
     )
     exc_value = None
     if "exc_info" in hint:
