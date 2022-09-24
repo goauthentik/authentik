@@ -15,7 +15,8 @@ import { AdminApi, OutpostsApi, System } from "@goauthentik/api";
 export class SystemStatusCard extends AdminStatusCard<System> {
     now?: Date;
 
-    header = t`OK`;
+    header = t`System status`;
+    icon = "pf-icon pf-icon-server";
 
     async getPrimaryValue(): Promise<System> {
         this.now = new Date();

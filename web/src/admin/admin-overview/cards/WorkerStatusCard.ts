@@ -13,6 +13,9 @@ import { AdminApi } from "@goauthentik/api";
 
 @customElement("ak-admin-status-card-workers")
 export class WorkersStatusCard extends AdminStatusCard<number> {
+    header = t`Workers`;
+    icon = "pf-icon pf-icon-server";
+
     getPrimaryValue(): Promise<number> {
         return new AdminApi(DEFAULT_CONFIG).adminWorkersRetrieve().then((workers) => {
             return workers.count;

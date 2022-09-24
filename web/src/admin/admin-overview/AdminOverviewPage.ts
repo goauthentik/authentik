@@ -168,30 +168,17 @@ export class AdminOverviewPage extends AKElement {
                     <div
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
                     >
-                        <ak-admin-status-system
-                            icon="pf-icon pf-icon-server"
-                            header=${t`System status`}
-                        >
-                        </ak-admin-status-system>
+                        <ak-admin-status-system> </ak-admin-status-system>
                     </div>
                     <div
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
                     >
-                        <ak-admin-status-version
-                            icon="pf-icon pf-icon-bundle"
-                            header=${t`Version`}
-                            headerLink="https://github.com/goauthentik/authentik/releases"
-                        >
-                        </ak-admin-status-version>
+                        <ak-admin-status-version> </ak-admin-status-version>
                     </div>
                     <div
                         class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
                     >
-                        <ak-admin-status-card-workers
-                            icon="pf-icon pf-icon-server"
-                            header=${t`Workers`}
-                        >
-                        </ak-admin-status-card-workers>
+                        <ak-admin-status-card-workers> </ak-admin-status-card-workers>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col row-divider">
                         <hr />
