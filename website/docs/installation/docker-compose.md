@@ -37,7 +37,7 @@ Append this block to your `.env` file
 # SMTP Host Emails are sent to
 AUTHENTIK_EMAIL__HOST=localhost
 AUTHENTIK_EMAIL__PORT=25
-# Optionally authenticate (don't add quotation marks to you password)
+# Optionally authenticate (don't add quotation marks to your password)
 AUTHENTIK_EMAIL__USERNAME=
 AUTHENTIK_EMAIL__PASSWORD=
 # Use StartTLS
