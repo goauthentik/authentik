@@ -84,8 +84,7 @@ services:
     certbot:
         image: certbot/dns-route53:v1.22.0
         volumes:
-            - ./letsencrypt:/etc/letsencrypt
-            - ../authentik/certs/:/etc/letsencrypt/live
+            - ./certs/:/etc/letsencrypt
         # Variables depending on DNS Plugin
         environment:
             AWS_ACCESS_KEY_ID: ...
