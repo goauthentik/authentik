@@ -2,11 +2,11 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 # Translators:
 # Chen Zhikai, 2022
 # 刘松, 2022
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
@@ -15,7 +15,7 @@ msgstr ""
 "POT-Creation-Date: 2022-01-03 12:29+0000\n"
 "PO-Revision-Date: 2021-10-09 18:10+0000\n"
 "Last-Translator: 刘松, 2022\n"
-"Language-Team: Chinese Traditional (https://www.transifex.com/beryjuorg/teams/119923/zh-Hant/)\n"
+"Language-Team: Chinese Traditional (https://www.transifex.com/authentik/teams/119923/zh-Hant/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -697,7 +697,7 @@ msgstr "RS256（非对称加密）"
 
 #: authentik/providers/oauth2/models.py:93
 msgid "ES256 (Asymmetric Encryption)"
-msgstr "ES256（非对称加密）"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py:99
 msgid "Scope used by the client"
