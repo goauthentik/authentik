@@ -11,7 +11,7 @@ msgstr ""
 "POT-Creation-Date: 2021-04-04 16:55+0200\n"
 "PO-Revision-Date: 2021-10-04 20:03+0000\n"
 "Last-Translator: deluxghost, 2022\n"
-"Language-Team: Chinese (China) (https://www.transifex.com/beryjuorg/teams/119923/zh_CN/)\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/authentik/teams/119923/zh_CN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -56,9 +56,9 @@ msgstr "-"
 
 #: src/pages/flows/FlowImportForm.ts
 msgid ""
-".yaml files, which can be found on goauthentik.io and can be exported by "
+".akflow files, which can be found on goauthentik.io and can be exported by "
 "authentik."
-msgstr ".yaml 文件，可以在 goauthentik.io 上找到，也可以通过 authentik 导出。"
+msgstr ".akflow 文件，可以在 goauthentik.io 上找到，也可以通过 authentik 导出。"
 
 #: src/pages/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "6 digits, widely compatible"
