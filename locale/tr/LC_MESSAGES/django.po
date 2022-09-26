@@ -2,19 +2,19 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 # Translators:
-# Oktay Altunergil, 2022
-#
+# Oktay, 2022
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-01 14:02+0000\n"
+"POT-Creation-Date: 2022-01-03 12:29+0000\n"
 "PO-Revision-Date: 2021-10-09 18:10+0000\n"
-"Last-Translator: Oktay Altunergil, 2022\n"
-"Language-Team: Turkish (https://www.transifex.com/beryjuorg/teams/119923/tr/)\n"
+"Last-Translator: Oktay, 2022\n"
+"Language-Team: Turkish (https://www.transifex.com/authentik/teams/119923/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -42,51 +42,51 @@ msgstr "Meta Verilerden SAML Sağlayıcı"
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr "Meta Verilerini içe aktararak bir SAML Sağlayıcısı oluşturun."
 
-#: authentik/core/models.py:68
+#: authentik/core/models.py:69
 msgid "name"
 msgstr "ad"
 
-#: authentik/core/models.py:70
+#: authentik/core/models.py:71
 msgid "Users added to this group will be superusers."
 msgstr "Bu gruba eklenen kullanıcılar süper kullanıcılar olacaktır."
 
-#: authentik/core/models.py:128
+#: authentik/core/models.py:129
 msgid "User's display name."
 msgstr "Kullanıcının görünen adı."
 
-#: authentik/core/models.py:195 authentik/providers/oauth2/models.py:299
+#: authentik/core/models.py:212 authentik/providers/oauth2/models.py:299
 msgid "User"
 msgstr "Kullanıcı"
 
-#: authentik/core/models.py:196
+#: authentik/core/models.py:213
 msgid "Users"
 msgstr "Kullanıcılar"
 
-#: authentik/core/models.py:207
+#: authentik/core/models.py:224
 msgid "Flow used when authorizing this provider."
 msgstr "Bu sağlayıcıyı yetkilendirirken kullanılan akış."
 
-#: authentik/core/models.py:240
+#: authentik/core/models.py:257
 msgid "Application's display Name."
 msgstr "Uygulamanın görünen Adı."
 
-#: authentik/core/models.py:241
+#: authentik/core/models.py:258
 msgid "Internal application name, used in URLs."
 msgstr "URL'lerde kullanılan dahili uygulama adı."
 
-#: authentik/core/models.py:294
+#: authentik/core/models.py:311
 msgid "Application"
 msgstr "Uygulama"
 
-#: authentik/core/models.py:295
+#: authentik/core/models.py:312
 msgid "Applications"
 msgstr "Uygulamalar"
 
-#: authentik/core/models.py:301
+#: authentik/core/models.py:318
 msgid "Use the source-specific identifier"
 msgstr "Kaynağa özgü tanımlayıcıyı kullanma"
 
-#: authentik/core/models.py:309
+#: authentik/core/models.py:326
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
@@ -94,7 +94,7 @@ msgstr ""
 "Kullanıcının e-posta adresini kullanın, ancak e-posta adresi zaten varken "
 "kaydı reddedin."
 
-#: authentik/core/models.py:318
+#: authentik/core/models.py:335
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
@@ -102,43 +102,43 @@ msgstr ""
 "Kullanıcının kullanıcı adını kullanın, ancak kullanıcı adı zaten varken "
 "kaydı reddedin."
 
-#: authentik/core/models.py:325
+#: authentik/core/models.py:342
 msgid "Source's display Name."
 msgstr "Kaynağın görünen Adı."
 
-#: authentik/core/models.py:326
+#: authentik/core/models.py:343
 msgid "Internal source name, used in URLs."
 msgstr "URL'lerde kullanılan iç kaynak adı."
 
-#: authentik/core/models.py:337
+#: authentik/core/models.py:354
 msgid "Flow to use when authenticating existing users."
 msgstr "Mevcut kullanıcıların kimliğini doğrularken kullanmak için akış."
 
-#: authentik/core/models.py:346
+#: authentik/core/models.py:363
 msgid "Flow to use when enrolling new users."
 msgstr "Yeni kullanıcıları kaydettirirken kullanmak için akış."
 
-#: authentik/core/models.py:484
+#: authentik/core/models.py:501
 msgid "Token"
 msgstr "Belirteç"
 
-#: authentik/core/models.py:485
+#: authentik/core/models.py:502
 msgid "Tokens"
 msgstr "Belirteçler"
 
-#: authentik/core/models.py:528
+#: authentik/core/models.py:545
 msgid "Property Mapping"
 msgstr "Özellik Eşleme"
 
-#: authentik/core/models.py:529
+#: authentik/core/models.py:546
 msgid "Property Mappings"
 msgstr "Özellik Eşleştirmeleri"
 
-#: authentik/core/models.py:565
+#: authentik/core/models.py:582
 msgid "Authenticated Session"
 msgstr "Kimliği Doğrulanmış Oturum"
 
-#: authentik/core/models.py:566
+#: authentik/core/models.py:583
 msgid "Authenticated Sessions"
 msgstr "Kimliği Doğrulanmış Oturumlar"
 
@@ -720,7 +720,7 @@ msgstr "RS256 (Asimetrik Şifreleme)"
 
 #: authentik/providers/oauth2/models.py:93
 msgid "ES256 (Asymmetric Encryption)"
-msgstr "ES256 (Asimetrik Şifreleme)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py:99
 msgid "Scope used by the client"
