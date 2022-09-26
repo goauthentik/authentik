@@ -11,7 +11,7 @@
 # David <david@techniknews.net>, 2021
 # Steve Oswald, 2022
 # 97cce0ae0cad2a2cc552d3165d04643e_de3d740, 2022
-# 3ole, 2022
+# 8d4895d1a97955a09df504bfbc4402b0_584b927, 2022
 # 
 #, fuzzy
 msgid ""
@@ -20,8 +20,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-03 12:29+0000\n"
 "PO-Revision-Date: 2021-10-09 18:10+0000\n"
-"Last-Translator: 3ole, 2022\n"
-"Language-Team: German (https://www.transifex.com/beryjuorg/teams/119923/de/)\n"
+"Last-Translator: 8d4895d1a97955a09df504bfbc4402b0_584b927, 2022\n"
+"Language-Team: German (https://www.transifex.com/authentik/teams/119923/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -75,11 +75,11 @@ msgstr "Flow der zur Authorisierung des Anbieter verwendet wird."
 
 #: authentik/core/models.py:257
 msgid "Application's display Name."
-msgstr "Anzeigename der Applikation"
+msgstr "Anzeigename der Anwendung"
 
 #: authentik/core/models.py:258
 msgid "Internal application name, used in URLs."
-msgstr "Interner Applikationsname, wird in URLs verwendet."
+msgstr "Interner Anwendungsname; wird in URLs verwendet."
 
 #: authentik/core/models.py:311
 msgid "Application"
@@ -123,7 +123,7 @@ msgstr "Flow der zur Authorisierung bereits ersteller Nutzer verwendet wird"
 
 #: authentik/core/models.py:363
 msgid "Flow to use when enrolling new users."
-msgstr "Flow der zum Anlegen bereits neuer Nutzer verwendet wird"
+msgstr "Flow der zum Anlegen neuer Nutzer verwendet wird"
 
 #: authentik/core/models.py:501
 msgid "Token"
@@ -220,7 +220,7 @@ msgstr ""
 
 #: authentik/core/templates/login/base_full.html:65
 msgid "Powered by authentik"
-msgstr "Erstellt durch Authentik"
+msgstr "Mit Authentik erstellt"
 
 #: authentik/crypto/api.py:132
 msgid "Subject-alt name"
