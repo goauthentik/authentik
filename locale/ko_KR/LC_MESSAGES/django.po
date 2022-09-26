@@ -14,7 +14,7 @@ msgstr ""
 "POT-Creation-Date: 2022-01-03 12:29+0000\n"
 "PO-Revision-Date: 2021-10-09 18:10+0000\n"
 "Last-Translator: despenser08, 2022\n"
-"Language-Team: Korean (Korea) (https://www.transifex.com/beryjuorg/teams/119923/ko_KR/)\n"
+"Language-Team: Korean (Korea) (https://www.transifex.com/authentik/teams/119923/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -478,7 +478,7 @@ msgstr "비밀번호 만료 정책"
 
 #: authentik/policies/expiry/models.py:55
 msgid "Password Expiry Policies"
-msgstr "암호 만료 정책"
+msgstr "비밀번호 만료 정책"
 
 #: authentik/policies/expression/models.py:41
 msgid "Expression Policy"
@@ -835,7 +835,7 @@ msgstr "HTTP-Basic 인증 설정"
 msgid ""
 "Set a custom HTTP-Basic Authentication header based on values from "
 "authentik."
-msgstr "authentik의 값을 기반으로 사용자 지정 HTTP-Basic 인증 헤더를 설정합니다."
+msgstr "authentik의 값을 기반으로 커스텀 HTTP-Basic 인증 헤더를 설정합니다."
 
 #: authentik/providers/proxy/models.py:84
 msgid "HTTP-Basic Username Key"
@@ -1048,7 +1048,7 @@ msgstr "인증 URL"
 
 #: authentik/sources/oauth/models.py:33
 msgid "URL the user is redirect to to conest the flow."
-msgstr "흐름에 동의하기 위해 사용자가 리다이렉트되는 URL입니다."
+msgstr "흐름에 동의하기 위해 유저가 리다이렉트되는 URL입니다."
 
 #: authentik/sources/oauth/models.py:38
 msgid "Access Token URL"
@@ -1064,7 +1064,7 @@ msgstr "프로필 URL"
 
 #: authentik/sources/oauth/models.py:45
 msgid "URL used by authentik to get user information."
-msgstr "authentik이 사용자 정보를 가져오는 데 사용하는 URL입니다."
+msgstr "authentik이 유저 정보를 가져오는 데 사용하는 URL입니다."
 
 #: authentik/sources/oauth/models.py:97
 msgid "OAuth Source"
@@ -1240,7 +1240,7 @@ msgstr "IdP로 보낼 NameID 정책입니다. 비워둘 수 있으며, 비워둘
 
 #: authentik/sources/saml/models.py:102
 msgid "Delete temporary users after"
-msgstr "임시 사용자 삭제"
+msgstr "임시 유저 삭제"
 
 #: authentik/sources/saml/models.py:120
 msgid ""
@@ -1425,7 +1425,7 @@ msgstr "계정 확인"
 
 #: authentik/stages/email/models.py:75
 msgid "Activate users upon completion of stage."
-msgstr "단계가 완료되면 사용자를 활성화합니다."
+msgstr "단계가 완료되면 유저를 활성화합니다."
 
 #: authentik/stages/email/models.py:79
 msgid "Time in minutes the token sent is valid."
@@ -1445,7 +1445,7 @@ msgstr "이메일을 성공적으로 인증했습니다."
 
 #: authentik/stages/email/stage.py:113 authentik/stages/email/stage.py:135
 msgid "No pending user."
-msgstr "보류 중인 사용자가 없습니다."
+msgstr "보류 중인 유저가 없습니다."
 
 #: authentik/stages/email/stage.py:125
 msgid "Email sent."
@@ -1504,7 +1504,7 @@ msgid ""
 "                    "
 msgstr ""
 "\n"
-"                    authentik 계정에 대한 비밀번호를 변경 요청했습니다. 아래 버튼를 사용하여 새 암호를 설정하십시오.\n"
+"                    authentik 계정에 대한 비밀번호를 변경 요청했습니다. 아래 버튼를 사용하여 새 비밀번호를 설정하십시오.\n"
 "                    "
 
 #: authentik/stages/email/templates/email/password_reset.html:33
@@ -1519,7 +1519,7 @@ msgid ""
 "                    "
 msgstr ""
 "\n"
-"                    암호 변경을 요청하지 않은 경우 이 이메일을 무시하십시오. 위의 링크는 %(expires)s동안 유효합니다.\n"
+"                    비밀번호 변경을 요청하지 않은 경우 이 이메일을 무시하십시오. 위의 링크는 %(expires)s동안 유효합니다.\n"
 "                    "
 
 #: authentik/stages/email/templates/email/setup.html:9
@@ -1684,7 +1684,7 @@ msgstr "유저 삭제 단계"
 
 #: authentik/stages/user_delete/stage.py:24
 msgid "No Pending User."
-msgstr "보류 중인 사용자가 없습니다."
+msgstr "보류 중인 유저가 없습니다."
 
 #: authentik/stages/user_login/models.py:19
 msgid ""
@@ -1704,7 +1704,7 @@ msgstr "유저 로그인 단계"
 
 #: authentik/stages/user_login/stage.py:29
 msgid "No Pending user to login."
-msgstr "로그인할 보류 중인 사용자가 없습니다."
+msgstr "로그인할 보류 중인 유저가 없습니다."
 
 #: authentik/stages/user_login/stage.py:57
 msgid "Successfully logged in!"
