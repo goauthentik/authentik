@@ -5,7 +5,7 @@ title: LDAP Provider
 You can configure an LDAP Provider for applications that don't support any newer protocols or require LDAP.
 
 :::info
-Note: This provider requires the deployment of the [LDAP Outpost](../outposts/)
+Note: This provider requires the deployment of the [LDAP Outpost](../../outposts/)
 :::
 
 All users and groups in authentik's database are searchable. Currently, there is limited support for filters (you can only search for objectClass), but this will be expanded in further releases.
@@ -72,7 +72,7 @@ This enables you to bind on port 636 using LDAPS, StartTLS is not supported.
 
 ## Integrations
 
-See the integration guide for [sssd](../../integrations/services/sssd/) for
+See the integration guide for [sssd](../../../integrations/services/sssd/) for
 an example guide.
 
 ## Bind Modes
@@ -81,9 +81,9 @@ All bind modes rely on flows.
 
 The following stages are supported:
 
--   [Identification](../flow/stages/identification/)
--   [Password](../flow/stages/password/)
--   [Authenticator validation](../flow/stages/authenticator_validate/)
+-   [Identification](../../flow/stages/identification/)
+-   [Password](../../flow/stages/password/)
+-   [Authenticator validation](../../flow/stages/authenticator_validate/)
 
     Note: Authenticator validation currently only supports DUO devices
 
