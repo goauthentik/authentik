@@ -85,10 +85,10 @@ Change the following fields
     ou=users is the default OU for users. If you are using authentik's virtual groups, or have your users in a different organizational unit (ou), change accordingly.
     :::
 -   LDAP Filter: &(objectClass=user)
+-   Username Field: mail
     :::note
     Setting the Username fieled to mail is recommended in order to ensure the usernameisunique. See https://snipe-it.readme.io/docs/ldap-sync-login
     :::
--   Username Field: mail
 -   Allow unauthenticated bind: **unticked**
 -   Last Name: sn
 -   LDAP First Name: givenname
@@ -176,9 +176,15 @@ Configure Snipe-IT SAML settings by going to settings (he gear icon), and select
 
 -   SAML enabled: **ticked**
 -   SAML IdP Metadata: (paste information copied in Step 2 above -or-
--   Click `Select File`and select the file you downloadedin Step 2
+-   Click `Select File`and select the file you downloaded in Step 2
 -   Attribute Mapping - Username: mail
 -   SAML Force Login: **ticked**
 -   SAML Single Log Out: **ticked**
 
 All other field can be left blank.
+
+## Additional Resources
+
+-    https://snipe-it.readme.io/docs/ldap-sync-login
+-    https://snipe-it.readme.io/docs/saml
+
