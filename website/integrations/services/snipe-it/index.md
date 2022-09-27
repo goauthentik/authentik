@@ -185,6 +185,5 @@ All other field can be left blank.
 
 ## Additional Resources
 
--    https://snipe-it.readme.io/docs/ldap-sync-login
--    https://snipe-it.readme.io/docs/saml
-
+-   https://snipe-it.readme.io/docs/ldap-sync-login
+-   https://snipe-it.readme.io/docs/saml
