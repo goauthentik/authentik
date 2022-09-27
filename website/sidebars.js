@@ -62,7 +62,15 @@ module.exports = {
                         "providers/proxy/forward_auth",
                     ],
                 },
-                "providers/ldap",
+                {
+                    type: "category",
+                    label: "LDAP Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/ldap/index",
+                    },
+                    items: ["providers/ldap/general_setup"],
+                },
             ],
         },
         {
