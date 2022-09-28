@@ -257,6 +257,9 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         name="authenticationFlow"
                     >
                         <select class="pf-c-form-control">
+                            <option value="" ?selected=${this.instance?.authenticationFlow === undefined}>
+                                ---------
+                            </option>
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
@@ -296,6 +299,9 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         name="enrollmentFlow"
                     >
                         <select class="pf-c-form-control">
+                            <option value="" ?selected=${this.instance?.enrollmentFlow === undefined}>
+                                ---------
+                            </option>
                             ${until(
                                 new FlowsApi(DEFAULT_CONFIG)
                                     .flowsInstancesList({
