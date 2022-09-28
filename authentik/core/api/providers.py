@@ -35,6 +35,7 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
         fields = [
             "pk",
             "name",
+            "authentication_flow",
             "authorization_flow",
             "property_mappings",
             "component",

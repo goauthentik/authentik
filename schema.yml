@@ -15822,6 +15822,11 @@ paths:
         schema:
           type: string
       - in: query
+        name: authentication_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: authorization_flow
         schema:
           type: string
@@ -30582,6 +30587,12 @@ components:
           title: ID
         name:
           type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -30672,6 +30683,12 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -31314,6 +31331,12 @@ components:
           title: ID
         name:
           type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -31430,6 +31453,12 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -36068,6 +36097,12 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -36297,6 +36332,12 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -36759,6 +36800,12 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -36841,6 +36888,12 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -36853,7 +36906,7 @@ components:
         client_networks:
           type: string
           minLength: 1
-          description: List of CIDRs (comma-seperated) that clients can connect from.
+          description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
         shared_secret:
@@ -36911,6 +36964,12 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -38157,6 +38216,12 @@ components:
           title: ID
         name:
           type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -38215,6 +38280,12 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -38375,6 +38446,12 @@ components:
           title: ID
         name:
           type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -38503,6 +38580,12 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -38598,7 +38681,7 @@ components:
           type: string
         client_networks:
           type: string
-          description: List of CIDRs (comma-seperated) that clients can connect from.
+          description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
         shared_secret:
@@ -38619,6 +38702,12 @@ components:
           title: ID
         name:
           type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -38654,7 +38743,7 @@ components:
           readOnly: true
         client_networks:
           type: string
-          description: List of CIDRs (comma-seperated) that clients can connect from.
+          description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
         shared_secret:
@@ -38677,6 +38766,12 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -38689,7 +38784,7 @@ components:
         client_networks:
           type: string
           minLength: 1
-          description: List of CIDRs (comma-seperated) that clients can connect from.
+          description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
         shared_secret:
@@ -38934,6 +39029,12 @@ components:
           title: ID
         name:
           type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid
@@ -39090,6 +39191,12 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
         authorization_flow:
           type: string
           format: uuid

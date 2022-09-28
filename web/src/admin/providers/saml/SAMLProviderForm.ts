@@ -82,6 +82,38 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
+                label=${t`Authentication flow`}
+                ?required=${false}
+                name="authenticationFlow"
+            >
+                <select class="pf-c-form-control">
+                    <option value="" ?selected=${this.instance?.authenticationFlow === undefined}>
+                        ---------
+                    </option>
+                    ${until(
+                        new FlowsApi(DEFAULT_CONFIG)
+                            .flowsInstancesList({
+                                ordering: "slug",
+                                designation: FlowsInstancesListDesignationEnum.Authentication,
+                            })
+                            .then((flows) => {
+                                return flows.results.map((flow) => {
+                                    return html`<option
+                                        value=${ifDefined(flow.pk)}
+                                        ?selected=${this.instance?.authenticationFlow === flow.pk}
+                                    >
+                                        ${flow.name} (${flow.slug})
+                                    </option>`;
+                                });
+                            }),
+                        html`<option>${t`Loading...`}</option>`,
+                    )}
+                </select>
+                <p class="pf-c-form__helper-text">
+                    ${t`Flow used when authenticating using this provider.`}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
                 label=${t`Authorization flow`}
                 ?required=${true}
                 name="authorizationFlow"
