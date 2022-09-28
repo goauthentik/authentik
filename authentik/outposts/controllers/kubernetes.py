@@ -38,7 +38,7 @@ class KubernetesClient(ApiClient, BaseClient):
                 load_kube_config_from_dict(connection.kubeconfig, client_configuration=config)
             super().__init__(config)
         except ConfigException as exc:
-            raise ServiceConnectionInvalid from exc
+            raise ServiceConnectionInvalid(exc) from exc
 
     def fetch_state(self) -> OutpostServiceConnectionState:
         """Get version info"""

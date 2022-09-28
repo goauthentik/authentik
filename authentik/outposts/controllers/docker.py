@@ -61,7 +61,9 @@ class DockerClient(UpstreamDockerClient, BaseClient):
                     tls=tls_config,
                 )
             except SSHException as exc:
-                raise ServiceConnectionInvalid from exc
+                if self.ssh:
+                    self.ssh.cleanup()
+                raise ServiceConnectionInvalid(exc) from exc
         # Ensure the client actually works
         self.containers.list()
 
