@@ -48,6 +48,7 @@ email:
   use_ssl: false
   timeout: 10
   from: authentik@localhost
+  template_dir: /templates
 
 outposts:
   # Placeholders:
