@@ -60,7 +60,7 @@ Note: The `default-authentication-flow` can have mult-factor authenticator(s) co
 
 1. Create (or update) the LDAP Outpost `Applications > Outposts > Create`. Type is `LDAP` and choose the `LDAP` application created in the previous step.
    :::info
-   Note: There can only be one LDAP Outpost.
+   Note: There can only be one local LDAP provider, but many LDAP outposts.
    :::
    ![](./general_setup17.png)
 
