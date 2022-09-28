@@ -15051,6 +15051,11 @@ paths:
         schema:
           type: string
       - in: query
+        name: authentication_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: authorization_flow
         schema:
           type: string
@@ -28227,6 +28232,11 @@ components:
           title: ID
         name:
           type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -28313,6 +28323,11 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -28895,6 +28910,11 @@ components:
           title: ID
         name:
           type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -28990,6 +29010,11 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -33215,6 +33240,11 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -33434,6 +33464,11 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -33845,6 +33880,11 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -33950,6 +33990,11 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -35019,6 +35064,11 @@ components:
           title: ID
         name:
           type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -35070,6 +35120,11 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -35200,6 +35255,11 @@ components:
           title: ID
         name:
           type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -35300,6 +35360,11 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -35612,6 +35677,11 @@ components:
           title: ID
         name:
           type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid
@@ -35745,6 +35815,11 @@ components:
         name:
           type: string
           minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authenticating using this provider.
         authorization_flow:
           type: string
           format: uuid

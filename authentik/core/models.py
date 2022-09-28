@@ -258,6 +258,15 @@ class Provider(SerializerModel):
 
     name = models.TextField()
 
+    authentication_flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        help_text=_("Flow used when authenticating using this provider."),
+        related_name="provider_authentication",
+    )
+
     authorization_flow = models.ForeignKey(
         "authentik_flows.Flow",
         on_delete=models.CASCADE,
