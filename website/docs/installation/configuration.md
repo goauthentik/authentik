@@ -68,6 +68,12 @@ Log level for the server and worker containers. Possible values: debug, info, wa
 
 Starting with 2021.12.3, you can also set the log level to _trace_. This has no affect on the core authentik server, but shows additional messages for the embedded outpost.
 
+:::danger
+Setting the log level to `trace` will include sensitive details in logs, so it shouldn't be used in most cases.
+
+Logs generated with `trace` should be treated with care as they can give others access to your instance.
+:::
+
 Defaults to `info`.
 
 ### `AUTHENTIK_COOKIE_DOMAIN`
