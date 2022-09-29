@@ -71,7 +71,7 @@ Starting with 2021.12.3, you can also set the log level to _trace_. This has no 
 :::danger
 Setting the log level to `trace` will include sensitive details in logs, so it shouldn't be used in most cases.
 
-Logs generated with `trace` should be treated with care as they can give others access to your instance.
+Logs generated with `trace` should be treated with care as they can give others access to your instance, and can potentially include things like session cookies to authentik **and other pages**.
 :::
 
 Defaults to `info`.
