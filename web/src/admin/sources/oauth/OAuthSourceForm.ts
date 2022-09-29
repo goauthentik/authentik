@@ -331,7 +331,10 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         name="authenticationFlow"
                     >
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.authenticationFlow === undefined}>
+                            <option
+                                value=""
+                                ?selected=${this.instance?.authenticationFlow === undefined}
+                            >
                                 ---------
                             </option>
                             ${until(
@@ -373,7 +376,10 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         name="enrollmentFlow"
                     >
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.enrollmentFlow === undefined}>
+                            <option
+                                value=""
+                                ?selected=${this.instance?.enrollmentFlow === undefined}
+                            >
                                 ---------
                             </option>
                             ${until(

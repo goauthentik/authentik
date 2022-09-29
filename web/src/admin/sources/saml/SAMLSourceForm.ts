@@ -358,7 +358,10 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         name="preAuthenticationFlow"
                     >
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.preAuthenticationFlow === undefined}>
+                            <option
+                                value=""
+                                ?selected=${this.instance?.preAuthenticationFlow === undefined}
+                            >
                                 ---------
                             </option>
                             ${until(
@@ -398,7 +401,10 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         name="authenticationFlow"
                     >
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.authenticationFlow === undefined}>
+                            <option
+                                value=""
+                                ?selected=${this.instance?.authenticationFlow === undefined}
+                            >
                                 ---------
                             </option>
                             ${until(
@@ -440,7 +446,10 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         name="enrollmentFlow"
                     >
                         <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.enrollmentFlow === undefined}>
+                            <option
+                                value=""
+                                ?selected=${this.instance?.enrollmentFlow === undefined}
+                            >
                                 ---------
                             </option>
                             ${until(
