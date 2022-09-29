@@ -93,8 +93,17 @@ class ProviderInfoView(View):
             "scopes_supported": scopes,
             # https://openid.net/specs/openid-connect-core-1_0.html#RequestObject
             "request_parameter_supported": False,
-            # Because claims are dynamic and per-application, the only fixed Claim is "sub"
-            "claims_supported": ["sub"],
+            # Because claims are dynamic and per-application, the only claims listed here
+            # are ones that are always set by authentik itself on every token
+            "claims_supported": [
+                "sub",
+                "iss",
+                "aud",
+                "exp",
+                "iat",
+                "auth_time",
+                "acr",
+            ],
             "claims_parameter_supported": False,
         }
 
