@@ -54,8 +54,8 @@ class DockerInlineSSH:
                     self.header,
                     f"Host {self.host}\n",
                     f"    IdentityFile {key_path}\n",
-                    "   StrictHostKeyChecking No\n",
-                    "   UserKnownHostsFile /dev/null\n",
+                    "    StrictHostKeyChecking No\n",
+                    "    UserKnownHostsFile /dev/null\n",
                     f"{FOOTER}\n",
                     "\n",
                 ]
