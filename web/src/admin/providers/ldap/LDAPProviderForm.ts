@@ -182,6 +182,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                                     .cryptoCertificatekeypairsList({
                                         ordering: "name",
                                         hasKey: true,
+                                        includeDetails: false,
                                     })
                                     .then((keys) => {
                                         return keys.results.map((key) => {

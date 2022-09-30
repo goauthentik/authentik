@@ -346,6 +346,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                                     .cryptoCertificatekeypairsList({
                                         ordering: "name",
                                         hasKey: true,
+                                        includeDetails: false,
                                     })
                                     .then((keys) => {
                                         return keys.results.map((key) => {

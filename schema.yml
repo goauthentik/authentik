@@ -4924,6 +4924,11 @@ paths:
           type: boolean
         description: Only return certificate-key pairs with keys
       - in: query
+        name: include_details
+        schema:
+          type: boolean
+          default: true
+      - in: query
         name: managed
         schema:
           type: string
@@ -25924,16 +25929,20 @@ components:
           type: string
         fingerprint_sha256:
           type: string
+          nullable: true
           readOnly: true
         fingerprint_sha1:
           type: string
+          nullable: true
           readOnly: true
         cert_expiry:
           type: string
           format: date-time
+          nullable: true
           readOnly: true
         cert_subject:
           type: string
+          nullable: true
           readOnly: true
         private_key_available:
           type: boolean

@@ -189,6 +189,7 @@ ${this.instance?.redirectUris}</textarea
                                     .cryptoCertificatekeypairsList({
                                         ordering: "name",
                                         hasKey: true,
+                                        includeDetails: false,
                                     })
                                     .then((keys) => {
                                         return keys.results.map((key) => {
@@ -200,7 +201,7 @@ ${this.instance?.redirectUris}</textarea
                                                 value=${ifDefined(key.pk)}
                                                 ?selected=${selected}
                                             >
-                                                ${key.name} (${key.privateKeyType?.toUpperCase()})
+                                                ${key.name}
                                             </option>`;
                                         });
                                     }),

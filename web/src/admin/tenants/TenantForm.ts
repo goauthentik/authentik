@@ -366,6 +366,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                     .cryptoCertificatekeypairsList({
                                         ordering: "name",
                                         hasKey: true,
+                                        includeDetails: false,
                                     })
                                     .then((keys) => {
                                         return keys.results.map((key) => {

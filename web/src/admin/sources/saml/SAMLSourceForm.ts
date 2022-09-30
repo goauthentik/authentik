@@ -151,6 +151,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                                 new CryptoApi(DEFAULT_CONFIG)
                                     .cryptoCertificatekeypairsList({
                                         ordering: "name",
+                                        includeDetails: false,
                                     })
                                     .then((keys) => {
                                         return keys.results.map((key) => {

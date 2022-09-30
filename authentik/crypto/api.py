@@ -1,4 +1,5 @@
 """Crypto API Views"""
+from datetime import datetime
 from typing import Optional
 
 from cryptography.hazmat.backends import default_backend
@@ -13,7 +14,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, DateTimeField, IntegerField, SerializerMethodField
+from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
@@ -34,7 +35,10 @@ LOGGER = get_logger()
 class CertificateKeyPairSerializer(ModelSerializer):
     """CertificateKeyPair Serializer"""
 
-    cert_expiry = DateTimeField(source="certificate.not_valid_after", read_only=True)
+    fingerprint_sha256 = SerializerMethodField()
+    fingerprint_sha1 = SerializerMethodField()
+
+    cert_expiry = SerializerMethodField()
     cert_subject = SerializerMethodField()
     private_key_available = SerializerMethodField()
     private_key_type = SerializerMethodField()
@@ -42,8 +46,35 @@ class CertificateKeyPairSerializer(ModelSerializer):
     certificate_download_url = SerializerMethodField()
     private_key_download_url = SerializerMethodField()
 
-    def get_cert_subject(self, instance: CertificateKeyPair) -> str:
+    @property
+    def _should_include_details(self) -> bool:
+        request: Request = self.context.get("request", None)
+        if not request:
+            return True
+        return str(request.query_params.get("include_details", "true")).lower() == "true"
+
+    def get_fingerprint_sha256(self, instance: CertificateKeyPair) -> Optional[str]:
+        "Get certificate Hash (SHA256)"
+        if not self._should_include_details:
+            return None
+        return instance.fingerprint_sha256
+
+    def get_fingerprint_sha1(self, instance: CertificateKeyPair) -> Optional[str]:
+        "Get certificate Hash (SHA1)"
+        if not self._should_include_details:
+            return None
+        return instance.fingerprint_sha1
+
+    def get_cert_expiry(self, instance: CertificateKeyPair) -> Optional[datetime]:
+        "Get certificate expiry"
+        if not self._should_include_details:
+            return None
+        return instance.certificate.not_valid_after
+
+    def get_cert_subject(self, instance: CertificateKeyPair) -> Optional[str]:
         """Get certificate subject as full rfc4514"""
+        if not self._should_include_details:
+            return None
         return instance.certificate.subject.rfc4514_string()
 
     def get_private_key_available(self, instance: CertificateKeyPair) -> bool:
@@ -52,6 +83,8 @@ class CertificateKeyPairSerializer(ModelSerializer):
 
     def get_private_key_type(self, instance: CertificateKeyPair) -> Optional[str]:
         """Get the private key's type, if set"""
+        if not self._should_include_details:
+            return None
         key = instance.private_key
         if key:
             return key.__class__.__name__.replace("_", "").lower().replace("privatekey", "")
@@ -170,6 +203,14 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
     filterset_class = CertificateKeyPairFilter
     ordering = ["name"]
     search_fields = ["name"]
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("include_details", bool, default=True),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     @permission_required(None, ["authentik_crypto.add_certificatekeypair"])
     @extend_schema(

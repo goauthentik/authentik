@@ -158,6 +158,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                                     .cryptoCertificatekeypairsList({
                                         ordering: "name",
                                         hasKey: true,
+                                        includeDetails: false,
                                     })
                                     .then((keys) => {
                                         return keys.results.map((key) => {
@@ -196,6 +197,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                                 new CryptoApi(DEFAULT_CONFIG)
                                     .cryptoCertificatekeypairsList({
                                         ordering: "name",
+                                        includeDetails: false,
                                     })
                                     .then((keys) => {
                                         return keys.results.map((key) => {
