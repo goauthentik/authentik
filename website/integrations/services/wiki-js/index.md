@@ -62,6 +62,10 @@ In Wiki.js, configure the authentication strategy with these settings:
 You do not have to enable "Allow self-registration" and select a group to which new users should be assigned, but if you don't you will have to manually provision users in Wiki.js and ensure that their usernames match the username they have in authentik.
 :::
 
+:::note
+If you're using self-signed certificates for authentik, you need to set the root certificate of your CA as trusted in WikiJS by setting the NODE_EXTRA_CA_CERTS variable as explained here: https://github.com/Requarks/wiki/discussions/3387.
+:::
+
 ### Step 5
 
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
