@@ -28,11 +28,13 @@ Create an OAuth2/OpenID provider with the following parameters:
 Under _Advanced protocol settings_, set the following:
 
 -   Token validity: Any value to configure how long the session should last. Guacamole will not accept any tokens valid longer than 300 Minutes.
--   Signing Key: Set the key as `authentik.company`
+-   Signing Key: Set the key as `authentik Self-signed Certificate`
 
 Note the Client ID value. Create an application, using the provider you've created above.
 
 ## Guacamole
+
+It is recommended you configure an admin account in Guacamole before setting up SSO to make things easier. Create a user in Guacamole using the email address of your user in authentik and give them admin permissions. Without this you might loose access to the Guacamole admin settings and have to revert the settings below.
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
@@ -68,10 +70,3 @@ openid-redirect-uri=https://guacamole.company/ # This must match the redirect UR
 
   </TabItem>
 </Tabs>
-
-## Guacamole User Creation
-
-In Guacamole - if everything has configured correctly you will see in the bottom left corner `Sign in with: OpenID`
-Before you are able to use this - using your preconfigured Admin Account - Login then create a User using your Email Address (one set in Authentik) as the username. Give the persmission as you prefer. When you then login you will now see as configured.
-
-
