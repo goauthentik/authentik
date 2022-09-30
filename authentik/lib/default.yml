@@ -77,7 +77,7 @@ default_user_change_username: true
 
 gdpr_compliance: true
 cert_discovery_dir: /certs
-default_token_length: 128
+default_token_length: 60
 impersonation: true
 
 blueprints_dir: /blueprints

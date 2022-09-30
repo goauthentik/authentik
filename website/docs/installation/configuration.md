@@ -215,7 +215,7 @@ When enabled, all the events caused by a user will be deleted upon the user's de
 Requires authentik 2022.4.1
 :::
 
-Configure the length of generated tokens. Defaults to 128.
+Configure the length of generated tokens. Defaults to 60.
 
 ### `AUTHENTIK_IMPERSONATION`
 
