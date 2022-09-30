@@ -23,7 +23,7 @@ The following placeholders will be used:
 Only settings that have been modified from default have been listed.
 :::
 
-## Authentik Configuration
+## authentik Configuration
 
 ### Step 1 - Provider creation
 
@@ -69,7 +69,7 @@ In the `argocd-secret` Secret, add the following value to the `data` field:
 dex.authentik.clientSecret: <base 64 encoded value of the Client Secret from the Provider above>
 ```
 
-### Step 2 - Configure ArgoCD to use Authentik as OIDC backend
+### Step 2 - Configure ArgoCD to use authentik as OIDC backend
 
 In the `argocd-cm` ConfigMap, add the following to the data field :
 
