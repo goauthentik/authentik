@@ -1,5 +1,6 @@
 """Crypto tests"""
 import datetime
+from json import loads
 from os import makedirs
 from tempfile import TemporaryDirectory
 
@@ -86,13 +87,35 @@ class TestCrypto(APITestCase):
 
     def test_list(self):
         """Test API List"""
+        cert = create_test_cert()
         self.client.force_login(create_test_admin_user())
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-list",
             )
+            + f"?name={cert.name}"
         )
         self.assertEqual(200, response.status_code)
+        body = loads(response.content.decode())
+        api_cert = [x for x in body["results"] if x["name"] == cert.name][0]
+        self.assertEqual(api_cert["fingerprint_sha1"], cert.fingerprint_sha1)
+        self.assertEqual(api_cert["fingerprint_sha256"], cert.fingerprint_sha256)
+
+    def test_list_without_details(self):
+        """Test API List (no details)"""
+        cert = create_test_cert()
+        self.client.force_login(create_test_admin_user())
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-list",
+            )
+            + f"?name={cert.name}&include_details=false"
+        )
+        self.assertEqual(200, response.status_code)
+        body = loads(response.content.decode())
+        api_cert = [x for x in body["results"] if x["name"] == cert.name][0]
+        self.assertEqual(api_cert["fingerprint_sha1"], None)
+        self.assertEqual(api_cert["fingerprint_sha256"], None)
 
     def test_certificate_download(self):
         """Test certificate export (download)"""
