@@ -22,6 +22,7 @@ module.exports = {
                         "services/pfsense/index",
                         "services/pgadmin/index",
                         "services/powerdns-admin/index",
+                        "services/snipe-it/index",
                         "services/veeam-enterprise-manager/index",
                     ],
                 },
