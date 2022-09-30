@@ -19,6 +19,7 @@ module.exports = {
                         "services/harbor/index",
                         "services/hashicorp-vault/index",
                         "services/minio/index",
+                        "services/qnap-nas/index",
                         "services/opnsense/index",
                         "services/pfsense/index",
                         "services/pgadmin/index",
