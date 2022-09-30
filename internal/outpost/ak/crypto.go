@@ -48,7 +48,7 @@ func (cs *CryptoStore) getFingerprint(uuid string) string {
 		cs.log.WithField("uuid", uuid).WithError(err).Warning("Failed to fetch certificate's fingerprint")
 		return ""
 	}
-	return kp.FingerprintSha256
+	return kp.GetFingerprintSha256()
 }
 
 func (cs *CryptoStore) Fetch(uuid string) error {

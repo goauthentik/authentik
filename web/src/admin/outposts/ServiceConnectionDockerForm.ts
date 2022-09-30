@@ -87,6 +87,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                         new CryptoApi(DEFAULT_CONFIG)
                             .cryptoCertificatekeypairsList({
                                 ordering: "name",
+                                includeDetails: false,
                             })
                             .then((certs) => {
                                 return certs.results.map((cert) => {
@@ -122,6 +123,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                         new CryptoApi(DEFAULT_CONFIG)
                             .cryptoCertificatekeypairsList({
                                 ordering: "name",
+                                includeDetails: false,
                             })
                             .then((certs) => {
                                 return certs.results.map((cert) => {
