@@ -66,7 +66,6 @@ You do not have to enable "Allow self-registration" and select a group to which 
 If you're using self-signed certificates for authentik, you need to set the root certificate of your CA as trusted in WikiJS by setting the NODE_EXTRA_CA_CERTS variable as explained here: https://github.com/Requarks/wiki/discussions/3387.
 :::
 
-
 ### Step 5
 
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
