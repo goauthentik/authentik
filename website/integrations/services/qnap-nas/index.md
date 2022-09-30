@@ -17,16 +17,16 @@ as it is **not** (well) documented what really is done behind the scenes of QNAP
 
 The following placeholders will be used:
 
-- `ldap.baseDN` is the Base DN you configure in the LDAP provider.
-- `ldap.domain` is (typically) a FQDN for your domain. Usually
-  it is just the components of your base DN. For example, if
-  `ldap.baseDN` is `dc=ldap,dc=goauthentik,dc=io` then the domain
-  might be `ldap.goauthentik.io`.
-- `ldap.searchGroup` is the "Search Group" that can can see all
-  users and groups in authentik.
-- `qnap.serviceAccount` is a service account created in authentik
-- `qnap.serviceAccountToken` is the service account token generated
-  by authentik.
+-   `ldap.baseDN` is the Base DN you configure in the LDAP provider.
+-   `ldap.domain` is (typically) a FQDN for your domain. Usually
+    it is just the components of your base DN. For example, if
+    `ldap.baseDN` is `dc=ldap,dc=goauthentik,dc=io` then the domain
+    might be `ldap.goauthentik.io`.
+-   `ldap.searchGroup` is the "Search Group" that can can see all
+    users and groups in authentik.
+-   `qnap.serviceAccount` is a service account created in authentik
+-   `qnap.serviceAccountToken` is the service account token generated
+    by authentik.
 
 Create an LDAP Provider if you don't already have one setup.
 This guide assumes you will be running with TLS. See the [ldap provider docs](../../../docs/providers/ldap) for setting up SSL on the authentik side.
@@ -41,9 +41,6 @@ to `ldap.searchGroup`.
 :::warning
 It seems that QNAP LDAP client configuration has issues with too long password.
 Max password length <= 66 characters.
-
-As workaround it might make sense to set a password for the service account
-as long as GitHub issue [#2574: Provide a possibility to define a max. token length](https://github.com/goauthentik/authentik/issues/2574) is not closed.
 :::
 
 ## Deployment
