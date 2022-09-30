@@ -22,7 +22,7 @@ The following placeholders will be used:
 
 -   `vik.company` is the FQDN of Vikunja.
 -   `authentik.company` is the FQDN of authentik.
--   `Authentik Login` is the name shown on Vikunja set in config.yml, and used for the Redirect URI. If the name set in config.yml has capitalization or spaces like in this example, they will be set to lowercase and no spaces in the callback URL, like `authentiklogin`.
+-   `authentik Login` is the name shown on Vikunja set in config.yml, and used for the Redirect URI. If the name set in config.yml has capitalization or spaces like in this example, they will be set to lowercase and no spaces in the callback URL, like `authentiklogin`.
 
 ### Step 1
 
@@ -48,7 +48,7 @@ https://vik.company/auth/openid/authentiklogin
 
 ### Step 2
 
-Edit/Create your `config.yml` file for Vikunja. Local authentication can be safely disabled in the Local block if all users must login through Authentik, in this example it is left enabled.
+Edit/Create your `config.yml` file for Vikunja. Local authentication can be safely disabled in the Local block if all users must login through authentik, in this example it is left enabled.
 
 Incorporate the following example Auth block into your `config.yml`:
 
@@ -73,7 +73,7 @@ auth:
     # A list of enabled providers
     providers:
       # The name of the provider as it will appear in the frontend.
-      - name: "Authentik Login"
+      - name: "authentik Login"
         # The auth url to send users to if they want to authenticate using OpenID Connect.
         authurl: https://authentik.company/application/o/vikunja/
         # The client ID used to authenticate Vikunja at the OpenID Connect provider.
