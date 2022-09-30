@@ -47,7 +47,7 @@ In authentik, create a LDAP Provider (under _Applications/Providers_) with these
 
 -   Name : Snipe IT-LDAP
 -   Bind DN : `DC=ldap,DC=goauthentik,DC=io`
--   Certificate : `self-signed`
+-   Certificate : `authentik Self-signed Certificate`
 
 ### Step 3 - Application
 
@@ -96,7 +96,7 @@ Change the following fields
 -   LDAP Email: mail
 
 :::note
-authentik does not support other LDAP attributes like Employee Number, Department, etc. If you need these fields, you will need to setup custom attributes.
+authentik does not support other LDAP attributes like Employee Number, Department, etc out of the box. If you need these fields, you will need to setup custom attributes.
 :::
 
 Save your config, then click on Test LDAP Synchorization. This does not import any users, just verifies everything is working and the account can search the directory.
