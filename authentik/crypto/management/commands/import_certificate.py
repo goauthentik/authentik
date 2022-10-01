@@ -38,9 +38,9 @@ class Command(BaseCommand):
         try:
             serializer.validate_certificate_data(keypair.certificate_data)
             if keypair.key_data != "":
-                serializer.validate_certificate_data(keypair.key_data)
+                serializer.validate_key_data(keypair.key_data)
         except ValidationError as exc:
-            self.stderr.write(exc)
+            self.stderr.write(str(exc))
             sys_exit(1)
         if dirty:
             keypair.save()
