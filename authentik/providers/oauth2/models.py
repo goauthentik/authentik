@@ -391,7 +391,6 @@ class IDToken:
     acr: Optional[str] = ACR_AUTHENTIK_DEFAULT
 
     c_hash: Optional[str] = None
-
     nonce: Optional[str] = None
     at_hash: Optional[str] = None
 
@@ -400,9 +399,14 @@ class IDToken:
     def to_dict(self) -> dict[str, Any]:
         """Convert dataclass to dict, and update with keys from `claims`"""
         id_dict = asdict(self)
-        # at_hash should be omitted when not set instead of retuning a null claim
+        # The following claims should be omitted if they aren't set instead of being
+        # set to null
         if not self.at_hash:
             id_dict.pop("at_hash")
+        if not self.nonce:
+            id_dict.pop("nonce")
+        if not self.c_hash:
+            id_dict.pop("c_hash")
         id_dict.pop("claims")
         id_dict.update(self.claims)
         return id_dict
