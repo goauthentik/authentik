@@ -44,7 +44,6 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             image="ghcr.io/beryju/oidc-test-client:latest",
             detach=True,
             network_mode="host",
-            auto_remove=True,
             healthcheck=Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:9009/health"],
                 interval=5 * 100 * 1000000,

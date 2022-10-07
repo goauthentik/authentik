@@ -33,7 +33,6 @@ class OutpostDockerTests(ChannelsLiveServerTestCase):
             image="library/docker:dind",
             detach=True,
             network_mode="host",
-            remove=True,
             privileged=True,
             healthcheck=Healthcheck(
                 test=["CMD", "docker", "info"],
