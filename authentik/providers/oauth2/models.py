@@ -399,10 +399,13 @@ class IDToken:
 
     def to_dict(self) -> dict[str, Any]:
         """Convert dataclass to dict, and update with keys from `claims`"""
-        dic = asdict(self)
-        dic.pop("claims")
-        dic.update(self.claims)
-        return dic
+        id_dict = asdict(self)
+        # at_hash should be omitted when not set instead of retuning a null claim
+        if not self.at_hash:
+            id_dict.pop("at_hash")
+        id_dict.pop("claims")
+        id_dict.update(self.claims)
+        return id_dict
 
 
 class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
@@ -432,7 +435,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     @id_token.setter
     def id_token(self, value: IDToken):
-        self._id_token = json.dumps(asdict(value))
+        self._id_token = json.dumps(value.to_dict())
 
     def __str__(self):
         return f"Refresh Token for {self.provider} for user {self.user}"

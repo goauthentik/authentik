@@ -1,7 +1,6 @@
 """Test revoke view"""
 import json
 from base64 import b64encode
-from dataclasses import asdict
 
 from django.urls import reverse
 
@@ -36,11 +35,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             access_token=generate_id(),
             refresh_token=generate_id(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=json.dumps(IDToken("foo", "bar").to_dict()),
         )
         self.auth = b64encode(
             f"{self.provider.client_id}:{self.provider.client_secret}".encode()

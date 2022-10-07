@@ -1,7 +1,6 @@
 """Test introspect view"""
 import json
 from base64 import b64encode
-from dataclasses import asdict
 
 from django.urls import reverse
 
@@ -37,9 +36,7 @@ class TesOAuth2Introspection(OAuthTestCase):
             refresh_token=generate_id(),
             _scope="openid user profile",
             _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
+                IDToken("foo", "bar").to_dict(),
             ),
         )
         self.auth = b64encode(

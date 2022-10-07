@@ -1,5 +1,4 @@
 """OAuth2Provider API Views"""
-from dataclasses import asdict
 from json import dumps
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -38,7 +37,7 @@ class RefreshTokenModelSerializer(ExpiringBaseGrantModelSerializer):
 
     def get_id_token(self, instance: RefreshToken) -> str:
         """Get the token's id_token as JSON String"""
-        return dumps(asdict(instance.id_token), indent=4)
+        return dumps(instance.id_token.to_dict(), indent=4)
 
     class Meta:
 
