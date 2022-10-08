@@ -44,6 +44,7 @@ export class OAuth2DeviceCode extends BaseStage<
                         this.submitForm(e);
                     }}
                 >
+                    <p>${t`Enter the code shown on your device.`}</p>
                     <ak-form-element
                         label="${t`Code`}"
                         ?required="${true}"

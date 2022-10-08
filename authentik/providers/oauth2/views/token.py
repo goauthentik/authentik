@@ -533,12 +533,12 @@ class TokenView(View):
         provider: OAuth2Provider = self.params.provider
 
         refresh_token: RefreshToken = provider.create_refresh_token(
-            user=self.params.user,
-            scope=self.params.scope,
+            user=self.params.device_code.user,
+            scope=self.params.device_code.scope,
             request=self.request,
         )
         refresh_token.id_token = refresh_token.create_id_token(
-            user=self.params.user,
+            user=self.params.device_code.user,
             request=self.request,
         )
         refresh_token.id_token.at_hash = refresh_token.at_hash
