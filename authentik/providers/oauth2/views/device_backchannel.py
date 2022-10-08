@@ -9,10 +9,13 @@ from django.utils.timezone import now
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.throttling import AnonRateThrottle
+from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
+
+LOGGER = get_logger()
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -73,10 +76,3 @@ class DeviceView(View):
                 "interval": 5,
             }
         )
-
-
-class DeviceEntryView(View):
-    """View used to initiate the device-code flow, url entered by endusers"""
-
-    def dispatch(self, request: HttpRequest) -> HttpResponse:
-        pass

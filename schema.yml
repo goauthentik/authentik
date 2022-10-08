@@ -26033,6 +26033,7 @@ components:
       - $ref: '#/components/schemas/EmailChallenge'
       - $ref: '#/components/schemas/FlowErrorChallenge'
       - $ref: '#/components/schemas/IdentificationChallenge'
+      - $ref: '#/components/schemas/OAuthDeviceCodeChallenge'
       - $ref: '#/components/schemas/PasswordChallenge'
       - $ref: '#/components/schemas/PlexAuthenticationChallenge'
       - $ref: '#/components/schemas/PromptChallenge'
@@ -26056,6 +26057,7 @@ components:
           ak-stage-email: '#/components/schemas/EmailChallenge'
           xak-flow-error: '#/components/schemas/FlowErrorChallenge'
           ak-stage-identification: '#/components/schemas/IdentificationChallenge'
+          ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallenge'
           ak-stage-password: '#/components/schemas/PasswordChallenge'
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
           ak-stage-prompt: '#/components/schemas/PromptChallenge'
@@ -27247,6 +27249,7 @@ components:
       - $ref: '#/components/schemas/DummyChallengeResponseRequest'
       - $ref: '#/components/schemas/EmailChallengeResponseRequest'
       - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
+      - $ref: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
       - $ref: '#/components/schemas/PasswordChallengeResponseRequest'
       - $ref: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
       - $ref: '#/components/schemas/PromptChallengeResponseRequest'
@@ -27266,6 +27269,7 @@ components:
           ak-stage-dummy: '#/components/schemas/DummyChallengeResponseRequest'
           ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
+          ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
           ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
           ak-stage-prompt: '#/components/schemas/PromptChallengeResponseRequest'
@@ -29103,6 +29107,37 @@ components:
       - provider_info
       - token
       - user_info
+    OAuthDeviceCodeChallenge:
+      type: object
+      description: OAuth Device code challenge
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-provider-oauth2-device-code
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+      required:
+      - type
+    OAuthDeviceCodeChallengeResponseRequest:
+      type: object
+      description: Response that includes the user-entered device code
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-provider-oauth2-device-code
+        code:
+          type: integer
+      required:
+      - code
     OAuthSource:
       type: object
       description: OAuth Source Serializer

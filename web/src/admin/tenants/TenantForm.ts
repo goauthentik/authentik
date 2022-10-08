@@ -327,7 +327,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                                     .flowsInstancesList({
                                         ordering: "slug",
                                         designation:
-                                            FlowsInstancesListDesignationEnum.Authentication,
+                                            FlowsInstancesListDesignationEnum.StageConfiguration,
                                     })
                                     .then((flows) => {
                                         return flows.results.map((flow) => {

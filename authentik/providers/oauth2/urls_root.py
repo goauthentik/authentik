@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import include, path
 
 from authentik.providers.oauth2.views.authorize import AuthorizationFlowInitView
-from authentik.providers.oauth2.views.device import DeviceEntryView
+from authentik.providers.oauth2.views.device_init import DeviceEntryView
 from authentik.providers.oauth2.views.github import GitHubUserTeamsView, GitHubUserView
 from authentik.providers.oauth2.views.token import TokenView
 

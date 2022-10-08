@@ -357,6 +357,7 @@ export class FlowExecutor extends AKElement implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-validate>`;
+            // Sources
             case "ak-source-plex":
                 await import("@goauthentik/flow/sources/plex/PlexLoginInit");
                 return html`<ak-flow-source-plex
@@ -369,6 +370,13 @@ export class FlowExecutor extends AKElement implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-flow-source-oauth-apple>`;
+            // Providers
+            case "ak-provider-oauth2-device-code":
+                await import("@goauthentik/flow/providers/oauth2/DeviceCode");
+                return html`<ak-flow-provider-oauth2-code
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-flow-provider-oauth2-code>`;
             default:
                 break;
         }

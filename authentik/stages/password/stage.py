@@ -154,7 +154,7 @@ class PasswordStageView(ChallengeStageView):
         else:
             if not user:
                 # No user was found -> invalid credentials
-                self.logger.debug("Invalid credentials")
+                self.logger.info("Invalid credentials")
                 # Manually inject error into form
                 response._errors.setdefault("password", [])
                 response._errors["password"].append(ErrorDetail(_("Invalid password"), "invalid"))

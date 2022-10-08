@@ -3,7 +3,7 @@ from django.urls import path
 from django.views.generic.base import RedirectView
 
 from authentik.providers.oauth2.views.authorize import AuthorizationFlowInitView
-from authentik.providers.oauth2.views.device import DeviceView
+from authentik.providers.oauth2.views.device_backchannel import DeviceView
 from authentik.providers.oauth2.views.introspection import TokenIntrospectionView
 from authentik.providers.oauth2.views.jwks import JWKSView
 from authentik.providers.oauth2.views.provider import ProviderInfoView
