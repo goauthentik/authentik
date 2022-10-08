@@ -421,8 +421,7 @@ class TokenView(View):
 
     def create_code_response(self) -> dict[str, Any]:
         """See https://tools.ietf.org/html/rfc6749#section-4.1"""
-
-        refresh_token = self.params.authorization_code.provider.create_refresh_token(
+        refresh_token = self.provider.create_refresh_token(
             user=self.params.authorization_code.user,
             scope=self.params.authorization_code.scope,
             request=self.request,
@@ -447,22 +446,17 @@ class TokenView(View):
             "access_token": refresh_token.access_token,
             "refresh_token": refresh_token.refresh_token,
             "token_type": "bearer",
-            "expires_in": int(
-                timedelta_from_string(self.params.provider.token_validity).total_seconds()
-            ),
-            "id_token": refresh_token.provider.encode(refresh_token.id_token.to_dict()),
+            "expires_in": int(timedelta_from_string(self.provider.token_validity).total_seconds()),
+            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
         }
 
     def create_refresh_response(self) -> dict[str, Any]:
         """See https://tools.ietf.org/html/rfc6749#section-6"""
-
         unauthorized_scopes = set(self.params.scope) - set(self.params.refresh_token.scope)
         if unauthorized_scopes:
             raise TokenError("invalid_scope")
 
-        provider: OAuth2Provider = self.params.refresh_token.provider
-
-        refresh_token: RefreshToken = provider.create_refresh_token(
+        refresh_token: RefreshToken = self.provider.create_refresh_token(
             user=self.params.refresh_token.user,
             scope=self.params.scope,
             request=self.request,
@@ -487,17 +481,13 @@ class TokenView(View):
             "access_token": refresh_token.access_token,
             "refresh_token": refresh_token.refresh_token,
             "token_type": "bearer",
-            "expires_in": int(
-                timedelta_from_string(refresh_token.provider.token_validity).total_seconds()
-            ),
-            "id_token": self.params.provider.encode(refresh_token.id_token.to_dict()),
+            "expires_in": int(timedelta_from_string(self.provider.token_validity).total_seconds()),
+            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
         }
 
     def create_client_credentials_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"""
-        provider: OAuth2Provider = self.params.provider
-
-        refresh_token: RefreshToken = provider.create_refresh_token(
+        refresh_token: RefreshToken = self.provider.create_refresh_token(
             user=self.params.user,
             scope=self.params.scope,
             request=self.request,
@@ -514,8 +504,6 @@ class TokenView(View):
         return {
             "access_token": refresh_token.access_token,
             "token_type": "bearer",
-            "expires_in": int(
-                timedelta_from_string(refresh_token.provider.token_validity).total_seconds()
-            ),
-            "id_token": self.params.provider.encode(refresh_token.id_token.to_dict()),
+            "expires_in": int(timedelta_from_string(self.provider.token_validity).total_seconds()),
+            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
         }

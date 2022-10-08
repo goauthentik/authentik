@@ -1,5 +1,6 @@
 """Test userinfo view"""
 import json
+from dataclasses import asdict
 
 from django.urls import reverse
 
@@ -38,7 +39,11 @@ class TestUserinfo(OAuthTestCase):
             access_token=generate_id(),
             refresh_token=generate_id(),
             _scope="openid user profile",
-            _id_token=json.dumps(IDToken("foo", "bar").to_dict()),
+            _id_token=json.dumps(
+                asdict(
+                    IDToken("foo", "bar"),
+                )
+            ),
         )
 
     def test_userinfo_normal(self):

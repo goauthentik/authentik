@@ -439,7 +439,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     @id_token.setter
     def id_token(self, value: IDToken):
-        self._id_token = json.dumps(value.to_dict())
+        self._id_token = json.dumps(asdict(value))
 
     def __str__(self):
         return f"Refresh Token for {self.provider} for user {self.user}"
