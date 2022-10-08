@@ -377,6 +377,12 @@ export class FlowExecutor extends AKElement implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-flow-provider-oauth2-code>`;
+            case "ak-provider-oauth2-device-code-finish":
+                await import("@goauthentik/flow/providers/oauth2/DeviceCodeFinish");
+                return html`<ak-flow-provider-oauth2-code-finish
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-flow-provider-oauth2-code-finish>`;
             default:
                 break;
         }

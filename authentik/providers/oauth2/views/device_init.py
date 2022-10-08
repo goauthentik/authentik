@@ -1,5 +1,5 @@
 """Device flow views"""
-from django.http import Http404, HttpRequest, HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from django.views import View
 from rest_framework.exceptions import ErrorDetail
@@ -14,6 +14,10 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
+from authentik.providers.oauth2.views.device_finish import (
+    PLAN_CONTEXT_DEVICE,
+    OAuthDeviceCodeFinishStage,
+)
 from authentik.providers.oauth2.views.userinfo import UserInfoView
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
@@ -22,7 +26,6 @@ from authentik.stages.consent.stage import (
 from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
-PLAN_CONTEXT_DEVICE = "device"
 
 
 class DeviceEntryView(View):
@@ -112,6 +115,7 @@ class OAuthDeviceCodeStage(ChallengeStageView):
                 PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
             },
         )
+        plan.insert_stage(in_memory_stage(OAuthDeviceCodeFinishStage))
         # Run cancel to cleanup the current flow
         self.executor.cancel()
         self.request.session[SESSION_KEY_PLAN] = plan
