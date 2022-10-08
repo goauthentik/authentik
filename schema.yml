@@ -24621,7 +24621,7 @@ components:
         component:
           type: string
           minLength: 1
-          default: ak-flow-sources-oauth-apple
+          default: ak-source-oauth-apple
     AppleLoginChallenge:
       type: object
       description: Special challenge for apple-native authentication flow, which happens
@@ -24633,7 +24633,7 @@ components:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
-          default: ak-flow-sources-oauth-apple
+          default: ak-source-oauth-apple
         response_errors:
           type: object
           additionalProperties:
@@ -26042,7 +26042,7 @@ components:
         propertyName: component
         mapping:
           ak-stage-access-denied: '#/components/schemas/AccessDeniedChallenge'
-          ak-flow-sources-oauth-apple: '#/components/schemas/AppleLoginChallenge'
+          ak-source-oauth-apple: '#/components/schemas/AppleLoginChallenge'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallenge'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallenge'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallenge'
@@ -26057,7 +26057,7 @@ components:
           xak-flow-error: '#/components/schemas/FlowErrorChallenge'
           ak-stage-identification: '#/components/schemas/IdentificationChallenge'
           ak-stage-password: '#/components/schemas/PasswordChallenge'
-          ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallenge'
+          ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
           ak-stage-prompt: '#/components/schemas/PromptChallenge'
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
           xak-flow-shell: '#/components/schemas/ShellChallenge'
@@ -27253,7 +27253,7 @@ components:
       discriminator:
         propertyName: component
         mapping:
-          ak-flow-sources-oauth-apple: '#/components/schemas/AppleChallengeResponseRequest'
+          ak-source-oauth-apple: '#/components/schemas/AppleChallengeResponseRequest'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallengeResponseRequest'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
@@ -27267,7 +27267,7 @@ components:
           ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
           ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
-          ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
+          ak-source-plex: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
           ak-stage-prompt: '#/components/schemas/PromptChallengeResponseRequest'
     FlowDesignationEnum:
       enum:
@@ -28639,8 +28639,8 @@ components:
         propertyName: component
         mapping:
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
-          ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallenge'
-          ak-flow-sources-oauth-apple: '#/components/schemas/AppleLoginChallenge'
+          ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
+          ak-source-oauth-apple: '#/components/schemas/AppleLoginChallenge'
     LoginMetrics:
       type: object
       description: Login Metrics per 1h
@@ -34395,7 +34395,7 @@ components:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
-          default: ak-flow-sources-plex
+          default: ak-source-plex
         response_errors:
           type: object
           additionalProperties:
@@ -34417,7 +34417,7 @@ components:
         component:
           type: string
           minLength: 1
-          default: ak-flow-sources-plex
+          default: ak-source-plex
     PlexSource:
       type: object
       description: Plex Source Serializer

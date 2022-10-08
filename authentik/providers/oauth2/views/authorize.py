@@ -343,11 +343,10 @@ class AuthorizationFlowInitView(PolicyAccessView):
         ):
             self.request.session[SESSION_KEY_NEEDS_LOGIN] = True
             return self.handle_no_permission()
+        scope_descriptions = UserInfoView().get_scope_descriptions(self.params.scope)
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
-        # planner.use_cache = False
         planner.allow_empty_flows = True
-        scope_descriptions = UserInfoView().get_scope_descriptions(self.params.scope)
         plan = planner.plan(
             self.request,
             {
