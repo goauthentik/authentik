@@ -1,4 +1,6 @@
 """Device flow views"""
+from typing import Optional
+
 from django.http import Http404, HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from django.views import View
@@ -26,6 +28,53 @@ from authentik.stages.consent.stage import (
 from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
+QS_KEY_CODE = "code"  # nosec
+
+
+def get_application(provider: OAuth2Provider) -> Application:
+    """Get application from provider"""
+    try:
+        app = provider.application
+        if not app:
+            raise Http404
+        return app
+    except Application.DoesNotExist:
+        raise Http404
+
+
+def validate_code(code: int, request: HttpRequest) -> Optional[HttpResponse]:
+    """Validate user token"""
+    token = DeviceToken.objects.filter(
+        user_code=code,
+    ).first()
+    if not token:
+        return None
+
+    app = get_application(token.provider)
+
+    scope_descriptions = UserInfoView().get_scope_descriptions(token.scope)
+    planner = FlowPlanner(token.provider.authorization_flow)
+    planner.allow_empty_flows = True
+    plan = planner.plan(
+        request,
+        {
+            PLAN_CONTEXT_SSO: True,
+            PLAN_CONTEXT_APPLICATION: app,
+            # OAuth2 related params
+            PLAN_CONTEXT_DEVICE: token,
+            # Consent related params
+            PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
+            % {"application": app.name},
+            PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
+        },
+    )
+    plan.insert_stage(in_memory_stage(OAuthDeviceCodeFinishStage))
+    request.session[SESSION_KEY_PLAN] = plan
+    return redirect_with_qs(
+        "authentik_core:if-flow",
+        request.GET,
+        flow_slug=token.provider.authorization_flow.slug,
+    )
 
 
 class DeviceEntryView(View):
@@ -37,6 +86,12 @@ class DeviceEntryView(View):
         if not device_flow:
             LOGGER.info("Tenant has no device code flow configured", tenant=tenant)
             raise Http404
+        if QS_KEY_CODE in request.GET:
+            validation = validate_code(request.GET[QS_KEY_CODE], request)
+            if validation:
+                return validation
+            LOGGER.info("Got code from query parameter but no matching token found")
+
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(device_flow)
         planner.allow_empty_flows = True
@@ -77,50 +132,13 @@ class OAuthDeviceCodeStage(ChallengeStageView):
             }
         )
 
-    def get_application(self, provider: OAuth2Provider) -> Application:
-        """Get application from provider"""
-        try:
-            app = provider.application
-            if not app:
-                raise Http404
-            return app
-        except Application.DoesNotExist:
-            raise Http404
-
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         code = response.validated_data["code"]
-        token = DeviceToken.objects.filter(
-            user_code=code,
-        ).first()
-        if not token:
+        validation = validate_code(code, self.request)
+        if not validation:
             response._errors.setdefault("code", [])
             response._errors["code"].append(ErrorDetail(_("Invalid code"), "invalid"))
             return self.challenge_invalid(response)
-
-        app = self.get_application(token.provider)
-
-        scope_descriptions = UserInfoView().get_scope_descriptions(token.scope)
-        planner = FlowPlanner(token.provider.authorization_flow)
-        planner.allow_empty_flows = True
-        plan = planner.plan(
-            self.request,
-            {
-                PLAN_CONTEXT_SSO: True,
-                PLAN_CONTEXT_APPLICATION: app,
-                # OAuth2 related params
-                PLAN_CONTEXT_DEVICE: token,
-                # Consent related params
-                PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
-                % {"application": app.name},
-                PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
-            },
-        )
-        plan.insert_stage(in_memory_stage(OAuthDeviceCodeFinishStage))
         # Run cancel to cleanup the current flow
         self.executor.cancel()
-        self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=token.provider.authorization_flow.slug,
-        )
+        return validation

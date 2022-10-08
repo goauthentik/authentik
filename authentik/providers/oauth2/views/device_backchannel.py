@@ -14,6 +14,7 @@ from structlog.stdlib import get_logger
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
+from authentik.providers.oauth2.views.device_init import QS_KEY_CODE, get_application
 
 LOGGER = get_logger()
 
@@ -35,6 +36,8 @@ class DeviceView(View):
             client_id=client_id,
         ).first()
         if not provider:
+            return HttpResponseBadRequest()
+        if not get_application(provider):
             return HttpResponseBadRequest()
         self.provider = provider
         self.client_id = client_id
@@ -69,7 +72,7 @@ class DeviceView(View):
                 + "?"
                 + urlencode(
                     {
-                        "code": token.user_code,
+                        QS_KEY_CODE: token.user_code,
                     }
                 ),
                 "user_code": token.user_code,
