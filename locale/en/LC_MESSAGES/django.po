@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-22 18:53+0000\n"
+"POT-Creation-Date: 2022-10-10 10:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -184,12 +184,12 @@ msgstr ""
 msgid "Successfully linked %(source)s!"
 msgstr ""
 
-#: authentik/core/templates/if/admin.html:26
-#: authentik/core/templates/if/admin.html:32
-#: authentik/core/templates/if/flow.html:40
-#: authentik/core/templates/if/flow.html:46
-#: authentik/core/templates/if/user.html:26
-#: authentik/core/templates/if/user.html:32
+#: authentik/core/templates/if/admin.html:21
+#: authentik/core/templates/if/admin.html:27
+#: authentik/core/templates/if/flow.html:37
+#: authentik/core/templates/if/flow.html:43
+#: authentik/core/templates/if/user.html:21
+#: authentik/core/templates/if/user.html:27
 msgid "Loading..."
 msgstr ""
 
@@ -235,7 +235,7 @@ msgstr ""
 msgid "Go home"
 msgstr ""
 
-#: authentik/core/templates/login/base_full.html:89
+#: authentik/core/templates/login/base_full.html:90
 msgid "Powered by authentik"
 msgstr ""
 
@@ -246,7 +246,7 @@ msgstr ""
 msgid "You're about to sign into %(application)s."
 msgstr ""
 
-#: authentik/crypto/api.py:144
+#: authentik/crypto/api.py:177
 msgid "Subject-alt name"
 msgstr ""
 
@@ -858,23 +858,23 @@ msgstr ""
 msgid "Authorization Codes"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:411
+#: authentik/providers/oauth2/models.py:418
 msgid "Access Token"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:412
+#: authentik/providers/oauth2/models.py:419
 msgid "Refresh Token"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:413
+#: authentik/providers/oauth2/models.py:420
 msgid "ID Token"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:422
+#: authentik/providers/oauth2/models.py:429
 msgid "OAuth2 Token"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:423
+#: authentik/providers/oauth2/models.py:430
 msgid "OAuth2 Tokens"
 msgstr ""
 
@@ -1119,6 +1119,10 @@ msgstr ""
 msgid "Password does not match Active Directory Complexity."
 msgstr ""
 
+#: authentik/sources/oauth/clients/oauth2.py:68
+msgid "No token received."
+msgstr ""
+
 #: authentik/sources/oauth/models.py:24
 msgid "Request Token URL"
 msgstr ""
@@ -1173,87 +1177,96 @@ msgid "GitHub OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:124
-msgid "Mailcow OAuth Source"
+msgid "Twitch OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:125
-msgid "Mailcow OAuth Sources"
+msgid "Twitch OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:134
-msgid "Twitter OAuth Source"
+msgid "Mailcow OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:135
-msgid "Twitter OAuth Sources"
+msgid "Mailcow OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:144
-msgid "Facebook OAuth Source"
+msgid "Twitter OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:145
-msgid "Facebook OAuth Sources"
+msgid "Twitter OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:154
-msgid "Discord OAuth Source"
+msgid "Facebook OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:155
-msgid "Discord OAuth Sources"
+msgid "Facebook OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:164
-msgid "Google OAuth Source"
+msgid "Discord OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:165
-msgid "Google OAuth Sources"
+msgid "Discord OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:174
-msgid "Azure AD OAuth Source"
+msgid "Google OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:175
-msgid "Azure AD OAuth Sources"
+msgid "Google OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:184
-msgid "OpenID OAuth Source"
+msgid "Azure AD OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:185
-msgid "OpenID OAuth Sources"
+msgid "Azure AD OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:194
-msgid "Apple OAuth Source"
+msgid "OpenID OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:195
-msgid "Apple OAuth Sources"
+msgid "OpenID OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:204
-msgid "Okta OAuth Source"
+msgid "Apple OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:205
+msgid "Apple OAuth Sources"
+msgstr ""
+
+#: authentik/sources/oauth/models.py:214
+msgid "Okta OAuth Source"
+msgstr ""
+
+#: authentik/sources/oauth/models.py:215
 msgid "Okta OAuth Sources"
 msgstr ""
 
-#: authentik/sources/oauth/models.py:228
+#: authentik/sources/oauth/models.py:238
 msgid "User OAuth Source Connection"
 msgstr ""
 
-#: authentik/sources/oauth/models.py:229
+#: authentik/sources/oauth/models.py:239
 msgid "User OAuth Source Connections"
 msgstr ""
 
-#: authentik/sources/oauth/views/callback.py:100
-msgid "Authentication Failed."
+#: authentik/sources/oauth/views/callback.py:103
+#, python-format
+msgid "Authentication failed: %(reason)s"
 msgstr ""
 
 #: authentik/sources/plex/models.py:37

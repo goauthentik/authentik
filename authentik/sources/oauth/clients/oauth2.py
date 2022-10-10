@@ -4,6 +4,7 @@ from typing import Any, Optional
 from urllib.parse import parse_qsl
 
 from django.utils.crypto import constant_time_compare, get_random_string
+from django.utils.translation import gettext as _
 from requests.exceptions import RequestException
 from requests.models import Response
 from structlog.stdlib import get_logger
@@ -58,11 +59,13 @@ class OAuth2Client(BaseOAuthClient):
         callback = self.request.build_absolute_uri(self.callback or self.request.path)
         if not self.check_application_state():
             LOGGER.warning("Application state check failed.")
-            return None
+            return {"error": "State check failed."}
         code = self.get_request_arg("code", None)
         if not code:
             LOGGER.warning("No code returned by the source")
-            return None
+            error = self.get_request_arg("error", None)
+            error_desc = self.get_request_arg("error_description", None)
+            return {"error": error_desc or error or _("No token received.")}
         args = {
             "client_id": self.get_client_id(),
             "client_secret": self.get_client_secret(),
