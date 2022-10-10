@@ -1,0 +1,20 @@
+<script>
+    window.authentik = {};
+    window.authentik.locale = "{{ tenant.default_locale }}";
+    window.authentik.config = JSON.parse('{{ config_json|escapejs }}');
+    window.authentik.tenant = JSON.parse('{{ tenant_json|escapejs }}');
+    window.addEventListener("DOMContentLoaded", () => {
+        {% for message in messages %}
+        window.dispatchEvent(
+            new CustomEvent("ak-message", {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    level: "{{ message.tags|escapejs }}",
+                    message: "{{ message.message|escapejs }}",
+                },
+            }),
+        );
+        {% endfor %}
+    });
+</script>

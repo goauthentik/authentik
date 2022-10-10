@@ -9,12 +9,7 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <link rel="icon" href="{{ tenant.branding_favicon }}">
 <link rel="shortcut icon" href="{{ tenant.branding_favicon }}">
-<script>
-window.authentik = {};
-window.authentik.locale = "{{ tenant.default_locale }}";
-window.authentik.config = JSON.parse('{{ config_json|escapejs }}');
-window.authentik.tenant = JSON.parse('{{ tenant_json|escapejs }}');
-</script>
+{% include "base/header_js.html" %}
 {% endblock %}
 
 {% block body %}

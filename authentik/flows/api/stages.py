@@ -55,7 +55,7 @@ class StageViewSet(
 ):
     """Stage Viewset"""
 
-    queryset = Stage.objects.all().select_related("flow_set")
+    queryset = Stage.objects.none()
     serializer_class = StageSerializer
     search_fields = ["name"]
     filterset_fields = ["name"]

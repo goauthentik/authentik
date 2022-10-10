@@ -44,11 +44,11 @@ export class MessageContainer extends AKElement {
 
     constructor() {
         super();
-        this.addEventListener(EVENT_WS_MESSAGE, ((e: CustomEvent<WSMessage>) => {
+        window.addEventListener(EVENT_WS_MESSAGE, ((e: CustomEvent<WSMessage>) => {
             if (e.detail.message_type !== WS_MSG_TYPE_MESSAGE) return;
             this.addMessage(e.detail as unknown as APIMessage);
         }) as EventListener);
-        this.addEventListener(EVENT_MESSAGE, ((e: CustomEvent<APIMessage>) => {
+        window.addEventListener(EVENT_MESSAGE, ((e: CustomEvent<APIMessage>) => {
             this.addMessage(e.detail);
         }) as EventListener);
     }
@@ -61,6 +61,7 @@ export class MessageContainer extends AKElement {
             }
         }
         this.messages.push(message);
+        this.requestUpdate();
     }
 
     render(): TemplateResult {
