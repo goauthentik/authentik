@@ -424,7 +424,7 @@ _LOGGING_HANDLER_MAP = {
     "daphne": "WARNING",
     "kubernetes": "INFO",
     "asyncio": "WARNING",
-    "aioredis": "WARNING",
+    "redis": "WARNING",
     "silk": "INFO",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
