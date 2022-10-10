@@ -12,6 +12,7 @@ import { WebsocketClient } from "@goauthentik/common/ws";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
+import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";

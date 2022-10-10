@@ -12,7 +12,7 @@ import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/MessageContainer";
-import "@goauthentik/elements/messages/MessageContainer";
+import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import "@goauthentik/elements/router/RouterOutlet";
