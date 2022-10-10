@@ -49,7 +49,7 @@ class DeviceView(View):
         throttle.rate = CONFIG.y("throttle.providers.oauth2.device", "20/hour")
         throttle.num_requests, throttle.duration = throttle.parse_rate(throttle.rate)
         if not throttle.allow_request(request, self):
-            return HttpResponse(status_code=429)
+            return HttpResponse(status=429)
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request: HttpRequest) -> HttpResponse:

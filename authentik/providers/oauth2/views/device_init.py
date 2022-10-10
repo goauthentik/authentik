@@ -1,7 +1,7 @@
 """Device flow views"""
 from typing import Optional
 
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from django.views import View
 from rest_framework.exceptions import ErrorDetail
@@ -31,15 +31,15 @@ LOGGER = get_logger()
 QS_KEY_CODE = "code"  # nosec
 
 
-def get_application(provider: OAuth2Provider) -> Application:
+def get_application(provider: OAuth2Provider) -> Optional[Application]:
     """Get application from provider"""
     try:
         app = provider.application
         if not app:
-            raise Http404
+            return None
         return app
     except Application.DoesNotExist:
-        raise Http404
+        return None
 
 
 def validate_code(code: int, request: HttpRequest) -> Optional[HttpResponse]:
@@ -51,6 +51,8 @@ def validate_code(code: int, request: HttpRequest) -> Optional[HttpResponse]:
         return None
 
     app = get_application(token.provider)
+    if not app:
+        return None
 
     scope_descriptions = UserInfoView().get_scope_descriptions(token.scope)
     planner = FlowPlanner(token.provider.authorization_flow)
@@ -85,7 +87,7 @@ class DeviceEntryView(View):
         device_flow = tenant.flow_device_code
         if not device_flow:
             LOGGER.info("Tenant has no device code flow configured", tenant=tenant)
-            raise Http404
+            return HttpResponse(status=404)
         if QS_KEY_CODE in request.GET:
             validation = validate_code(request.GET[QS_KEY_CODE], request)
             if validation:
