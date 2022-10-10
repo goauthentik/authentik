@@ -2,7 +2,6 @@
 from asyncio.exceptions import CancelledError
 from typing import Any, Optional
 
-from aioredis.errors import ConnectionClosedError, ReplyError
 from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
 from celery.exceptions import CeleryError
 from channels.middleware import BaseMiddleware
@@ -124,8 +123,6 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         ConnectionInterrupted,
         RedisError,
         ResponseError,
-        ReplyError,
-        ConnectionClosedError,
         # websocket errors
         ChannelFull,
         WebSocketException,
