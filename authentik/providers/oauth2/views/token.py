@@ -530,9 +530,8 @@ class TokenView(View):
         """See https://datatracker.ietf.org/doc/html/rfc8628"""
         if not self.params.device_code.user:
             raise DeviceCodeError("authorization_pending")
-        provider: OAuth2Provider = self.params.provider
 
-        refresh_token: RefreshToken = provider.create_refresh_token(
+        refresh_token: RefreshToken = self.provider.create_refresh_token(
             user=self.params.device_code.user,
             scope=self.params.device_code.scope,
             request=self.request,
@@ -552,5 +551,5 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(refresh_token.provider.token_validity).total_seconds()
             ),
-            "id_token": self.params.provider.encode(refresh_token.id_token.to_dict()),
+            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
         }
