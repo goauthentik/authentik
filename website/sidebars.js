@@ -47,7 +47,10 @@ module.exports = {
                         type: "doc",
                         id: "providers/oauth2/index",
                     },
-                    items: ["providers/oauth2/client_credentials"],
+                    items: [
+                        "providers/oauth2/client_credentials",
+                        "providers/oauth2/device_code",
+                    ],
                 },
                 "providers/saml",
                 {
