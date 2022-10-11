@@ -76,7 +76,7 @@ class DeviceView(View):
                     }
                 ),
                 "user_code": token.user_code,
-                "expires_in": until.total_seconds(),
+                "expires_in": int(until.total_seconds()),
                 "interval": 5,
             }
         )
