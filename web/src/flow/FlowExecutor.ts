@@ -357,18 +357,32 @@ export class FlowExecutor extends AKElement implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-validate>`;
-            case "ak-flow-sources-plex":
+            // Sources
+            case "ak-source-plex":
                 await import("@goauthentik/flow/sources/plex/PlexLoginInit");
-                return html`<ak-flow-sources-plex
+                return html`<ak-flow-source-plex
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
-                ></ak-flow-sources-plex>`;
-            case "ak-flow-sources-oauth-apple":
+                ></ak-flow-source-plex>`;
+            case "ak-source-oauth-apple":
                 await import("@goauthentik/flow/sources/apple/AppleLoginInit");
-                return html`<ak-flow-sources-oauth-apple
+                return html`<ak-flow-source-oauth-apple
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
-                ></ak-flow-sources-oauth-apple>`;
+                ></ak-flow-source-oauth-apple>`;
+            // Providers
+            case "ak-provider-oauth2-device-code":
+                await import("@goauthentik/flow/providers/oauth2/DeviceCode");
+                return html`<ak-flow-provider-oauth2-code
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-flow-provider-oauth2-code>`;
+            case "ak-provider-oauth2-device-code-finish":
+                await import("@goauthentik/flow/providers/oauth2/DeviceCodeFinish");
+                return html`<ak-flow-provider-oauth2-code-finish
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-flow-provider-oauth2-code-finish>`;
             default:
                 break;
         }

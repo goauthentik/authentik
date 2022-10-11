@@ -3530,6 +3530,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: flow_device_code
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: flow_invalidation
         schema:
           type: string
@@ -24616,7 +24621,7 @@ components:
         component:
           type: string
           minLength: 1
-          default: ak-flow-sources-oauth-apple
+          default: ak-source-oauth-apple
     AppleLoginChallenge:
       type: object
       description: Special challenge for apple-native authentication flow, which happens
@@ -24628,7 +24633,7 @@ components:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
-          default: ak-flow-sources-oauth-apple
+          default: ak-source-oauth-apple
         response_errors:
           type: object
           additionalProperties:
@@ -26028,6 +26033,8 @@ components:
       - $ref: '#/components/schemas/EmailChallenge'
       - $ref: '#/components/schemas/FlowErrorChallenge'
       - $ref: '#/components/schemas/IdentificationChallenge'
+      - $ref: '#/components/schemas/OAuthDeviceCodeChallenge'
+      - $ref: '#/components/schemas/OAuthDeviceCodeFinishChallenge'
       - $ref: '#/components/schemas/PasswordChallenge'
       - $ref: '#/components/schemas/PlexAuthenticationChallenge'
       - $ref: '#/components/schemas/PromptChallenge'
@@ -26037,7 +26044,7 @@ components:
         propertyName: component
         mapping:
           ak-stage-access-denied: '#/components/schemas/AccessDeniedChallenge'
-          ak-flow-sources-oauth-apple: '#/components/schemas/AppleLoginChallenge'
+          ak-source-oauth-apple: '#/components/schemas/AppleLoginChallenge'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallenge'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallenge'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallenge'
@@ -26051,8 +26058,10 @@ components:
           ak-stage-email: '#/components/schemas/EmailChallenge'
           xak-flow-error: '#/components/schemas/FlowErrorChallenge'
           ak-stage-identification: '#/components/schemas/IdentificationChallenge'
+          ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallenge'
+          ak-provider-oauth2-device-code-finish: '#/components/schemas/OAuthDeviceCodeFinishChallenge'
           ak-stage-password: '#/components/schemas/PasswordChallenge'
-          ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallenge'
+          ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
           ak-stage-prompt: '#/components/schemas/PromptChallenge'
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
           xak-flow-shell: '#/components/schemas/ShellChallenge'
@@ -26260,6 +26269,8 @@ components:
         flow_unenrollment:
           type: string
         flow_user_settings:
+          type: string
+        flow_device_code:
           type: string
         default_locale:
           type: string
@@ -27240,13 +27251,15 @@ components:
       - $ref: '#/components/schemas/DummyChallengeResponseRequest'
       - $ref: '#/components/schemas/EmailChallengeResponseRequest'
       - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
+      - $ref: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
+      - $ref: '#/components/schemas/OAuthDeviceCodeFinishChallengeResponseRequest'
       - $ref: '#/components/schemas/PasswordChallengeResponseRequest'
       - $ref: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
       - $ref: '#/components/schemas/PromptChallengeResponseRequest'
       discriminator:
         propertyName: component
         mapping:
-          ak-flow-sources-oauth-apple: '#/components/schemas/AppleChallengeResponseRequest'
+          ak-source-oauth-apple: '#/components/schemas/AppleChallengeResponseRequest'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallengeResponseRequest'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
@@ -27259,8 +27272,10 @@ components:
           ak-stage-dummy: '#/components/schemas/DummyChallengeResponseRequest'
           ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
+          ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
+          ak-provider-oauth2-device-code-finish: '#/components/schemas/OAuthDeviceCodeFinishChallengeResponseRequest'
           ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
-          ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
+          ak-source-plex: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
           ak-stage-prompt: '#/components/schemas/PromptChallengeResponseRequest'
     FlowDesignationEnum:
       enum:
@@ -28632,8 +28647,8 @@ components:
         propertyName: component
         mapping:
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
-          ak-flow-sources-plex: '#/components/schemas/PlexAuthenticationChallenge'
-          ak-flow-sources-oauth-apple: '#/components/schemas/AppleLoginChallenge'
+          ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
+          ak-source-oauth-apple: '#/components/schemas/AppleLoginChallenge'
     LoginMetrics:
       type: object
       description: Login Metrics per 1h
@@ -29096,6 +29111,64 @@ components:
       - provider_info
       - token
       - user_info
+    OAuthDeviceCodeChallenge:
+      type: object
+      description: OAuth Device code challenge
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-provider-oauth2-device-code
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+      required:
+      - type
+    OAuthDeviceCodeChallengeResponseRequest:
+      type: object
+      description: Response that includes the user-entered device code
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-provider-oauth2-device-code
+        code:
+          type: integer
+      required:
+      - code
+    OAuthDeviceCodeFinishChallenge:
+      type: object
+      description: Final challenge after user enters their code
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-provider-oauth2-device-code-finish
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+      required:
+      - type
+    OAuthDeviceCodeFinishChallengeResponseRequest:
+      type: object
+      description: Response that device has been authenticated and tab can be closed
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-provider-oauth2-device-code-finish
     OAuthSource:
       type: object
       description: OAuth Source Serializer
@@ -34205,6 +34278,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
         event_retention:
           type: string
           minLength: 1
@@ -34384,7 +34461,7 @@ components:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
-          default: ak-flow-sources-plex
+          default: ak-source-plex
         response_errors:
           type: object
           additionalProperties:
@@ -34406,7 +34483,7 @@ components:
         component:
           type: string
           minLength: 1
-          default: ak-flow-sources-plex
+          default: ak-source-plex
     PlexSource:
       type: object
       description: Plex Source Serializer
@@ -36703,6 +36780,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
         event_retention:
           type: string
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
@@ -36754,6 +36835,10 @@ components:
           format: uuid
           nullable: true
         flow_user_settings:
+          type: string
+          format: uuid
+          nullable: true
+        flow_device_code:
           type: string
           format: uuid
           nullable: true

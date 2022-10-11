@@ -20,13 +20,13 @@ class PlexAuthenticationChallenge(Challenge):
 
     client_id = CharField()
     slug = CharField()
-    component = CharField(default="ak-flow-sources-plex")
+    component = CharField(default="ak-source-plex")
 
 
 class PlexAuthenticationChallengeResponse(ChallengeResponse):
     """Pseudo class for plex response"""
 
-    component = CharField(default="ak-flow-sources-plex")
+    component = CharField(default="ak-source-plex")
 
 
 class PlexSource(Source):
@@ -68,7 +68,7 @@ class PlexSource(Source):
             challenge=PlexAuthenticationChallenge(
                 {
                     "type": ChallengeTypes.NATIVE.value,
-                    "component": "ak-flow-sources-plex",
+                    "component": "ak-source-plex",
                     "client_id": self.client_id,
                     "slug": self.slug,
                 }

@@ -23,7 +23,7 @@ from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
-from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
@@ -320,8 +320,8 @@ class BaseGrantModel(models.Model):
 
     provider = models.ForeignKey(OAuth2Provider, on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
-    _scope = models.TextField(default="", verbose_name=_("Scopes"))
     revoked = models.BooleanField(default=False)
+    _scope = models.TextField(default="", verbose_name=_("Scopes"))
 
     @property
     def scope(self) -> list[str]:
@@ -516,3 +516,31 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
             token.claims = claims
 
         return token
+
+
+class DeviceToken(ExpiringModel):
+    """Device token for OAuth device flow"""
+
+    user = models.ForeignKey(
+        "authentik_core.User", default=None, on_delete=models.CASCADE, null=True
+    )
+    provider = models.ForeignKey(OAuth2Provider, on_delete=models.CASCADE)
+    device_code = models.TextField(default=generate_key)
+    user_code = models.TextField(default=generate_code_fixed_length)
+    _scope = models.TextField(default="", verbose_name=_("Scopes"))
+
+    @property
+    def scope(self) -> list[str]:
+        """Return scopes as list of strings"""
+        return self._scope.split()
+
+    @scope.setter
+    def scope(self, value):
+        self._scope = " ".join(value)
+
+    class Meta:
+        verbose_name = _("Device Token")
+        verbose_name_plural = _("Device Tokens")
+
+    def __str__(self):
+        return f"Device Token for {self.provider}"

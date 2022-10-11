@@ -32,13 +32,15 @@ from authentik.providers.oauth2.constants import (
     CLIENT_ASSERTION_TYPE_JWT,
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_CLIENT_CREDENTIALS,
+    GRANT_TYPE_DEVICE_CODE,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
 )
-from authentik.providers.oauth2.errors import TokenError, UserAuthError
+from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
 from authentik.providers.oauth2.models import (
     AuthorizationCode,
     ClientTypes,
+    DeviceToken,
     OAuth2Provider,
     RefreshToken,
 )
@@ -64,6 +66,7 @@ class TokenParams:
 
     authorization_code: Optional[AuthorizationCode] = None
     refresh_token: Optional[RefreshToken] = None
+    device_code: Optional[DeviceToken] = None
     user: Optional[User] = None
 
     code_verifier: Optional[str] = None
@@ -139,6 +142,11 @@ class TokenParams:
                 op="authentik.providers.oauth2.post.parse.client_credentials",
             ):
                 self.__post_init_client_credentials(request)
+        elif self.grant_type == GRANT_TYPE_DEVICE_CODE:
+            with Hub.current.start_span(
+                op="authentik.providers.oauth2.post.parse.device_code",
+            ):
+                self.__post_init_device_code(request)
         else:
             LOGGER.warning("Invalid grant type", grant_type=self.grant_type)
             raise TokenError("unsupported_grant_type")
@@ -347,6 +355,13 @@ class TokenParams:
             PLAN_CONTEXT_APPLICATION=app,
         ).from_http(request, user=self.user)
 
+    def __post_init_device_code(self, request: HttpRequest):
+        device_code = request.POST.get("device_code", "")
+        code = DeviceToken.objects.filter(device_code=device_code, provider=self.provider).first()
+        if not code:
+            raise TokenError("invalid_grant")
+        self.device_code = code
+
     def __create_user_from_jwt(self, token: dict[str, Any], app: Application, source: OAuthSource):
         """Create user from JWT"""
         exp = token.get("exp")
@@ -413,8 +428,11 @@ class TokenView(View):
                 if self.params.grant_type == GRANT_TYPE_CLIENT_CREDENTIALS:
                     LOGGER.debug("Client credentials grant")
                     return TokenResponse(self.create_client_credentials_response())
+                if self.params.grant_type == GRANT_TYPE_DEVICE_CODE:
+                    LOGGER.debug("Device code grant")
+                    return TokenResponse(self.create_device_code_response())
                 raise ValueError(f"Invalid grant_type: {self.params.grant_type}")
-        except TokenError as error:
+        except (TokenError, DeviceCodeError) as error:
             return TokenResponse(error.create_dict(), status=400)
         except UserAuthError as error:
             return TokenResponse(error.create_dict(), status=403)
@@ -505,5 +523,33 @@ class TokenView(View):
             "access_token": refresh_token.access_token,
             "token_type": "bearer",
             "expires_in": int(timedelta_from_string(self.provider.token_validity).total_seconds()),
+            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
+        }
+
+    def create_device_code_response(self) -> dict[str, Any]:
+        """See https://datatracker.ietf.org/doc/html/rfc8628"""
+        if not self.params.device_code.user:
+            raise DeviceCodeError("authorization_pending")
+
+        refresh_token: RefreshToken = self.provider.create_refresh_token(
+            user=self.params.device_code.user,
+            scope=self.params.device_code.scope,
+            request=self.request,
+        )
+        refresh_token.id_token = refresh_token.create_id_token(
+            user=self.params.device_code.user,
+            request=self.request,
+        )
+        refresh_token.id_token.at_hash = refresh_token.at_hash
+
+        # Store the refresh_token.
+        refresh_token.save()
+
+        return {
+            "access_token": refresh_token.access_token,
+            "token_type": "bearer",
+            "expires_in": int(
+                timedelta_from_string(refresh_token.provider.token_validity).total_seconds()
+            ),
             "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
         }

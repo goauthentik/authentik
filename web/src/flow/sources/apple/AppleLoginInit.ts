@@ -16,7 +16,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AppleChallengeResponseRequest, AppleLoginChallenge } from "@goauthentik/api";
 
-@customElement("ak-flow-sources-oauth-apple")
+@customElement("ak-flow-source-oauth-apple")
 export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChallengeResponseRequest> {
     @property({ type: Boolean })
     isModalShown = false;

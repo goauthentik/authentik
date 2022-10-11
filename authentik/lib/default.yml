@@ -50,6 +50,11 @@ email:
   from: authentik@localhost
   template_dir: /templates
 
+throttle:
+  providers:
+    oauth2:
+      device: 20/hour
+
 outposts:
   # Placeholders:
   # %(type)s: Outpost type; proxy, ldap, etc

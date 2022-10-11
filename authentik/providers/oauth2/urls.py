@@ -3,6 +3,7 @@ from django.urls import path
 from django.views.generic.base import RedirectView
 
 from authentik.providers.oauth2.views.authorize import AuthorizationFlowInitView
+from authentik.providers.oauth2.views.device_backchannel import DeviceView
 from authentik.providers.oauth2.views.introspection import TokenIntrospectionView
 from authentik.providers.oauth2.views.jwks import JWKSView
 from authentik.providers.oauth2.views.provider import ProviderInfoView
@@ -17,6 +18,7 @@ urlpatterns = [
         name="authorize",
     ),
     path("token/", TokenView.as_view(), name="token"),
+    path("device/", DeviceView.as_view(), name="device"),
     path(
         "userinfo/",
         UserInfoView.as_view(),

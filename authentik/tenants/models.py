@@ -48,6 +48,9 @@ class Tenant(SerializerModel):
     flow_user_settings = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_user_settings"
     )
+    flow_device_code = models.ForeignKey(
+        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_device_code"
+    )
 
     event_retention = models.TextField(
         default="days=365",

@@ -43,7 +43,7 @@ COPY ./internal /work/internal
 COPY ./go.mod /work/go.mod
 COPY ./go.sum /work/go.sum
 
-RUN go build -o /work/authentik ./cmd/server/main.go
+RUN go build -o /work/authentik ./cmd/server/
 
 # Stage 5: Run
 FROM docker.io/python:3.10.7-slim-bullseye AS final-image

@@ -25,7 +25,7 @@ import {
 } from "@goauthentik/api";
 import { SourcesApi } from "@goauthentik/api";
 
-@customElement("ak-flow-sources-plex")
+@customElement("ak-flow-source-plex")
 export class PlexLoginInit extends BaseStage<
     PlexAuthenticationChallenge,
     PlexAuthenticationChallengeResponseRequest

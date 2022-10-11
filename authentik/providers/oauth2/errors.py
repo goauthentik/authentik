@@ -235,6 +235,32 @@ class TokenRevocationError(OAuth2Error):
         self.description = self.errors[error]
 
 
+class DeviceCodeError(OAuth2Error):
+    """
+    Device-code flow errors
+    See https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
+    """
+
+    errors = {
+        "authorization_pending": (
+            "The authorization request is still pending as the end user hasn't "
+            "yet completed the user-interaction steps"
+        ),
+        "access_denied": ("The authorization request was denied."),
+        "expired_token": (
+            'The "device_code" has expired, and the device authorization '
+            "session has concluded.  The client MAY commence a new device "
+            "authorization request but SHOULD wait for user interaction before "
+            "restarting to avoid unnecessary polling."
+        ),
+    }
+
+    def __init__(self, error: str):
+        super().__init__()
+        self.error = error
+        self.description = self.errors[error]
+
+
 class BearerTokenError(OAuth2Error):
     """
     OAuth2 errors.
