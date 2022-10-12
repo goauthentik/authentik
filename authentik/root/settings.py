@@ -270,6 +270,12 @@ DATABASES = {
     }
 }
 
+if CONFIG.y_bool("postgresql.use_pgbouncer", False):
+    # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
+    DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+    # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
+    DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
+
 # Email
 EMAIL_HOST = CONFIG.y("email.host")
 EMAIL_PORT = int(CONFIG.y("email.port"))
