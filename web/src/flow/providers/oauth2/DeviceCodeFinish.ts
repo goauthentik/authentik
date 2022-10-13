@@ -1,34 +1,14 @@
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import { AccessDeniedStage } from "@goauthentik/flow/stages/access_denied/AccessDeniedStage";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    OAuthDeviceCodeFinishChallenge,
-    OAuthDeviceCodeFinishChallengeResponseRequest,
-} from "@goauthentik/api";
-
 @customElement("ak-flow-provider-oauth2-code-finish")
-export class DeviceCodeFinish extends BaseStage<
-    OAuthDeviceCodeFinishChallenge,
-    OAuthDeviceCodeFinishChallengeResponseRequest
-> {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFList, PFFormControl, PFTitle, AKGlobal];
-    }
-
+export class DeviceCodeFinish extends AccessDeniedStage {
     render(): TemplateResult {
         if (!this.challenge) {
             return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
@@ -39,10 +19,12 @@ export class DeviceCodeFinish extends BaseStage<
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
                     <div class="pf-c-form__group">
-                        <p>
+                        <p class="big-icon">
                             <i class="pf-icon pf-icon-ok"></i>
-                            ${t`You've successfully authenticated your device.`}
                         </p>
+                        <h3 class="pf-c-title pf-m-3xl reason">
+                            ${t`You've successfully authenticated your device.`}
+                        </h3>
                         <hr />
                         <p>${t`You can close this tab now.`}</p>
                     </div>

@@ -4,7 +4,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -24,7 +24,30 @@ export class AccessDeniedStage extends BaseStage<
     FlowChallengeResponseRequest
 > {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFList, PFFormControl, PFTitle, AKGlobal];
+        return [
+            PFBase,
+            PFLogin,
+            PFForm,
+            PFList,
+            PFFormControl,
+            PFTitle,
+            AKGlobal,
+            css`
+                .big-icon {
+                    display: flex;
+                    width: 100%;
+                    justify-content: center;
+                    height: 5rem;
+                }
+                .big-icon i {
+                    font-size: 3rem;
+                }
+                .reason {
+                    margin-bottom: 1rem;
+                    text-align: center;
+                }
+            `,
+        ];
     }
 
     render(): TemplateResult {
@@ -48,10 +71,10 @@ export class AccessDeniedStage extends BaseStage<
                         </div>
                     </ak-form-static>
                     <div class="pf-c-form__group">
-                        <p>
+                        <p class="big-icon">
                             <i class="pf-icon pf-icon-error-circle-o"></i>
-                            ${t`Request has been denied.`}
                         </p>
+                        <h3 class="pf-c-title pf-m-3xl reason">${t`Request has been denied.`}</h3>
                         ${this.challenge?.errorMessage &&
                         html`<hr />
                             <p>${this.challenge.errorMessage}</p>`}
