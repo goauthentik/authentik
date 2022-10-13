@@ -35,13 +35,11 @@ Note: The `default-authentication-flow` can have mult-factor authenticator(s) co
    ![](./general_setup8.png)
 3. Click `Bind Stage` choose `ldap-identification-stage` and set the order to `10`.
    ![](./general_setup9.png)
-4. Click `Bind Stage` choose `ldap-authentication-password` and set the order to `20`.
-   ![](./general_setup10.png)
-5. Click `Bind Stage` choose `ldap-authentication-login` and set the order to `30`.
+4. Click `Bind Stage` choose `ldap-authentication-login` and set the order to `30`.
    ![](./general_setup11.png)
-6. Edit the `ldap-identification-stage`.
+5. Edit the `ldap-identification-stage`.
    ![](./general_setup12.png)
-7. Change the Password stage to `ldap-authentication-password`.
+6. Change the Password stage to `ldap-authentication-password`.
    ![](./general_setup13.png)
 
 ### Create LDAP Provider
