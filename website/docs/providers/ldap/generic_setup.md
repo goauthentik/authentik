@@ -9,7 +9,7 @@ title: Generic Setup
 2. Create a new group for LDAP searches. In this example `ldapsearch`. Add the `ldapservice` user to this new group.
 
 :::info
-Note: The `default-authentication-flow` can have multi-factor authenticator(s) configured. If mult-factor authentication if used on the `default-authentication-flow`, create a new authentication flow, with 3 stages, dedicated to LDAP.
+Note: The `default-authentication-flow` can have multi-factor authenticator(s) configured. If multi-factor authentication is used on the `default-authentication-flow`, create a new authentication flow, with 3 stages, dedicated to LDAP.
 :::
 
 ### Create Custom Stages
