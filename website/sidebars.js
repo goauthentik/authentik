@@ -69,7 +69,7 @@ module.exports = {
                         type: "doc",
                         id: "providers/ldap/index",
                     },
-                    items: ["providers/ldap/general_setup"],
+                    items: ["providers/ldap/generic_setup"],
                 },
             ],
         },
