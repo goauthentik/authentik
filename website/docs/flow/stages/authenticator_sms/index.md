@@ -36,6 +36,16 @@ For the generic provider, a POST request will be sent to the URL you have specif
 
 Authentication can either be done as HTTP Basic, or via a Bearer Token. Any response with status 400 or above is counted as failed, and will prevent the user from proceeding.
 
+Starting with authentik 2022.10, a custom webhook mapping can be specified to freely customise the payload of the request. For example:
+
+```python
+return {
+    "from": stage.from_number,
+    "to": device.phone_number,
+    "body": f"foo bar baz {token}".
+}
+```
+
 ## Verify only
 
 :::info
