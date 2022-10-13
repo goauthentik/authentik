@@ -1,12 +1,12 @@
 ---
-title: General Setup
+title: Generic Setup
 ---
 
 ### Create User/Group
 
 1. Create a new user account to test ldap bind. `Directory > Users > Create` In this example `ldapservice`.
    Note the DN is `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
-2. Create a new group for ldap searches. In this example `ldapsearch`. Add the `ldapservice` user to this new group.
+2. Create a new group for LDAP searches. In this example `ldapsearch`. Add the `ldapservice` user to this new group.
 
 :::info
 Note: The `default-authentication-flow` can have mult-factor authenticator(s) configured. This will not work with ldap for authentication. To account for this, create a new authenication flow, with 3 stages, dedicated to ldap.
