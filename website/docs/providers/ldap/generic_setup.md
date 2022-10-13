@@ -77,5 +77,5 @@ ldapsearch \
 ```
 
 :::info
-Note: This query will NOT log an event in the `Events > Logs` area if it is successful. To validate connectivity, run the query, but use an incorrect password. This will log a failed login attempt.
+Note: This query will log the first successful attempt in an event in the `Events > Logs` area.
 :::
