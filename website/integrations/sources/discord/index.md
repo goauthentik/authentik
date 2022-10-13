@@ -52,3 +52,58 @@ Save, and you now have Discord as a source.
 :::note
 For more details on how-to have the new source display on the Login Page see [here](../).
 :::
+
+
+### Checking for membership of a Discord Guild
+
+:::info
+Requires authentik 2021.12.5.
+:::
+
+Refer to Discord API: https://discord.com/developers/docs/resources/user#get-current-user-guilds
+
+To check if the user is member of an organisation, you can use the following policy on your flows:
+
+```python
+ACCEPTED_GUILD_ID = "80351110224678912"
+ACCEPTED_GUILD_NAME = "1337 Krew"
+
+# Ensure flow is only run during oauth logins via Github
+if context['source'].provider_type != "discord":
+    return True
+
+# Get the user-source connection object from the context, and get the access token
+connection = context['goauthentik.io/sources/connection']
+access_token = connection.access_token
+
+# We also access the user info authentik already retrieved, to get the correct username
+#discord_username = context["oauth_userinfo"]
+
+# Github does not include Organisations in the userinfo endpoint, so we have to call another URL
+
+guilds = requests.get(
+    "https://discord.com/api/users/@me/guilds",
+    headers= {
+        "Authorization": "Bearer " + access_token,
+    }
+).json()
+
+# `guilds` will be formatted like this
+# [
+#     {
+#       "id": "80351110224678912",
+#       "name": "1337 Krew",
+#       "icon": "8342729096ea3675442027381ff50dfe",
+#       ...
+#     }
+# ]
+user_matched = False
+user_matched = any(ACCEPTED_GUILD_ID == g["id"] for g in guilds)
+if not user_matched:
+    ak_message(f"User is not member of {ACCEPTED_GUILD_NAME}.")
+return user_matched
+```
+
+If a user is not member of the chosen organisation, they will see this message
+
+TODO: Add picture
