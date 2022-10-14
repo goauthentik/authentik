@@ -7,7 +7,7 @@ import xmlsec
 from defusedxml.lxml import fromstring
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest
 from django.utils.timezone import now
 from structlog.stdlib import get_logger
 

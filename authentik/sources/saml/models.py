@@ -1,13 +1,15 @@
 """saml sp models"""
+from typing import Optional
 
 from django.db import models
 from django.http import HttpRequest
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Source, UserSourceConnection
-from authentik.core.types import UILoginButton
+from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import ChallengeTypes, RedirectChallenge
 from authentik.flows.models import Flow
@@ -189,6 +191,19 @@ class SAMLSource(Source):
                 }
             ),
             name=self.name,
+        )
+
+    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+        return UserSettingSerializer(
+            data={
+                "title": self.name,
+                "component": "ak-user-settings-source-saml",
+                "configure_url": reverse(
+                    "authentik_sources_saml:login",
+                    kwargs={"source_slug": self.slug},
+                ),
+                "icon_url": static(f"authentik/sources/{self.slug}.svg"),
+            }
         )
 
     def __str__(self):

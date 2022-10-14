@@ -91,7 +91,7 @@ class TestResponseProcessor(TestCase):
             ValueError,
             (
                 "Invalid request, ACS Url in request http://localhost:9000/source/saml/google/acs/ "
-                "doesn't match configured ACS Url https://127.0.0.1:9443/source/saml/google/acs/.",
+                "doesn't match configured ACS Url https://127.0.0.1:9443/source/saml/google/acs/."
             ),
         ):
             ResponseProcessor(self.source, request).parse()
