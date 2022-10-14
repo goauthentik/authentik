@@ -227,6 +227,7 @@ class BlueprintDumper(SafeDumper):
         self.add_representer(UUID, lambda self, data: self.represent_str(str(data)))
         self.add_representer(OrderedDict, lambda self, data: self.represent_dict(dict(data)))
         self.add_representer(Enum, lambda self, data: self.represent_str(data.value))
+        self.add_representer(None, lambda self, data: self.represent_str(str(data)))
 
     def represent(self, data) -> None:
         if is_dataclass(data):
