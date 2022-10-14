@@ -32,6 +32,7 @@ kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
 -   `AUTHENTIK_POSTGRESQL__USER`: Database user
 -   `AUTHENTIK_POSTGRESQL__PORT`: Database port, defaults to 5432
 -   `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
+-   `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjust configuration to support connection to PgBouncer
 
 ## Redis Settings
 
