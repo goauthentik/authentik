@@ -4,6 +4,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/user/user-settings/sources/SourceSettingsOAuth";
 import "@goauthentik/user/user-settings/sources/SourceSettingsPlex";
+import "@goauthentik/user/user-settings/sources/SourceSettingsSAML";
 
 import { t } from "@lingui/macro";
 
@@ -95,6 +96,15 @@ export class UserSourceSettingsPage extends AKElement {
                     .configureUrl=${source.configureUrl}
                 >
                 </ak-user-settings-source-plex>`;
+            case "ak-user-settings-source-saml":
+                return html`<ak-user-settings-source-saml
+                    class="pf-c-data-list__item-row"
+                    objectId=${source.objectUid}
+                    title=${source.title}
+                    connectionPk=${connectionPk}
+                    .configureUrl=${source.configureUrl}
+                >
+                </ak-user-settings-source-saml>`;
             default:
                 return html`<p>${t`Error: unsupported source settings: ${source.component}`}</p>`;
         }

@@ -1,3 +1,4 @@
+import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
@@ -22,6 +23,7 @@ import {
     SAMLSource,
     SignatureAlgorithmEnum,
     SourcesApi,
+    UserMatchingModeEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-source-saml-form")
@@ -80,6 +82,49 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                     />
                     <label class="pf-c-check__label"> ${t`Enabled`} </label>
                 </div>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`User matching mode`}
+                ?required=${true}
+                name="userMatchingMode"
+            >
+                <select class="pf-c-form-control">
+                    <option
+                        value=${UserMatchingModeEnum.Identifier}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.Identifier}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.EmailLink}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.EmailLink}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.EmailDeny}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.EmailDeny}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.UsernameLink}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.UsernameLink}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.UsernameDeny}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.UsernameDeny}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
+                    </option>
+                </select>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
