@@ -130,8 +130,8 @@ class TestAuthNRequest(TestCase):
         http_request.POST = QueryDict(mutable=True)
         http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
 
-        response_parser = ResponseProcessor(self.source)
-        response_parser.parse(http_request)
+        response_parser = ResponseProcessor(self.source, http_request)
+        response_parser.parse()
 
     def test_request_id_invalid(self):
         """Test generated AuthNRequest with invalid request ID"""
@@ -157,10 +157,10 @@ class TestAuthNRequest(TestCase):
         http_request.POST = QueryDict(mutable=True)
         http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
 
-        response_parser = ResponseProcessor(self.source)
+        response_parser = ResponseProcessor(self.source, http_request)
 
         with self.assertRaises(MismatchedRequestID):
-            response_parser.parse(http_request)
+            response_parser.parse()
 
     def test_signed_valid_detached(self):
         """Test generated AuthNRequest with valid signature (detached)"""

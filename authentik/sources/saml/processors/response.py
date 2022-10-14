@@ -31,6 +31,8 @@ from authentik.sources.saml.exceptions import (
 from authentik.sources.saml.models import SAMLSource, UserSAMLSourceConnection
 from authentik.sources.saml.processors.constants import (
     NS_MAP,
+    NS_SAML_ASSERTION,
+    NS_SAML_PROTOCOL,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
@@ -56,14 +58,14 @@ class ResponseProcessor:
 
     _http_request: HttpRequest
 
-    def __init__(self, source: SAMLSource):
+    def __init__(self, source: SAMLSource, request: HttpRequest):
         self._source = source
-
-    def parse(self, request: HttpRequest):
-        """Check if `request` contains SAML Response data, parse and validate it."""
         self._http_request = request
+
+    def parse(self):
+        """Check if `request` contains SAML Response data, parse and validate it."""
         # First off, check if we have any SAML Data at all.
-        raw_response = request.POST.get("SAMLResponse", None)
+        raw_response = self._http_request.POST.get("SAMLResponse", None)
         if not raw_response:
             raise MissingSAMLResponse("Request does not contain 'SAMLResponse'")
         # Check if response is compressed, b64 decode it
@@ -72,7 +74,8 @@ class ResponseProcessor:
 
         if self._source.signing_kp:
             self._verify_signed()
-        self._verify_request_id(request)
+        self._verify_request_id()
+        self._verify_status()
 
     def _verify_signed(self):
         """Verify SAML Response's Signature"""
@@ -98,7 +101,7 @@ class ResponseProcessor:
             raise InvalidSignature from exc
         LOGGER.debug("Successfully verified signautre")
 
-    def _verify_request_id(self, request: HttpRequest):
+    def _verify_request_id(self):
         if self._source.allow_idp_initiated:
             # If IdP-initiated SSO flows are enabled, we want to cache the Response ID
             # somewhat mitigate replay attacks
@@ -108,14 +111,26 @@ class ResponseProcessor:
             seen_ids.append(self._root.attrib["ID"])
             cache.set(CACHE_SEEN_REQUEST_ID % self._source.pk, seen_ids)
             return
-        if SESSION_KEY_REQUEST_ID not in request.session or "InResponseTo" not in self._root.attrib:
+        if (
+            SESSION_KEY_REQUEST_ID not in self._http_request.session
+            or "InResponseTo" not in self._root.attrib
+        ):
             raise MismatchedRequestID(
                 "Missing InResponseTo and IdP-initiated Logins are not allowed"
             )
-        if request.session[SESSION_KEY_REQUEST_ID] != self._root.attrib["InResponseTo"]:
+        if self._http_request.session[SESSION_KEY_REQUEST_ID] != self._root.attrib["InResponseTo"]:
             raise MismatchedRequestID("Mismatched request ID")
 
-    def _handle_name_id_transient(self, request: HttpRequest) -> HttpResponse:
+    def _verify_status(self):
+        """Check for SAML Status elements"""
+        status = self._root.find(f"{{{NS_SAML_PROTOCOL}}}Status")
+        if status is None:
+            return
+        message = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusMessage")
+        if message is not None:
+            raise ValueError(message.text)
+
+    def _handle_name_id_transient(self) -> SourceFlowManager:
         """Handle a NameID with the Format of Transient. This is a bit more complex than other
         formats, as we need to create a temporary User that is used in the session. This
         user has an attribute that refers to our Source for cleanup. The user is also deleted
@@ -146,17 +161,17 @@ class ResponseProcessor:
             self._http_request,
             name_id,
             delete_none_keys(self.get_attributes()),
-        ).get_flow()
+        )
 
     def _get_name_id(self) -> "Element":
         """Get NameID Element"""
-        assertion = self._root.find("{urn:oasis:names:tc:SAML:2.0:assertion}Assertion")
-        if not assertion:
+        assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
+        if assertion is None:
             raise ValueError("Assertion element not found")
-        subject = assertion.find("{urn:oasis:names:tc:SAML:2.0:assertion}Subject")
-        if not subject:
+        subject = assertion.find(f"{{{NS_SAML_ASSERTION}}}Subject")
+        if subject is None:
             raise ValueError("Subject element not found")
-        name_id = subject.find("{urn:oasis:names:tc:SAML:2.0:assertion}NameID")
+        name_id = subject.find(f"{{{NS_SAML_ASSERTION}}}NameID")
         if name_id is None:
             raise ValueError("NameID element not found")
         return name_id
@@ -186,12 +201,10 @@ class ResponseProcessor:
     def get_attributes(self) -> dict[str, list[str] | str]:
         """Get all attributes sent"""
         attributes = {}
-        assertion = self._root.find("{urn:oasis:names:tc:SAML:2.0:assertion}Assertion")
+        assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
         if not assertion:
             raise ValueError("Assertion element not found")
-        attribute_statement = assertion.find(
-            "{urn:oasis:names:tc:SAML:2.0:assertion}AttributeStatement"
-        )
+        attribute_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
         if not attribute_statement:
             raise ValueError("Attribute statement element not found")
         # Get all attributes and their values into a dict
@@ -205,7 +218,7 @@ class ResponseProcessor:
             attributes[key] = BaseEvaluator.expr_flatten(value)
         return attributes
 
-    def prepare_flow(self, request: HttpRequest) -> HttpResponse:
+    def prepare_flow_manager(self) -> SourceFlowManager:
         """Prepare flow plan depending on whether or not the user exists"""
         name_id = self._get_name_id()
         # Sanity check, show a warning if NameIDPolicy doesn't match what we go
@@ -217,14 +230,14 @@ class ResponseProcessor:
             )
         # transient NameIDs are handled separately as they don't have to go through flows.
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
-            return self._handle_name_id_transient(request)
+            return self._handle_name_id_transient()
 
         return SAMLSourceFlowManager(
             self._source,
             self._http_request,
             name_id.text,
             delete_none_keys(self.get_attributes()),
-        ).get_flow()
+        )
 
 
 class SAMLSourceFlowManager(SourceFlowManager):
