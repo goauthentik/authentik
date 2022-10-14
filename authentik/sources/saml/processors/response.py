@@ -163,10 +163,14 @@ class ResponseProcessor:
     def _get_name_id(self) -> "Element":
         """Get NameID Element"""
         assertion = self._root.find("{urn:oasis:names:tc:SAML:2.0:assertion}Assertion")
+        if not assertion:
+            raise ValueError("Assertion element not found")
         subject = assertion.find("{urn:oasis:names:tc:SAML:2.0:assertion}Subject")
+        if not subject:
+            raise ValueError("Subject element not found")
         name_id = subject.find("{urn:oasis:names:tc:SAML:2.0:assertion}NameID")
         if name_id is None:
-            raise ValueError("NameID Element not found!")
+            raise ValueError("NameID element not found")
         return name_id
 
     def _get_name_id_filter(self) -> dict[str, str]:

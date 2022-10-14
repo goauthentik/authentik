@@ -163,7 +163,7 @@ class ACSView(View):
 
         try:
             return processor.prepare_flow(request)
-        except UnsupportedNameIDFormat as exc:
+        except (UnsupportedNameIDFormat, ValueError) as exc:
             return bad_request_message(request, str(exc))
 
 
