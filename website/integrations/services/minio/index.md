@@ -19,7 +19,7 @@ The following placeholders will be used:
 -   `minio.company` is the FQDN of the MinIO install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-Under _Property Mappings_, create a _Scope Mapping_. Give it a name like "OIDC-Scope-minio". Set the scope name to `minio` and the expression to the following
+Under _Customization_ -> _Property Mappings_, create a _Scope Mapping_. Give it a name like "OIDC-Scope-minio". Set the scope name to `minio` and the expression to the following
 
 ```python
 return {

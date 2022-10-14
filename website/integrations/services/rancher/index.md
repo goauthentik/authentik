@@ -20,7 +20,7 @@ The following placeholders will be used:
 -   `rancher.company` is the FQDN of the Rancher install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-Under _Property Mappings_, create a _SAML Property Mapping_. Give it a name like "SAML Rancher User ID". Set the SAML name to `rancherUidUsername` and the expression to the following
+Under _Customization_ -> _Property Mappings_, create a _SAML Property Mapping_. Give it a name like "SAML Rancher User ID". Set the SAML name to `rancherUidUsername` and the expression to the following
 
 ```python
 return f"{user.pk}-{user.username}"
