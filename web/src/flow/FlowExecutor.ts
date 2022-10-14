@@ -36,6 +36,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
+    CapabilitiesEnum,
     ChallengeChoices,
     ChallengeTypes,
     CurrentTenant,
@@ -154,7 +155,11 @@ export class FlowExecutor extends AKElement implements StageHost {
         super();
         this.ws = new WebsocketClient();
         this.flowSlug = window.location.pathname.split("/")[3];
-        this.inspectorOpen = window.location.search.includes("inspector");
+        this.inspectorOpen =
+            globalAK()?.config.capabilities.includes(CapabilitiesEnum.Debug) || false;
+        if (window.location.search.includes("inspector")) {
+            this.inspectorOpen = !this.inspectorOpen;
+        }
         tenant().then((tenant) => (this.tenant = tenant));
     }
 
