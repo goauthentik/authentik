@@ -13101,7 +13101,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Notification Webhook Mapping.
+        description: A UUID string identifying this Webhook Mapping.
         required: true
       tags:
       - propertymappings
@@ -13135,7 +13135,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Notification Webhook Mapping.
+        description: A UUID string identifying this Webhook Mapping.
         required: true
       tags:
       - propertymappings
@@ -13175,7 +13175,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Notification Webhook Mapping.
+        description: A UUID string identifying this Webhook Mapping.
         required: true
       tags:
       - propertymappings
@@ -13214,7 +13214,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Notification Webhook Mapping.
+        description: A UUID string identifying this Webhook Mapping.
         required: true
       tags:
       - propertymappings
@@ -13245,7 +13245,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Notification Webhook Mapping.
+        description: A UUID string identifying this Webhook Mapping.
         required: true
       tags:
       - propertymappings
@@ -18794,6 +18794,11 @@ paths:
         name: from_number
         schema:
           type: string
+      - in: query
+        name: mapping
+        schema:
+          type: string
+          format: uuid
       - in: query
         name: name
         schema:
@@ -25185,6 +25190,11 @@ components:
           description: When enabled, the Phone number is only used during enrollment
             to verify the users authenticity. Only a hash of the phone number is saved
             to ensure it is not re-used in the future.
+        mapping:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
       - auth
@@ -25233,6 +25243,11 @@ components:
           description: When enabled, the Phone number is only used during enrollment
             to verify the users authenticity. Only a hash of the phone number is saved
             to ensure it is not re-used in the future.
+        mapping:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
       - auth
@@ -32702,6 +32717,11 @@ components:
           description: When enabled, the Phone number is only used during enrollment
             to verify the users authenticity. Only a hash of the phone number is saved
             to ensure it is not re-used in the future.
+        mapping:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally modify the payload being sent to custom providers.
     PatchedAuthenticatorStaticStageRequest:
       type: object
       description: AuthenticatorStaticStage Serializer

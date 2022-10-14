@@ -22,4 +22,8 @@ class Migration(migrations.Migration):
                 default="local",
             ),
         ),
+        migrations.AlterModelOptions(
+            name="notificationwebhookmapping",
+            options={"verbose_name": "Webhook Mapping", "verbose_name_plural": "Webhook Mappings"},
+        ),
     ]

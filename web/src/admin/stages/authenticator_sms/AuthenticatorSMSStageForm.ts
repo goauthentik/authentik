@@ -16,6 +16,7 @@ import {
     AuthenticatorSMSStage,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    PropertymappingsApi,
     ProviderEnum,
     StagesApi,
 } from "@goauthentik/api";
@@ -91,7 +92,8 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
     }
 
     renderProviderGeneric(): TemplateResult {
-        return html` <ak-form-element-horizontal
+        return html`
+            <ak-form-element-horizontal
                 label=${t`Authentication Type`}
                 @change=${(ev: Event) => {
                     const current = (ev.target as HTMLInputElement).value;
@@ -153,7 +155,33 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                 <p class="pf-c-form__helper-text">
                     ${t`This is the password to be used with basic auth`}
                 </p>
-            </ak-form-element-horizontal>`;
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Mapping`} name="mapping">
+                <select class="pf-c-form-control">
+                    <option value="" ?selected=${this.instance?.mapping === undefined}>
+                        ---------
+                    </option>
+                    ${until(
+                        new PropertymappingsApi(DEFAULT_CONFIG)
+                            .propertymappingsNotificationList({})
+                            .then((mappings) => {
+                                return mappings.results.map((mapping) => {
+                                    return html`<option
+                                        value=${ifDefined(mapping.pk)}
+                                        ?selected=${this.instance?.mapping === mapping.pk}
+                                    >
+                                        ${mapping.name}
+                                    </option>`;
+                                });
+                            }),
+                        html`<option>${t`Loading...`}</option>`,
+                    )}
+                </select>
+                <p class="pf-c-form__helper-text">
+                    ${t`Modify the payload sent to the custom provider.`}
+                </p>
+            </ak-form-element-horizontal>
+        `;
     }
 
     renderForm(): TemplateResult {

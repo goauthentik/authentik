@@ -560,7 +560,7 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
 
 
 class NotificationWebhookMapping(PropertyMapping):
-    """Modify the schema and layout of the webhook being sent"""
+    """Modify the payload of outgoing webhook requests"""
 
     @property
     def component(self) -> str:
@@ -573,9 +573,9 @@ class NotificationWebhookMapping(PropertyMapping):
         return NotificationWebhookMappingSerializer
 
     def __str__(self):
-        return f"Notification Webhook Mapping {self.name}"
+        return f"Webhook Mapping {self.name}"
 
     class Meta:
 
-        verbose_name = _("Notification Webhook Mapping")
-        verbose_name_plural = _("Notification Webhook Mappings")
+        verbose_name = _("Webhook Mapping")
+        verbose_name_plural = _("Webhook Mappings")

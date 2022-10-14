@@ -15,7 +15,8 @@ from twilio.base.exceptions import TwilioRestException
 from twilio.rest import Client
 
 from authentik.core.types import UserSettingSerializer
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, NotificationWebhookMapping
+from authentik.events.utils import sanitize_item
 from authentik.flows.models import ConfigurableStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.errors import exception_to_string
@@ -59,6 +60,14 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
         ),
     )
 
+    mapping = models.ForeignKey(
+        NotificationWebhookMapping,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_("Optionally modify the payload being sent to custom providers."),
+    )
+
     def send(self, token: str, device: "SMSDevice"):
         """Send message via selected provider"""
         if self.provider == SMSProviders.TWILIO:
@@ -82,24 +91,33 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
 
     def send_generic(self, token: str, device: "SMSDevice"):
         """Send SMS via outside API"""
-
-        data = {
+        payload = {
             "From": self.from_number,
             "To": device.phone_number,
             "Body": token,
         }
 
+        if self.mapping:
+            payload = sanitize_item(
+                self.mapping.evaluate(
+                    user=device.user,
+                    request=None,
+                    device=device,
+                    token=token,
+                    stage=self,
+                )
+            )
+
         if self.auth_type == SMSAuthTypes.BEARER:
             response = get_http_session().post(
                 f"{self.account_sid}",
-                json=data,
+                json=payload,
                 headers={"Authorization": f"Bearer {self.auth}"},
             )
-
         elif self.auth_type == SMSAuthTypes.BASIC:
             response = get_http_session().post(
                 f"{self.account_sid}",
-                json=data,
+                json=payload,
                 auth=(self.auth, self.auth_password),
             )
         else:
