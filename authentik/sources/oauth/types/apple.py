@@ -114,9 +114,6 @@ class AppleType(SourceType):
     access_token_url = "https://appleid.apple.com/auth/token"  # nosec
     profile_url = ""
 
-    def icon_url(self) -> str:
-        return "https://appleid.cdn-apple.com/appleid/button/logo"
-
     def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
         """Pre-general all the things required for the JS SDK"""
         apple_client = AppleOAuthClient(
