@@ -73,16 +73,16 @@ class FlowInspectorView(APIView):
     flow: Flow
     _logger: BoundLogger
 
+    def check_permissions(self, request):
+        """Always allow access when in debug mode"""
+        if settings.DEBUG:
+            return None
+        return super().check_permissions(request)
+
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)
         self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         self._logger = get_logger().bind(flow_slug=flow_slug)
-
-    # pylint: disable=unused-argument, too-many-return-statements
-    def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
-        if SESSION_KEY_HISTORY not in self.request.session:
-            return HttpResponse(status=400)
-        return super().dispatch(request, flow_slug=flow_slug)
 
     @extend_schema(
         responses={
@@ -95,7 +95,7 @@ class FlowInspectorView(APIView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Get current flow state and record it"""
         plans = []
-        for plan in request.session[SESSION_KEY_HISTORY]:
+        for plan in request.session.get(SESSION_KEY_HISTORY, []):
             plan_serializer = FlowInspectorPlanSerializer(
                 instance=plan, context={"request": request}
             )

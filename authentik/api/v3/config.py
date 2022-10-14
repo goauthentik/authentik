@@ -28,6 +28,7 @@ class Capabilities(models.TextChoices):
     CAN_SAVE_MEDIA = "can_save_media"
     CAN_GEO_IP = "can_geo_ip"
     CAN_IMPERSONATE = "can_impersonate"
+    CAN_DEBUG = "can_debug"
 
 
 class ErrorReportingConfigSerializer(PassiveSerializer):
@@ -66,6 +67,8 @@ class ConfigView(APIView):
             caps.append(Capabilities.CAN_GEO_IP)
         if CONFIG.y_bool("impersonation"):
             caps.append(Capabilities.CAN_IMPERSONATE)
+        if settings.DEBUG:
+            caps.append(Capabilities.CAN_DEBUG)
         return caps
 
     def get_config(self) -> ConfigSerializer:
