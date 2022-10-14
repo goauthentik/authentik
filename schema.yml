@@ -18164,6 +18164,270 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /sources/user_connections/saml/:
+    get:
+      operationId: sources_user_connections_saml_list
+      description: Source Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserSAMLSourceConnectionList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: sources_user_connections_saml_create
+      description: Source Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSAMLSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSAMLSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/user_connections/saml/{id}/:
+    get:
+      operationId: sources_user_connections_saml_retrieve
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User SAML Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSAMLSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: sources_user_connections_saml_update
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User SAML Source Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSAMLSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSAMLSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: sources_user_connections_saml_partial_update
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User SAML Source Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSAMLSourceConnectionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSAMLSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: sources_user_connections_saml_destroy
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User SAML Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/user_connections/saml/{id}/used_by/:
+    get:
+      operationId: sources_user_connections_saml_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User SAML Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /stages/all/:
     get:
       operationId: stages_all_list
@@ -32190,6 +32454,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedUserSAMLSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSAMLSourceConnection'
+      required:
+      - pagination
+      - results
     PaginatedUserSourceConnectionList:
       type: object
       properties:
@@ -34430,6 +34729,15 @@ components:
           type: object
           additionalProperties: {}
         path:
+          type: string
+          minLength: 1
+    PatchedUserSAMLSourceConnectionRequest:
+      type: object
+      description: SAML Source Serializer
+      properties:
+        user:
+          type: integer
+        identifier:
           type: string
           minLength: 1
     PatchedUserWriteStageRequest:
@@ -37376,6 +37684,39 @@ components:
       - groups
       - name
       - username
+    UserSAMLSourceConnection:
+      type: object
+      description: SAML Source Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          type: integer
+        source:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+      required:
+      - identifier
+      - pk
+      - source
+      - user
+    UserSAMLSourceConnectionRequest:
+      type: object
+      description: SAML Source Serializer
+      properties:
+        user:
+          type: integer
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - user
     UserSelf:
       type: object
       description: User Serializer for information a user can retrieve about themselves

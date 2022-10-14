@@ -89,6 +89,7 @@
                             "authentik_sources_plex.plexsource",
                             "authentik_sources_plex.plexsourceconnection",
                             "authentik_sources_saml.samlsource",
+                            "authentik_sources_saml.usersamlsourceconnection",
                             "authentik_stages_authenticator_duo.authenticatorduostage",
                             "authentik_stages_authenticator_duo.duodevice",
                             "authentik_stages_authenticator_sms.authenticatorsmsstage",

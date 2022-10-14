@@ -18,17 +18,9 @@ from authentik.core.models import (
     USER_ATTRIBUTE_SOURCES,
     User,
 )
-from authentik.flows.models import Flow
-from authentik.flows.planner import (
-    PLAN_CONTEXT_PENDING_USER,
-    PLAN_CONTEXT_REDIRECT,
-    PLAN_CONTEXT_SOURCE,
-    PLAN_CONTEXT_SSO,
-    FlowPlanner,
-)
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.core.sources.flow_manager import SourceFlowManager
+from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.utils import delete_none_keys
 from authentik.sources.saml.exceptions import (
     InvalidSignature,
@@ -36,7 +28,7 @@ from authentik.sources.saml.exceptions import (
     MissingSAMLResponse,
     UnsupportedNameIDFormat,
 )
-from authentik.sources.saml.models import SAMLSource
+from authentik.sources.saml.models import SAMLSource, UserSAMLSourceConnection
 from authentik.sources.saml.processors.constants import (
     NS_MAP,
     SAML_NAME_ID_FORMAT_EMAIL,
@@ -46,9 +38,6 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_X509,
 )
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID
-from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
-from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
-from authentik.stages.user_login.stage import BACKEND_INBUILT
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
@@ -151,14 +140,13 @@ class ResponseProcessor:
         LOGGER.debug("Created temporary user for NameID Transient", username=name_id)
         user.set_unusable_password()
         user.save()
-        return self._flow_response(
-            request,
-            self._source.authentication_flow,
-            **{
-                PLAN_CONTEXT_PENDING_USER: user,
-                PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_INBUILT,
-            },
-        )
+        UserSAMLSourceConnection.objects.create(source=self._source, user=user, identifier=name_id)
+        return SAMLSourceFlowManager(
+            self._source,
+            self._http_request,
+            name_id,
+            delete_none_keys(self.get_attributes()),
+        ).get_flow()
 
     def _get_name_id(self) -> "Element":
         """Get NameID Element"""
@@ -195,6 +183,28 @@ class ResponseProcessor:
             f"Assertion contains NameID with unsupported format {_format}."
         )
 
+    def get_attributes(self) -> dict[str, list[str] | str]:
+        """Get all attributes sent"""
+        attributes = {}
+        assertion = self._root.find("{urn:oasis:names:tc:SAML:2.0:assertion}Assertion")
+        if not assertion:
+            raise ValueError("Assertion element not found")
+        attribute_statement = assertion.find(
+            "{urn:oasis:names:tc:SAML:2.0:assertion}AttributeStatement"
+        )
+        if not attribute_statement:
+            raise ValueError("Attribute statement element not found")
+        # Get all attributes and their values into a dict
+        for attribute in attribute_statement.iterchildren():
+            key = attribute.attrib["Name"]
+            attributes.setdefault(key, [])
+            for value in attribute.iterchildren():
+                attributes[key].append(value.text)
+        # Flatten all lists in the dict
+        for key, value in attributes.items():
+            attributes[key] = BaseEvaluator.expr_flatten(value)
+        return attributes
+
     def prepare_flow(self, request: HttpRequest) -> HttpResponse:
         """Prepare flow plan depending on whether or not the user exists"""
         name_id = self._get_name_id()
@@ -209,36 +219,15 @@ class ResponseProcessor:
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
             return self._handle_name_id_transient(request)
 
-        name_id_filter = self._get_name_id_filter()
-        matching_users = User.objects.filter(**name_id_filter)
-        # Ensure redirect is carried through when user was trying to
-        # authorize application
-        final_redirect = self._http_request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:if-user"
-        )
-        if matching_users.exists():
-            # User exists already, switch to authentication flow
-            return self._flow_response(
-                request,
-                self._source.authentication_flow,
-                **{
-                    PLAN_CONTEXT_PENDING_USER: matching_users.first(),
-                    PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_INBUILT,
-                    PLAN_CONTEXT_REDIRECT: final_redirect,
-                },
-            )
-        return self._flow_response(
-            request,
-            self._source.enrollment_flow,
-            **{PLAN_CONTEXT_PROMPT: delete_none_keys(name_id_filter)},
-        )
+        return SAMLSourceFlowManager(
+            self._source,
+            self._http_request,
+            name_id.text,
+            delete_none_keys(self.get_attributes()),
+        ).get_flow()
 
-    def _flow_response(self, request: HttpRequest, flow: Flow, **kwargs) -> HttpResponse:
-        kwargs[PLAN_CONTEXT_SSO] = True
-        kwargs[PLAN_CONTEXT_SOURCE] = self._source
-        request.session[SESSION_KEY_PLAN] = FlowPlanner(flow).plan(request, kwargs)
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            request.GET,
-            flow_slug=flow.slug,
-        )
+
+class SAMLSourceFlowManager(SourceFlowManager):
+    """Source flow manager for SAML Sources"""
+
+    connection_type = UserSAMLSourceConnection
