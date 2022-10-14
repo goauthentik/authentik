@@ -13101,7 +13101,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Notification Webhook Mapping.
+        description: A UUID string identifying this Webhook Mapping.
         required: true
       tags:
       - propertymappings
@@ -13135,7 +13135,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Notification Webhook Mapping.
+        description: A UUID string identifying this Webhook Mapping.
         required: true
       tags:
       - propertymappings
@@ -13175,7 +13175,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Notification Webhook Mapping.
+        description: A UUID string identifying this Webhook Mapping.
         required: true
       tags:
       - propertymappings
@@ -13214,7 +13214,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Notification Webhook Mapping.
+        description: A UUID string identifying this Webhook Mapping.
         required: true
       tags:
       - propertymappings
@@ -13245,7 +13245,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Notification Webhook Mapping.
+        description: A UUID string identifying this Webhook Mapping.
         required: true
       tags:
       - propertymappings

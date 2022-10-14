@@ -20,6 +20,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 to="authentik_events.notificationwebhookmapping",
+                help_text="Optionally modify the payload being sent to custom providers.",
             ),
         ),
     ]

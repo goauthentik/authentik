@@ -182,7 +182,7 @@ class SAMLProvider(Provider):
 
 
 class SAMLPropertyMapping(PropertyMapping):
-    """Map User/Group attribute to SAML Attribute, which can be used by the Service Provider."""
+    """Map User/Group attribute to SAML Attribute, which can be used by the Service Provider"""
 
     saml_name = models.TextField(verbose_name="SAML Name")
     friendly_name = models.TextField(default=None, blank=True, null=True)
