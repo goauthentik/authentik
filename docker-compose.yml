@@ -41,7 +41,6 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-      AUTHENTIK_POSTGRESQL__USE_PGBOUNCER: false
       # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
     volumes:
       - ./media:/media
