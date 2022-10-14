@@ -35,7 +35,7 @@ Since vCenter only allows OpenID-Connect in combination with Active Directory, i
 
 ### Step 1
 
-Under _Property Mappings_, create a _Scope Mapping_. Give it a name like "OIDC-Scope-VMware-vCenter". Set the scope name to `openid` and the expression to the following
+Under _Customization_ -> _Property Mappings_, create a _Scope Mapping_. Give it a name like "OIDC-Scope-VMware-vCenter". Set the scope name to `openid` and the expression to the following
 
 ```python
 return {

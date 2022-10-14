@@ -25,7 +25,7 @@ The following placeholders will be used:
 Create a new oauth2 Scope Mapping which does not return the 'group' values and associate this mapping
 in the provider settings instead of the default oauth mapping.
 
-Under _Property Mappings_, create a _Scope Mapping_. Give it a name like "oauth2-Scope-dovecot". Set the scope name to `dovecotprofile` and the expression to the following
+Under _Customization_ -> _Property Mappings_, create a _Scope Mapping_. Give it a name like "oauth2-Scope-dovecot". Set the scope name to `dovecotprofile` and the expression to the following
 
 ```
 return {
