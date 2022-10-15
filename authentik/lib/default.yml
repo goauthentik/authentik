@@ -55,6 +55,7 @@ throttle:
   providers:
     oauth2:
       device: 20/hour
+  default: 1000/second
 
 outposts:
   # Placeholders:
