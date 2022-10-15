@@ -14,7 +14,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, IntegerField, SerializerMethodField
+from rest_framework.fields import CharField, DateTimeField, IntegerField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
@@ -69,7 +69,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
         "Get certificate expiry"
         if not self._should_include_details:
             return None
-        return instance.certificate.not_valid_after
+        return DateTimeField().to_representation(instance.certificate.not_valid_after)
 
     def get_cert_subject(self, instance: CertificateKeyPair) -> Optional[str]:
         """Get certificate subject as full rfc4514"""
