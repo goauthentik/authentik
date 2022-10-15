@@ -80,7 +80,7 @@ class FlowSerializer(ModelSerializer):
 class FlowViewSet(UsedByMixin, ModelViewSet):
     """Flow Viewset"""
 
-    queryset = Flow.objects.all()
+    queryset = Flow.objects.all().prefetch_related("stages")
     serializer_class = FlowSerializer
     lookup_field = "slug"
     ordering = ["slug", "name"]

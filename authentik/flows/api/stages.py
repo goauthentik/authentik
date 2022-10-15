@@ -61,7 +61,7 @@ class StageViewSet(
     filterset_fields = ["name"]
 
     def get_queryset(self):  # pragma: no cover
-        return Stage.objects.select_subclasses()
+        return Stage.objects.select_subclasses().prefetch_related("flow_set")
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
