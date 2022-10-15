@@ -23,7 +23,7 @@ type GoUnicorn struct {
 	alive   bool
 }
 
-func NewGoUnicorn() *GoUnicorn {
+func New() *GoUnicorn {
 	logger := log.WithField("logger", "authentik.router.unicorn")
 	g := &GoUnicorn{
 		log:             logger,

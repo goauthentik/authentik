@@ -58,7 +58,11 @@ func main() {
 
 	u, _ := url.Parse("http://localhost:8000")
 
-	g := gounicorn.NewGoUnicorn()
+	g := gounicorn.New()
+	defer func() {
+		l.Info("shutting down gunicorn")
+		g.Kill()
+	}()
 	ws := web.NewWebServer(g)
 	g.HealthyCallback = func() {
 		if !config.Get().Outposts.DisableEmbeddedOutpost {
@@ -70,8 +74,6 @@ func main() {
 	ws.Start()
 	<-ex
 	running = false
-	l.Info("shutting down gunicorn")
-	go g.Kill()
 	l.Info("shutting down webserver")
 	go ws.Shutdown()
 }
