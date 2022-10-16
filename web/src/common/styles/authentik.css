@@ -106,11 +106,6 @@ html > form > input {
     margin-bottom: 6px;
 }
 
-/* Fix scrolling in modals in low-height viewports on Chromium */
-.pf-c-modal-box__body {
-    overflow: hidden;
-}
-
 @media (prefers-color-scheme: dark) {
     .ak-static-page h1 {
         color: var(--ak-dark-foreground);
