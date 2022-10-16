@@ -32,6 +32,7 @@ runs:
       shell: python
       run: |
         """Helper script to get the actual branch name, docker safe"""
+        import configparser
         import os
         from time import time
 
@@ -44,20 +45,17 @@ runs:
             branch_name = os.environ[env_pr_branch]
 
         should_build = str(os.environ.get("DOCKER_USERNAME", "") != "").lower()
-
-        print("##[set-output name=branchName]%s" % branch_name)
-        print(
-            "##[set-output name=branchNameContainer]%s"
-            % branch_name.replace("refs/heads/", "").replace("/", "-")
-        )
-        print("##[set-output name=timestamp]%s" % int(time()))
-        print("##[set-output name=sha]%s" % os.environ[sha])
-        print("##[set-output name=shouldBuild]%s" % should_build)
-
-        import configparser
         parser = configparser.ConfigParser()
         parser.read(".bumpversion.cfg")
         version = parser.get("bumpversion", "current_version")
         version_family = ".".join(version.split(".")[:-1])
-        print("##[set-output name=version]%s" % version)
-        print("##[set-output name=versionFamily]%s" % version_family)
+        safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
+
+        with open(os.environ["GITHUB_OUTPUT"], "w+", encoding="utf-8") as _output:
+            _output.write("branchName=%s" % branch_name)
+            _output.write("branchNameContainer=%s" % safe_branch_name)
+            _output.write("timestamp=%s" % int(time()))
+            _output.write("sha=%s" % os.environ[sha])
+            _output.write("shouldBuild=%s" % should_build)
+            _output.write("version=%s" % version)
+            _output.write("versionFamily=%s" % version_family)
