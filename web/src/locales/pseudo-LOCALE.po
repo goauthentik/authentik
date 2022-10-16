@@ -258,8 +258,8 @@ msgid "Addition User DN"
 msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
-msgid "Additional Scope"
-msgstr ""
+#~ msgid "Additional Scope"
+#~ msgstr ""
 
 #: src/admin/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Additional UI settings"
@@ -274,7 +274,11 @@ msgid "Additional scope mappings, which are passed to the proxy."
 msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
-msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
+#~ msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
+#~ msgstr ""
+
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+msgid "Additional scopes to be passed to the OAuth Provider, separated by space. To replace existing scopes, prefix with *."
 msgstr ""
 
 #: src/admin/blueprints/BlueprintForm.ts
@@ -1069,6 +1073,7 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+#: src/flow/providers/oauth2/DeviceCode.ts
 #: src/flow/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flow/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
@@ -1183,6 +1188,7 @@ msgstr ""
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
+#: src/user/user-settings/sources/SourceSettingsSAML.ts
 msgid "Connect"
 msgstr ""
 
@@ -1266,6 +1272,7 @@ msgid "Context"
 msgstr ""
 
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+#: src/flow/providers/oauth2/DeviceCode.ts
 #: src/flow/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flow/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flow/stages/authenticator_static/AuthenticatorStaticStage.ts
@@ -1743,6 +1750,10 @@ msgstr ""
 msgid "Device classes which can be used to authenticate."
 msgstr ""
 
+#: src/admin/tenants/TenantForm.ts
+msgid "Device code flow"
+msgstr ""
+
 #: 
 #~ msgid "Device name"
 #~ msgstr ""
@@ -1812,6 +1823,7 @@ msgstr ""
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
+#: src/user/user-settings/sources/SourceSettingsSAML.ts
 msgid "Disconnect"
 msgstr ""
 
@@ -2042,6 +2054,10 @@ msgstr ""
 #: src/admin/sources/saml/SAMLSourceForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "Enrollment flow"
+msgstr ""
+
+#: src/flow/providers/oauth2/DeviceCode.ts
+msgid "Enter the code shown on your device."
 msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
@@ -2291,6 +2307,7 @@ msgstr ""
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
+#: src/user/user-settings/sources/SourceSettingsSAML.ts
 msgid "Failed to disconnected source: {exc}"
 msgstr ""
 
@@ -2784,6 +2801,10 @@ msgstr ""
 #~ msgstr ""
 
 #: src/admin/tenants/TenantForm.ts
+msgid "If set, the OAuth Device Code profile can be used, and the selected flow will be used to enter the code."
+msgstr ""
+
+#: src/admin/tenants/TenantForm.ts
 msgid "If set, users are able to configure details of their profile."
 msgstr ""
 
@@ -3134,6 +3155,8 @@ msgstr ""
 #: src/flow/FlowExecutor.ts
 #: src/flow/FlowExecutor.ts
 #: src/flow/FlowInspector.ts
+#: src/flow/providers/oauth2/DeviceCode.ts
+#: src/flow/providers/oauth2/DeviceCodeFinish.ts
 #: src/flow/stages/FlowErrorStage.ts
 #: src/flow/stages/access_denied/AccessDeniedStage.ts
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
@@ -3210,6 +3233,7 @@ msgstr ""
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/admin/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 #: src/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -3224,6 +3248,7 @@ msgstr ""
 #: src/admin/stages/password/PasswordStageForm.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
+#: src/admin/tenants/TenantForm.ts
 #: src/admin/tenants/TenantForm.ts
 #: src/admin/tenants/TenantForm.ts
 #: src/admin/tenants/TenantForm.ts
@@ -3349,6 +3374,10 @@ msgstr ""
 msgid "Manually configure SAML"
 msgstr ""
 
+#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Mapping"
+msgstr ""
+
 #: src/admin/stages/user_write/UserWriteStageForm.ts
 msgid "Mark newly created users as inactive."
 msgstr ""
@@ -3451,6 +3480,10 @@ msgstr ""
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Modern applications, APIs and Single-page applications."
+msgstr ""
+
+#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Modify the payload sent to the custom provider."
 msgstr ""
 
 #: 
@@ -3879,8 +3912,8 @@ msgid "OIDC well-known configuration URL. Can be used to automatically configure
 msgstr ""
 
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
-msgid "OK"
-msgstr ""
+#~ msgid "OK"
+#~ msgstr ""
 
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
@@ -4193,6 +4226,7 @@ msgstr ""
 msgid "Please enter the code you received via SMS"
 msgstr ""
 
+#: src/flow/providers/oauth2/DeviceCode.ts
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Please enter your Code"
 msgstr ""
@@ -4844,6 +4878,7 @@ msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Scopes"
 msgstr ""
@@ -5569,6 +5604,7 @@ msgstr ""
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
+#: src/user/user-settings/sources/SourceSettingsSAML.ts
 msgid "Successfully disconnected source"
 msgstr ""
 
@@ -5811,7 +5847,7 @@ msgstr ""
 msgid "System Tasks"
 msgstr ""
 
-#: src/admin/admin-overview/AdminOverviewPage.ts
+#: src/admin/admin-overview/cards/SystemStatusCard.ts
 msgid "System status"
 msgstr ""
 
@@ -6671,6 +6707,7 @@ msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "User matching mode"
 msgstr ""
 
@@ -6852,7 +6889,7 @@ msgstr ""
 msgid "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity."
 msgstr ""
 
-#: src/admin/admin-overview/AdminOverviewPage.ts
+#: src/admin/admin-overview/cards/VersionStatusCard.ts
 msgid "Version"
 msgstr ""
 
@@ -7049,7 +7086,7 @@ msgstr ""
 msgid "Windows"
 msgstr ""
 
-#: src/admin/admin-overview/AdminOverviewPage.ts
+#: src/admin/admin-overview/cards/WorkerStatusCard.ts
 msgid "Workers"
 msgstr ""
 
@@ -7091,6 +7128,10 @@ msgstr ""
 msgid "Yes ({0})"
 msgstr ""
 
+#: src/flow/providers/oauth2/DeviceCodeFinish.ts
+msgid "You can close this tab now."
+msgstr ""
+
 #: src/admin/outposts/OutpostForm.ts
 msgid "You can only select providers that match the type of the outpost."
 msgstr ""
@@ -7101,6 +7142,10 @@ msgstr ""
 
 #: src/admin/AdminInterface.ts
 msgid "You're currently impersonating {0}. Click to stop."
+msgstr ""
+
+#: src/flow/providers/oauth2/DeviceCodeFinish.ts
+msgid "You've successfully authenticated your device."
 msgstr ""
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts

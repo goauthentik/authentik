@@ -306,17 +306,14 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                     >
                         <textarea class="pf-c-form-control"></textarea>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${t`Additional Scope`}
-                        name="additionalScopes"
-                    >
+                    <ak-form-element-horizontal label=${t`Scopes`} name="additionalScopes">
                         <input
                             type="text"
                             value="${first(this.instance?.additionalScopes, "")}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Additional scopes to be passed to the OAuth Provider, separated by space.`}
+                            ${t`Additional scopes to be passed to the OAuth Provider, separated by space. To replace existing scopes, prefix with *.`}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

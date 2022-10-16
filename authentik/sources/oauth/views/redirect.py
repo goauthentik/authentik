@@ -44,5 +44,8 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
             params = self.get_additional_parameters(source)
             params.setdefault("scope", [])
             if source.additional_scopes != "":
-                params["scope"] += source.additional_scopes.split(" ")
+                if source.additional_scopes.startswith("*"):
+                    params["scope"] = source.additional_scopes[1:].split(" ")
+                else:
+                    params["scope"] += source.additional_scopes.split(" ")
             return client.get_redirect_url(params)

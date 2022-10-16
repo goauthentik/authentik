@@ -14,6 +14,9 @@ This source allows users to enroll themselves with an external OAuth-based Ident
 -   Access Token URL: This value will be provided by the provider.
 -   Profile URL: This URL is called by authentik to retrieve user information upon successful authentication.
 -   Consumer key/Consumer secret: These values will be provided by the provider.
+-   Scopes: Configure additional scopes to send to the provider.
+
+    Starting with authentik 2022.10, the default scopes can be replaced by prefix the value for scopes with `*`.
 
 ### OpenID Connect
 

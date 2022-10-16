@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-10 10:27+0000\n"
+"POT-Creation-Date: 2022-10-16 19:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -194,7 +194,6 @@ msgid "Loading..."
 msgstr ""
 
 #: authentik/core/templates/if/end_session.html:7
-#: authentik/core/templates/if/error.html:7
 msgid "End session"
 msgstr ""
 
@@ -240,7 +239,8 @@ msgid "Powered by authentik"
 msgstr ""
 
 #: authentik/core/views/apps.py:48
-#: authentik/providers/oauth2/views/authorize.py:359
+#: authentik/providers/oauth2/views/authorize.py:358
+#: authentik/providers/oauth2/views/device_init.py:68
 #: authentik/providers/saml/views/sso.py:69
 #, python-format
 msgid "You're about to sign into %(application)s."
@@ -347,11 +347,11 @@ msgid "Notification Rules"
 msgstr ""
 
 #: authentik/events/models.py:580
-msgid "Notification Webhook Mapping"
+msgid "Webhook Mapping"
 msgstr ""
 
 #: authentik/events/models.py:581
-msgid "Notification Webhook Mappings"
+msgid "Webhook Mappings"
 msgstr ""
 
 #: authentik/events/monitored_tasks.py:195
@@ -826,7 +826,8 @@ msgstr ""
 msgid "OAuth2/OpenID Providers"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:323
+#: authentik/providers/oauth2/models.py:324
+#: authentik/providers/oauth2/models.py:530
 msgid "Scopes"
 msgstr ""
 
@@ -878,10 +879,22 @@ msgstr ""
 msgid "OAuth2 Tokens"
 msgstr ""
 
-#: authentik/providers/oauth2/views/authorize.py:413
+#: authentik/providers/oauth2/models.py:542
+msgid "Device Token"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py:543
+msgid "Device Tokens"
+msgstr ""
+
+#: authentik/providers/oauth2/views/authorize.py:412
 #: authentik/providers/saml/views/flows.py:86
 #, python-format
 msgid "Redirecting to %(app)s..."
+msgstr ""
+
+#: authentik/providers/oauth2/views/device_init.py:142
+msgid "Invalid code"
 msgstr ""
 
 #: authentik/providers/oauth2/views/userinfo.py:46
@@ -965,39 +978,39 @@ msgstr ""
 msgid "NameID Property Mapping"
 msgstr ""
 
-#: authentik/providers/saml/models.py:109 authentik/sources/saml/models.py:139
+#: authentik/providers/saml/models.py:109 authentik/sources/saml/models.py:141
 msgid "SHA1"
 msgstr ""
 
-#: authentik/providers/saml/models.py:110 authentik/sources/saml/models.py:140
+#: authentik/providers/saml/models.py:110 authentik/sources/saml/models.py:142
 msgid "SHA256"
 msgstr ""
 
-#: authentik/providers/saml/models.py:111 authentik/sources/saml/models.py:141
+#: authentik/providers/saml/models.py:111 authentik/sources/saml/models.py:143
 msgid "SHA384"
 msgstr ""
 
-#: authentik/providers/saml/models.py:112 authentik/sources/saml/models.py:142
+#: authentik/providers/saml/models.py:112 authentik/sources/saml/models.py:144
 msgid "SHA512"
 msgstr ""
 
-#: authentik/providers/saml/models.py:119 authentik/sources/saml/models.py:149
+#: authentik/providers/saml/models.py:119 authentik/sources/saml/models.py:151
 msgid "RSA-SHA1"
 msgstr ""
 
-#: authentik/providers/saml/models.py:120 authentik/sources/saml/models.py:150
+#: authentik/providers/saml/models.py:120 authentik/sources/saml/models.py:152
 msgid "RSA-SHA256"
 msgstr ""
 
-#: authentik/providers/saml/models.py:121 authentik/sources/saml/models.py:151
+#: authentik/providers/saml/models.py:121 authentik/sources/saml/models.py:153
 msgid "RSA-SHA384"
 msgstr ""
 
-#: authentik/providers/saml/models.py:122 authentik/sources/saml/models.py:152
+#: authentik/providers/saml/models.py:122 authentik/sources/saml/models.py:154
 msgid "RSA-SHA512"
 msgstr ""
 
-#: authentik/providers/saml/models.py:123 authentik/sources/saml/models.py:153
+#: authentik/providers/saml/models.py:123 authentik/sources/saml/models.py:155
 msgid "DSA-SHA1"
 msgstr ""
 
@@ -1009,7 +1022,7 @@ msgstr ""
 msgid "Keypair used to sign outgoing Responses going to the Service Provider."
 msgstr ""
 
-#: authentik/providers/saml/models.py:150 authentik/sources/saml/models.py:129
+#: authentik/providers/saml/models.py:150 authentik/sources/saml/models.py:131
 msgid "Signing Keypair"
 msgstr ""
 
@@ -1297,73 +1310,81 @@ msgstr ""
 msgid "User Plex Source Connections"
 msgstr ""
 
-#: authentik/sources/saml/models.py:38
+#: authentik/sources/saml/models.py:40
 msgid "Redirect Binding"
 msgstr ""
 
-#: authentik/sources/saml/models.py:39
+#: authentik/sources/saml/models.py:41
 msgid "POST Binding"
 msgstr ""
 
-#: authentik/sources/saml/models.py:40
+#: authentik/sources/saml/models.py:42
 msgid "POST Binding with auto-confirmation"
 msgstr ""
 
-#: authentik/sources/saml/models.py:68
+#: authentik/sources/saml/models.py:70
 msgid "Flow used before authentication."
 msgstr ""
 
-#: authentik/sources/saml/models.py:75
+#: authentik/sources/saml/models.py:77
 msgid "Issuer"
 msgstr ""
 
-#: authentik/sources/saml/models.py:76
+#: authentik/sources/saml/models.py:78
 msgid "Also known as Entity ID. Defaults the Metadata URL."
 msgstr ""
 
-#: authentik/sources/saml/models.py:80
+#: authentik/sources/saml/models.py:82
 msgid "SSO URL"
 msgstr ""
 
-#: authentik/sources/saml/models.py:81
+#: authentik/sources/saml/models.py:83
 msgid "URL that the initial Login request is sent to."
 msgstr ""
 
-#: authentik/sources/saml/models.py:87
+#: authentik/sources/saml/models.py:89
 msgid "SLO URL"
 msgstr ""
 
-#: authentik/sources/saml/models.py:88
+#: authentik/sources/saml/models.py:90
 msgid "Optional URL if your IDP supports Single-Logout."
 msgstr ""
 
-#: authentik/sources/saml/models.py:94
+#: authentik/sources/saml/models.py:96
 msgid ""
 "Allows authentication flows initiated by the IdP. This can be a security "
 "risk, as no validation of the request ID is done."
 msgstr ""
 
-#: authentik/sources/saml/models.py:102
+#: authentik/sources/saml/models.py:104
 msgid ""
 "NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
 msgstr ""
 
-#: authentik/sources/saml/models.py:113
+#: authentik/sources/saml/models.py:115
 msgid "Delete temporary users after"
 msgstr ""
 
-#: authentik/sources/saml/models.py:131
+#: authentik/sources/saml/models.py:133
 msgid ""
 "Keypair which is used to sign outgoing requests. Leave empty to disable "
 "signing."
 msgstr ""
 
-#: authentik/sources/saml/models.py:199
+#: authentik/sources/saml/models.py:214
 msgid "SAML Source"
 msgstr ""
 
-#: authentik/sources/saml/models.py:200
+#: authentik/sources/saml/models.py:215
 msgid "SAML Sources"
+msgstr ""
+
+#: authentik/sources/saml/models.py:231
+msgid "User SAML Source Connection"
+msgstr ""
+
+#: authentik/sources/saml/models.py:232
+msgid "User SAML Source Connections"
 msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py:81
@@ -1382,26 +1403,30 @@ msgstr ""
 msgid "Duo Devices"
 msgstr ""
 
-#: authentik/stages/authenticator_sms/models.py:56
+#: authentik/stages/authenticator_sms/models.py:57
 msgid ""
 "When enabled, the Phone number is only used during enrollment to verify the "
 "users authenticity. Only a hash of the phone number is saved to ensure it is "
 "not re-used in the future."
 msgstr ""
 
-#: authentik/stages/authenticator_sms/models.py:158
+#: authentik/stages/authenticator_sms/models.py:68
+msgid "Optionally modify the payload being sent to custom providers."
+msgstr ""
+
+#: authentik/stages/authenticator_sms/models.py:176
 msgid "SMS Authenticator Setup Stage"
 msgstr ""
 
-#: authentik/stages/authenticator_sms/models.py:159
+#: authentik/stages/authenticator_sms/models.py:177
 msgid "SMS Authenticator Setup Stages"
 msgstr ""
 
-#: authentik/stages/authenticator_sms/models.py:204
+#: authentik/stages/authenticator_sms/models.py:222
 msgid "SMS Device"
 msgstr ""
 
-#: authentik/stages/authenticator_sms/models.py:205
+#: authentik/stages/authenticator_sms/models.py:223
 msgid "SMS Devices"
 msgstr ""
 
@@ -1871,10 +1896,10 @@ msgid ""
 "and `ba.b`"
 msgstr ""
 
-#: authentik/tenants/models.py:95
+#: authentik/tenants/models.py:98
 msgid "Tenant"
 msgstr ""
 
-#: authentik/tenants/models.py:96
+#: authentik/tenants/models.py:99
 msgid "Tenants"
 msgstr ""

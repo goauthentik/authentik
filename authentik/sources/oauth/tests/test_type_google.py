@@ -58,6 +58,13 @@ class TestTypeGoogle(TestCase):
                 "email%20profile"
             ),
         )
+
+    def test_authorize_url_additional(self):
+        """Test authorize URL"""
+        request = self.request_factory.get("/")
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
         self.source.additional_scopes = "foo"
         self.source.save()
         redirect = GoogleOAuthRedirect(request=request).get_redirect_url(
@@ -70,5 +77,26 @@ class TestTypeGoogle(TestCase):
                 "direct_uri=http%3A%2F%2Ftestserver%2Fsource%2Foauth%2Fcallback%2Ftest%2F&response_"
                 f"type=code&state={request.session['oauth-client-test-request-state']}&scope="
                 "email%20foo%20profile"
+            ),
+        )
+
+    def test_authorize_url_additional_replace(self):
+        """Test authorize URL"""
+        request = self.request_factory.get("/")
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+        self.source.additional_scopes = "*foo"
+        self.source.save()
+        redirect = GoogleOAuthRedirect(request=request).get_redirect_url(
+            source_slug=self.source.slug
+        )
+        self.assertEqual(
+            redirect,
+            (
+                f"https://accounts.google.com/o/oauth2/auth?client_id={self.source.consumer_key}&re"
+                "direct_uri=http%3A%2F%2Ftestserver%2Fsource%2Foauth%2Fcallback%2Ftest%2F&response_"
+                f"type=code&state={request.session['oauth-client-test-request-state']}&scope="
+                "foo"
             ),
         )
