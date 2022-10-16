@@ -58,8 +58,7 @@ func TestAKAttrsToLDAP_Dict(t *testing.T) {
 	}
 	assert.Equal(t, 1, len(AKAttrsToLDAP(d)))
 	assert.Equal(t, "foo", AKAttrsToLDAP(d)[0].Name)
-	// Dicts are currently unsupported, but make sure we don't crash
-	assert.Equal(t, []string([]string(nil)), AKAttrsToLDAP(d)[0].Values)
+	assert.Equal(t, []string{"map[foo:bar]"}, AKAttrsToLDAP(d)[0].Values)
 }
 
 func TestAKAttrsToLDAP_Mixed(t *testing.T) {
@@ -72,6 +71,5 @@ func TestAKAttrsToLDAP_Mixed(t *testing.T) {
 	}
 	assert.Equal(t, 1, len(AKAttrsToLDAP(d)))
 	assert.Equal(t, "foo", AKAttrsToLDAP(d)[0].Name)
-	// Dicts are currently unsupported, but make sure we don't crash
-	assert.Equal(t, []string{"foo", ""}, AKAttrsToLDAP(d)[0].Values)
+	assert.Equal(t, []string{"foo", "6"}, AKAttrsToLDAP(d)[0].Values)
 }

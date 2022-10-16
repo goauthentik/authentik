@@ -1,20 +1,13 @@
 package utils
 
 import (
-	"reflect"
+	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/nmcclain/ldap"
-	log "github.com/sirupsen/logrus"
 	ldapConstants "goauthentik.io/internal/outpost/ldap/constants"
 )
-
-func BoolToString(in bool) string {
-	if in {
-		return "true"
-	}
-	return "false"
-}
 
 func ldapResolveTypeSingle(in interface{}) *string {
 	switch t := in.(type) {
@@ -23,14 +16,21 @@ func ldapResolveTypeSingle(in interface{}) *string {
 	case *string:
 		return t
 	case bool:
-		s := BoolToString(t)
+		s := strconv.FormatBool(t)
 		return &s
-	case *bool:
-		s := BoolToString(*t)
+	case float32:
+		s := strconv.FormatFloat(float64(t), 'f', -1, 64)
+		return &s
+	case float64:
+		s := strconv.FormatFloat(t, 'f', -1, 64)
+		return &s
+	case int:
+		s := strconv.FormatInt(int64(t), 10)
 		return &s
 	default:
 		if in != nil {
-			log.WithField("type", reflect.TypeOf(in).String()).Warning("Type can't be mapped to LDAP yet")
+			s := fmt.Sprintf("%s", in)
+			return &s
 		}
 		return nil
 	}

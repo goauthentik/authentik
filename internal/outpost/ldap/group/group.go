@@ -1,6 +1,8 @@
 package group
 
 import (
+	"strconv"
+
 	"github.com/nmcclain/ldap"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
@@ -30,7 +32,7 @@ func (lg *LDAPGroup) Entry() *ldap.Entry {
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
 		"objectClass":                   objectClass,
 		"member":                        lg.Member,
-		"goauthentik.io/ldap/superuser": {utils.BoolToString(lg.IsSuperuser)},
+		"goauthentik.io/ldap/superuser": {strconv.FormatBool(lg.IsSuperuser)},
 		"cn":                            {lg.CN},
 		"uid":                           {lg.Uid},
 		"sAMAccountName":                {lg.CN},
