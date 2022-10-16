@@ -4,34 +4,38 @@ title: Generic Setup
 
 ### Create User/Group
 
-1. Create a new user account to test LDAP bind. `Directory > Users > Create` In this example `ldapservice`.
-   Note the DN is `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
+1. Create a new user account to test LDAP bind under _Directory_ -> _Users_ -> _Create_, in this example called `ldapservice`.
+
+    Note the DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
+
 2. Create a new group for LDAP searches. In this example `ldapsearch`. Add the `ldapservice` user to this new group.
 
 :::info
-Note: The `default-authentication-flow` can have multi-factor authenticator(s) configured. If multi-factor authentication is used on the `default-authentication-flow`, create a new authentication flow, with 3 stages, dedicated to LDAP.
+Note: The `default-authentication-flow` validates MFA by default, and currently only Duo-based MFA devices are supported by LDAP. If you plan to use only dedicated service accounts to bind to LDAP, then you can use the default flow and skip the extra steps below and continue at [Create LDAP Provider](#create-ldap-provider)
 :::
 
-### Create Custom Stages
+### LDAP Flow
 
-1. Create a new identification stage. `Flows & Stage > Stages > Create`
+#### Create Custom Stages
+
+1. Create a new identification stage. _Flows & Stage_ -> _Stages_ -> _Create_
    ![](./general_setup1.png)
 2. Name it something meaningful like `ldap-identification-stage`. Select User fields Username and Email (and UPN if it is relevant to your setup).
    ![](./general_setup2.png)
-3. Create a new password stage. `Flows & Stage > Stages > Create`
+3. Create a new password stage. _Flows & Stage_ -> _Stages_ -> _Create_
    ![](./general_setup3.png)
 4. Name it something meaningful like `ldap-authentication-password`. Leave the defaults for Backends.
    ![](./general_setup4.png)
-5. Create a new user login stage. `Flows & Stage > Stages > Create`
+5. Create a new user login stage. _Flows & Stage_ -> _Stages_ -> _Create_
    ![](./general_setup5.png)
 6. Name it something meaningful like `ldap-authentication-login`.
    ![](./general_setup6.png)
 
-### Create Custom Flow
+#### Create Custom Flow
 
-1. Create a new authentication flow. `Flows & Stage > Flows > Create`. Name it something meaningful like `ldap-authentication-flow`
+1. Create a new authentication flow under _Flows & Stage_ -> _Flows_ -> _Create_, and name it something meaningful like `ldap-authentication-flow`
    ![](./general_setup7.png)
-2. Click the newly created flow and choose `Stage Bindings`.
+2. Click the newly created flow and choose _Stage Bindings_.
    ![](./general_setup8.png)
 3. Click `Bind Stage` choose `ldap-identification-stage` and set the order to `10`.
    ![](./general_setup9.png)
@@ -44,29 +48,39 @@ Note: The `default-authentication-flow` can have multi-factor authenticator(s) c
 
 ### Create LDAP Provider
 
-1. Create the LDAP Provider. `Applications > Providers > Create`
+1. Create the LDAP Provider under _Applications_ -> _Providers_ -> _Create_.
    ![](./general_setup14.png)
-2. Name is something meaningful like `LDAP`, bind the custom flow created previously and specifiy the search group created earlier.
+2. Name is something meaningful like `LDAP`, bind the custom flow created previously (or the default flow, depending on setup) and specify the search group created earlier.
    ![](./general_setup15.png)
 
 ### Create LDAP Application
 
-1. Create the LDAP Application. `Applications > Applications > Create`. Name it something meaningful like `LDAP`. Choose the provider created in the previous step.
+1. Create the LDAP Application under _Applications_ -> _Applications_ -> _Create_ and name it something meaningful like `LDAP`. Choose the provider created in the previous step.
    ![](./general_setup16.png)
 
 ### Create LDAP Outpost
 
-1. Create (or update) the LDAP Outpost `Applications > Outposts > Create`. Type is `LDAP` and choose the `LDAP` application created in the previous step.
+1. Create (or update) the LDAP Outpost under _Applications_ -> _Outposts_ -> _Create_. Set the Type to `LDAP` and choose the `LDAP` application created in the previous step.
    ![](./general_setup17.png)
 
 ### ldapsearch Test
 
-Test connectivity by using ldapsearch `sudo apt-get install ldap-utils -y`(install command for Debian-based systems)
+Test connectivity by using ldapsearch.
+
+:::info
+ldapsearch can be installed on Linux system with these commands
+
+```
+sudo apt-get install ldap-utils -y # Debian-based systems
+sudo yum install openldap-clients -y # CentOS-based systems
+```
+
+:::
 
 ```
 ldapsearch \
   -x \
-  -h <ldap ip address> \
+  -h <LDAP Outpost IP address> \
   -p 389 \ # Production should use SSL 636
   -D 'cn=ldapservice,ou=users,DC=ldap,DC=goauthentik,DC=io' \
   -w '<ldapuserpassword>' \
@@ -75,5 +89,5 @@ ldapsearch \
 ```
 
 :::info
-Note: This query will log the first successful attempt in an event in the `Events > Logs` area.
+This query will log the first successful attempt in an event in the _Events_ -> _Logs_ area, further successful logins from the same user are not logged as they are cached in the outpost.
 :::
