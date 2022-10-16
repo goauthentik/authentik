@@ -11,7 +11,7 @@ import {
 } from "@codemirror/language";
 import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
-import { EditorView, keymap, lineNumbers } from "@codemirror/view";
+import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
 import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
 
@@ -145,6 +145,7 @@ export class CodeMirrorTextarea extends AKElement {
             syntaxHighlighting(defaultHighlightStyle),
             this.getLanguageExtension(),
             lineNumbers(),
+            drawSelection(),
             EditorView.lineWrapping,
             EditorState.readOnly.of(this.readOnly),
             EditorState.tabSize.of(2),
