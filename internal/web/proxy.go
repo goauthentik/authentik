@@ -61,6 +61,7 @@ func (ws *WebServer) configureProxy() {
 		Requests.With(prometheus.Labels{
 			"dest": "py",
 		}).Observe(float64(time.Since(before)))
+		r.Body = http.MaxBytesReader(rw, r.Body, 32*1024*1024)
 		rp.ServeHTTP(rw, r)
 	}))
 }
