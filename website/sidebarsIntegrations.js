@@ -27,7 +27,7 @@ module.exports = {
                         "services/zulip/index",
                     ],
                 },
-				{
+                {
                     type: "category",
                     label: "Cloud Providers",
                     items: [
@@ -35,14 +35,12 @@ module.exports = {
                         "services/oracle-cloud/index",
                     ],
                 },
-				{
+                {
                     type: "category",
                     label: "Dashboards",
-                    items: [
-                        "services/organizr/index",
-                    ],
+                    items: ["services/organizr/index"],
                 },
-				{
+                {
                     type: "category",
                     label: "Platforms",
                     items: [
@@ -50,7 +48,7 @@ module.exports = {
                         "services/wordpress/index",
                     ],
                 },
-				{
+                {
                     type: "category",
                     label: "Hypervisors / Orchestrators",
                     items: [
@@ -60,7 +58,7 @@ module.exports = {
                         "services/vmware-vcenter/index",
                     ],
                 },
-				{
+                {
                     type: "category",
                     label: "Infrastructure",
                     items: [
@@ -80,7 +78,7 @@ module.exports = {
                         "services/veeam-enterprise-manager/index",
                     ],
                 },
-				{
+                {
                     type: "category",
                     label: "Miscellaneous",
                     items: [
@@ -91,7 +89,7 @@ module.exports = {
                         "services/jellyfin/index",
                     ],
                 },
-				{
+                {
                     type: "category",
                     label: "Monitoring",
                     items: [
@@ -101,7 +99,7 @@ module.exports = {
                         "services/zabbix/index",
                     ],
                 },
-				{
+                {
                     type: "category",
                     label: "Platforms",
                     items: [
@@ -109,7 +107,7 @@ module.exports = {
                         "services/wordpress/index",
                     ],
                 },
-				{
+                {
                     type: "category",
                     label: "Version Control Systems",
                     items: [
