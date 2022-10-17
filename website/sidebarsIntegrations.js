@@ -50,6 +50,13 @@ module.exports = {
                 },
                 {
                     type: "category",
+                    label: "Dashboards",
+                    items: [
+                        "services/organizr/index",
+                    ],
+                },
+                {
+                    type: "category",
                     label: "Cloud Providers",
                     items: [
                         "services/aws/index",
