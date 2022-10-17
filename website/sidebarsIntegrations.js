@@ -132,7 +132,24 @@ module.exports = {
                     "Sources of users which can be federated with authentik",
             },
             items: [
+                {
+                    type: "category",
+                    label: "Directory syncronization",
+                    items: [
+                        "sources/active-directory/index",
+                        "sources/freeipa/index",
+                    ],
+                },
                 "sources/general",
+                {
+                    type: "category",
+                    label: "Protocols",
+                    items: [
+                        "sources/ldap/index",
+                        "sources/oauth/index",
+                        "sources/saml/index",
+                    ],
+                },
                 {
                     type: "category",
                     label: "Social Logins",
@@ -146,23 +163,6 @@ module.exports = {
                         "sources/twitch/index",
                         "sources/plex/index",
                         "sources/twitter/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Directory syncronization",
-                    items: [
-                        "sources/active-directory/index",
-                        "sources/freeipa/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Protocols",
-                    items: [
-                        "sources/ldap/index",
-                        "sources/oauth/index",
-                        "sources/saml/index",
                     ],
                 },
             ],
