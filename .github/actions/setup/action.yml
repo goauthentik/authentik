@@ -1,5 +1,5 @@
-name: 'Setup authentik testing environemnt'
-description: 'Setup authentik testing environemnt'
+name: 'Setup authentik testing environment'
+description: 'Setup authentik testing environment'
 
 runs:
   using: "composite"
