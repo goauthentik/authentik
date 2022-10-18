@@ -28967,7 +28967,13 @@ components:
           items:
             $ref: '#/components/schemas/Coordinate'
           readOnly: true
+        authorizations_per_1h:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coordinate'
+          readOnly: true
       required:
+      - authorizations_per_1h
       - logins_failed_per_1h
       - logins_per_1h
     LoginSource:
