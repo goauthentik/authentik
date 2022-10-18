@@ -1,26 +1,17 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { PFColor } from "@goauthentik/elements/Label";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
-
-
 import { t } from "@lingui/macro";
-
-
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-
-
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-
-
 import { Flow, FlowImportResult, FlowsApi } from "@goauthentik/api";
-import { PFColor } from "@goauthentik/elements/Label";
-
 
 @customElement("ak-flow-import-form")
 export class FlowImportForm extends Form<Flow> {
