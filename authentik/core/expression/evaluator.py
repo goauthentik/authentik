@@ -4,7 +4,6 @@ from typing import Optional
 
 from django.db.models import Model
 from django.http import HttpRequest
-from guardian.utils import get_anonymous_user
 
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
@@ -27,7 +26,7 @@ class PropertyMappingEvaluator(BaseEvaluator):
         else:
             _filename = str(model)
         super().__init__(filename=_filename)
-        req = PolicyRequest(user=get_anonymous_user())
+        req = PolicyRequest(user=User())
         req.obj = model
         if user:
             req.user = user
