@@ -27625,8 +27625,9 @@ components:
         logs:
           type: array
           items:
-            type: string
-            readOnly: true
+            type: object
+            additionalProperties: {}
+          readOnly: true
         success:
           type: boolean
           readOnly: true

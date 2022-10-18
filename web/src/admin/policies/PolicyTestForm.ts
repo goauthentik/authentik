@@ -10,7 +10,7 @@ import YAML from "yaml";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -28,7 +28,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false })
     policy?: Policy;
 
-    @property({ attribute: false })
+    @state()
     result?: PolicyTestResult;
 
     @property({ attribute: false })
