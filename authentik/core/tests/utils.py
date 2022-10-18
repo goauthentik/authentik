@@ -44,9 +44,11 @@ def create_test_tenant() -> Tenant:
     return Tenant.objects.create(domain=uid, default=True)
 
 
-def create_test_cert() -> CertificateKeyPair:
+def create_test_cert(use_ec_private_key=False) -> CertificateKeyPair:
     """Generate a certificate for testing"""
-    builder = CertificateBuilder()
+    builder = CertificateBuilder(
+        use_ec_private_key=use_ec_private_key,
+    )
     builder.common_name = "goauthentik.io"
     builder.build(
         subject_alt_names=["goauthentik.io"],

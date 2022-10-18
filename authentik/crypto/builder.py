@@ -6,7 +6,8 @@ from typing import Optional
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives.asymmetric import ec, rsa
+from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
 from cryptography.x509.oid import NameOID
 
 from authentik import __version__
@@ -18,7 +19,10 @@ class CertificateBuilder:
 
     common_name: str
 
-    def __init__(self):
+    _use_ec_private_key: bool
+
+    def __init__(self, use_ec_private_key=False):
+        self._use_ec_private_key = use_ec_private_key
         self.__public_key = None
         self.__private_key = None
         self.__builder = None
@@ -36,6 +40,14 @@ class CertificateBuilder:
         self.cert.save()
         return self.cert
 
+    def generate_private_key(self) -> PRIVATE_KEY_TYPES:
+        """Generate private key"""
+        if self._use_ec_private_key:
+            return ec.generate_private_key(curve=ec.SECP256R1)
+        return rsa.generate_private_key(
+            public_exponent=65537, key_size=4096, backend=default_backend()
+        )
+
     def build(
         self,
         validity_days: int = 365,
@@ -43,9 +55,7 @@ class CertificateBuilder:
     ):
         """Build self-signed certificate"""
         one_day = datetime.timedelta(1, 0, 0)
-        self.__private_key = rsa.generate_private_key(
-            public_exponent=65537, key_size=4096, backend=default_backend()
-        )
+        self.__private_key = self.generate_private_key()
         self.__public_key = self.__private_key.public_key()
         alt_names: list[x509.GeneralName] = [x509.DNSName(x) for x in subject_alt_names or []]
         self.__builder = (

@@ -4,6 +4,9 @@ from typing import Optional
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.ec import (
+    SECP256R1,
+    SECP384R1,
+    SECP521R1,
     EllipticCurvePrivateKey,
     EllipticCurvePublicKey,
 )
@@ -24,6 +27,15 @@ def b64_enc(number: int) -> str:
     number_bytes = number.to_bytes(length, "big")
     final = urlsafe_b64encode(number_bytes).rstrip(b"=")
     return final.decode("ascii")
+
+
+# See https://notes.salrahman.com/generate-es256-es384-es512-private-keys/
+# and _CURVE_TYPES in the same file as the below curve files
+ec_crv_map = {
+    SECP256R1: "P-256",
+    SECP384R1: "P-384",
+    SECP521R1: "P-512",
+}
 
 
 class JWKSView(View):
@@ -54,8 +66,9 @@ class JWKSView(View):
                 "alg": JWTAlgorithms.ES256,
                 "use": "sig",
                 "kid": key.kid,
-                "n": b64_enc(public_numbers.n),
-                "e": b64_enc(public_numbers.e),
+                "x": b64_enc(public_numbers.x),
+                "y": b64_enc(public_numbers.y),
+                "crv": ec_crv_map.get(type(public_key.curve), public_key.curve.name),
             }
         else:
             return key_data
