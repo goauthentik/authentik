@@ -23,6 +23,7 @@ class LoginMetricsSerializer(PassiveSerializer):
 
     logins_per_1h = SerializerMethodField()
     logins_failed_per_1h = SerializerMethodField()
+    authorizations_per_1h = SerializerMethodField()
 
     @extend_schema_field(CoordinateSerializer(many=True))
     def get_logins_per_1h(self, _):
@@ -41,6 +42,16 @@ class LoginMetricsSerializer(PassiveSerializer):
         return (
             get_objects_for_user(user, "authentik_events.view_event")
             .filter(action=EventAction.LOGIN_FAILED)
+            .get_events_per_hour()
+        )
+
+    @extend_schema_field(CoordinateSerializer(many=True))
+    def get_authorizations_per_1h(self, _):
+        """Get successful authorizations per hour for the last 24 hours"""
+        user = self.context["user"]
+        return (
+            get_objects_for_user(user, "authentik_events.view_event")
+            .filter(action=EventAction.AUTHORIZE_APPLICATION)
             .get_events_per_hour()
         )
 

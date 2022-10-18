@@ -3,6 +3,7 @@ import "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
 import "@goauthentik/admin/admin-overview/cards/SystemStatusCard";
 import "@goauthentik/admin/admin-overview/cards/VersionStatusCard";
 import "@goauthentik/admin/admin-overview/cards/WorkerStatusCard";
+import "@goauthentik/admin/admin-overview/charts/AdminLoginAuthorizeChart";
 import "@goauthentik/admin/admin-overview/charts/FlowStatusChart";
 import "@goauthentik/admin/admin-overview/charts/GroupCountStatusChart";
 import "@goauthentik/admin/admin-overview/charts/LDAPSyncStatusChart";
@@ -13,7 +14,6 @@ import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/cards/AggregatePromiseCard";
-import "@goauthentik/elements/charts/AdminLoginsChart";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
 import { t } from "@lingui/macro";
@@ -189,9 +189,9 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-server"
-                            header=${t`Logins over the last 24 hours`}
+                            header=${t`Logins and authorizations over the last 24 hours`}
                         >
-                            <ak-charts-admin-login></ak-charts-admin-login>
+                            <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
                         </ak-aggregate-card>
                     </div>
                     <div
