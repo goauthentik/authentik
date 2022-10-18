@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import ReadOnlyField
+from rest_framework.fields import BooleanField, CharField, ListField, ReadOnlyField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -24,6 +24,7 @@ from authentik.core.api.utils import (
     FilePathSerializer,
     FileUploadSerializer,
     LinkSerializer,
+    PassiveSerializer,
 )
 from authentik.flows.api.flows_diagram import FlowDiagram, FlowDiagramSerializer
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -75,6 +76,13 @@ class FlowSerializer(ModelSerializer):
         extra_kwargs = {
             "background": {"read_only": True},
         }
+
+
+class FlowImportResultSerializer(PassiveSerializer):
+    """Logs of an attempted flow import"""
+
+    logs = ListField(child=CharField(read_only=True))
+    success = BooleanField(read_only=True)
 
 
 class FlowViewSet(UsedByMixin, ModelViewSet):
@@ -130,25 +138,31 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         request={"multipart/form-data": FileUploadSerializer},
         responses={
-            204: OpenApiResponse(description="Successfully imported flow"),
-            400: OpenApiResponse(description="Bad request"),
+            204: FlowImportResultSerializer,
+            400: FlowImportResultSerializer,
         },
     )
-    @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
+    @action(url_path="import", detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
     def import_flow(self, request: Request) -> Response:
         """Import flow from .yaml file"""
         file = request.FILES.get("file", None)
         if not file:
-            return HttpResponseBadRequest()
+            return Response(data=FlowImportResultSerializer().data, status=400)
         importer = Importer(file.read().decode())
-        valid, _logs = importer.validate()
-        # TODO: return logs
+        valid, logs = importer.validate()
+        logs_response = FlowImportResultSerializer(
+            data={
+                "logs": [log["msg"] for log in logs],
+                "success": valid,
+            }
+        )
         if not valid:
-            return HttpResponseBadRequest()
+            return Response(data=FlowImportResultSerializer().data, status=400)
         successful = importer.apply()
+        logs_response.initial_data["success"] = successful
         if not successful:
-            return HttpResponseBadRequest()
-        return Response(status=204)
+            return Response(data=FlowImportResultSerializer().data, status=400)
+        return Response(data=FlowImportResultSerializer().data, status=200)
 
     @permission_required(
         "authentik_flows.export_flow",
