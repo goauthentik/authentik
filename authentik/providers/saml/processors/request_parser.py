@@ -29,9 +29,6 @@ ERROR_CANNOT_DECODE_REQUEST = "Cannot decode SAML request."
 ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
     "Verification Certificate configured, but request is not signed."
 )
-ERROR_SIGNATURE_EXISTS_BUT_NO_VERIFIER = (
-    "Provider does not have a Validation Certificate configured."
-)
 ERROR_FAILED_TO_VERIFY = "Failed to verify signature"
 
 
@@ -94,22 +91,19 @@ class AuthNRequestParser:
             raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
 
         verifier = self.provider.verification_kp
+        if not verifier:
+            return self._parse_xml(decoded_xml, relay_state)
 
         root = lxml_from_string(decoded_xml)
         xmlsec.tree.add_ids(root, ["ID"])
         signature_nodes = root.xpath("/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP)
         # No signatures, no verifier configured -> decode xml directly
         if len(signature_nodes) < 1:
-            if not verifier:
-                return self._parse_xml(decoded_xml, relay_state)
             raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
 
         signature_node = signature_nodes[0]
 
         if signature_node is not None:
-            if not verifier:
-                raise CannotHandleAssertion(ERROR_SIGNATURE_EXISTS_BUT_NO_VERIFIER)
-
             try:
                 ctx = xmlsec.SignatureContext()
                 key = xmlsec.Key.from_memory(
@@ -138,14 +132,13 @@ class AuthNRequestParser:
             raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
 
         verifier = self.provider.verification_kp
+        if not verifier:
+            return self._parse_xml(decoded_xml, relay_state)
 
         if verifier and not (signature and sig_alg):
             raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
 
         if signature and sig_alg:
-            if not verifier:
-                raise CannotHandleAssertion(ERROR_SIGNATURE_EXISTS_BUT_NO_VERIFIER)
-
             querystring = f"SAMLRequest={quote_plus(saml_request)}&"
             if relay_state is not None:
                 querystring += f"RelayState={quote_plus(relay_state)}&"
