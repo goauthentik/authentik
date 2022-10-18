@@ -151,13 +151,16 @@ web-extract:
 ## Website
 #########################
 
-website: website-lint-fix
+website: website-lint-fix website-build
 
 website-install:
 	cd website && npm ci
 
 website-lint-fix:
 	cd website && npm run prettier
+
+website-build:
+	cd website && npm run build
 
 website-watch:
 	cd website && npm run watch

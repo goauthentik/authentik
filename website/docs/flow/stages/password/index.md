@@ -6,7 +6,7 @@ This is a generic password prompt which authenticates the current `pending_user`
 
 ## Passwordless login
 
-To achieve a "passwordless" experience; authenticating users based only on TOTP/WebAuthn/Duo, create an expression policy and optionally skip the password stage.
+There are two different ways to configure passwordless authentication; you can follow the instructions [here](../authenticator_validate/index.md#passwordless-authentication) to allow users to directly authenticate with their authenticator (only supported for WebAuthn devices), or dynamically skip the password stage depending on the users device, which is documented here.
 
 Depending on what kind of device you want to require the user to have:
 
@@ -14,14 +14,14 @@ Depending on what kind of device you want to require the user to have:
 
 ```python
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-return WebAuthnDevice.objects.filter(user=request.user, confirmed=True).exists()
+return WebAuthnDevice.objects.filter(user=request.context['pending_user'], confirmed=True).exists()
 ```
 
 #### Duo
 
 ```python
 from authentik.stages.authenticator_duo.models import DuoDevice
-return DuoDevice.objects.filter(user=request.user, confirmed=True).exists()
+return DuoDevice.objects.filter(user=request.context['pending_user'], confirmed=True).exists()
 ```
 
 Afterwards, bind the policy you've created to the stage binding of the password stage.

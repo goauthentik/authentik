@@ -35,7 +35,7 @@ You can configure this stage to only ask for MFA validation if the user hasn't a
 Requires authentik 2021.12.4
 :::
 
-Passwordless authentication currently only supports WebAuthn devices, like security keys and biometrics.
+Passwordless authentication currently only supports WebAuthn devices, like security keys and biometrics. For an alternate passwordless setup, see [Password stage](../password/index.md#passwordless-login), which supports other types.
 
 To configure passwordless authentication, create a new Flow with the delegation set to _Authentication_.
 
