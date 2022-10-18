@@ -187,7 +187,10 @@ class Importer:
             if "pk" in updated_identifiers:
                 model_instance.pk = updated_identifiers["pk"]
             serializer_kwargs["instance"] = model_instance
-        full_data = self.__update_pks_for_attrs(entry.get_attrs(self.__import))
+        try:
+            full_data = self.__update_pks_for_attrs(entry.get_attrs(self.__import))
+        except ValueError as exc:
+            raise EntryInvalidError(exc) from exc
         full_data.update(updated_identifiers)
         serializer_kwargs["data"] = full_data
 

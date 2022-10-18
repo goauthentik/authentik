@@ -14,6 +14,7 @@ from django.views.debug import SafeExceptionReporterFilter
 from geoip2.models import City
 from guardian.utils import get_anonymous_user
 
+from authentik.blueprints.v1.common import YAMLTag
 from authentik.core.models import User
 from authentik.events.geo import GEOIP_READER
 from authentik.policies.types import PolicyRequest
@@ -110,6 +111,10 @@ def sanitize_item(value: Any) -> Any:
     if isinstance(value, City):
         return GEOIP_READER.city_to_dict(value)
     if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, Exception):
+        return str(value)
+    if isinstance(value, YAMLTag):
         return str(value)
     if isinstance(value, type):
         return {

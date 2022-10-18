@@ -7516,9 +7516,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /flows/instances/import_flow/:
+  /flows/instances/import/:
     post:
-      operationId: flows_instances_import_flow_create
+      operationId: flows_instances_import_create
       description: Import flow from .yaml file
       tags:
       - flows
@@ -7531,9 +7531,17 @@ paths:
       - authentik: []
       responses:
         '204':
-          description: Successfully imported flow
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowImportResult'
+          description: ''
         '400':
-          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowImportResult'
+          description: ''
         '403':
           content:
             application/json:
@@ -27610,6 +27618,22 @@ components:
       - pending_user_avatar
       - request_id
       - type
+    FlowImportResult:
+      type: object
+      description: Logs of an attempted flow import
+      properties:
+        logs:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+        success:
+          type: boolean
+          readOnly: true
+      required:
+      - logs
+      - success
     FlowInspection:
       type: object
       description: Serializer for inspect endpoint
