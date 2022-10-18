@@ -34,7 +34,7 @@ from authentik.lib.utils.http import authentik_user_agent
 from authentik.lib.utils.reflection import class_to_path, get_env
 
 LOGGER = get_logger()
-SENTRY_DSN = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
+DEFAULT_SENTRY_DSN = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
 
 
 class SentryWSMiddleware(BaseMiddleware):
@@ -63,6 +63,7 @@ class SentryTransport(HttpTransport):
 
 def sentry_init(**sentry_init_kwargs):
     """Configure sentry SDK"""
+    sentry_dsn = CONFIG.y("error_reporting.sentry_dsn", DEFAULT_SENTRY_DSN)
     sentry_env = CONFIG.y("error_reporting.environment", "customer")
     kwargs = {
         "environment": sentry_env,
@@ -71,7 +72,7 @@ def sentry_init(**sentry_init_kwargs):
     kwargs.update(**sentry_init_kwargs)
     # pylint: disable=abstract-class-instantiated
     sentry_sdk_init(
-        dsn=SENTRY_DSN,
+        dsn=sentry_dsn,
         integrations=[
             DjangoIntegration(transaction_style="function_name"),
             CeleryIntegration(),
