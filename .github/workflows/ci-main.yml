@@ -130,7 +130,7 @@ jobs:
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
-      - name: Setup authentik env
+      - name: Setup e2e env (chrome, etc)
         run: |
           docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
@@ -166,7 +166,7 @@ jobs:
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: ${{github.repository_owner}}
-      - name: Setup authentik env
+      - name: Setup e2e env (chrome, etc)
         run: |
           docker-compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web

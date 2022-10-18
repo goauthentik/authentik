@@ -36,26 +36,23 @@ runs:
         import os
         from time import time
 
-        env_pr_branch = "GITHUB_HEAD_REF"
-        default_branch = "GITHUB_REF"
-        sha = "GITHUB_SHA"
-
-        branch_name = os.environ[default_branch]
-        if os.environ.get(env_pr_branch, "") != "":
-            branch_name = os.environ[env_pr_branch]
-
-        should_build = str(os.environ.get("DOCKER_USERNAME", "") != "").lower()
         parser = configparser.ConfigParser()
         parser.read(".bumpversion.cfg")
+
+        branch_name = os.environ["GITHUB_REF"]
+        if os.environ.get("GITHUB_HEAD_REF", "") != "":
+            branch_name = os.environ["GITHUB_HEAD_REF"]
+
+        should_build = str(os.environ.get("DOCKER_USERNAME", "") != "").lower()
         version = parser.get("bumpversion", "current_version")
         version_family = ".".join(version.split(".")[:-1])
         safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
 
-        with open(os.environ["GITHUB_OUTPUT"], "w+", encoding="utf-8") as _output:
-            _output.write("branchName=%s" % branch_name)
-            _output.write("branchNameContainer=%s" % safe_branch_name)
-            _output.write("timestamp=%s" % int(time()))
-            _output.write("sha=%s" % os.environ[sha])
-            _output.write("shouldBuild=%s" % should_build)
-            _output.write("version=%s" % version)
-            _output.write("versionFamily=%s" % version_family)
+        with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
+            print("branchName=%s" % branch_name, file=_output)
+            print("branchNameContainer=%s" % safe_branch_name, file=_output)
+            print("timestamp=%s" % int(time()), file=_output)
+            print("sha=%s" % os.environ["GITHUB_SHA"], file=_output)
+            print("shouldBuild=%s" % should_build, file=_output)
+            print("version=%s" % version, file=_output)
+            print("versionFamily=%s" % version_family, file=_output)
