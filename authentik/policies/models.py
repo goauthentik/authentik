@@ -194,6 +194,7 @@ class Policy(SerializerModel, CreatedUpdatedModel):
 
     class PolicyMeta:
         """Base class for the Meta class for all policies"""
+
         indexes = [
             models.Index(fields=["policy_ptr_id"]),
         ]
