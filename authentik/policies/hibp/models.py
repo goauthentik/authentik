@@ -65,7 +65,7 @@ class HaveIBeenPwendPolicy(Policy):
             return PolicyResult(False, message)
         return PolicyResult(True)
 
-    class Meta:
+    class Meta(Policy.PolicyMeta):
 
         verbose_name = _("Have I Been Pwned Policy")
         verbose_name_plural = _("Have I Been Pwned Policies")

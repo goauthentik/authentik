@@ -49,7 +49,7 @@ class PasswordExpiryPolicy(Policy):
             return PolicyResult(False, _("Password has expired."))
         return PolicyResult(True)
 
-    class Meta:
+    class Meta(Policy.PolicyMeta):
 
         verbose_name = _("Password Expiry Policy")
         verbose_name_plural = _("Password Expiry Policies")

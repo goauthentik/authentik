@@ -472,6 +472,21 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     def __str__(self):
         return self.name
 
+    class Meta:
+
+        indexes = [
+            models.Index(
+                fields=[
+                    "slug",
+                ]
+            ),
+            models.Index(
+                fields=[
+                    "name",
+                ]
+            ),
+        ]
+
 
 class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
     """Connection between User and Source."""

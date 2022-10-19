@@ -84,7 +84,7 @@ class PasswordPolicy(Policy):
 
         return PolicyResult(True)
 
-    class Meta:
+    class Meta(Policy.PolicyMeta):
 
         verbose_name = _("Password Policy")
         verbose_name_plural = _("Password Policies")

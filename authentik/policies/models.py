@@ -141,6 +141,12 @@ class PolicyBinding(SerializerModel):
         verbose_name = _("Policy Binding")
         verbose_name_plural = _("Policy Bindings")
         unique_together = ("policy", "target", "order")
+        indexes = [
+            models.Index(fields=["policy"]),
+            models.Index(fields=["group"]),
+            models.Index(fields=["user"]),
+            models.Index(fields=["target"]),
+        ]
 
 
 class Policy(SerializerModel, CreatedUpdatedModel):
@@ -184,4 +190,11 @@ class Policy(SerializerModel, CreatedUpdatedModel):
         permissions = [
             ("view_policy_cache", "View Policy's cache metrics"),
             ("clear_policy_cache", "Clear Policy's cache metrics"),
+        ]
+
+    class PolicyMeta:
+        """Base class for the Meta class for all policies"""
+
+        indexes = [
+            models.Index(fields=["policy_ptr_id"]),
         ]

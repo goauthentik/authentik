@@ -54,7 +54,7 @@ class ReputationPolicy(Policy):
         )
         return PolicyResult(bool(passing))
 
-    class Meta:
+    class Meta(Policy.PolicyMeta):
 
         verbose_name = _("Reputation Policy")
         verbose_name_plural = _("Reputation Policies")

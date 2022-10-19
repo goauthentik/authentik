@@ -75,7 +75,7 @@ class EventMatcherPolicy(Policy):
             return PolicyResult(True, "App matched.")
         return PolicyResult(False)
 
-    class Meta:
+    class Meta(Policy.PolicyMeta):
 
         verbose_name = _("Event Matcher Policy")
         verbose_name_plural = _("Event Matcher Policies")
