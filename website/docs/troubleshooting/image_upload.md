@@ -15,4 +15,6 @@ To fix these issues, run these commands in the folder of your docker-compose fil
 ```shell
 sudo chown 1000:1000 media/
 sudo chown 1000:1000 custom-templates/
+sudo chmod ug+rwx media/
+sudo chmod ug+rx certs/
 ```

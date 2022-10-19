@@ -232,7 +232,11 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             return Response({})
         if icon:
             app.meta_icon = icon
-            app.save()
+            try:
+                app.save()
+            except PermissionError as exc:
+                LOGGER.warning("Failed to save icon", exc=exc)
+                return HttpResponseBadRequest()
             return Response({})
         return HttpResponseBadRequest()
 

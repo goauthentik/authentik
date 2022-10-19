@@ -27,8 +27,10 @@ function check_if_root {
         GROUP_NAME=$(getent group $DOCKER_GID | sed 's/:/\n/g' | head -1)
         GROUP="authentik:${GROUP_NAME}"
     fi
-    # Fix permissions of backups and media
+    # Fix permissions of certs and media
     chown -R authentik:authentik /media /certs
+    chmod ug+rwx /media
+    chmod ug+rx /certs
     exec chpst -u authentik:$GROUP env HOME=/authentik $1
 }
 

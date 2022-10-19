@@ -239,7 +239,11 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
             return Response({})
         if background:
             flow.background = background
-            flow.save()
+            try:
+                flow.save()
+            except PermissionError as exc:
+                LOGGER.warning("Failed to save icon", exc=exc)
+                return HttpResponseBadRequest()
             return Response({})
         return HttpResponseBadRequest()
 
