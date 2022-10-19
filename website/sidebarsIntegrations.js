@@ -10,6 +10,56 @@ module.exports = {
             items: [
                 {
                     type: "category",
+                    label: "Chat, Communication & Collaboration",
+                    items: [
+                        "services/bookstack/index",
+                        "services/hedgedoc/index",
+                        "services/kimai/index",
+                        "services/matrix-synapse/index",
+                        "services/nextcloud/index",
+                        "services/onlyoffice/index",
+                        "services/paperless-ng/index",
+                        "services/rocketchat/index",
+                        "services/roundcube/index",
+                        "services/vikunja/index",
+                        "services/wekan/index",
+                        "services/wiki-js/index",
+                        "services/zulip/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Cloud Providers",
+                    items: [
+                        "services/aws/index",
+                        "services/oracle-cloud/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Dashboards",
+                    items: ["services/organizr/index"],
+                },
+                {
+                    type: "category",
+                    label: "Platforms",
+                    items: [
+                        "services/budibase/index",
+                        "services/wordpress/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Hypervisors / Orchestrators",
+                    items: [
+                        "services/portainer/index",
+                        "services/proxmox-ve/index",
+                        "services/rancher/index",
+                        "services/vmware-vcenter/index",
+                    ],
+                },
+                {
+                    type: "category",
                     label: "Infrastructure",
                     items: [
                         "services/apache-guacamole/index",
@@ -30,12 +80,13 @@ module.exports = {
                 },
                 {
                     type: "category",
-                    label: "Hypervisors / Orchestrators",
+                    label: "Miscellaneous",
                     items: [
-                        "services/portainer/index",
-                        "services/proxmox-ve/index",
-                        "services/rancher/index",
-                        "services/vmware-vcenter/index",
+                        "services/home-assistant/index",
+                        "services/node-red/index",
+                        "services/sonarr/index",
+                        "services/tautulli/index",
+                        "services/jellyfin/index",
                     ],
                 },
                 {
@@ -50,46 +101,10 @@ module.exports = {
                 },
                 {
                     type: "category",
-                    label: "Cloud Providers",
-                    items: [
-                        "services/aws/index",
-                        "services/oracle-cloud/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Chat, Communication & Collaboration",
-                    items: [
-                        "services/bookstack/index",
-                        "services/hedgedoc/index",
-                        "services/kimai/index",
-                        "services/matrix-synapse/index",
-                        "services/nextcloud/index",
-                        "services/onlyoffice/index",
-                        "services/paperless-ng/index",
-                        "services/rocketchat/index",
-                        "services/roundcube/index",
-                        "services/vikunja/index",
-                        "services/wekan/index",
-                        "services/wiki-js/index",
-                        "services/zulip/index",
-                    ],
-                },
-                {
-                    type: "category",
                     label: "Platforms",
                     items: [
                         "services/budibase/index",
                         "services/wordpress/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Developer tools",
-                    items: [
-                        "services/sentry/index",
-                        "services/sssd/index",
-                        "services/weblate/index",
                     ],
                 },
                 {
@@ -100,17 +115,6 @@ module.exports = {
                         "services/github-enterprise-cloud/index",
                         "services/github-organization/index",
                         "services/gitlab/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Miscellaneous",
-                    items: [
-                        "services/home-assistant/index",
-                        "services/node-red/index",
-                        "services/sonarr/index",
-                        "services/tautulli/index",
-                        "services/jellyfin/index",
                     ],
                 },
             ],
@@ -126,7 +130,24 @@ module.exports = {
                     "Sources of users which can be federated with authentik",
             },
             items: [
+                {
+                    type: "category",
+                    label: "Directory syncronization",
+                    items: [
+                        "sources/active-directory/index",
+                        "sources/freeipa/index",
+                    ],
+                },
                 "sources/general",
+                {
+                    type: "category",
+                    label: "Protocols",
+                    items: [
+                        "sources/ldap/index",
+                        "sources/oauth/index",
+                        "sources/saml/index",
+                    ],
+                },
                 {
                     type: "category",
                     label: "Social Logins",
@@ -140,23 +161,6 @@ module.exports = {
                         "sources/twitch/index",
                         "sources/plex/index",
                         "sources/twitter/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Directory syncronization",
-                    items: [
-                        "sources/active-directory/index",
-                        "sources/freeipa/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Protocols",
-                    items: [
-                        "sources/ldap/index",
-                        "sources/oauth/index",
-                        "sources/saml/index",
                     ],
                 },
             ],

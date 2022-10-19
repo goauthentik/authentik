@@ -4,7 +4,7 @@ title: Generic Setup
 
 ### Create User/Group
 
-1. Create a new user account to test LDAP bind under _Directory_ -> _Users_ -> _Create_, in this example called `ldapservice`.
+1. Create a new user account to bind with under _Directory_ -> _Users_ -> _Create_, in this example called `ldapservice`.
 
     Note the DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
 
