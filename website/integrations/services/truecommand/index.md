@@ -38,6 +38,7 @@ Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
 Under _Advanced protocol settings_, set NameID Property to _authentik default SAML Mapping: Email_.
 
 ## SAML Property Mappings
+
 There will need to create some property mappings.
 
 Under _Customisation_, select _Property Mappings_, then _Create_. Select _SAML Property Mapping_.
