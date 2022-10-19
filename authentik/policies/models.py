@@ -191,3 +191,8 @@ class Policy(SerializerModel, CreatedUpdatedModel):
             ("view_policy_cache", "View Policy's cache metrics"),
             ("clear_policy_cache", "Clear Policy's cache metrics"),
         ]
+
+    class PolicyMeta:
+        indexes = [
+            models.Index(fields=["policy_ptr_id"]),
+        ]

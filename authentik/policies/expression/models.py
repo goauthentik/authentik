@@ -36,7 +36,7 @@ class ExpressionPolicy(Policy):
         evaluator.validate(self.expression)
         return super().save(*args, **kwargs)
 
-    class Meta:
+    class Meta(Policy.PolicyMeta):
 
         verbose_name = _("Expression Policy")
         verbose_name_plural = _("Expression Policies")
