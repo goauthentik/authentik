@@ -141,6 +141,12 @@ class PolicyBinding(SerializerModel):
         verbose_name = _("Policy Binding")
         verbose_name_plural = _("Policy Bindings")
         unique_together = ("policy", "target", "order")
+        indexes = [
+            models.Index(fields=["policy"]),
+            models.Index(fields=["group"]),
+            models.Index(fields=["user"]),
+            models.Index(fields=["target"]),
+        ]
 
 
 class Policy(SerializerModel, CreatedUpdatedModel):
