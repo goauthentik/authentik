@@ -26,62 +26,92 @@ The following placeholders will be used:
 -   `truecommand.company` is the FQDN of the snipe-it install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-## authentik Configuration
+Create an application in authentik and use the slug for later as `<application-slug>`.
 
-### Step 1 - authentik config
-
-### Step 2 - TrueCommand Setup
-
-### Step 3 - Application
-
-In authentik, create an application (under _Resources/Applications_) with these settings :
-
--   Name: TrueCommand
--   Slug: truecommand
--   Provider: TrueCommand
-
-## Snipe-IT LDAP Sync
-
-## authentik Property Mapping
-
-To create a policy mapping, go to _Customisation/Property Mappings_, click `Create` then `LDAP Property Mapping`. Name is 'sn' and set 
-Object field to sn:
-
-## authentik SAML Config
-
-### Step 1
-
-Create another application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to Applica
-tions ->Providers. Create a SAML provider with the following parameters:
+Create a SAML provider with the following parameters:
 
 -   ACS URL: `https://truecommand.company/saml/acs`
--   Issuer: `https://truecommand.company`
--   Service Provider Binding: `Post`
--   Audience: `https://truecommand.company`
--   Signing certificate: Select any certificate you have.
--   Property mappings: Select all Managed mappings.
--   NamedID Property Mapping: authentik default SAML Mapping: Email
-    :::note
-    This is to match setting the username as **mail**. If you are using another field as the username, set it here.
-    :::
+-   Issuer: `truecommand-saml`
+-   Binding: `Post`
 
-### Step 2
+Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
+Under _Advanced protocol settings_, set NameID Property to _authentik default SAML Mapping: Email_.
 
-After saving your new Application and Provider, go to _Applications/Providers_ and select your newly created Provider.
+## SAML Property Mappings
+There will need to create some property mappings.
 
-Either copy the information under SAML Metadata, or click the Download button under SAML Metadata
+Under _Customisation_, select _Property Mappings_, then _Create_. Select _SAML Property Mapping_.
 
-## TrueCommand SAML Config
+### Username
 
-Configure Snipe-IT SAML settings by going to settings (he gear icon), and selecting `SAML`
+-   Name: `Truecommand - Username`
+-   SAML Attribute Name: `username`
+-   Expression
 
--   SAML enabled: **ticked**
--   SAML IdP Metadata: (paste information copied in Step 2 above -or-
--   Click `Select File`and select the file you downloaded in Step 2
--   Attribute Mapping - Username: mail
--   SAML Force Login: **ticked**
--   SAML Single Log Out: **ticked**
+```python
+return request.user.username
+```
 
-All other field can be left blank.
+### Email
+
+-   Name: `Truecommand - Email`
+-   SAML Attribute Name: `email`
+-   Expression
+
+```python
+return request.user.email
+```
+
+### Fullname
+
+-   Name: `Truecommand - Fullname`
+-   SAML Attribute Name: `given_name` OR `display_name`
+-   Expression
+
+```python
+return request.user.name
+```
+
+### Other Attributes
+
+If you have custom attributes, or attributes imported from Active Directory, TrueCommand supports the following additional mappings:
+
+#### Role
+
+-   Name: `Truecommand - Role`
+-   SAML Attribute Name: `title`
+-   Expression
+
+```python
+return [custom_attribute]
+```
+
+#### Phone Number
+
+-   Name: `Truecommand - Phone Number`
+-   SAML Attribute Name: `telephone_number`
+-   Expression
+
+```python
+return [custom_attribute]
+```
+
+Return to _Providers_ under _Applications_, and edit the Provider created above.
+
+Under _Advanced protocol settings_, select the additional property mappings created above.
+
+### SAML Metadata
+
+Click the _Copy download URL_ to save the Metadata URL into your clipboard.
+
+## TrueCommand Config
+
+-   Click on the gear icon in the upper right corner.
+-   Select Administration
+-   Click on CONFIGURE
+-   SAML Identity Provider URL: `Paste the Metadata URL from your clipboard.`
+-   Click _Save_, then click _Configure_ again then select _Start the SAML service_, then click _Save_ to start the service.
 
 ## Additional Resources
+
+-   https://www.truenas.com/docs/truecommand/administration/settings/samlad/
