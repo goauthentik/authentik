@@ -40,10 +40,9 @@ LOGGER = get_logger()
 class FlowSerializer(ModelSerializer):
     """Flow Serializer"""
 
-    cache_count = SerializerMethodField()
-
     background = ReadOnlyField(source="background_url")
 
+    cache_count = SerializerMethodField()
     export_url = SerializerMethodField()
 
     def get_cache_count(self, flow: Flow) -> int:
@@ -89,7 +88,7 @@ class FlowImportResultSerializer(PassiveSerializer):
 class FlowViewSet(UsedByMixin, ModelViewSet):
     """Flow Viewset"""
 
-    queryset = Flow.objects.all().prefetch_related("stages")
+    queryset = Flow.objects.all().prefetch_related("stages", "policies")
     serializer_class = FlowSerializer
     lookup_field = "slug"
     ordering = ["slug", "name"]
