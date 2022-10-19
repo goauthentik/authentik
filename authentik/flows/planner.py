@@ -192,16 +192,18 @@ class FlowPlanner:
             if default_context:
                 plan.context = default_context
             # Check Flow policies
-            for binding in FlowStageBinding.objects.filter(target__pk=self.flow.pk).order_by(
-                "order"
-            ):
+            bindings = list(
+                FlowStageBinding.objects.filter(target__pk=self.flow.pk).order_by("order")
+            )
+            stages = Stage.objects.filter(flowstagebinding__in=[binding.pk for binding in bindings])
+            for binding in bindings:
                 binding: FlowStageBinding
-                stage = binding.stage
+                stage = [stage for stage in stages if stage.pk == binding.stage_id][0]
                 marker = StageMarker()
                 if binding.evaluate_on_plan:
                     self._logger.debug(
                         "f(plan): evaluating on plan",
-                        stage=binding.stage,
+                        stage=stage,
                     )
                     engine = PolicyEngine(binding, user, request)
                     engine.request.context["flow_plan"] = plan
@@ -210,19 +212,19 @@ class FlowPlanner:
                     if engine.passing:
                         self._logger.debug(
                             "f(plan): stage passing",
-                            stage=binding.stage,
+                            stage=stage,
                         )
                     else:
                         stage = None
                 else:
                     self._logger.debug(
                         "f(plan): not evaluating on plan",
-                        stage=binding.stage,
+                        stage=stage,
                     )
                 if binding.re_evaluate_policies and stage:
                     self._logger.debug(
                         "f(plan): stage has re-evaluate marker",
-                        stage=binding.stage,
+                        stage=stage,
                     )
                     marker = ReevaluateMarker(binding=binding)
                 if stage:
