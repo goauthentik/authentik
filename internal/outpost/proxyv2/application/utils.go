@@ -56,10 +56,25 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	urlArgs := url.Values{
-		"rd": []string{redirectUrl},
+		redirectParam: []string{redirectUrl},
 	}
 	authUrl := urlJoin(a.proxyConfig.ExternalHost, "/outpost.goauthentik.io/start")
 	http.Redirect(rw, r, authUrl+"?"+urlArgs.Encode(), http.StatusFound)
+}
+
+func (a *Application) redirect(rw http.ResponseWriter, r *http.Request) {
+	redirect := a.proxyConfig.ExternalHost
+	rd, ok := a.checkRedirectParam(r)
+	if ok {
+		redirect = rd
+	}
+	s, _ := a.sessions.Get(r, constants.SessionName)
+	redirectR, ok := s.Values[constants.SessionRedirect]
+	if ok {
+		redirect = redirectR.(string)
+	}
+	a.log.WithField("redirect", redirect).Trace("final redirect")
+	http.Redirect(rw, r, redirect, http.StatusFound)
 }
 
 // getClaims Get claims which are currently in session

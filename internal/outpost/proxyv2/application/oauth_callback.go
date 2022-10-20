@@ -9,23 +9,13 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func (a *Application) redeemCallback(states []string, u *url.URL, c context.Context) (*Claims, error) {
+func (a *Application) redeemCallback(savedState string, u *url.URL, c context.Context) (*Claims, error) {
 	state := u.Query().Get("state")
-	if len(states) < 1 {
-		return nil, fmt.Errorf("no states")
-	}
-	found := false
-	for _, fstate := range states {
-		if fstate == state {
-			found = true
-		}
-	}
 	a.log.WithFields(log.Fields{
-		"states":   states,
+		"states":   savedState,
 		"expected": state,
-		"found":    found,
 	}).Trace("tracing states")
-	if !found {
+	if savedState != state {
 		return nil, fmt.Errorf("invalid state")
 	}
 
