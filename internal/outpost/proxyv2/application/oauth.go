@@ -45,22 +45,28 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 
 func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request) {
 	newState := base64.RawURLEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
-	s, err := a.sessions.Get(r, constants.SessionName)
-	if err != nil {
-		s.Values[constants.SessionOAuthState] = []string{}
-	}
-	state, ok := s.Values[constants.SessionOAuthState].([]string)
-	if !ok {
-		s.Values[constants.SessionOAuthState] = []string{}
-		state = []string{}
+	s, _ := a.sessions.Get(r, constants.SessionName)
+	// Check if we already have a state in the session,
+	// and if we do we don't do anything here
+	currentState, ok := s.Values[constants.SessionOAuthState].(string)
+	if ok {
+		claims, err := a.getClaims(r)
+		if err != nil && claims != nil {
+			a.log.Trace("auth start request with existing authenticated session")
+			a.redirect(rw, r)
+			return
+		}
+		a.log.Trace("session already has state, sending redirect to current state")
+		http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(currentState), http.StatusFound)
+		return
 	}
 	rd, ok := a.checkRedirectParam(r)
 	if ok {
 		s.Values[constants.SessionRedirect] = rd
 		a.log.WithField("rd", rd).Trace("Setting redirect")
 	}
-	s.Values[constants.SessionOAuthState] = append(state, newState)
-	err = s.Save(r, rw)
+	s.Values[constants.SessionOAuthState] = newState
+	err := s.Save(r, rw)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session")
 	}
@@ -75,10 +81,10 @@ func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request
 	state, ok := s.Values[constants.SessionOAuthState]
 	if !ok {
 		a.log.Warning("No state saved in session")
-		http.Redirect(rw, r, a.proxyConfig.ExternalHost, http.StatusFound)
+		a.redirect(rw, r)
 		return
 	}
-	claims, err := a.redeemCallback(state.([]string), r.URL, r.Context())
+	claims, err := a.redeemCallback(state.(string), r.URL, r.Context())
 	if err != nil {
 		a.log.WithError(err).Warning("failed to redeem code")
 		rw.WriteHeader(400)
@@ -101,11 +107,5 @@ func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request
 		rw.WriteHeader(400)
 		return
 	}
-	redirect := a.proxyConfig.ExternalHost
-	redirectR, ok := s.Values[constants.SessionRedirect]
-	if ok {
-		redirect = redirectR.(string)
-	}
-	a.log.WithField("redirect", redirect).Trace("final redirect")
-	http.Redirect(rw, r, redirect, http.StatusFound)
+	a.redirect(rw, r)
 }
