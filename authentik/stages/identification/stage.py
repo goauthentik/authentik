@@ -15,6 +15,7 @@ from sentry_sdk.hub import Hub
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Application, Source, User
+from authentik.events.utils import sanitize_item
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
@@ -25,6 +26,7 @@ from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_GET
+from authentik.lib.utils.http import get_client_ip
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.sources.oauth.types.apple import AppleLoginChallenge
 from authentik.sources.plex.models import PlexAuthenticationChallenge
@@ -96,7 +98,17 @@ class IdentificationChallengeResponse(ChallengeResponse):
             ):
                 # Sleep a random time (between 90 and 210ms) to "prevent" user enumeration attacks
                 sleep(0.030 * SystemRandom().randint(3, 7))
-            self.stage.logger.info("invalid_login", identifier=uid_field)
+            # Log in a similar format to Event.new(), but we don't want to create an event here
+            # as this stage is mostly used by unauthenticated users with very high rate limits
+            self.stage.logger.info(
+                "invalid_login",
+                identifier=uid_field,
+                client_ip=get_client_ip(self.stage.request),
+                action="invalid_identifier",
+                context={
+                    "stage": sanitize_item(self.stage),
+                },
+            )
             identification_failed.send(sender=self, request=self.stage.request, uid_field=uid_field)
             # We set the pending_user even on failure so it's part of the context, even
             # when the input is invalid
