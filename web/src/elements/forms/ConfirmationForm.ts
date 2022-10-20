@@ -62,7 +62,7 @@ export class ConfirmationForm extends ModalButton {
                     </h1>
                 </div>
             </section>
-            <section class="pf-c-modal-box__body pf-c-page__main-section pf-m-light">
+            <section class="pf-c-modal-box__body pf-m-light">
                 <form class="pf-c-form pf-m-horizontal">
                     <slot class="pf-c-content" name="body"></slot>
                 </form>
