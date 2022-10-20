@@ -1,10 +1,10 @@
 ---
-title: TrueCommand
+title: TrueNAS TrueCommand
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is Service Name
+## What is TrueNAS TrueCommand
 
 From https://www.truenas.com/truecommand/
 :::note
@@ -12,7 +12,6 @@ What is TrueCommand?
 TrueCommand is a ZFS-aware solution allowing you to set custom alerts on statistics like ARC usage or pool capacity and ensuring storag
 e uptime and future planning. TrueCommand also identifies and pinpoints errors on drives or vdevs (RAID groups), saving you valuable ti
 me when resolving issues.
-A free open source IT asset/license management system.
 :::
 
 :::warning
@@ -46,7 +45,7 @@ Under _Customisation_, select _Property Mappings_, then _Create_. Select _SAML P
 ### Username
 
 -   Name: `Truecommand - Username`
--   SAML Attribute Name: `username`
+-   SAML Attribute Name: `unique_name`
 -   Expression
 
 ```python
