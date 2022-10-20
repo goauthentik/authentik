@@ -40,7 +40,27 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
     queryset = SAMLSource.objects.all()
     serializer_class = SAMLSourceSerializer
     lookup_field = "slug"
-    filterset_fields = "__all__"
+    filterset_fields = [
+        "name",
+        "slug",
+        "enabled",
+        "authentication_flow",
+        "enrollment_flow",
+        "managed",
+        "policy_engine_mode",
+        "user_matching_mode",
+        "pre_authentication_flow",
+        "issuer",
+        "sso_url",
+        "slo_url",
+        "allow_idp_initiated",
+        "name_id_policy",
+        "binding_type",
+        "signing_kp",
+        "digest_algorithm",
+        "signature_algorithm",
+        "temporary_user_delete_after",
+    ]
     search_fields = ["name", "slug"]
     ordering = ["name"]
 

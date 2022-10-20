@@ -1,11 +1,13 @@
 """Source API Views"""
 from typing import Iterable
 
+from django.http.response import HttpResponseBadRequest
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, ReadOnlyField, SerializerMethodField
@@ -13,8 +15,14 @@ from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
+from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
+from authentik.core.api.utils import (
+    FilePathSerializer,
+    FileUploadSerializer,
+    MetaNameSerializer,
+    TypeCreateSerializer,
+)
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UserSettingSerializer
 from authentik.lib.utils.reflection import all_subclasses
@@ -28,6 +36,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
     managed = ReadOnlyField()
     component = SerializerMethodField()
+    icon = ReadOnlyField(source="get_icon")
 
     def get_component(self, obj: Source) -> str:
         """Get object component so that we know how to edit the object"""
@@ -54,6 +63,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             "user_matching_mode",
             "managed",
             "user_path_template",
+            "icon",
         ]
 
 
@@ -74,6 +84,68 @@ class SourceViewSet(
 
     def get_queryset(self):  # pragma: no cover
         return Source.objects.select_subclasses()
+
+    @permission_required("authentik_core.change_source")
+    @extend_schema(
+        request={
+            "multipart/form-data": FileUploadSerializer,
+        },
+        responses={
+            200: OpenApiResponse(description="Success"),
+            400: OpenApiResponse(description="Bad request"),
+        },
+    )
+    @action(
+        detail=True,
+        pagination_class=None,
+        filter_backends=[],
+        methods=["POST"],
+        parser_classes=(MultiPartParser,),
+    )
+    # pylint: disable=unused-argument
+    def set_icon(self, request: Request, slug: str):
+        """Set source icon"""
+        source: Source = self.get_object()
+        icon = request.FILES.get("file", None)
+        clear = request.data.get("clear", "false").lower() == "true"
+        if clear:
+            # .delete() saves the model by default
+            source.icon.delete()
+            return Response({})
+        if icon:
+            source.icon = icon
+            try:
+                source.save()
+            except PermissionError as exc:
+                LOGGER.warning("Failed to save icon", exc=exc)
+                return HttpResponseBadRequest()
+            return Response({})
+        return HttpResponseBadRequest()
+
+    @permission_required("authentik_core.change_source")
+    @extend_schema(
+        request=FilePathSerializer,
+        responses={
+            200: OpenApiResponse(description="Success"),
+            400: OpenApiResponse(description="Bad request"),
+        },
+    )
+    @action(
+        detail=True,
+        pagination_class=None,
+        filter_backends=[],
+        methods=["POST"],
+    )
+    # pylint: disable=unused-argument
+    def set_icon_url(self, request: Request, slug: str):
+        """Set source icon (as URL)"""
+        source: Source = self.get_object()
+        url = request.data.get("url", None)
+        if url is None:
+            return HttpResponseBadRequest()
+        source.icon.name = url
+        source.save()
+        return Response({})
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])

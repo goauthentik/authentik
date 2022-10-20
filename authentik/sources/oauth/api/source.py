@@ -35,6 +35,7 @@ class OAuthSourceSerializer(SourceSerializer):
 
     provider_type = ChoiceField(choices=registry.get_name_tuple())
     callback_url = SerializerMethodField()
+    type = SerializerMethodField()
 
     def get_callback_url(self, instance: OAuthSource) -> str:
         """Get OAuth Callback URL"""
@@ -45,8 +46,6 @@ class OAuthSourceSerializer(SourceSerializer):
         if "request" not in self.context:
             return relative_url
         return self.context["request"].build_absolute_uri(relative_url)
-
-    type = SerializerMethodField()
 
     @extend_schema_field(SourceTypeSerializer)
     def get_type(self, instance: OAuthSource) -> SourceTypeSerializer:

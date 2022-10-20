@@ -421,6 +421,12 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
 
     enabled = models.BooleanField(default=True)
     property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
+    icon = models.FileField(
+        upload_to="source-icons/",
+        default=None,
+        null=True,
+        max_length=500,
+    )
 
     authentication_flow = models.ForeignKey(
         "authentik_flows.Flow",
@@ -453,6 +459,16 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     )
 
     objects = InheritanceManager()
+
+    @property
+    def get_icon(self) -> Optional[str]:
+        """Get the URL to the Icon. If the name is /static or
+        starts with http it is returned as-is"""
+        if not self.icon:
+            return None
+        if "://" in self.icon.name or self.icon.name.startswith("/static"):
+            return self.icon.name
+        return self.icon.url
 
     def get_user_path(self) -> str:
         """Get user path, fallback to default for formatting errors"""

@@ -15795,6 +15795,69 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /sources/all/{slug}/set_icon/:
+    post:
+      operationId: sources_all_set_icon_create
+      description: Set source icon
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/all/{slug}/set_icon_url/:
+    post:
+      operationId: sources_all_set_icon_url_create
+      description: Set source icon (as URL)
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilePathRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /sources/all/{slug}/used_by/:
     get:
       operationId: sources_all_used_by_list
@@ -17093,20 +17156,6 @@ paths:
         schema:
           type: integer
       - in: query
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: policies
-        schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        explode: true
-        style: form
-      - in: query
         name: policy_engine_mode
         schema:
           type: string
@@ -17118,15 +17167,6 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: property_mappings
-        schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        explode: true
-        style: form
       - name: search
         required: false
         in: query
@@ -17176,10 +17216,6 @@ paths:
           - username_link
         description: How the source determines if an existing user should be authenticated
           or a new user enrolled.
-      - in: query
-        name: user_path_template
-        schema:
-          type: string
       tags:
       - sources
       security:
@@ -28871,6 +28907,10 @@ components:
           readOnly: true
         user_path_template:
           type: string
+        icon:
+          type: string
+          nullable: true
+          readOnly: true
         server_uri:
           type: string
           format: uri
@@ -28933,6 +28973,7 @@ components:
       required:
       - base_dn
       - component
+      - icon
       - managed
       - meta_model_name
       - name
@@ -29662,6 +29703,10 @@ components:
           readOnly: true
         user_path_template:
           type: string
+        icon:
+          type: string
+          nullable: true
+          readOnly: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -29707,6 +29752,7 @@ components:
       - callback_url
       - component
       - consumer_key
+      - icon
       - managed
       - meta_model_name
       - name
@@ -35075,6 +35121,10 @@ components:
           readOnly: true
         user_path_template:
           type: string
+        icon:
+          type: string
+          nullable: true
+          readOnly: true
         client_id:
           type: string
           description: Client identifier used to talk to Plex.
@@ -35092,6 +35142,7 @@ components:
           description: Plex token used to check friends
       required:
       - component
+      - icon
       - managed
       - meta_model_name
       - name
@@ -36495,6 +36546,10 @@ components:
           readOnly: true
         user_path_template:
           type: string
+        icon:
+          type: string
+          nullable: true
+          readOnly: true
         pre_authentication_flow:
           type: string
           format: uuid
@@ -36543,6 +36598,7 @@ components:
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
+      - icon
       - managed
       - meta_model_name
       - name
@@ -36936,8 +36992,13 @@ components:
           readOnly: true
         user_path_template:
           type: string
+        icon:
+          type: string
+          nullable: true
+          readOnly: true
       required:
       - component
+      - icon
       - managed
       - meta_model_name
       - name
