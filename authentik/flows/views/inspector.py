@@ -105,7 +105,7 @@ class FlowInspectorView(APIView):
             current_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
         else:
             try:
-                current_plan = request.session[SESSION_KEY_HISTORY][-1]
+                current_plan = request.session.get(SESSION_KEY_HISTORY, [])[-1]
             except IndexError:
                 return Response(status=400)
             is_completed = True
