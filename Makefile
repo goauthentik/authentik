@@ -90,11 +90,11 @@ gen-client-ts:
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/gen-ts-api \
-		--additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=@goauthentik/api,npmVersion=${NPM_VERSION} \
+		-c /local/scripts/api-ts-config.yaml \
+		--additional-properties=npmVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
 	mkdir -p web/node_modules/@goauthentik/api
-	\cp -fv scripts/web_api_readme.md gen-ts-api/README.md
 	cd gen-ts-api && npm i
 	\cp -rfv gen-ts-api/* web/node_modules/@goauthentik/api
 
