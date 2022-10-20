@@ -13,12 +13,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="captchastage",
             name="api_url",
-            field=models.TextField(default="https://www.google.com/recaptcha/api/siteverify"),
+            field=models.TextField(default="https://www.recaptcha.net/recaptcha/api/siteverify"),
         ),
         migrations.AddField(
             model_name="captchastage",
             name="js_url",
-            field=models.TextField(default="https://www.google.com/recaptcha/api.js"),
+            field=models.TextField(default="https://www.recaptcha.net/recaptcha/api.js"),
         ),
         migrations.AlterField(
             model_name="captchastage",

@@ -14,8 +14,8 @@ class CaptchaStage(Stage):
     public_key = models.TextField(help_text=_("Public key, acquired your captcha Provider."))
     private_key = models.TextField(help_text=_("Private key, acquired your captcha Provider."))
 
-    js_url = models.TextField(default="https://www.google.com/recaptcha/api.js")
-    api_url = models.TextField(default="https://www.google.com/recaptcha/api/siteverify")
+    js_url = models.TextField(default="https://www.recaptcha.net/recaptcha/api.js")
+    api_url = models.TextField(default="https://www.recaptcha.net/recaptcha/api/siteverify")
 
     @property
     def serializer(self) -> type[BaseSerializer]:
