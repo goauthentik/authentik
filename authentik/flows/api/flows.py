@@ -78,6 +78,28 @@ class FlowSerializer(ModelSerializer):
         }
 
 
+class FlowSetSerializer(FlowSerializer):
+    """Stripped down flow serializer"""
+
+    class Meta:
+
+        model = Flow
+        fields = [
+            "pk",
+            "policybindingmodel_ptr_id",
+            "name",
+            "slug",
+            "title",
+            "designation",
+            "background",
+            "policy_engine_mode",
+            "compatibility_mode",
+            "export_url",
+            "layout",
+            "denied_action",
+        ]
+
+
 class FlowImportResultSerializer(PassiveSerializer):
     """Logs of an attempted flow import"""
 

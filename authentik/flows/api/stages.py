@@ -12,7 +12,7 @@ from structlog.stdlib import get_logger
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.types import UserSettingSerializer
-from authentik.flows.api.flows import FlowSerializer
+from authentik.flows.api.flows import FlowSetSerializer
 from authentik.flows.models import ConfigurableStage, Stage
 from authentik.lib.utils.reflection import all_subclasses
 
@@ -23,7 +23,7 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
     """Stage Serializer"""
 
     component = SerializerMethodField()
-    flow_set = FlowSerializer(many=True, required=False)
+    flow_set = FlowSetSerializer(many=True, required=False)
 
     def get_component(self, obj: Stage) -> str:
         """Get object type so that we know how to edit the object"""
