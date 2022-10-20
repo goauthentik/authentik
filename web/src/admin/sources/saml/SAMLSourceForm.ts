@@ -1,5 +1,5 @@
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -9,12 +9,13 @@ import "@goauthentik/elements/utils/TimeDeltaHelp";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import {
     BindingTypeEnum,
+    CapabilitiesEnum,
     CryptoApi,
     DigestAlgorithmEnum,
     FlowsApi,
@@ -28,6 +29,9 @@ import {
 
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
+    @state()
+    clearIcon = false;
+
     loadInstance(pk: string): Promise<SAMLSource> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
             slug: pk,
@@ -42,17 +46,37 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
         }
     }
 
-    send = (data: SAMLSource): Promise<SAMLSource> => {
+    send = async (data: SAMLSource): Promise<SAMLSource> => {
+        let source: SAMLSource;
         if (this.instance) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
+            source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
                 slug: this.instance.slug,
                 sAMLSourceRequest: data,
             });
         } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
+            source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
                 sAMLSourceRequest: data,
             });
         }
+        const c = await config();
+        if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
+            const icon = this.getFormFiles()["icon"];
+            if (icon || this.clearIcon) {
+                await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
+                    slug: source.slug,
+                    file: icon,
+                    clear: this.clearIcon,
+                });
+            }
+        } else {
+            await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconUrlCreate({
+                slug: source.slug,
+                filePathRequest: {
+                    url: data.icon || "",
+                },
+            });
+        }
+        return source;
     };
 
     renderForm(): TemplateResult {
@@ -126,6 +150,54 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                     </option>
                 </select>
             </ak-form-element-horizontal>
+            ${until(
+                config().then((c) => {
+                    if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
+                        return html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
+                                <input type="file" value="" class="pf-c-form-control" />
+                                ${this.instance?.icon
+                                    ? html`
+                                          <p class="pf-c-form__helper-text">
+                                              ${t`Currently set to:`} ${this.instance?.icon}
+                                          </p>
+                                      `
+                                    : html``}
+                            </ak-form-element-horizontal>
+                            ${this.instance?.icon
+                                ? html`
+                                      <ak-form-element-horizontal>
+                                          <div class="pf-c-check">
+                                              <input
+                                                  type="checkbox"
+                                                  class="pf-c-check__input"
+                                                  @change=${(ev: Event) => {
+                                                      const target = ev.target as HTMLInputElement;
+                                                      this.clearIcon = target.checked;
+                                                  }}
+                                              />
+                                              <label class="pf-c-check__label">
+                                                  ${t`Clear icon`}
+                                              </label>
+                                          </div>
+                                          <p class="pf-c-form__helper-text">
+                                              ${t`Delete currently set icon.`}
+                                          </p>
+                                      </ak-form-element-horizontal>
+                                  `
+                                : html``}`;
+                    }
+                    return html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
+                        <input
+                            type="text"
+                            value="${first(this.instance?.icon, "")}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".`}
+                        </p>
+                    </ak-form-element-horizontal>`;
+                }),
+            )}
 
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Protocol settings`} </span>
