@@ -43,7 +43,7 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`This stage checks the user's current session against the Google reCaptcha service.`}
+                ${t`This stage checks the user's current session against the Google reCaptcha (or compatible) service.`}
             </div>
             <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
                 <input
@@ -80,6 +80,39 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
                         <input type="text" value="" class="pf-c-form-control" required />
                         <p class="pf-c-form__helper-text">
                             ${t`Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group>
+                <span slot="header"> ${t`Advanced settings`} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${t`JS URL`} ?required=${true} name="jsUrl">
+                        <input
+                            type="text"
+                            value="${ifDefined(
+                                this.instance?.jsUrl ||
+                                    "https://www.recaptcha.net/recaptcha/api.js",
+                            )}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`URL to fetch JavaScript from, defaults to recaptcha. Can be replaced with any compatible alternative.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`API URL`} ?required=${true} name="apiUrl">
+                        <input
+                            type="text"
+                            value="${ifDefined(
+                                this.instance?.apiUrl ||
+                                    "https://www.recaptcha.net/recaptcha/api/siteverify",
+                            )}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`URL used to validate captcha response, defaults to recaptcha. Can be replaced with any compatible alternative.`}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
