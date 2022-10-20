@@ -16,7 +16,7 @@ A free open source IT asset/license management system.
 :::
 
 :::warning
-This setup assumes you will be using HTTPS as TrueCommand generates ACS and Redirect based on the complete URL.
+This setup assumes you will be using HTTPS as TrueCommand generates ACS and Redirect URLs based on the complete URL.
 :::
 
 ## Preparation
