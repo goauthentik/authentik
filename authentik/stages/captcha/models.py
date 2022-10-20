@@ -11,12 +11,11 @@ from authentik.flows.models import Stage
 class CaptchaStage(Stage):
     """Verify the user is human using Google's reCaptcha."""
 
-    public_key = models.TextField(
-        help_text=_("Public key, acquired from https://www.google.com/recaptcha/intro/v3.html")
-    )
-    private_key = models.TextField(
-        help_text=_("Private key, acquired from https://www.google.com/recaptcha/intro/v3.html")
-    )
+    public_key = models.TextField(help_text=_("Public key, acquired your captcha Provider."))
+    private_key = models.TextField(help_text=_("Private key, acquired your captcha Provider."))
+
+    js_url = models.TextField(default="https://www.google.com/recaptcha/api.js")
+    api_url = models.TextField(default="https://www.google.com/recaptcha/api/siteverify")
 
     @property
     def serializer(self) -> type[BaseSerializer]:
