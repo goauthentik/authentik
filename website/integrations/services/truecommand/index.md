@@ -26,7 +26,7 @@ The following placeholders will be used:
 -   `truecommand.company` is the FQDN of the snipe-it install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-Create an application in authentik and use the slug for later as `<application-slug>`.
+Create an application in authentik and use the slug for later as `truenas-truecommand`.
 
 Create a SAML provider with the following parameters:
 
