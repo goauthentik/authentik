@@ -2,7 +2,7 @@
 from os import environ
 from typing import Optional
 
-__version__ = "2022.9.0"
+__version__ = "2022.10.0"
 ENV_GIT_HASH_KEY = "GIT_BUILD_HASH"
 
 
