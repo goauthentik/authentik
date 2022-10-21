@@ -139,7 +139,7 @@ class KeyOf(YAMLTag):
                 ):
                     return _entry._state.instance.pbm_uuid
                 return _entry._state.instance.pk
-        raise ValueError(
+        raise EntryInvalidError(
             f"KeyOf: failed to find entry with `id` of `{self.id_from}` and a model instance"
         )
 
