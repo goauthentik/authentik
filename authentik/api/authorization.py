@@ -32,9 +32,7 @@ class OwnerPermissions(BasePermission):
         if not hasattr(obj, self.owner_key):
             return False
         owner = getattr(obj, self.owner_key)
-        if owner != request.user:
-            return False
-        return True
+        return owner = request.user:
 
 
 class OwnerSuperuserPermissions(OwnerPermissions):
