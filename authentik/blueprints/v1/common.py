@@ -63,7 +63,7 @@ class BlueprintEntry:
         all_attrs = get_attrs(model)
 
         for extra_identifier_name in extra_identifier_names:
-            identifiers[extra_identifier_name] = all_attrs.pop(extra_identifier_name)
+            identifiers[extra_identifier_name] = all_attrs.pop(extra_identifier_name, None)
         return BlueprintEntry(
             identifiers=identifiers,
             model=f"{model._meta.app_label}.{model._meta.model_name}",
