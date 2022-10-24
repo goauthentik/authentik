@@ -80,5 +80,5 @@ export function currentInterface(): string {
     if (pathMatches && pathMatches.length >= 2) {
         currentInterface = pathMatches[1];
     }
-    return currentInterface;
+    return currentInterface.toLowerCase();
 }

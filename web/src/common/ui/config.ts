@@ -1,3 +1,4 @@
+import { currentInterface } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 
 import { UserSelf } from "@goauthentik/api";
@@ -65,6 +66,12 @@ export class DefaultUIConfig implements UIConfig {
         perPage: 20,
     };
     locale = "";
+
+    constructor() {
+        if (currentInterface() === "user") {
+            this.enabledFeatures.apiDrawer = false;
+        }
+    }
 }
 
 let globalUiConfig: Promise<UIConfig>;
