@@ -738,7 +738,7 @@ python-versions = "*"
 
 [[package]]
 name = "duo-client"
-version = "4.4.0"
+version = "4.5.0"
 description = "Reference client for Duo Security APIs"
 category = "main"
 optional = false
@@ -2620,8 +2620,8 @@ dumb-init = [
     {file = "dumb_init-1.2.5.post1-py2.py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:fc1e309f52c898ee00df056189f46ca3f6055a72b77015f4eefbd7c58c45290f"},
 ]
 duo-client = [
-    {file = "duo_client-4.4.0-py2.py3-none-any.whl", hash = "sha256:927b7e838433b20debc8d07c2c418c2e1b650735acb9fcf214eaa3a2caf00358"},
-    {file = "duo_client-4.4.0.tar.gz", hash = "sha256:44e06bf730a201a1e1749215ef16d2c2682a73532eedd58d63663a8adabba3d3"},
+    {file = "duo_client-4.5.0-py2.py3-none-any.whl", hash = "sha256:c200f58cf4cb6f5dd7e95fae7136ea925fa61c5d5519eb16a40fea401965460d"},
+    {file = "duo_client-4.5.0.tar.gz", hash = "sha256:674d1de1a46dfdd488362cd049650f0473801864b42ae458ae1803bf7e339668"},
 ]
 facebook-sdk = [
     {file = "facebook-sdk-3.1.0.tar.gz", hash = "sha256:cabcd2e69ea3d9f042919c99b353df7aa1e2be86d040121f6e9f5e63c1cf0f8d"},
