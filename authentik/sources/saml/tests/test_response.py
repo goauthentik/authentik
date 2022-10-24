@@ -109,4 +109,7 @@ class TestResponseProcessor(TestCase):
         parser = ResponseProcessor(self.source, request)
         parser.parse()
         sfm = parser.prepare_flow_manager()
-        self.assertEqual(sfm.enroll_info, {"email": "foo@bar.baz", "name": "foo", "sn": "bar"})
+        self.assertEqual(
+            sfm.enroll_info,
+            {"email": "foo@bar.baz", "name": "foo", "sn": "bar", "username": "jens@beryju.org"},
+        )

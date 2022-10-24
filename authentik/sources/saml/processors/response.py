@@ -216,6 +216,7 @@ class ResponseProcessor:
         # Flatten all lists in the dict
         for key, value in attributes.items():
             attributes[key] = BaseEvaluator.expr_flatten(value)
+        attributes["username"] = self._get_name_id().text
         return attributes
 
     def prepare_flow_manager(self) -> SourceFlowManager:
