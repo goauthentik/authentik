@@ -16,11 +16,12 @@ import (
 func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) sessions.Store {
 	var store sessions.Store
 	if config.Get().Redis.Host != "" {
-		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port), config.Get().Redis.Password, strconv.Itoa(config.Get().Redis.OutpostSessionDB), []byte(*p.CookieSecret))
+		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port), config.Get().Redis.Password, strconv.Itoa(config.Get().Redis.DB), []byte(*p.CookieSecret))
 		if err != nil {
 			panic(err)
 		}
 		rs.SetMaxLength(math.MaxInt)
+		rs.SetKeyPrefix("authentik_proxy_session_")
 		if p.TokenValidity.IsSet() {
 			t := p.TokenValidity.Get()
 			// Add one to the validity to ensure we don't have a session with indefinite length

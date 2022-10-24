@@ -39,10 +39,7 @@ kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
 -   `AUTHENTIK_REDIS__HOST`: Hostname of your Redis Server
 -   `AUTHENTIK_REDIS__PORT`: Redis port, defaults to 6379
 -   `AUTHENTIK_REDIS__PASSWORD`: Password for your Redis Server
--   `AUTHENTIK_REDIS__CACHE_DB`: Database for caching, defaults to 0
--   `AUTHENTIK_REDIS__MESSAGE_QUEUE_DB`: Database for the message queue, defaults to 1
--   `AUTHENTIK_REDIS__WS_DB`: Database for websocket connections, defaults to 2
--   `AUTHENTIK_REDIS__OUTPOST_SESSION_DB`: Database for sessions for the embedded outpost, defaults to 3
+-   `AUTHENTIK_REDIS__DB`: Database, defaults to 0
 -   `AUTHENTIK_REDIS__CACHE_TIMEOUT`: Timeout for cached data until it expires in seconds, defaults to 300
 -   `AUTHENTIK_REDIS__CACHE_TIMEOUT_FLOWS`: Timeout for cached flow plans until they expire in seconds, defaults to 300
 -   `AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES`: Timeout for cached policies until they expire in seconds, defaults to 300
