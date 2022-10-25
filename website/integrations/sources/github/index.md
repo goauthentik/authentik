@@ -58,15 +58,19 @@ Requires authentik 2021.12.5.
 
 To check if the user is member of an organisation, you can use the following policy on your flows:
 
+:::info
+Make sure to include `read:org` in the sources' _Scopes_ setting.
+:::
+
 ```python
 # Ensure flow is only run during oauth logins via Github
-if context['source'].provider_type != "github":
+if context["source"].provider_type != "github":
     return True
 
 accepted_org = "foo"
 
 # Get the user-source connection object from the context, and get the access token
-connection = context['goauthentik.io/sources/connection']
+connection = context["goauthentik.io/sources/connection"]
 access_token = connection.access_token
 
 # We also access the user info authentik already retrieved, to get the correct username
@@ -74,13 +78,15 @@ github_username = context["oauth_userinfo"]
 
 # Github does not include Organisations in the userinfo endpoint, so we have to call another URL
 
-orgs = requests.get(
+orgs_response = requests.get(
     "https://api.github.com/user/orgs",
     auth=(github_username["login"], access_token),
     headers={
         "accept": "application/vnd.github.v3+json"
     }
-).json()
+)
+orgs_response.raise_for_status()
+orgs = orgs_response.json()
 
 # `orgs` will be formatted like this
 # [
