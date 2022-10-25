@@ -75,6 +75,7 @@ module.exports = {
                         "services/pgadmin/index",
                         "services/powerdns-admin/index",
                         "services/snipe-it/index",
+                        "services/truecommand/index",
                         "services/veeam-enterprise-manager/index",
                     ],
                 },
