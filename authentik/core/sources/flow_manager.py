@@ -180,7 +180,7 @@ class SourceFlowManager:
             action, connection = self.get_action(**kwargs)
         except IntegrityError as exc:
             self._logger.warning("failed to get action", exc=exc)
-            return redirect("/")
+            return redirect(reverse("authentik_core:root-redirect"))
         self._logger.debug("get_action", action=action, connection=connection)
         try:
             if connection:
@@ -228,7 +228,7 @@ class SourceFlowManager:
             ]
         return []
 
-    def _handle_login_flow(
+    def _prepare_flow(
         self,
         flow: Flow,
         connection: UserSourceConnection,
@@ -279,7 +279,7 @@ class SourceFlowManager:
     ) -> HttpResponse:
         """Login user and redirect."""
         flow_kwargs = {PLAN_CONTEXT_PENDING_USER: connection.user}
-        return self._handle_login_flow(
+        return self._prepare_flow(
             self.source.authentication_flow,
             connection,
             stages=[
@@ -302,6 +302,9 @@ class SourceFlowManager:
     ) -> HttpResponse:
         """Handler when the user was already authenticated and linked an external source
         to their account."""
+        # When request isn't authenticated we jump straight to auth
+        if not self.request.user.is_authenticated:
+            return self.handle_auth(connection)
         # Connection has already been saved
         Event.new(
             EventAction.SOURCE_LINKED,
@@ -312,9 +315,6 @@ class SourceFlowManager:
             self.request,
             _("Successfully linked %(source)s!" % {"source": self.source.name}),
         )
-        # When request isn't authenticated we jump straight to auth
-        if not self.request.user.is_authenticated:
-            return self.handle_auth(connection)
         return redirect(
             reverse(
                 "authentik_core:if-user",
@@ -334,7 +334,7 @@ class SourceFlowManager:
                 self.request,
                 _("Source is not configured for enrollment."),
             )
-        return self._handle_login_flow(
+        return self._prepare_flow(
             self.source.enrollment_flow,
             connection,
             stages=[
