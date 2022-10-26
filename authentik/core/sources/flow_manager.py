@@ -45,32 +45,24 @@ class Action(Enum):
     DENY = "deny"
 
 
-def message_stage(message: str, level: int) -> StageView:
+class MessageStage(StageView):
     """Show a pre-configured message after the flow is done"""
 
-    class MessageStage(StageView):
+    # pylint: disable=unused-argument
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Show a pre-configured message after the flow is done"""
+        message = getattr(self.executor.current_stage, "message", "")
+        level = getattr(self.executor.current_stage, "level", messages.SUCCESS)
+        messages.add_message(
+            self.request,
+            level,
+            message,
+        )
+        return self.executor.stage_ok()
 
-        message: str
-        level: int
-
-        # pylint: disable=unused-argument
-        def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-            """Show a pre-configured message after the flow is done"""
-            messages.add_message(
-                self.request,
-                self.level,
-                self.message,
-            )
-            return self.executor.stage_ok()
-
-        def post(self, request: HttpRequest) -> HttpResponse:
-            """Wrapper for post requests"""
-            return self.get(request)
-
-    MessageStage.message = message
-    MessageStage.level = level
-    return MessageStage
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Wrapper for post requests"""
+        return self.get(request)
 
 
 class SourceFlowManager:
@@ -284,13 +276,10 @@ class SourceFlowManager:
             connection,
             stages=[
                 in_memory_stage(
-                    message_stage(
-                        messages.SUCCESS,
-                        _(
-                            "Successfully authenticated with %(source)s!"
-                            % {"source": self.source.name}
-                        ),
-                    )
+                    MessageStage,
+                    message=_(
+                        "Successfully authenticated with %(source)s!" % {"source": self.source.name}
+                    ),
                 )
             ],
             **flow_kwargs,
@@ -339,13 +328,10 @@ class SourceFlowManager:
             connection,
             stages=[
                 in_memory_stage(
-                    message_stage(
-                        messages.SUCCESS,
-                        _(
-                            "Successfully authenticated with %(source)s!"
-                            % {"source": self.source.name}
-                        ),
-                    )
+                    MessageStage,
+                    message=_(
+                        "Successfully authenticated with %(source)s!" % {"source": self.source.name}
+                    ),
                 )
             ],
             **{
