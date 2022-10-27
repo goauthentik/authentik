@@ -470,7 +470,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     # pylint: disable=invalid-name, unused-argument
     def recovery_email(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""
-        for_user = self.get_object()
+        for_user: User = self.get_object()
         if for_user.email == "":
             LOGGER.debug("User doesn't have an email address")
             return Response(status=404)
@@ -488,8 +488,9 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         email_stage: EmailStage = stages.first()
         message = TemplateEmailMessage(
             subject=_(email_stage.subject),
-            template_name=email_stage.template,
             to=[for_user.email],
+            template_name=email_stage.template,
+            language=for_user.locale(request),
             template_context={
                 "url": link,
                 "user": for_user,

@@ -445,8 +445,9 @@ class NotificationTransport(SerializerModel):
             subject += notification.body[:75]
         mail = TemplateEmailMessage(
             subject=subject,
-            template_name="email/generic.html",
             to=[notification.user.email],
+            language=notification.user.locale(),
+            template_name="email/generic.html",
             template_context={
                 "title": subject,
                 "body": notification.body,

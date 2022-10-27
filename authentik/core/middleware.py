@@ -31,7 +31,7 @@ class ImpersonateMiddleware:
         # No permission checks are done here, they need to be checked before
         # SESSION_KEY_IMPERSONATE_USER is set.
         if request.user.is_authenticated:
-            locale = request.user.locale
+            locale = request.user.locale(request)
             if locale != "":
                 activate(locale)
 

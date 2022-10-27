@@ -220,15 +220,16 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
         return sha256(f"{self.id}-{settings.SECRET_KEY}".encode("ascii")).hexdigest()
 
-    @property
-    def locale(self) -> str:
+    def locale(self, request: Optional[HttpRequest] = None) -> str:
         """Get the locale the user has configured"""
         try:
             return self.attributes.get("settings", {}).get("locale", "")
         # pylint: disable=broad-except
         except Exception as exc:
             LOGGER.warning("Failed to get default locale", exc=exc)
-            return ""
+        if request:
+            return request.tenant.locale
+        return ""
 
     @property
     def avatar(self) -> str:
