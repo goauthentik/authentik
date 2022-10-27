@@ -3,6 +3,7 @@ from typing import Callable
 
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
+from django.utils.translation import activate
 from sentry_sdk.api import set_tag
 
 from authentik.tenants.utils import get_tenant_for_request
@@ -22,4 +23,7 @@ class TenantMiddleware:
             setattr(request, "tenant", tenant)
             set_tag("authentik.tenant_uuid", tenant.tenant_uuid.hex)
             set_tag("authentik.tenant_domain", tenant.domain)
+            locale = tenant.default_locale
+            if locale != "":
+                activate(locale)
         return self.get_response(request)

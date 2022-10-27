@@ -221,6 +221,16 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         return sha256(f"{self.id}-{settings.SECRET_KEY}".encode("ascii")).hexdigest()
 
     @property
+    def locale(self) -> str:
+        """Get the locale the user has configured"""
+        try:
+            return self.attributes.get("settings", {}).get("locale", "")
+        # pylint: disable=broad-except
+        except Exception as exc:
+            LOGGER.warning("Failed to get default locale", exc=exc)
+            return ""
+
+    @property
     def avatar(self) -> str:
         """Get avatar, depending on authentik.avatar setting"""
         mode: str = CONFIG.y("avatars", "none")
