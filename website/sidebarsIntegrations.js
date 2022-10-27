@@ -77,6 +77,7 @@ module.exports = {
                         "services/snipe-it/index",
                         "services/truecommand/index",
                         "services/veeam-enterprise-manager/index",
+                        "services/skyhigh/index",
                     ],
                 },
                 {
