@@ -88,6 +88,7 @@ module.exports = {
                         "services/sonarr/index",
                         "services/tautulli/index",
                         "services/jellyfin/index",
+                        "services/calibre-web/index",
                     ],
                 },
                 {
