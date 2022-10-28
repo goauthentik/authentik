@@ -25,7 +25,47 @@ return True
 
 You can also use custom email templates, to use your own design or layout.
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+<Tabs
+  defaultValue="docker-compose"
+  values={[
+    {label: 'docker-compose', value: 'docker-compose'},
+    {label: 'Kubernetes', value: 'kubernetes'},
+  ]}>
+  <TabItem value="docker-compose">
 Place any custom templates in the `custom-templates` Folder, which is in the same folder as your docker-compose file. Afterwards, you'll be able to select the template when creating/editing an Email stage.
+
+  </TabItem>
+  <TabItem value="kubernetes">
+Create a ConfigMap with your email templates:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: authentik-templates
+    namespace: authentik
+data:
+    my-template.html: |
+        <tr>...
+```
+
+Then, in the helm chart add this to your `values.yaml` file:
+
+```yaml
+volumes:
+    - name: email-templates
+      configMap:
+          name: authentik-templates
+volumeMounts:
+    - name: email-templates
+      mountPath: /templates
+```
+
+  </TabItem>
+</Tabs>
 
 :::info
 This is currently only supported for docker-compose installs, and supported starting version 0.15.
