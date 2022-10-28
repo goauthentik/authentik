@@ -11,6 +11,7 @@ from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 
+from authentik.core.models import User
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
@@ -81,7 +82,7 @@ class EmailStageView(ChallengeStageView):
     def send_email(self):
         """Helper function that sends the actual email. Implies that you've
         already checked that there is a pending user."""
-        pending_user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        pending_user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         email = self.executor.plan.context.get(PLAN_CONTEXT_EMAIL_OVERRIDE, None)
         if not email:
             email = pending_user.email
@@ -90,8 +91,9 @@ class EmailStageView(ChallengeStageView):
         # Send mail to user
         message = TemplateEmailMessage(
             subject=_(current_stage.subject),
-            template_name=current_stage.template,
             to=[email],
+            language=pending_user.locale(self.request),
+            template_name=current_stage.template,
             template_context={
                 "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
                 "user": pending_user,

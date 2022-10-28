@@ -28,8 +28,8 @@ class Command(BaseCommand):
             delete_stage = True
         message = TemplateEmailMessage(
             subject="authentik Test-Email",
-            template_name="email/setup.html",
             to=[options["to"]],
+            template_name="email/setup.html",
             template_context={},
         )
         try:

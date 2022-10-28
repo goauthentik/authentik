@@ -4,6 +4,7 @@ from typing import Callable, Optional
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
+from django.utils.translation import activate
 from sentry_sdk.api import set_tag
 from structlog.contextvars import STRUCTLOG_KEY_PREFIX
 
@@ -29,6 +30,10 @@ class ImpersonateMiddleware:
     def __call__(self, request: HttpRequest) -> HttpResponse:
         # No permission checks are done here, they need to be checked before
         # SESSION_KEY_IMPERSONATE_USER is set.
+        if request.user.is_authenticated:
+            locale = request.user.locale(request)
+            if locale != "":
+                activate(locale)
 
         if SESSION_KEY_IMPERSONATE_USER in request.session:
             request.user = request.session[SESSION_KEY_IMPERSONATE_USER]
