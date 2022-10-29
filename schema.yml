@@ -38128,5 +38128,6 @@ components:
       type: apiKey
       in: header
       name: Authorization
+      scheme: bearer
 servers:
 - url: /api/v3/
