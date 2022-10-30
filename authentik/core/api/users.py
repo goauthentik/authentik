@@ -46,7 +46,6 @@ from structlog.stdlib import get_logger
 
 from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.decorators import permission_required
-from authentik.core.api.groups import GroupSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import (
@@ -72,6 +71,7 @@ from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
+
 
 class SimpleGroupSerializer(ModelSerializer):
     """Group Serializer"""
