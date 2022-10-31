@@ -254,7 +254,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                             <label class="pf-c-check__label">${t`Hash phone number`}</label>
                         </div>
                         <p class="pf-c-form__helper-text">
-                            ${t`If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons.Devices created from a stage with this enabled cannot be used with the authenticator validation stage.`}
+                            ${t`If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons. Devices created from a stage with this enabled cannot be used with the authenticator validation stage.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
