@@ -2,6 +2,7 @@
 import re
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
+from types import GeneratorType
 from typing import Any, Optional
 from uuid import UUID
 
@@ -93,6 +94,8 @@ def sanitize_item(value: Any) -> Any:
         value = asdict(value)
     if isinstance(value, dict):
         return sanitize_dict(value)
+    if isinstance(value, GeneratorType):
+        return sanitize_item(list(value))
     if isinstance(value, list):
         new_values = []
         for item in value:
