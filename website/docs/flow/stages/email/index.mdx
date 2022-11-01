@@ -68,11 +68,7 @@ volumeMounts:
 </Tabs>
 
 :::info
-This is currently only supported for docker-compose installs, and supported starting version 0.15.
-:::
-
-:::info
-If you've add the line and created a file, and can't see if, check the logs using `docker-compose logs -f worker`.
+If you've add the line and created a file, and can't see if, check the worker logs using `docker-compose logs -f worker` or `kubectl logs -f deployment/authentik-worker`.
 :::
 
 ![](custom_template.png)

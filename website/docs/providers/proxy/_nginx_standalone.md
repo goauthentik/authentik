@@ -14,18 +14,18 @@ server {
     proxy_buffer_size 32k;
 
     location / {
-        # Put your proxy_pass to your application here
-        # proxy_pass          http://localhost:5000;
+        # Put your proxy_pass to your application here, and all the other statements you'll need
+        # proxy_pass http://localhost:5000;
+        # proxy_set_header Host $host;
+        # proxy_set_header ...
 
+        ##############################
         # authentik-specific config
-        auth_request        /outpost.goauthentik.io/auth/nginx;
-        error_page          401 = @goauthentik_proxy_signin;
+        ##############################
+        auth_request     /outpost.goauthentik.io/auth/nginx;
+        error_page       401 = @goauthentik_proxy_signin;
         auth_request_set $auth_cookie $upstream_http_set_cookie;
-        add_header Set-Cookie $auth_cookie;
-
-        # pass original hostname and url to Nginx, it might be needed for some apps to work
-        # proxy_set_header    Host $host;
-        # proxy_set_header    X-Original-URL $scheme://$http_host$request_uri;
+        add_header       Set-Cookie $auth_cookie;
 
         # translate headers from the outposts back to the actual upstream
         auth_request_set $authentik_username $upstream_http_x_authentik_username;
@@ -43,17 +43,15 @@ server {
 
     # all requests to /outpost.goauthentik.io must be accessible without authentication
     location /outpost.goauthentik.io {
-        proxy_pass          http://outpost.company:9000/outpost.goauthentik.io;
+        proxy_pass              http://outpost.company:9000/outpost.goauthentik.io;
         # ensure the host of this vserver matches your external URL you've configured
         # in authentik
-        proxy_set_header    Host $host;
-        proxy_set_header    X-Original-URL $scheme://$http_host$request_uri;
-        add_header          Set-Cookie $auth_cookie;
-        auth_request_set    $auth_cookie $upstream_http_set_cookie;
-
-        # required for POST requests to work
+        proxy_set_header        Host $host;
+        proxy_set_header        X-Original-URL $scheme://$http_host$request_uri;
+        add_header              Set-Cookie $auth_cookie;
+        auth_request_set        $auth_cookie $upstream_http_set_cookie;
         proxy_pass_request_body off;
-        proxy_set_header Content-Length "";
+        proxy_set_header        Content-Length "";
     }
 
     # Special location for when the /auth endpoint returns a 401,
