@@ -57,6 +57,7 @@ class LDAPSourceSerializer(SourceSerializer):
             "sync_users_password",
             "sync_groups",
             "sync_parent_group",
+            "lookup_groups_from_user",
             "property_mappings",
             "property_mappings_group",
         ]
@@ -88,6 +89,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "sync_users_password",
         "sync_groups",
         "sync_parent_group",
+        "lookup_groups_from_user",
         "property_mappings",
         "property_mappings_group",
     ]
