@@ -47,9 +47,26 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             return -1
         membership_count = 0
         for group in page_data:
-            if "attributes" not in group:
-                continue
-            members = group.get("attributes", {}).get(self._source.group_membership_field, [])
+            if self._source.lookup_groups_from_user:
+                group_dn = group.get("dn", {})
+                group_filter = f"({self._source.group_membership_field}={group_dn})"
+                group_members = self._source.connection.extend.standard.paged_search(
+                    search_base=self.base_dn_users,
+                    search_filter=group_filter,
+                    search_scope=ldap3.SUBTREE,
+                    attributes=[
+                        self._source.object_uniqueness_field
+                    ]
+                )
+                members = []
+                for group_member in group_members:
+                    group_member_dn = group_member.get("dn", {})
+                    members.append(group_member_dn)
+            else:
+                if "attributes" not in group:
+                    continue
+                members = group.get("attributes", {}).get(self._source.group_membership_field, [])
+
             ak_group = self.get_group(group)
             if not ak_group:
                 continue
@@ -68,7 +85,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                         "ak_groups__in": [ak_group],
                     }
                 )
-            )
+            ).distinct()
             membership_count += 1
             membership_count += users.count()
             ak_group.users.set(users)
