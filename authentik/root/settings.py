@@ -134,7 +134,7 @@ SPECTACULAR_SETTINGS = {
     },
     "AUTHENTICATION_WHITELIST": ["authentik.api.authentication.TokenAuthentication"],
     "LICENSE": {
-        "name": "GNU GPLv3",
+        "name": "MIT",
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {

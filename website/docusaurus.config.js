@@ -3,7 +3,6 @@ const sidebar = require("./sidebars.js");
 const releases = sidebar.docs
     .filter((doc) => doc.link?.slug === "releases")[0]
     .items.filter((release) => typeof release === "string");
-const latestVersion = releases[0].replace("releases/v", "");
 
 module.exports = {
     title: "authentik",
@@ -22,6 +21,7 @@ module.exports = {
                 src: "img/icon_left_brand.svg",
             },
             items: [
+                { to: "blog", label: "Blog", position: "left" },
                 {
                     to: "docs/",
                     activeBasePath: "docs",
@@ -112,7 +112,7 @@ module.exports = {
                     ],
                 },
             ],
-            copyright: `Copyright © ${new Date().getFullYear()} BeryJu.org. Built with Docusaurus.`,
+            copyright: `Copyright © ${new Date().getFullYear()} authentik Security Inc. Built with Docusaurus.`,
         },
         colorMode: {
             respectPrefersColorScheme: true,

@@ -1,8 +1,8 @@
 {
-    "name": "authentik-web",
+    "name": "@goauthentik/web",
     "version": "0.0.0",
     "private": true,
-    "license": "GNU GPLv3",
+    "license": "MIT",
     "scripts": {
         "extract": "lingui extract",
         "build": "lingui compile && rollup -c ./rollup.config.js",

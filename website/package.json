@@ -1,7 +1,8 @@
 {
-    "name": "authentik-docs",
+    "name": "@goauthentik/website",
     "version": "0.0.0",
     "private": true,
+    "license": "MIT",
     "scripts": {
         "docusaurus": "docusaurus",
         "watch": "docusaurus start",

@@ -31,7 +31,7 @@ RESPONSE_SUCCESS = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
     <saml2:Assertion xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" ID="_346001c5708ffd118c40edbc0c72fc60" IssueInstant="2022-10-14T14:11:49.590Z" Version="2.0">
         <saml2:Issuer>https://accounts.google.com/o/saml2?idpid=</saml2:Issuer>
         <saml2:Subject>
-            <saml2:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">jens@beryju.org</saml2:NameID>
+            <saml2:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">jens@goauthentik.io</saml2:NameID>
             <saml2:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
                 <saml2:SubjectConfirmationData InResponseTo="_157fb504b59f4ae3919f74896a6b8565" NotOnOrAfter="2022-10-14T14:16:49.590Z" Recipient="https://127.0.0.1:9443/source/saml/google/acs/"></saml2:SubjectConfirmationData>
             </saml2:SubjectConfirmation>
@@ -111,5 +111,5 @@ class TestResponseProcessor(TestCase):
         sfm = parser.prepare_flow_manager()
         self.assertEqual(
             sfm.enroll_info,
-            {"email": "foo@bar.baz", "name": "foo", "sn": "bar", "username": "jens@beryju.org"},
+            {"email": "foo@bar.baz", "name": "foo", "sn": "bar", "username": "jens@goauthentik.io"},
         )
