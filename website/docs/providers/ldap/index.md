@@ -68,9 +68,9 @@ All bind modes rely on flows.
 
 The following stages are supported:
 
--   [Identification](../../flow/stages/identification/)
--   [Password](../../flow/stages/password/)
--   [Authenticator validation](../../flow/stages/authenticator_validate/)
+-   [Identification](../../flow/stages/identification/index.md)
+-   [Password](../../flow/stages/password/index.md)
+-   [Authenticator validation](../../flow/stages/authenticator_validate/index.md)
 
     Note: Authenticator validation currently only supports DUO devices
 
