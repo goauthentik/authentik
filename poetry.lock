@@ -1625,7 +1625,7 @@ pyasn1 = ">=0.1.3"
 
 [[package]]
 name = "selenium"
-version = "4.5.0"
+version = "4.6.0"
 description = ""
 category = "dev"
 optional = false
@@ -3467,7 +3467,7 @@ rsa = [
     {file = "rsa-4.9.tar.gz", hash = "sha256:e38464a49c6c85d7f1351b0126661487a7e0a14a50f1675ec50eb34d4f20ef21"},
 ]
 selenium = [
-    {file = "selenium-4.5.0-py3-none-any.whl", hash = "sha256:a733dd77d3171b846893f4d51b18967d809313f547a10974e26579f9ce797462"},
+    {file = "selenium-4.6.0-py3-none-any.whl", hash = "sha256:3f1999875ef487ae676a254e7293a68041f1f1ec76be81402d8a1cd5a481bf3b"},
 ]
 sentry-sdk = [
     {file = "sentry-sdk-1.10.1.tar.gz", hash = "sha256:105faf7bd7b7fa25653404619ee261527266b14103fe1389e0ce077bd23a9691"},
