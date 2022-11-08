@@ -73,13 +73,11 @@ from authentik.tenants.models import Tenant
 LOGGER = get_logger()
 
 
-class SimpleGroupSerializer(ModelSerializer):
-    """Group Serializer"""
+class UserGroupSerializer(ModelSerializer):
+    """Simplified Group Serializer for user's groups"""
 
-    attributes = JSONField(validators=[is_dict], required=False)
+    attributes = JSONField(required=False)
     parent_name = CharField(source="parent.name", read_only=True)
-
-    num_pk = IntegerField(read_only=True)
 
     class Meta:
 
@@ -104,7 +102,7 @@ class UserSerializer(ModelSerializer):
     groups = PrimaryKeyRelatedField(
         allow_empty=True, many=True, source="ak_groups", queryset=Group.objects.all()
     )
-    groups_obj = ListSerializer(child=SimpleGroupSerializer(), read_only=True, source="ak_groups")
+    groups_obj = ListSerializer(child=UserGroupSerializer(), read_only=True, source="ak_groups")
     uid = CharField(read_only=True)
     username = CharField(max_length=150)
 

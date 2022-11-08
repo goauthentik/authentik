@@ -36800,59 +36800,6 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
       - http://www.w3.org/2000/09/xmldsig#dsa-sha1
       type: string
-    SimpleGroup:
-      type: object
-      description: Group Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        num_pk:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 80
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
-        parent_name:
-          type: string
-          readOnly: true
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - num_pk
-      - parent_name
-      - pk
-    SimpleGroupRequest:
-      type: object
-      description: Group Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 80
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
     Source:
       type: object
       description: Source Serializer
@@ -37530,7 +37477,7 @@ components:
         groups_obj:
           type: array
           items:
-            $ref: '#/components/schemas/SimpleGroup'
+            $ref: '#/components/schemas/UserGroup'
           readOnly: true
         email:
           type: string
@@ -37632,6 +37579,59 @@ components:
       - username
       - upn
       type: string
+    UserGroup:
+      type: object
+      description: Simplified Group Serializer for user's groups
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        num_pk:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 80
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        parent:
+          type: string
+          format: uuid
+          nullable: true
+        parent_name:
+          type: string
+          readOnly: true
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - num_pk
+      - parent_name
+      - pk
+    UserGroupRequest:
+      type: object
+      description: Simplified Group Serializer for user's groups
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        parent:
+          type: string
+          format: uuid
+          nullable: true
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
     UserLoginStage:
       type: object
       description: UserLoginStage Serializer
