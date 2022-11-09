@@ -76,6 +76,7 @@ module.exports = {
                         "services/powerdns-admin/index",
                         "services/snipe-it/index",
                         "services/truecommand/index",
+                        "services/sssd/index",
                         "services/veeam-enterprise-manager/index",
                     ],
                 },
