@@ -73,7 +73,7 @@ Change the following fields
 ### Step 4 _(optional Claims for authorization management)_
 
 :::note
-This step is __optional__ and shows how to set claims to control the permissions of users in gitea by adding them to groups.
+This step is **optional** and shows how to set claims to control the permissions of users in gitea by adding them to groups.
 :::
 
 #### Define Groups
@@ -96,7 +96,7 @@ You can add Members to the groups now or anytime later.
 
 #### Create Custom Property Mapping
 
-In authentik, create a custom property mapping (under _Customization/Property Mappings_) which has the type __Scope Mapping__. 
+In authentik, create a custom property mapping (under _Customization/Property Mappings_) which has the type **Scope Mapping**.
 
 :::note
 Only settings that have been modified from default have been listed.
@@ -105,7 +105,7 @@ Only settings that have been modified from default have been listed.
 -   Name: authentik gitea OAuth Mapping: OpenID 'gitea'
 -   Scope name: gitea
 
-And as __Expression__ set the following:
+And as **Expression** set the following:
 
 ```(python)
 gitea_claims = {}
@@ -121,7 +121,7 @@ return gitea_claims
 
 #### Add the custom Property Mapping to the Gitea Provider
 
-In authentik, edit the __Gitea__ provider (under _Applications/Providers_) by clicking the pencil Icon. 
+In authentik, edit the **Gitea** provider (under _Applications/Providers_) by clicking the pencil Icon.
 
 Unfold the _Advanced protocol settings_ and activate these Mappings:
 
@@ -134,7 +134,7 @@ Click `Update` and the configuration authentik is done.
 
 #### Configure Gitea to use the new claims
 
-Navigate to the _Authentication Sources_ page at https://gitea.company/admin/auths and edit the __authentik__ Authentication Source.
+Navigate to the _Authentication Sources_ page at https://gitea.company/admin/auths and edit the **authentik** Authentication Source.
 
 Change the following fields
 
@@ -144,10 +144,10 @@ Change the following fields
 -   Group Claim value for administrator users. (Optional - requires claim name above): `admin`
 -   Group Claim value for restricted users. (Optional - requires claim name above): `restricted`
 
-`Update Authentication Source` and you should be done. 
+`Update Authentication Source` and you should be done.
 
 Users without any of the defined groups should no longer be able to log in.
-Users of the group __gitadmin__ should have administrative privileges, and users in the group __gitrestricted__ should be restricted.
+Users of the group **gitadmin** should have administrative privileges, and users in the group **gitrestricted** should be restricted.
 
 ## Helm Chart Configuration
 
