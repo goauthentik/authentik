@@ -1,11 +1,13 @@
 """Test authorize view"""
 from django.test import RequestFactory
 from django.urls import reverse
+from django.utils.timezone import now
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.challenge import ChallengeTypes
 from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, RedirectUriError
 from authentik.providers.oauth2.models import (
     AuthorizationCode,
@@ -250,6 +252,7 @@ class TestAuthorize(OAuthTestCase):
             client_id="test",
             authorization_flow=flow,
             redirect_uris="foo://localhost",
+            access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
@@ -277,6 +280,11 @@ class TestAuthorize(OAuthTestCase):
                 "to": f"foo://localhost?code={code.code}&state={state}",
             },
         )
+        self.assertAlmostEqual(
+            code.expires.timestamp() - now().timestamp(),
+            timedelta_from_string(provider.access_code_validity).total_seconds(),
+            delta=5,
+        )
 
     def test_full_implicit(self):
         """Test full authorization"""
@@ -288,6 +296,7 @@ class TestAuthorize(OAuthTestCase):
             authorization_flow=flow,
             redirect_uris="http://localhost",
             signing_key=self.keypair,
+            access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
@@ -308,6 +317,7 @@ class TestAuthorize(OAuthTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         token: RefreshToken = RefreshToken.objects.filter(user=user).first()
+        expires = timedelta_from_string(provider.access_code_validity).total_seconds()
         self.assertJSONEqual(
             response.content.decode(),
             {
@@ -316,11 +326,16 @@ class TestAuthorize(OAuthTestCase):
                 "to": (
                     f"http://localhost#access_token={token.access_token}"
                     f"&id_token={provider.encode(token.id_token.to_dict())}&token_type=bearer"
-                    f"&expires_in=60&state={state}"
+                    f"&expires_in={int(expires)}&state={state}"
                 ),
             },
         )
-        self.validate_jwt(token, provider)
+        jwt = self.validate_jwt(token, provider)
+        self.assertAlmostEqual(
+            jwt["exp"] - now().timestamp(),
+            expires,
+            delta=5,
+        )
 
     def test_full_form_post_id_token(self):
         """Test full authorization (form_post response)"""

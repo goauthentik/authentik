@@ -1,4 +1,6 @@
 """OAuth test helpers"""
+from typing import Any
+
 from django.test import TestCase
 from jwt import decode
 
@@ -25,7 +27,7 @@ class OAuthTestCase(TestCase):
         cls.keypair = create_test_cert()
         super().setUpClass()
 
-    def validate_jwt(self, token: RefreshToken, provider: OAuth2Provider):
+    def validate_jwt(self, token: RefreshToken, provider: OAuth2Provider) -> dict[str, Any]:
         """Validate that all required fields are set"""
         key, alg = provider.get_jwt_key()
         if alg != JWTAlgorithms.HS256:
@@ -40,3 +42,4 @@ class OAuthTestCase(TestCase):
         for key in self.required_jwt_keys:
             self.assertIsNotNone(jwt[key], f"Key {key} is missing in access_token")
             self.assertIsNotNone(id_token[key], f"Key {key} is missing in id_token")
+        return jwt

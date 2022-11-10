@@ -261,7 +261,7 @@ class OAuthAuthorizationParams:
             code.code_challenge = self.code_challenge
             code.code_challenge_method = self.code_challenge_method
 
-        code.expires_at = timezone.now() + timedelta_from_string(self.provider.access_code_validity)
+        code.expires = timezone.now() + timedelta_from_string(self.provider.access_code_validity)
         code.scope = self.scope
         code.nonce = self.nonce
         code.is_open_id = SCOPE_OPENID in self.scope
@@ -525,6 +525,7 @@ class OAuthFulfillmentStage(StageView):
             user=self.request.user,
             scope=self.params.scope,
             request=self.request,
+            expiry=timedelta_from_string(self.provider.access_code_validity),
         )
 
         # Check if response_type must include access_token in the response.

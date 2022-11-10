@@ -2,9 +2,8 @@
 import base64
 import binascii
 import json
-import time
 from dataclasses import asdict, dataclass, field
-from datetime import datetime
+from datetime import datetime, timedelta
 from hashlib import sha256
 from typing import Any, Optional
 from urllib.parse import urlparse, urlunparse
@@ -14,7 +13,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from dacite.core import from_dict
 from django.db import models
 from django.http import HttpRequest
-from django.utils import dateformat, timezone
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 from rest_framework.serializers import Serializer
@@ -25,7 +24,7 @@ from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import SerializerModel
-from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
+from authentik.lib.utils.time import timedelta_string_validator
 from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
 from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT
 from authentik.sources.oauth.models import OAuthSource
@@ -237,14 +236,18 @@ class OAuth2Provider(Provider):
     )
 
     def create_refresh_token(
-        self, user: User, scope: list[str], request: HttpRequest
+        self,
+        user: User,
+        scope: list[str],
+        request: HttpRequest,
+        expiry: timedelta,
     ) -> "RefreshToken":
         """Create and populate a RefreshToken object."""
         token = RefreshToken(
             user=user,
             provider=self,
             refresh_token=base64.urlsafe_b64encode(generate_key().encode()).decode(),
-            expires=timezone.now() + timedelta_from_string(self.token_validity),
+            expires=timezone.now() + expiry,
             scope=scope,
         )
         token.access_token = token.create_access_token(user, request)
@@ -484,18 +487,21 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
             )
 
         # Convert datetimes into timestamps.
-        now = int(time.time())
-        iat_time = now
-        exp_time = int(dateformat.format(self.expires, "U"))
+        now = datetime.now()
+        iat_time = int(now.timestamp())
+        exp_time = int(self.expires.timestamp())
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
-        auth_events = Event.objects.filter(action=EventAction.LOGIN, user=get_user(user)).order_by(
-            "-created"
+        auth_event = (
+            Event.objects.filter(action=EventAction.LOGIN, user=get_user(user))
+            .order_by("-created")
+            .first()
         )
         # Fallback in case we can't find any login events
-        auth_time = datetime.now()
-        if auth_events.exists():
-            auth_time = auth_events.first().created
-        auth_time = int(dateformat.format(auth_time, "U"))
+        auth_time = now
+        if auth_event:
+            auth_time = auth_event.created
+
+        auth_timestamp = int(auth_time.timestamp())
 
         token = IDToken(
             iss=self.provider.get_issuer(request),
@@ -503,7 +509,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
             aud=self.provider.client_id,
             exp=exp_time,
             iat=iat_time,
-            auth_time=auth_time,
+            auth_time=auth_timestamp,
         )
 
         # Include (or not) user standard claims in the id_token.

@@ -443,6 +443,7 @@ class TokenView(View):
             user=self.params.authorization_code.user,
             scope=self.params.authorization_code.scope,
             request=self.request,
+            expiry=timedelta_from_string(self.provider.token_validity),
         )
 
         if self.params.authorization_code.is_open_id:
@@ -478,6 +479,7 @@ class TokenView(View):
             user=self.params.refresh_token.user,
             scope=self.params.scope,
             request=self.request,
+            expiry=timedelta_from_string(self.provider.token_validity),
         )
 
         # If the Token has an id_token it's an Authentication request.
@@ -509,6 +511,7 @@ class TokenView(View):
             user=self.params.user,
             scope=self.params.scope,
             request=self.request,
+            expiry=timedelta_from_string(self.provider.token_validity),
         )
         refresh_token.id_token = refresh_token.create_id_token(
             user=self.params.user,
@@ -535,6 +538,7 @@ class TokenView(View):
             user=self.params.device_code.user,
             scope=self.params.device_code.scope,
             request=self.request,
+            expiry=timedelta_from_string(self.provider.token_validity),
         )
         refresh_token.id_token = refresh_token.create_id_token(
             user=self.params.device_code.user,
