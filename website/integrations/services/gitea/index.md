@@ -109,11 +109,11 @@ And as **Expression** set the following:
 
 ```(python)
 gitea_claims = {}
-if any(group.name == "gituser" for group in request.user.ak_groups.all()):
+if request.user.ak_groups.filter(name="gituser").exists():
     gitea_claims["gitea"]= "user"
-if any(group.name == "gitadmin" for group in request.user.ak_groups.all()):
+if request.user.ak_groups.filter(name="gitadmin").exists():
     gitea_claims["gitea"]= "admin"
-if any(group.name == "gitrestricted" for group in request.user.ak_groups.all()):
+if request.user.ak_groups.filter(name="gitrestricted").exists():
     gitea_claims["gitea"]= "restricted"
 
 return gitea_claims
