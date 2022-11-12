@@ -35,7 +35,7 @@ while True:
     except OperationalError as exc:
         sleep(1)
         CONFIG.log("info", f"PostgreSQL connection failed, retrying... ({exc})")
-    CONFIG.log("info", "PostgreSQL connection successful")
+CONFIG.log("info", "PostgreSQL connection successful")
 
 REDIS_PROTOCOL_PREFIX = "redis://"
 if CONFIG.y_bool("redis.tls", False):
@@ -53,6 +53,6 @@ while True:
     except RedisError as exc:
         sleep(1)
         CONFIG.log("info", f"Redis Connection failed, retrying... ({exc})", redis_url=REDIS_URL)
-    CONFIG.log("info", "Redis Connection successful")
+CONFIG.log("info", "Redis Connection successful")
 
 CONFIG.log("info", "Finished authentik bootstrap")
