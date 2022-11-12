@@ -85,11 +85,11 @@ class Importer:
             self.__import = from_dict(Blueprint, import_dict)
         except DaciteError as exc:
             raise EntryInvalidError from exc
-        context = {}
-        always_merger.merge(context, self.__import.context)
+        ctx = {}
+        always_merger.merge(ctx, self.__import.context)
         if context:
-            always_merger.merge(context, context)
-        self.__import.context = context
+            always_merger.merge(ctx, context)
+        self.__import.context = ctx
 
     @property
     def blueprint(self) -> Blueprint:
