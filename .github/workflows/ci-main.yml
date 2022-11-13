@@ -83,17 +83,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{github.repository_owner}}
       - name: run unittest
         run: |
           poetry run make test
           poetry run coverage xml
-      - name: run testspace
-        if: ${{ always() }}
-        run: |
-          testspace [unittest]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v3
         with:
@@ -104,19 +97,12 @@ jobs:
       - uses: actions/checkout@v3
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{github.repository_owner}}
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.4.0
       - name: run integration
         run: |
           poetry run make test-integration
           poetry run coverage xml
-      - name: run testspace
-        if: ${{ always() }}
-        run: |
-          testspace [integration]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v3
         with:
@@ -127,9 +113,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{github.repository_owner}}
       - name: Setup e2e env (chrome, etc)
         run: |
           docker-compose -f tests/e2e/docker-compose.yml up -d
@@ -149,10 +132,6 @@ jobs:
         run: |
           poetry run make test-e2e-provider
           poetry run coverage xml
-      - name: run testspace
-        if: ${{ always() }}
-        run: |
-          testspace [e2e-provider]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v3
         with:
@@ -163,9 +142,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{github.repository_owner}}
       - name: Setup e2e env (chrome, etc)
         run: |
           docker-compose -f tests/e2e/docker-compose.yml up -d
@@ -185,10 +161,6 @@ jobs:
         run: |
           poetry run make test-e2e-rest
           poetry run coverage xml
-      - name: run testspace
-        if: ${{ always() }}
-        run: |
-          testspace [e2e-rest]unittest.xml --link=codecov
       - if: ${{ always() }}
         uses: codecov/codecov-action@v3
         with:
