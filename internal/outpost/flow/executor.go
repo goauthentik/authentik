@@ -14,9 +14,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
-	"goauthentik.io/internal/constants"
-	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/utils/web"
 )
 
 var (
@@ -60,7 +57,7 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 		l.WithError(err).Warning("Failed to create cookiejar")
 		panic(err)
 	}
-	transport := web.NewUserAgentTransport(constants.OutpostUserAgent(), web.NewTracingTransport(rsp.Context(), ak.GetTLSTransport()))
+	transport := refConfig.HTTPClient.Transport
 	fe := &FlowExecutor{
 		Params:    url.Values{},
 		Answers:   make(map[StageComponent]string),
