@@ -4,7 +4,7 @@ title: Full development environment
 
 ## Requirements
 
--   Python 3.10
+-   Python 3.11
 -   poetry, which is used to manage dependencies, and can be installed with `pip install poetry`
 -   Go 1.18
 -   PostgreSQL (any recent version will do)

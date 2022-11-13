@@ -13,7 +13,7 @@ runs:
     - name: Setup python and restore poetry
       uses: actions/setup-python@v3
       with:
-        python-version: '3.10'
+        python-version: '3.11'
         cache: 'poetry'
     - name: Setup node
       uses: actions/setup-node@v3.1.0
@@ -25,7 +25,7 @@ runs:
       shell: bash
       run: |
         docker-compose -f .github/actions/setup/docker-compose.yml up -d
-        poetry env use python3.10
+        poetry env use python3.11
         poetry install
         cd web && npm ci
     - name: Generate config
