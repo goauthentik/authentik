@@ -46,15 +46,13 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
         with patch(
             "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.auth_client",
             MagicMock(
-                MagicMock(
-                    return_value=MagicMock(
-                        auth=MagicMock(
-                            return_value={
-                                "result": "allow",
-                                "status": "allow",
-                                "status_msg": "Success. Logging you in...",
-                            }
-                        )
+                return_value=MagicMock(
+                    auth=MagicMock(
+                        return_value={
+                            "result": "allow",
+                            "status": "allow",
+                            "status_msg": "Success. Logging you in...",
+                        }
                     )
                 )
             ),
