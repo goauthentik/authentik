@@ -6,7 +6,7 @@ This stage can be used to invite users. You can use this to enroll users with pr
 
 If the option `Continue Flow without Invitation` is enabled, this stage will continue even when no invitation token is present.
 
-To check if a user has used an invitation within a policy, you can check `request.context.invitation_in_effect`.
+To check if a user has used an invitation within a policy, you can check `request.context.get("invitation_in_effect", False)`.
 
 To use an invitation, use the URL `https://authentik.tld/if/flow/your-enrollment-flow/?itoken=invitation-token`.
 
