@@ -37,7 +37,7 @@ class PasswordPolicy(Policy):
     amount_symbols = models.PositiveIntegerField(default=0)
     length_min = models.PositiveIntegerField(default=0)
     symbol_charset = models.TextField(default=r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ")
-    error_message = models.TextField()
+    error_message = models.TextField(blank=True)
 
     hibp_allowed_count = models.PositiveIntegerField(
         default=0,

@@ -18,6 +18,7 @@ def migrate_hibp_policy(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
             hibp_allowed_count=old_policy.allowed_count,
             password_field=old_policy.password_field,
             execution_logging=old_policy.execution_logging,
+            check_static_rules=False,
             check_have_i_been_pwned=True,
         )
         PolicyBinding.objects.using(db_alias).filter(policy=old_policy).update(policy=new_policy)
@@ -62,6 +63,11 @@ class Migration(migrations.Migration):
                 default=2,
                 help_text="If the zxcvbn score is equal or less than this value, the policy will fail.",
             ),
+        ),
+        migrations.AlterField(
+            model_name="passwordpolicy",
+            name="error_message",
+            field=models.TextField(blank=True),
         ),
         migrations.RunPython(migrate_hibp_policy),
     ]
