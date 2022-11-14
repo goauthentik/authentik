@@ -159,9 +159,15 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
                 hosts=tls_hosts,
                 secret_name=self.controller.outpost.config.kubernetes_ingress_secret_name,
             )
+        spec = V1IngressSpec(
+            rules=rules,
+            tls=[tls_config],
+        )
+        if self.controller.outpost.config.kubernetes_ingress_class_name:
+            spec.ingress_class_name = self.controller.outpost.config.kubernetes_ingress_class_name
         return V1Ingress(
             metadata=meta,
-            spec=V1IngressSpec(rules=rules, tls=[tls_config]),
+            spec=spec,
         )
 
     def create(self, reference: V1Ingress):

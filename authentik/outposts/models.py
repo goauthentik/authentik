@@ -53,7 +53,7 @@ class ServiceConnectionInvalid(SentryIgnoredException):
 class OutpostConfig:
     """Configuration an outpost uses to configure it self"""
 
-    # update website/docs/outposts/outposts.md
+    # update website/docs/outposts/_config.md
 
     authentik_host: str = ""
     authentik_host_insecure: bool = False
@@ -62,16 +62,17 @@ class OutpostConfig:
     log_level: str = CONFIG.y("log_level")
     object_naming_template: str = field(default="ak-outpost-%(name)s")
 
+    container_image: Optional[str] = field(default=None)
+
     docker_network: Optional[str] = field(default=None)
     docker_map_ports: bool = field(default=True)
     docker_labels: Optional[dict[str, str]] = field(default=None)
-
-    container_image: Optional[str] = field(default=None)
 
     kubernetes_replicas: int = field(default=1)
     kubernetes_namespace: str = field(default_factory=get_namespace)
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
+    kubernetes_ingress_class_name: Optional[str] = field(default=None)
     kubernetes_service_type: str = field(default="ClusterIP")
     kubernetes_disabled_components: list[str] = field(default_factory=list)
     kubernetes_image_pull_secrets: list[str] = field(default_factory=list)

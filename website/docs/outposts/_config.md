@@ -59,4 +59,9 @@ kubernetes_disabled_components: []
 # NOTE: The secret must be created manually in the namespace first.
 # Applies to: non-embedded
 kubernetes_image_pull_secrets: []
+# Optionally configure an ingress class name. If not set, the ingress will use the cluster's
+# default ingress class
+# (Available with 2022.11.0+)
+# Applies to: proxy outposts
+kubernetes_ingress_class_name: null
 ```
