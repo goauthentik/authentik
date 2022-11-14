@@ -143,7 +143,7 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
     class Meta:
 
         model = KubernetesServiceConnection
-        fields = ServiceConnectionSerializer.Meta.fields + ["kubeconfig"]
+        fields = ServiceConnectionSerializer.Meta.fields + ["kubeconfig", "verify_ssl"]
 
 
 class KubernetesServiceConnectionViewSet(UsedByMixin, ModelViewSet):

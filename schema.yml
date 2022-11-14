@@ -28488,6 +28488,9 @@ components:
           additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
+        verify_ssl:
+          type: boolean
+          description: Verify SSL Certificates of the Kubernetes API endpoint
       required:
       - component
       - meta_model_name
@@ -28511,6 +28514,9 @@ components:
           additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
+        verify_ssl:
+          type: boolean
+          description: Verify SSL Certificates of the Kubernetes API endpoint
       required:
       - name
     LDAPAPIAccessMode:
@@ -33714,6 +33720,9 @@ components:
           additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
+        verify_ssl:
+          type: boolean
+          description: Verify SSL Certificates of the Kubernetes API endpoint
     PatchedLDAPPropertyMappingRequest:
       type: object
       description: LDAP PropertyMapping Serializer

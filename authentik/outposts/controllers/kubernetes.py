@@ -36,6 +36,7 @@ class KubernetesClient(ApiClient, BaseClient):
                 load_incluster_config(client_configuration=config)
             else:
                 load_kube_config_from_dict(connection.kubeconfig, client_configuration=config)
+            config.verify_ssl = connection.verify_ssl
             super().__init__(config)
         except ConfigException as exc:
             raise ServiceConnectionInvalid(exc) from exc
