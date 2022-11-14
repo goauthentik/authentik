@@ -199,6 +199,41 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                     ${msg("Flow used when authorizing this provider.")}
                 </p>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`Invalidation flow`}
+                ?required=${true}
+                name="invalidationFlow"
+            >
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                        const args: FlowsInstancesListRequest = {
+                            ordering: "slug",
+                            designation: FlowsInstancesListDesignationEnum.Invalidation,
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
+                        return flows.results;
+                    }}
+                    .renderElement=${(flow: Flow): string => {
+                        return RenderFlowOption(flow);
+                    }}
+                    .renderDescription=${(flow: Flow): TemplateResult => {
+                        return html`${flow.name}`;
+                    }}
+                    .value=${(flow: Flow | undefined): string | undefined => {
+                        return flow?.pk;
+                    }}
+                    .selected=${(flow: Flow): boolean => {
+                        return flow.pk === this.instance?.invalidationFlow;
+                    }}
+                >
+                </ak-search-select>
+                <p class="pf-c-form__helper-text">
+                    ${t`Flow used when authorizing this provider.`}
+                </p>
+            </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>

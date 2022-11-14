@@ -1,0 +1,13 @@
+version: 1
+metadata:
+  name: Default - Provider invalidation flow
+entries:
+- attrs:
+    designation: invalidation
+    name: Logout
+    title: You've logged out of %(app)s.
+    authentication: none
+  identifiers:
+    slug: default-provider-invalidation-flow
+  model: authentik_flows.flow
+  id: flow
