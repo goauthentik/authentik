@@ -69,7 +69,7 @@ gen-build:
 	AUTHENTIK_DEBUG=true ak spectacular --file schema.yml
 
 gen-diff:
-	git show $(shell git tag -l | tail -n 1):schema.yml > old_schema.yml
+	git show $(shell git describe --abbrev=0):schema.yml > old_schema.yml
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \

@@ -20,6 +20,11 @@ class PasswordPolicySerializer(PolicySerializer):
             "length_min",
             "symbol_charset",
             "error_message",
+            "check_static_rules",
+            "check_have_i_been_pwned",
+            "check_zxcvbn",
+            "hibp_allowed_count",
+            "zxcvbn_score_threshold",
         ]
 
 
