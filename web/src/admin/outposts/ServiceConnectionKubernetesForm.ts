@@ -78,6 +78,18 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                     ${t`Set custom attributes using YAML or JSON.`}
                 </p>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="verifySsl">
+                <div class="pf-c-check">
+                    <input
+                        type="checkbox"
+                        class="pf-c-check__input"
+                        ?checked=${first(this.instance?.verifySsl, true)}
+                    />
+                    <label class="pf-c-check__label">
+                        ${t`Verify Kubernetes API SSL Certificate`}
+                    </label>
+                </div>
+            </ak-form-element-horizontal>
         </form>`;
     }
 }

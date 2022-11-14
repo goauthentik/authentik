@@ -225,6 +225,9 @@ class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
         ),
         blank=True,
     )
+    verify_ssl = models.BooleanField(
+        default=True, help_text=_("Verify SSL Certificates of the Kubernetes API endpoint")
+    )
 
     @property
     def serializer(self) -> Serializer:
