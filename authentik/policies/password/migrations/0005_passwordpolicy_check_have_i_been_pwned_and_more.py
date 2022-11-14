@@ -14,7 +14,7 @@ def migrate_hibp_policy(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
     for old_policy in HaveIBeenPwendPolicy.objects.using(db_alias).all():
         new_policy = PasswordPolicy.objects.using(db_alias).create(
-            name=old_policy,
+            name=old_policy.name,
             hibp_allowed_count=old_policy.allowed_count,
             password_field=old_policy.password_field,
             execution_logging=old_policy.execution_logging,
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="passwordpolicy",
             name="hibp_allowed_count",
-            field=models.IntegerField(
+            field=models.PositiveIntegerField(
                 default=0,
                 help_text="How many times the password hash is allowed to be on haveibeenpwned",
             ),

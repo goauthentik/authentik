@@ -15,7 +15,7 @@ LOGGER = get_logger()
 
 
 class HaveIBeenPwendPolicy(Policy):
-    """Check if password is on HaveIBeenPwned's list by uploading the first
+    """DEPRECATED. Check if password is on HaveIBeenPwned's list by uploading the first
     5 characters of the SHA1 Hash."""
 
     password_field = models.TextField(

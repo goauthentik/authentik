@@ -39,7 +39,7 @@ class PasswordPolicy(Policy):
     symbol_charset = models.TextField(default=r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ")
     error_message = models.TextField()
 
-    hibp_allowed_count = models.IntegerField(
+    hibp_allowed_count = models.PositiveIntegerField(
         default=0,
         help_text=_("How many times the password hash is allowed to be on haveibeenpwned"),
     )
@@ -143,12 +143,15 @@ class PasswordPolicy(Policy):
             user_inputs.append(request.user.email)
         if request.http_request:
             user_inputs.append(request.http_request.tenant.branding_title)
-        results = zxcvbn(password, user_inputs)
+        # Only calculate result for the first 100 characters, as with over 100 char
+        # long passwords we can be reasonably sure that they'll surpass the score anyways
+        # See https://github.com/dropbox/zxcvbn#runtime-latency
+        results = zxcvbn(password[:100], user_inputs)
         result = PolicyResult(results["score"] <= self.zxcvbn_score_threshold)
         if isinstance(results["feedback"]["warning"], list):
-            result.messages += results["feedback"]["warning"]
+            result.messages += tuple(results["feedback"]["warning"])
         if isinstance(results["feedback"]["suggestions"], list):
-            result.messages += results["feedback"]["suggestions"]
+            result.messages += tuple(results["feedback"]["suggestions"])
         return result
 
     class Meta(Policy.PolicyMeta):

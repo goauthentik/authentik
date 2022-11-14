@@ -11435,6 +11435,18 @@ paths:
         schema:
           type: integer
       - in: query
+        name: check_have_i_been_pwned
+        schema:
+          type: boolean
+      - in: query
+        name: check_static_rules
+        schema:
+          type: boolean
+      - in: query
+        name: check_zxcvbn
+        schema:
+          type: boolean
+      - in: query
         name: created
         schema:
           type: string
@@ -11447,6 +11459,10 @@ paths:
         name: execution_logging
         schema:
           type: boolean
+      - in: query
+        name: hibp_allowed_count
+        schema:
+          type: integer
       - in: query
         name: last_updated
         schema:
@@ -11497,6 +11513,10 @@ paths:
         name: symbol_charset
         schema:
           type: string
+      - in: query
+        name: zxcvbn_score_threshold
+        schema:
+          type: integer
       tags:
       - policies
       security:
@@ -32889,6 +32909,23 @@ components:
           type: string
         error_message:
           type: string
+        check_static_rules:
+          type: boolean
+        check_have_i_been_pwned:
+          type: boolean
+        check_zxcvbn:
+          type: boolean
+        hibp_allowed_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many times the password hash is allowed to be on haveibeenpwned
+        zxcvbn_score_threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: If the zxcvbn score is equal or less than this value, the policy
+            will fail.
       required:
       - bound_to
       - component
@@ -32939,6 +32976,23 @@ components:
         error_message:
           type: string
           minLength: 1
+        check_static_rules:
+          type: boolean
+        check_have_i_been_pwned:
+          type: boolean
+        check_zxcvbn:
+          type: boolean
+        hibp_allowed_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many times the password hash is allowed to be on haveibeenpwned
+        zxcvbn_score_threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: If the zxcvbn score is equal or less than this value, the policy
+            will fail.
       required:
       - error_message
     PasswordStage:
@@ -34201,6 +34255,23 @@ components:
         error_message:
           type: string
           minLength: 1
+        check_static_rules:
+          type: boolean
+        check_have_i_been_pwned:
+          type: boolean
+        check_zxcvbn:
+          type: boolean
+        hibp_allowed_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many times the password hash is allowed to be on haveibeenpwned
+        zxcvbn_score_threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: If the zxcvbn score is equal or less than this value, the policy
+            will fail.
     PatchedPasswordStageRequest:
       type: object
       description: PasswordStage Serializer
