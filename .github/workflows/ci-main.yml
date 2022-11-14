@@ -46,6 +46,7 @@ jobs:
         run: poetry run python -m lifecycle.migrate
   test-migrations-from-stable:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v3
         with:
