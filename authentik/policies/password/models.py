@@ -90,24 +90,24 @@ class PasswordPolicy(Policy):
     def passes_static(self, password: str, request: PolicyRequest) -> PolicyResult:
         """Check static rules"""
         if len(password) < self.length_min:
-            LOGGER.debug("password failed", reason="length")
+            LOGGER.debug("password failed", check="static", reason="length")
             return PolicyResult(False, self.error_message)
 
         if self.amount_digits > 0 and len(RE_DIGITS.findall(password)) < self.amount_digits:
-            LOGGER.debug("password failed", reason="amount_digits")
+            LOGGER.debug("password failed", check="static", reason="amount_digits")
             return PolicyResult(False, self.error_message)
         if self.amount_lowercase > 0 and len(RE_LOWER.findall(password)) < self.amount_lowercase:
-            LOGGER.debug("password failed", reason="amount_lowercase")
+            LOGGER.debug("password failed", check="static", reason="amount_lowercase")
             return PolicyResult(False, self.error_message)
         if self.amount_uppercase > 0 and len(RE_UPPER.findall(password)) < self.amount_lowercase:
-            LOGGER.debug("password failed", reason="amount_uppercase")
+            LOGGER.debug("password failed", check="static", reason="amount_uppercase")
             return PolicyResult(False, self.error_message)
         if self.amount_symbols > 0:
             count = 0
             for symbol in self.symbol_charset:
                 count += password.count(symbol)
             if count < self.amount_symbols:
-                LOGGER.debug("password failed", reason="amount_symbols")
+                LOGGER.debug("password failed", check="static", reason="amount_symbols")
                 return PolicyResult(False, self.error_message)
 
         return PolicyResult(True)
@@ -130,6 +130,7 @@ class PasswordPolicy(Policy):
                 final_count = int(count)
         LOGGER.debug("got hibp result", count=final_count, hash=pw_hash[:5])
         if final_count > self.hibp_allowed_count:
+            LOGGER.debug("password failed", check="hibp", count=final_count)
             message = _("Password exists on %(count)d online lists." % {"count": final_count})
             return PolicyResult(False, message)
         return PolicyResult(True)
@@ -147,7 +148,8 @@ class PasswordPolicy(Policy):
         # long passwords we can be reasonably sure that they'll surpass the score anyways
         # See https://github.com/dropbox/zxcvbn#runtime-latency
         results = zxcvbn(password[:100], user_inputs)
-        result = PolicyResult(results["score"] <= self.zxcvbn_score_threshold)
+        LOGGER.debug("password failed", check="zxcvbn", score=results["score"])
+        result = PolicyResult(results["score"] > self.zxcvbn_score_threshold)
         if isinstance(results["feedback"]["warning"], list):
             result.messages += tuple(results["feedback"]["warning"])
         if isinstance(results["feedback"]["suggestions"], list):
