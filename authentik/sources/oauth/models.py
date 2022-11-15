@@ -75,15 +75,20 @@ class OAuthSource(Source):
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         provider_type = self.type
         provider = provider_type()
+        icon = self.get_icon
+        if not icon:
+            icon = provider.icon_url()
         return UILoginButton(
             name=self.name,
-            icon_url=provider.icon_url(),
             challenge=provider.login_challenge(self, request),
+            icon_url=icon,
         )
 
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         provider_type = self.type
-        provider = provider_type()
+        icon = self.get_icon
+        if not icon:
+            icon = provider_type().icon_url()
         return UserSettingSerializer(
             data={
                 "title": self.name,
@@ -92,7 +97,7 @@ class OAuthSource(Source):
                     "authentik_sources_oauth:oauth-client-login",
                     kwargs={"source_slug": self.slug},
                 ),
-                "icon_url": provider.icon_url(),
+                "icon_url": icon,
             }
         )
 
