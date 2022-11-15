@@ -27162,6 +27162,9 @@ components:
         enabled:
           type: boolean
           readOnly: true
+        sentry_dsn:
+          type: string
+          readOnly: true
         environment:
           type: string
           readOnly: true
@@ -27176,6 +27179,7 @@ components:
       - enabled
       - environment
       - send_pii
+      - sentry_dsn
       - traces_sample_rate
     Event:
       type: object

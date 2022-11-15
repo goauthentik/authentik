@@ -44,12 +44,11 @@ func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 	}
 
 	if globalConfig.ErrorReporting.Enabled {
-		dsn := "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
 		if !initialSetup {
 			l.WithField("env", globalConfig.ErrorReporting.Environment).Debug("Error reporting enabled")
 		}
 		err := sentry.Init(sentry.ClientOptions{
-			Dsn:           dsn,
+			Dsn:           globalConfig.ErrorReporting.SentryDsn,
 			Environment:   globalConfig.ErrorReporting.Environment,
 			TracesSampler: sentryutils.SamplerFunc(float64(globalConfig.ErrorReporting.TracesSampleRate)),
 			Release:       fmt.Sprintf("authentik@%s", constants.VERSION),

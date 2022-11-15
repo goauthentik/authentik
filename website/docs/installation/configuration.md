@@ -90,9 +90,20 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
     Error reports are sent to https://sentry.beryju.org, and are used for debugging and general feedback. Anonymous performance data is also sent.
 
+-   `AUTHENTIK_ERROR_REPORTING__SENTRY_DSN`
+
+    Sets the DSN for the Sentry API endpoint. Defaults to `https://sentry.beryju.org`.
+
+    When error reporting is enabled, the default Sentry DSN will allow the authentik developers to receive error reports and anonymous performance data, which is used for general feedback about authentik, and in some cases, may be used for debugging purposes.
+
+    Users can create their own hosted Sentry account (or self-host Sentry) and opt to collect this data themselves.
+
 -   `AUTHENTIK_ERROR_REPORTING__ENVIRONMENT`
 
-    Unique environment that is attached to your error reports, should be set to your email address for example. Defaults to `customer`.
+    The environment tag associated with all data sent to Sentry. Defaults to `customer`.
+
+    When error reporting has been enabled to aid in debugging issues, this should be set to a unique
+    value, such as an e-mail address.
 
 -   `AUTHENTIK_ERROR_REPORTING__SEND_PII`
 

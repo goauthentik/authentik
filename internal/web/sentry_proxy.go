@@ -39,8 +39,7 @@ func (ws *WebServer) APISentryProxy(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if sd.DSN != config.Get().ErrorReporting.DSN {
-		ws.log.WithField("have", sd.DSN).WithField("expected", config.Get().ErrorReporting.DSN).Debug("invalid DSN")
+	if sd.DSN != config.Get().ErrorReporting.SentryDSN {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}

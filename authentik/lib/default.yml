@@ -32,6 +32,7 @@ log_level: info
 # Error reporting, sends stacktrace to sentry.beryju.org
 error_reporting:
   enabled: false
+  sentry_dsn: https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8
   environment: customer
   send_pii: false
   sample_rate: 0.1
