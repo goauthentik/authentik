@@ -2,6 +2,8 @@
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
 
+from authentik.root.messages.storage import CACHE_PREFIX
+
 
 class MessageConsumer(JsonWebsocketConsumer):
     """Consumer which sends django.contrib.messages Messages over WS.
@@ -12,11 +14,13 @@ class MessageConsumer(JsonWebsocketConsumer):
     def connect(self):
         self.accept()
         self.session_key = self.scope["session"].session_key
-        cache.set(f"user_{self.session_key}_messages_{self.channel_name}", True, None)
+        if not self.session_key:
+            return
+        cache.set(f"{CACHE_PREFIX}{self.session_key}_messages_{self.channel_name}", True, None)
 
     # pylint: disable=unused-argument
     def disconnect(self, code):
-        cache.delete(f"user_{self.session_key}_messages_{self.channel_name}")
+        cache.delete(f"{CACHE_PREFIX}{self.session_key}_messages_{self.channel_name}")
 
     def event_update(self, event: dict):
         """Event handler which is called by Messages Storage backend"""

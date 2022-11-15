@@ -15,6 +15,7 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
 
 LOGGER = get_logger()
+CACHE_KEY_PREFIX = "goauthentik.io/events/tasks/"
 
 
 class TaskResultStatus(Enum):
@@ -70,16 +71,16 @@ class TaskInfo:
     @staticmethod
     def all() -> dict[str, "TaskInfo"]:
         """Get all TaskInfo objects"""
-        return cache.get_many(cache.keys("task_*"))
+        return cache.get_many(cache.keys(CACHE_KEY_PREFIX + "*"))
 
     @staticmethod
     def by_name(name: str) -> Optional["TaskInfo"]:
         """Get TaskInfo Object by name"""
-        return cache.get(f"task_{name}", None)
+        return cache.get(CACHE_KEY_PREFIX + name, None)
 
     def delete(self):
         """Delete task info from cache"""
-        return cache.delete(f"task_{self.task_name}")
+        return cache.delete(CACHE_KEY_PREFIX + self.task_name)
 
     def set_prom_metrics(self):
         """Update prometheus metrics"""
@@ -98,9 +99,9 @@ class TaskInfo:
 
     def save(self, timeout_hours=6):
         """Save task into cache"""
-        key = f"task_{self.task_name}"
+        key = CACHE_KEY_PREFIX + self.task_name
         if self.result.uid:
-            key += f"_{self.result.uid}"
+            key += f"/{self.result.uid}"
             self.task_name += f"_{self.result.uid}"
         self.set_prom_metrics()
         cache.set(key, self, timeout=timeout_hours * 60 * 60)

@@ -31,7 +31,7 @@ CACHE_TIMEOUT = int(CONFIG.y("redis.cache_timeout_flows"))
 
 def cache_key(flow: Flow, user: Optional[User] = None) -> str:
     """Generate Cache key for flow"""
-    prefix = f"flow_{flow.pk}"
+    prefix = f"goauthentik.io/flows/planner/{flow.pk}"
     if user:
         prefix += f"#{user.pk}"
     return prefix

@@ -14,7 +14,7 @@ from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.apps import HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
-from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.policies.types import CACHE_PREFIX, PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 
@@ -25,7 +25,7 @@ PROCESS_CLASS = FORK_CTX.Process
 
 def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
     """Generate Cache key for policy"""
-    prefix = f"policy_{binding.policy_binding_uuid.hex}_"
+    prefix = f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}_"
     if request.http_request and hasattr(request.http_request, "session"):
         prefix += f"_{request.http_request.session.session_key}"
     if request.user:

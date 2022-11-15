@@ -37,7 +37,7 @@ LOGGER = get_logger()
 
 def user_app_cache_key(user_pk: str) -> str:
     """Cache key where application list for user is saved"""
-    return f"user_app_cache_{user_pk}"
+    return f"goauthentik.io/core/app_access/{user_pk}"
 
 
 class ApplicationSerializer(ModelSerializer):

@@ -23,12 +23,12 @@ def update_score(request: HttpRequest, identifier: str, amount: int):
     try:
         # We only update the cache here, as its faster than writing to the DB
         score = cache.get_or_set(
-            CACHE_KEY_PREFIX + remote_ip + identifier,
+            CACHE_KEY_PREFIX + remote_ip + "/" + identifier,
             {"ip": remote_ip, "identifier": identifier, "score": 0},
             CACHE_TIMEOUT,
         )
         score["score"] += amount
-        cache.set(CACHE_KEY_PREFIX + remote_ip + identifier, score)
+        cache.set(CACHE_KEY_PREFIX + remote_ip + "/" + identifier, score)
     except ValueError as exc:
         LOGGER.warning("failed to set reputation", exc=exc)
 

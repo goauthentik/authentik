@@ -297,7 +297,7 @@ class Provider(SerializerModel):
         raise NotImplementedError
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Application(SerializerModel, PolicyBindingModel):
@@ -379,7 +379,7 @@ class Application(SerializerModel, PolicyBindingModel):
             return None
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     class Meta:
 
@@ -481,7 +481,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         return None
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     class Meta:
 

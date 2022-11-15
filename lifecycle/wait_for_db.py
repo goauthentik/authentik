@@ -43,7 +43,7 @@ if CONFIG.y_bool("redis.tls", False):
 REDIS_URL = (
     f"{REDIS_PROTOCOL_PREFIX}:"
     f"{quote_plus(CONFIG.y('redis.password'))}@{quote_plus(CONFIG.y('redis.host'))}:"
-    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.ws_db')}"
+    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.db')}"
 )
 while True:
     try:

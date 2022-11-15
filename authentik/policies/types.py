@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from authentik.policies.models import PolicyBinding
 
 LOGGER = get_logger()
+CACHE_PREFIX = "goauthentik.io/policies/"
 
 
 @dataclass

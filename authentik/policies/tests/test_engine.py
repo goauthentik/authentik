@@ -8,6 +8,7 @@ from authentik.policies.engine import PolicyEngine
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel, PolicyEngineMode
 from authentik.policies.tests.test_process import clear_policy_cache
+from authentik.policies.types import CACHE_PREFIX
 
 
 class TestPolicyEngine(TestCase):
@@ -101,8 +102,8 @@ class TestPolicyEngine(TestCase):
         pbm = PolicyBindingModel.objects.create()
         binding = PolicyBinding.objects.create(target=pbm, policy=self.policy_false, order=0)
         engine = PolicyEngine(pbm, self.user)
-        self.assertEqual(len(cache.keys(f"policy_{binding.policy_binding_uuid.hex}*")), 0)
+        self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 0)
         self.assertEqual(engine.build().passing, False)
-        self.assertEqual(len(cache.keys(f"policy_{binding.policy_binding_uuid.hex}*")), 1)
+        self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 1)
         self.assertEqual(engine.build().passing, False)
-        self.assertEqual(len(cache.keys(f"policy_{binding.policy_binding_uuid.hex}*")), 1)
+        self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 1)

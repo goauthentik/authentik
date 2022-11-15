@@ -293,7 +293,7 @@ class Event(SerializerModel, ExpiringModel):
         return f"{self.action}: {self.context}"
 
     def __str__(self) -> str:
-        return f"<Event action={self.action} user={self.user} context={self.context}>"
+        return f"Event action={self.action} user={self.user} context={self.context}"
 
     class Meta:
 
