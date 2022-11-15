@@ -6,6 +6,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.applications import user_app_cache_key
 from authentik.policies.apps import GAUGE_POLICIES_CACHED
+from authentik.policies.types import CACHE_PREFIX
 from authentik.root.monitoring import monitoring_set
 
 LOGGER = get_logger()
@@ -15,7 +16,7 @@ LOGGER = get_logger()
 # pylint: disable=unused-argument
 def monitoring_set_policies(sender, **kwargs):
     """set policy gauges"""
-    GAUGE_POLICIES_CACHED.set(len(cache.keys("policy_*") or []))
+    GAUGE_POLICIES_CACHED.set(len(cache.keys(f"{CACHE_PREFIX}_*") or []))
 
 
 @receiver(post_save)
@@ -27,7 +28,7 @@ def invalidate_policy_cache(sender, instance, **_):
     if isinstance(instance, Policy):
         total = 0
         for binding in PolicyBinding.objects.filter(policy=instance):
-            prefix = f"policy_{binding.policy_binding_uuid.hex}_{binding.policy.pk.hex}*"
+            prefix = f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}_{binding.policy.pk.hex}*"
             keys = cache.keys(prefix)
             total += len(keys)
             cache.delete_many(keys)
