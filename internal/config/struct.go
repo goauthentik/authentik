@@ -39,7 +39,7 @@ type PathsConfig struct {
 
 type ErrorReportingConfig struct {
 	Enabled     bool    `yaml:"enabled" env:"AUTHENTIK_ERROR_REPORTING__ENABLED"`
-	SentryDSN   string  `yaml:"sentry_dsn": env:"AUTHENTIK_ERROR_REPORTING__SENTRY_DSN"`
+	SentryDSN   string  `yaml:"sentry_dsn" env:"AUTHENTIK_ERROR_REPORTING__SENTRY_DSN"`
 	Environment string  `yaml:"environment" env:"AUTHENTIK_ERROR_REPORTING__ENVIRONMENT"`
 	SendPII     bool    `yaml:"send_pii" env:"AUTHENTIK_ERROR_REPORTING__SEND_PII"`
 	SampleRate  float64 `yaml:"sample_rate" env:"AUTHENTIK_ERROR_REPORTING__SAMPLE_RATE"`
