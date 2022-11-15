@@ -99,13 +99,16 @@ class BaseEvaluator:
     def expr_event_create(self, action: str, **kwargs):
         """Create event with supplied data and try to extract as much relevant data
         from the context"""
+        # If the result was a complex variable, we don't want to re-use it
+        self._context.pop("result", None)
+        self._context.pop("handler", None)
         kwargs["context"] = self._context
         event = Event.new(
             action,
             app=self._filename,
             **kwargs,
         )
-        if "request" in self._context and isinstance(PolicyRequest, self._context["request"]):
+        if "request" in self._context and isinstance(self._context["request"], PolicyRequest):
             policy_request: PolicyRequest = self._context["request"]
             if policy_request.http_request:
                 event.from_http(policy_request)
