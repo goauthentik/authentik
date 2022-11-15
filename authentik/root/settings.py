@@ -198,7 +198,7 @@ CACHES = {
         "LOCATION": f"{_redis_url}/{CONFIG.y('redis.db')}",
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
-        "KEY_PREFIX": "authentik_cache_"
+        "KEY_PREFIX": "authentik_cache",
     }
 }
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
@@ -257,7 +257,7 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [f"{_redis_url}/{CONFIG.y('redis.db')}"],
-            "prefix": "authentik_channels_"
+            "prefix": "authentik_channels",
         },
     },
 }
@@ -340,12 +340,8 @@ CELERY_BEAT_SCHEDULE = {
 }
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
-CELERY_BROKER_URL = (
-    f"{_redis_url}/{CONFIG.y('redis.db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
-)
-CELERY_RESULT_BACKEND = (
-    f"{_redis_url}/{CONFIG.y('redis.db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
-)
+CELERY_BROKER_URL = f"{_redis_url}/{CONFIG.y('redis.db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
+CELERY_RESULT_BACKEND = f"{_redis_url}/{CONFIG.y('redis.db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
 
 # Sentry integration
 env = get_env()

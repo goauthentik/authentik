@@ -197,7 +197,4 @@ dev-reset:
 	dropdb -U postgres -h localhost authentik
 	createdb -U postgres -h localhost authentik
 	redis-cli -n 0 flushall
-	redis-cli -n 1 flushall
-	redis-cli -n 2 flushall
-	redis-cli -n 3 flushall
 	make migrate

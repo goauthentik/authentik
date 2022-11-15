@@ -25,7 +25,7 @@ PROCESS_CLASS = FORK_CTX.Process
 
 def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
     """Generate Cache key for policy"""
-    prefix = f"policy_{binding.policy_binding_uuid.hex}_"
+    prefix = f"goauthentik.io/policies/{binding.policy_binding_uuid.hex}_"
     if request.http_request and hasattr(request.http_request, "session"):
         prefix += f"_{request.http_request.session.session_key}"
     if request.user:

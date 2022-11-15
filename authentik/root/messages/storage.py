@@ -7,6 +7,7 @@ from django.core.cache import cache
 from django.http.request import HttpRequest
 
 SESSION_KEY = "_messages"
+CACHE_PREFIX = "goauthentik.io/root/messages_"
 
 
 class ChannelsStorage(SessionStorage):
@@ -18,7 +19,7 @@ class ChannelsStorage(SessionStorage):
         self.channel = get_channel_layer()
 
     def _store(self, messages: list[Message], response, *args, **kwargs):
-        prefix = f"user_{self.request.session.session_key}_messages_"
+        prefix = f"{CACHE_PREFIX}{self.request.session.session_key}_messages_"
         keys = cache.keys(f"{prefix}*")
         # if no active connections are open, fallback to storing messages in the
         # session, so they can always be retrieved

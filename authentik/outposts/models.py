@@ -292,7 +292,7 @@ class Outpost(SerializerModel, ManagedModel):
     @property
     def state_cache_prefix(self) -> str:
         """Key by which the outposts status is saved"""
-        return f"outpost_{self.uuid.hex}_state"
+        return f"goauthentik.io/outposts/{self.uuid.hex}_state"
 
     @property
     def state(self) -> list["OutpostState"]:
