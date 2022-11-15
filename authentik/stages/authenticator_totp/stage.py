@@ -13,9 +13,12 @@ from authentik.flows.challenge import (
     ChallengeTypes,
     WithUserInfoChallenge,
 )
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 from authentik.stages.authenticator_totp.settings import OTP_TOTP_ISSUER
+
+SESSION_TOTP_DEVICE = "totp_device"
 
 
 class AuthenticatorTOTPChallenge(WithUserInfoChallenge):
@@ -49,8 +52,7 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
     response_class = AuthenticatorTOTPChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
-        user = self.get_pending_user()
-        device: TOTPDevice = TOTPDevice.objects.filter(user=user).first()
+        device: TOTPDevice = self.request.session[SESSION_TOTP_DEVICE]
         return AuthenticatorTOTPChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
@@ -62,8 +64,7 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
 
     def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
         response = super().get_response_instance(data)
-        user = self.get_pending_user()
-        response.device = TOTPDevice.objects.filter(user=user).first()
+        response.device = self.request.session.get(SESSION_TOTP_DEVICE)
         return response
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -74,17 +75,18 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
 
         stage: AuthenticatorTOTPStage = self.executor.current_stage
 
-        TOTPDevice.objects.create(
-            user=user, confirmed=False, digits=stage.digits, name="TOTP Authenticator"
-        )
+        if SESSION_TOTP_DEVICE not in self.request.session:
+            device = TOTPDevice(
+                user=user, confirmed=False, digits=stage.digits, name="TOTP Authenticator"
+            )
+
+            self.request.session[SESSION_TOTP_DEVICE] = device
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         """TOTP Token is validated by challenge"""
-        user = self.get_pending_user()
-        device: TOTPDevice = TOTPDevice.objects.filter(user=user).first()
-        if not device:
-            return self.executor.stage_invalid()
+        device: TOTPDevice = self.request.session[SESSION_TOTP_DEVICE]
         device.confirmed = True
         device.save()
+        del self.request.session[SESSION_TOTP_DEVICE]
         return self.executor.stage_ok()
