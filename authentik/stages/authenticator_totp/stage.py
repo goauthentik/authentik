@@ -13,7 +13,6 @@ from authentik.flows.challenge import (
     ChallengeTypes,
     WithUserInfoChallenge,
 )
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 from authentik.stages.authenticator_totp.settings import OTP_TOTP_ISSUER

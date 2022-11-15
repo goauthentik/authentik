@@ -4,7 +4,6 @@ from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from rest_framework.fields import CharField, ListField
 
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
 
