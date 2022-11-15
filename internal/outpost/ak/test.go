@@ -19,7 +19,7 @@ func TestSecret() string {
 
 func MockConfig() api.Config {
 	return *api.NewConfig(
-		*api.NewErrorReportingConfig(false, "test", false, 0.0),
+		*api.NewErrorReportingConfig(false, "https://foo.bar/9", "test", false, 0.0),
 		[]api.CapabilitiesEnum{},
 		100,
 		100,

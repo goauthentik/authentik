@@ -40,7 +40,6 @@ func defaultConfig() *Config {
 		LogLevel: "info",
 		ErrorReporting: ErrorReportingConfig{
 			Enabled:    false,
-			DSN:        "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
 			SampleRate: 1,
 		},
 	}
@@ -63,11 +62,11 @@ func (c *Config) Setup(paths ...string) {
 func (c *Config) LoadConfig(path string) error {
 	raw, err := os.ReadFile(path)
 	if err != nil {
-		return fmt.Errorf("Failed to load config file: %w", err)
+		return fmt.Errorf("failed to load config file: %w", err)
 	}
 	err = yaml.Unmarshal(raw, c)
 	if err != nil {
-		return fmt.Errorf("Failed to parse YAML: %w", err)
+		return fmt.Errorf("failed to parse YAML: %w", err)
 	}
 	c.walkScheme(c)
 	log.WithField("path", path).Debug("Loaded config")
