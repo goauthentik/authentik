@@ -99,7 +99,7 @@ class DuoDevice(SerializerModel, Device):
         return DuoDeviceSerializer
 
     def __str__(self):
-        return self.name or str(self.user)
+        return str(self.name) or str(self.user)
 
     class Meta:
 

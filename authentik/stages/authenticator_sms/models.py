@@ -216,7 +216,7 @@ class SMSDevice(SerializerModel, SideChannelDevice):
         return valid
 
     def __str__(self):
-        return self.name or str(self.user)
+        return str(self.name) or str(self.user)
 
     class Meta:
         verbose_name = _("SMS Device")

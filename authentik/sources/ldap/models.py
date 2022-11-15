@@ -166,7 +166,7 @@ class LDAPPropertyMapping(PropertyMapping):
         return LDAPPropertyMappingSerializer
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     class Meta:
 
