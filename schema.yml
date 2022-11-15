@@ -11550,7 +11550,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PasswordPolicyRequest'
-        required: true
       security:
       - authentik: []
       responses:
@@ -11625,7 +11624,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PasswordPolicyRequest'
-        required: true
       security:
       - authentik: []
       responses:
@@ -32929,7 +32927,6 @@ components:
       required:
       - bound_to
       - component
-      - error_message
       - meta_model_name
       - pk
       - verbose_name
@@ -32975,7 +32972,6 @@ components:
           minLength: 1
         error_message:
           type: string
-          minLength: 1
         check_static_rules:
           type: boolean
         check_have_i_been_pwned:
@@ -32993,8 +32989,6 @@ components:
           minimum: 0
           description: If the zxcvbn score is equal or less than this value, the policy
             will fail.
-      required:
-      - error_message
     PasswordStage:
       type: object
       description: PasswordStage Serializer
@@ -34254,7 +34248,6 @@ components:
           minLength: 1
         error_message:
           type: string
-          minLength: 1
         check_static_rules:
           type: boolean
         check_have_i_been_pwned:
