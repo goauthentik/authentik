@@ -191,9 +191,13 @@ class SAMLSource(Source):
                 }
             ),
             name=self.name,
+            icon_url=self.get_icon,
         )
 
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+        icon = self.get_icon
+        if not icon:
+            icon = static(f"authentik/sources/{self.slug}.svg")
         return UserSettingSerializer(
             data={
                 "title": self.name,
@@ -202,7 +206,7 @@ class SAMLSource(Source):
                     "authentik_sources_saml:login",
                     kwargs={"source_slug": self.slug},
                 ),
-                "icon_url": static(f"authentik/sources/{self.slug}.svg"),
+                "icon_url": icon,
             }
         )
 

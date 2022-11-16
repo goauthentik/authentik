@@ -1,5 +1,5 @@
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
@@ -9,11 +9,12 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import {
+    CapabilitiesEnum,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     OAuthSource,
@@ -57,6 +58,9 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
     @property({ attribute: false })
     providerType: SourceType | null = null;
 
+    @state()
+    clearIcon = false;
+
     getSuccessMessage(): string {
         if (this.instance) {
             return t`Successfully updated source.`;
@@ -65,18 +69,38 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
         }
     }
 
-    send = (data: OAuthSource): Promise<OAuthSource> => {
+    send = async (data: OAuthSource): Promise<OAuthSource> => {
         data.providerType = (this.providerType?.slug || "") as ProviderTypeEnum;
-        if (this.instance?.slug) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
+        let source: OAuthSource;
+        if (this.instance) {
+            source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
                 patchedOAuthSourceRequest: data,
             });
         } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
+            source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
                 oAuthSourceRequest: data as unknown as OAuthSourceRequest,
             });
         }
+        const c = await config();
+        if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
+            const icon = this.getFormFiles()["icon"];
+            if (icon || this.clearIcon) {
+                await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
+                    slug: source.slug,
+                    file: icon,
+                    clear: this.clearIcon,
+                });
+            }
+        } else {
+            await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconUrlCreate({
+                slug: source.slug,
+                filePathRequest: {
+                    url: data.icon || "",
+                },
+            });
+        }
+        return source;
     };
 
     renderUrlOptions(): TemplateResult {
@@ -282,6 +306,54 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                     ${t`Path template for users created. Use placeholders like \`%(slug)s\` to insert the source slug.`}
                 </p>
             </ak-form-element-horizontal>
+            ${until(
+                config().then((c) => {
+                    if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
+                        return html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
+                                <input type="file" value="" class="pf-c-form-control" />
+                                ${this.instance?.icon
+                                    ? html`
+                                          <p class="pf-c-form__helper-text">
+                                              ${t`Currently set to:`} ${this.instance?.icon}
+                                          </p>
+                                      `
+                                    : html``}
+                            </ak-form-element-horizontal>
+                            ${this.instance?.icon
+                                ? html`
+                                      <ak-form-element-horizontal>
+                                          <div class="pf-c-check">
+                                              <input
+                                                  type="checkbox"
+                                                  class="pf-c-check__input"
+                                                  @change=${(ev: Event) => {
+                                                      const target = ev.target as HTMLInputElement;
+                                                      this.clearIcon = target.checked;
+                                                  }}
+                                              />
+                                              <label class="pf-c-check__label">
+                                                  ${t`Clear icon`}
+                                              </label>
+                                          </div>
+                                          <p class="pf-c-form__helper-text">
+                                              ${t`Delete currently set icon.`}
+                                          </p>
+                                      </ak-form-element-horizontal>
+                                  `
+                                : html``}`;
+                    }
+                    return html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
+                        <input
+                            type="text"
+                            value="${first(this.instance?.icon, "")}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".`}
+                        </p>
+                    </ak-form-element-horizontal>`;
+                }),
+            )}
 
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Protocol settings`} </span>

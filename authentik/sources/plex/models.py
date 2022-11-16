@@ -64,6 +64,9 @@ class PlexSource(Source):
         return PlexSourceSerializer
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
+        icon = self.get_icon
+        if not icon:
+            icon = static("authentik/sources/plex.svg")
         return UILoginButton(
             challenge=PlexAuthenticationChallenge(
                 {
@@ -73,17 +76,20 @@ class PlexSource(Source):
                     "slug": self.slug,
                 }
             ),
-            icon_url=static("authentik/sources/plex.svg"),
+            icon_url=icon,
             name=self.name,
         )
 
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+        icon = self.get_icon
+        if not icon:
+            icon = static("authentik/sources/plex.svg")
         return UserSettingSerializer(
             data={
                 "title": self.name,
                 "component": "ak-user-settings-source-plex",
                 "configure_url": self.client_id,
-                "icon_url": static("authentik/sources/plex.svg"),
+                "icon_url": icon,
             }
         )
 

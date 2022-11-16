@@ -23,10 +23,15 @@ from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.decorators import permission_required
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import FilePathSerializer, FileUploadSerializer
 from authentik.core.models import Application, User
 from authentik.events.models import EventAction
 from authentik.events.utils import sanitize_dict
+from authentik.lib.utils.file import (
+    FilePathSerializer,
+    FileUploadSerializer,
+    set_file,
+    set_file_url,
+)
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
@@ -224,21 +229,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     def set_icon(self, request: Request, slug: str):
         """Set application icon"""
         app: Application = self.get_object()
-        icon = request.FILES.get("file", None)
-        clear = request.data.get("clear", "false").lower() == "true"
-        if clear:
-            # .delete() saves the model by default
-            app.meta_icon.delete()
-            return Response({})
-        if icon:
-            app.meta_icon = icon
-            try:
-                app.save()
-            except PermissionError as exc:
-                LOGGER.warning("Failed to save icon", exc=exc)
-                return HttpResponseBadRequest()
-            return Response({})
-        return HttpResponseBadRequest()
+        return set_file(request, app, "meta_icon")
 
     @permission_required("authentik_core.change_application")
     @extend_schema(
@@ -258,12 +249,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     def set_icon_url(self, request: Request, slug: str):
         """Set application icon (as URL)"""
         app: Application = self.get_object()
-        url = request.data.get("url", None)
-        if url is None:
-            return HttpResponseBadRequest()
-        app.meta_icon.name = url
-        app.save()
-        return Response({})
+        return set_file_url(request, app, "meta_icon")
 
     @permission_required("authentik_core.view_application", ["authentik_events.view_event"])
     @extend_schema(responses={200: CoordinateSerializer(many=True)})

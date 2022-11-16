@@ -1,7 +1,6 @@
 """Flow API Views"""
 from django.core.cache import cache
 from django.http import HttpResponse
-from django.http.response import HttpResponseBadRequest
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
@@ -19,19 +18,19 @@ from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import (
-    CacheSerializer,
-    FilePathSerializer,
-    FileUploadSerializer,
-    LinkSerializer,
-    PassiveSerializer,
-)
+from authentik.core.api.utils import CacheSerializer, LinkSerializer, PassiveSerializer
 from authentik.events.utils import sanitize_dict
 from authentik.flows.api.flows_diagram import FlowDiagram, FlowDiagramSerializer
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
 from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
+from authentik.lib.utils.file import (
+    FilePathSerializer,
+    FileUploadSerializer,
+    set_file,
+    set_file_url,
+)
 from authentik.lib.views import bad_request_message
 
 LOGGER = get_logger()
@@ -249,25 +248,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     def set_background(self, request: Request, slug: str):
         """Set Flow background"""
         flow: Flow = self.get_object()
-        background = request.FILES.get("file", None)
-        clear = request.data.get("clear", "false").lower() == "true"
-        if clear:
-            if flow.background_url.startswith("/media"):
-                # .delete() saves the model by default
-                flow.background.delete()
-            else:
-                flow.background = None
-                flow.save()
-            return Response({})
-        if background:
-            flow.background = background
-            try:
-                flow.save()
-            except PermissionError as exc:
-                LOGGER.warning("Failed to save icon", exc=exc)
-                return HttpResponseBadRequest()
-            return Response({})
-        return HttpResponseBadRequest()
+        return set_file(request, flow, "background")
 
     @permission_required("authentik_core.change_application")
     @extend_schema(
@@ -287,12 +268,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     def set_background_url(self, request: Request, slug: str):
         """Set Flow background (as URL)"""
         flow: Flow = self.get_object()
-        url = request.data.get("url", None)
-        if not url:
-            return HttpResponseBadRequest()
-        flow.background.name = url
-        flow.save()
-        return Response({})
+        return set_file_url(request, flow, "background")
 
     @extend_schema(
         responses={
