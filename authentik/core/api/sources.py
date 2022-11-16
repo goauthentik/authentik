@@ -1,7 +1,6 @@
 """Source API Views"""
 from typing import Iterable
 
-from django.http.response import HttpResponseBadRequest
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins
@@ -17,14 +16,15 @@ from structlog.stdlib import get_logger
 from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import (
-    FilePathSerializer,
-    FileUploadSerializer,
-    MetaNameSerializer,
-    TypeCreateSerializer,
-)
+from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UserSettingSerializer
+from authentik.lib.utils.file import (
+    FilePathSerializer,
+    FileUploadSerializer,
+    set_file,
+    set_file_url,
+)
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.engine import PolicyEngine
 
@@ -106,21 +106,7 @@ class SourceViewSet(
     def set_icon(self, request: Request, slug: str):
         """Set source icon"""
         source: Source = self.get_object()
-        icon = request.FILES.get("file", None)
-        clear = request.data.get("clear", "false").lower() == "true"
-        if clear:
-            # .delete() saves the model by default
-            source.icon.delete()
-            return Response({})
-        if icon:
-            source.icon = icon
-            try:
-                source.save()
-            except PermissionError as exc:
-                LOGGER.warning("Failed to save icon", exc=exc)
-                return HttpResponseBadRequest()
-            return Response({})
-        return HttpResponseBadRequest()
+        return set_file(request, source, "icon")
 
     @permission_required("authentik_core.change_source")
     @extend_schema(
@@ -140,12 +126,7 @@ class SourceViewSet(
     def set_icon_url(self, request: Request, slug: str):
         """Set source icon (as URL)"""
         source: Source = self.get_object()
-        url = request.data.get("url", None)
-        if url is None:
-            return HttpResponseBadRequest()
-        source.icon.name = url
-        source.save()
-        return Response({})
+        return set_file_url(request, source, "icon")
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])

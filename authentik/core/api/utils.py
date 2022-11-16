@@ -2,7 +2,7 @@
 from typing import Any
 
 from django.db.models import Model
-from rest_framework.fields import BooleanField, CharField, FileField, IntegerField
+from rest_framework.fields import CharField, IntegerField
 from rest_framework.serializers import Serializer, SerializerMethodField, ValidationError
 
 
@@ -21,19 +21,6 @@ class PassiveSerializer(Serializer):
 
     def update(self, instance: Model, validated_data: dict) -> Model:  # pragma: no cover
         return Model()
-
-
-class FileUploadSerializer(PassiveSerializer):
-    """Serializer to upload file"""
-
-    file = FileField(required=False)
-    clear = BooleanField(default=False)
-
-
-class FilePathSerializer(PassiveSerializer):
-    """Serializer to upload file"""
-
-    url = CharField()
 
 
 class MetaNameSerializer(PassiveSerializer):
