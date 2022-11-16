@@ -591,14 +591,14 @@ Django = ">=2.2"
 
 [[package]]
 name = "django-model-utils"
-version = "4.2.0"
+version = "4.3.1"
 description = "Django model mixins and utilities"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 
 [package.dependencies]
-Django = ">=2.0.1"
+Django = ">=3.2"
 
 [[package]]
 name = "django-otp"
@@ -2587,8 +2587,8 @@ django-guardian = [
     {file = "django_guardian-2.4.0-py3-none-any.whl", hash = "sha256:440ca61358427e575323648b25f8384739e54c38b3d655c81d75e0cd0d61b697"},
 ]
 django-model-utils = [
-    {file = "django-model-utils-4.2.0.tar.gz", hash = "sha256:e7a95e102f9c9653427eadab980d5d59e1dea972913b9c9e01ac37f86bba0ddf"},
-    {file = "django_model_utils-4.2.0-py3-none-any.whl", hash = "sha256:a768a25c80514e0ad4e4a6f9c02c44498985f36c5dfdea47b5b1e8cf994beba6"},
+    {file = "django-model-utils-4.3.1.tar.gz", hash = "sha256:2e2e4f13e4f14613134a9777db7ad4265f59a1d8f1384107bcaa3028fe3c87c1"},
+    {file = "django_model_utils-4.3.1-py3-none-any.whl", hash = "sha256:8c0b0177bab909a8635b602d960daa67e80607aa5469217857271a60726d7a4b"},
 ]
 django-otp = [
     {file = "django-otp-1.1.4.tar.gz", hash = "sha256:0adead4aa5e34618fc4dba8ea15c71f6b3d520a6197a02a2edd6fa8b5140295c"},
