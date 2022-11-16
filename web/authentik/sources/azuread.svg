@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21"><title>MS-SymbolLockup</title><rect x="1" y="1" width="9" height="9"/><rect x="1" y="11" width="9" height="9"/><rect x="11" y="1" width="9" height="9"/><rect x="11" y="11" width="9" height="9"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 23">
+    <path fill="#000000" d="M1 1h10v10H1z"/>
+    <path fill="#000000" d="M12 1h10v10H12z"/>
+    <path fill="#000000" d="M1 12h10v10H1z"/>
+    <path fill="#000000" d="M12 12h10v10H12z"/>
+</svg>
