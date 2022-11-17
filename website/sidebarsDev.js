@@ -30,6 +30,7 @@ module.exports = {
                 "api/flow-executor",
                 "api/making-schema-changes",
                 "api/websocket",
+                "api/browser",
             ],
         },
         {
