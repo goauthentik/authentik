@@ -41,9 +41,9 @@ module.exports = {
                     position: "left",
                 },
                 {
-                    to: "api/",
-                    activeBasePath: "api",
-                    label: "API",
+                    to: "jobs/",
+                    activeBasePath: "jobs",
+                    label: "Jobs",
                     position: "left",
                 },
                 {
