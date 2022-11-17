@@ -64,12 +64,14 @@ module.exports = {
                 },
                 {
                     href: "https://github.com/goauthentik/authentik",
-                    label: "GitHub",
+                    className: "header-github-link",
+                    "aria-label": "GitHub repository",
                     position: "right",
                 },
                 {
                     href: "https://goauthentik.io/discord",
-                    label: "Discord",
+                    className: "header-discord-link",
+                    "aria-label": "GitHub repository",
                     position: "right",
                 },
             ],
@@ -77,11 +79,15 @@ module.exports = {
         footer: {
             links: [
                 {
-                    title: "Docs",
+                    title: "Documentation",
                     items: [
                         {
                             label: "Documentation",
                             to: "docs/",
+                        },
+                        {
+                            label: "Integrations",
+                            to: "integrations/",
                         },
                         {
                             label: "Developer Documentation",
@@ -103,11 +109,6 @@ module.exports = {
                         {
                             label: "Discord",
                             href: "https://goauthentik.io/discord",
-                        },
-                        {
-                            html: `<a href="https://www.netlify.com" target="_blank" rel="noreferrer noopener" aria-label="Deploys by Netlify">
-                                    <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg" alt="Deploys by Netlify" />
-                                </a>`,
                         },
                     ],
                 },
