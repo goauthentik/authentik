@@ -103,7 +103,7 @@ class PolicyProcess(PROCESS_CLASS):
             LOGGER.debug("P_ENG(proc): error", exc=src_exc)
             policy_result = PolicyResult(False, str(src_exc))
         policy_result.source_binding = self.binding
-        if not self.request.debug:
+        if self.request.should_cache:
             key = cache_key(self.binding, self.request)
             cache.set(key, policy_result, CACHE_TIMEOUT)
         LOGGER.debug(
