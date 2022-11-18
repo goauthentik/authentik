@@ -59,7 +59,6 @@ export class AccessDeniedStage extends BaseStage<
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    ${this.challenge.pendingUser ? html`
                     <ak-form-static
                         class="pf-c-form__group"
                         userAvatar="${this.challenge.pendingUserAvatar}"
@@ -70,7 +69,7 @@ export class AccessDeniedStage extends BaseStage<
                                 >${t`Not you?`}</a
                             >
                         </div>
-                    </ak-form-static>` : html``}
+                    </ak-form-static>
                     <div class="pf-c-form__group">
                         <p class="big-icon">
                             <i class="pf-icon pf-icon-error-circle-o"></i>

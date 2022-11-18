@@ -14,7 +14,7 @@ export class FormStatic extends AKElement {
     userAvatar?: string;
 
     @property()
-    user = "";
+    user?: string;
 
     static get styles(): CSSResult[] {
         return [
@@ -44,6 +44,9 @@ export class FormStatic extends AKElement {
     }
 
     render(): TemplateResult {
+        if (!this.user) {
+            return html``;
+        }
         return html`
             <div class="form-control-static">
                 <div class="avatar">
