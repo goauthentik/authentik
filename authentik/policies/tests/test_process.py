@@ -10,12 +10,12 @@ from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
-from authentik.policies.types import PolicyRequest
+from authentik.policies.types import CACHE_PREFIX, PolicyRequest
 
 
 def clear_policy_cache():
     """Ensure no policy-related keys are still cached"""
-    keys = cache.keys("policy_*")
+    keys = cache.keys(f"{CACHE_PREFIX}*")
     cache.delete(keys)
 
 

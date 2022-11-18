@@ -23,7 +23,7 @@ from authentik.events.utils import sanitize_dict
 from authentik.flows.api.flows_diagram import FlowDiagram, FlowDiagramSerializer
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
+from authentik.flows.planner import CACHE_PREFIX, PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
 from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
 from authentik.lib.utils.file import (
     FilePathSerializer,
@@ -121,7 +121,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, pagination_class=None, filter_backends=[])
     def cache_info(self, request: Request) -> Response:
         """Info about cached flows"""
-        return Response(data={"count": len(cache.keys("flow_*"))})
+        return Response(data={"count": len(cache.keys(f"{CACHE_PREFIX}*"))})
 
     @permission_required(None, ["authentik_flows.clear_flow_cache"])
     @extend_schema(
@@ -134,7 +134,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, methods=["POST"])
     def cache_clear(self, request: Request) -> Response:
         """Clear flow cache"""
-        keys = cache.keys("flow_*")
+        keys = cache.keys(f"{CACHE_PREFIX}*")
         cache.delete_many(keys)
         LOGGER.debug("Cleared flow cache", keys=len(keys))
         return Response(status=204)

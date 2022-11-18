@@ -21,7 +21,7 @@ from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
-from authentik.policies.types import PolicyRequest
+from authentik.policies.types import CACHE_PREFIX, PolicyRequest
 
 LOGGER = get_logger()
 
@@ -114,7 +114,7 @@ class PolicyViewSet(
     @action(detail=False, pagination_class=None, filter_backends=[])
     def cache_info(self, request: Request) -> Response:
         """Info about cached policies"""
-        return Response(data={"count": len(cache.keys("policy_*"))})
+        return Response(data={"count": len(cache.keys(f"{CACHE_PREFIX}*"))})
 
     @permission_required(None, ["authentik_policies.clear_policy_cache"])
     @extend_schema(
@@ -127,7 +127,7 @@ class PolicyViewSet(
     @action(detail=False, methods=["POST"])
     def cache_clear(self, request: Request) -> Response:
         """Clear policy cache"""
-        keys = cache.keys("policy_*")
+        keys = cache.keys(f"{CACHE_PREFIX}*")
         cache.delete_many(keys)
         LOGGER.debug("Cleared Policy cache", keys=len(keys))
         # Also delete user application cache

@@ -27,11 +27,12 @@ PLAN_CONTEXT_SOURCE = "source"
 # was restored.
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
 CACHE_TIMEOUT = int(CONFIG.y("redis.cache_timeout_flows"))
+CACHE_PREFIX = "goauthentik.io/flows/planner/"
 
 
 def cache_key(flow: Flow, user: Optional[User] = None) -> str:
     """Generate Cache key for flow"""
-    prefix = f"goauthentik.io/flows/planner/{flow.pk}"
+    prefix = CACHE_PREFIX + str(flow.pk)
     if user:
         prefix += f"#{user.pk}"
     return prefix
@@ -141,6 +142,7 @@ class FlowPlanner:
             # First off, check the flow's direct policy bindings
             # to make sure the user even has access to the flow
             engine = PolicyEngine(self.flow, user, request)
+            engine.use_cache = self.use_cache
             if default_context:
                 span.set_data("default_context", cleanse_dict(default_context))
                 engine.request.context.update(default_context)
@@ -206,6 +208,7 @@ class FlowPlanner:
                         stage=stage,
                     )
                     engine = PolicyEngine(binding, user, request)
+                    engine.use_cache = self.use_cache
                     engine.request.context["flow_plan"] = plan
                     engine.request.context.update(plan.context)
                     engine.build()
