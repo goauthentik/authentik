@@ -195,7 +195,7 @@ _redis_url = (
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"{_redis_url}/{CONFIG.y('redis.db')}",
+        "LOCATION": CONFIG.y('redis.url') or f"{_redis_url}/{CONFIG.y('redis.db')}",
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
         "KEY_PREFIX": "authentik_cache",
