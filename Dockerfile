@@ -62,7 +62,7 @@ COPY --from=poetry-locker /work/requirements-dev.txt /
 
 RUN apt-get update && \
     # Required for installing pip packages
-    apt-get install -y --no-install-recommends build-essential pkg-config libxmlsec1-dev && \
+    apt-get install -y --no-install-recommends build-essential pkg-config libxmlsec1-dev zlib1g-dev && \
     # Required for runtime
     apt-get install -y --no-install-recommends libxmlsec1-openssl libmaxminddb0 && \
     # Required for bootstrap & healtcheck
