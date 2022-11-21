@@ -8,6 +8,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.flows.models import NotConfiguredAction, Stage
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.stages.authenticator_webauthn.models import UserVerification
 
 
 class DeviceClasses(models.TextChoices):
@@ -67,6 +68,12 @@ class AuthenticatorValidateStage(Stage):
                 "stage will be skipped"
             )
         ),
+    )
+
+    webauthn_user_verification = models.TextField(
+        help_text=_("Enforce user verification for WebAuthn devices."),
+        choices=UserVerification.choices,
+        default=UserVerification.PREFERRED,
     )
 
     @property

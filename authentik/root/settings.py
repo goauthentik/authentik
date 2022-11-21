@@ -145,6 +145,7 @@ SPECTACULAR_SETTINGS = {
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
+        "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "POSTPROCESSING_HOOKS": [

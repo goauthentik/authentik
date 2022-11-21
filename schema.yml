@@ -25842,6 +25842,10 @@ components:
           type: string
           description: If any of the user's device has been used within this threshold,
             this stage will be skipped
+        webauthn_user_verification:
+          allOf:
+          - $ref: '#/components/schemas/UserVerificationEnum'
+          description: Enforce user verification for WebAuthn devices.
       required:
       - component
       - meta_model_name
@@ -25880,6 +25884,10 @@ components:
           minLength: 1
           description: If any of the user's device has been used within this threshold,
             this stage will be skipped
+        webauthn_user_verification:
+          allOf:
+          - $ref: '#/components/schemas/UserVerificationEnum'
+          description: Enforce user verification for WebAuthn devices.
       required:
       - name
     AuthenticatorValidationChallenge:
@@ -33326,6 +33334,10 @@ components:
           minLength: 1
           description: If any of the user's device has been used within this threshold,
             this stage will be skipped
+        webauthn_user_verification:
+          allOf:
+          - $ref: '#/components/schemas/UserVerificationEnum'
+          description: Enforce user verification for WebAuthn devices.
     PatchedBlueprintInstanceRequest:
       type: object
       description: Info about a single blueprint instance file

@@ -260,7 +260,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.TOTP],
         )
-        self.assertEqual(get_challenge_for_device(request, totp_device), {})
+        self.assertEqual(get_challenge_for_device(request, stage, totp_device), {})
         with self.assertRaises(ValidationError):
             validate_challenge_code(
                 "1234", StageView(FlowExecutorView(current_stage=stage), request=request), self.user

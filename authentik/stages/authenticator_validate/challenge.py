@@ -29,8 +29,8 @@ from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
 from authentik.lib.utils.http import get_client_ip
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
-from authentik.stages.authenticator_validate.models import DeviceClasses
-from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
+from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_TITLE
@@ -46,29 +46,35 @@ class DeviceChallenge(PassiveSerializer):
     challenge = JSONField()
 
 
-def get_challenge_for_device(request: HttpRequest, device: Device) -> dict:
+def get_challenge_for_device(
+    request: HttpRequest, stage: AuthenticatorValidateStage, device: Device
+) -> dict:
     """Generate challenge for a single device"""
     if isinstance(device, WebAuthnDevice):
-        return get_webauthn_challenge(request, device)
+        return get_webauthn_challenge(request, stage, device)
     # Code-based challenges have no hints
     return {}
 
 
-def get_webauthn_challenge_without_user(request: HttpRequest) -> dict:
+def get_webauthn_challenge_without_user(
+    request: HttpRequest, stage: AuthenticatorValidateStage
+) -> dict:
     """Same as `get_webauthn_challenge`, but allows any client device. We can then later check
     who the device belongs to."""
     request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
     authentication_options = generate_authentication_options(
         rp_id=get_rp_id(request),
         allow_credentials=[],
+        user_verification=stage.webauthn_user_verification,
     )
-
     request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
     return loads(options_to_json(authentication_options))
 
 
-def get_webauthn_challenge(request: HttpRequest, device: Optional[WebAuthnDevice] = None) -> dict:
+def get_webauthn_challenge(
+    request: HttpRequest, stage: AuthenticatorValidateStage, device: Optional[WebAuthnDevice] = None
+) -> dict:
     """Send the client a challenge that we'll check later"""
     request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
 
@@ -83,6 +89,7 @@ def get_webauthn_challenge(request: HttpRequest, device: Optional[WebAuthnDevice
     authentication_options = generate_authentication_options(
         rp_id=get_rp_id(request),
         allow_credentials=allowed_credentials,
+        user_verification=stage.webauthn_user_verification,
     )
 
     request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
@@ -129,6 +136,8 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
     if not device:
         raise ValidationError("Invalid device")
 
+    stage: AuthenticatorValidateStage = stage_view.executor.current_stage
+
     try:
         authentication_verification = verify_authentication_response(
             credential=AuthenticationCredential.parse_raw(dumps(data)),
@@ -137,7 +146,7 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
             expected_origin=get_origin(request),
             credential_public_key=base64url_to_bytes(device.public_key),
             credential_current_sign_count=device.sign_count,
-            require_user_verification=False,
+            require_user_verification=stage.webauthn_user_verification == UserVerification.REQUIRED,
         )
     except InvalidAuthenticationResponse as exc:
         LOGGER.warning("Assertion failed", exc=exc)

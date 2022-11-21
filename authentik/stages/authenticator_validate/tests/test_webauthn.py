@@ -21,7 +21,7 @@ from authentik.stages.authenticator_validate.challenge import (
 )
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_validate.stage import AuthenticatorValidateStageView
-from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
@@ -90,8 +90,9 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             last_auth_threshold="milliseconds=0",
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.WEBAUTHN],
+            webauthn_user_verification=UserVerification.PREFERRED,
         )
-        challenge = get_challenge_for_device(request, webauthn_device)
+        challenge = get_challenge_for_device(request, stage, webauthn_device)
         del challenge["challenge"]
         self.assertEqual(
             challenge,
@@ -118,6 +119,13 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         request = get_request("/")
         request.user = self.user
 
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            last_auth_threshold="milliseconds=0",
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.WEBAUTHN],
+            webauthn_user_verification=UserVerification.PREFERRED,
+        )
         webauthn_device = WebAuthnDevice.objects.create(
             user=self.user,
             public_key=(
@@ -128,7 +136,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             sign_count=0,
             rp_id=generate_id(),
         )
-        challenge = get_challenge_for_device(request, webauthn_device)
+        challenge = get_challenge_for_device(request, stage, webauthn_device)
         webauthn_challenge = request.session[SESSION_KEY_WEBAUTHN_CHALLENGE]
         self.assertEqual(
             challenge,
@@ -149,7 +157,9 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
     def test_get_challenge_userless(self):
         """Test webauthn (userless)"""
         request = get_request("/")
-
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+        )
         WebAuthnDevice.objects.create(
             user=self.user,
             public_key=(
@@ -160,7 +170,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             sign_count=0,
             rp_id=generate_id(),
         )
-        challenge = get_webauthn_challenge_without_user(request)
+        challenge = get_webauthn_challenge_without_user(request, stage)
         webauthn_challenge = request.session[SESSION_KEY_WEBAUTHN_CHALLENGE]
         self.assertEqual(
             challenge,
