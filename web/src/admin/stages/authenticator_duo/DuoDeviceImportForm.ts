@@ -16,9 +16,9 @@ import { until } from "lit/directives/until.js";
 
 import {
     AuthenticatorDuoStage,
+    AuthenticatorDuoStageManualDeviceImportRequest,
     CoreApi,
     StagesApi,
-    StagesAuthenticatorDuoImportDeviceManualCreateRequest,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-duo-device-import-form")
@@ -34,11 +34,11 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     }
 
     send = (data: AuthenticatorDuoStage): Promise<void> => {
-        const importData = data as unknown as StagesAuthenticatorDuoImportDeviceManualCreateRequest;
-        importData.stageUuid = this.instancePk;
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoImportDeviceManualCreate(
-            importData,
-        );
+        const importData = data as unknown as AuthenticatorDuoStageManualDeviceImportRequest;
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoImportDeviceManualCreate({
+            stageUuid: this.instance?.pk || "",
+            authenticatorDuoStageManualDeviceImportRequest: importData,
+        });
     };
 
     renderForm(): TemplateResult {
