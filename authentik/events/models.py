@@ -1,6 +1,7 @@
 """authentik events models"""
 import time
 from collections import Counter
+from copy import deepcopy
 from datetime import timedelta
 from inspect import currentframe
 from smtplib import SMTPException
@@ -210,7 +211,7 @@ class Event(SerializerModel, ExpiringModel):
             current = currentframe()
             parent = current.f_back
             app = parent.f_globals["__name__"]
-        cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
+        cleaned_kwargs = cleanse_dict(sanitize_dict(deepcopy(kwargs)))
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
 

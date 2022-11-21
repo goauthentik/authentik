@@ -20,15 +20,20 @@
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "python.formatting.provider": "black",
-    "yaml.customTags": [
-        "!Find sequence",
-        "!KeyOf scalar"
-    ],
+    "yaml.customTags": ["!Find sequence", "!KeyOf scalar"],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",
     "typescript.tsdk": "./web/node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "yaml.schemas": {
         "./blueprints/schema.json": "blueprints/**/*.yaml"
-    }
+    },
+    "gitlens.autolinks": [
+        {
+            "alphanumeric": true,
+            "prefix": "#<num>",
+            "url": "https://github.com/goauthentik/authentik/issues/<num>",
+            "ignoreCase": false
+        }
+    ]
 }
