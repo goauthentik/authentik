@@ -1,6 +1,7 @@
 """Test blueprints v1"""
 from django.test import TransactionTestCase
 
+from authentik.blueprints.tests import load_yaml_fixture
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -9,32 +10,6 @@ from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.user_login.models import UserLoginStage
-
-STATIC_PROMPT_EXPORT = """version: 1
-entries:
-- identifiers:
-    pk: cb954fd4-65a5-4ad9-b1ee-180ee9559cf4
-  model: authentik_stages_prompt.prompt
-  attrs:
-    field_key: username
-    label: Username
-    type: username
-    required: true
-    placeholder: Username
-    order: 0
-"""
-
-YAML_TAG_TESTS = """version: 1
-context:
-    foo: bar
-entries:
-- attrs:
-    expression: return True
-  identifiers:
-    name: !Format [foo-%s-%s, !Context foo, !Context bar]
-  id: default-source-enrollment-if-username
-  model: authentik_policies_expression.expressionpolicy
-"""
 
 
 class TestBlueprintsV1(TransactionTestCase):
@@ -85,14 +60,14 @@ class TestBlueprintsV1(TransactionTestCase):
         """Test export and import it twice"""
         count_initial = Prompt.objects.filter(field_key="username").count()
 
-        importer = Importer(STATIC_PROMPT_EXPORT)
+        importer = Importer(load_yaml_fixture("fixtures/static_prompt_export.yaml"))
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 
         count_before = Prompt.objects.filter(field_key="username").count()
         self.assertEqual(count_initial + 1, count_before)
 
-        importer = Importer(STATIC_PROMPT_EXPORT)
+        importer = Importer(load_yaml_fixture("fixtures/static_prompt_export.yaml"))
         self.assertTrue(importer.apply())
 
         self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
@@ -100,7 +75,7 @@ class TestBlueprintsV1(TransactionTestCase):
     def test_import_yaml_tags(self):
         """Test some yaml tags"""
         ExpressionPolicy.objects.filter(name="foo-foo-bar").delete()
-        importer = Importer(YAML_TAG_TESTS, {"bar": "baz"})
+        importer = Importer(load_yaml_fixture("fixtures/tags.yaml"), {"bar": "baz"})
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         self.assertTrue(ExpressionPolicy.objects.filter(name="foo-foo-bar"))

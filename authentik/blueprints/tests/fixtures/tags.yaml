@@ -1,0 +1,10 @@
+version: 1
+context:
+    foo: bar
+entries:
+- attrs:
+    expression: return True
+  identifiers:
+    name: !Format [foo-%s-%s, !Context foo, !Context bar]
+  id: default-source-enrollment-if-username
+  model: authentik_policies_expression.expressionpolicy

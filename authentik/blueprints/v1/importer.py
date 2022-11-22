@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from copy import deepcopy
 from typing import Any, Optional
 
+from dacite.config import Config
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from deepmerge import always_merger
@@ -83,7 +84,9 @@ class Importer:
         self.logger = get_logger()
         import_dict = load(yaml_input, BlueprintLoader)
         try:
-            self.__import = from_dict(Blueprint, import_dict)
+            self.__import = from_dict(
+                Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
+            )
         except DaciteError as exc:
             raise EntryInvalidError from exc
         ctx = {}
@@ -241,7 +244,10 @@ class Importer:
             if not serializer:
                 continue
 
-            if entry.state == BlueprintEntryDesiredState.PRESENT:
+            if entry.state in [
+                BlueprintEntryDesiredState.PRESENT,
+                BlueprintEntryDesiredState.CREATED,
+            ]:
                 model = serializer.save()
                 if "pk" in entry.identifiers:
                     self.__pk_map[entry.identifiers["pk"]] = model.pk

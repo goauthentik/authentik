@@ -20,7 +20,12 @@
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "python.formatting.provider": "black",
-    "yaml.customTags": ["!Find sequence", "!KeyOf scalar"],
+    "yaml.customTags": [
+        "!Find sequence",
+        "!KeyOf scalar",
+        "!Context scalar",
+        "!Format sequence"
+    ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",
     "typescript.tsdk": "./web/node_modules/typescript/lib",
