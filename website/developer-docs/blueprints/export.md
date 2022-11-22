@@ -24,4 +24,4 @@ This export can be triggered via the API or the Web UI by clicking the download 
 
 ## Cleaning up
 
-Exports from either method will contain a (potentially) long list of objects, all with hardcoded primary keys and now ability for templating/instantiation. This is because currently, authentik does not check which primary keys are used where. It is assumed that for most exports, there'll be some manual changes done regardless, to filter out unwanted objects, adjust properties, etc.
+Exports from either method will contain a (potentially) long list of objects, all with hardcoded primary keys and no ability for templating/instantiation. This is because currently, authentik does not check which primary keys are used where. It is assumed that for most exports, there'll be some manual changes done regardless, to filter out unwanted objects, adjust properties, etc.
