@@ -72,6 +72,9 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
 
     send = (data: ProxyProvider): Promise<ProxyProvider> => {
         data.mode = this.mode;
+        if (this.mode !== ProxyMode.ForwardDomain) {
+            data.cookieDomain = "";
+        }
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersProxyUpdate({
                 id: this.instance.pk || 0,
