@@ -202,10 +202,10 @@ class ResponseProcessor:
         """Get all attributes sent"""
         attributes = {}
         assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
-        if not assertion:
+        if assertion is None:
             raise ValueError("Assertion element not found")
         attribute_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
-        if not attribute_statement:
+        if attribute_statement is None:
             raise ValueError("Attribute statement element not found")
         # Get all attributes and their values into a dict
         for attribute in attribute_statement.iterchildren():

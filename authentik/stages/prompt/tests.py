@@ -137,7 +137,7 @@ class TestPromptStage(FlowTestCase):
             self.assertIn(prompt.label, response.content.decode())
             self.assertIn(prompt.placeholder, response.content.decode())
 
-    def test_valid_challenge_with_policy(self) -> PromptChallengeResponse:
+    def test_valid_challenge_with_policy(self):
         """Test challenge_response validation"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         expr = (
@@ -151,9 +151,8 @@ class TestPromptStage(FlowTestCase):
             None, stage=self.stage, plan=plan, data=self.prompt_data
         )
         self.assertEqual(challenge_response.is_valid(), True)
-        return challenge_response
 
-    def test_invalid_challenge(self) -> PromptChallengeResponse:
+    def test_invalid_challenge(self):
         """Test challenge_response validation"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         expr = "False"
@@ -164,7 +163,6 @@ class TestPromptStage(FlowTestCase):
             None, stage=self.stage, plan=plan, data=self.prompt_data
         )
         self.assertEqual(challenge_response.is_valid(), False)
-        return challenge_response
 
     def test_valid_challenge_request(self):
         """Test a request with valid challenge_response data"""
@@ -173,7 +171,18 @@ class TestPromptStage(FlowTestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        challenge_response = self.test_valid_challenge_with_policy()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        expr = (
+            "return request.context['prompt_data']['password_prompt'] "
+            "== request.context['prompt_data']['password2_prompt']"
+        )
+        expr_policy = ExpressionPolicy.objects.create(name="validate-form", expression=expr)
+        self.stage.validation_policies.set([expr_policy])
+        self.stage.save()
+        challenge_response = PromptChallengeResponse(
+            None, stage=self.stage, plan=plan, data=self.prompt_data
+        )
+        self.assertEqual(challenge_response.is_valid(), True)
 
         with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             response = self.client.post(
