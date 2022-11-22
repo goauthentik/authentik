@@ -50,4 +50,8 @@ def reconcile_app(app_name: str):
 def load_yaml_fixture(path: str, **kwargs) -> str:
     """Load yaml fixture, optionally formatting it with kwargs"""
     with open(Path(__file__).resolve().parent / Path(path), "r+", encoding="utf-8") as _fixture:
-        return _fixture.read() % kwargs
+        fixture = _fixture.read()
+        try:
+            return fixture % kwargs
+        except TypeError:
+            return fixture
