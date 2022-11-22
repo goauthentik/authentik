@@ -1,6 +1,8 @@
 """authentik shell command"""
 import code
 import platform
+import sys
+import traceback
 
 from django.apps import apps
 from django.core.management.base import BaseCommand
@@ -88,7 +90,21 @@ class Command(BaseCommand):
             # pylint: disable=exec-used
             exec(options["command"], namespace)  # nosec # noqa
             return
-
+        try:
+            hook = sys.__interactivehook__
+        except AttributeError:
+            # Match the behavior of the cpython shell where a missing
+            # sys.__interactivehook__ is ignored.
+            pass
+        else:
+            try:
+                hook()
+            except Exception:
+                # Match the behavior of the cpython shell where an error in
+                # sys.__interactivehook__ prints a warning and the exception
+                # and continues.
+                print("Failed calling sys.__interactivehook__")
+                traceback.print_exc()
         # Try to enable tab-complete
         try:
             import readline
