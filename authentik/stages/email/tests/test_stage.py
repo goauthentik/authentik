@@ -44,6 +44,28 @@ class TestEmailStage(FlowTestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
+    def test_rendering_locale(self):
+        """Test with pending user"""
+        self.user.attributes = {"settings": {"locale": "de"}}
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "authentik")
+        self.assertNotIn(
+            "You recently requested to change your password", mail.outbox[0].alternatives[0][0]
+        )
+
     def test_without_user(self):
         """Test without pending user"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -55,6 +77,10 @@ class TestEmailStage(FlowTestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
     def test_pending_user(self):
         """Test with pending user"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -64,16 +90,16 @@ class TestEmailStage(FlowTestCase):
         session.save()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        with patch(
-            "authentik.stages.email.models.EmailStage.backend_class",
-            PropertyMock(return_value=EmailBackend),
-        ):
-            response = self.client.post(url)
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(mail.outbox), 1)
-            self.assertEqual(mail.outbox[0].subject, "authentik")
-            self.assertEqual(mail.outbox[0].to, [self.user.email])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "authentik")
+        self.assertEqual(mail.outbox[0].to, [self.user.email])
 
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
     def test_pending_user_override(self):
         """Test with pending user (override to)"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -84,25 +110,21 @@ class TestEmailStage(FlowTestCase):
         session.save()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        with patch(
-            "authentik.stages.email.models.EmailStage.backend_class",
-            PropertyMock(return_value=EmailBackend),
-        ):
-            response = self.client.post(url)
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(mail.outbox), 1)
-            self.assertEqual(mail.outbox[0].subject, "authentik")
-            self.assertEqual(mail.outbox[0].to, ["foo@bar.baz"])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "authentik")
+        self.assertEqual(mail.outbox[0].to, ["foo@bar.baz"])
 
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=SMTPEmailBackend),
+    )
     def test_use_global_settings(self):
         """Test use_global_settings"""
         host = "some-unique-string"
-        with patch(
-            "authentik.stages.email.models.EmailStage.backend_class",
-            PropertyMock(return_value=SMTPEmailBackend),
-        ):
-            with self.settings(EMAIL_HOST=host):
-                self.assertEqual(EmailStage(use_global_settings=True).backend.host, host)
+        with self.settings(EMAIL_HOST=host):
+            self.assertEqual(EmailStage(use_global_settings=True).backend.host, host)
 
     def test_token(self):
         """Test with token"""
