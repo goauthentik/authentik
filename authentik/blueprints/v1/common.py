@@ -41,11 +41,20 @@ class BlueprintEntryState:
     instance: Optional[Model] = None
 
 
+class BlueprintEntryDesiredState(Enum):
+    """State an entry should be reconciled to"""
+
+    ABSENT = "absent"
+    PRESENT = "present"
+    CREATED = "created"
+
+
 @dataclass
 class BlueprintEntry:
     """Single entry of a blueprint"""
 
     model: str
+    state: BlueprintEntryDesiredState = field(default=BlueprintEntryDesiredState.PRESENT)
     identifiers: dict[str, Any] = field(default_factory=dict)
     attrs: Optional[dict[str, Any]] = field(default_factory=dict)
 
