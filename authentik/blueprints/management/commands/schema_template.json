@@ -53,6 +53,15 @@
                     "id": {
                         "type": "string"
                     },
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "absent",
+                            "present",
+                            "created"
+                        ],
+                        "default": "present"
+                    },
                     "attrs": {
                         "type": "object",
                         "properties": {

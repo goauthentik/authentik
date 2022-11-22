@@ -20,6 +20,11 @@ context:
 entries:
     - # Model in app.model notation, possibilities are listed in the schema (required)
       model: authentik_flows.flow
+      # The state this object should be in (optional, can be "present", "created" or "absent")
+      # Present will keep the object in sync with its definition here, created will only ensure
+      # the object is created (and create it with the values given here), and "absent" will
+      # delete the object
+      state: present
       # Key:value filters to uniquely identify this object (required)
       identifiers:
           slug: initial-setup

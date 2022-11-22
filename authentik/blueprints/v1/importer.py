@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from copy import deepcopy
 from typing import Any, Optional
 
+from dacite.config import Config
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from deepmerge import always_merger
@@ -20,6 +21,7 @@ from yaml import load
 from authentik.blueprints.v1.common import (
     Blueprint,
     BlueprintEntry,
+    BlueprintEntryDesiredState,
     BlueprintEntryState,
     BlueprintLoader,
     EntryInvalidError,
@@ -82,7 +84,9 @@ class Importer:
         self.logger = get_logger()
         import_dict = load(yaml_input, BlueprintLoader)
         try:
-            self.__import = from_dict(Blueprint, import_dict)
+            self.__import = from_dict(
+                Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
+            )
         except DaciteError as exc:
             raise EntryInvalidError from exc
         ctx = {}
@@ -135,7 +139,7 @@ class Importer:
             sub_query &= Q(**{identifier: value})
         return main_query | sub_query
 
-    def _validate_single(self, entry: BlueprintEntry) -> BaseSerializer:
+    def _validate_single(self, entry: BlueprintEntry) -> Optional[BaseSerializer]:
         """Validate a single entry"""
         model_app_label, model_name = entry.model.split(".")
         model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
@@ -168,8 +172,11 @@ class Importer:
         existing_models = model.objects.filter(self.__query_from_identifier(updated_identifiers))
 
         serializer_kwargs = {}
-        if not isinstance(model(), BaseMetaModel) and existing_models.exists():
-            model_instance = existing_models.first()
+        model_instance = existing_models.first()
+        if not isinstance(model(), BaseMetaModel) and model_instance:
+            if entry.state == BlueprintEntryDesiredState.CREATED:
+                self.logger.debug("instance exists, skipping")
+                return None
             self.logger.debug(
                 "initialise serializer with instance",
                 model=model,
@@ -234,12 +241,25 @@ class Importer:
             except EntryInvalidError as exc:
                 self.logger.warning(f"entry invalid: {exc}", entry=entry, error=exc)
                 return False
+            if not serializer:
+                continue
 
-            model = serializer.save()
-            if "pk" in entry.identifiers:
-                self.__pk_map[entry.identifiers["pk"]] = model.pk
-            entry._state = BlueprintEntryState(model)
-            self.logger.debug("updated model", model=model)
+            if entry.state in [
+                BlueprintEntryDesiredState.PRESENT,
+                BlueprintEntryDesiredState.CREATED,
+            ]:
+                model = serializer.save()
+                if "pk" in entry.identifiers:
+                    self.__pk_map[entry.identifiers["pk"]] = model.pk
+                entry._state = BlueprintEntryState(model)
+                self.logger.debug("updated model", model=model)
+            elif entry.state == BlueprintEntryDesiredState.ABSENT:
+                instance: Optional[Model] = serializer.instance
+                if instance:
+                    instance.delete()
+                    self.logger.debug("deleted model", mode=instance)
+                    continue
+                self.logger.debug("entry to delete with no instance, skipping")
         return True
 
     def validate(self) -> tuple[bool, list[EventDict]]:

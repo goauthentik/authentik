@@ -41,11 +41,20 @@ class BlueprintEntryState:
     instance: Optional[Model] = None
 
 
+class BlueprintEntryDesiredState(Enum):
+    """State an entry should be reconciled to"""
+
+    ABSENT = "absent"
+    PRESENT = "present"
+    CREATED = "created"
+
+
 @dataclass
 class BlueprintEntry:
     """Single entry of a blueprint"""
 
     model: str
+    state: BlueprintEntryDesiredState = field(default=BlueprintEntryDesiredState.PRESENT)
     identifiers: dict[str, Any] = field(default_factory=dict)
     attrs: Optional[dict[str, Any]] = field(default_factory=dict)
 
@@ -227,7 +236,14 @@ class BlueprintDumper(SafeDumper):
         self.add_representer(UUID, lambda self, data: self.represent_str(str(data)))
         self.add_representer(OrderedDict, lambda self, data: self.represent_dict(dict(data)))
         self.add_representer(Enum, lambda self, data: self.represent_str(data.value))
+        self.add_representer(
+            BlueprintEntryDesiredState, lambda self, data: self.represent_str(data.value)
+        )
         self.add_representer(None, lambda self, data: self.represent_str(str(data)))
+
+    def ignore_aliases(self, data):
+        """Don't use any YAML anchors"""
+        return True
 
     def represent(self, data) -> None:
         if is_dataclass(data):
