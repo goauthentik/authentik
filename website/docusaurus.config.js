@@ -95,7 +95,7 @@ module.exports = {
                         },
                         {
                             label: "Installations",
-                            to: "docs/installation/index",
+                            to: "docs/installation/",
                         },
                     ],
                 },
