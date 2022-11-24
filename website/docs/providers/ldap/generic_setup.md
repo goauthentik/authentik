@@ -64,7 +64,7 @@ Note: The `default-authentication-flow` validates MFA by default, and currently 
    ![](./general_setup17.png)
 
 :::info
-The LDAP Outpost selects different providers based on their Base DN. Adding multiple providers with the same Base DN will result in inconsistent access 
+The LDAP Outpost selects different providers based on their Base DN. Adding multiple providers with the same Base DN will result in inconsistent access
 :::
 
 ### ldapsearch Test
