@@ -11,6 +11,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.generators import generate_id
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
 
@@ -25,7 +26,7 @@ class TestPasswordStage(FlowTestCase):
         self.user = create_test_admin_user()
 
         self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
-        self.stage = PasswordStage.objects.create(name="password", backends=[BACKEND_INBUILT])
+        self.stage = PasswordStage.objects.create(name=generate_id(), backends=[BACKEND_INBUILT])
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     @patch(

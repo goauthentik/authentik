@@ -207,6 +207,7 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
                 request=stage_view.request,
                 stage=stage_view.executor.current_stage,
                 device_class=DeviceClasses.DUO.value,
+                duo_response=response,
             )
             raise ValidationError("Duo denied access", code="denied")
         return device
