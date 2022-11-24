@@ -1,6 +1,7 @@
 """Events middleware"""
 from functools import partial
-from typing import Callable
+from threading import Thread
+from typing import Any, Callable, Optional
 
 from django.conf import settings
 from django.contrib.sessions.models import Session
@@ -13,7 +14,6 @@ from guardian.models import UserObjectPermission
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.events.models import Event, EventAction, Notification
-from authentik.events.signals import EventNewThread
 from authentik.events.utils import model_to_dict
 from authentik.flows.models import FlowToken
 from authentik.lib.sentry import before_send
@@ -35,6 +35,25 @@ def should_log_model(model: Model) -> bool:
     if model.__module__.startswith("silk"):
         return False
     return not isinstance(model, IGNORED_MODELS)
+
+
+class EventNewThread(Thread):
+    """Create Event in background thread"""
+
+    action: str
+    request: HttpRequest
+    kwargs: dict[str, Any]
+    user: Optional[User] = None
+
+    def __init__(self, action: str, request: HttpRequest, user: Optional[User] = None, **kwargs):
+        super().__init__()
+        self.action = action
+        self.request = request
+        self.user = user
+        self.kwargs = kwargs
+
+    def run(self):
+        Event.new(self.action, **self.kwargs).from_http(self.request, user=self.user)
 
 
 class AuditMiddleware:

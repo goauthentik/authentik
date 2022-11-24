@@ -196,9 +196,9 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         if not should_cache:
             allowed_applications = self._get_allowed_applications(queryset)
         if should_cache:
-            LOGGER.debug("Caching allowed application list")
             allowed_applications = cache.get(user_app_cache_key(self.request.user.pk))
             if not allowed_applications:
+                LOGGER.debug("Caching allowed application list")
                 allowed_applications = self._get_allowed_applications(queryset)
                 cache.set(
                     user_app_cache_key(self.request.user.pk),
