@@ -200,6 +200,7 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
         )
         # {'result': 'allow', 'status': 'allow', 'status_msg': 'Success. Logging you in...'}
         if response["result"] == "deny":
+            LOGGER.debug("duo push response", result=response["result"], msg=response["status_msg"])
             login_failed.send(
                 sender=__name__,
                 credentials={"username": user.username},
