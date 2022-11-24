@@ -1,3 +1,4 @@
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
@@ -5,7 +6,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -18,18 +19,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
 
-@customElement("ak-stage-access-denied")
-export class AccessDeniedStage extends BaseStage<
-    AccessDeniedChallenge,
-    FlowChallengeResponseRequest
-> {
+@customElement("ak-stage-access-denied-icon")
+export class AccessDeniedIcon extends AKElement {
+    @property()
+    errorMessage?: string;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
-            PFLogin,
-            PFForm,
-            PFList,
-            PFFormControl,
             PFTitle,
             AKGlobal,
             css`
@@ -48,6 +45,29 @@ export class AccessDeniedStage extends BaseStage<
                 }
             `,
         ];
+    }
+
+    render(): TemplateResult {
+        return html` <div class="pf-c-form__group">
+            <p class="big-icon">
+                <i class="pf-icon pf-icon-error-circle-o"></i>
+            </p>
+            <h3 class="pf-c-title pf-m-3xl reason">${t`Request has been denied.`}</h3>
+            ${this.errorMessage
+                ? html`<hr />
+                      <p>${this.errorMessage}</p>`
+                : html``}
+        </div>`;
+    }
+}
+
+@customElement("ak-stage-access-denied")
+export class AccessDeniedStage extends BaseStage<
+    AccessDeniedChallenge,
+    FlowChallengeResponseRequest
+> {
+    static get styles(): CSSResult[] {
+        return [PFBase, PFLogin, PFForm, PFList, PFFormControl, PFTitle, AKGlobal];
     }
 
     render(): TemplateResult {
@@ -70,15 +90,10 @@ export class AccessDeniedStage extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
-                    <div class="pf-c-form__group">
-                        <p class="big-icon">
-                            <i class="pf-icon pf-icon-error-circle-o"></i>
-                        </p>
-                        <h3 class="pf-c-title pf-m-3xl reason">${t`Request has been denied.`}</h3>
-                        ${this.challenge?.errorMessage &&
-                        html`<hr />
-                            <p>${this.challenge.errorMessage}</p>`}
-                    </div>
+                    <ak-stage-access-denied-icon
+                        errorMessage=${ifDefined(this.challenge.errorMessage)}
+                    >
+                    </ak-stage-access-denied-icon>
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">

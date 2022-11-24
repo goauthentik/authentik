@@ -73,7 +73,17 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
             )
         with patch(
             "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.auth_client",
-            MagicMock(return_value=MagicMock(auth=MagicMock(return_value={"result": "deny"}))),
+            MagicMock(
+                return_value=MagicMock(
+                    auth=MagicMock(
+                        return_value={
+                            "result": "deny",
+                            "status": "deny",
+                            "status_msg": "foo",
+                        }
+                    )
+                )
+            ),
         ):
             with self.assertRaises(ValidationError):
                 validate_challenge_duo(

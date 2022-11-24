@@ -69,15 +69,17 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
                         </div>
                     </ak-form-static>
 
-                    ${errors.map((err) => {
-                        return html`<p>${err.string}</p>`;
-                    })}
-
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${t`Continue`}
-                        </button>
-                    </div>
+                    ${errors.length > 0
+                        ? errors.map((err) => {
+                              if (err.code === "denied") {
+                                  return html` <ak-stage-access-denied-icon
+                                      errorMessage=${err.string}
+                                  >
+                                  </ak-stage-access-denied-icon>`;
+                              }
+                              return html`<p>${err.string}</p>`;
+                          })
+                        : html`${t`Sending Duo push notification`}`}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">

@@ -208,8 +208,7 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
                 stage=stage_view.executor.current_stage,
                 device_class=DeviceClasses.DUO.value,
             )
-            raise ValidationError("Duo denied access")
-        device.save()
+            raise ValidationError("Duo denied access", code="denied")
         return device
     except RuntimeError as exc:
         Event.new(
@@ -217,4 +216,4 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
             message=f"Failed to DUO authenticate user: {str(exc)}",
             user=user,
         ).from_http(stage_view.request, user)
-        raise ValidationError("Duo denied access")
+        raise ValidationError("Duo denied access", code="denied")
