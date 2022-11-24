@@ -67,6 +67,26 @@ msgstr "-"
 msgid ".yaml files, which can be found on goauthentik.io and can be exported by authentik."
 msgstr ""
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "0: Too guessable: risky password. (guesses < 10^3)"
+msgstr ""
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "1: Very guessable: protection from throttled online attacks. (guesses < 10^6)"
+msgstr ""
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "2: Somewhat guessable: protection from unthrottled online attacks. (guesses < 10^8)"
+msgstr ""
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses < 10^10)"
+msgstr ""
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "4: Very unguessable: strong protection from offline slow-hash scenario. (guesses >= 10^10)"
+msgstr ""
+
 #: src/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "6 digits, widely compatible"
 msgstr "6位数字，广泛兼容"
@@ -312,8 +332,8 @@ msgid "Advanced protocol settings"
 msgstr "高级协议设置"
 
 #: src/admin/policies/password/PasswordPolicyForm.ts
-msgid "Advanced settings"
-msgstr "高级设置"
+#~ msgid "Advanced settings"
+#~ msgstr "高级设置"
 
 #: src/admin/events/EventInfo.ts
 msgid "Affected model:"
@@ -335,6 +355,7 @@ msgid "Allow friends to authenticate via Plex, even if you don't share any serve
 msgstr "允许好友通过Plex进行身份验证，即使您不共享任何服务器"
 
 #: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
+#: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Allow up to N occurrences in the HIBP database."
 msgstr "HIBP 数据库中最多允许 N 次出现。"
 
@@ -347,6 +368,7 @@ msgid "Allowed Redirect URIs"
 msgstr "允许的重定向 URI"
 
 #: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
+#: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Allowed count"
 msgstr "允许计数"
 
@@ -626,6 +648,7 @@ msgstr "授权网址"
 msgid "Authorization flow"
 msgstr "授权流程"
 
+#: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
 #: src/elements/charts/ApplicationAuthorizeChart.ts
 msgid "Authorizations"
 msgstr "授权"
@@ -830,8 +853,8 @@ msgid "Callback URL"
 msgstr "回调 URL"
 
 #: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
-msgid "Can be either the username (found in the Users list) or the ID (can be found in the URL after clicking on a user)."
-msgstr ""
+#~ msgid "Can be either the username (found in the Users list) or the ID (can be found in the URL after clicking on a user)."
+#~ msgstr ""
 
 #~ msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
 #~ msgstr "连接到本地 docker 守护进程时可以采用 'unix://' 的格式，或者在连接到远程系统时采用 'https://:2376' 的格式。"
@@ -945,6 +968,10 @@ msgstr "检查用户名"
 msgid "Check access"
 msgstr "检查访问权限"
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "Check haveibeenpwned.com"
+msgstr ""
+
 #~ msgid ""
 #~ "Check if password is on HaveIBeenPwned's list by uploading the first\n"
 #~ "5 characters of the SHA1 Hash."
@@ -955,6 +982,10 @@ msgstr "检查访问权限"
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 msgid "Check outposts."
 msgstr "检查  outposts."
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "Check static rules"
+msgstr ""
 
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Check status"
@@ -974,6 +1005,10 @@ msgstr "检查日志"
 #: src/flow/stages/email/EmailStage.ts
 msgid "Check your Inbox for a verification email."
 msgstr "检查您的收件箱是否有验证电子邮件。"
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "Check zxcvbn"
+msgstr ""
 
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Checkbox"
@@ -1028,6 +1063,9 @@ msgid "Clear cache"
 msgstr "清除缓存"
 
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Clear icon"
 msgstr "清除图标"
 
@@ -1539,6 +1577,9 @@ msgstr "当前计划上下文"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/flows/FlowForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Currently set to:"
 msgstr "当前设置为："
 
@@ -1655,6 +1696,9 @@ msgid "Delete currently set background image."
 msgstr "删除当前设置的背景图片。"
 
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Delete currently set icon."
 msgstr "删除当前设置的图标。"
 
@@ -1925,6 +1969,9 @@ msgid "Edit User"
 msgstr "编辑用户"
 
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon \"fa-test\"."
 msgstr "输入完整的网址、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 “fa-test”。"
 
@@ -2233,7 +2280,7 @@ msgstr ""
 msgid "External host"
 msgstr "外部主机"
 
-#: src/elements/charts/AdminLoginsChart.ts
+#: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
 #: src/elements/charts/UserChart.ts
 msgid "Failed Logins"
 msgstr "登入失败"
@@ -2432,6 +2479,10 @@ msgstr "流程描述了一系列用于对用户进行身份验证、注册或恢
 msgid "Follow redirect"
 msgstr "跟随重定向"
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "For more info see:"
+msgstr ""
+
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Force the user to configure an authenticator"
 msgstr "强制用户配置身份验证器"
@@ -2617,6 +2668,10 @@ msgstr ""
 #~ msgid "Have I been pwned policy"
 #~ msgstr "Have I been pwned 策略"
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "HaveIBeenPwned settings"
+msgstr ""
+
 #: src/admin/outposts/OutpostListPage.ts
 msgid "Health and Version"
 msgstr "运行状况和版本"
@@ -2690,6 +2745,12 @@ msgstr "IP"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Icon"
 msgstr "图标"
 
@@ -2723,8 +2784,12 @@ msgid "If checked, the launch URL will open in a new browser tab or window from 
 msgstr ""
 
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-msgid "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons.Devices created from a stage with this enabled cannot be used with the authenticator validation stage."
+msgid "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons. Devices created from a stage with this enabled cannot be used with the authenticator validation stage."
 msgstr ""
+
+#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+#~ msgid "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons.Devices created from a stage with this enabled cannot be used with the authenticator validation stage."
+#~ msgstr ""
 
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 #: src/admin/outposts/ServiceConnectionKubernetesForm.ts
@@ -2762,6 +2827,10 @@ msgstr "设置后，用户可以配置他们个人资料的详细信息。"
 #: src/admin/tenants/TenantForm.ts
 msgid "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown."
 msgstr "如果已设置，则用户可以使用此流程自行取消注册。如果未设置流量，则不显示选项。"
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "If the password's score is less than or equal this value, the policy will fail."
+msgstr ""
 
 #: src/admin/stages/invitation/InvitationStageForm.ts
 msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
@@ -3223,6 +3292,7 @@ msgstr ""
 #~ msgstr "区域设置"
 
 #: src/admin/applications/ApplicationCheckAccessForm.ts
+#: src/admin/flows/FlowImportForm.ts
 #: src/admin/policies/PolicyTestForm.ts
 msgid "Log messages"
 msgstr "日志消息"
@@ -3252,6 +3322,9 @@ msgid "Logins"
 msgstr "登入"
 
 #: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Logins and authorizations over the last 24 hours"
+msgstr ""
+
 #: src/admin/applications/ApplicationViewPage.ts
 msgid "Logins over the last 24 hours"
 msgstr "过去 24 小时内的登入次数"
@@ -3623,6 +3696,7 @@ msgstr "Nginx (standalone)"
 #: src/admin/applications/ApplicationCheckAccessForm.ts
 #: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/crypto/CertificateKeyPairListPage.ts
+#: src/admin/flows/FlowImportForm.ts
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/groups/RelatedGroupList.ts
@@ -3678,6 +3752,7 @@ msgid "No integration active"
 msgstr "没有激活的集成"
 
 #: src/admin/applications/ApplicationCheckAccessForm.ts
+#: src/admin/flows/FlowImportForm.ts
 #: src/admin/policies/PolicyTestForm.ts
 msgid "No log messages."
 msgstr "没有日志消息。"
@@ -4097,6 +4172,10 @@ msgstr "密码已设置"
 msgid "Password stage"
 msgstr "密码阶段"
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "Password strength estimator created by Dropbox, see:"
+msgstr ""
+
 #~ msgid "Password, 2FA, etc"
 #~ msgstr "密码、2FA 等"
 
@@ -4235,7 +4314,6 @@ msgstr "策略 {0}"
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
 #: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
-#: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Policy-specific settings"
 msgstr "特定于策略的设置"
@@ -4787,6 +4865,10 @@ msgstr "范围"
 msgid "Score"
 msgstr "得分"
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "Score threshold"
+msgstr ""
+
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
 msgid "Search base"
 msgstr "搜索基础"
@@ -5280,6 +5362,10 @@ msgstr "静态令牌"
 msgid "Static authenticator"
 msgstr "静态身份验证器"
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "Static rules"
+msgstr ""
+
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Static token"
 msgstr "静态令牌"
@@ -5325,11 +5411,12 @@ msgid "Subject-alt name"
 msgstr "替代名称"
 
 #: src/admin/blueprints/BlueprintListPage.ts
+#: src/admin/flows/FlowImportForm.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Successful"
 msgstr "成功"
 
-#: src/elements/charts/AdminLoginsChart.ts
+#: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
 #: src/elements/charts/UserChart.ts
 msgid "Successful Logins"
 msgstr "成功登入"
@@ -5887,8 +5974,12 @@ msgid "The start for uidNumbers, this number is added to the user.Pk to make sur
 msgstr "对于UIDNumbers来说，这个数字被添加到User.pk中，以确保对于POSIX用户来说，这个数字不会太低。默认值为 2000，以确保我们不会与本地用户 uidNumber 发生冲突"
 
 #: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
-msgid "The user ID in Duo."
+msgid "The user ID in Duo, can be found in the URL after clicking on a user."
 msgstr ""
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+#~ msgid "The user ID in Duo."
+#~ msgstr ""
 
 #: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
 msgid "The user in authentik this device will be assigned to."
@@ -6611,14 +6702,17 @@ msgstr "用户状态"
 msgid "User verification"
 msgstr "用户验证"
 
+#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 msgid "User verification is preferred if available, but not required."
 msgstr "如果可用，则首选用户验证，但不是必需的。"
 
+#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 msgid "User verification must occur."
 msgstr "必须进行用户验证。"
 
+#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 msgid "User verification should not occur."
 msgstr "不应进行用户验证。"
@@ -6741,6 +6835,10 @@ msgstr "验证证书"
 #~ msgid "Verification certificates"
 #~ msgstr "验证证书"
 
+#: src/admin/outposts/ServiceConnectionKubernetesForm.ts
+msgid "Verify Kubernetes API SSL Certificate"
+msgstr ""
+
 #~ msgid "Verify only"
 #~ msgstr ""
 
@@ -6839,6 +6937,10 @@ msgstr "WebAuthn 身份验证器"
 
 #~ msgid "WebAuthn Devices"
 #~ msgstr "WebAuthn 设备"
+
+#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "WebAuthn User verification"
+msgstr ""
 
 #: src/admin/events/TransportForm.ts
 msgid "Webhook (Slack/Discord)"
@@ -6967,6 +7069,7 @@ msgstr ""
 
 #: src/admin/applications/ApplicationCheckAccessForm.ts
 #: src/admin/blueprints/BlueprintListPage.ts
+#: src/admin/flows/FlowImportForm.ts
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/groups/RelatedGroupList.ts
@@ -7061,6 +7164,10 @@ msgstr "以当前用户"
 #: src/admin/flows/FlowViewPage.ts
 msgid "with inspector"
 msgstr "和检查员一起"
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "zxcvbn settings"
+msgstr ""
 
 #: src/elements/Expand.ts
 #: src/elements/Expand.ts

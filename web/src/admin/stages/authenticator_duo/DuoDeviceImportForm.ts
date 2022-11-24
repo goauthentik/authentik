@@ -74,8 +74,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
             <ak-form-element-horizontal label=${t`Duo User ID`} ?required=${true} name="duoUserId">
                 <input type="text" class="pf-c-form-control" required />
                 <p class="pf-c-form__helper-text">
-                    ${t`The user ID in Duo.`}
-                    ${t`Can be either the username (found in the Users list) or the ID (can be found in the URL after clicking on a user).`}
+                    ${t`The user ID in Duo, can be found in the URL after clicking on a user.`}
                 </p>
             </ak-form-element-horizontal>
         </form>`;

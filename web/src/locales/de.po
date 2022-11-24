@@ -81,6 +81,26 @@ msgstr "-"
 msgid ".yaml files, which can be found on goauthentik.io and can be exported by authentik."
 msgstr ""
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "0: Too guessable: risky password. (guesses < 10^3)"
+msgstr ""
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "1: Very guessable: protection from throttled online attacks. (guesses < 10^6)"
+msgstr ""
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "2: Somewhat guessable: protection from unthrottled online attacks. (guesses < 10^8)"
+msgstr ""
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses < 10^10)"
+msgstr ""
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "4: Very unguessable: strong protection from offline slow-hash scenario. (guesses >= 10^10)"
+msgstr ""
+
 #: src/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "6 digits, widely compatible"
 msgstr "6 Ziffern, weitestgehend kompatibel"
@@ -328,8 +348,8 @@ msgid "Advanced protocol settings"
 msgstr "Erweiterte Protokolleinstellungen"
 
 #: src/admin/policies/password/PasswordPolicyForm.ts
-msgid "Advanced settings"
-msgstr "Erweiterte Einstellungen"
+#~ msgid "Advanced settings"
+#~ msgstr "Erweiterte Einstellungen"
 
 #: src/admin/events/EventInfo.ts
 msgid "Affected model:"
@@ -351,6 +371,7 @@ msgid "Allow friends to authenticate via Plex, even if you don't share any serve
 msgstr "Freunden erlauben sich via Plex zu authentifizieren, auch wenn keine Server geteilt werden."
 
 #: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
+#: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Allow up to N occurrences in the HIBP database."
 msgstr "Erlaube bis zu N Einträge in der HIBP Datenbank."
 
@@ -363,6 +384,7 @@ msgid "Allowed Redirect URIs"
 msgstr "Erlaubte Weiterleitungs-URIs"
 
 #: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
+#: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Allowed count"
 msgstr "Erlaubte Anzahl"
 
@@ -642,6 +664,7 @@ msgstr "Autorisierungs-URL"
 msgid "Authorization flow"
 msgstr "Autorisierungsablauf"
 
+#: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
 #: src/elements/charts/ApplicationAuthorizeChart.ts
 msgid "Authorizations"
 msgstr "Berechtigungen"
@@ -846,8 +869,8 @@ msgid "Callback URL"
 msgstr "Callback URL"
 
 #: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
-msgid "Can be either the username (found in the Users list) or the ID (can be found in the URL after clicking on a user)."
-msgstr ""
+#~ msgid "Can be either the username (found in the Users list) or the ID (can be found in the URL after clicking on a user)."
+#~ msgstr ""
 
 #~ msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, or 'https://:2376' when connecting to a remote system."
 #~ msgstr "Kann das Format \"unix://\" haben, wenn eine Verbindung zu einem lokalen Docker-Daemon besteht, oder \"https://:2376\", wenn eine Verbindung zu einem entfernten System besteht."
@@ -961,6 +984,10 @@ msgstr "Benutzername prüfen"
 msgid "Check access"
 msgstr "Zugang prüfen"
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "Check haveibeenpwned.com"
+msgstr ""
+
 #~ msgid ""
 #~ "Check if password is on HaveIBeenPwned's list by uploading the first\n"
 #~ "5 characters of the SHA1 Hash."
@@ -971,6 +998,10 @@ msgstr "Zugang prüfen"
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 msgid "Check outposts."
 msgstr "Outposts prüfen"
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "Check static rules"
+msgstr ""
 
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Check status"
@@ -990,6 +1021,10 @@ msgstr "Logs überprüfen"
 #: src/flow/stages/email/EmailStage.ts
 msgid "Check your Inbox for a verification email."
 msgstr "Prüfen Sie Ihren Posteingang auf eine Bestätigungsmail."
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "Check zxcvbn"
+msgstr ""
 
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Checkbox"
@@ -1044,6 +1079,9 @@ msgid "Clear cache"
 msgstr "Cache löschen"
 
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Clear icon"
 msgstr "Symbol zurücksetzen"
 
@@ -1555,6 +1593,9 @@ msgstr "Aktueller Plankontext"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/flows/FlowForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Currently set to:"
 msgstr "Aktuell eingestellt auf:"
 
@@ -1671,6 +1712,9 @@ msgid "Delete currently set background image."
 msgstr "Aktuelles Hintergrundbild löschen"
 
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Delete currently set icon."
 msgstr "Lösche das aktuell festgelegte Symbol."
 
@@ -1941,6 +1985,9 @@ msgid "Edit User"
 msgstr "Benutzer bearbeiten"
 
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon \"fa-test\"."
 msgstr "Geben Sie entweder eine vollständige URL oder einen relativen Pfad ein oder geben Sie 'fa://fa-test' ein, um das Font Awesome-Icon \"fa-test\" zu verwenden "
 
@@ -2249,7 +2296,7 @@ msgstr ""
 msgid "External host"
 msgstr "Externer Host"
 
-#: src/elements/charts/AdminLoginsChart.ts
+#: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
 #: src/elements/charts/UserChart.ts
 msgid "Failed Logins"
 msgstr "Fehlgeschlagene Anmeldungen"
@@ -2448,6 +2495,10 @@ msgstr "Abläufe beschreiben eine Kette von Phasen zum Authentifizieren, Registr
 msgid "Follow redirect"
 msgstr "Weiterleitung folgen"
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "For more info see:"
+msgstr ""
+
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Force the user to configure an authenticator"
 msgstr "Benutzer auffordern einen Authenticator einzurichten"
@@ -2633,6 +2684,10 @@ msgstr "Hash-Telefonnummer"
 #~ msgid "Have I been pwned policy"
 #~ msgstr "Have I been pwned Richtlinie"
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "HaveIBeenPwned settings"
+msgstr ""
+
 #: src/admin/outposts/OutpostListPage.ts
 msgid "Health and Version"
 msgstr "Zustand und Version"
@@ -2706,6 +2761,12 @@ msgstr "IP"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/plex/PlexSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Icon"
 msgstr "Symbol"
 
@@ -2739,8 +2800,12 @@ msgid "If checked, the launch URL will open in a new browser tab or window from 
 msgstr ""
 
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-msgid "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons.Devices created from a stage with this enabled cannot be used with the authenticator validation stage."
-msgstr "Wenn aktiviert, wird nur ein Hash der Telefonnummer gespeichert. Dies kann aus datenschutzrechtlichen Gründen erfolgen. Geräte, die aus einer Phase erstellt wurden, in der diese Option aktiviert ist, können nicht mit der Authentifikator-Validierungsphase verwendet werden."
+msgid "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons. Devices created from a stage with this enabled cannot be used with the authenticator validation stage."
+msgstr ""
+
+#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+#~ msgid "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons.Devices created from a stage with this enabled cannot be used with the authenticator validation stage."
+#~ msgstr "Wenn aktiviert, wird nur ein Hash der Telefonnummer gespeichert. Dies kann aus datenschutzrechtlichen Gründen erfolgen. Geräte, die aus einer Phase erstellt wurden, in der diese Option aktiviert ist, können nicht mit der Authentifikator-Validierungsphase verwendet werden."
 
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 #: src/admin/outposts/ServiceConnectionKubernetesForm.ts
@@ -2780,6 +2845,10 @@ msgstr "Wenn aktiviert, können Nutzer Profildetails selbstständig ändern."
 #: src/admin/tenants/TenantForm.ts
 msgid "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown."
 msgstr "Wenn festgelegt, können sich Benutzer mit diesem Ablauf selbst abmelden. Wenn kein Ablauf eingestellt ist, wird die Option nicht angezeigt."
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "If the password's score is less than or equal this value, the policy will fail."
+msgstr ""
 
 #: src/admin/stages/invitation/InvitationStageForm.ts
 msgid "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
@@ -3239,6 +3308,7 @@ msgstr "Lokal (Benachrichtigungen werden innerhalb von authentik erstellt)"
 #~ msgstr "Gebietsschema"
 
 #: src/admin/applications/ApplicationCheckAccessForm.ts
+#: src/admin/flows/FlowImportForm.ts
 #: src/admin/policies/PolicyTestForm.ts
 msgid "Log messages"
 msgstr "Logeinträge"
@@ -3268,6 +3338,9 @@ msgid "Logins"
 msgstr "Anmeldungen"
 
 #: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Logins and authorizations over the last 24 hours"
+msgstr ""
+
 #: src/admin/applications/ApplicationViewPage.ts
 msgid "Logins over the last 24 hours"
 msgstr "Anmeldungen in den letzten 24 Stunden"
@@ -3639,6 +3712,7 @@ msgstr "Nginx (eigenständig)"
 #: src/admin/applications/ApplicationCheckAccessForm.ts
 #: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/crypto/CertificateKeyPairListPage.ts
+#: src/admin/flows/FlowImportForm.ts
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/groups/RelatedGroupList.ts
@@ -3694,6 +3768,7 @@ msgid "No integration active"
 msgstr "Keine Integrationen aktiv"
 
 #: src/admin/applications/ApplicationCheckAccessForm.ts
+#: src/admin/flows/FlowImportForm.ts
 #: src/admin/policies/PolicyTestForm.ts
 msgid "No log messages."
 msgstr "Keine Logeinträge."
@@ -4113,6 +4188,10 @@ msgstr "Passwort festgelegt"
 msgid "Password stage"
 msgstr "Passwort-Phase"
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "Password strength estimator created by Dropbox, see:"
+msgstr ""
+
 #~ msgid "Password, 2FA, etc"
 #~ msgstr "Passwort, 2FA, usw."
 
@@ -4251,7 +4330,6 @@ msgstr "Richtlinie {0}"
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
 #: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
-#: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Policy-specific settings"
 msgstr "Richtlinienspezifische Einstellungen"
@@ -4803,6 +4881,10 @@ msgstr "Umfang"
 msgid "Score"
 msgstr "Punkt(e)"
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "Score threshold"
+msgstr ""
+
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
 msgid "Search base"
 msgstr "Suchbasis"
@@ -5296,6 +5378,10 @@ msgstr "Statische Token"
 msgid "Static authenticator"
 msgstr "Statischer Authentifikator"
 
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "Static rules"
+msgstr ""
+
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Static token"
 msgstr "Statische Token"
@@ -5341,11 +5427,12 @@ msgid "Subject-alt name"
 msgstr "Betreff alternativer Name"
 
 #: src/admin/blueprints/BlueprintListPage.ts
+#: src/admin/flows/FlowImportForm.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Successful"
 msgstr "Erfolgreich"
 
-#: src/elements/charts/AdminLoginsChart.ts
+#: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
 #: src/elements/charts/UserChart.ts
 msgid "Successful Logins"
 msgstr "Erfolgreiche Anmeldungen"
@@ -5903,8 +5990,12 @@ msgid "The start for uidNumbers, this number is added to the user.Pk to make sur
 msgstr "Der Anfang für uidNumbers, diese Zahl wird zu user.Pk hinzugefügt, um sicherzustellen, dass die Zahlen für POSIX-Benutzer nicht zu niedrig sind. Standardwert ist 2000, um sicherzustellen, dass wir nicht mit lokalen uidNumbers der Benutzer kollidieren"
 
 #: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
-msgid "The user ID in Duo."
+msgid "The user ID in Duo, can be found in the URL after clicking on a user."
 msgstr ""
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+#~ msgid "The user ID in Duo."
+#~ msgstr ""
 
 #: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
 msgid "The user in authentik this device will be assigned to."
@@ -6627,14 +6718,17 @@ msgstr "Benutzerstatus"
 msgid "User verification"
 msgstr "Benutzerüberprüfung"
 
+#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 msgid "User verification is preferred if available, but not required."
 msgstr "Die Benutzerüberprüfung wird bevorzugt, falls verfügbar, aber nicht erforderlich."
 
+#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 msgid "User verification must occur."
 msgstr "Die Benutzerüberprüfung muss erfolgen."
 
+#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 #: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 msgid "User verification should not occur."
 msgstr "Die Benutzerüberprüfung sollte nicht stattfinden."
@@ -6757,6 +6851,10 @@ msgstr "Zertifikat zur Überprüfung"
 #~ msgid "Verification certificates"
 #~ msgstr "Verifizierungszertifikate"
 
+#: src/admin/outposts/ServiceConnectionKubernetesForm.ts
+msgid "Verify Kubernetes API SSL Certificate"
+msgstr ""
+
 #~ msgid "Verify only"
 #~ msgstr "Nur verifizieren"
 
@@ -6855,6 +6953,10 @@ msgstr "WebAuthn-Authentifikatoren"
 
 #~ msgid "WebAuthn Devices"
 #~ msgstr "WebAuthn Geräte"
+
+#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "WebAuthn User verification"
+msgstr ""
 
 #: src/admin/events/TransportForm.ts
 msgid "Webhook (Slack/Discord)"
@@ -6981,6 +7083,7 @@ msgstr ""
 
 #: src/admin/applications/ApplicationCheckAccessForm.ts
 #: src/admin/blueprints/BlueprintListPage.ts
+#: src/admin/flows/FlowImportForm.ts
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/groups/RelatedGroupList.ts
@@ -7075,6 +7178,10 @@ msgstr "mit aktuellem Nutzer"
 #: src/admin/flows/FlowViewPage.ts
 msgid "with inspector"
 msgstr "mit Inspektor"
+
+#: src/admin/policies/password/PasswordPolicyForm.ts
+msgid "zxcvbn settings"
+msgstr ""
 
 #: src/elements/Expand.ts
 #: src/elements/Expand.ts
