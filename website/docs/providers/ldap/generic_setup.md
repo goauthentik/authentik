@@ -63,6 +63,10 @@ Note: The `default-authentication-flow` validates MFA by default, and currently 
 1. Create (or update) the LDAP Outpost under _Applications_ -> _Outposts_ -> _Create_. Set the Type to `LDAP` and choose the `LDAP` application created in the previous step.
    ![](./general_setup17.png)
 
+:::info
+The LDAP Outpost selects different providers based on their Base DN. Adding multiple providers with the same Base DN will result in inconsistent access
+:::
+
 ### ldapsearch Test
 
 Test connectivity by using ldapsearch.
