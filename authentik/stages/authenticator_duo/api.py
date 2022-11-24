@@ -128,6 +128,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
             duo_user_id=request.data.get("duo_user_id"),
             user=user,
             stage=stage,
+            confirmed=True,
             name="Imported Duo Authenticator",
         )
         return Response(status=204)
