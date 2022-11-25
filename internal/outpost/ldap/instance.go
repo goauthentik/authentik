@@ -84,6 +84,14 @@ func (pi *ProviderInstance) SetFlags(dn string, flag flags.UserFlags) {
 	pi.boundUsersMutex.Unlock()
 }
 
+func (pi *ProviderInstance) DeleteFlags(dn string) {
+	pi.boundUsersMutex.Lock()
+	if pi.boundUsers[dn] != nil {
+		delete(pi.boundUsers, dn)
+	}
+	pi.boundUsersMutex.Unlock()
+}
+
 func (pi *ProviderInstance) GetAppSlug() string {
 	return pi.appSlug
 }
