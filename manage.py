@@ -6,21 +6,14 @@ import warnings
 
 from defusedxml import defuse_stdlib
 
+warnings.filterwarnings("ignore", "SelectableGroups dict interface")
 warnings.filterwarnings(
     "ignore",
-    message="defusedxml.lxml is no longer supported and will be removed in a future release.",
+    "defusedxml.lxml is no longer supported and will be removed in a future release.",
 )
 warnings.filterwarnings(
     "ignore",
-    message="defusedxml.cElementTree is deprecated, import from defusedxml.ElementTree instead.",
-)
-warnings.filterwarnings(
-    "ignore",
-    message=(
-        "'django_prometheus' defines default_app_config = 'django_prometheus.apps.DjangoPromethe"
-        "usConfig'. Django now detects this configuration automatically. You can remove d"
-        "efault_app_config."
-    ),
+    "defusedxml.cElementTree is deprecated, import from defusedxml.ElementTree instead.",
 )
 
 defuse_stdlib()
