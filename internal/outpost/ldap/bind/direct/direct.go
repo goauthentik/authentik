@@ -3,6 +3,7 @@ package direct
 import (
 	"context"
 	"errors"
+	"net/http"
 	"strings"
 
 	"github.com/getsentry/sentry-go"
@@ -53,7 +54,7 @@ func (db *DirectBinder) GetUsername(dn string) (string, error) {
 	return "", errors.New("failed to find cn")
 }
 
-func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResultCode, error) {
+func (db *DirectBinder) BindNoClean(username string, req *bind.Request) (ldap.LDAPResultCode, error, *http.Cookie) {
 	fe := flow.NewFlowExecutor(req.Context(), db.si.GetFlowSlug(), db.si.GetAPIClient().GetConfig(), log.Fields{
 		"bindDN":    req.BindDN,
 		"client":    req.RemoteAddr(),
@@ -66,10 +67,6 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 	fe.Answers[flow.StagePassword] = req.BindPW
 
 	passed, err := fe.Execute()
-	flags := flags.UserFlags{
-		Session: fe.GetSession(),
-	}
-	db.si.SetFlags(req.BindDN, flags)
 	if err != nil {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": db.si.GetOutpostName(),
@@ -78,7 +75,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"app":          db.si.GetAppSlug(),
 		}).Inc()
 		req.Log().WithError(err).Warning("failed to execute flow")
-		return ldap.LDAPResultInvalidCredentials, nil
+		return ldap.LDAPResultProtocolError, nil, nil
 	}
 	if !passed {
 		metrics.RequestsRejected.With(prometheus.Labels{
@@ -88,7 +85,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"app":          db.si.GetAppSlug(),
 		}).Inc()
 		req.Log().Info("Invalid credentials")
-		return ldap.LDAPResultInvalidCredentials, nil
+		return ldap.LDAPResultInvalidCredentials, nil, nil
 	}
 
 	access, err := fe.CheckApplicationAccess(db.si.GetAppSlug())
@@ -100,7 +97,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"reason":       "access_denied",
 			"app":          db.si.GetAppSlug(),
 		}).Inc()
-		return ldap.LDAPResultInsufficientAccessRights, nil
+		return ldap.LDAPResultInsufficientAccessRights, nil, nil
 	}
 	if err != nil {
 		metrics.RequestsRejected.With(prometheus.Labels{
@@ -110,7 +107,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"app":          db.si.GetAppSlug(),
 		}).Inc()
 		req.Log().WithError(err).Warning("failed to check access")
-		return ldap.LDAPResultOperationsError, nil
+		return ldap.LDAPResultOperationsError, nil, nil
 	}
 	req.Log().Info("User has access")
 	uisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.bind.user_info")
@@ -123,28 +120,45 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"reason":       "user_info_fail",
 			"app":          db.si.GetAppSlug(),
 		}).Inc()
-		req.Log().WithError(err).Warning("failed to get user info")
-		return ldap.LDAPResultOperationsError, nil
+		req.Log().WithError(err).Warning("failed to get user info from Core/Users/Me")
+		//do logout!
+		go func() {
+			flow.Logout(fe.GetSession(), db.si.GetAPIClient().GetConfig())
+		}()
+		db.si.DeleteFlags(req.BindDN)
+		return ldap.LDAPResultOperationsError, nil, nil
 	}
 	cs := db.SearchAccessCheck(userInfo.User)
-	flags.UserPk = userInfo.User.Pk
-	flags.CanSearch = cs != nil
-	db.si.SetFlags(req.BindDN, flags)
-	if flags.CanSearch {
+	userFlags := flags.UserFlags{
+		Session:   fe.GetSession(),
+		UserPk:    userInfo.User.Pk,
+		CanSearch: cs != nil,
+	}
+	db.si.SetFlags(req.BindDN, userFlags)
+	if userFlags.CanSearch {
 		req.Log().WithField("group", cs).Info("Allowed access to search")
 	}
+
 	uisp.Finish()
-	return ldap.LDAPResultSuccess, nil
+	return ldap.LDAPResultSuccess, nil, fe.GetSession()
+}
+
+func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResultCode, error) {
+	res, err, cookie := db.BindNoClean(username, req)
+	flow.Logout(cookie, db.si.GetAPIClient().GetConfig())
+	return res, err
 }
 
 // SearchAccessCheck Check if the current user is allowed to search
 func (db *DirectBinder) SearchAccessCheck(user api.UserSelf) *string {
 	for _, group := range user.Groups {
+		db.log.WithField("group", group.Pk).Debug("Checking group")
 		for _, allowedGroup := range db.si.GetSearchAllowedGroups() {
 			if allowedGroup == nil {
+				db.log.WithField("group", group.Pk).Debug("Group not allowed")
 				continue
 			}
-			db.log.WithField("userGroup", group.Pk).WithField("allowedGroup", allowedGroup).Trace("Checking search access")
+			db.log.WithField("group", group.Pk).WithField("allowedGroup", allowedGroup).Debug("Checking search access")
 			if group.Pk == allowedGroup.String() {
 				return &group.Name
 			}
@@ -162,4 +176,8 @@ func (db *DirectBinder) TimerFlowCacheExpiry() {
 	if err != nil {
 		db.log.WithError(err).Warning("failed to warm up flow cache")
 	}
+}
+
+func (db *DirectBinder) Cleanup() {
+
 }
