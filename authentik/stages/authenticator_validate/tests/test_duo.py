@@ -169,7 +169,7 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
         self.assertEqual(
             event.context,
             {
-                "auth_method": "mfa",
+                "auth_method": "auth_mfa",
                 "auth_method_args": {
                     "mfa_devices": [
                         {

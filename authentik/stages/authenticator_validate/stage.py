@@ -134,7 +134,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         # Here we only check if the any data was sent at all
         if "code" not in attrs and "webauthn" not in attrs and "duo" not in attrs:
             raise ValidationError("Empty response")
-        self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD, "mfa")
+        self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD, "auth_mfa")
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
         self.stage.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].setdefault("mfa_devices", [])
         self.stage.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS]["mfa_devices"].append(

@@ -10,6 +10,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
+from authentik.events.signals import SESSION_LOGIN_EVENT
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.request_parser import AuthNRequest
@@ -30,6 +31,7 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_X509,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
 
@@ -129,9 +131,23 @@ class AssertionProcessor:
         auth_n_context_class_ref = SubElement(
             auth_n_context, f"{{{NS_SAML_ASSERTION}}}AuthnContextClassRef"
         )
-        auth_n_context_class_ref.text = (
-            "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport"
-        )
+        auth_n_context_class_ref.text = "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified"
+        if SESSION_LOGIN_EVENT in self.http_request.session:
+            event: Event = self.http_request.session[SESSION_LOGIN_EVENT]
+            method = event.context.get(PLAN_CONTEXT_METHOD, "")
+            method_args = event.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
+            if method == "password":
+                auth_n_context_class_ref.text = (
+                    "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport"
+                )
+            if "mfa_devices" in method_args:
+                auth_n_context_class_ref.text = (
+                    "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileTwoFactorContract"
+                )
+            if method in ["auth_mfa", "auth_webauthn_pwl"]:
+                auth_n_context_class_ref.text = (
+                    "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileOneFactorContract"
+                )
         return auth_n_statement
 
     def get_assertion_conditions(self) -> Element:
