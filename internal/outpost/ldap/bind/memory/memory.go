@@ -33,7 +33,7 @@ type SessionBinder struct {
 	bindMutex map[string]*sync.Mutex
 }
 
-var defaultTTL = time.Second * 20
+var defaultTTL = time.Hour * time.Duration(24)
 
 func NewSessionBinder(si server.LDAPServerInstance, oldBinder bind.Binder) *SessionBinder {
 	sb := &SessionBinder{
@@ -48,7 +48,7 @@ func NewSessionBinder(si server.LDAPServerInstance, oldBinder bind.Binder) *Sess
 		sb.log.Info("re-initialised session binder")
 	} else {
 		sb.sessions = ttlcache.New(
-			ttlcache.WithTTL[Credentials, LoginResult](time.Second),
+			ttlcache.WithTTL[Credentials, LoginResult](defaultTTL),
 			ttlcache.WithDisableTouchOnHit[Credentials, LoginResult](),
 		)
 		sb.sessions.OnEviction(func(_ context.Context, reason ttlcache.EvictionReason, item *ttlcache.Item[Credentials, LoginResult]) {
@@ -62,14 +62,11 @@ func NewSessionBinder(si server.LDAPServerInstance, oldBinder bind.Binder) *Sess
 			cookie := f.Session
 			//get mutex
 			sb.lockUser(username, "evict")
-			go func() {
-				flow.Logout(cookie, sb.si.GetAPIClient().GetConfig())
-				sb.log.WithField("username", username).Debug("Session closed")
-			}()
+			flow.Logout(cookie, sb.si.GetAPIClient().GetConfig())
 			//remove flags
 			sb.si.DeleteFlags(dn)
 			sb.unlockUser(username, "evict")
-			sb.log.WithField("username", username).Debug("Close session registered")
+			sb.log.WithField("username", username).Info("Session closed")
 		})
 		sb.DirectBinder = *direct.NewDirectBinder(si)
 		go sb.sessions.Start()
@@ -156,7 +153,7 @@ func (sb *SessionBinder) Bind(username string, req *bind.Request) (ldap.LDAPResu
 		if cookie.MaxAge == 0 {
 			ttl = defaultTTL
 		}
-		sb.sessions.Set(creds, LoginResult{result, username, time.Now().Add(time.Second)}, ttl)
+		sb.sessions.Set(creds, LoginResult{result, username, time.Now().Add(ttl)}, ttl)
 		logger.WithField("ttl", ttl).Info("Stored in sessions for later use with timeout")
 	}
 	if err != nil && cookie != nil {
@@ -168,7 +165,15 @@ func (sb *SessionBinder) Bind(username string, req *bind.Request) (ldap.LDAPResu
 
 func (sb *SessionBinder) Cleanup() {
 	//terminate the session cleanup process
+	sb.log.Info("Delete all sessions")
 	sb.sessions.Stop()
 	//evict all sessions
-	sb.sessions.DeleteAll()
+	for _, key := range sb.sessions.Keys() {
+		fl := sb.si.GetFlags(key.DN)
+		if fl == nil || fl.Session == nil {
+			continue
+		}
+		flow.Logout(fl.Session, sb.si.GetAPIClient().GetConfig())
+	}
+	sb.log.Info("Deleted all sessions")
 }
