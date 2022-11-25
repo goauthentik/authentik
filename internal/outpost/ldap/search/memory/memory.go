@@ -40,7 +40,6 @@ func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
 func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, error) {
 	accsp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.check_access")
 	baseDN := ms.si.GetBaseDN()
-
 	filterOC, err := ldap.GetFilterObjectClass(req.Filter)
 	if err != nil {
 		metrics.RequestsRejected.With(prometheus.Labels{
@@ -49,6 +48,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			"reason":       "filter_parse_fail",
 			"app":          ms.si.GetAppSlug(),
 		}).Inc()
+		req.Log().WithField("err", err).Error("Error searching with memory searcher")
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
 	}
 	if len(req.BindDN) < 1 {
@@ -58,6 +58,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			"reason":       "empty_bind_dn",
 			"app":          ms.si.GetAppSlug(),
 		}).Inc()
+		req.Log().WithField("bindDN", req.BindDN).Error("Error searching with memory searcher: No bindDN?")
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", req.BindDN)
 	}
 	if !utils.HasSuffixNoCase(req.BindDN, ","+baseDN) {
@@ -67,6 +68,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			"reason":       "invalid_bind_dn",
 			"app":          ms.si.GetAppSlug(),
 		}).Inc()
+		req.Log().WithField("bindDN", req.BindDN).Error("Error searching with memory searcher: Wrong bindDN")
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: BindDN %s not in our BaseDN %s", req.BindDN, ms.si.GetBaseDN())
 	}
 
@@ -80,6 +82,9 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			"app":          ms.si.GetAppSlug(),
 		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
+	}
+	if flags.UserPk == 0 {
+		req.Log().WithField("bindDN", req.BindDN).WithField("baseDN", baseDN).Warning("WARNING: User with Pk 0 found")
 	}
 	accsp.Finish()
 
@@ -113,7 +118,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 				if flags.UserInfo == nil {
 					req.Log().WithField("pk", flags.UserPk).Warning("User with pk is not in local cache")
-					err = fmt.Errorf("failed to get userinfo")
+					err = fmt.Errorf("failed to get userinfo (users: %d, flags: %v)", len(ms.users), flags)
 				}
 			} else {
 				u[0] = *flags.UserInfo

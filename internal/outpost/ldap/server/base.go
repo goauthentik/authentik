@@ -33,6 +33,7 @@ type LDAPServerInstance interface {
 
 	GetFlags(dn string) *flags.UserFlags
 	SetFlags(dn string, flags flags.UserFlags)
+	DeleteFlags(dn string)
 
 	GetBaseEntry() *ldap.Entry
 	GetNeededObjects(int, string, string) (bool, bool)
