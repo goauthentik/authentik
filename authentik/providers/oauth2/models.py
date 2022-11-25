@@ -20,14 +20,21 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
-from authentik.events.models import Event, EventAction
-from authentik.events.utils import get_user
+from authentik.events.models import Event
+from authentik.events.signals import SESSION_LOGIN_EVENT
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
-from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT
+from authentik.providers.oauth2.constants import (
+    ACR_AUTHENTIK_DEFAULT,
+    AMR_MFA,
+    AMR_OTP,
+    AMR_PASSWORD,
+    AMR_WEBAUTHN,
+)
 from authentik.sources.oauth.models import OAuthSource
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 
 class ClientTypes(models.TextChoices):
@@ -392,6 +399,7 @@ class IDToken:
     iat: Optional[int] = None
     auth_time: Optional[int] = None
     acr: Optional[str] = ACR_AUTHENTIK_DEFAULT
+    amr: Optional[list[str]] = None
 
     c_hash: Optional[str] = None
     nonce: Optional[str] = None
@@ -485,21 +493,27 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
                     f"selected: {self.provider.sub_mode}"
                 )
             )
-
+        amr = []
         # Convert datetimes into timestamps.
         now = datetime.now()
         iat_time = int(now.timestamp())
         exp_time = int(self.expires.timestamp())
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
-        auth_event = (
-            Event.objects.filter(action=EventAction.LOGIN, user=get_user(user))
-            .order_by("-created")
-            .first()
-        )
         # Fallback in case we can't find any login events
         auth_time = now
-        if auth_event:
+        if SESSION_LOGIN_EVENT in request.session:
+            auth_event: Event = request.session[SESSION_LOGIN_EVENT]
             auth_time = auth_event.created
+            # Also check which method was used for authentication
+            method = auth_event.context.get(PLAN_CONTEXT_METHOD, "")
+            method_args = auth_event.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
+            if method == "password":
+                amr.append(AMR_PASSWORD)
+            if method == "auth_webauthn_pwl":
+                amr.append(AMR_WEBAUTHN)
+            if "mfa_devices" in method_args:
+                if len(amr) > 0:
+                    amr.append(AMR_MFA)
 
         auth_timestamp = int(auth_time.timestamp())
 

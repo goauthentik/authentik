@@ -11,7 +11,6 @@ from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import Token, TokenIntents, User
 from authentik.outposts.models import Outpost
 from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
-from authentik.providers.oauth2.models import RefreshToken
 
 LOGGER = get_logger()
 
@@ -33,6 +32,8 @@ def validate_auth(header: bytes) -> Optional[str]:
 
 def bearer_auth(raw_header: bytes) -> Optional[User]:
     """raw_header in the Format of `Bearer ....`"""
+    from authentik.providers.oauth2.models import RefreshToken
+
     auth_credentials = validate_auth(raw_header)
     if not auth_credentials:
         return None

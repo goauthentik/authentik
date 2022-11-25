@@ -31,3 +31,9 @@ SCOPE_GITHUB_USER_EMAIL = "user:email"
 SCOPE_GITHUB_ORG_READ = "read:org"
 
 ACR_AUTHENTIK_DEFAULT = "goauthentik.io/providers/oauth2/default"
+
+# https://datatracker.ietf.org/doc/html/draft-ietf-oauth-amr-values-06#section-2
+AMR_PASSWORD = "pwd"  # nosec
+AMR_MFA = "mfa"
+AMR_OTP = "otp"
+AMR_WEBAUTHN = "user"
