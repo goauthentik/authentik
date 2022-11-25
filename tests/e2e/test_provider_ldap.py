@@ -156,7 +156,7 @@ class TestProviderLDAP(SeleniumTestCase):
             Event.objects.filter(
                 action=EventAction.LOGIN_FAILED,
                 user={"pk": anon.pk, "email": anon.email, "username": anon.username},
-            )
+            ).exists(),
         )
 
     @retry()

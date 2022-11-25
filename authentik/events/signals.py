@@ -65,7 +65,7 @@ def on_login_failed(
     **kwargs,
 ):
     """Failed Login, authentik custom event"""
-    Event.new(EventAction.USER_WRITE, **credentials, stage=stage, **kwargs).from_http(request)
+    Event.new(EventAction.LOGIN_FAILED, **credentials, stage=stage, **kwargs).from_http(request)
 
 
 @receiver(invitation_used)

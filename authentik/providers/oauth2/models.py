@@ -29,7 +29,6 @@ from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
 from authentik.providers.oauth2.constants import (
     ACR_AUTHENTIK_DEFAULT,
     AMR_MFA,
-    AMR_OTP,
     AMR_PASSWORD,
     AMR_WEBAUTHN,
 )
@@ -474,6 +473,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         token["uid"] = generate_key()
         return self.provider.encode(token)
 
+    # pylint: disable=too-many-locals
     def create_id_token(self, user: User, request: HttpRequest) -> IDToken:
         """Creates the id_token.
         See: http://openid.net/specs/openid-connect-core-1_0.html#IDToken"""
