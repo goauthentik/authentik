@@ -2,7 +2,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -18,7 +18,20 @@ import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/ap
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFButton, PFFormControl, PFTitle, AKGlobal];
+        return [
+            PFBase,
+            PFLogin,
+            PFForm,
+            PFButton,
+            PFFormControl,
+            PFTitle,
+            AKGlobal,
+            css`
+                code {
+                    word-break: break-all;
+                }
+            `,
+        ];
     }
 
     renderURL(): string {
@@ -36,7 +49,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                 <form method="POST" class="pf-c-form">
                     <div class="pf-c-form__group">
                         <p>${t`You're about to be redirect to the following URL.`}</p>
-                        <pre>${this.renderURL()}</pre>
+                        <code>${this.renderURL()}</code>
                     </div>
                     <div class="pf-c-form__group pf-m-action">
                         <a
