@@ -6,3 +6,6 @@ htmlcov
 dist/**
 build/**
 build_docs/**
+__pycache__
+.venv
+gen-images
