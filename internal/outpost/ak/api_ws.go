@@ -67,6 +67,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 
 // Shutdown Gracefully stops all workers, disconnects from websocket
 func (ac *APIController) Shutdown() {
+	ac.isShuttingDown = true
 	// Cleanly close the connection by sending a close message and then
 	// waiting (with timeout) for the server to close the connection.
 	err := ac.wsConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
@@ -124,6 +125,9 @@ func (ac *APIController) startWSHandler() {
 		}
 		err := ac.wsConn.ReadJSON(&wsMsg)
 		if err != nil {
+			if ac.isShuttingDown {
+				return
+			}
 			ConnectionStatus.With(prometheus.Labels{
 				"outpost_name": ac.Outpost.Name,
 				"outpost_type": ac.Server.Type(),

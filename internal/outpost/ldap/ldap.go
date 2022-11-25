@@ -48,6 +48,12 @@ func (ls *LDAPServer) Type() string {
 	return "ldap"
 }
 
+func (ls *LDAPServer) Cleanup() {
+	for _, p := range ls.providers {
+		p.binder.Cleanup()
+	}
+}
+
 func (ls *LDAPServer) StartLDAPServer() error {
 	listen := config.Get().Listen.LDAP
 

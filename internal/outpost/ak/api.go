@@ -41,6 +41,7 @@ type APIController struct {
 	wsConn              *websocket.Conn
 	lastWsReconnect     time.Time
 	wsIsReconnecting    bool
+	isShuttingDown      bool
 	wsBackoffMultiplier int
 	refreshHandlers     []func()
 

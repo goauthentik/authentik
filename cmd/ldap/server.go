@@ -52,12 +52,6 @@ func main() {
 
 	ex := common.Init()
 	defer common.Defer()
-	go func() {
-		for {
-			<-ex
-			os.Exit(0)
-		}
-	}()
 
 	ac := ak.NewAPIController(*akURLActual, akToken)
 	if ac == nil {
@@ -65,14 +59,17 @@ func main() {
 	}
 	defer ac.Shutdown()
 
-	ac.Server = ldap.NewServer(ac)
+	server := ldap.NewServer(ac)
+	ac.Server = server
 
 	err = ac.Start()
 	if err != nil {
 		log.WithError(err).Panic("Failed to run server")
 	}
-
-	for {
-		<-ex
-	}
+	//wait for exit
+	<-ex
+	//cleanup
+	log.Info("Server shutdown")
+	server.Cleanup()
+	log.Info("Cleanup completed")
 }
