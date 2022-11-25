@@ -16,6 +16,7 @@ import (
 )
 
 var initialSetup = false
+var tlsTransport *http.RoundTripper = nil
 
 func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 	l := log.WithField("logger", "authentik.outpost")
@@ -70,15 +71,19 @@ func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 
 // GetTLSTransport Get a TLS transport instance, that skips verification if configured via environment variables.
 func GetTLSTransport() http.RoundTripper {
+	if tlsTransport != nil {
+		return *tlsTransport
+	}
 	value, set := os.LookupEnv("AUTHENTIK_INSECURE")
 	if !set {
 		value = "false"
 	}
-	tlsTransport, err := httptransport.TLSTransport(httptransport.TLSClientOptions{
+	tmp, err := httptransport.TLSTransport(httptransport.TLSClientOptions{
 		InsecureSkipVerify: strings.ToLower(value) == "true",
 	})
 	if err != nil {
 		panic(err)
 	}
-	return tlsTransport
+	tlsTransport = &tmp
+	return *tlsTransport
 }
