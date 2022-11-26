@@ -36,7 +36,7 @@ export class PlexLoginInit extends BaseStage<
 
     async firstUpdated(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.challenge?.clientId || "");
-        const authWindow = popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
+        const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
         PlexAPIClient.pinPoll(this.challenge?.clientId || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
             new SourcesApi(DEFAULT_CONFIG)

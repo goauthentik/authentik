@@ -95,7 +95,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
 
     async doAuth(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.instance?.clientId || "");
-        const authWindow = popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
+        const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
         PlexAPIClient.pinPoll(this.instance?.clientId || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
             this.plexToken = token;
