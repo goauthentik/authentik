@@ -26,6 +26,13 @@ class TestBlueprintsV1(TransactionTestCase):
             )
         )
         self.assertFalse(importer.validate()[0])
+        importer = Importer(
+            (
+                '{"version": 1, "entries": [{"identifiers": {"attributes": {"key": "value"}}, '
+                '"attrs": {}, "model": "authentik_core.User"}]}'
+            )
+        )
+        self.assertFalse(importer.validate()[0])
 
     def test_export_validate_import(self):
         """Test export and validate it"""
