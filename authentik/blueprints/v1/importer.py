@@ -156,8 +156,6 @@ class Importer:
                     f"Serializer errors {serializer.errors}", serializer_errors=serializer.errors
                 ) from exc
             return serializer
-        if entry.identifiers == {}:
-            raise EntryInvalidError("No identifiers")
 
         # If we try to validate without referencing a possible instance
         # we'll get a duplicate error, hence we load the model here and return
@@ -169,7 +167,12 @@ class Importer:
             if isinstance(value, dict) and "pk" in value:
                 del updated_identifiers[key]
                 updated_identifiers[f"{key}"] = value["pk"]
-        existing_models = model.objects.filter(self.__query_from_identifier(updated_identifiers))
+        
+        query = self.__query_from_identifier(updated_identifiers)
+        if not query:
+            raise EntryInvalidError("No or invalid identifiers")
+            
+        existing_models = model.objects.filter(query)
 
         serializer_kwargs = {}
         model_instance = existing_models.first()
