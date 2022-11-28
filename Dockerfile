@@ -3,6 +3,7 @@ FROM --platform=${BUILDPLATFORM} docker.io/node:18 as website-builder
 
 COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
+COPY ./SECURITY.md /work/
 
 ENV NODE_ENV=production
 WORKDIR /work/website
