@@ -150,6 +150,8 @@ class PasswordPolicy(Policy):
         results = zxcvbn(password[:100], user_inputs)
         LOGGER.debug("password failed", check="zxcvbn", score=results["score"])
         result = PolicyResult(results["score"] > self.zxcvbn_score_threshold)
+        if not result.passing:
+            result.messages += tuple(_("Password is too weak."))
         if isinstance(results["feedback"]["warning"], list):
             result.messages += tuple(results["feedback"]["warning"])
         if isinstance(results["feedback"]["suggestions"], list):
