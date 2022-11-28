@@ -68,7 +68,10 @@ class AuthenticatorValidateStageTests(FlowTestCase):
         """Test serializer validation"""
         self.client.force_login(self.user)
         serializer = AuthenticatorValidateStageSerializer(
-            data={"name": generate_id(), "not_configured_action": NotConfiguredAction.CONFIGURE}
+            data={
+                "name": generate_id(),
+                "not_configured_action": NotConfiguredAction.CONFIGURE,
+            }
         )
         self.assertFalse(serializer.is_valid())
         self.assertIn("not_configured_action", serializer.errors)

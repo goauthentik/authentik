@@ -11,16 +11,17 @@ from authentik.stages.authenticator_validate.models import AuthenticatorValidate
 class AuthenticatorValidateStageSerializer(StageSerializer):
     """AuthenticatorValidateStage Serializer"""
 
-    def validate_configuration_stages(self, value):
+    def validate_not_configured_action(self, value):
         """Ensure that a configuration stage is set when not_configured_action is configure"""
-        not_configured_action = self.initial_data.get("not_configured_action", [])
-        if not_configured_action == NotConfiguredAction.CONFIGURE and len(value) < 1:
-            raise ValidationError(
-                (
-                    'When "Not configured action" is set to "Configure", '
-                    "you must set a configuration stage."
+        configuration_stages = self.initial_data.get("configuration_stages", None)
+        if value == NotConfiguredAction.CONFIGURE:
+            if not configuration_stages or len(configuration_stages) < 1:
+                raise ValidationError(
+                    (
+                        'When "Not configured action" is set to "Configure", '
+                        "you must set a configuration stage."
+                    )
                 )
-            )
         return value
 
     class Meta:
