@@ -11,19 +11,22 @@ The following is a set of guidelines for contributing to authentik and its compo
 [I don't want to read this whole thing, I just have a question!!!](#i-dont-want-to-read-this-whole-thing-i-just-have-a-question)
 
 [What should I know before I get started?](#what-should-i-know-before-i-get-started)
-  * [The components](#the-components)
-  * [authentik's structure](#authentiks-structure)
+
+-   [The components](#the-components)
+-   [authentik's structure](#authentiks-structure)
 
 [How Can I Contribute?](#how-can-i-contribute)
-  * [Reporting Bugs](#reporting-bugs)
-  * [Suggesting Enhancements](#suggesting-enhancements)
-  * [Your First Code Contribution](#your-first-code-contribution)
-  * [Pull Requests](#pull-requests)
+
+-   [Reporting Bugs](#reporting-bugs)
+-   [Suggesting Enhancements](#suggesting-enhancements)
+-   [Your First Code Contribution](#your-first-code-contribution)
+-   [Pull Requests](#pull-requests)
 
 [Styleguides](#styleguides)
-  * [Git Commit Messages](#git-commit-messages)
-  * [Python Styleguide](#python-styleguide)
-  * [Documentation Styleguide](#documentation-styleguide)
+
+-   [Git Commit Messages](#git-commit-messages)
+-   [Python Styleguide](#python-styleguide)
+-   [Documentation Styleguide](#documentation-styleguide)
 
 ## Code of Conduct
 
@@ -39,11 +42,11 @@ Either [create a question on GitHub](https://github.com/goauthentik/authentik/is
 
 authentik consists of a few larger components:
 
-- *authentik* the actual application server, is described below.
-- *outpost-proxy* is a Go application based on a forked version of oauth2_proxy, which does identity-aware reverse proxying.
-- *outpost-ldap* is a Go LDAP server that uses the *authentik* application server as its backend
-- *web* is the web frontend, both for administrating and using authentik. It is written in TypeScript using lit-html and the PatternFly CSS Library.
-- *website* is the Website/documentation, which uses docusaurus.
+-   _authentik_ the actual application server, is described below.
+-   _outpost-proxy_ is a Go application based on a forked version of oauth2_proxy, which does identity-aware reverse proxying.
+-   _outpost-ldap_ is a Go LDAP server that uses the _authentik_ application server as its backend
+-   _web_ is the web frontend, both for administrating and using authentik. It is written in TypeScript using lit-html and the PatternFly CSS Library.
+-   _website_ is the Website/documentation, which uses docusaurus.
 
 ### authentik's structure
 
@@ -137,10 +140,10 @@ This is documented in the [developer docs](https://goauthentik.io/developer-docs
 
 The process described here has several goals:
 
-- Maintain authentik's quality
-- Fix problems that are important to users
-- Engage the community in working toward the best possible authentik
-- Enable a sustainable system for authentik's maintainers to review contributions
+-   Maintain authentik's quality
+-   Fix problems that are important to users
+-   Engage the community in working toward the best possible authentik
+-   Enable a sustainable system for authentik's maintainers to review contributions
 
 Please follow these steps to have your contribution considered by the maintainers:
 
@@ -154,10 +157,10 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 ### Git Commit Messages
 
-* Use the format of `<package>: <verb> <description>`
-  - See [here](#authentik-packages) for `package`
-  - Example: `providers/saml2: fix parsing of requests`
-* Reference issues and pull requests liberally after the first line
+-   Use the format of `<package>: <verb> <description>`
+    -   See [here](#authentik-packages) for `package`
+    -   Example: `providers/saml2: fix parsing of requests`
+-   Reference issues and pull requests liberally after the first line
 
 ### Python Styleguide
 
@@ -165,11 +168,11 @@ All Python code is linted with [black](https://black.readthedocs.io/en/stable/),
 
 authentik runs on Python 3.9 at the time of writing this.
 
-* Use native type-annotations wherever possible.
-* Add meaningful docstrings when possible.
-* Ensure any database migrations work properly from the last stable version (this is checked via CI)
-* If your code changes central functions, make sure nothing else is broken.
+-   Use native type-annotations wherever possible.
+-   Add meaningful docstrings when possible.
+-   Ensure any database migrations work properly from the last stable version (this is checked via CI)
+-   If your code changes central functions, make sure nothing else is broken.
 
 ### Documentation Styleguide
 
-* Use [MDX](https://mdxjs.com/) whenever appropriate.
+-   Use [MDX](https://mdxjs.com/) whenever appropriate.
