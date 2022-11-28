@@ -282,5 +282,15 @@ module.exports = {
                 "troubleshooting/missing_admin_group",
             ],
         },
+        {
+            type: "category",
+            label: "Security",
+            link: {
+                type: "generated-index",
+                title: "Security",
+                slug: "security",
+            },
+            items: ["security/policy"],
+        },
     ],
 };
