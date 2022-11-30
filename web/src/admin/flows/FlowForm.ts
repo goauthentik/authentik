@@ -1,4 +1,5 @@
 import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/utils";
+import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -141,6 +142,37 @@ export class FlowForm extends ModelForm<Flow, string> {
             </option>`;
     }
 
+    renderAuthentication(): TemplateResult {
+        return html`
+            <option
+                value=${AuthenticationEnum.None}
+                ?selected=${this.instance?.authentication === AuthenticationEnum.None}
+            >
+                ${t`No requirement`}
+            </option>
+            <option
+                value=${AuthenticationEnum.RequireAuthenticated}
+                ?selected=${this.instance?.authentication ===
+                AuthenticationEnum.RequireAuthenticated}
+            >
+                ${t`Require authentication`}
+            </option>
+            <option
+                value=${AuthenticationEnum.RequireUnauthenticated}
+                ?selected=${this.instance?.authentication ===
+                AuthenticationEnum.RequireUnauthenticated}
+            >
+                ${t`Require no authentication.`}
+            </option>
+            <option
+                value=${AuthenticationEnum.RequireSuperuser}
+                ?selected=${this.instance?.authentication === AuthenticationEnum.RequireSuperuser}
+            >
+                ${t`Require superuser.`}
+            </option>
+        `;
+    }
+
     renderLayout(): TemplateResult {
         return html`
             <option
@@ -223,6 +255,18 @@ export class FlowForm extends ModelForm<Flow, string> {
                         ${t`ALL, all policies must match to grant access.`}
                     </option>
                 </select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`Authentication`}
+                ?required=${true}
+                name="authentication"
+            >
+                <select class="pf-c-form-control">
+                    ${this.renderAuthentication()}
+                </select>
+                <p class="pf-c-form__helper-text">
+                    ${t`Required authentication level for this flow.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Designation`}

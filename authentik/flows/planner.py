@@ -13,7 +13,7 @@ from authentik.events.models import cleanse_dict
 from authentik.flows.apps import HIST_FLOWS_PLAN_TIME
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage, in_memory_stage
+from authentik.flows.models import Flow, FlowAuthenticationRequirement, FlowDesignation, FlowStageBinding, Stage, in_memory_stage
 from authentik.lib.config import CONFIG
 from authentik.policies.engine import PolicyEngine
 
@@ -117,11 +117,21 @@ class FlowPlanner:
         self.flow = flow
         self._logger = get_logger().bind(flow_slug=flow.slug)
 
+    def _check_authentication(self, request: HttpRequest):
+        """Check the flow's authentication level is matched by `request`"""
+        if self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED and not request.user.is_authenticated:
+            raise FlowNonApplicableException()
+        if self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED and request.user.is_authenticated:
+            raise FlowNonApplicableException()
+        if self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_SUPERUSER and not request.user.is_superuser:
+            raise FlowNonApplicableException()
+
     def plan(
         self, request: HttpRequest, default_context: Optional[dict[str, Any]] = None
     ) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
+        self._check_authentication(request)
         with Hub.current.start_span(
             op="authentik.flow.planner.plan", description=self.flow.slug
         ) as span:

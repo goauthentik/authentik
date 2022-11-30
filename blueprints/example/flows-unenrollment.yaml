@@ -12,6 +12,7 @@ entries:
       name: Default unenrollment flow
       title: Delete your account
       designation: unenrollment
+      authentication: require_authenticated
   - identifiers:
       name: default-unenrollment-user-delete
     id: default-unenrollment-user-delete

@@ -23,6 +23,15 @@ if TYPE_CHECKING:
 LOGGER = get_logger()
 
 
+class FlowAuthenticationRequirement(models.TextChoices):
+    """Required level of authentication and authorization to access a flow"""
+
+    NONE = "none"
+    REQUIRE_AUTHENTICATED = "require_authenticated"
+    REQUIRE_UNAUTHENTICATED = "require_unauthenticated"
+    REQUIRE_SUPERUSER = "require_superuser"
+
+
 class NotConfiguredAction(models.TextChoices):
     """Decides how the FlowExecutor should proceed when a stage isn't configured"""
 
@@ -150,6 +159,12 @@ class Flow(SerializerModel, PolicyBindingModel):
         choices=FlowDeniedAction.choices,
         default=FlowDeniedAction.MESSAGE_CONTINUE,
         help_text=_("Configure what should happen when a flow denies access to a user."),
+    )
+
+    authentication = models.TextField(
+        choices=FlowAuthenticationRequirement.choices,
+        default=FlowAuthenticationRequirement.NONE,
+        help_text=_("Required level of authentication and authorization to access a flow."),
     )
 
     @property
