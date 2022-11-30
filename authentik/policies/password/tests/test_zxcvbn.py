@@ -28,13 +28,21 @@ class TestPasswordPolicyZxcvbn(TestCase):
         policy = PasswordPolicy.objects.create(
             check_zxcvbn=True,
             check_static_rules=False,
+            zxcvbn_score_threshold=3,
             name="test_false",
         )
         request = PolicyRequest(get_anonymous_user())
         request.context[PLAN_CONTEXT_PROMPT] = {"password": "password"}  # nosec
         result: PolicyResult = policy.passes(request)
         self.assertFalse(result.passing, result.messages)
-        self.assertEqual(result.messages[0], "Add another word or two. Uncommon words are better.")
+        self.assertEqual(result.messages[0], "Password is too weak.")
+        self.assertEqual(result.messages[1], "Add another word or two. Uncommon words are better.")
+
+        request.context[PLAN_CONTEXT_PROMPT] = {"password": "Awdccdw1234"}  # nosec
+        result: PolicyResult = policy.passes(request)
+        self.assertFalse(result.passing, result.messages)
+        self.assertEqual(result.messages[0], "Password is too weak.")
+        self.assertEqual(len(result.messages), 1)
 
     def test_true(self):
         """Positive password case"""
