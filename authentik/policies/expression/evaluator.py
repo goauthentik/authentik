@@ -87,7 +87,7 @@ class PolicyEvaluator(BaseEvaluator):
                 LOGGER.warning(
                     "Expression policy returned None",
                     src=expression_source,
-                    req=self._context,
+                    policy=self._filename,
                 )
                 policy_result.passing = False
             if result:
