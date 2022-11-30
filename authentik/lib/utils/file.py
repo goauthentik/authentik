@@ -24,17 +24,17 @@ class FilePathSerializer(PassiveSerializer):
     url = CharField()
 
 
-def set_file(request: Request, obj: Model, field: str):
+def set_file(request: Request, obj: Model, field_name: str):
     """Upload file"""
-    field = getattr(obj, field)
-    icon = request.FILES.get("file", None)
+    field = getattr(obj, field_name)
+    file = request.FILES.get("file", None)
     clear = request.data.get("clear", "false").lower() == "true"
     if clear:
         # .delete() saves the model by default
         field.delete()
         return Response({})
-    if icon:
-        field = icon
+    if file:
+        setattr(obj, field_name, file)
         try:
             obj.save()
         except PermissionError as exc:

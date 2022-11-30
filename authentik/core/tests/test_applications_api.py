@@ -1,6 +1,8 @@
 """Test Applications API"""
 from json import loads
 
+from django.core.files.base import ContentFile
+from django.test.client import BOUNDARY, MULTIPART_CONTENT, encode_multipart
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -21,7 +23,7 @@ class TestApplicationsAPI(APITestCase):
             redirect_uris="http://some-other-domain",
             authorization_flow=create_test_flow(),
         )
-        self.allowed = Application.objects.create(
+        self.allowed: Application = Application.objects.create(
             name="allowed",
             slug="allowed",
             meta_launch_url="https://goauthentik.io/%(username)s",
@@ -34,6 +36,31 @@ class TestApplicationsAPI(APITestCase):
             policy=DummyPolicy.objects.create(name="deny", result=False, wait_min=1, wait_max=2),
             order=0,
         )
+
+    def test_set_icon(self):
+        """Test set_icon"""
+        file = ContentFile(b"text", "name")
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "authentik_api:application-set-icon",
+                kwargs={"slug": self.allowed.slug},
+            ),
+            data=encode_multipart(data={"file": file}, boundary=BOUNDARY),
+            content_type=MULTIPART_CONTENT,
+        )
+        self.assertEqual(response.status_code, 200)
+
+        app_raw = self.client.get(
+            reverse(
+                "authentik_api:application-detail",
+                kwargs={"slug": self.allowed.slug},
+            ),
+        )
+        app = loads(app_raw.content)
+        self.allowed.refresh_from_db()
+        self.assertEqual(self.allowed.get_meta_icon, app["meta_icon"])
+        self.assertEqual(self.allowed.meta_icon.read(), b"text")
 
     def test_check_access(self):
         """Test check_access operation"""
