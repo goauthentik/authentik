@@ -77,7 +77,7 @@
         "@rollup/plugin-commonjs": "^23.0.3",
         "@rollup/plugin-node-resolve": "^15.0.1",
         "@rollup/plugin-replace": "^5.0.1",
-        "@rollup/plugin-typescript": "^10.0.0",
+        "@rollup/plugin-typescript": "^10.0.1",
         "@sentry/browser": "^7.21.1",
         "@sentry/tracing": "^7.22.0",
         "@squoosh/cli": "^0.7.2",
