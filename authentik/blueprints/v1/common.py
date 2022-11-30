@@ -188,11 +188,18 @@ class Format(YAMLTag):
         self.format_string = node.value[0].value
         self.args = []
         for raw_node in node.value[1:]:
-            self.args.append(raw_node.value)
+            self.args.append(loader.construct_object(raw_node))
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        args = []
+        for arg in self.args:
+            if isinstance(arg, YAMLTag):
+                args.append(arg.resolve(entry, blueprint))
+            else:
+                args.append(arg)
+
         try:
-            return self.format_string % tuple(self.args)
+            return self.format_string % tuple(args)
         except TypeError as exc:
             raise EntryInvalidError(exc)
 
@@ -219,7 +226,15 @@ class Find(YAMLTag):
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         query = Q()
         for cond in self.conditions:
-            query &= Q(**{cond[0]: cond[1]})
+            if isinstance(cond[0], YAMLTag):
+                c0 = cond[0].resolve(entry, blueprint)
+            else:
+                c0 = cond[0]
+            if isinstance(cond[1], YAMLTag):
+                c1 = cond[1].resolve(entry, blueprint)
+            else:
+                c1 = cond[1]
+            query &= Q(**{c0: c1})
         instance = self.model_class.objects.filter(query).first()
         if instance:
             return instance.pk
