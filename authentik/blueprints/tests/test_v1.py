@@ -75,7 +75,8 @@ class TestBlueprintsV1(TransactionTestCase):
 
     def test_import_yaml_tags(self):
         """Test some yaml tags"""
-        ExpressionPolicy.objects.filter(name="foo-foo-bar").delete()
+        ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").delete()
+        Group.objects.filter(name="test").delete()
         importer = Importer(load_yaml_fixture("fixtures/tags.yaml"), {"bar": "baz"})
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
