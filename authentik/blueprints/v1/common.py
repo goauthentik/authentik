@@ -227,14 +227,14 @@ class Find(YAMLTag):
         query = Q()
         for cond in self.conditions:
             if isinstance(cond[0], YAMLTag):
-                c0 = cond[0].resolve(entry, blueprint)
+                c_0 = cond[0].resolve(entry, blueprint)
             else:
-                c0 = cond[0]
+                c_0 = cond[0]
             if isinstance(cond[1], YAMLTag):
-                c1 = cond[1].resolve(entry, blueprint)
+                c_1 = cond[1].resolve(entry, blueprint)
             else:
-                c1 = cond[1]
-            query &= Q(**{c0: c1})
+                c_1 = cond[1]
+            query &= Q(**{c_0: c_1})
         instance = self.model_class.objects.filter(query).first()
         if instance:
             return instance.pk
