@@ -13,7 +13,14 @@ from authentik.events.models import cleanse_dict
 from authentik.flows.apps import HIST_FLOWS_PLAN_TIME
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import Flow, FlowAuthenticationRequirement, FlowDesignation, FlowStageBinding, Stage, in_memory_stage
+from authentik.flows.models import (
+    Flow,
+    FlowAuthenticationRequirement,
+    FlowDesignation,
+    FlowStageBinding,
+    Stage,
+    in_memory_stage,
+)
 from authentik.lib.config import CONFIG
 from authentik.policies.engine import PolicyEngine
 
@@ -119,11 +126,20 @@ class FlowPlanner:
 
     def _check_authentication(self, request: HttpRequest):
         """Check the flow's authentication level is matched by `request`"""
-        if self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED and not request.user.is_authenticated:
+        if (
+            self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED
+            and not request.user.is_authenticated
+        ):
             raise FlowNonApplicableException()
-        if self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED and request.user.is_authenticated:
+        if (
+            self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+            and request.user.is_authenticated
+        ):
             raise FlowNonApplicableException()
-        if self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_SUPERUSER and not request.user.is_superuser:
+        if (
+            self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_SUPERUSER
+            and not request.user.is_superuser
+        ):
             raise FlowNonApplicableException()
 
     def plan(
