@@ -4,6 +4,7 @@ from django.test import TransactionTestCase
 from authentik.blueprints.tests import load_yaml_fixture
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
+from authentik.core.models import Group
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
@@ -78,7 +79,16 @@ class TestBlueprintsV1(TransactionTestCase):
         importer = Importer(load_yaml_fixture("fixtures/tags.yaml"), {"bar": "baz"})
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
-        self.assertTrue(ExpressionPolicy.objects.filter(name="foo-foo-bar"))
+        policy = ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").first()
+        self.assertTrue(policy)
+        self.assertTrue(
+            Group.objects.filter(
+                attributes__contains={
+                    "policy_pk1": str(policy.pk) + "-suffix",
+                    "policy_pk2": str(policy.pk) + "-suffix",
+                }
+            )
+        )
 
     def test_export_validate_import_policies(self):
         """Test export and validate it"""
