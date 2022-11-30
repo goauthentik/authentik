@@ -62,7 +62,7 @@
         "@codemirror/lang-python": "^6.1.0",
         "@codemirror/lang-xml": "^6.0.1",
         "@codemirror/legacy-modes": "^6.3.1",
-        "@formatjs/intl-listformat": "^7.1.3",
+        "@formatjs/intl-listformat": "^7.1.4",
         "@fortawesome/fontawesome-free": "^6.2.1",
         "@goauthentik/api": "^2022.11.1-1669197045",
         "@jackfranklin/rollup-plugin-markdown": "^0.4.0",
