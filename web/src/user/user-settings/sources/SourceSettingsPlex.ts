@@ -23,7 +23,7 @@ export class SourceSettingsPlex extends BaseUserSettings {
 
     async doPlex(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.configureUrl || "");
-        const authWindow = popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
+        const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
         PlexAPIClient.pinPoll(this.configureUrl || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
             new SourcesApi(DEFAULT_CONFIG).sourcesPlexRedeemTokenAuthenticatedCreate({

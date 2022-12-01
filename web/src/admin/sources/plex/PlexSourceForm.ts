@@ -62,7 +62,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
     send = async (data: PlexSource): Promise<PlexSource> => {
         data.plexToken = this.plexToken || "";
         let source: PlexSource;
-        if (this.instance) {
+        if (this.instance?.pk) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexUpdate({
                 slug: this.instance.slug,
                 plexSourceRequest: data,
@@ -95,7 +95,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
 
     async doAuth(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.instance?.clientId || "");
-        const authWindow = popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
+        const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
         PlexAPIClient.pinPoll(this.instance?.clientId || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
             this.plexToken = token;

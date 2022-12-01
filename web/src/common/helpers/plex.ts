@@ -23,15 +23,24 @@ export const DEFAULT_HEADERS = {
     "X-Plex-Device-Vendor": "goauthentik.io",
 };
 
-export function popupCenterScreen(url: string, title: string, w: number, h: number): Window | null {
+export async function popupCenterScreen(
+    url: string,
+    title: string,
+    w: number,
+    h: number,
+): Promise<Window | null> {
     const top = (screen.height - h) / 4,
         left = (screen.width - w) / 2;
-    const popup = window.open(
-        url,
-        title,
-        `scrollbars=yes,width=${w},height=${h},top=${top},left=${left}`,
-    );
-    return popup;
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const popup = window.open(
+                url,
+                title,
+                `scrollbars=yes,width=${w},height=${h},top=${top},left=${left}`,
+            );
+            resolve(popup);
+        });
+    });
 }
 
 export class PlexAPIClient {
