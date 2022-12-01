@@ -8,7 +8,7 @@ import { t } from "@lingui/macro";
 
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -30,12 +30,16 @@ export class PlexLoginInit extends BaseStage<
     PlexAuthenticationChallenge,
     PlexAuthenticationChallengeResponseRequest
 > {
+    @state()
+    authUrl?: string;
+
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, AKGlobal];
     }
 
     async firstUpdated(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.challenge?.clientId || "");
+        this.authUrl = authInfo.authUrl;
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
         PlexAPIClient.pinPoll(this.challenge?.clientId || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
@@ -69,7 +73,19 @@ export class PlexLoginInit extends BaseStage<
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    <ak-empty-state ?loading="${true}"> </ak-empty-state>
+                    <ak-empty-state ?loading="${true}" header=${t`Waiting for authentication...`}>
+                    </ak-empty-state>
+                    <hr />
+                    <p>${t`If no Plex popup opens, click the button below.`}</p>
+                    <button
+                        class="pf-c-button pf-m-block pf-m-primary"
+                        type="button"
+                        @click=${() => {
+                            window.open(this.authUrl, "_blank");
+                        }}
+                    >
+                        ${t`Open login`}
+                    </button>
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
