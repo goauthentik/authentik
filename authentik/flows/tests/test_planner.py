@@ -1,6 +1,7 @@
 """flow planner tests"""
 from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.cache import cache
 from django.test import RequestFactory, TestCase
@@ -8,10 +9,10 @@ from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import User
-from authentik.core.tests.utils import create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
 from authentik.lib.tests.utils import dummy_get_response
 from authentik.policies.dummy.models import DummyPolicy
@@ -42,6 +43,30 @@ class TestFlowPlanner(TestCase):
         with self.assertRaises(EmptyFlowException):
             planner = FlowPlanner(flow)
             planner.plan(request)
+
+    def test_authentication(self):
+        """Test flow authentication"""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.NONE
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        request.user = AnonymousUser()
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        planner.plan(request)
+
+        with self.assertRaises(FlowNonApplicableException):
+            flow.authentication = FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED
+            FlowPlanner(flow).plan(request)
+        with self.assertRaises(FlowNonApplicableException):
+            flow.authentication = FlowAuthenticationRequirement.REQUIRE_SUPERUSER
+            FlowPlanner(flow).plan(request)
+
+        request.user = create_test_admin_user()
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        planner.plan(request)
 
     @patch(
         "authentik.policies.engine.PolicyEngine.result",
