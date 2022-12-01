@@ -6,6 +6,7 @@ entries:
     designation: stage_configuration
     name: Pre-Authentication
     title: Pre-authentication
+    authentication: none
   identifiers:
     slug: default-source-pre-authentication
   model: authentik_flows.flow

@@ -12,6 +12,7 @@ entries:
       name: Default recovery flow
       title: Reset your password
       designation: recovery
+      authentication: require_unauthenticated
   - identifiers:
       field_key: password
       label: Password

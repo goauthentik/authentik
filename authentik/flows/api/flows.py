@@ -72,6 +72,7 @@ class FlowSerializer(ModelSerializer):
             "export_url",
             "layout",
             "denied_action",
+            "authentication",
         ]
         extra_kwargs = {
             "background": {"read_only": True},

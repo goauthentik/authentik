@@ -12,6 +12,7 @@ entries:
       name: Default enrollment Flow
       title: Welcome to authentik!
       designation: enrollment
+      authentication: require_unauthenticated
   - identifiers:
       field_key: username
       label: Username
