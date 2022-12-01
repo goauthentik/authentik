@@ -10,11 +10,19 @@ If no matching entry can be found, an error is raised and the blueprint is inval
 
 #### `!Find`
 
-Example:
+Examples:
 
 `configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]`
 
-`configure_flow: !Find [authentik_flows.flow, [!Context property_name, !Context property_value]]`
+```
+configure_flow: !Find [
+  authentik_flows.flow,
+  [
+    !Context property_name,
+    !Context property_value
+  ]
+]
+```
 
 Looks up any model and resolves to the the matches' primary key.
 First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
