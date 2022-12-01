@@ -28,7 +28,7 @@ export async function popupCenterScreen(
     title: string,
     w: number,
     h: number,
-): Window | null {
+): Promise<Window | null> {
     const top = (screen.height - h) / 4,
         left = (screen.width - w) / 2;
     return new Promise((resolve) => {

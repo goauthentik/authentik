@@ -62,7 +62,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
     send = async (data: PlexSource): Promise<PlexSource> => {
         data.plexToken = this.plexToken || "";
         let source: PlexSource;
-        if (this.instance) {
+        if (this.instance?.pk) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexUpdate({
                 slug: this.instance.slug,
                 plexSourceRequest: data,
