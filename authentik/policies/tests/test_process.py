@@ -2,6 +2,7 @@
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.test import RequestFactory, TestCase
+from django.urls import resolve, reverse
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import Application, Group, User
@@ -129,8 +130,9 @@ class TestPolicyProcess(TestCase):
         )
         binding = PolicyBinding(policy=policy, target=Application.objects.create(name="test"))
 
-        http_request = self.factory.get("/")
+        http_request = self.factory.get(reverse("authentik_core:impersonate-end"))
         http_request.user = self.user
+        http_request.resolver_match = resolve(reverse("authentik_core:impersonate-end"))
 
         request = PolicyRequest(self.user)
         request.set_http_request(http_request)

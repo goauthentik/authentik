@@ -1,5 +1,6 @@
 """event utilities"""
 import re
+from copy import copy
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from types import GeneratorType
@@ -87,9 +88,15 @@ def sanitize_item(value: Any) -> Any:
     """Sanitize a single item, ensure it is JSON parsable"""
     if is_dataclass(value):
         # Because asdict calls `copy.deepcopy(obj)` on everything that's not tuple/dict,
-        # and deepcopy doesn't work with HttpRequests (neither django nor rest_framework).
+        # and deepcopy doesn't work with HttpRequest (neither django nor rest_framework).
+        # (more specifically doesn't work with ResolverMatch)
+        # rest_framework's custom Request class makes this more complicated as it also holds a
+        # thread lock.
+        # Since this class is mainly used for Events which already hold the http request context
+        # we just remove the http_request from the shallow policy request
         # Currently, the only dataclass that actually holds an http request is a PolicyRequest
-        if isinstance(value, PolicyRequest):
+        if isinstance(value, PolicyRequest) and value.http_request is not None:
+            value: PolicyRequest = copy(value)
             value.http_request = None
         value = asdict(value)
     if isinstance(value, dict):
