@@ -1,6 +1,5 @@
 """Gunicorn config"""
 import os
-import pwd
 from hashlib import sha512
 from multiprocessing import cpu_count
 from os import makedirs
@@ -22,13 +21,6 @@ if TYPE_CHECKING:
     from gunicorn.arbiter import Arbiter
 
 bind = "127.0.0.1:8000"
-
-try:
-    pwd.getpwnam("authentik")
-    user = "authentik"
-    group = "authentik"
-except KeyError:
-    pass
 
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
