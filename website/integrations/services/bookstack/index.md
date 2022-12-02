@@ -71,6 +71,10 @@ Modify the following Example SAML config and paste incorporate into your `.env` 
 ```bash
 # Set authentication method to be saml2
 AUTH_METHOD=saml2
+# Control if BookStack automatically initiates login via your SAML system if it's the only authentication method.
+# Prevents the need for the user to click the "Login with x" button on the login page.
+# Setting this to true enables auto-initiation.
+AUTH_AUTO_INITIATE=true
 # Set the display name to be shown on the login button.
 # (Login with <name>)
 SAML2_NAME=authentik
@@ -78,15 +82,20 @@ SAML2_NAME=authentik
 SAML2_EMAIL_ATTRIBUTE=email
 # Name of the attribute to use as an ID for the SAML user.
 SAML2_EXTERNAL_ID_ATTRIBUTE=uid
+# Enable SAML group sync.
+SAML2_USER_TO_GROUPS=true
+# Set the attribute from which BookStack will read groups names from.
+# You will need to rename your roles in Bookstack to match your groups in authentik.
+SAML2_GROUP_ATTRIBUTE=http://schemas.xmlsoap.org/claims/Group
 # Name of the attribute(s) to use for the user's display name
 # Can have multiple attributes listed, separated with a '|' in which
 # case those values will be joined with a space.
 # Example: SAML2_DISPLAY_NAME_ATTRIBUTES=firstName|lastName
 # Defaults to the ID value if not found.
-SAML2_DISPLAY_NAME_ATTRIBUTES=Name
+SAML2_DISPLAY_NAME_ATTRIBUTES=http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname
 # Identity Provider entityID URL
 SAML2_IDP_ENTITYID=METADATAURL
- # Auto-load metatadata from the IDP
+# Auto-load metatadata from the IDP
 # Setting this to true negates the need to specify the next three options
 SAML2_AUTOLOAD_METADATA=true
 
