@@ -12,6 +12,7 @@ entries:
       name: Default Authentication Flow
       title: Welcome to authentik!
       designation: authentication
+      authentication: require_unauthenticated
   - identifiers:
       name: test-not-app-password
     id: test-not-app-password

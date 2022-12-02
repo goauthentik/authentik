@@ -12,6 +12,7 @@ entries:
       name: Default Authentication Flow
       title: Welcome to authentik!
       designation: authentication
+      authentication: require_unauthenticated
   - identifiers:
       name: default-authentication-login
     id: default-authentication-login

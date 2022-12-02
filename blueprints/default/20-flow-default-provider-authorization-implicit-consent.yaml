@@ -6,6 +6,7 @@ entries:
     designation: authorization
     name: Authorize Application
     title: Redirecting to %(app)s
+    authentication: require_authenticated
   identifiers:
     slug: default-provider-authorization-implicit-consent
   model: authentik_flows.flow

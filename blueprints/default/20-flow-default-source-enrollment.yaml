@@ -6,6 +6,7 @@ entries:
     designation: enrollment
     name: Welcome to authentik! Please select a username.
     title: Welcome to authentik! Please select a username.
+    authentication: none
   identifiers:
     slug: default-source-enrollment
   model: authentik_flows.flow

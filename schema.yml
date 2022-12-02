@@ -25269,6 +25269,13 @@ components:
       - last_used
       - user
       - user_agent
+    AuthenticationEnum:
+      enum:
+      - none
+      - require_authenticated
+      - require_unauthenticated
+      - require_superuser
+      type: string
     AuthenticatorAttachmentEnum:
       enum:
       - platform
@@ -27578,6 +27585,11 @@ components:
           - $ref: '#/components/schemas/DeniedActionEnum'
           description: Configure what should happen when a flow denies access to a
             user.
+        authentication:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticationEnum'
+          description: Required level of authentication and authorization to access
+            a flow.
       required:
       - background
       - cache_count
@@ -27774,6 +27786,11 @@ components:
           - $ref: '#/components/schemas/DeniedActionEnum'
           description: Configure what should happen when a flow denies access to a
             user.
+        authentication:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticationEnum'
+          description: Required level of authentication and authorization to access
+            a flow.
       required:
       - designation
       - name
@@ -33651,6 +33668,11 @@ components:
           - $ref: '#/components/schemas/DeniedActionEnum'
           description: Configure what should happen when a flow denies access to a
             user.
+        authentication:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticationEnum'
+          description: Required level of authentication and authorization to access
+            a flow.
     PatchedFlowStageBindingRequest:
       type: object
       description: FlowStageBinding Serializer
