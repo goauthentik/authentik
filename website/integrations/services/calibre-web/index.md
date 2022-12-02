@@ -46,4 +46,4 @@ Following Settings are Needed For User Import
 
 Click Save
 
-You must then go back to the main settings page and click Import LDAP Users 
+You must then go back to the main settings page and click Import LDAP Users

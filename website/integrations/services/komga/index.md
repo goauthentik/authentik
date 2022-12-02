@@ -38,22 +38,22 @@ For more info, see https://komga.org/installation/oauth2.html#advanced-configura
 
 ```yaml
 komga:
-  ## Comment if you don't want automatic account creation.
-  oauth2-account-creation: true
+    ## Comment if you don't want automatic account creation.
+    oauth2-account-creation: true
 spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          authentik:
-            client-id: 'client-id'
-            client-secret: 'client-secret'
-            client-name: client-name
-            scope: openid,profile,email
-            authorization-grant-type: authorization_code
-            redirect-uri: "https://komga.company/login/oauth2/code/authentik"
-        provider:
-          authentik:
-            issuer-uri: https://authentik.company/application/o/app-slug/
-            user-name-attribute: preferred_username
+    security:
+        oauth2:
+            client:
+                registration:
+                    authentik:
+                        client-id: "client-id"
+                        client-secret: "client-secret"
+                        client-name: client-name
+                        scope: openid,profile,email
+                        authorization-grant-type: authorization_code
+                        redirect-uri: "https://komga.company/login/oauth2/code/authentik"
+                provider:
+                    authentik:
+                        issuer-uri: https://authentik.company/application/o/app-slug/
+                        user-name-attribute: preferred_username
 ```
