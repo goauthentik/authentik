@@ -13,7 +13,7 @@ Wiki.js is a wiki engine running on Node.js and written in JavaScript. It is fre
 :::
 
 :::note
-This is based on authentik 2021.3 and Wiki.js 2.5. Instructions may differ between versions.
+This is based on authentik 2022.11 and Wiki.js 2.5. Instructions may differ between versions.
 :::
 
 ## Preparation
@@ -30,13 +30,11 @@ In Wiki.js, navigate to the _Authentication_ section in the _Administration_ int
 Add a _Generic OpenID Connect / OAuth2_ strategy and note the _Callback URL / Redirect URI_ in the _Configuration Reference_ section at the bottom.
 
 ### Step 2
-
+    
 In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
 
 -   Redirect URI: The _Callback URL / Redirect URI_ you noted from the previous step.
--   Scopes: Default OAUth mappings for: OpenID, email, profile.
 -   Signing Key: Select any available key
--   Sub Mode: Based on username.
 
 Note the _client ID_ and _client secret_, then save the provider. If you need to retrieve these values, you can do so by editing the provider.
 
@@ -59,7 +57,7 @@ In Wiki.js, configure the authentication strategy with these settings:
 ![](./wiki-js_strategy.png)
 
 :::note
-You do not have to enable "Allow self-registration" and select a group to which new users should be assigned, but if you don't you will have to manually provision users in Wiki.js and ensure that their usernames match the username they have in authentik.
+You do not have to enable "Allow self-registration" and select a group to which new users should be assigned, but if you don't you will have to manually provision users in Wiki.js and ensure that their emails match the email they have in authentik.
 :::
 
 :::note
