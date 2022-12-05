@@ -71,29 +71,29 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
             >
                 <select class="pf-c-form-control">
                     ${until(
-            tenant().then((t) => {
-                return new FlowsApi(DEFAULT_CONFIG)
-                    .flowsInstancesList({
-                        ordering: "slug",
-                        designation: FlowsInstancesListDesignationEnum.Authentication,
-                    })
-                    .then((flows) => {
-                        return flows.results.map((flow) => {
-                            let selected = flow.pk === t.flowAuthentication;
-                            if (this.instance?.authorizationFlow === flow.pk) {
-                                selected = true;
-                            }
-                            return html`<option
+                        tenant().then((t) => {
+                            return new FlowsApi(DEFAULT_CONFIG)
+                                .flowsInstancesList({
+                                    ordering: "slug",
+                                    designation: FlowsInstancesListDesignationEnum.Authentication,
+                                })
+                                .then((flows) => {
+                                    return flows.results.map((flow) => {
+                                        let selected = flow.pk === t.flowAuthentication;
+                                        if (this.instance?.authorizationFlow === flow.pk) {
+                                            selected = true;
+                                        }
+                                        return html`<option
                                             value=${ifDefined(flow.pk)}
                                             ?selected=${selected}
                                         >
                                             ${flow.name} (${flow.slug})
                                         </option>`;
-                        });
-                    });
-            }),
-            html`<option>${t`Loading...`}</option>`,
-        )}
+                                    });
+                                });
+                        }),
+                        html`<option>${t`Loading...`}</option>`,
+                    )}
                 </select>
                 <p class="pf-c-form__helper-text">
                     ${t`Flow used for users to authenticate. Currently only identification and password stages are supported.`}
@@ -189,29 +189,29 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                                 ---------
                             </option>
                             ${until(
-                new CryptoApi(DEFAULT_CONFIG)
-                    .cryptoCertificatekeypairsList({
-                        ordering: "name",
-                        hasKey: true,
-                        includeDetails: false,
-                    })
-                    .then((keys) => {
-                        return keys.results.map((key) => {
-                            return html`<option
+                                new CryptoApi(DEFAULT_CONFIG)
+                                    .cryptoCertificatekeypairsList({
+                                        ordering: "name",
+                                        hasKey: true,
+                                        includeDetails: false,
+                                    })
+                                    .then((keys) => {
+                                        return keys.results.map((key) => {
+                                            return html`<option
                                                 value=${ifDefined(key.pk)}
                                                 ?selected=${this.instance?.certificate === key.pk}
                                             >
                                                 ${key.name}
                                             </option>`;
-                        });
-                    }),
-                html`<option
+                                        });
+                                    }),
+                                html`<option
                                     value=${ifDefined(this.instance?.certificate || undefined)}
                                     ?selected=${this.instance?.certificate !== undefined}
                                 >
                                     ${t`Loading...`}
                                 </option>`,
-            )}
+                            )}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Due to protocol limitations, this certificate is only used when the outpost has a single provider.`}
