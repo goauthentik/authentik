@@ -3,22 +3,25 @@ import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/SearchSelect";
 
 import { t } from "@lingui/macro";
 
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import {
     CoreApi,
+    CoreGroupsListRequest,
     CryptoApi,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    Group,
     LDAPAPIAccessMode,
     LDAPProvider,
-    ProvidersApi,
+    ProvidersApi
 } from "@goauthentik/api";
 
 @customElement("ak-provider-ldap-form")
@@ -68,53 +71,61 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
             >
                 <select class="pf-c-form-control">
                     ${until(
-                        tenant().then((t) => {
-                            return new FlowsApi(DEFAULT_CONFIG)
-                                .flowsInstancesList({
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Authentication,
-                                })
-                                .then((flows) => {
-                                    return flows.results.map((flow) => {
-                                        let selected = flow.pk === t.flowAuthentication;
-                                        if (this.instance?.authorizationFlow === flow.pk) {
-                                            selected = true;
-                                        }
-                                        return html`<option
+            tenant().then((t) => {
+                return new FlowsApi(DEFAULT_CONFIG)
+                    .flowsInstancesList({
+                        ordering: "slug",
+                        designation: FlowsInstancesListDesignationEnum.Authentication,
+                    })
+                    .then((flows) => {
+                        return flows.results.map((flow) => {
+                            let selected = flow.pk === t.flowAuthentication;
+                            if (this.instance?.authorizationFlow === flow.pk) {
+                                selected = true;
+                            }
+                            return html`<option
                                             value=${ifDefined(flow.pk)}
                                             ?selected=${selected}
                                         >
                                             ${flow.name} (${flow.slug})
                                         </option>`;
-                                    });
-                                });
-                        }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
+                        });
+                    });
+            }),
+            html`<option>${t`Loading...`}</option>`,
+        )}
                 </select>
                 <p class="pf-c-form__helper-text">
                     ${t`Flow used for users to authenticate. Currently only identification and password stages are supported.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Search group`} name="searchGroup">
-                <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.instance?.searchGroup === undefined}>
-                        ---------
-                    </option>
-                    ${until(
-                        new CoreApi(DEFAULT_CONFIG).coreGroupsList({}).then((groups) => {
-                            return groups.results.map((group) => {
-                                return html`<option
-                                    value=${ifDefined(group.pk)}
-                                    ?selected=${this.instance?.searchGroup === group.pk}
-                                >
-                                    ${group.name}
-                                </option>`;
-                            });
-                        }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <!-- @ts-ignore -->
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
+                const args: CoreGroupsListRequest = {
+                    ordering: "name",
+                };
+                if (query !== undefined) {
+                    args.search = query;
+                }
+                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
+                    args,
+                );
+                return groups.results;
+            }}
+                    .renderElement=${(group: Group): string => {
+                return group.name;
+            }}
+                    .value=${(group: Group | undefined): string | undefined => {
+                return group ? group.pk : undefined;
+            }}
+                    .selected=${(group: Group): boolean => {
+                return group.pk === this.instance?.searchGroup;
+            }}
+                    ?blankable=${true}
+                >
+                </ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${t`Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.`}
                 </p>
@@ -178,29 +189,29 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                                 ---------
                             </option>
                             ${until(
-                                new CryptoApi(DEFAULT_CONFIG)
-                                    .cryptoCertificatekeypairsList({
-                                        ordering: "name",
-                                        hasKey: true,
-                                        includeDetails: false,
-                                    })
-                                    .then((keys) => {
-                                        return keys.results.map((key) => {
-                                            return html`<option
+                new CryptoApi(DEFAULT_CONFIG)
+                    .cryptoCertificatekeypairsList({
+                        ordering: "name",
+                        hasKey: true,
+                        includeDetails: false,
+                    })
+                    .then((keys) => {
+                        return keys.results.map((key) => {
+                            return html`<option
                                                 value=${ifDefined(key.pk)}
                                                 ?selected=${this.instance?.certificate === key.pk}
                                             >
                                                 ${key.name}
                                             </option>`;
-                                        });
-                                    }),
-                                html`<option
+                        });
+                    }),
+                html`<option
                                     value=${ifDefined(this.instance?.certificate || undefined)}
                                     ?selected=${this.instance?.certificate !== undefined}
                                 >
                                     ${t`Loading...`}
                                 </option>`,
-                            )}
+            )}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Due to protocol limitations, this certificate is only used when the outpost has a single provider.`}
