@@ -103,26 +103,26 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 <!-- @ts-ignore -->
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                const args: CoreGroupsListRequest = {
-                    ordering: "name",
-                };
-                if (query !== undefined) {
-                    args.search = query;
-                }
-                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                    args,
-                );
-                return groups.results;
-            }}
+                        const args: CoreGroupsListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
+                            args,
+                        );
+                        return groups.results;
+                    }}
                     .renderElement=${(group: Group): string => {
-                return group.name;
-            }}
-                    .value=${(group: Group | undefined): string | undefined => {
-                return group ? group.pk : undefined;
-            }}
-                    .selected=${(group: Group): boolean => {
-                return group.pk === this.instance?.searchGroup;
-            }}
+                        return group.name;
+                    }}
+                            .value=${(group: Group | undefined): string | undefined => {
+                        return group ? group.pk : undefined;
+                    }}
+                            .selected=${(group: Group): boolean => {
+                        return group.pk === this.instance?.searchGroup;
+                    }}
                     ?blankable=${true}
                 >
                 </ak-search-select>
