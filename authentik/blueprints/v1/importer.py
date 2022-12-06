@@ -141,6 +141,7 @@ class Importer:
 
         return main_query | sub_query
 
+    # pylint: disable-msg=too-many-locals
     def _validate_single(self, entry: BlueprintEntry) -> Optional[BaseSerializer]:
         """Validate a single entry"""
         model_app_label, model_name = entry.model.split(".")
