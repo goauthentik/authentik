@@ -132,11 +132,13 @@ class Importer:
             main_query = Q(pk=attrs["pk"])
         sub_query = Q()
         for identifier, value in attrs.items():
-            if isinstance(value, dict):
-                continue
             if identifier == "pk":
                 continue
-            sub_query &= Q(**{identifier: value})
+            if isinstance(value, dict):
+                sub_query &= Q(**{f"{identifier}__contains": value})
+            else:
+                sub_query &= Q(**{identifier: value})
+
         return main_query | sub_query
 
     def _validate_single(self, entry: BlueprintEntry) -> Optional[BaseSerializer]:
@@ -167,11 +169,11 @@ class Importer:
             if isinstance(value, dict) and "pk" in value:
                 del updated_identifiers[key]
                 updated_identifiers[f"{key}"] = value["pk"]
-        
+
         query = self.__query_from_identifier(updated_identifiers)
         if not query:
             raise EntryInvalidError("No or invalid identifiers")
-            
+
         existing_models = model.objects.filter(query)
 
         serializer_kwargs = {}
@@ -201,7 +203,7 @@ class Importer:
             full_data = self.__update_pks_for_attrs(entry.get_attrs(self.__import))
         except ValueError as exc:
             raise EntryInvalidError(exc) from exc
-        full_data.update(updated_identifiers)
+        always_merger.merge(full_data, updated_identifiers)
         serializer_kwargs["data"] = full_data
 
         serializer: Serializer = model().serializer(**serializer_kwargs)
