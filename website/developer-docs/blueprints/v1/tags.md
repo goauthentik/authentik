@@ -38,3 +38,27 @@ Find values from the context. Can optionally be called with a default like `!Con
 Example: `name: !Format [my-policy-%s, !Context instance_name]`
 
 Format a string using python's % formatting. First argument is the format string, any remaining arguments are used for formatting.
+
+#### `!AsBool`
+
+Minimal example:
+
+`required: !AsBool [OR, true]`
+
+Full example:
+
+```
+required: !AsBool [
+    AND, # Valid modes are: AND, NAND, OR, NOR, XOR, XNOR
+    !Context instance_name,
+    !Find [authentik_flows.flow, [slug, default-password-change],
+    "My string",
+    123
+]
+```
+
+Converts one or more arguments to their boolean representations, then merges all representations together.
+Requires at least one argument after the mode selection.
+
+If only a single argument is provided, its boolean representation will be returned for all normal
+modes and its negated boolean representation will be returned for all negated modes.

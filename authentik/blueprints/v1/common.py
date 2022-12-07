@@ -2,7 +2,9 @@
 from collections import OrderedDict
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
-from typing import Any, Optional
+from functools import reduce
+from operator import ixor
+from typing import Any, Literal, Optional
 from uuid import UUID
 
 from django.apps import apps
@@ -241,6 +243,49 @@ class Find(YAMLTag):
         return None
 
 
+class AsBool(YAMLTag):
+    """Convert all values to a single boolean"""
+
+    mode: Literal["AND", "NAND", "OR", "NOR", "XOR", "XNOR"]
+    args: list[Any]
+
+    _COMPARATORS = {
+        # Using all and any here instead of from operator import iand, ior
+        # to improve performance
+        "AND": all,
+        "NAND": lambda args: not all(args),
+        "OR": any,
+        "NOR": lambda args: not any(args),
+        "XOR": lambda args: reduce(ixor, args) if len(args) > 1 else args[0],
+        "XNOR": lambda args: not (reduce(ixor, args) if len(args) > 1 else args[0]),
+    }
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
+        super().__init__()
+        self.mode = node.value[0].value
+        self.args = []
+        for raw_node in node.value[1:]:
+            self.args.append(loader.construct_object(raw_node))
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        args = []
+        for arg in self.args:
+            if isinstance(arg, YAMLTag):
+                args.append(arg.resolve(entry, blueprint))
+            else:
+                args.append(arg)
+
+        if not args:
+            raise EntryInvalidError("At least one value is required after mode selection.")
+
+        try:
+            comparator = self._COMPARATORS[self.mode.upper()]
+            return comparator(tuple(bool(x) for x in args))
+        except (TypeError, KeyError) as exc:
+            raise EntryInvalidError(exc)
+
+
 class BlueprintDumper(SafeDumper):
     """Dump dataclasses to yaml"""
 
@@ -281,6 +326,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Find", Find)
         self.add_constructor("!Context", Context)
         self.add_constructor("!Format", Format)
+        self.add_constructor("!AsBool", AsBool)
 
 
 class EntryInvalidError(SentryIgnoredException):

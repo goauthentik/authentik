@@ -139,9 +139,16 @@ class TestBlueprintsV1(TransactionTestCase):
         self.assertTrue(policy)
         self.assertTrue(
             Group.objects.filter(
-                attributes__contains={
+                attributes={
                     "policy_pk1": str(policy.pk) + "-suffix",
                     "policy_pk2": str(policy.pk) + "-suffix",
+                    "boolAnd": True,
+                    "boolNand": False,
+                    "boolOr": True,
+                    "boolNor": False,
+                    "boolXor": True,
+                    "boolXnor": False,
+                    "boolComplex": True,
                 }
             )
         )
