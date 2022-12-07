@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -35,7 +35,7 @@ export class SearchSelect<T> extends AKElement {
     placeholder: string = t`Select an object.`;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFFormControl, PFSelect, AKGlobal];
+        return [PFBase, PFForm, PFFormControl, PFSelect, AKGlobal, css`.pf-c-select__menu { max-height: 18em; overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none; } .pf-c-select__menu::-webkit-scrollbar { display: none; }`];
     }
 
     @property({ attribute: false })
@@ -96,6 +96,7 @@ export class SearchSelect<T> extends AKElement {
                                   @click=${() => {
                                       this.selectedObject = undefined;
                                       this.open = false;
+                                      console.log("click");
                                   }}
                               >
                                   ---------
@@ -112,6 +113,7 @@ export class SearchSelect<T> extends AKElement {
                                 @click=${() => {
                                     this.selectedObject = obj;
                                     this.open = false;
+                                    console.log("click");
                                 }}
                             >
                                 ${this.renderElement(obj)}
