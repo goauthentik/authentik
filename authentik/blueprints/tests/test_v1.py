@@ -27,6 +27,61 @@ class TestBlueprintsV1(TransactionTestCase):
             )
         )
         self.assertFalse(importer.validate()[0])
+        importer = Importer(
+            (
+                '{"version": 1, "entries": [{"attrs": {"name": "test"}, '
+                '"identifiers": {}, '
+                '"model": "authentik_core.Group"}]}'
+            )
+        )
+        self.assertFalse(importer.validate()[0])
+
+    def test_validated_import_dict_identifiers(self):
+        """Test importing blueprints with dict identifiers."""
+        Group.objects.filter(name__istartswith="test").delete()
+
+        Group.objects.create(
+            name="test1",
+            attributes={
+                "key": ["value"],
+                "other_key": ["a_value", "other_value"],
+            },
+        )
+        Group.objects.create(
+            name="test2",
+            attributes={
+                "key": ["value"],
+                "other_key": ["diff_value", "other_diff_value"],
+            },
+        )
+
+        importer = Importer(
+            (
+                '{"version": 1, "entries": [{"attrs": {"name": "test999", "attributes": '
+                '{"key": ["updated_value"]}}, "identifiers": {"attributes": {"other_key": '
+                '["other_value"]}}, "model": "authentik_core.Group"}]}'
+            )
+        )
+        self.assertTrue(importer.validate()[0])
+        self.assertTrue(importer.apply())
+        self.assertTrue(
+            Group.objects.filter(
+                name="test2",
+                attributes={
+                    "key": ["value"],
+                    "other_key": ["diff_value", "other_diff_value"],
+                },
+            )
+        )
+        self.assertTrue(
+            Group.objects.filter(
+                name="test999",
+                # All attributes used as identifiers are kept and merged with the
+                # new attributes declared in the blueprint
+                attributes={"key": ["updated_value"], "other_key": ["other_value"]},
+            )
+        )
+        self.assertFalse(Group.objects.filter(name="test1"))
 
     def test_export_validate_import(self):
         """Test export and validate it"""
