@@ -67,25 +67,8 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
     @CONFIG.patch("blueprints_dir", TMP)
     def test_valid_updated(self):
         """Test valid file"""
+        BlueprintInstance.objects.filter(name="foo").delete()
         with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-            file.write(
-                dump(
-                    {
-                        "version": 1,
-                        "entries": [],
-                    }
-                )
-            )
-            file.flush()
-            blueprints_discover()  # pylint: disable=no-value-for-parameter
-            self.assertEqual(
-                BlueprintInstance.objects.first().last_applied_hash,
-                (
-                    "e52bb445b03cd36057258dc9f0ce0fbed8278498ee1470e45315293e5f026d1b"
-                    "d1f9b3526871c0003f5c07be5c3316d9d4a08444bd8fed1b3f03294e51e44522"
-                ),
-            )
-            self.assertEqual(BlueprintInstance.objects.first().metadata, {})
             file.write(
                 dump(
                     {
@@ -99,18 +82,44 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
             )
             file.flush()
             blueprints_discover()  # pylint: disable=no-value-for-parameter
+            blueprint = BlueprintInstance.objects.filter(name="foo").first()
             self.assertEqual(
-                BlueprintInstance.objects.first().last_applied_hash,
+                blueprint.last_applied_hash,
                 (
-                    "fc62fea96067da8592bdf90927246d0ca150b045447df93b0652a0e20a8bc327"
-                    "681510b5db37ea98759c61f9a98dd2381f46a3b5a2da69dfb45158897f14e824"
+                    "b86ec439b3857350714f070d2833490e736d9155d3d97b2cac13f3b352223e5a"
+                    "1adbf8ec56fa616d46090cc4773ff9e46c4e509fde96b97de87dd21fa329ca1a"
+                ),
+            )
+            self.assertEqual(blueprint.metadata, {"labels": {}, "name": "foo"})
+            file.write(
+                dump(
+                    {
+                        "version": 1,
+                        "entries": [],
+                        "metadata": {
+                            "name": "foo",
+                            "labels": {
+                                "foo": "bar",
+                            },
+                        },
+                    }
+                )
+            )
+            file.flush()
+            blueprints_discover()  # pylint: disable=no-value-for-parameter
+            blueprint.refresh_from_db()
+            self.assertEqual(
+                blueprint.last_applied_hash,
+                (
+                    "87b68b10131d2c9751ed308bba38f04734b9e2cdf8532ed617bc52979b063c49"
+                    "2564f33f3d20ab9d5f0fd9e6eb77a13942e060199f147789cb7afab9690e72b5"
                 ),
             )
             self.assertEqual(
-                BlueprintInstance.objects.first().metadata,
+                blueprint.metadata,
                 {
                     "name": "foo",
-                    "labels": {},
+                    "labels": {"foo": "bar"},
                 },
             )
 
