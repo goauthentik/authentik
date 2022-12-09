@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"net/url"
 	"os"
@@ -62,6 +63,9 @@ func (c *Config) Setup(paths ...string) {
 func (c *Config) LoadConfig(path string) error {
 	raw, err := os.ReadFile(path)
 	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return nil
+		}
 		return fmt.Errorf("failed to load config file: %w", err)
 	}
 	err = yaml.Unmarshal(raw, c)
