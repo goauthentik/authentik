@@ -23,12 +23,12 @@ func SentryNoSampleMiddleware(h http.Handler) http.Handler {
 	})
 }
 
-func SamplerFunc(defaultRate float64) sentry.TracesSamplerFunc {
-	return sentry.TracesSamplerFunc(func(ctx sentry.SamplingContext) sentry.Sampled {
+func SamplerFunc(defaultRate float64) sentry.TracesSampler {
+	return func(ctx sentry.SamplingContext) float64 {
 		data, ok := ctx.Span.Context().Value(contextSentryNoSample{}).(bool)
 		if data && ok {
-			return sentry.SampledFalse
+			return 0
 		}
-		return sentry.UniformTracesSampler(defaultRate).Sample(ctx)
-	})
+		return defaultRate
+	}
 }
