@@ -45,7 +45,7 @@ from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import DEFAULT_TENANT
 
-LOGGER = get_logger("authentik.events")
+LOGGER = get_logger()
 if TYPE_CHECKING:
     from rest_framework.serializers import Serializer
 
