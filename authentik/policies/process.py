@@ -101,12 +101,14 @@ class PolicyProcess(PROCESS_CLASS):
             LOGGER.debug("P_ENG(proc): error", exc=src_exc)
             policy_result = PolicyResult(False, str(src_exc))
         policy_result.source_binding = self.binding
-        if self.request.should_cache:
+        should_cache = self.request.should_cache
+        if should_cache:
             key = cache_key(self.binding, self.request)
             cache.set(key, policy_result, CACHE_TIMEOUT)
         LOGGER.debug(
-            "P_ENG(proc): finished and cached ",
+            "P_ENG(proc): finished",
             policy=self.binding.policy,
+            cached=should_cache,
             result=policy_result,
             # this is used for filtering in access checking where logs are sent to the admin
             process="PolicyProcess",

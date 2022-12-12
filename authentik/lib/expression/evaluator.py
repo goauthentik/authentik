@@ -42,7 +42,7 @@ class BaseEvaluator:
             "ak_user_by": BaseEvaluator.expr_user_by,
             "ak_user_has_authenticator": BaseEvaluator.expr_func_user_has_authenticator,
             "ak_create_event": self.expr_event_create,
-            "ak_logger": get_logger(self._filename),
+            "ak_logger": get_logger(self._filename).bind(),
             "requests": get_http_session(),
             "ip_address": ip_address,
             "ip_network": ip_network,
