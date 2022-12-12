@@ -590,6 +590,7 @@ msgstr "正在使用 Apple 进行身份验证..."
 msgid "Authenticating with Plex..."
 msgstr "正在使用 Plex 进行身份验证..."
 
+#: src/admin/flows/FlowForm.ts
 #: src/admin/flows/utils.ts
 msgid "Authentication"
 msgstr "身份验证"
@@ -1309,7 +1310,6 @@ msgstr "上下文"
 #: src/flow/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flow/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
-#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
 #: src/flow/stages/autosubmit/AutosubmitStage.ts
 #: src/flow/stages/consent/ConsentStage.ts
 #: src/flow/stages/dummy/DummyStage.ts
@@ -2804,6 +2804,10 @@ msgstr "如果留空，authentik 将尝试根据选定的提供程序提取启�
 msgid "If multiple providers share an outpost, a self-signed certificate is used."
 msgstr "如果多个提供程序共享同一个前哨，则使用自签名证书。"
 
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "If no Plex popup opens, click the button below."
+msgstr ""
+
 #~ msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
 #~ msgstr "如果未指定显式重定向 URI，则允许使用任何重定向 URI。"
 
@@ -3780,6 +3784,10 @@ msgstr "不发送偏好"
 msgid "No recovery flow is configured."
 msgstr "未配置恢复流程。"
 
+#: src/admin/flows/FlowForm.ts
+msgid "No requirement"
+msgstr ""
+
 #: src/user/user-settings/sources/SourceSettings.ts
 msgid "No services available."
 msgstr "没有可用的服务。"
@@ -3979,6 +3987,10 @@ msgstr ""
 #: src/admin/events/EventInfo.ts
 msgid "Open issue on GitHub..."
 msgstr "在 GitHub 上提出议题..."
+
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "Open login"
+msgstr ""
 
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Open settings"
@@ -4673,9 +4685,25 @@ msgstr "请求被拒绝。"
 msgid "Request token URL"
 msgstr "请求令牌 URL"
 
+#: src/admin/flows/FlowForm.ts
+msgid "Require authentication"
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Require no authentication."
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Require superuser."
+msgstr ""
+
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Required"
 msgstr "必需"
+
+#: src/admin/flows/FlowForm.ts
+msgid "Required authentication level for this flow."
+msgstr ""
 
 #: src/flow/stages/prompt/PromptStage.ts
 msgid "Required."
@@ -5014,6 +5042,10 @@ msgstr "发送一次"
 #: src/admin/users/UserListPage.ts
 msgid "Send recovery link to user"
 msgstr "向用户发送恢复链接"
+
+#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
+msgid "Sending Duo push notification"
+msgstr ""
 
 #: src/admin/events/RuleListPage.ts
 msgid "Sent to group"
@@ -6876,6 +6908,10 @@ msgstr "等待（最长）"
 #: src/admin/policies/dummy/DummyPolicyForm.ts
 msgid "Wait (min)"
 msgstr "等待（最短）"
+
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "Waiting for authentication..."
+msgstr ""
 
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/admin-overview/cards/SystemStatusCard.ts

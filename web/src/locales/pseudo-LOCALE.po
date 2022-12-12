@@ -584,6 +584,7 @@ msgstr ""
 msgid "Authenticating with Plex..."
 msgstr ""
 
+#: src/admin/flows/FlowForm.ts
 #: src/admin/flows/utils.ts
 msgid "Authentication"
 msgstr ""
@@ -1316,7 +1317,6 @@ msgstr ""
 #: src/flow/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flow/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
-#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
 #: src/flow/stages/autosubmit/AutosubmitStage.ts
 #: src/flow/stages/consent/ConsentStage.ts
 #: src/flow/stages/dummy/DummyStage.ts
@@ -2851,6 +2851,10 @@ msgstr ""
 msgid "If multiple providers share an outpost, a self-signed certificate is used."
 msgstr ""
 
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "If no Plex popup opens, click the button below."
+msgstr ""
+
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #~ msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
 #~ msgstr ""
@@ -3835,6 +3839,10 @@ msgstr ""
 msgid "No recovery flow is configured."
 msgstr ""
 
+#: src/admin/flows/FlowForm.ts
+msgid "No requirement"
+msgstr ""
+
 #: src/user/user-settings/sources/SourceSettings.ts
 msgid "No services available."
 msgstr ""
@@ -4043,6 +4051,10 @@ msgstr ""
 
 #: src/admin/events/EventInfo.ts
 msgid "Open issue on GitHub..."
+msgstr ""
+
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "Open login"
 msgstr ""
 
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
@@ -4767,8 +4779,24 @@ msgstr ""
 msgid "Request token URL"
 msgstr ""
 
+#: src/admin/flows/FlowForm.ts
+msgid "Require authentication"
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Require no authentication."
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Require superuser."
+msgstr ""
+
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Required"
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Required authentication level for this flow."
 msgstr ""
 
 #: src/flow/stages/prompt/PromptStage.ts
@@ -5116,6 +5144,10 @@ msgstr ""
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
 msgid "Send recovery link to user"
+msgstr ""
+
+#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
+msgid "Sending Duo push notification"
 msgstr ""
 
 #: src/admin/events/RuleListPage.ts
@@ -7017,6 +7049,10 @@ msgstr ""
 
 #: src/admin/policies/dummy/DummyPolicyForm.ts
 msgid "Wait (min)"
+msgstr ""
+
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "Waiting for authentication..."
 msgstr ""
 
 #: src/admin/admin-overview/cards/SystemStatusCard.ts

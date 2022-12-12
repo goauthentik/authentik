@@ -588,6 +588,7 @@ msgstr "Uwierzytelnianie z Apple..."
 msgid "Authenticating with Plex..."
 msgstr "Uwierzytelnianie z Plex..."
 
+#: src/admin/flows/FlowForm.ts
 #: src/admin/flows/utils.ts
 msgid "Authentication"
 msgstr "Uwierzytelnianie"
@@ -1307,7 +1308,6 @@ msgstr "Kontekst"
 #: src/flow/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flow/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
-#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
 #: src/flow/stages/autosubmit/AutosubmitStage.ts
 #: src/flow/stages/consent/ConsentStage.ts
 #: src/flow/stages/dummy/DummyStage.ts
@@ -2802,6 +2802,10 @@ msgstr "Jeśli pozostawione puste, authentik spróbuje wyodrębnić URL uruchami
 msgid "If multiple providers share an outpost, a self-signed certificate is used."
 msgstr "Jeśli wielu dostawców współdzieli placówkę, używany jest certyfikat z podpisem własnym."
 
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "If no Plex popup opens, click the button below."
+msgstr ""
+
 #~ msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
 #~ msgstr "Jeśli nie określono żadnych jawnych identyfikatorów URI przekierowania, dozwolony jest dowolny identyfikator URI przekierowania."
 
@@ -3780,6 +3784,10 @@ msgstr "Żadne preferencje nie są wysyłane"
 msgid "No recovery flow is configured."
 msgstr "Nie skonfigurowano przepływu odzyskiwania."
 
+#: src/admin/flows/FlowForm.ts
+msgid "No requirement"
+msgstr ""
+
 #: src/user/user-settings/sources/SourceSettings.ts
 msgid "No services available."
 msgstr "Brak dostępnych usług."
@@ -3979,6 +3987,10 @@ msgstr ""
 #: src/admin/events/EventInfo.ts
 msgid "Open issue on GitHub..."
 msgstr "Otwórz problem w serwisie GitHub..."
+
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "Open login"
+msgstr ""
 
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Open settings"
@@ -4675,9 +4687,25 @@ msgstr "Żądanie zostało odrzucone."
 msgid "Request token URL"
 msgstr "URL żądania tokena"
 
+#: src/admin/flows/FlowForm.ts
+msgid "Require authentication"
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Require no authentication."
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Require superuser."
+msgstr ""
+
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Required"
 msgstr "Wymagany"
+
+#: src/admin/flows/FlowForm.ts
+msgid "Required authentication level for this flow."
+msgstr ""
 
 #: src/flow/stages/prompt/PromptStage.ts
 msgid "Required."
@@ -5016,6 +5044,10 @@ msgstr "Wyślij raz"
 #: src/admin/users/UserListPage.ts
 msgid "Send recovery link to user"
 msgstr "Wyślij link odzyskiwania do użytkownika"
+
+#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
+msgid "Sending Duo push notification"
+msgstr ""
 
 #: src/admin/events/RuleListPage.ts
 msgid "Sent to group"
@@ -6878,6 +6910,10 @@ msgstr "Czekaj (max)"
 #: src/admin/policies/dummy/DummyPolicyForm.ts
 msgid "Wait (min)"
 msgstr "Czekaj (min)"
+
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "Waiting for authentication..."
+msgstr ""
 
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/admin-overview/cards/SystemStatusCard.ts

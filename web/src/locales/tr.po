@@ -584,6 +584,7 @@ msgstr "Apple ile kimlik doğrulaması..."
 msgid "Authenticating with Plex..."
 msgstr "Plex ile kimlik doğrulaması..."
 
+#: src/admin/flows/FlowForm.ts
 #: src/admin/flows/utils.ts
 msgid "Authentication"
 msgstr "Kimlik Doğrulama"
@@ -1301,7 +1302,6 @@ msgstr "Bağlam"
 #: src/flow/stages/authenticator_static/AuthenticatorStaticStage.ts
 #: src/flow/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
-#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
 #: src/flow/stages/autosubmit/AutosubmitStage.ts
 #: src/flow/stages/consent/ConsentStage.ts
 #: src/flow/stages/dummy/DummyStage.ts
@@ -2796,6 +2796,10 @@ msgstr "Boş bırakılırsa, authentik seçili sağlayıcıya göre başlatma UR
 msgid "If multiple providers share an outpost, a self-signed certificate is used."
 msgstr "Birden çok sağlayıcı bir üssü paylaşıyorsa, otomatik olarak imzalanan bir sertifika kullanılır."
 
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "If no Plex popup opens, click the button below."
+msgstr ""
+
 #~ msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
 #~ msgstr "Açık bir yeniden yönlendirme URI'leri belirtilmezse, herhangi bir yeniden yönlendirme URI'sine izin verilir."
 
@@ -3772,6 +3776,10 @@ msgstr ""
 msgid "No recovery flow is configured."
 msgstr "Kurtarma akışı yapılandırılmamış."
 
+#: src/admin/flows/FlowForm.ts
+msgid "No requirement"
+msgstr ""
+
 #: src/user/user-settings/sources/SourceSettings.ts
 msgid "No services available."
 msgstr "Hizmet yok."
@@ -3971,6 +3979,10 @@ msgstr ""
 #: src/admin/events/EventInfo.ts
 msgid "Open issue on GitHub..."
 msgstr "GitHub'da açık sorun..."
+
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "Open login"
+msgstr ""
 
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Open settings"
@@ -4665,9 +4677,25 @@ msgstr "İstek reddedildi."
 msgid "Request token URL"
 msgstr "Belirteç URL'sini iste"
 
+#: src/admin/flows/FlowForm.ts
+msgid "Require authentication"
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Require no authentication."
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Require superuser."
+msgstr ""
+
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Required"
 msgstr "Zorunlu"
+
+#: src/admin/flows/FlowForm.ts
+msgid "Required authentication level for this flow."
+msgstr ""
 
 #: src/flow/stages/prompt/PromptStage.ts
 msgid "Required."
@@ -5006,6 +5034,10 @@ msgstr "Bir kez gönder"
 #: src/admin/users/UserListPage.ts
 msgid "Send recovery link to user"
 msgstr "Kullanıcıya kurtarma bağlantısını gönder"
+
+#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo.ts
+msgid "Sending Duo push notification"
+msgstr ""
 
 #: src/admin/events/RuleListPage.ts
 msgid "Sent to group"
@@ -6868,6 +6900,10 @@ msgstr "Bekleyin (maks.)"
 #: src/admin/policies/dummy/DummyPolicyForm.ts
 msgid "Wait (min)"
 msgstr "Bekle (dk)"
+
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "Waiting for authentication..."
+msgstr ""
 
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
