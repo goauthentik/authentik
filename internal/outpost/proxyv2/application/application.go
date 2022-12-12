@@ -222,17 +222,24 @@ func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
-	//TODO: Token revocation
+	redirect := a.endpoint.EndSessionEndpoint
 	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
-		http.Redirect(rw, r, a.endpoint.EndSessionEndpoint, http.StatusFound)
+		http.Redirect(rw, r, redirect, http.StatusFound)
 		return
+	}
+	if c, exists := s.Values[constants.SessionClaims]; c == nil || !exists {
+		cc := c.(Claims)
+		uv := url.Values{
+			"id_token_hint": []string{cc.RawToken},
+		}
+		redirect += "?" + uv.Encode()
 	}
 	s.Options.MaxAge = -1
 	err = s.Save(r, rw)
 	if err != nil {
-		http.Redirect(rw, r, a.endpoint.EndSessionEndpoint, http.StatusFound)
+		http.Redirect(rw, r, redirect, http.StatusFound)
 		return
 	}
-	http.Redirect(rw, r, a.endpoint.EndSessionEndpoint, http.StatusFound)
+	http.Redirect(rw, r, redirect, http.StatusFound)
 }
