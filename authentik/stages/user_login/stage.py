@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 
 from authentik.core.models import User
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
 from authentik.flows.stage import StageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password import BACKEND_INBUILT
@@ -52,5 +52,8 @@ class UserLoginStageView(StageView):
             session_duration=self.executor.current_stage.session_duration,
         )
         self.request.session[USER_LOGIN_AUTHENTICATED] = True
-        messages.success(self.request, _("Successfully logged in!"))
+        # Only show success message if we don't have a source in the flow
+        # as sources show their own success messages
+        if not self.executor.plan.context.get(PLAN_CONTEXT_SOURCE, None):
+            messages.success(self.request, _("Successfully logged in!"))
         return self.executor.stage_ok()
