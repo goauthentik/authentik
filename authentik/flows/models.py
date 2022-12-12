@@ -14,6 +14,7 @@ from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
+from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.models import PolicyBindingModel
 
 if TYPE_CHECKING:
@@ -110,6 +111,8 @@ def in_memory_stage(view: type["StageView"], **kwargs) -> Stage:
     # we set the view as a separate property and reference a generic function
     # that returns that member
     setattr(stage, "__in_memory_type", view)
+    setattr(stage, "name", _("Dynamic In-memory stage: %(doc)s" % {"doc": view.__doc__}))
+    setattr(stage._meta, "verbose_name", class_to_path(view))
     for key, value in kwargs.items():
         setattr(stage, key, value)
     return stage
