@@ -7,9 +7,9 @@ import (
 	"goauthentik.io/api/v3"
 )
 
-func Test_ldapResolveTypeSingle_nil(t *testing.T) {
+func Test_stringify_nil(t *testing.T) {
 	var ex *string
-	assert.Equal(t, ex, ldapResolveTypeSingle(nil))
+	assert.Equal(t, ex, stringify(nil))
 }
 
 func TestAKAttrsToLDAP_String(t *testing.T) {

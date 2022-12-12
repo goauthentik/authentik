@@ -9,7 +9,7 @@ import (
 	ldapConstants "goauthentik.io/internal/outpost/ldap/constants"
 )
 
-func ldapResolveTypeSingle(in interface{}) *string {
+func stringify(in interface{}) *string {
 	switch t := in.(type) {
 	case string:
 		return &t
@@ -51,13 +51,13 @@ func AKAttrsToLDAP(attrs map[string]interface{}) []*ldap.EntryAttribute {
 		case []interface{}:
 			entry.Values = make([]string, len(t))
 			for idx, v := range t {
-				v := ldapResolveTypeSingle(v)
+				v := stringify(v)
 				if v != nil {
 					entry.Values[idx] = *v
 				}
 			}
 		default:
-			v := ldapResolveTypeSingle(t)
+			v := stringify(t)
 			if v != nil {
 				entry.Values = []string{*v}
 			}

@@ -38,37 +38,34 @@ func parseFilterForUserSingle(req api.ApiCoreUsersListRequest, f *ber.Packet) (a
 	if v == nil {
 		return req, false
 	}
-	// Switch on type of the value, then check the key
-	switch vv := v.(type) {
-	case string:
-		switch k {
-		case "cn":
-			return req.Username(vv), false
-		case "name":
-		case "displayName":
-			return req.Name(vv), false
-		case "mail":
-			return req.Email(vv), false
-		case "member":
-			fallthrough
-		case "memberOf":
-			groupDN, err := goldap.ParseDN(vv)
-			if err != nil {
-				return req.GroupsByName([]string{vv}), false
-			}
-			name := groupDN.RDNs[0].Attributes[0].Value
-			// If the DN's first ou is virtual-groups, ignore this filter
-			if len(groupDN.RDNs) > 1 {
-				if groupDN.RDNs[1].Attributes[0].Value == constants.OUUsers || groupDN.RDNs[1].Attributes[0].Value == constants.OUVirtualGroups {
-					// Since we know we're not filtering anything, skip this request
-					return req, true
-				}
-			}
-			return req.GroupsByName([]string{name}), false
-		}
-	//TODO: Support int
-	default:
+	val := stringify(v)
+	if val == nil {
 		return req, false
+	}
+	switch k {
+	case "cn":
+		return req.Username(*val), false
+	case "name":
+	case "displayName":
+		return req.Name(*val), false
+	case "mail":
+		return req.Email(*val), false
+	case "member":
+		fallthrough
+	case "memberOf":
+		groupDN, err := goldap.ParseDN(*val)
+		if err != nil {
+			return req.GroupsByName([]string{*val}), false
+		}
+		name := groupDN.RDNs[0].Attributes[0].Value
+		// If the DN's first ou is virtual-groups, ignore this filter
+		if len(groupDN.RDNs) > 1 {
+			if groupDN.RDNs[1].Attributes[0].Value == constants.OUUsers || groupDN.RDNs[1].Attributes[0].Value == constants.OUVirtualGroups {
+				// Since we know we're not filtering anything, skip this request
+				return req, true
+			}
+		}
+		return req.GroupsByName([]string{name}), false
 	}
 	return req, false
 }

@@ -40,32 +40,30 @@ func parseFilterForGroupSingle(req api.ApiCoreGroupsListRequest, f *ber.Packet) 
 	if v == nil {
 		return req, false
 	}
-	// Switch on type of the value, then check the key
-	switch vv := v.(type) {
-	case string:
-		switch strings.ToLower(k.(string)) {
-		case "cn":
-			return req.Name(vv), false
-		case "member":
-			fallthrough
-		case "memberOf":
-			userDN, err := goldap.ParseDN(vv)
-			if err != nil {
-				return req.MembersByUsername([]string{vv}), false
-			}
-			username := userDN.RDNs[0].Attributes[0].Value
-			// If the DN's first ou is virtual-groups, ignore this filter
-			if len(userDN.RDNs) > 1 {
-				if strings.EqualFold(userDN.RDNs[1].Attributes[0].Value, constants.OUVirtualGroups) || strings.EqualFold(userDN.RDNs[1].Attributes[0].Value, constants.OUGroups) {
-					// Since we know we're not filtering anything, skip this request
-					return req, true
-				}
-			}
-			return req.MembersByUsername([]string{username}), false
-		}
-	//TODO: Support int
-	default:
+	val := stringify(v)
+	if val == nil {
 		return req, false
+	}
+	// Check key
+	switch strings.ToLower(k.(string)) {
+	case "cn":
+		return req.Name(*val), false
+	case "member":
+		fallthrough
+	case "memberOf":
+		userDN, err := goldap.ParseDN(*val)
+		if err != nil {
+			return req.MembersByUsername([]string{*val}), false
+		}
+		username := userDN.RDNs[0].Attributes[0].Value
+		// If the DN's first ou is virtual-groups, ignore this filter
+		if len(userDN.RDNs) > 1 {
+			if strings.EqualFold(userDN.RDNs[1].Attributes[0].Value, constants.OUVirtualGroups) || strings.EqualFold(userDN.RDNs[1].Attributes[0].Value, constants.OUGroups) {
+				// Since we know we're not filtering anything, skip this request
+				return req, true
+			}
+		}
+		return req.MembersByUsername([]string{username}), false
 	}
 	return req, false
 }
