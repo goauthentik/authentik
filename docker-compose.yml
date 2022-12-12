@@ -41,7 +41,6 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-      # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
@@ -61,15 +60,17 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-      # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
-    # This is optional, and can be removed. If you remove this, the following will happen
-    # - The permissions for the /media folders aren't fixed, so make sure they are 1000:1000
-    # - The docker socket can't be accessed anymore
+    # `user: root` and the docker socket volume are optional.
+    # See more for the docker socket integration here:
+    # https://goauthentik.io/docs/outposts/integrations/docker
+    # Removing `user: root` also prevents the worker from fixing the permissions
+    # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
+    # (1000:1000 by default)
     user: root
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./media:/media
       - ./certs:/certs
-      - /var/run/docker.sock:/var/run/docker.sock
       - ./custom-templates:/templates
       - geoip:/geoip
     env_file:
