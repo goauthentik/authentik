@@ -73,7 +73,9 @@ class UserWriteStageView(StageView):
         """Update `user` with data from plan context
 
         Only simple attributes are updated, nothing which requires a foreign key or m2m"""
-        data = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
+        data: dict = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
+        # This is always sent back but not written to the user
+        data.pop("component", None)
         for key, value in data.items():
             setter_name = f"set_{key}"
             # Check if user has a setter for this key, like set_password
