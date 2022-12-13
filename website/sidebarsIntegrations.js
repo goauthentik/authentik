@@ -78,6 +78,7 @@ module.exports = {
                         "services/truecommand/index",
                         "services/sssd/index",
                         "services/veeam-enterprise-manager/index",
+                        "services/skyhigh/index",
                     ],
                 },
                 {
