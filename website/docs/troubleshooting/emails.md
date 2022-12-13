@@ -2,6 +2,10 @@
 title: Troubleshooting Email sending
 ---
 
+:::info
+Some hosting providers block outgoing SMTP ports, in which case you'll have to host an SMTP relay on a different port with a different provider.
+:::
+
 To test if an email stage, or the global email settings are configured correctly, you can run the following command:
 
 ```
