@@ -30,7 +30,7 @@ In Wiki.js, navigate to the _Authentication_ section in the _Administration_ int
 Add a _Generic OpenID Connect / OAuth2_ strategy and note the _Callback URL / Redirect URI_ in the _Configuration Reference_ section at the bottom.
 
 ### Step 2
-    
+
 In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
 
 -   Redirect URI: The _Callback URL / Redirect URI_ you noted from the previous step.
