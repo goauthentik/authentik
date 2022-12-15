@@ -194,11 +194,9 @@ pip-selfcheck.json
 /static/
 local.env.yml
 
-# Selenium Screenshots
-selenium_screenshots/
-backups/
 media/
 *mmdb
 
 .idea/
 /gen-*/
+data/

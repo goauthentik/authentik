@@ -278,3 +278,11 @@ Requires authentik 2022.9
 Configure how many gunicorn threads a worker processes should have (see https://docs.gunicorn.org/en/stable/design.html).
 
 Defaults to 4.
+
+## Custom python settings
+
+To modify additional settings further than the options above allow, you can create a custom python file and mount it to `/data/user_settings.py`. This file will be loaded on startup by both the server and the worker. All default settings are [here](https://github.com/goauthentik/authentik/blob/main/authentik/root/settings.py)
+
+:::warning
+Using these custom settings is not supported and can prevent your authentik instance from starting. Use with caution.
+:::

@@ -2,8 +2,8 @@
 import json
 import os
 from functools import lru_cache, wraps
-from os import environ, makedirs
-from time import sleep, time
+from os import environ
+from time import sleep
 from typing import Any, Callable, Optional
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -111,11 +111,6 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 
     def tearDown(self):
-        if "TF_BUILD" in environ:
-            makedirs("selenium_screenshots/", exist_ok=True)
-            screenshot_file = f"selenium_screenshots/{self.__class__.__name__}_{time()}.png"
-            self.driver.save_screenshot(screenshot_file)
-            self.logger.warning("Saved screenshot", file=screenshot_file)
         self.logger.debug("--------browser logs")
         for line in self.driver.get_log("browser"):
             self.logger.debug(line["message"], source=line["source"], level=line["level"])

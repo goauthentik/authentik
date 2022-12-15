@@ -452,22 +452,29 @@ _DISALLOWED_ITEMS = [
     "AUTHENTICATION_BACKENDS",
     "CELERY_BEAT_SCHEDULE",
 ]
-# Load subapps's INSTALLED_APPS
+
+
+def _update_settings(app_path: str):
+    try:
+        settings_module = importlib.import_module(app_path)
+        CONFIG.log("debug", "Loaded app settings", path=app_path)
+        INSTALLED_APPS.extend(getattr(settings_module, "INSTALLED_APPS", []))
+        MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
+        AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
+        CELERY_BEAT_SCHEDULE.update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
+        for _attr in dir(settings_module):
+            if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
+                globals()[_attr] = getattr(settings_module, _attr)
+    except ImportError:
+        pass
+
+
+# Load subapps's settings
 for _app in INSTALLED_APPS:
-    if _app.startswith("authentik"):
-        if "apps" in _app:
-            _app = ".".join(_app.split(".")[:-2])
-        try:
-            app_settings = importlib.import_module(f"{_app}.settings")
-            INSTALLED_APPS.extend(getattr(app_settings, "INSTALLED_APPS", []))
-            MIDDLEWARE.extend(getattr(app_settings, "MIDDLEWARE", []))
-            AUTHENTICATION_BACKENDS.extend(getattr(app_settings, "AUTHENTICATION_BACKENDS", []))
-            CELERY_BEAT_SCHEDULE.update(getattr(app_settings, "CELERY_BEAT_SCHEDULE", {}))
-            for _attr in dir(app_settings):
-                if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
-                    globals()[_attr] = getattr(app_settings, _attr)
-        except ImportError:
-            pass
+    if not _app.startswith("authentik"):
+        continue
+    _update_settings(f"{_app}.settings")
+_update_settings("data.user_settings")
 
 if DEBUG:
     CELERY_TASK_ALWAYS_EAGER = True
