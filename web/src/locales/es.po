@@ -165,6 +165,10 @@ msgstr "Solicitudes de API"
 msgid "API Token (can be used to access the API programmatically)"
 msgstr "Token de API (se puede usar para acceder a la API mediante programación)"
 
+#: src/admin/stages/captcha/CaptchaStageForm.ts
+msgid "API URL"
+msgstr ""
+
 #: src/elements/messages/Middleware.ts
 msgid "API request failed"
 msgstr "Solicitud de API fallida"
@@ -325,9 +329,9 @@ msgstr "Interfaz de administración"
 msgid "Advanced protocol settings"
 msgstr "Configuraciones de protocolo avanzada"
 
-#: src/admin/policies/password/PasswordPolicyForm.ts
-#~ msgid "Advanced settings"
-#~ msgstr "Configuraciones avanzadas"
+#: src/admin/stages/captcha/CaptchaStageForm.ts
+msgid "Advanced settings"
+msgstr "Configuraciones avanzadas"
 
 #: src/admin/events/EventInfo.ts
 msgid "Affected model:"
@@ -3008,6 +3012,10 @@ msgstr "Emisor"
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Issuer mode"
 msgstr "Modo emisor"
+
+#: src/admin/stages/captcha/CaptchaStageForm.ts
+msgid "JS URL"
+msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "JSON Web Key URL. Keys from the URL will be used to validate JWTs from this source."
@@ -6072,8 +6080,12 @@ msgid "This stage can be included in enrollment flows to accept invitations."
 msgstr "Esta etapa se puede incluir en los flujos de inscripción para aceptar invitaciones."
 
 #: src/admin/stages/captcha/CaptchaStageForm.ts
-msgid "This stage checks the user's current session against the Google reCaptcha service."
-msgstr "En esta etapa, se comprueba la sesión actual del usuario con el servicio Google reCAPTCHA."
+msgid "This stage checks the user's current session against the Google reCaptcha (or compatible) service."
+msgstr ""
+
+#: src/admin/stages/captcha/CaptchaStageForm.ts
+#~ msgid "This stage checks the user's current session against the Google reCaptcha service."
+#~ msgstr "En esta etapa, se comprueba la sesión actual del usuario con el servicio Google reCAPTCHA."
 
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Threshold"
@@ -6299,6 +6311,10 @@ msgstr "URL a la que se envía la solicitud de inicio de sesión inicial."
 msgid "URL the user is redirect to to consent the authorization."
 msgstr "URL a la que se redirige al usuario para dar su consentimiento a la autorización."
 
+#: src/admin/stages/captcha/CaptchaStageForm.ts
+msgid "URL to fetch JavaScript from, defaults to recaptcha. Can be replaced with any compatible alternative."
+msgstr ""
+
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "URL used by authentik to get user information."
 msgstr "URL utilizada por authentik para obtener información del usuario."
@@ -6310,6 +6326,10 @@ msgstr "URL utilizada por authentik para recuperar tokens."
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr "URL utilizada para solicitar el token inicial. Esta URL solo es necesaria para OAuth 1."
+
+#: src/admin/stages/captcha/CaptchaStageForm.ts
+msgid "URL used to validate captcha response, defaults to recaptcha. Can be replaced with any compatible alternative."
+msgstr ""
 
 #: src/admin/applications/wizard/link/TypeLinkApplicationWizardPage.ts
 msgid "URL which will be opened when a user clicks on the application."

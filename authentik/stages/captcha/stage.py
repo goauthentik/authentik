@@ -20,6 +20,7 @@ class CaptchaChallenge(WithUserInfoChallenge):
     """Site public key"""
 
     site_key = CharField()
+    js_url = CharField(read_only=True)
     component = CharField(default="ak-stage-captcha")
 
 
@@ -34,7 +35,7 @@ class CaptchaChallengeResponse(ChallengeResponse):
         stage: CaptchaStage = self.stage.executor.current_stage
         try:
             response = get_http_session().post(
-                "https://www.google.com/recaptcha/api/siteverify",
+                stage.api_url,
                 headers={
                     "Content-type": "application/x-www-form-urlencoded",
                 },
@@ -61,6 +62,7 @@ class CaptchaStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return CaptchaChallenge(
             data={
+                "js_url": self.executor.current_stage.js_url,
                 "type": ChallengeTypes.NATIVE.value,
                 "site_key": self.executor.current_stage.public_key,
             }

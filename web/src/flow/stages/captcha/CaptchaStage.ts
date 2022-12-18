@@ -28,7 +28,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     firstUpdated(): void {
         const script = document.createElement("script");
-        script.src = "https://www.google.com/recaptcha/api.js";
+        script.src = this.challenge.jsUrl;
         script.async = true;
         script.defer = true;
         const captchaContainer = document.createElement("div");

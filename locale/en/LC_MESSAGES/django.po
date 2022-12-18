@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-12 16:22+0000\n"
+"POT-Creation-Date: 2022-12-15 15:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1555,21 +1555,19 @@ msgstr ""
 msgid "WebAuthn Devices"
 msgstr ""
 
+#: authentik/stages/captcha/models.py:14
+msgid "Public key, acquired your captcha Provider."
+msgstr ""
+
 #: authentik/stages/captcha/models.py:15
-msgid ""
-"Public key, acquired from https://www.google.com/recaptcha/intro/v3.html"
+msgid "Private key, acquired your captcha Provider."
 msgstr ""
 
-#: authentik/stages/captcha/models.py:18
-msgid ""
-"Private key, acquired from https://www.google.com/recaptcha/intro/v3.html"
-msgstr ""
-
-#: authentik/stages/captcha/models.py:39
+#: authentik/stages/captcha/models.py:38
 msgid "Captcha Stage"
 msgstr ""
 
-#: authentik/stages/captcha/models.py:40
+#: authentik/stages/captcha/models.py:39
 msgid "Captcha Stages"
 msgstr ""
 
@@ -1897,7 +1895,7 @@ msgstr ""
 msgid "No Pending user to login."
 msgstr ""
 
-#: authentik/stages/user_login/stage.py:55
+#: authentik/stages/user_login/stage.py:58
 msgid "Successfully logged in!"
 msgstr ""
 
