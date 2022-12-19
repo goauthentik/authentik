@@ -25,7 +25,7 @@ require (
 	github.com/quasoft/memstore v0.0.0-20191010062613-2bce066d2b0b
 	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.1
-	goauthentik.io/api/v3 v3.2022113.1
+	goauthentik.io/api/v3 v3.2022113.2
 	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f
 	gopkg.in/boj/redistore.v1 v1.0.0-20160128113310-fc113767cd6b
