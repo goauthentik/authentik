@@ -36,6 +36,7 @@ export class EventInfo extends AKElement {
                 code {
                     display: block;
                     white-space: pre-wrap;
+                    word-break: break-all;
                 }
                 .pf-l-flex {
                     justify-content: space-between;
