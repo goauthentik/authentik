@@ -6,7 +6,7 @@ entries:
     designation: invalidation
     name: Logout
     title: Default Invalidation Flow
-    authentication: require_authenticated
+    authentication: none
   identifiers:
     slug: default-invalidation-flow
   model: authentik_flows.flow
