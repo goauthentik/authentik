@@ -35,7 +35,7 @@ export class Diagram extends AKElement {
         const matcher = window.matchMedia("(prefers-color-scheme: light)");
         const handler = (ev?: MediaQueryListEvent) => {
             mermaid.initialize({
-                logLevel: "error",
+                logLevel: 3,
                 startOnLoad: false,
                 theme: ev?.matches || matcher.matches ? "default" : "dark",
                 flowchart: {

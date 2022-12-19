@@ -1,6 +1,7 @@
 import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
 import "@goauthentik/admin/applications/ApplicationForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
+import { ProviderViewPage } from "@goauthentik/admin/providers/ProviderViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -122,8 +123,13 @@ export class ApplicationViewPage extends AKElement {
                                           <dd class="pf-c-description-list__description">
                                               <div class="pf-c-description-list__text">
                                                   <a
-                                                      href="#/core/providers/${this.application
-                                                          .providerObj?.pk}"
+                                                      href=${`#/core/applications/${
+                                                          this.application.slug
+                                                      };${encodeURIComponent(
+                                                          JSON.stringify({
+                                                              page: "page-provider",
+                                                          }),
+                                                      )}`}
                                                   >
                                                       ${this.application.providerObj?.name}
                                                       (${this.application.providerObj?.verboseName})
@@ -247,6 +253,7 @@ export class ApplicationViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            ${this.renderProviderPage()}
             <section
                 slot="page-policy-bindings"
                 data-tab-title="${t`Policy / Group / User Bindings`}"
@@ -261,5 +268,20 @@ export class ApplicationViewPage extends AKElement {
                 </div>
             </section>
         </ak-tabs>`;
+    }
+
+    renderProviderPage(): TemplateResult {
+        if (!this.application || !this.application.providerObj) {
+            return html``;
+        }
+        const page = new ProviderViewPage();
+        page.provider = this.application.providerObj;
+        return html` <section
+            slot="page-provider"
+            data-tab-title="${t`Provider`}"
+            class="pf-c-page__main-section pf-m-no-padding"
+        >
+            ${page.renderProvider()}
+        </section>`;
     }
 }
