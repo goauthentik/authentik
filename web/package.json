@@ -70,7 +70,7 @@
         "@lingui/core": "^3.15.0",
         "@lingui/detect-locale": "^3.15.0",
         "@lingui/macro": "^3.15.0",
-        "@patternfly/patternfly": "^4.221.2",
+        "@patternfly/patternfly": "^4.222.4",
         "@polymer/iron-form": "^3.0.1",
         "@polymer/paper-input": "^3.2.1",
         "@rollup/plugin-babel": "^6.0.3",
