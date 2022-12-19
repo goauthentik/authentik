@@ -27,7 +27,6 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
                 /NS_ERROR_FAILURE/gi,
             ],
             release: `authentik@${VERSION}`,
-            tunnel: "/api/v3/sentry/",
             integrations: [
                 new Integrations.BrowserTracing({
                     tracingOrigins: [window.location.host, "localhost"],

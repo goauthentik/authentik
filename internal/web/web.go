@@ -47,13 +47,8 @@ func NewWebServer(g *gounicorn.GoUnicorn) *WebServer {
 		p:   g,
 	}
 	ws.configureStatic()
-	ws.configureRoutes()
 	ws.configureProxy()
 	return ws
-}
-
-func (ws *WebServer) configureRoutes() {
-	ws.m.Path("/api/v3/sentry/").HandlerFunc(ws.APISentryProxy())
 }
 
 func (ws *WebServer) Start() {
