@@ -57,7 +57,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 "GF_AUTH_GENERIC_OAUTH_API_URL": (self.url("authentik_providers_oauth2:userinfo")),
                 "GF_AUTH_SIGNOUT_REDIRECT_URL": (
                     self.url(
-                        "authentik_core:if-session-end",
+                        "authentik_providers_oauth2:end-session",
                         application_slug=self.app_slug,
                     )
                 ),

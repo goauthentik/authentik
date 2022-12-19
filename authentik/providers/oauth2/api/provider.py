@@ -117,7 +117,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
             )
             data["logout"] = request.build_absolute_uri(
                 reverse(
-                    "authentik_core:if-session-end",
+                    "authentik_providers_oauth2:end-session",
                     kwargs={"application_slug": provider.application.slug},
                 )
             )
