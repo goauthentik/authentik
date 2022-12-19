@@ -100,7 +100,7 @@
         "eslint": "^8.30.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.6",
-        "eslint-plugin-lit": "^1.7.1",
+        "eslint-plugin-lit": "^1.7.2",
         "fuse.js": "^6.6.2",
         "lit": "^2.5.0",
         "mermaid": "^9.3.0",
