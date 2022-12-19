@@ -74,7 +74,7 @@
         "@polymer/iron-form": "^3.0.1",
         "@polymer/paper-input": "^3.2.1",
         "@rollup/plugin-babel": "^6.0.3",
-        "@rollup/plugin-commonjs": "^23.0.5",
+        "@rollup/plugin-commonjs": "^24.0.0",
         "@rollup/plugin-node-resolve": "^15.0.1",
         "@rollup/plugin-replace": "^5.0.1",
         "@rollup/plugin-typescript": "^10.0.1",
