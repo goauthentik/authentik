@@ -40,7 +40,7 @@ export class Markdown extends AKElement {
         const admonitionStart = /:::(\w+)<br\s\/>/gm;
         const admonitionEnd = /:::/gm;
         return input
-            .replaceAll(admonitionStart, "<ak-alert level=\"$1\">")
+            .replaceAll(admonitionStart, "<ak-alert level='$1'>")
             .replaceAll(admonitionEnd, "</ak-alert>");
     }
 
