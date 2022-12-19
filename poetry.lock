@@ -702,7 +702,7 @@ ssh = ["paramiko (>=2.4.3)"]
 
 [[package]]
 name = "drf-spectacular"
-version = "0.25.0"
+version = "0.25.1"
 description = "Sane and flexible OpenAPI 3 schema generation for Django REST framework"
 category = "main"
 optional = false
@@ -2612,8 +2612,8 @@ docker = [
     {file = "docker-6.0.1.tar.gz", hash = "sha256:896c4282e5c7af5c45e8b683b0b0c33932974fe6e50fc6906a0a83616ab3da97"},
 ]
 drf-spectacular = [
-    {file = "drf-spectacular-0.25.0.tar.gz", hash = "sha256:5dbda8112226e7b72e7b8039eefc955bd8f8fa429efca5407d402b0382cd1ae3"},
-    {file = "drf_spectacular-0.25.0-py3-none-any.whl", hash = "sha256:43251ffd4c0af9302fa57af9879986ed2796933f51cd392d1331dcceb3152631"},
+    {file = "drf-spectacular-0.25.1.tar.gz", hash = "sha256:789696f9845ef2397c52f66154aec6d96411baf6aa09a5d40c5f0b0e99f6b3d8"},
+    {file = "drf_spectacular-0.25.1-py3-none-any.whl", hash = "sha256:d58684e702f5ad436c5bd1735d46df0e123e64de883092d38f1debb9fa4a03c9"},
 ]
 dumb-init = [
     {file = "dumb-init-1.2.5.post1.tar.gz", hash = "sha256:6510538a975e0de10658b0210ec2ad62dc3617543af5c6fbd29a3af111eae981"},
