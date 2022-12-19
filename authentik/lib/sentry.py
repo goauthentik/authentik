@@ -66,6 +66,9 @@ def sentry_init(**sentry_init_kwargs):
     kwargs = {
         "environment": sentry_env,
         "send_default_pii": CONFIG.y_bool("error_reporting.send_pii", False),
+        "_experiments": {
+            "profiles_sample_rate": float(CONFIG.y("error_reporting.sample_rate", 0.1)),
+        },
     }
     kwargs.update(**sentry_init_kwargs)
     # pylint: disable=abstract-class-instantiated
