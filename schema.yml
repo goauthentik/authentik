@@ -14663,6 +14663,36 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /providers/oauth2/{id}/preview_user/:
+    get:
+      operationId: providers_oauth2_preview_user_retrieve
+      description: Preview user data for provider
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this OAuth2/OpenID Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyMappingPreview'
+          description: ''
+        '400':
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /providers/oauth2/{id}/setup_urls/:
     get:
       operationId: providers_oauth2_setup_urls_retrieve
@@ -15418,6 +15448,36 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
           description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/saml/{id}/preview_user/:
+    get:
+      operationId: providers_saml_preview_user_retrieve
+      description: Preview user data for provider
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SAML Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyMappingPreview'
+          description: ''
+        '400':
+          description: Bad request
         '403':
           content:
             application/json:
@@ -35719,6 +35779,17 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    PropertyMappingPreview:
+      type: object
+      description: Preview how the current user is mapped via the property mappings
+        selected in a provider
+      properties:
+        preview:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+      required:
+      - preview
     PropertyMappingTestResult:
       type: object
       description: Result of a Property-mapping test
@@ -36455,6 +36526,8 @@ components:
           minLength: 1
         authorization_flow:
           type: string
+          minLength: 1
+          description: Visible in the URL.
         file:
           type: string
           format: binary

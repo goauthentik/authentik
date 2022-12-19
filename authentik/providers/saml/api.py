@@ -31,12 +31,14 @@ from authentik.api.decorators import permission_required
 from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
+from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
+from authentik.providers.saml.processors.request_parser import AuthNRequest
 from authentik.sources.saml.processors.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
 
 LOGGER = get_logger()
@@ -235,6 +237,32 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                 _("Failed to import Metadata: %(message)s" % {"message": str(exc)}),
             )
         return Response(status=204)
+
+    @permission_required(
+        "authentik_providers_saml.view_samlprovider",
+    )
+    @extend_schema(
+        responses={
+            200: PropertyMappingPreviewSerializer(),
+            400: OpenApiResponse(description="Bad request"),
+        },
+    )
+    @action(detail=True, methods=["GET"])
+    # pylint: disable=invalid-name, unused-argument
+    def preview_user(self, request: Request, pk: int) -> Response:
+        """Preview user data for provider"""
+        provider: SAMLProvider = self.get_object()
+        processor = AssertionProcessor(provider, request._request, AuthNRequest())
+        attributes = processor.get_attributes()
+        data = []
+        for attribute in attributes:
+            item = {"Value": []}
+            item.update(attribute.attrib)
+            for value in attribute:
+                item["Value"].append(value.text)
+            data.append(item)
+        serializer = PropertyMappingPreviewSerializer(instance={"preview": data})
+        return Response(serializer.data)
 
 
 class SAMLPropertyMappingSerializer(PropertyMappingSerializer):

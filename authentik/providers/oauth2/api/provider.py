@@ -8,11 +8,13 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.decorators import permission_required
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
-from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.models import OAuth2Provider, RefreshToken, ScopeMapping
+from authentik.providers.oauth2.views.userinfo import UserInfoView
 
 
 class OAuth2ProviderSerializer(ProviderSerializer):
@@ -128,3 +130,27 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
             pass
         return Response(data)
+
+    @permission_required(
+        "authentik_providers_oauth2.view_oauth2provider",
+    )
+    @extend_schema(
+        responses={
+            200: PropertyMappingPreviewSerializer(),
+            400: OpenApiResponse(description="Bad request"),
+        },
+    )
+    @action(detail=True, methods=["GET"])
+    # pylint: disable=invalid-name, unused-argument
+    def preview_user(self, request: Request, pk: int) -> Response:
+        """Preview user data for provider"""
+        provider: OAuth2Provider = self.get_object()
+        temp_token = RefreshToken()
+        temp_token.scope = ScopeMapping.objects.filter(provider=provider).values_list(
+            "scope_name", flat=True
+        )
+        temp_token.provider = provider
+        temp_token.user = request.user
+        userinfo = UserInfoView(request=request._request).get_claims(temp_token)
+        serializer = PropertyMappingPreviewSerializer(instance={"preview": userinfo})
+        return Response(serializer.data)
