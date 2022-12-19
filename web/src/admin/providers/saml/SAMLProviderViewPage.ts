@@ -75,32 +75,59 @@ export class SAMLProviderViewPage extends AKElement {
     }
 
     async renderRelatedObjects(): Promise<TemplateResult> {
-        if (!this.provider?.signingKp) {
-            return Promise.resolve(html``);
+        const relatedObjects = [];
+        if (this.provider?.assignedApplicationName) {
+            relatedObjects.push(html`<div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${t`Metadata`}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <a
+                            class="pf-c-button pf-m-primary"
+                            target="_blank"
+                            href=${ifDefined(this.provider?.urlDownloadMetadata)}
+                        >
+                            ${t`Download`}
+                        </a>
+                        <ak-action-button
+                            class="pf-m-secondary"
+                            .apiRequest=${() => {
+                                return navigator.clipboard.writeText(
+                                    this.provider?.urlDownloadMetadata || "",
+                                );
+                            }}
+                        >
+                            ${t`Copy download URL`}
+                        </ak-action-button>
+                    </div>
+                </dd>
+            </div>`);
         }
-        const kp = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({
-            kpUuid: this.provider.signingKp,
-        });
+        if (this.provider?.signingKp) {
+            const kp = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({
+                kpUuid: this.provider.signingKp,
+            });
+            relatedObjects.push(html`<div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text"
+                        >${t`Download signing certificate`}</span
+                    >
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <a class="pf-c-button pf-m-primary" href=${kp.certificateDownloadUrl}
+                            >${t`Download`}</a
+                        >
+                    </div>
+                </dd>
+            </div>`);
+        }
         return html` <div class="pf-c-card pf-l-grid__item pf-m-12-col">
             <div class="pf-c-card__title">${t`Related objects`}</div>
             <div class="pf-c-card__body">
                 <dl class="pf-c-description-list pf-m-2-col">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text"
-                                >${t`Download signing certificate`}</span
-                            >
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <a
-                                    class="pf-c-button pf-m-primary"
-                                    href=${kp.certificateDownloadUrl}
-                                    >${t`Download`}</a
-                                >
-                            </div>
-                        </dd>
-                    </div>
+                    ${relatedObjects.length > 0 ? relatedObjects : html`-`}
                 </dl>
             </div>
         </div>`;
