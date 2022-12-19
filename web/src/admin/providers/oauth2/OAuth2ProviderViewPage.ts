@@ -259,7 +259,20 @@ export class OAuth2ProviderViewPage extends AKElement {
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                 >
                     <div class="pf-c-card__body">
-                        <ak-markdown .md=${MDProviderOAuth2}></ak-markdown>
+                        <ak-markdown
+                            .replacers=${[
+                                (input: string) => {
+                                    if (!this.provider) {
+                                        return input;
+                                    }
+                                    return input.replaceAll(
+                                        "&lt;application slug&gt;",
+                                        this.provider.assignedApplicationSlug,
+                                    );
+                                },
+                            ]}
+                            .md=${MDProviderOAuth2}
+                        ></ak-markdown>
                     </div>
                 </div>
             </div>`;

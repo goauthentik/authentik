@@ -13,7 +13,6 @@ import MDTraefikStandalone from "@goauthentik/docs/providers/proxy/_traefik_stan
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { PFColor } from "@goauthentik/elements/Label";
-import { MarkdownDocument } from "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
@@ -104,25 +103,6 @@ export class ProxyProviderViewPage extends AKElement {
         });
     }
 
-    renderConfigTemplate(markdown: MarkdownDocument): MarkdownDocument {
-        const extHost = new URL(this.provider?.externalHost || "http://a");
-        // See website/docs/providers/proxy/forward_auth.mdx
-        if (this.provider?.mode === ProxyMode.ForwardSingle) {
-            markdown.html = markdown.html
-                .replaceAll("authentik.company", window.location.hostname)
-                .replaceAll("outpost.company:9000", window.location.hostname)
-                .replaceAll("https://app.company", extHost.toString())
-                .replaceAll("app.company", extHost.hostname);
-        } else if (this.provider?.mode == ProxyMode.ForwardDomain) {
-            markdown.html = markdown.html
-                .replaceAll("authentik.company", window.location.hostname)
-                .replaceAll("outpost.company:9000", extHost.toString())
-                .replaceAll("https://app.company", extHost.toString())
-                .replaceAll("app.company", extHost.hostname);
-        }
-        return markdown;
-    }
-
     renderConfig(): TemplateResult {
         const serves = [
             {
@@ -154,6 +134,29 @@ export class ProxyProviderViewPage extends AKElement {
                 md: MDCaddyStandalone,
             },
         ];
+        const replacers = [
+            (input: string): string => {
+                if (!this.provider) {
+                    return input;
+                }
+                const extHost = new URL(this.provider.externalHost);
+                // See website/docs/providers/proxy/forward_auth.mdx
+                if (this.provider?.mode === ProxyMode.ForwardSingle) {
+                    return input
+                        .replaceAll("authentik.company", window.location.hostname)
+                        .replaceAll("outpost.company:9000", window.location.hostname)
+                        .replaceAll("https://app.company", extHost.toString())
+                        .replaceAll("app.company", extHost.hostname);
+                } else if (this.provider?.mode == ProxyMode.ForwardDomain) {
+                    return input
+                        .replaceAll("authentik.company", window.location.hostname)
+                        .replaceAll("outpost.company:9000", extHost.toString())
+                        .replaceAll("https://app.company", extHost.toString())
+                        .replaceAll("app.company", extHost.hostname);
+                }
+                return input;
+            },
+        ];
         return html`<ak-tabs pageIdentifier="proxy-setup">
             ${serves.map((server) => {
                 return html`<section
@@ -161,7 +164,7 @@ export class ProxyProviderViewPage extends AKElement {
                     data-tab-title="${server.label}"
                     class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
                 >
-                    <ak-markdown .md=${this.renderConfigTemplate(server.md)}></ak-markdown>
+                    <ak-markdown .replacers=${replacers} .md=${server.md}></ak-markdown>
                 </section>`;
             })}</ak-tabs
         >`;

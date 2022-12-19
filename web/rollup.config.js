@@ -3,6 +3,7 @@ import babel from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
+import { cwd } from "process";
 import copy from "rollup-plugin-copy";
 import cssimport from "rollup-plugin-cssimport";
 import { terser } from "rollup-plugin-terser";
@@ -82,6 +83,7 @@ export const defaultOptions = {
         }),
         replace({
             "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
+            "process.env.CWD": JSON.stringify(cwd()),
             "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
             "preventAssignment": true,
         }),
