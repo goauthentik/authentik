@@ -70,7 +70,7 @@ import Objects from "../expressions/_objects.md";
     -   `request.obj`: A Django Model instance. This is only set if the policy is ran against an object.
     -   `request.context`: A dictionary with dynamic data. This depends on the origin of the execution.
 
--   `geoip`: GeoIP object, which is added when GeoIP is enabled. See [GeoIP](https://geoip2.readthedocs.io/en/latest/#geoip2.models.City)
+-   `geoip`: GeoIP object, see [GeoIP](https://geoip2.readthedocs.io/en/latest/#geoip2.models.City)
 -   `ak_is_sso_flow`: Boolean which is true if request was initiated by authenticating through an external provider.
 -   `ak_client_ip`: Client's IP Address or 255.255.255.255 if no IP Address could be extracted. Can be [compared](#comparing-ip-addresses), for example
 

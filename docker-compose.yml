@@ -44,7 +44,6 @@ services:
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
-      - geoip:/geoip
     env_file:
       - .env
     ports:
@@ -72,16 +71,6 @@ services:
       - ./media:/media
       - ./certs:/certs
       - ./custom-templates:/templates
-      - geoip:/geoip
-    env_file:
-      - .env
-  geoipupdate:
-    image: "maxmindinc/geoipupdate:latest"
-    volumes:
-      - "geoip:/usr/share/GeoIP"
-    environment:
-      GEOIPUPDATE_EDITION_IDS: "GeoLite2-City"
-      GEOIPUPDATE_FREQUENCY: "8"
     env_file:
       - .env
 
@@ -89,6 +78,4 @@ volumes:
   database:
     driver: local
   redis:
-    driver: local
-  geoip:
     driver: local

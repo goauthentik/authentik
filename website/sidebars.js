@@ -34,6 +34,7 @@ module.exports = {
                 "core/applications",
                 "core/tenants",
                 "core/certificates",
+                "core/geoip",
             ],
         },
         {
@@ -217,13 +218,14 @@ module.exports = {
                 description: "Release notes for recent authentik versions",
             },
             items: [
+                "releases/v2022.12",
                 "releases/v2022.11",
                 "releases/v2022.10",
-                "releases/v2022.9",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/v2022.9",
                         "releases/v2022.8",
                         "releases/v2022.7",
                         "releases/v2022.6",

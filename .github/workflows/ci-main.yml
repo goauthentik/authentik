@@ -208,6 +208,9 @@ jobs:
       - name: Building Docker Image
         uses: docker/build-push-action@v3
         with:
+          secrets: |
+            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
+            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
             ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}

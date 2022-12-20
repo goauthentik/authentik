@@ -31,6 +31,9 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: ${{ github.event_name == 'release' }}
+          secrets:
+            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
+            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
           tags: |
             beryju/authentik:${{ steps.ev.outputs.version }},
             beryju/authentik:${{ steps.ev.outputs.versionFamily }},
@@ -39,7 +42,8 @@ jobs:
             ghcr.io/goauthentik/server:${{ steps.ev.outputs.versionFamily }},
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
-          context: .
+          build-args: |
+            VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost:
     runs-on: ubuntu-latest
     strategy:
@@ -84,6 +88,11 @@ jobs:
             ghcr.io/goauthentik/${{ matrix.type }}:latest
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
+          secrets: |
+            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
+            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
+          build-args: |
+            VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost-binary:
     timeout-minutes: 120
     runs-on: ubuntu-latest
