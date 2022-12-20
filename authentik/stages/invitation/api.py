@@ -8,6 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import is_dict
+from authentik.flows.api.flows import FlowSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.invitation.models import Invitation, InvitationStage
 
@@ -49,6 +50,7 @@ class InvitationSerializer(ModelSerializer):
 
     created_by = GroupMemberSerializer(read_only=True)
     fixed_data = JSONField(validators=[is_dict], required=False)
+    flow_obj = FlowSerializer(read_only=True, required=False, source="flow")
 
     class Meta:
 
@@ -60,6 +62,8 @@ class InvitationSerializer(ModelSerializer):
             "fixed_data",
             "created_by",
             "single_use",
+            "flow",
+            "flow_obj",
         ]
 
 
@@ -69,8 +73,8 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
     queryset = Invitation.objects.all()
     serializer_class = InvitationSerializer
     ordering = ["-expires"]
-    search_fields = ["name", "created_by__username", "expires"]
-    filterset_fields = ["name", "created_by__username", "expires"]
+    search_fields = ["name", "created_by__username", "expires", "flow__slug"]
+    filterset_fields = ["name", "created_by__username", "expires", "flow__slug"]
 
     def perform_create(self, serializer: InvitationSerializer):
         serializer.save(created_by=self.request.user)

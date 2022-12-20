@@ -114,7 +114,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         return html` <td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-stage-invitation-list-link
-                        invitation=${item.pk}
+                        .invitation=${item}
                     ></ak-stage-invitation-list-link>
                 </div>
             </td>
