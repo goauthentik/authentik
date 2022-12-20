@@ -46,7 +46,21 @@ COPY ./go.sum /work/go.sum
 
 RUN go build -o /work/authentik ./cmd/server/
 
-# Stage 5: Run
+# Stage 5: MaxMind GeoIP
+FROM docker.io/maxmindinc/geoipupdate:v4.10 as geoip
+
+ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City"
+
+RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
+    --mount=type=secret,id=GEOIPUPDATE_LICENSE_KEY \
+    mkdir -p /usr/share/GeoIP && \
+    /bin/sh -c "\
+        export GEOIPUPDATE_ACCOUNT_ID=$(cat /run/secrets/GEOIPUPDATE_ACCOUNT_ID); \
+        export GEOIPUPDATE_LICENSE_KEY=$(cat /run/secrets/GEOIPUPDATE_LICENSE_KEY); \
+        /usr/bin/entry.sh || exit 0 \
+    "
+
+# Stage 6: Run
 FROM docker.io/python:3.11.1-slim-bullseye AS final-image
 
 LABEL org.opencontainers.image.url https://goauthentik.io
@@ -60,6 +74,7 @@ ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 COPY --from=poetry-locker /work/requirements.txt /
 COPY --from=poetry-locker /work/requirements-dev.txt /
+COPY --from=geoip /usr/share/GeoIP /geoip
 
 RUN apt-get update && \
     # Required for installing pip packages
