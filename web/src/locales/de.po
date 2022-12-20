@@ -956,7 +956,10 @@ msgstr "Ändern Sie Ihr Passwort"
 #: src/admin/applications/ApplicationViewPage.ts
 #: src/admin/flows/FlowViewPage.ts
 #: src/admin/groups/GroupViewPage.ts
-#: src/admin/providers/ProviderViewPage.ts
+#: src/admin/providers/ldap/LDAPProviderViewPage.ts
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 #: src/admin/sources/plex/PlexSourceViewPage.ts
@@ -1357,6 +1360,7 @@ msgstr "Kopieren"
 #~ msgid "Copy Key"
 #~ msgstr "Kopiere Schlüssel"
 
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
 msgid "Copy download URL"
 msgstr "Download URL kopieren"
@@ -1896,7 +1900,6 @@ msgid "Download Private key"
 msgstr "Privaten Schlüssel herunterladen"
 
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
 msgid "Download signing certificate"
 msgstr "Signierzertifikat herunterladen"
 
@@ -2170,6 +2173,14 @@ msgstr "Ereignisse"
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 msgid "Everything is ok."
 msgstr "Alles funktioniert."
+
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+msgid "Example JWT payload (for currently authenticated user)"
+msgstr ""
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "Example SAML attributes"
+msgstr ""
 
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
@@ -3472,6 +3483,8 @@ msgstr "Nachrichten"
 
 #: src/admin/applications/wizard/saml/TypeSAMLImportApplicationWizardPage.ts
 #: src/admin/providers/saml/SAMLProviderImportForm.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/sources/saml/SAMLSourceViewPage.ts
 msgid "Metadata"
 msgstr "Metadaten"
@@ -3648,6 +3661,10 @@ msgstr "NameID Richtlinie"
 #: src/admin/providers/saml/SAMLProviderForm.ts
 msgid "NameID Property Mapping"
 msgstr "NameID Eigenschaft"
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "NameID attribute"
+msgstr ""
 
 #: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
 msgid "Native application"
@@ -4142,7 +4159,10 @@ msgstr "Outposts sind Installationen von authentik-Komponenten, die Unterstützu
 #: src/admin/AdminInterface.ts
 #: src/admin/applications/ApplicationViewPage.ts
 #: src/admin/groups/GroupViewPage.ts
-#: src/admin/providers/ProviderViewPage.ts
+#: src/admin/providers/ldap/LDAPProviderViewPage.ts
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 #: src/admin/sources/plex/PlexSourceViewPage.ts
@@ -4377,6 +4397,11 @@ msgstr "Erstellt durch Authentik"
 #: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Pre-authentication flow"
 msgstr "Vor-Authentifizierungs Ablauf"
+
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "Preview"
+msgstr ""
 
 #: src/admin/crypto/CertificateKeyPairForm.ts
 #: src/admin/stages/captcha/CaptchaStageForm.ts
@@ -6970,7 +6995,6 @@ msgstr "Warnung: Keine Einladungsphase ist an einen Ablauf gebunden. Einladungen
 msgid "Warning: Policy is not assigned."
 msgstr "Warnung: Keine Richtlinie zugewiesen"
 
-#: src/admin/providers/ldap/LDAPProviderViewPage.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts

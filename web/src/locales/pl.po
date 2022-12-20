@@ -938,7 +938,10 @@ msgstr "Zmień swoje hasło"
 #: src/admin/applications/ApplicationViewPage.ts
 #: src/admin/flows/FlowViewPage.ts
 #: src/admin/groups/GroupViewPage.ts
-#: src/admin/providers/ProviderViewPage.ts
+#: src/admin/providers/ldap/LDAPProviderViewPage.ts
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 #: src/admin/sources/plex/PlexSourceViewPage.ts
@@ -1339,6 +1342,7 @@ msgstr "Kopiuj"
 #~ msgid "Copy Key"
 #~ msgstr "Kopiuj klucz"
 
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
 msgid "Copy download URL"
 msgstr "Skopiuj URL pobierania"
@@ -1878,7 +1882,6 @@ msgid "Download Private key"
 msgstr "Pobierz klucz prywatny"
 
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
 msgid "Download signing certificate"
 msgstr "Pobierz certyfikat podpisywania"
 
@@ -2152,6 +2155,14 @@ msgstr "Zdarzenia"
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 msgid "Everything is ok."
 msgstr "Wszystko w porządku."
+
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+msgid "Example JWT payload (for currently authenticated user)"
+msgstr ""
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "Example SAML attributes"
+msgstr ""
 
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
@@ -3456,6 +3467,8 @@ msgstr "Wiadomości"
 
 #: src/admin/applications/wizard/saml/TypeSAMLImportApplicationWizardPage.ts
 #: src/admin/providers/saml/SAMLProviderImportForm.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/sources/saml/SAMLSourceViewPage.ts
 msgid "Metadata"
 msgstr "Metadane"
@@ -3632,6 +3645,10 @@ msgstr "Zasada NameID"
 #: src/admin/providers/saml/SAMLProviderForm.ts
 msgid "NameID Property Mapping"
 msgstr "Mapowanie właściwości NameID"
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "NameID attribute"
+msgstr ""
 
 #: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
 msgid "Native application"
@@ -4126,7 +4143,10 @@ msgstr "Placówki (Outposts) to wdrożenia komponentów uwierzytelniających do 
 #: src/admin/AdminInterface.ts
 #: src/admin/applications/ApplicationViewPage.ts
 #: src/admin/groups/GroupViewPage.ts
-#: src/admin/providers/ProviderViewPage.ts
+#: src/admin/providers/ldap/LDAPProviderViewPage.ts
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 #: src/admin/sources/plex/PlexSourceViewPage.ts
@@ -4363,6 +4383,11 @@ msgstr "Napędzane przez authentik"
 #: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Pre-authentication flow"
 msgstr "Przepływ wstępnego uwierzytelniania"
+
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "Preview"
+msgstr ""
 
 #: src/admin/crypto/CertificateKeyPairForm.ts
 #: src/admin/stages/captcha/CaptchaStageForm.ts
@@ -6956,7 +6981,6 @@ msgstr "Ostrzeżenie: żaden etap zaproszenia nie jest powiązany z żadnym prze
 msgid "Warning: Policy is not assigned."
 msgstr "Ostrzeżenie: zasada nie jest przypisana."
 
-#: src/admin/providers/ldap/LDAPProviderViewPage.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts

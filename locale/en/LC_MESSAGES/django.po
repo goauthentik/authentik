@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-15 15:01+0000\n"
+"POT-Creation-Date: 2022-12-20 23:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -988,11 +988,11 @@ msgstr ""
 msgid "Proxy Providers"
 msgstr ""
 
-#: authentik/providers/saml/api.py:225
+#: authentik/providers/saml/api.py:227
 msgid "Invalid XML Syntax"
 msgstr ""
 
-#: authentik/providers/saml/api.py:235
+#: authentik/providers/saml/api.py:237
 #, python-format
 msgid "Failed to import Metadata: %(message)s"
 msgstr ""
