@@ -49,22 +49,6 @@ AUTHENTIK_EMAIL__TIMEOUT=10
 AUTHENTIK_EMAIL__FROM=authentik@localhost
 ```
 
-## GeoIP configuration (optional)
-
-authentik can use a MaxMind-formatted GeoIP Database to extract location data from IPs. You can then use this location data in policies, and location data is saved in events.
-
-To configure GeoIP, sign up for a free MaxMind account [here](https://www.maxmind.com/en/geolite2/signup).
-
-After you have your account ID and license key, add the following block to your `.env` file:
-
-```shell
-GEOIPUPDATE_ACCOUNT_ID=*your account ID*
-GEOIPUPDATE_LICENSE_KEY=* your license key*
-AUTHENTIK_AUTHENTIK__GEOIP=/geoip/GeoLite2-City.mmdb
-```
-
-The GeoIP database will automatically be updated every 8 hours.
-
 ## Running on Port 80/443
 
 By default, authentik listens on port 9000 for HTTP and 9443 for HTTPS. To change this, you can set the following variables in `.env`:
