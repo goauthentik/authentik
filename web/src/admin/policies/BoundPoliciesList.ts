@@ -42,9 +42,9 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     columns(): TableColumn[] {
         return [
+            new TableColumn(t`Order`, "order"),
             new TableColumn(t`Policy / User / Group`),
             new TableColumn(t`Enabled`, "enabled"),
-            new TableColumn(t`Order`, "order"),
             new TableColumn(t`Timeout`, "timeout"),
             new TableColumn(t`Actions`),
         ];
@@ -137,11 +137,11 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     row(item: PolicyBinding): TemplateResult[] {
         return [
+            html`${item.order}`,
             html`${this.getPolicyUserGroupRow(item)}`,
             html` <ak-label color=${item.enabled ? PFColor.Green : PFColor.Orange}>
                 ${item.enabled ? t`Yes` : t`No`}
             </ak-label>`,
-            html`${item.order}`,
             html`${item.timeout}`,
             html` ${this.getObjectEditButton(item)}
                 <ak-forms-modal size=${PFSize.Medium}>
