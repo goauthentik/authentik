@@ -33,10 +33,10 @@ entries:
       # a special !Condition tag. See the documentattion for custom tags for more
       # information.
       conditions:
-      - true
-      - text
-      - 2
-      - !Condition [AND, ...] # See custom tags section
+          - true
+          - text
+          - 2
+          - !Condition [AND, ...] # See custom tags section
       # Key:value filters to uniquely identify this object (required)
       identifiers:
           slug: initial-setup
