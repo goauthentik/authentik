@@ -80,13 +80,33 @@ export class LDAPProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html`${
-            this.provider?.assignedApplicationName
-                ? html``
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${t`Warning: Provider is not used by an Application.`}
-                  </div>`
+        return html` <ak-tabs>
+            <section slot="page-overview" data-tab-title="${t`Overview`}">
+                ${this.renderTabOverview()}
+            </section>
+            <section
+                slot="page-changelog"
+                data-tab-title="${t`Changelog`}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
+                    </div>
+                </div>
+            </section>
+        </ak-tabs>`;
+    }
+
+    renderTabOverview(): TemplateResult {
+        if (!this.provider) {
+            return html``;
         }
+        return html`
             ${
                 this.provider?.outpostSet.length < 1
                     ? html`<div slot="header" class="pf-c-banner pf-m-warning">
