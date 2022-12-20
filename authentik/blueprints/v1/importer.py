@@ -144,6 +144,10 @@ class Importer:
     # pylint: disable-msg=too-many-locals
     def _validate_single(self, entry: BlueprintEntry) -> Optional[BaseSerializer]:
         """Validate a single entry"""
+        if not entry.check_all_conditions_match(self.__import):
+            self.logger.debug("One or more conditions of this entry are not fulfilled, skipping")
+            return None
+
         model_app_label, model_name = entry.model.split(".")
         model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
         # Don't use isinstance since we don't want to check for inheritance

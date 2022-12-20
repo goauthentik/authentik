@@ -57,6 +57,7 @@ class BlueprintEntry:
 
     model: str
     state: BlueprintEntryDesiredState = field(default=BlueprintEntryDesiredState.PRESENT)
+    conditions: list[Any] = field(default_factory=list)
     identifiers: dict[str, Any] = field(default_factory=dict)
     attrs: Optional[dict[str, Any]] = field(default_factory=dict)
 
@@ -100,6 +101,10 @@ class BlueprintEntry:
     def get_identifiers(self, blueprint: "Blueprint") -> dict[str, Any]:
         """Get attributes of this entry, with all yaml tags resolved"""
         return self.tag_resolver(self.identifiers, blueprint)
+
+    def check_all_conditions_match(self, blueprint: "Blueprint") -> bool:
+        """Check all conditions of this entry match (evaluate to True)"""
+        return all(self.tag_resolver(self.conditions, blueprint))
 
 
 @dataclass

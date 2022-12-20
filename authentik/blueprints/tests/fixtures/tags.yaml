@@ -23,4 +23,8 @@ entries:
       boolComplex: !Condition [XNOR, !Condition [AND, !Context non_existing], !Condition [NOR, a string], !Condition [XOR, null]]
   identifiers:
     name: test
+  conditions:
+  - !Condition [AND, true, true, text]
+  - true
+  - text
   model: authentik_core.group
