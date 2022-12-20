@@ -24,23 +24,21 @@ In case something goes wrong with the configuration, you can use the URL `http:/
 
 The following placeholders will be used:
 
--   `nextcloud.company` is the FQDN of the NextCloud install.
+-   `nextcloud.company` is the FQDN of the Nextcloud install.
 -   `authentik.company` is the FQDN of the authentik install.
 
 Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to Applications->Providers. Create a SAML provider with the following parameters:
 
 -   ACS URL: `https://nextcloud.company/apps/user_saml/saml/acs`
-:::note
-Depending on your nextcloud configuration, you might need to use `https://nextcloud.company/index.php/` instead of `https://nextcloud.company/`
-:::
 -   Issuer: `https://authentik.company`
 -   Service Provider Binding: `Post`
 -   Audience: `https://nextcloud.company/apps/user_saml/saml/metadata`
-:::note
-Depending on your nextcloud configuration, you might need to use `https://nextcloud.company/index.php/` instead of `https://nextcloud.company/`
-:::
 -   Signing certificate: Select any certificate you have.
 -   Property mappings: Select all Managed mappings.
+
+:::note
+Depending on your Nextcloud configuration, you might need to use `https://nextcloud.company/index.php/` instead of `https://nextcloud.company/`
+:::
 
 You can of course use a custom signing certificate, and adjust durations.
 
@@ -92,4 +90,4 @@ if ak_is_group_member(request.user, name="<authentik nextcloud admin group's nam
     yield "admin"
 ```
 
-Then, edit the NextCloud SAML Provider, and replace the default Groups mapping with the one you've created above.
+Then, edit the Nextcloud SAML Provider, and replace the default Groups mapping with the one you've created above.
