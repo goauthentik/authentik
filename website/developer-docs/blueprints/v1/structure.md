@@ -25,6 +25,18 @@ entries:
       # the object is created (and create it with the values given here), and "absent" will
       # delete the object
       state: present
+      # An optional list of boolean-like conditions. If all conditions match (or
+      # no condiitons are provided) the entry will be evaluated and acted upon
+      # as normal. Otherwise, the entry is skipped as if not defined at all.
+      # Each condition will be evaluated in Python to its boolean representation
+      # bool(<condition>). Furthermore, complex conditions can be built using
+      # a special !Condition tag. See the documentattion for custom tags for more
+      # information.
+      conditions:
+      - true
+      - text
+      - 2
+      - !Condition [AND, ...] # See custom tags section
       # Key:value filters to uniquely identify this object (required)
       identifiers:
           slug: initial-setup

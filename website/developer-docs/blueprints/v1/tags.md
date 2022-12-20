@@ -62,3 +62,8 @@ Requires at least one argument after the mode selection.
 
 If only a single argument is provided, its boolean representation will be returned for all normal
 modes and its negated boolean representation will be returned for all negated modes.
+
+Normally, it should be used to define complex conditions for the `conditions`
+attribute of a blueprint entry (see [the blueprint file structure](./structure.md)).
+However, this is essentially just a boolean evaluator so it can be used everywhere
+a boolean representation is required.
