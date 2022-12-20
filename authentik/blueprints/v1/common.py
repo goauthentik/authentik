@@ -243,7 +243,7 @@ class Find(YAMLTag):
         return None
 
 
-class AsBool(YAMLTag):
+class Condition(YAMLTag):
     """Convert all values to a single boolean"""
 
     mode: Literal["AND", "NAND", "OR", "NOR", "XOR", "XNOR"]
@@ -326,7 +326,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Find", Find)
         self.add_constructor("!Context", Context)
         self.add_constructor("!Format", Format)
-        self.add_constructor("!AsBool", AsBool)
+        self.add_constructor("!Condition", Condition)
 
 
 class EntryInvalidError(SentryIgnoredException):

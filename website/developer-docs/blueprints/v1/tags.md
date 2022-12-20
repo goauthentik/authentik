@@ -39,16 +39,16 @@ Example: `name: !Format [my-policy-%s, !Context instance_name]`
 
 Format a string using python's % formatting. First argument is the format string, any remaining arguments are used for formatting.
 
-#### `!AsBool`
+#### `!Condition`
 
 Minimal example:
 
-`required: !AsBool [OR, true]`
+`required: !Condition [OR, true]`
 
 Full example:
 
 ```
-required: !AsBool [
+required: !Condition [
     AND, # Valid modes are: AND, NAND, OR, NOR, XOR, XNOR
     !Context instance_name,
     !Find [authentik_flows.flow, [slug, default-password-change],

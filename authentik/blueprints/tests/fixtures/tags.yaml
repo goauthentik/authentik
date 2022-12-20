@@ -14,13 +14,13 @@ entries:
     attributes:
       policy_pk1: !Format ["%s-%s", !Find [authentik_policies_expression.expressionpolicy, [!Context policy_property, !Context policy_property_value], [expression, return True]], suffix]
       policy_pk2: !Format ["%s-%s", !KeyOf policy, suffix]
-      boolAnd: !AsBool [AND, !Context foo, !Format ["%s", "a_string"], 1]
-      boolNand: !AsBool [NAND, !Context foo, !Format ["%s", "a_string"], 1]
-      boolOr: !AsBool [OR, !Context foo, !Format ["%s", "a_string"], null]
-      boolNor: !AsBool [NOR, !Context foo, !Format ["%s", "a_string"], null]
-      boolXor: !AsBool [XOR, !Context foo, !Format ["%s", "a_string"], 1]
-      boolXnor: !AsBool [XNOR, !Context foo, !Format ["%s", "a_string"], 1]
-      boolComplex: !AsBool [XNOR, !AsBool [AND, !Context non_existing], !AsBool [NOR, a string], !AsBool [XOR, null]]
+      boolAnd: !Condition [AND, !Context foo, !Format ["%s", "a_string"], 1]
+      boolNand: !Condition [NAND, !Context foo, !Format ["%s", "a_string"], 1]
+      boolOr: !Condition [OR, !Context foo, !Format ["%s", "a_string"], null]
+      boolNor: !Condition [NOR, !Context foo, !Format ["%s", "a_string"], null]
+      boolXor: !Condition [XOR, !Context foo, !Format ["%s", "a_string"], 1]
+      boolXnor: !Condition [XNOR, !Context foo, !Format ["%s", "a_string"], 1]
+      boolComplex: !Condition [XNOR, !Condition [AND, !Context non_existing], !Condition [NOR, a string], !Condition [XOR, null]]
   identifiers:
     name: test
   model: authentik_core.group
