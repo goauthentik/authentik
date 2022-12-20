@@ -14,7 +14,6 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
 from authentik.providers.oauth2.models import OAuth2Provider, RefreshToken, ScopeMapping
-from authentik.providers.oauth2.views.userinfo import UserInfoView
 
 
 class OAuth2ProviderSerializer(ProviderSerializer):
@@ -151,6 +150,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         )
         temp_token.provider = provider
         temp_token.user = request.user
-        userinfo = UserInfoView(request=request._request).get_claims(temp_token)
-        serializer = PropertyMappingPreviewSerializer(instance={"preview": userinfo})
+        serializer = PropertyMappingPreviewSerializer(
+            instance={"preview": temp_token.create_id_token(request.user, request).to_dict()}
+        )
         return Response(serializer.data)

@@ -254,6 +254,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         provider: SAMLProvider = self.get_object()
         processor = AssertionProcessor(provider, request._request, AuthNRequest())
         attributes = processor.get_attributes()
+        name_id = processor.get_name_id()
         data = []
         for attribute in attributes:
             item = {"Value": []}
@@ -261,7 +262,10 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             for value in attribute:
                 item["Value"].append(value.text)
             data.append(item)
-        serializer = PropertyMappingPreviewSerializer(instance={"preview": data})
+        serializer = PropertyMappingPreviewSerializer(instance={"preview": {
+            "attributes": data,
+            "nameID": name_id.text
+        }})
         return Response(serializer.data)
 
 

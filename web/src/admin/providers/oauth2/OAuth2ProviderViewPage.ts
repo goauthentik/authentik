@@ -16,6 +16,7 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { until } from "lit/directives/until.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -85,6 +86,9 @@ export class OAuth2ProviderViewPage extends AKElement {
         return html` <ak-tabs>
             <section slot="page-overview" data-tab-title="${t`Overview`}">
                 ${this.renderTabOverview()}
+            </section>
+            <section slot="page-preview" data-tab-title="${t`Preview`}">
+                ${this.renderTabPreview()}
             </section>
             <section
                 slot="page-changelog"
@@ -302,5 +306,31 @@ export class OAuth2ProviderViewPage extends AKElement {
                     </div>
                 </div>
             </div>`;
+    }
+
+    renderTabPreview(): TemplateResult {
+        if (!this.provider) {
+            return html``;
+        }
+        return html` <div
+            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+        >
+            <div class="pf-c-card">
+                <div class="pf-c-card__title">
+                    ${t`Example JWT payload (for currently authenticated user)`}
+                </div>
+                <div class="pf-c-card__body">
+                    ${until(
+                        new ProvidersApi(DEFAULT_CONFIG)
+                            .providersOauth2PreviewUserRetrieve({
+                                id: this.provider?.pk,
+                            })
+                            .then((data) => {
+                                return html`<pre>${JSON.stringify(data.preview, null, 4)}</pre>`;
+                            }),
+                    )}
+                </div>
+            </div>
+        </div>`;
     }
 }

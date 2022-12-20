@@ -25,11 +25,20 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFList from "@patternfly/patternfly/components/List/List.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { CryptoApi, ProvidersApi, SAMLProvider } from "@goauthentik/api";
+
+interface SAMLPreviewAttribute {
+    attributes: {
+        Name: string;
+        Value: string[];
+    }[];
+    nameID: string;
+}
 
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends AKElement {
@@ -58,6 +67,7 @@ export class SAMLProviderViewPage extends AKElement {
             PFGrid,
             PFContent,
             PFCard,
+            PFList,
             PFDescriptionList,
             PFForm,
             PFFormControl,
@@ -140,6 +150,10 @@ export class SAMLProviderViewPage extends AKElement {
         return html` <ak-tabs>
             <section slot="page-overview" data-tab-title="${t`Overview`}">
                 ${this.renderTabOverview()}
+            </section>
+            ${this.renderTabMetadata()}
+            <section slot="page-preview" data-tab-title="${t`Preview`}">
+                ${this.renderTabPreview()}
             </section>
             <section
                 slot="page-changelog"
@@ -246,103 +260,183 @@ export class SAMLProviderViewPage extends AKElement {
                 ${
                     this.provider.assignedApplicationName
                         ? html` <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                                  <div class="pf-c-card__title">${t`SAML Configuration`}</div>
-                                  <div class="pf-c-card__body">
-                                      <form class="pf-c-form">
-                                          <div class="pf-c-form__group">
-                                              <label class="pf-c-form__label">
-                                                  <span class="pf-c-form__label-text"
-                                                      >${t`EntityID/Issuer`}</span
-                                                  >
-                                              </label>
-                                              <input
-                                                  class="pf-c-form-control"
-                                                  readonly
-                                                  type="text"
-                                                  value="${ifDefined(this.provider?.issuer)}"
-                                              />
-                                          </div>
-                                          <div class="pf-c-form__group">
-                                              <label class="pf-c-form__label">
-                                                  <span class="pf-c-form__label-text"
-                                                      >${t`SSO URL (Post)`}</span
-                                                  >
-                                              </label>
-                                              <input
-                                                  class="pf-c-form-control"
-                                                  readonly
-                                                  type="text"
-                                                  value="${ifDefined(this.provider.urlSsoPost)}"
-                                              />
-                                          </div>
-                                          <div class="pf-c-form__group">
-                                              <label class="pf-c-form__label">
-                                                  <span class="pf-c-form__label-text"
-                                                      >${t`SSO URL (Redirect)`}</span
-                                                  >
-                                              </label>
-                                              <input
-                                                  class="pf-c-form-control"
-                                                  readonly
-                                                  type="text"
-                                                  value="${ifDefined(this.provider.urlSsoRedirect)}"
-                                              />
-                                          </div>
-                                          <div class="pf-c-form__group">
-                                              <label class="pf-c-form__label">
-                                                  <span class="pf-c-form__label-text"
-                                                      >${t`SSO URL (IdP-initiated Login)`}</span
-                                                  >
-                                              </label>
-                                              <input
-                                                  class="pf-c-form-control"
-                                                  readonly
-                                                  type="text"
-                                                  value="${ifDefined(this.provider.urlSsoInit)}"
-                                              />
-                                          </div>
-                                      </form>
-                                  </div>
+                              <div class="pf-c-card__title">${t`SAML Configuration`}</div>
+                              <div class="pf-c-card__body">
+                                  <form class="pf-c-form">
+                                      <div class="pf-c-form__group">
+                                          <label class="pf-c-form__label">
+                                              <span class="pf-c-form__label-text"
+                                                  >${t`EntityID/Issuer`}</span
+                                              >
+                                          </label>
+                                          <input
+                                              class="pf-c-form-control"
+                                              readonly
+                                              type="text"
+                                              value="${ifDefined(this.provider?.issuer)}"
+                                          />
+                                      </div>
+                                      <div class="pf-c-form__group">
+                                          <label class="pf-c-form__label">
+                                              <span class="pf-c-form__label-text"
+                                                  >${t`SSO URL (Post)`}</span
+                                              >
+                                          </label>
+                                          <input
+                                              class="pf-c-form-control"
+                                              readonly
+                                              type="text"
+                                              value="${ifDefined(this.provider.urlSsoPost)}"
+                                          />
+                                      </div>
+                                      <div class="pf-c-form__group">
+                                          <label class="pf-c-form__label">
+                                              <span class="pf-c-form__label-text"
+                                                  >${t`SSO URL (Redirect)`}</span
+                                              >
+                                          </label>
+                                          <input
+                                              class="pf-c-form-control"
+                                              readonly
+                                              type="text"
+                                              value="${ifDefined(this.provider.urlSsoRedirect)}"
+                                          />
+                                      </div>
+                                      <div class="pf-c-form__group">
+                                          <label class="pf-c-form__label">
+                                              <span class="pf-c-form__label-text"
+                                                  >${t`SSO URL (IdP-initiated Login)`}</span
+                                              >
+                                          </label>
+                                          <input
+                                              class="pf-c-form-control"
+                                              readonly
+                                              type="text"
+                                              value="${ifDefined(this.provider.urlSsoInit)}"
+                                          />
+                                      </div>
+                                  </form>
                               </div>
-                              <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                                  <div class="pf-c-card__title">${t`SAML Metadata`}</div>
-                                  <div class="pf-c-card__body">
-                                      ${until(
-                                          new ProvidersApi(DEFAULT_CONFIG)
-                                              .providersSamlMetadataRetrieve({
-                                                  id: this.provider.pk || 0,
-                                              })
-                                              .then((m) => {
-                                                  return html`<ak-codemirror
-                                                      mode="xml"
-                                                      ?readOnly=${true}
-                                                      value="${ifDefined(m.metadata)}"
-                                                  ></ak-codemirror>`;
-                                              }),
-                                      )}
-                                  </div>
-                                  <div class="pf-c-card__footer">
-                                      <a
-                                          class="pf-c-button pf-m-primary"
-                                          target="_blank"
-                                          href=${this.provider.urlDownloadMetadata}
-                                      >
-                                          ${t`Download`}
-                                      </a>
-                                      <ak-action-button
-                                          class="pf-m-secondary"
-                                          .apiRequest=${() => {
-                                              return navigator.clipboard.writeText(
-                                                  this.provider?.urlDownloadMetadata || "",
-                                              );
-                                          }}
-                                      >
-                                          ${t`Copy download URL`}
-                                      </ak-action-button>
-                                  </div>
-                              </div>`
+                          </div>`
                         : html``
                 }
+            </div>
+        </div>`;
+    }
+
+    renderTabMetadata(): TemplateResult {
+        if (!this.provider) {
+            return html``;
+        }
+        return html`
+            ${this.provider.assignedApplicationName
+                ? html` <section slot="page-metadata" data-tab-title="${t`Metadata`}">
+                      <div
+                          class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+                      >
+                          <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                              <div class="pf-c-card__title">${t`SAML Metadata`}</div>
+                              <div class="pf-c-card__body">
+                                  <a
+                                      class="pf-c-button pf-m-primary"
+                                      target="_blank"
+                                      href=${this.provider.urlDownloadMetadata}
+                                  >
+                                      ${t`Download`}
+                                  </a>
+                                  <ak-action-button
+                                      class="pf-m-secondary"
+                                      .apiRequest=${() => {
+                                          return navigator.clipboard.writeText(
+                                              this.provider?.urlDownloadMetadata || "",
+                                          );
+                                      }}
+                                  >
+                                      ${t`Copy download URL`}
+                                  </ak-action-button>
+                              </div>
+                              <div class="pf-c-card__footer">
+                                  ${until(
+                                      new ProvidersApi(DEFAULT_CONFIG)
+                                          .providersSamlMetadataRetrieve({
+                                              id: this.provider.pk || 0,
+                                          })
+                                          .then((m) => {
+                                              return html`<ak-codemirror
+                                                  mode="xml"
+                                                  ?readOnly=${true}
+                                                  value="${ifDefined(m.metadata)}"
+                                              ></ak-codemirror>`;
+                                          }),
+                                  )}
+                              </div>
+                          </div>
+                      </div>
+                  </section>`
+                : html``}
+        `;
+    }
+
+    renderTabPreview(): TemplateResult {
+        if (!this.provider) {
+            return html``;
+        }
+        return html` <div
+            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+        >
+            <div class="pf-c-card">
+                <div class="pf-c-card__title">${t`Example SAML attributes`}</div>
+                ${until(
+                    new ProvidersApi(DEFAULT_CONFIG)
+                        .providersSamlPreviewUserRetrieve({
+                            id: this.provider?.pk,
+                        })
+                        .then((data) => {
+                            const d = data.preview as SAMLPreviewAttribute;
+                            return html`
+                                <div class="pf-c-card__body">
+                                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
+                                        <div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text"
+                                                    >${t`NameID attribute`}</span
+                                                >
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">
+                                                    ${d.nameID}
+                                                </div>
+                                            </dd>
+                                        </div>
+                                    </dl>
+                                </div>
+                                <div class="pf-c-card__body">
+                                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
+                                        ${d.attributes.map((attr) => {
+                                            return html` <div class="pf-c-description-list__group">
+                                                <dt class="pf-c-description-list__term">
+                                                    <span class="pf-c-description-list__text"
+                                                        >${attr.Name}</span
+                                                    >
+                                                </dt>
+                                                <dd class="pf-c-description-list__description">
+                                                    <div class="pf-c-description-list__text">
+                                                        <ul class="pf-c-list">
+                                                            ${attr.Value.map((value) => {
+                                                                return html`
+                                                                    <li><pre>${value}</pre></li>
+                                                                `;
+                                                            })}
+                                                        </ul>
+                                                    </div>
+                                                </dd>
+                                            </div>`;
+                                        })}
+                                    </dl>
+                                </div>
+                            `;
+                        }),
+                )}
             </div>
         </div>`;
     }
