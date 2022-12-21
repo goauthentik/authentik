@@ -24,7 +24,8 @@
         "!Find sequence",
         "!KeyOf scalar",
         "!Context scalar",
-        "!Format sequence"
+        "!Format sequence",
+        "!Condition sequence"
     ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",

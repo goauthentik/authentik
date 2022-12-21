@@ -1,0 +1,21 @@
+version: 1
+entries:
+- identifiers:
+    name: "%(id1)s"
+    slug: "%(id1)s"
+  model: authentik_flows.flow
+  conditions:
+  - false
+  attrs:
+    designation: stage_configuration
+    title: foo
+- identifiers:
+    name: "%(id2)s"
+    slug: "%(id2)s"
+  model: authentik_flows.flow
+  conditions:
+  - true
+  - false
+  attrs:
+    designation: stage_configuration
+    title: foo
