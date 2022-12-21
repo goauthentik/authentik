@@ -1,13 +1,15 @@
 """SAML Provider API Tests"""
+from json import loads
 from tempfile import TemporaryFile
 
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation
-from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.tests.test_metadata import METADATA_SIMPLE
 
 
@@ -107,3 +109,24 @@ class TestSAMLProviderAPI(APITestCase):
             format="multipart",
         )
         self.assertEqual(400, response.status_code)
+
+    @apply_blueprint("system/providers-saml.yaml")
+    def test_preview(self):
+        """Test Preview API Endpoint"""
+        provider: SAMLProvider = SAMLProvider.objects.create(
+            name="test",
+            authorization_flow=create_test_flow(),
+        )
+        provider.property_mappings.set(SAMLPropertyMapping.objects.all())
+        Application.objects.create(name="test", provider=provider, slug="test")
+        response = self.client.get(
+            reverse("authentik_api:samlprovider-preview-user", kwargs={"pk": provider.pk})
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())["preview"]["attributes"]
+        self.assertEqual(
+            [x for x in body if x["Name"] == "http://schemas.goauthentik.io/2021/02/saml/username"][
+                0
+            ]["Value"],
+            [self.user.username],
+        )
