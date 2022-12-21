@@ -2,6 +2,7 @@ import "@goauthentik/admin/stages/invitation/InvitationForm";
 import "@goauthentik/admin/stages/invitation/InvitationListLink";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -18,7 +19,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
-import { Invitation, StagesApi } from "@goauthentik/api";
+import { FlowDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
@@ -49,12 +50,24 @@ export class InvitationListPage extends TablePage<Invitation> {
     @state()
     invitationStageExists = false;
 
+    @state()
+    multipleEnrollmentFlows = false;
+
     async apiEndpoint(page: number): Promise<PaginatedResponse<Invitation>> {
+        // Check if any invitation stages exist
         const stages = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesList({
             noFlows: false,
         });
         this.invitationStageExists = stages.pagination.count > 0;
         this.expandable = this.invitationStageExists;
+        stages.results.forEach((stage) => {
+            const enrollmentFlows = (stage.flowSet || []).filter(
+                (flow) => flow.designation === FlowDesignationEnum.Enrollment,
+            );
+            if (enrollmentFlows.length > 1) {
+                this.multipleEnrollmentFlows = true;
+            }
+        });
         return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsList({
             ordering: this.order,
             page: page,
@@ -96,7 +109,14 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     row(item: Invitation): TemplateResult[] {
         return [
-            html`${item.name}`,
+            html`<div>${item.name}</div>
+                ${!item.flowObj && this.multipleEnrollmentFlows
+                    ? html`
+                          <ak-label color=${PFColor.Orange}>
+                              ${t`Invitation not limited to any flow, and can be used with any enrollment flow.`}
+                          </ak-label>
+                      `
+                    : html``}`,
             html`${item.createdBy?.username}`,
             html`${item.expires?.toLocaleString() || t`-`}`,
             html` <ak-forms-modal>
