@@ -262,10 +262,9 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             for value in attribute:
                 item["Value"].append(value.text)
             data.append(item)
-        serializer = PropertyMappingPreviewSerializer(instance={"preview": {
-            "attributes": data,
-            "nameID": name_id.text
-        }})
+        serializer = PropertyMappingPreviewSerializer(
+            instance={"preview": {"attributes": data, "nameID": name_id.text}}
+        )
         return Response(serializer.data)
 
 
