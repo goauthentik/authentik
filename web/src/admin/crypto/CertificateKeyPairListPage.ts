@@ -101,7 +101,9 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             html`<ak-label color=${item.privateKeyAvailable ? PFColor.Green : PFColor.Grey}>
                 ${item.privateKeyAvailable ? t`Yes (${item.privateKeyType?.toUpperCase()})` : t`No`}
             </ak-label>`,
-            html`<ak-label color=${item.certExpiry || new Date() > new Date() ? PFColor.Green : PFColor.Orange}>
+            html`<ak-label
+                color=${item.certExpiry || new Date() > new Date() ? PFColor.Green : PFColor.Orange}
+            >
                 ${item.certExpiry?.toLocaleString()}
             </ak-label>`,
             html`<ak-forms-modal>
