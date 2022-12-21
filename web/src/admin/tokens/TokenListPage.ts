@@ -105,10 +105,8 @@ export class TokenListPage extends TablePage<Token> {
 
     row(item: Token): TemplateResult[] {
         return [
-            html`<div>
-                <div>${item.identifier}</div>
-                ${item.managed ? html`<small>${t`Token is managed by authentik.`}</small>` : html``}
-            </div>`,
+            html`<div>${item.identifier}</div>
+                ${item.managed ? html`<small>${t`Token is managed by authentik.`}</small>` : html``}`,
             html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
             html` <ak-label color=${item.expiring ? PFColor.Green : PFColor.Orange}>
                 ${item.expiring ? t`Yes` : t`No`}

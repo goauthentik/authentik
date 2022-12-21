@@ -96,11 +96,6 @@ html > form > input {
     color: var(--pf-global--Color--100);
 }
 
-/* Fix alignment issues with images in tables */
-.pf-c-table tbody > tr > * {
-    vertical-align: middle;
-}
-
 .pf-c-description-list__description .pf-c-button {
     margin-right: 6px;
     margin-bottom: 6px;

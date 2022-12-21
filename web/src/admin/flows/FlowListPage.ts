@@ -92,13 +92,11 @@ export class FlowListPage extends TablePage<Flow> {
     row(item: Flow): TemplateResult[] {
         return [
             html`<div>
-                <div>
                     <a href="#/flow/flows/${item.slug}">
                         <code>${item.slug}</code>
                     </a>
                 </div>
-                <small>${item.title}</small>
-            </div>`,
+                <small>${item.title}</small>`,
             html`${item.name}`,
             html`${Array.from(item.stages || []).length}`,
             html`${Array.from(item.policies || []).length}`,

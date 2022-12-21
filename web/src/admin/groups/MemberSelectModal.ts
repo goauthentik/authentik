@@ -47,10 +47,8 @@ export class MemberSelectTable extends TableModal<User> {
 
     row(item: User): TemplateResult[] {
         return [
-            html`<div>
-                <div>${item.username}</div>
-                <small>${item.name}</small>
-            </div>`,
+            html`<div>${item.username}</div>
+                <small>${item.name}</small>`,
             html` <ak-label color=${item.isActive ? PFColor.Green : PFColor.Orange}>
                 ${item.isActive ? t`Yes` : t`No`}
             </ak-label>`,

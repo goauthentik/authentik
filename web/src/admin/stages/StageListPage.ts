@@ -118,10 +118,8 @@ export class StageListPage extends TablePage<Stage> {
 
     row(item: Stage): TemplateResult[] {
         return [
-            html`<div>
-                <div>${item.name}</div>
-                <small>${item.verboseName}</small>
-            </div>`,
+            html`<div>${item.name}</div>
+                <small>${item.verboseName}</small>`,
             html`<ul class="pf-c-list">
                 ${item.flowSet?.map((flow) => {
                     return html`<li>

@@ -60,6 +60,10 @@ export class ApplicationListPage extends TablePage<Application> {
             PFCard,
             AKGlobal,
             css`
+                /* Fix alignment issues with images in tables */
+                .pf-c-table tbody > tr > * {
+                    vertical-align: middle;
+                }
                 tr td:first-child {
                     width: auto;
                     min-width: 0px;

@@ -10,6 +10,7 @@ import "@goauthentik/admin/policies/reputation/ReputationPolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { groupBy } from "@goauthentik/common/utils";
+import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/forms/ConfirmationForm";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -69,14 +70,14 @@ export class PolicyListPage extends TablePage<Policy> {
 
     row(item: Policy): TemplateResult[] {
         return [
-            html`<div>
-                <div>${item.name}</div>
+            html`<div>${item.name}</div>
                 ${(item.boundTo || 0) > 0
-                    ? html`<i class="pf-icon pf-icon-ok"></i>
-                          <small>${t`Assigned to ${item.boundTo} object(s).`}</small>`
-                    : html`<i class="pf-icon pf-icon-warning-triangle"></i>
-                          <small>${t`Warning: Policy is not assigned.`}</small>`}
-            </div>`,
+                    ? html`<ak-label color=${PFColor.Green}>
+                          ${t`Assigned to ${item.boundTo} object(s).`}
+                      </ak-label>`
+                    : html`<ak-label color=${PFColor.Orange}>
+                          ${t`Warning: Policy is not assigned.`}
+                      </ak-label>`}`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
                     <span slot="submit"> ${t`Update`} </span>
