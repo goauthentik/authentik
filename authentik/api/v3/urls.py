@@ -49,11 +49,12 @@ from authentik.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from authentik.policies.password.api import PasswordPolicyViewSet
 from authentik.policies.reputation.api import ReputationPolicyViewSet, ReputationViewSet
 from authentik.providers.ldap.api import LDAPOutpostConfigViewSet, LDAPProviderViewSet
-from authentik.providers.oauth2.api.provider import OAuth2ProviderViewSet
-from authentik.providers.oauth2.api.scope import ScopeMappingViewSet
+from authentik.providers.oauth2.api.providers import OAuth2ProviderViewSet
+from authentik.providers.oauth2.api.scopes import ScopeMappingViewSet
 from authentik.providers.oauth2.api.tokens import AuthorizationCodeViewSet, RefreshTokenViewSet
 from authentik.providers.proxy.api import ProxyOutpostConfigViewSet, ProxyProviderViewSet
-from authentik.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProviderViewSet
+from authentik.providers.saml.api.property_mapping import SAMLPropertyMappingViewSet
+from authentik.providers.saml.api.providers import SAMLProviderViewSet
 from authentik.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from authentik.sources.oauth.api.source import OAuthSourceViewSet
 from authentik.sources.oauth.api.source_connection import UserOAuthSourceConnectionViewSet

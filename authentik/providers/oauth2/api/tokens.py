@@ -12,7 +12,7 @@ from rest_framework.viewsets import GenericViewSet
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import MetaNameSerializer
-from authentik.providers.oauth2.api.provider import OAuth2ProviderSerializer
+from authentik.providers.oauth2.api.providers import OAuth2ProviderSerializer
 from authentik.providers.oauth2.models import AuthorizationCode, RefreshToken
 
 

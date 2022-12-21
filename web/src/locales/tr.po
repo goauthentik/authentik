@@ -934,7 +934,10 @@ msgstr "Parolanızı değiştirin"
 #: src/admin/applications/ApplicationViewPage.ts
 #: src/admin/flows/FlowViewPage.ts
 #: src/admin/groups/GroupViewPage.ts
-#: src/admin/providers/ProviderViewPage.ts
+#: src/admin/providers/ldap/LDAPProviderViewPage.ts
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 #: src/admin/sources/plex/PlexSourceViewPage.ts
@@ -1333,6 +1336,7 @@ msgstr "Kopya"
 #~ msgid "Copy Key"
 #~ msgstr "Anahtar Kopyala"
 
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
 msgid "Copy download URL"
 msgstr "İndirme URL'sini"
@@ -1872,7 +1876,6 @@ msgid "Download Private key"
 msgstr "Indir Özel anahtar"
 
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
 msgid "Download signing certificate"
 msgstr "İmzalama sertifikasını indirme"
 
@@ -2146,6 +2149,14 @@ msgstr "Olaylar"
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 msgid "Everything is ok."
 msgstr "Her şey yolunda."
+
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+msgid "Example JWT payload (for currently authenticated user)"
+msgstr ""
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "Example SAML attributes"
+msgstr ""
 
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
@@ -3448,6 +3459,8 @@ msgstr "İletiler"
 
 #: src/admin/applications/wizard/saml/TypeSAMLImportApplicationWizardPage.ts
 #: src/admin/providers/saml/SAMLProviderImportForm.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/sources/saml/SAMLSourceViewPage.ts
 msgid "Metadata"
 msgstr "Meta veriler"
@@ -3624,6 +3637,10 @@ msgstr "NameID İlkesi"
 #: src/admin/providers/saml/SAMLProviderForm.ts
 msgid "NameID Property Mapping"
 msgstr "NameID Özellik Eşlemesi"
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "NameID attribute"
+msgstr ""
 
 #: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
 msgid "Native application"
@@ -4118,7 +4135,10 @@ msgstr "Outposts, ters proxy'ler gibi farklı ortamları ve protokolleri destekl
 #: src/admin/AdminInterface.ts
 #: src/admin/applications/ApplicationViewPage.ts
 #: src/admin/groups/GroupViewPage.ts
-#: src/admin/providers/ProviderViewPage.ts
+#: src/admin/providers/ldap/LDAPProviderViewPage.ts
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 #: src/admin/sources/plex/PlexSourceViewPage.ts
@@ -4353,6 +4373,11 @@ msgstr "Auentik tarafından desteklenmektedir"
 #: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Pre-authentication flow"
 msgstr "Ön kimlik doğrulama akışı"
+
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "Preview"
+msgstr ""
 
 #: src/admin/crypto/CertificateKeyPairForm.ts
 #: src/admin/stages/captcha/CaptchaStageForm.ts
@@ -6946,7 +6971,6 @@ msgstr "Uyarı: Hiçbir davetiye aşaması herhangi bir akışa bağlı değildi
 msgid "Warning: Policy is not assigned."
 msgstr "Uyarı: İlke atanmamış."
 
-#: src/admin/providers/ldap/LDAPProviderViewPage.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts

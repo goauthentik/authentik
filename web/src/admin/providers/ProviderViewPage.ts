@@ -8,8 +8,6 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
-import { t } from "@lingui/macro";
-
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -70,25 +68,6 @@ export class ProviderViewPage extends AKElement {
                 description=${ifDefined(this.provider?.verboseName)}
             >
             </ak-page-header>
-            <ak-tabs>
-                <section slot="page-overview" data-tab-title="${t`Overview`}">
-                    ${this.renderProvider()}
-                </section>
-                <section
-                    slot="page-changelog"
-                    data-tab-title="${t`Changelog`}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
-                    </div>
-                </section>
-            </ak-tabs>`;
+            ${this.renderProvider()}`;
     }
 }

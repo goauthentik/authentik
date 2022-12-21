@@ -192,7 +192,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                             <input
                                 type="checkbox"
                                 class="pf-c-check__input"
-                                ?checked=${first(this.instance?.openInNewTab, true)}
+                                ?checked=${first(this.instance?.openInNewTab, false)}
                             />
                             <label class="pf-c-check__label"> ${t`Open in new tab`} </label>
                         </div>

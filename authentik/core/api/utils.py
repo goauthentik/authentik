@@ -2,7 +2,7 @@
 from typing import Any
 
 from django.db.models import Model
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import CharField, IntegerField, JSONField
 from rest_framework.serializers import Serializer, SerializerMethodField, ValidationError
 
 
@@ -21,6 +21,12 @@ class PassiveSerializer(Serializer):
 
     def update(self, instance: Model, validated_data: dict) -> Model:  # pragma: no cover
         return Model()
+
+
+class PropertyMappingPreviewSerializer(PassiveSerializer):
+    """Preview how the current user is mapped via the property mappings selected in a provider"""
+
+    preview = JSONField(read_only=True)
 
 
 class MetaNameSerializer(PassiveSerializer):
