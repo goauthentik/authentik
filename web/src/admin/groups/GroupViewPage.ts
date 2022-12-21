@@ -160,7 +160,7 @@ export class GroupViewPage extends AKElement {
             >
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">
-                        <ak-user-related-list groupUuid=${this.group.pk}> </ak-user-related-list>
+                        <ak-user-related-list .targetGroup=${this.group}> </ak-user-related-list>
                     </div>
                 </div>
             </section>

@@ -13,7 +13,7 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { CoreApi, Group } from "@goauthentik/api";
+import { CoreApi, Group, User } from "@goauthentik/api";
 
 @customElement("ak-group-related-list")
 export class RelatedGroupList extends Table<Group> {
@@ -25,8 +25,8 @@ export class RelatedGroupList extends Table<Group> {
     @property()
     order = "name";
 
-    @property({ type: Number })
-    targetUser?: number;
+    @property({ attribute: false })
+    targetUser?: User;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
@@ -34,7 +34,7 @@ export class RelatedGroupList extends Table<Group> {
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
-            membersByPk: this.targetUser ? [this.targetUser] : [],
+            membersByPk: this.targetUser ? [this.targetUser.pk] : [],
         });
     }
 
@@ -51,20 +51,23 @@ export class RelatedGroupList extends Table<Group> {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${t`Group(s)`}
+            actionLabel=${t`Remove from Group(s)`}
+            actionSubtext=${t`Are you sure you want to remove users ${this.targetUser?.username} from the following groups?`}
             .objects=${this.selectedElements}
-            .usedBy=${(item: Group) => {
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
-                    groupUuid: item.pk,
-                });
-            }}
             .delete=${(item: Group) => {
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsDestroy({
-                    groupUuid: item.pk,
+                const newGroups = this.targetUser?.groups.filter((group) => {
+                    return group != item.pk;
+                });
+                return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+                    id: this.targetUser?.pk || 0,
+                    patchedUserRequest: {
+                        groups: newGroups,
+                    },
                 });
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${t`Remove`}
             </button>
         </ak-forms-delete-bulk>`;
     }

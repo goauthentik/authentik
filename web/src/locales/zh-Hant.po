@@ -525,6 +525,14 @@ msgstr "你确定要删除 {0} {1} 吗？"
 msgid "Are you sure you want to delete {0} {objName} ?"
 msgstr "你确定要删除 {0} {objName} 吗？"
 
+#: src/admin/users/RelatedUserList.ts
+msgid "Are you sure you want to remove the selected users from the group {0}?"
+msgstr ""
+
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Are you sure you want to remove users {0} from the following groups?"
+msgstr ""
+
 #: src/admin/users/UserActiveForm.ts
 msgid "Are you sure you want to update {0} \"{1}\"?"
 msgstr "你确定要更新 {0} \"{1}\" 吗？"
@@ -1654,7 +1662,6 @@ msgstr "定义如何向用户发送通知，例如电子邮件或 Webhook。"
 #: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/groups/GroupListPage.ts
-#: src/admin/groups/RelatedGroupList.ts
 #: src/admin/outposts/OutpostListPage.ts
 #: src/admin/outposts/ServiceConnectionListPage.ts
 #: src/admin/policies/BoundPoliciesList.ts
@@ -1668,7 +1675,6 @@ msgstr "定义如何向用户发送通知，例如电子邮件或 Webhook。"
 #: src/admin/stages/prompt/PromptListPage.ts
 #: src/admin/tenants/TenantListPage.ts
 #: src/admin/tokens/TokenListPage.ts
-#: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
@@ -4673,6 +4679,19 @@ msgstr ""
 msgid "Related objects"
 msgstr "相关对象"
 
+#: src/admin/groups/RelatedGroupList.ts
+#: src/admin/users/RelatedUserList.ts
+msgid "Remove"
+msgstr ""
+
+#: src/admin/users/RelatedUserList.ts
+msgid "Remove Users(s)"
+msgstr ""
+
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Remove from Group(s)"
+msgstr ""
+
 #: src/admin/stages/user_logout/UserLogoutStageForm.ts
 msgid "Remove the user from the current session."
 msgstr "从当前会话中移除用户。"
@@ -6994,7 +7013,6 @@ msgstr "警告：提供者未被任何 Outpos 使用。"
 msgid "Warning: Provider not assigned to any application."
 msgstr "警告：提供程序未分配给任何应用程序。"
 
-#: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
 msgid "Warning: You're about to delete the user you're logged in as ({0}). Proceed at your own risk."
 msgstr "警告：你即将删除登录的用户 ({0})。继续，风险自负。"

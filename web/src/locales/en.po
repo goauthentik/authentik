@@ -524,6 +524,14 @@ msgstr "Are you sure you want to delete {0} {1}?"
 msgid "Are you sure you want to delete {0} {objName} ?"
 msgstr "Are you sure you want to delete {0} {objName} ?"
 
+#: src/admin/users/RelatedUserList.ts
+msgid "Are you sure you want to remove the selected users from the group {0}?"
+msgstr "Are you sure you want to remove the selected users from the group {0}?"
+
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Are you sure you want to remove users {0} from the following groups?"
+msgstr "Are you sure you want to remove users {0} from the following groups?"
+
 #: src/admin/users/UserActiveForm.ts
 msgid "Are you sure you want to update {0} \"{1}\"?"
 msgstr "Are you sure you want to update {0} \"{1}\"?"
@@ -1676,7 +1684,6 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/groups/GroupListPage.ts
-#: src/admin/groups/RelatedGroupList.ts
 #: src/admin/outposts/OutpostListPage.ts
 #: src/admin/outposts/ServiceConnectionListPage.ts
 #: src/admin/policies/BoundPoliciesList.ts
@@ -1690,7 +1697,6 @@ msgstr "Define how notifications are sent to users, like Email or Webhook."
 #: src/admin/stages/prompt/PromptListPage.ts
 #: src/admin/tenants/TenantListPage.ts
 #: src/admin/tokens/TokenListPage.ts
-#: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
 #: src/elements/forms/DeleteBulkForm.ts
 #: src/elements/forms/DeleteForm.ts
@@ -4782,6 +4788,19 @@ msgstr "Related actions"
 msgid "Related objects"
 msgstr "Related objects"
 
+#: src/admin/groups/RelatedGroupList.ts
+#: src/admin/users/RelatedUserList.ts
+msgid "Remove"
+msgstr "Remove"
+
+#: src/admin/users/RelatedUserList.ts
+msgid "Remove Users(s)"
+msgstr "Remove Users(s)"
+
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Remove from Group(s)"
+msgstr "Remove from Group(s)"
+
 #: src/admin/stages/user_logout/UserLogoutStageForm.ts
 msgid "Remove the user from the current session."
 msgstr "Remove the user from the current session."
@@ -7166,7 +7185,6 @@ msgstr "Warning: Provider is not used by any Outpost."
 msgid "Warning: Provider not assigned to any application."
 msgstr "Warning: Provider not assigned to any application."
 
-#: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
 msgid "Warning: You're about to delete the user you're logged in as ({0}). Proceed at your own risk."
 msgstr "Warning: You're about to delete the user you're logged in as ({0}). Proceed at your own risk."

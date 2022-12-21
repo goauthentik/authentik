@@ -6,7 +6,6 @@ import "@goauthentik/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG, config, tenant } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -26,7 +25,7 @@ import { until } from "lit/directives/until.js";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CapabilitiesEnum, CoreApi, ResponseError, User } from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, Group, ResponseError, User } from "@goauthentik/api";
 
 @customElement("ak-user-related-list")
 export class RelatedUserList extends Table<User> {
@@ -38,7 +37,7 @@ export class RelatedUserList extends Table<User> {
     }
 
     @property()
-    groupUuid?: string;
+    targetGroup?: Group;
 
     @property()
     order = "last_login";
@@ -56,7 +55,7 @@ export class RelatedUserList extends Table<User> {
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
-            groupsByPk: this.groupUuid ? [this.groupUuid] : [],
+            groupsByPk: this.targetGroup ? [this.targetGroup.pk] : [],
             attributes: this.hideServiceAccounts
                 ? JSON.stringify({
                       "goauthentik.io/user/service-account__isnull": true,
@@ -78,6 +77,8 @@ export class RelatedUserList extends Table<User> {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${t`User(s)`}
+            actionLabel=${t`Remove Users(s)`}
+            actionSubtext=${t`Are you sure you want to remove the selected users from the group ${this.targetGroup?.name}?`}
             .objects=${this.selectedElements}
             .metadata=${(item: User) => {
                 return [
@@ -86,41 +87,22 @@ export class RelatedUserList extends Table<User> {
                     { key: t`UID`, value: item.uid },
                 ];
             }}
-            .usedBy=${(item: User) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
-                    id: item.pk,
-                });
-            }}
             .delete=${(item: User) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
-                    id: item.pk,
+                const newUsers = this.targetGroup?.usersObj
+                    .filter((user) => {
+                        return user.pk != item.pk;
+                    })
+                    .map((user) => user.pk);
+                return new CoreApi(DEFAULT_CONFIG).coreGroupsPartialUpdate({
+                    groupUuid: this.targetGroup?.pk || "",
+                    patchedGroupRequest: {
+                        users: newUsers,
+                    },
                 });
             }}
         >
-            ${until(
-                me().then((user) => {
-                    const shouldShowWarning = this.selectedElements.find((el) => {
-                        return el.pk === user.user.pk || el.pk == user.original?.pk;
-                    });
-                    if (shouldShowWarning) {
-                        return html`
-                            <div slot="notice" class="pf-c-form__alert">
-                                <div class="pf-c-alert pf-m-inline pf-m-warning">
-                                    <div class="pf-c-alert__icon">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                    </div>
-                                    <h4 class="pf-c-alert__title">
-                                        ${t`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`}
-                                    </h4>
-                                </div>
-                            </div>
-                        `;
-                    }
-                    return html``;
-                }),
-            )}
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${t`Remove`}
             </button>
         </ak-forms-delete-bulk>`;
     }

@@ -315,7 +315,7 @@ export class UserViewPage extends AKElement {
             >
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">
-                        <ak-group-related-list targetUser=${this.user.pk}> </ak-group-related-list>
+                        <ak-group-related-list .targetUser=${this.user}> </ak-group-related-list>
                     </div>
                 </div>
             </section>

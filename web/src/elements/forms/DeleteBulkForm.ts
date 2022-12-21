@@ -122,6 +122,12 @@ export class DeleteBulkForm extends ModalButton {
     @property()
     objectLabel?: string;
 
+    @property()
+    actionLabel?: string;
+
+    @property()
+    actionSubtext?: string;
+
     @property({ attribute: false })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     metadata: (item: any) => BulkDeleteMetadata = (item: any) => {
@@ -183,13 +189,17 @@ export class DeleteBulkForm extends ModalButton {
     renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">${t`Delete ${this.objectLabel}`}</h1>
+                    <h1 class="pf-c-title pf-m-2xl">
+                        ${this.actionLabel ? this.actionLabel : t`Delete ${this.objectLabel}`}
+                    </h1>
                 </div>
             </section>
             <section class="pf-c-modal-box__body pf-m-light">
                 <form class="pf-c-form pf-m-horizontal">
                     <p class="pf-c-title">
-                        ${t`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`}
+                        ${this.actionSubtext
+                            ? this.actionSubtext
+                            : t`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`}}
                     </p>
                     <slot name="notice"></slot>
                 </form>
