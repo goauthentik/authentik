@@ -164,7 +164,7 @@ class SAMLProvider(Provider):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.providers.saml.api import SAMLProviderSerializer
+        from authentik.providers.saml.api.providers import SAMLProviderSerializer
 
         return SAMLProviderSerializer
 
@@ -193,7 +193,7 @@ class SAMLPropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.providers.saml.api import SAMLPropertyMappingSerializer
+        from authentik.providers.saml.api.property_mapping import SAMLPropertyMappingSerializer
 
         return SAMLPropertyMappingSerializer
 

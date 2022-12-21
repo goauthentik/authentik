@@ -7,15 +7,8 @@ from django.http.response import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django_filters.filters import AllValuesMultipleFilter
-from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (
-    OpenApiParameter,
-    OpenApiResponse,
-    extend_schema,
-    extend_schema_field,
-)
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, FileField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
@@ -28,13 +21,12 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
-from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
+from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
@@ -266,35 +258,3 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             instance={"preview": {"attributes": data, "nameID": name_id.text}}
         )
         return Response(serializer.data)
-
-
-class SAMLPropertyMappingSerializer(PropertyMappingSerializer):
-    """SAMLPropertyMapping Serializer"""
-
-    class Meta:
-
-        model = SAMLPropertyMapping
-        fields = PropertyMappingSerializer.Meta.fields + [
-            "saml_name",
-            "friendly_name",
-        ]
-
-
-class SAMLPropertyMappingFilter(FilterSet):
-    """Filter for SAMLPropertyMapping"""
-
-    managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
-
-    class Meta:
-        model = SAMLPropertyMapping
-        fields = "__all__"
-
-
-class SAMLPropertyMappingViewSet(UsedByMixin, ModelViewSet):
-    """SAMLPropertyMapping Viewset"""
-
-    queryset = SAMLPropertyMapping.objects.all()
-    serializer_class = SAMLPropertyMappingSerializer
-    filterset_class = SAMLPropertyMappingFilter
-    search_fields = ["name"]
-    ordering = ["name"]
