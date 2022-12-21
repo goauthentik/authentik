@@ -62,6 +62,12 @@
                         ],
                         "default": "present"
                     },
+                    "conditions": {
+                        "type": "array",
+                        "items": {
+                            "type": "boolean"
+                        }
+                    },
                     "attrs": {
                         "type": "object",
                         "properties": {
