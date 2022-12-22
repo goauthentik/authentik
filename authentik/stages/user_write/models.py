@@ -16,7 +16,10 @@ class UserWriteStage(Stage):
     can_create_users = models.BooleanField(
         default=True,
         help_text=_(
-            "When set, this stage can create users. If not enabled and no user is available, stage will fail."
+            (
+                "When set, this stage can create users. "
+                "If not enabled and no user is available, stage will fail."
+            )
         ),
     )
 
