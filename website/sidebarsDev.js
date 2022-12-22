@@ -49,5 +49,9 @@ module.exports = {
             type: "doc",
             id: "docs/writing-documentation",
         },
+        {
+            type: "doc",
+            id: "releases/index",
+        },
     ],
 };
