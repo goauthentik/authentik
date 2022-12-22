@@ -62,6 +62,6 @@
 
 [[redirects]]
   from = "/api/event"
-  to = "https://analytics.beryju.org/api/event"
+  to = "https://plausible.io/api/event"
   status = 200
   force = true
