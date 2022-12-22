@@ -1,3 +1,4 @@
+import { docLink } from "@goauthentik/common/global";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
 
@@ -22,7 +23,7 @@ export class OutpostDeploymentModal extends ModalButton {
                 <p>
                     <a
                         target="_blank"
-                        href="https://goauthentik.io/docs/outposts?utm_source=authentik#deploy"
+                        href="${docLink("/docs/outposts?utm_source=authentik#deploy")}"
                         >${t`View deployment documentation`}</a
                     >
                 </p>

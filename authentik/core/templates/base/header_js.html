@@ -2,10 +2,14 @@
 {% get_current_language as LANGUAGE_CODE %}
 
 <script>
-    window.authentik = {};
-    window.authentik.locale = "{{ LANGUAGE_CODE }}";
-    window.authentik.config = JSON.parse('{{ config_json|escapejs }}');
-    window.authentik.tenant = JSON.parse('{{ tenant_json|escapejs }}');
+    window.authentik = {
+        locale: "{{ LANGUAGE_CODE }}",
+        config: JSON.parse('{{ config_json|escapejs }}'),
+        tenant: JSON.parse('{{ tenant_json|escapejs }}'),
+        versionFamily: "{{ version_family }}",
+        versionSubdomain: "{{ version_subdomain }}",
+        build: "{{ build }}",
+    };
     window.addEventListener("DOMContentLoaded", () => {
         {% for message in messages %}
         window.dispatchEvent(

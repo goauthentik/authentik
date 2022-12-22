@@ -7,6 +7,9 @@ export interface GlobalAuthentik {
     };
     config: Config;
     tenant: CurrentTenant;
+    versionFamily: string;
+    versionSubdomain: string;
+    build: string;
 }
 
 export interface AuthentikWindow {
@@ -15,4 +18,13 @@ export interface AuthentikWindow {
 
 export function globalAK(): GlobalAuthentik | undefined {
     return (window as unknown as AuthentikWindow).authentik;
+}
+
+export function docLink(path: string): string {
+    const ak = globalAK();
+    // Default case or beta build which should always point to latest
+    if (!ak || ak.build !== "") {
+        return `https://goauthentik.io${path}`;
+    }
+    return `https://${ak.versionSubdomain}.goauthentik.io${path}`;
 }

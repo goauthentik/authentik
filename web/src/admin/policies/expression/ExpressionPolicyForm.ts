@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { docLink } from "@goauthentik/common/global";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
@@ -85,7 +86,7 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
                             ${t`Expression using Python.`}
                             <a
                                 target="_blank"
-                                href="https://goauthentik.io/docs/policies/expression?utm_source=authentik"
+                                href="${docLink("/docs/policies/expression?utm_source=authentik")}"
                             >
                                 ${t`See documentation for a list of all variables.`}
                             </a>

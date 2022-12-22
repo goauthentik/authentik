@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -164,9 +165,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </p>
                 <p class="pf-c-form__helper-text">
                     See
-                    <a
-                        target="_blank"
-                        href="https://goauthentik.io/docs/outposts?utm_source=authentik"
+                    <a target="_blank" href="${docLink("/docs/outposts?utm_source=authentik")}"
                         >documentation</a
                     >.
                 </p>
@@ -209,7 +208,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     See
                     <a
                         target="_blank"
-                        href="https://goauthentik.io/docs/outposts?utm_source=authentik#configuration"
+                        href="${docLink("/docs/outposts?utm_source=authentik#configuration")}"
                         >documentation</a
                     >.
                 </p>

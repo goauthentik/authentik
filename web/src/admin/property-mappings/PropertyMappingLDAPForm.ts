@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -72,7 +73,7 @@ export class PropertyMappingLDAPForm extends ModelForm<LDAPPropertyMapping, stri
                     ${t`Expression using Python.`}
                     <a
                         target="_blank"
-                        href="https://goauthentik.io/docs/property-mappings/expression?utm_source=authentik"
+                        href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
                     >
                         ${t`See documentation for a list of all variables.`}
                     </a>

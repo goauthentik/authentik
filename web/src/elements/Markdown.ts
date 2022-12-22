@@ -1,3 +1,4 @@
+import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
 
@@ -56,7 +57,7 @@ export class Markdown extends AKElement {
         if (md.filename === "index.md") {
             relPath = relPath.replace("index.md", "");
         }
-        const baseURL = "https://goauthentik.io";
+        const baseURL = docLink("");
         const fullURL = `${baseURL}${relPath}.$1`;
         return input.replace(relativeLink, `href="${fullURL}" target="_blank"`);
     }
