@@ -70,7 +70,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
     enabled = models.BooleanField(default=True)
     managed_models = ArrayField(models.TextField(), default=list)
 
-    def retrieve_oci(self) -> str:
+    def retrieve_oci(self) -> list[str]:
         """Get blueprint from an OCI registry"""
         client = BlueprintOCIClient(self.path.replace("oci://", "https://"))
         try:
@@ -79,16 +79,16 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
         except OCIException as exc:
             raise BlueprintRetrievalFailed(exc) from exc
 
-    def retrieve_file(self) -> str:
+    def retrieve_file(self) -> list[str]:
         """Get blueprint from path"""
         try:
             full_path = Path(CONFIG.y("blueprints_dir")).joinpath(Path(self.path))
             with full_path.open("r", encoding="utf-8") as _file:
-                return _file.read()
+                return [_file.read()]
         except (IOError, OSError) as exc:
             raise BlueprintRetrievalFailed(exc) from exc
 
-    def retrieve(self) -> str:
+    def retrieve(self) -> list[str]:
         """Retrieve blueprint contents"""
         if self.path.startswith("oci://"):
             return self.retrieve_oci()

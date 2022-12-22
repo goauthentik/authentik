@@ -75,22 +75,29 @@ class BlueprintOCIClient:
             raise OCIException(manifest["errors"])
         return manifest
 
-    def fetch_blobs(self, manifest: dict[str, Any]):
+    def fetch_blobs(self, manifest: dict[str, Any]) -> list[str]:
         """Fetch blob based on manifest info"""
-        blob = None
+        blob_digests = []
         for layer in manifest.get("layers", []):
             if layer.get("mediaType", "") == OCI_MEDIA_TYPE:
-                blob = layer.get("digest")
-                self.logger.debug("Found layer with matching media type", blob=blob)
-        if not blob:
+                blob_digests.append(layer.get("digest"))
+        if not blob_digests:
             raise OCIException("Blob not found")
+        bodies = []
+        for blob in blob_digests:
+            bodies.append(self.fetch_blob(blob))
+        self.logger.debug("Fetched blobs", count=len(bodies))
+        return bodies
 
+    def fetch_blob(self, digest: str) -> str:
+        """Fetch blob based on manifest info"""
         blob_request = self.client.NewRequest(
             "GET",
             "/v2/<name>/blobs/<digest>",
-            WithDigest(blob),
+            WithDigest(digest),
         )
         try:
+            self.logger.debug("Fetching blob", digest=digest)
             blob_response = self.client.Do(blob_request)
             blob_response.raise_for_status()
             return blob_response.text

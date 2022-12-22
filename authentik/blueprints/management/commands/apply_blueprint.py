@@ -18,7 +18,7 @@ class Command(BaseCommand):
         """Apply all blueprints in order, abort when one fails to import"""
         for blueprint_path in options.get("blueprints", []):
             content = BlueprintInstance(path=blueprint_path).retrieve()
-            importer = Importer(content)
+            importer = Importer(*content)
             valid, logs = importer.validate()
             if not valid:
                 for log in logs:

@@ -21,7 +21,7 @@ def apply_blueprint(*files: str):
         def wrapper(*args, **kwargs):
             for file in files:
                 content = BlueprintInstance(path=file).retrieve()
-                Importer(content).apply()
+                Importer(*content).apply()
             return func(*args, **kwargs)
 
         return wrapper
