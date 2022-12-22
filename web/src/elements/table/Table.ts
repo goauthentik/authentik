@@ -447,6 +447,8 @@ export abstract class Table<T> extends AKElement {
                                       name="select-all"
                                       type="checkbox"
                                       aria-label=${t`Select all rows`}
+                                      .checked=${this.selectedElements.length ===
+                                      this.data?.results.length}
                                       @input=${(ev: InputEvent) => {
                                           if ((ev.target as HTMLInputElement).checked) {
                                               this.selectedElements =
