@@ -92,7 +92,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
         if ":" in url.path:
             path, _, ref = path.partition(":")
         client = NewClient(
-            f"{url.scheme}://{url.hostname}",
+            f"https://{url.hostname}",
             WithUserAgent(authentik_user_agent()),
             WithUsernamePassword(url.username, url.password),
             WithDefaultName(path),
@@ -135,12 +135,11 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
     def retrieve(self) -> str:
         """Retrieve blueprint contents"""
+        if self.path.startswith("oci://"):
+            return self.retrieve_oci()
         full_path = Path(CONFIG.y("blueprints_dir")).joinpath(Path(self.path))
-        if full_path.exists():
-            LOGGER.debug("Blueprint path exists locally", instance=self)
-            with full_path.open("r", encoding="utf-8") as _file:
-                return _file.read()
-        return self.retrieve_oci()
+        with full_path.open("r", encoding="utf-8") as _file:
+            return _file.read()
 
     @property
     def serializer(self) -> Serializer:
