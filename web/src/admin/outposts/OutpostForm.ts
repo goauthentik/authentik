@@ -205,12 +205,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     ${t`Set custom attributes using YAML or JSON.`}
                 </p>
                 <p class="pf-c-form__helper-text">
-                    See
+                    ${t`See more here:`}&nbsp;
                     <a
                         target="_blank"
                         href="${docLink("/docs/outposts?utm_source=authentik#configuration")}"
-                        >documentation</a
-                    >.
+                        >${t`Documentation`}</a
+                    >
                 </p>
             </ak-form-element-horizontal>
         </form>`;
