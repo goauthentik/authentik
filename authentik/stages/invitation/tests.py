@@ -23,7 +23,7 @@ from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 
-class TestUserLoginStage(FlowTestCase):
+class TestInvitationStage(FlowTestCase):
     """Login tests"""
 
     def setUp(self):
@@ -97,6 +97,33 @@ class TestUserLoginStage(FlowTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    def test_invalid_flow(self):
+        """Test with invitation, invalid flow limit"""
+        invalid_flow = create_test_flow(FlowDesignation.ENROLLMENT)
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        data = {"foo": "bar"}
+        invite = Invitation.objects.create(
+            created_by=get_anonymous_user(), fixed_data=data, flow=invalid_flow
+        )
+
+        with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
+            base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+            args = urlencode({INVITATION_TOKEN_KEY: invite.pk.hex})
+            response = self.client.get(base_url + f"?query={args}")
+
+        session = self.client.session
+        plan: FlowPlan = session[SESSION_KEY_PLAN]
+
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            component="ak-stage-access-denied",
+        )
 
     def test_with_invitation_prompt_data(self):
         """Test with invitation, check data in session"""
