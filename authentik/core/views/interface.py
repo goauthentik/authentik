@@ -5,9 +5,9 @@ from typing import Any
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 from rest_framework.request import Request
+
 from authentik import get_build_hash
 from authentik.admin.tasks import LOCAL_VERSION
-
 from authentik.api.v3.config import ConfigView
 from authentik.flows.models import Flow
 from authentik.tenants.api import CurrentTenantSerializer
