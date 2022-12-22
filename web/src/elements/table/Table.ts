@@ -12,7 +12,7 @@ import "@goauthentik/elements/table/TableSearch";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -157,6 +157,11 @@ export abstract class Table<T> extends AKElement {
             PFDropdown,
             PFPagination,
             AKGlobal,
+            css`
+                .pf-c-table tbody .pf-c-table__check input {
+                    margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+                }
+            `,
         ];
     }
 
