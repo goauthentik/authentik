@@ -50,6 +50,9 @@ export class NotificationDrawer extends AKElement {
                 .pf-c-notification-drawer__list-item-description {
                     white-space: pre-wrap;
                 }
+                .pf-c-notification-drawer__footer {
+                    margin: 1rem;
+                }
             `,
         );
     }
