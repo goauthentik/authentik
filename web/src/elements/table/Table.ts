@@ -286,34 +286,35 @@ export abstract class Table<T> extends AKElement {
                 <tr role="row">
                     ${this.checkbox
                         ? html`<td class="pf-c-table__check" role="cell">
-                              <input
-                                  type="checkbox"
-                                  .checked=${this.selectedElements.indexOf(item) >= 0}
-                                  @input=${(ev: InputEvent) => {
-                                      if ((ev.target as HTMLInputElement).checked) {
-                                          // Add item to selected
-                                          this.selectedElements.push(item);
-                                      } else {
-                                          // Get index of item and remove if selected
-                                          const index = this.selectedElements.indexOf(item);
-                                          if (index <= -1) return;
-                                          this.selectedElements.splice(index, 1);
-                                      }
-                                      this.requestUpdate();
-                                      // Unset select-all if selectedElements is empty
-                                      if (this.selectedElements.length < 1) {
-                                          const selectAllCheckbox =
-                                              this.shadowRoot?.querySelector<HTMLInputElement>(
-                                                  "[name=select-all]",
-                                              );
-                                          if (!selectAllCheckbox) {
-                                              return;
+                              <label
+                                  ><input
+                                      type="checkbox"
+                                      .checked=${this.selectedElements.indexOf(item) >= 0}
+                                      @input=${(ev: InputEvent) => {
+                                          if ((ev.target as HTMLInputElement).checked) {
+                                              // Add item to selected
+                                              this.selectedElements.push(item);
+                                          } else {
+                                              // Get index of item and remove if selected
+                                              const index = this.selectedElements.indexOf(item);
+                                              if (index <= -1) return;
+                                              this.selectedElements.splice(index, 1);
                                           }
-                                          selectAllCheckbox.checked = false;
                                           this.requestUpdate();
-                                      }
-                                  }}
-                              />
+                                          // Unset select-all if selectedElements is empty
+                                          if (this.selectedElements.length < 1) {
+                                              const selectAllCheckbox =
+                                                  this.shadowRoot?.querySelector<HTMLInputElement>(
+                                                      "[name=select-all]",
+                                                  );
+                                              if (!selectAllCheckbox) {
+                                                  return;
+                                              }
+                                              selectAllCheckbox.checked = false;
+                                              this.requestUpdate();
+                                          }
+                                      }}
+                              /></label>
                           </td>`
                         : html``}
                     ${this.expandable
