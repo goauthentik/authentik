@@ -46,10 +46,19 @@ To fetch blueprints from a private registry with authentication, credentials can
 
 Blueprints are re-fetched each execution, so when using changing tags, blueprints will automatically be updated.
 
-To push a blueprint to an OCI-compatible registry, [ORAS](https://oras.land/) can be used with this command
+To push a blueprint to an OCI-compatible registry, [ORAS](https://oras.land) can be used with this command
 
 ```
-oras push ghcr.io/<username>/blueprint/<blueprint name>:latest <yaml file>:application/vnd.goauthentik.blueprint.v1+yaml
+oras push ghcr.io/<username>/blueprint/<blueprint name>:latest \
+    <yaml file>:application/vnd.goauthentik.blueprint.v1+yaml
+```
+
+Starting with authentik 2022.12, blueprints hosted in OCI registries can contain multiple blueprints in a single package. To push an artifact with multiple files, just append more files to the command above:
+
+```
+oras push ghcr.io/<username>/blueprint/<blueprint name>:latest \
+    blueprint1.yaml:application/vnd.goauthentik.blueprint.v1+yaml \
+    blueprint2.yaml:application/vnd.goauthentik.blueprint.v1+yaml
 ```
 
 ## Storage - Internal
