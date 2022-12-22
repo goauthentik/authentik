@@ -115,6 +115,8 @@ If you have any questions or comments about this advisory:
 <details><summary>Mailing list template</summary>
 <p>
 
+Subject: `Notice of upcoming authentik Security releases 2022.10.3 and 2022.11.3`
+
 ```markdown
 We'll be publishing a security Issue and accompanying Fix on _date_, 13:00 UTC with the Criticality level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more infos, see the authentik Security policy here: https://goauthentik.io/docs/security/policy.
 ```
@@ -139,3 +141,30 @@ We'll be publishing a security Issue and accompanying Fix on _date_, 13:00 UTC w
 -   Cherry-pick the merge commit onto the version branch
 -   If the fix made any changes to the API schema, manually install the latest version of the API client in `/web`
 -   Resume the instructions above, starting with the `bumpversion` step
+-   After the release has been published, update the Discord announcement and send another mail to the mailing list to point to the new releases
+
+<details><summary>Mailing list template</summary>
+<p>
+
+Subject: `Release of authentik Security releases 2022.10.3 and 2022.11.3`
+
+```markdown
+The security advisory has been published: https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf
+
+Releases with fixes are being built and will be available here: https://github.com/goauthentik/authentik/releases
+```
+
+</p>
+</details>
+
+<details><summary>Discord template</summary>
+<p>
+
+```markdown
+[...existing announcement...]
+
+Edit: Advisory is here https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf, the fixed versions are currently building and will be available here: https://github.com/goauthentik/authentik/releases
+```
+
+</p>
+</details>
