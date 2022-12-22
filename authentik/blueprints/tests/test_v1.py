@@ -130,7 +130,7 @@ class TestBlueprintsV1(TransactionTestCase):
         ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").delete()
         Group.objects.filter(name="test").delete()
         environ["foo"] = generate_id()
-        importer = Importer(load_yaml_fixture("fixtures/tags.yaml"), {"bar": "baz"})
+        importer = Importer(load_yaml_fixture("fixtures/tags.yaml"), context={"bar": "baz"})
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         policy = ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").first()
