@@ -41,4 +41,4 @@ To report a vulnerability, send an email to [security@goauthentik.io](mailto:sec
 
 ## Getting security notifications
 
-To get security notifications, join the [discord](https://goauthentik.io/discord) server. In the future there will be a mailing list too.
+To get security notifications, subscribe to the mailing list [here](https://groups.google.com/g/authentik-security-announcements) or join the [discord](https://goauthentik.io/discord) server.
