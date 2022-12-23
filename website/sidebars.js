@@ -289,7 +289,11 @@ module.exports = {
                 title: "Security",
                 slug: "security",
             },
-            items: ["security/policy", "security/CVE-2022-46145"],
+            items: [
+                "security/policy",
+                "security/CVE-2022-46145",
+                "security/CVE-2022-46172",
+            ],
         },
     ],
 };

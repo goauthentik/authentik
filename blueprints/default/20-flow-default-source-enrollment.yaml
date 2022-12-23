@@ -57,6 +57,8 @@ entries:
     name: default-source-enrollment-write
   id: default-source-enrollment-write
   model: authentik_stages_user_write.userwritestage
+  attrs:
+    can_create_users: true
 - attrs:
     re_evaluate_policies: true
   identifiers:

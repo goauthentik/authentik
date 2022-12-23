@@ -1,10 +1,9 @@
 """Write stage logic"""
-from typing import Any
+from typing import Any, Optional
 
-from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.db import transaction
-from django.db.utils import IntegrityError
+from django.db.utils import IntegrityError, InternalError
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 
@@ -47,7 +46,7 @@ class UserWriteStageView(StageView):
         """Wrapper for post requests"""
         return self.get(request)
 
-    def ensure_user(self) -> tuple[User, bool]:
+    def ensure_user(self) -> tuple[Optional[User], bool]:
         """Ensure a user exists"""
         user_created = False
         path = self.executor.plan.context.get(
@@ -55,7 +54,11 @@ class UserWriteStageView(StageView):
         )
         if path == "":
             path = User.default_path()
+        if not self.request.user.is_anonymous:
+            self.executor.plan.context.setdefault(PLAN_CONTEXT_PENDING_USER, self.request.user)
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
+            if not self.executor.current_stage.can_create_users:
+                return None, False
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
                 is_active=not self.executor.current_stage.create_users_as_inactive,
                 path=path,
@@ -110,11 +113,14 @@ class UserWriteStageView(StageView):
         a new user is created."""
         if PLAN_CONTEXT_PROMPT not in self.executor.plan.context:
             message = _("No Pending data.")
-            messages.error(request, message)
             self.logger.debug(message)
-            return self.executor.stage_invalid()
+            return self.executor.stage_invalid(message)
         data = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
         user, user_created = self.ensure_user()
+        if not user:
+            message = _("No user found and can't create new user.")
+            self.logger.info(message)
+            return self.executor.stage_invalid(message)
         # Before we change anything, check if the user is the same as in the request
         # and we're updating a password. In that case we need to update the session hash
         # Also check that we're not currently impersonating, so we don't update the session
@@ -137,9 +143,9 @@ class UserWriteStageView(StageView):
                     user.ak_groups.add(self.executor.current_stage.create_users_group)
                 if PLAN_CONTEXT_GROUPS in self.executor.plan.context:
                     user.ak_groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
-        except (IntegrityError, ValueError, TypeError) as exc:
+        except (IntegrityError, ValueError, TypeError, InternalError) as exc:
             self.logger.warning("Failed to save user", exc=exc)
-            return self.executor.stage_invalid()
+            return self.executor.stage_invalid(_("Failed to save user"))
         user_write.send(sender=self, request=request, user=user, data=data, created=user_created)
         # Check if the password has been updated, and update the session auth hash
         if should_update_session:
