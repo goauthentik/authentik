@@ -149,6 +149,15 @@ class TestBlueprintsV1(TransactionTestCase):
                     "boolXor": True,
                     "boolXnor": False,
                     "boolComplex": True,
+                    "if_true_complex": {
+                        "dictionary": {
+                            "with": {"keys": "and_values"},
+                            "and_nested_custom_tags": "foo-bar",
+                        }
+                    },
+                    "if_false_complex": ["list", "with", "items", "foo-bar"],
+                    "if_true_simple": True,
+                    "if_false_simple": 2,
                 }
             )
         )

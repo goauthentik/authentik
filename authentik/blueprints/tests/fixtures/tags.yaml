@@ -21,6 +21,40 @@ entries:
       boolXor: !Condition [XOR, !Context foo, !Format ["%s", "a_string"], 1]
       boolXnor: !Condition [XNOR, !Context foo, !Format ["%s", "a_string"], 1]
       boolComplex: !Condition [XNOR, !Condition [AND, !Context non_existing], !Condition [NOR, a string], !Condition [XOR, null]]
+      if_true_complex: !If [
+        true,
+        {
+            dictionary:
+            {
+                with:
+                {
+                  keys: "and_values"
+                },
+                and_nested_custom_tags: !Format ["foo-%s", !Context foo]
+            }
+        },
+        null
+      ]
+      if_false_complex: !If [
+        !Condition [AND, false],
+        null,
+        [
+          list,
+          with,
+          items,
+          !Format ["foo-%s", !Context foo]
+        ]
+      ]
+      if_true_simple: !If [
+        !Context foo,
+        true,
+        text
+      ]
+      if_false_simple: !If [
+        null,
+        false,
+        2
+      ]
   identifiers:
     name: test
   conditions:
