@@ -82,6 +82,7 @@ module.exports = {
                         "services/sonarr/index",
                         "services/tautulli/index",
                         "services/jellyfin/index",
+                        "services/weblate/index",
                     ],
                 },
                 {
@@ -89,6 +90,7 @@ module.exports = {
                     label: "Monitoring",
                     items: [
                         "services/grafana/index",
+                        "services/sentry/index",
                         "services/ubuntu-landscape/index",
                         "services/uptime-kuma/index",
                         "services/zabbix/index",
