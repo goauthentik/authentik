@@ -98,13 +98,6 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
             if (!this.flowSlug) {
                 return;
             }
-            new FlowsApi(DEFAULT_CONFIG)
-                .flowsInstancesExecuteRetrieve({
-                    slug: this.flowSlug || "",
-                })
-                .then(() => {
-                    this.nextChallenge();
-                });
         });
     }
 
