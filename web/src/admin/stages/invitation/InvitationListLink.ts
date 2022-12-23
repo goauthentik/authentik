@@ -14,12 +14,12 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { StagesApi } from "@goauthentik/api";
+import { Invitation, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-invitation-list-link")
 export class InvitationListLink extends AKElement {
-    @property()
-    invitation?: string;
+    @property({ attribute: false })
+    invitation?: Invitation;
 
     @property()
     selectedFlow?: string;
@@ -29,60 +29,67 @@ export class InvitationListLink extends AKElement {
     }
 
     renderLink(): string {
-        return `${window.location.protocol}//${window.location.host}/if/flow/${this.selectedFlow}/?itoken=${this.invitation}`;
+        if (this.invitation?.flowObj) {
+            this.selectedFlow = this.invitation.flowObj?.slug;
+        }
+        return `${window.location.protocol}//${window.location.host}/if/flow/${this.selectedFlow}/?itoken=${this.invitation?.pk}`;
+    }
+
+    renderFlowSelector(): TemplateResult {
+        return html`<div class="pf-c-description-list__group">
+            <dt class="pf-c-description-list__term">
+                <span class="pf-c-description-list__text">${t`Select an enrollment flow`}</span>
+            </dt>
+            <dd class="pf-c-description-list__description">
+                <div class="pf-c-description-list__text">
+                    <select
+                        class="pf-c-form-control"
+                        @change=${(ev: Event) => {
+                            const current = (ev.target as HTMLInputElement).value;
+                            this.selectedFlow = current;
+                        }}
+                    >
+                        ${until(
+                            new StagesApi(DEFAULT_CONFIG)
+                                .stagesInvitationStagesList({
+                                    ordering: "name",
+                                    noFlows: false,
+                                })
+                                .then((stages) => {
+                                    if (
+                                        !this.selectedFlow &&
+                                        stages.results.length > 0 &&
+                                        stages.results[0].flowSet
+                                    ) {
+                                        this.selectedFlow = stages.results[0].flowSet[0].slug;
+                                    }
+                                    const seenFlowSlugs: string[] = [];
+                                    return stages.results.map((stage) => {
+                                        return stage.flowSet?.map((flow) => {
+                                            if (seenFlowSlugs.includes(flow.slug)) {
+                                                return html``;
+                                            }
+                                            seenFlowSlugs.push(flow.slug);
+                                            return html`<option
+                                                value=${flow.slug}
+                                                ?selected=${flow.slug === this.selectedFlow}
+                                            >
+                                                ${flow.slug}
+                                            </option>`;
+                                        });
+                                    });
+                                }),
+                            html`<option>${t`Loading...`}</option>`,
+                        )}
+                    </select>
+                </div>
+            </dd>
+        </div>`;
     }
 
     render(): TemplateResult {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`Select an enrollment flow`}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">
-                        <select
-                            class="pf-c-form-control"
-                            @change=${(ev: Event) => {
-                                const current = (ev.target as HTMLInputElement).value;
-                                this.selectedFlow = current;
-                            }}
-                        >
-                            ${until(
-                                new StagesApi(DEFAULT_CONFIG)
-                                    .stagesInvitationStagesList({
-                                        ordering: "name",
-                                        noFlows: false,
-                                    })
-                                    .then((stages) => {
-                                        if (
-                                            !this.selectedFlow &&
-                                            stages.results.length > 0 &&
-                                            stages.results[0].flowSet
-                                        ) {
-                                            this.selectedFlow = stages.results[0].flowSet[0].slug;
-                                        }
-                                        const seenFlowSlugs: string[] = [];
-                                        return stages.results.map((stage) => {
-                                            return stage.flowSet?.map((flow) => {
-                                                if (seenFlowSlugs.includes(flow.slug)) {
-                                                    return html``;
-                                                }
-                                                seenFlowSlugs.push(flow.slug);
-                                                return html`<option
-                                                    value=${flow.slug}
-                                                    ?selected=${flow.slug === this.selectedFlow}
-                                                >
-                                                    ${flow.slug}
-                                                </option>`;
-                                            });
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
-                    </div>
-                </dd>
-            </div>
+            ${this.invitation?.flow === undefined ? this.renderFlowSelector() : html``}
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
                     <span class="pf-c-description-list__text"

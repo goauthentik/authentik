@@ -294,6 +294,7 @@ module.exports = {
                 "security/policy",
                 "security/CVE-2022-46145",
                 "security/CVE-2022-46172",
+                "security/CVE-2022-23555",
             ],
         },
     ],
