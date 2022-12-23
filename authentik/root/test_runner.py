@@ -34,7 +34,7 @@ class PytestTestRunner:  # pragma: no cover
             "outposts.container_image_base",
             f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
         )
-        CONFIG.y_set("error_reporting.sample_rate", 1.0)
+        CONFIG.y_set("error_reporting.sample_rate", 0)
         sentry_init(
             environment="testing",
             send_default_pii=True,
