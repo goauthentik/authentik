@@ -24635,6 +24635,10 @@ paths:
       description: UserWriteStage Viewset
       parameters:
       - in: query
+        name: can_create_users
+        schema:
+          type: boolean
+      - in: query
         name: create_users_as_inactive
         schema:
           type: boolean
@@ -35122,6 +35126,10 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        can_create_users:
+          type: boolean
+          description: When set, this stage can create users. If not enabled and no
+            user is available, stage will fail.
         user_path_template:
           type: string
     PatchedWebAuthnDeviceRequest:
@@ -38341,6 +38349,10 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        can_create_users:
+          type: boolean
+          description: When set, this stage can create users. If not enabled and no
+            user is available, stage will fail.
         user_path_template:
           type: string
       required:
@@ -38369,6 +38381,10 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        can_create_users:
+          type: boolean
+          description: When set, this stage can create users. If not enabled and no
+            user is available, stage will fail.
         user_path_template:
           type: string
       required:

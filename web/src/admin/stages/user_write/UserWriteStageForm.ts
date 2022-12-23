@@ -59,6 +59,21 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal name="canCreateUsers">
+                        <div class="pf-c-check">
+                            <input
+                                type="checkbox"
+                                class="pf-c-check__input"
+                                ?checked=${first(this.instance?.canCreateUsers, false)}
+                            />
+                            <label class="pf-c-check__label">
+                                ${t`Can create users`}
+                            </label>
+                        </div>
+                        <p class="pf-c-form__helper-text">
+                            ${t`When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail.`}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="createUsersAsInactive">
                         <div class="pf-c-check">
                             <input

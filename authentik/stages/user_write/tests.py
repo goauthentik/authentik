@@ -1,6 +1,4 @@
 """write tests"""
-import string
-from random import SystemRandom
 from unittest.mock import patch
 
 from django.urls import reverse
@@ -14,6 +12,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.generators import generate_key
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserWriteStage
 from authentik.stages.user_write.stage import PLAN_CONTEXT_GROUPS, UserWriteStageView
@@ -32,12 +31,11 @@ class TestUserWriteStage(FlowTestCase):
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
         self.source = Source.objects.create(name="fake_source")
+        self.user = create_test_admin_user()
 
     def test_user_create(self):
         """Test creation of user"""
-        password = "".join(
-            SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(8)
-        )
+        password = generate_key()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PROMPT] = {
@@ -66,9 +64,7 @@ class TestUserWriteStage(FlowTestCase):
 
     def test_user_update(self):
         """Test update of existing user"""
-        new_password = "".join(
-            SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(8)
-        )
+        new_password = generate_key()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = User.objects.create(
             username="unittest", email="test@goauthentik.io"
@@ -136,6 +132,49 @@ class TestUserWriteStage(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+        )
+
+    def test_authenticated_no_user(self):
+        """Test user in session and none in plan"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        self.client.force_login(self.user)
+        session = self.client.session
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            "username": "foo",
+            "attribute_some-custom-attribute": "test",
+            "some_ignored_attribute": "bar",
+        }
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, "foo")
+
+    def test_no_create(self):
+        """Test can_create_users set to false"""
+        self.stage.can_create_users = False
+        self.stage.save()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            "username": "foo",
+            "attribute_some-custom-attribute": "test",
+            "some_ignored_attribute": "bar",
+        }
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
         self.assertStageResponse(
             response,
             self.flow,
