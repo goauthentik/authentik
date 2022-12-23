@@ -42,14 +42,6 @@ module.exports = {
                 },
                 {
                     type: "category",
-                    label: "Platforms",
-                    items: [
-                        "services/budibase/index",
-                        "services/wordpress/index",
-                    ],
-                },
-                {
-                    type: "category",
                     label: "Hypervisors / Orchestrators",
                     items: [
                         "services/portainer/index",
