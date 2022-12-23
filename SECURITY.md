@@ -6,8 +6,8 @@ Authentik takes security very seriously. We follow the rules of [responsible dis
 
 | Version   | Supported          |
 | --------- | ------------------ |
-| 2022.10.x | :white_check_mark: |
 | 2022.11.x | :white_check_mark: |
+| 2022.12.x | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
