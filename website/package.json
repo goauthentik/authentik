@@ -6,7 +6,7 @@
     "scripts": {
         "docusaurus": "docusaurus",
         "watch": "docusaurus start",
-        "build": "docusaurus build",
+        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus build",
         "build-docs-only": "docusaurus build --config docusaurus.docs-only.js --out-dir help",
         "swizzle": "docusaurus swizzle",
         "deploy": "docusaurus deploy",

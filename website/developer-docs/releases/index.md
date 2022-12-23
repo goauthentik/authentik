@@ -152,7 +152,7 @@ Subject: `Release of authentik Security releases 2022.10.3 and 2022.11.3`
 ```markdown
 The security advisory for CVE-2022-xxxxx has been published: https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf
 
-Releases with fixes are being built and will be available here: https://github.com/goauthentik/authentik/releases
+Releases 2022.10.3 and 2022.11.3 with fixes included are available here: https://github.com/goauthentik/authentik/releases
 ```
 
 </p>
@@ -164,7 +164,11 @@ Releases with fixes are being built and will be available here: https://github.c
 ```markdown
 [...existing announcement...]
 
-Edit: Advisory for for CVE-2022-xxxxx has been published here https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf, the fixed versions are currently building and will be available here: https://github.com/goauthentik/authentik/releases
+Edit:
+
+Advisory for for CVE-2022-xxxxx has been published here https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf
+
+The fixed versions 2022.10.3 and 2022.11.3 are available here: https://github.com/goauthentik/authentik/releases
 ```
 
 </p>

@@ -66,9 +66,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                                 class="pf-c-check__input"
                                 ?checked=${first(this.instance?.canCreateUsers, false)}
                             />
-                            <label class="pf-c-check__label">
-                                ${t`Can create users`}
-                            </label>
+                            <label class="pf-c-check__label"> ${t`Can create users`} </label>
                         </div>
                         <p class="pf-c-form__helper-text">
                             ${t`When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail.`}
