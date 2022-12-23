@@ -29,7 +29,7 @@ class OAuthTestCase(TestCase):
 
     def validate_jwt(self, token: RefreshToken, provider: OAuth2Provider) -> dict[str, Any]:
         """Validate that all required fields are set"""
-        key, alg = provider.get_jwt_key()
+        key, alg = provider.jwt_key
         if alg != JWTAlgorithms.HS256:
             key = provider.signing_key.public_key
         jwt = decode(

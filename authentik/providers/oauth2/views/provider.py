@@ -38,7 +38,7 @@ class ProviderInfoView(View):
         )
         if SCOPE_OPENID not in scopes:
             scopes.append(SCOPE_OPENID)
-        _, supported_alg = provider.get_jwt_key()
+        _, supported_alg = provider.jwt_key
         return {
             "issuer": provider.get_issuer(self.request),
             "authorization_endpoint": self.request.build_absolute_uri(

@@ -143,7 +143,7 @@ class TestTokenClientCredentials(OAuthTestCase):
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         self.assertEqual(body["token_type"], "bearer")
-        _, alg = self.provider.get_jwt_key()
+        _, alg = self.provider.jwt_key
         jwt = decode(
             body["access_token"],
             key=self.provider.signing_key.public_key,
