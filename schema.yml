@@ -22278,6 +22278,10 @@ paths:
           type: string
           format: date-time
       - in: query
+        name: flow__slug
+        schema:
+          type: string
+      - in: query
         name: name
         schema:
           type: string
@@ -28391,8 +28395,18 @@ components:
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
+        flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, only the configured flow can use this invitation.
+        flow_obj:
+          allOf:
+          - $ref: '#/components/schemas/Flow'
+          readOnly: true
       required:
       - created_by
+      - flow_obj
       - name
       - pk
     InvitationRequest:
@@ -28413,6 +28427,11 @@ components:
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
+        flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, only the configured flow can use this invitation.
       required:
       - name
     InvitationStage:
@@ -33708,6 +33727,11 @@ components:
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
+        flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, only the configured flow can use this invitation.
     PatchedInvitationStageRequest:
       type: object
       description: InvitationStage Serializer

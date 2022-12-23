@@ -37,22 +37,30 @@ class InvitationStageView(StageView):
             return self.executor.plan.context[PLAN_CONTEXT_PROMPT][INVITATION_TOKEN_KEY_CONTEXT]
         return None
 
+    def get_invite(self) -> Optional[Invitation]:
+        """Check the token, find the invite and check it's flow"""
+        token = self.get_token()
+        if not token:
+            return None
+        invite: Invitation = Invitation.objects.filter(pk=token).first()
+        if not invite:
+            self.logger.debug("invalid invitation", token=token)
+            return None
+        if invite.flow and invite.flow.pk != self.executor.plan.flow_pk:
+            self.logger.debug("invite for incorrect flow", expected=invite.flow.slug)
+            return None
+        return invite
+
     def get(self, request: HttpRequest) -> HttpResponse:
         """Apply data to the current flow based on a URL"""
         stage: InvitationStage = self.executor.current_stage
-        token = self.get_token()
-        if not token:
-            # No Invitation was given, raise error or continue
+
+        invite = self.get_invite()
+        if not invite:
             if stage.continue_flow_without_invitation:
                 return self.executor.stage_ok()
             return self.executor.stage_invalid()
 
-        invite: Invitation = Invitation.objects.filter(pk=token).first()
-        if not invite:
-            self.logger.debug("invalid invitation", token=token)
-            if stage.continue_flow_without_invitation:
-                return self.executor.stage_ok()
-            return self.executor.stage_invalid()
         self.executor.plan.context[INVITATION_IN_EFFECT] = True
         self.executor.plan.context[INVITATION] = invite
 
