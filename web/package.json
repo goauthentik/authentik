@@ -78,7 +78,7 @@
         "@rollup/plugin-node-resolve": "^15.0.1",
         "@rollup/plugin-replace": "^5.0.2",
         "@rollup/plugin-typescript": "^10.0.1",
-        "@sentry/browser": "^7.28.0",
+        "@sentry/browser": "^7.28.1",
         "@sentry/tracing": "^7.28.1",
         "@squoosh/cli": "^0.7.2",
         "@trivago/prettier-plugin-sort-imports": "^4.0.0",
