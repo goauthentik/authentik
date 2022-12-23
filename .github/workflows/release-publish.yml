@@ -170,11 +170,9 @@ jobs:
         if: ${{ github.event_name == 'release' }}
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: beryjuorg
+          SENTRY_ORG: authentik-security-inc
           SENTRY_PROJECT: authentik
-          SENTRY_URL: https://sentry.beryju.org
         with:
           version: authentik@${{ steps.ev.outputs.version }}
-          environment: beryjuorg-prod
           sourcemaps: './web/dist'
           url_prefix: '~/static/dist'

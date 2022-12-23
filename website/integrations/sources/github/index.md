@@ -91,7 +91,7 @@ orgs = orgs_response.json()
 # `orgs` will be formatted like this
 # [
 #     {
-#         "login": "beryjuorg",
+#         "login": "goauthentik",
 #         [...]
 #     }
 # ]
