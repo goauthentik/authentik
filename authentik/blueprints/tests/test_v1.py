@@ -1,4 +1,6 @@
 """Test blueprints v1"""
+from os import environ
+
 from django.test import TransactionTestCase
 
 from authentik.blueprints.tests import load_yaml_fixture
@@ -9,6 +11,7 @@ from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
+from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.user_login.models import UserLoginStage
 
@@ -132,6 +135,7 @@ class TestBlueprintsV1(TransactionTestCase):
         """Test some yaml tags"""
         ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").delete()
         Group.objects.filter(name="test").delete()
+        environ["foo"] = generate_id()
         importer = Importer(load_yaml_fixture("fixtures/tags.yaml"), {"bar": "baz"})
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
@@ -150,6 +154,12 @@ class TestBlueprintsV1(TransactionTestCase):
                     "boolXnor": False,
                     "boolComplex": True,
                 }
+            )
+        )
+        self.assertTrue(
+            OAuthSource.objects.filter(
+                slug="test",
+                consumer_key=environ["foo"],
             )
         )
 

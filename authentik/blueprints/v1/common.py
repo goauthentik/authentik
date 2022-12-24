@@ -4,6 +4,7 @@ from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from functools import reduce
 from operator import ixor
+from os import getenv
 from typing import Any, Literal, Optional
 from uuid import UUID
 
@@ -158,6 +159,26 @@ class KeyOf(YAMLTag):
         raise EntryInvalidError(
             f"KeyOf: failed to find entry with `id` of `{self.id_from}` and a model instance"
         )
+
+
+class Env(YAMLTag):
+    """Lookup environment variable with optional default"""
+
+    key: str
+    default: Optional[Any]
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
+        super().__init__()
+        self.default = None
+        if isinstance(node, ScalarNode):
+            self.key = node.value
+        if isinstance(node, SequenceNode):
+            self.key = node.value[0].value
+            self.default = node.value[1].value
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        return getenv(self.key, self.default)
 
 
 class Context(YAMLTag):
@@ -332,6 +353,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Context", Context)
         self.add_constructor("!Format", Format)
         self.add_constructor("!Condition", Condition)
+        self.add_constructor("!Env", Env)
 
 
 class EntryInvalidError(SentryIgnoredException):
