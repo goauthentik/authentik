@@ -1,3 +1,4 @@
+import { PolicyBindingForm } from "@goauthentik/admin/policies/PolicyBindingForm";
 import "@goauthentik/admin/policies/dummy/DummyPolicyForm";
 import "@goauthentik/admin/policies/event_matcher/EventMatcherPolicyForm";
 import "@goauthentik/admin/policies/expiry/ExpiryPolicyForm";
@@ -9,6 +10,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
+import { FormWizardPage } from "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
@@ -24,7 +26,7 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { PoliciesApi, TypeCreate } from "@goauthentik/api";
+import { PoliciesApi, Policy, PolicyBinding, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-policy-wizard-initial")
 export class InitialPolicyWizardPage extends WizardPage {
@@ -46,10 +48,12 @@ export class InitialPolicyWizardPage extends WizardPage {
                         name="type"
                         id=${`${type.component}-${type.modelName}`}
                         @change=${() => {
-                            this.host.steps = [
-                                "initial",
+                            const idx = this.host.steps.indexOf("initial") + 1;
+                            this.host.steps.splice(
+                                idx,
+                                0,
                                 `type-${type.component}-${type.modelName}`,
-                            ];
+                            );
                             this.host.isValid = true;
                         }}
                     />
@@ -72,6 +76,12 @@ export class PolicyWizard extends AKElement {
     @property()
     createText = t`Create`;
 
+    @property({ type: Boolean })
+    showBindingPage = false;
+
+    @property()
+    bindingTarget?: string;
+
     @property({ attribute: false })
     policyTypes: TypeCreate[] = [];
 
@@ -84,7 +94,7 @@ export class PolicyWizard extends AKElement {
     render(): TemplateResult {
         return html`
             <ak-wizard
-                .steps=${["initial"]}
+                .steps=${this.showBindingPage ? ["initial", "create-binding"] : ["initial"]}
                 header=${t`New policy`}
                 description=${t`Create a new policy.`}
             >
@@ -100,6 +110,27 @@ export class PolicyWizard extends AKElement {
                         </ak-wizard-page-form>
                     `;
                 })}
+                ${this.showBindingPage
+                    ? html`<ak-wizard-page-form
+                          slot="create-binding"
+                          .sidebarLabel=${() => t`Create Binding`}
+                          .activePageCallback=${async (context: FormWizardPage) => {
+                              const createSlot = context.host.steps[1];
+                              const bindingForm =
+                                  context.querySelector<PolicyBindingForm>(
+                                      "ak-policy-binding-form",
+                                  );
+                              if (!bindingForm) return;
+                              bindingForm.instance = {
+                                  policy: (context.host.state[createSlot] as Policy).pk,
+                              } as PolicyBinding;
+                          }}
+                      >
+                          <ak-policy-binding-form
+                              .targetPk=${this.bindingTarget}
+                          ></ak-policy-binding-form>
+                      </ak-wizard-page-form>`
+                    : html``}
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
             </ak-wizard>
         `;

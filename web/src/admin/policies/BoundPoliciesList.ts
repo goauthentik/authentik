@@ -199,6 +199,10 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     ${t`Create Binding`}
                 </button>
             </ak-forms-modal>
-            <ak-policy-wizard createText=${t`Create Policy`}></ak-policy-wizard> `;
+            <ak-policy-wizard
+                createText=${t`Create Policy`}
+                ?showBindingPage=${true}
+                bindingTarget=${ifDefined(this.target)}
+            ></ak-policy-wizard> `;
     }
 }
