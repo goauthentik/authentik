@@ -158,6 +158,9 @@ export abstract class Table<T> extends AKElement {
             PFPagination,
             AKGlobal,
             css`
+                .pf-c-table thead .pf-c-table__check {
+                    min-width: 3rem;
+                }
                 .pf-c-table tbody .pf-c-table__check input {
                     margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
                 }
@@ -453,7 +456,8 @@ export abstract class Table<T> extends AKElement {
                                       type="checkbox"
                                       aria-label=${t`Select all rows`}
                                       .checked=${this.selectedElements.length ===
-                                      this.data?.results.length}
+                                          this.data?.results.length &&
+                                      this.selectedElements.length > 0}
                                       @input=${(ev: InputEvent) => {
                                           if ((ev.target as HTMLInputElement).checked) {
                                               this.selectedElements =
