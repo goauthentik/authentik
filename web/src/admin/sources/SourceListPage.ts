@@ -5,6 +5,7 @@ import "@goauthentik/admin/sources/plex/PlexSourceForm";
 import "@goauthentik/admin/sources/saml/SAMLSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
@@ -82,7 +83,11 @@ export class SourceListPage extends TablePage<Source> {
         return [
             html`<a href="#/core/sources/${item.slug}">
                 <div>${item.name}</div>
-                ${item.enabled ? html`` : html`<small>${t`Disabled`}</small>`}
+                ${item.enabled
+                    ? html``
+                    : html`<ak-label color=${PFColor.Orange} ?compact=${true}>
+                          ${t`Disabled`}</ak-label
+                      >`}
             </a>`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
@@ -105,10 +110,10 @@ export class SourceListPage extends TablePage<Source> {
 
     rowInbuilt(item: Source): TemplateResult[] {
         return [
-            html`<span>
+            html`<div>
                 <div>${item.name}</div>
-                <small>${t`Built-in`}</small>
-            </span>`,
+                <ak-label color=${PFColor.Grey} ?compact=${true}> ${t`Built-in`}</ak-label>
+            </div>`,
             html`${t`Built-in`}`,
             html``,
         ];

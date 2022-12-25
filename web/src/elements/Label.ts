@@ -22,6 +22,9 @@ export class Label extends AKElement {
     @property()
     icon?: string;
 
+    @property({ type: Boolean })
+    compact = false;
+
     static get styles(): CSSResult[] {
         return [PFBase, PFLabel, AKGlobal];
     }
@@ -35,14 +38,14 @@ export class Label extends AKElement {
             case PFColor.Red:
                 return "fa-times";
             case PFColor.Grey:
-                return "fa-question-circle";
+                return "fa-info-circle";
             default:
                 return "";
         }
     }
 
     render(): TemplateResult {
-        return html`<span class="pf-c-label ${this.color}">
+        return html`<span class="pf-c-label ${this.color} ${this.compact ? "pf-m-compact" : ""}">
             <span class="pf-c-label__content">
                 <span class="pf-c-label__icon">
                     <i
