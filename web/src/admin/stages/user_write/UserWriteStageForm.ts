@@ -102,7 +102,6 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Group`} name="createUsersGroup">
-                        <!-- @ts-ignore -->
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
