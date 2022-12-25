@@ -8,6 +8,9 @@ import copy from "rollup-plugin-copy";
 import cssimport from "rollup-plugin-cssimport";
 import { terser } from "rollup-plugin-terser";
 
+// https://github.com/d3/d3-interpolate/issues/58
+const D3_WARNING = /Circular dependency.*d3-[interpolate|selection]/;
+
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
 export const resources = [
@@ -95,6 +98,15 @@ export const defaultOptions = {
     preserveEntrySignatures: "strict",
     cache: true,
     context: "window",
+    onwarn: function (warning, warn) {
+        if (D3_WARNING.test(warning)) {
+            return;
+        }
+        if (warning.code === "UNRESOLVED_IMPORT") {
+            throw Object.assign(new Error(), warning);
+        }
+        warn(warning);
+    },
 };
 
 // Polyfills (imported first)
