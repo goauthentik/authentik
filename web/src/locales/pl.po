@@ -768,6 +768,14 @@ msgstr "Bind DN"
 msgid "Bind Password"
 msgstr "Powiąż hasło"
 
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "Bind existing policy"
+msgstr ""
+
+#: src/admin/flows/BoundStagesList.ts
+msgid "Bind existing stage"
+msgstr ""
+
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Bind flow"
 msgstr "Powiąż przepływ"
@@ -776,7 +784,6 @@ msgstr "Powiąż przepływ"
 msgid "Bind mode"
 msgstr "Tryb powiązania"
 
-#: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/BoundStagesList.ts
 msgid "Bind stage"
 msgstr "Powiąż etap"
@@ -873,6 +880,10 @@ msgstr "URL wywołania zwrotnego"
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system."
 msgstr "Może mieć format „unix://” podczas łączenia się z lokalnym demonem dockera, używając „ssh://” do łączenia się przez SSH lub „https://:2376” podczas łączenia się z systemem zdalnym."
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Can create users"
+msgstr ""
 
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/users/GroupSelectModal.ts
@@ -1410,6 +1421,14 @@ msgstr "Skopiuj link odzyskiwania"
 msgid "Create"
 msgstr "Utwórz"
 
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "Create & bind Policy"
+msgstr ""
+
+#: src/admin/flows/BoundStagesList.ts
+msgid "Create & bind Stage"
+msgstr ""
+
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Create App password"
@@ -1423,7 +1442,8 @@ msgstr "Utwórz aplikację"
 #: src/admin/policies/BoundPoliciesList.ts
 #: src/admin/policies/BoundPoliciesList.ts
 #: src/admin/policies/BoundPoliciesList.ts
-#: src/admin/policies/BoundPoliciesList.ts
+#: src/admin/policies/PolicyWizard.ts
+#: src/admin/stages/StageWizard.ts
 msgid "Create Binding"
 msgstr "Utwórz powiązanie"
 
@@ -1464,8 +1484,8 @@ msgid "Create Outpost"
 msgstr "Utwórz placówkę"
 
 #: src/admin/policies/BoundPoliciesList.ts
-msgid "Create Policy"
-msgstr "Utwórz zasadę"
+#~ msgid "Create Policy"
+#~ msgstr "Utwórz zasadę"
 
 #: src/admin/stages/prompt/PromptListPage.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
@@ -1480,8 +1500,8 @@ msgid "Create Service account"
 msgstr "Utwórz konto usługi"
 
 #: src/admin/flows/BoundStagesList.ts
-msgid "Create Stage"
-msgstr "Utwórz etap"
+#~ msgid "Create Stage"
+#~ msgstr "Utwórz etap"
 
 #: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/BoundStagesList.ts
@@ -1864,6 +1884,11 @@ msgstr "Rozłącz"
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "Docker URL"
 msgstr "URL Dockera"
+
+#: src/admin/blueprints/BlueprintForm.ts
+#: src/admin/outposts/OutpostForm.ts
+msgid "Documentation"
+msgstr ""
 
 #: src/admin/tenants/TenantForm.ts
 #: src/admin/tenants/TenantListPage.ts
@@ -2401,6 +2426,7 @@ msgid "Finish"
 msgstr "Zakończ"
 
 #: src/admin/flows/FlowImportForm.ts
+#: src/admin/stages/invitation/InvitationForm.ts
 msgid "Flow"
 msgstr "Przepływ"
 
@@ -3006,6 +3032,10 @@ msgstr "Przepływ unieważnienia"
 #~ msgid "Invitation"
 #~ msgstr "Zaproszenie"
 
+#: src/admin/stages/invitation/InvitationListPage.ts
+msgid "Invitation not limited to any flow, and can be used with any enrollment flow."
+msgstr ""
+
 #: src/admin/events/utils.ts
 msgid "Invitation used"
 msgstr "Wykorzystano zaproszenie"
@@ -3289,6 +3319,7 @@ msgstr "Ładowanie"
 #: src/admin/stages/identification/IdentificationStageForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
+#: src/admin/stages/invitation/InvitationForm.ts
 #: src/admin/stages/invitation/InvitationListLink.ts
 #: src/admin/stages/password/PasswordStageForm.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
@@ -3316,6 +3347,10 @@ msgstr "Lokalny"
 #: src/admin/events/TransportForm.ts
 msgid "Local (notifications will be created within authentik)"
 msgstr "Lokalny (powiadomienia będą tworzone w ramach authentik)"
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Local path"
+msgstr ""
 
 #~ msgid "Locale"
 #~ msgstr "Język"
@@ -3944,6 +3979,14 @@ msgstr ""
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "OAuth2/OIDC"
+msgstr ""
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "OCI Registry"
+msgstr ""
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "OCI URL, in the format of oci://registry.domain.tld/path/to/manifest."
 msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
@@ -4999,6 +5042,14 @@ msgstr "Uwierzytelniający klucz bezpieczeństwa"
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
 msgid "See documentation for a list of all variables."
 msgstr "Zobacz dokumentację, aby zobaczyć listę wszystkich zmiennych."
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "See more about OCI support here:"
+msgstr ""
+
+#: src/admin/outposts/OutpostForm.ts
+msgid "See more here:"
+msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
 msgid "Select a provider that this application should use. Alternatively, create a new provider."
@@ -6349,6 +6400,10 @@ msgstr "Numer początkowy UID"
 msgid "UPN"
 msgstr "UPN"
 
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "URL"
+msgstr ""
+
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "URL settings"
 msgstr "Ustawienia URL"
@@ -7094,6 +7149,10 @@ msgstr "Po włączeniu będą używane globalne ustawienia połączenia poczty e
 msgid "When enabled, the invitation will be deleted after usage."
 msgstr "Po włączeniu zaproszenie zostanie usunięte po użyciu."
 
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail."
+msgstr ""
+
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr "Po włączeniu pola użytkownika są dopasowywane niezależnie od wielkości liter."
@@ -7109,6 +7168,10 @@ msgstr "Po wybraniu pole hasła jest wyświetlane na tej samej stronie zamiast n
 #: src/admin/providers/saml/SAMLProviderForm.ts
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr "Po wybraniu, przychodzące podpisy asercji będą sprawdzane względem tego certyfikatu. Aby zezwolić na niepodpisane żądania, pozostaw domyślnie."
+
+#: src/admin/stages/invitation/InvitationForm.ts
+msgid "When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages."
+msgstr ""
 
 #: src/admin/policies/dummy/DummyPolicyForm.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts

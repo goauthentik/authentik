@@ -141,14 +141,18 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     renderToolbar(): TemplateResult {
         return html`
+            <ak-stage-wizard
+                createText=${t`Create & bind Stage`}
+                ?showBindingPage=${true}
+                bindingTarget=${ifDefined(this.target)}
+            ></ak-stage-wizard>
             <ak-forms-modal>
                 <span slot="submit"> ${t`Create`} </span>
                 <span slot="header"> ${t`Create Stage binding`} </span>
                 <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                 </ak-stage-binding-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Bind stage`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Bind existing stage`}</button>
             </ak-forms-modal>
-            <ak-stage-wizard createText=${t`Create Stage`}></ak-stage-wizard>
             ${super.renderToolbar()}
         `;
     }

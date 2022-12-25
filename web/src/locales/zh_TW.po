@@ -770,6 +770,14 @@ msgstr "Bind DN"
 msgid "Bind Password"
 msgstr "Bind 密码"
 
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "Bind existing policy"
+msgstr ""
+
+#: src/admin/flows/BoundStagesList.ts
+msgid "Bind existing stage"
+msgstr ""
+
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Bind flow"
 msgstr "Bind 流程"
@@ -778,7 +786,6 @@ msgstr "Bind 流程"
 msgid "Bind mode"
 msgstr ""
 
-#: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/BoundStagesList.ts
 msgid "Bind stage"
 msgstr "Bind 阶段"
@@ -875,6 +882,10 @@ msgstr "回调 URL"
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system."
 msgstr "连接到本地 docker 守护进程时可以采用 'unix: //' 的格式，通过 SSH 连接时使用 'ssh: //'，或者在连接到远程系统时使用 'https://:2376' 的格式。"
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Can create users"
+msgstr ""
 
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/users/GroupSelectModal.ts
@@ -1412,6 +1423,14 @@ msgstr "复制恢复链接"
 msgid "Create"
 msgstr "创建"
 
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "Create & bind Policy"
+msgstr ""
+
+#: src/admin/flows/BoundStagesList.ts
+msgid "Create & bind Stage"
+msgstr ""
+
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Create App password"
@@ -1425,7 +1444,8 @@ msgstr "创建应用程序"
 #: src/admin/policies/BoundPoliciesList.ts
 #: src/admin/policies/BoundPoliciesList.ts
 #: src/admin/policies/BoundPoliciesList.ts
-#: src/admin/policies/BoundPoliciesList.ts
+#: src/admin/policies/PolicyWizard.ts
+#: src/admin/stages/StageWizard.ts
 msgid "Create Binding"
 msgstr "创建绑定"
 
@@ -1466,8 +1486,8 @@ msgid "Create Outpost"
 msgstr "创建 Outpost"
 
 #: src/admin/policies/BoundPoliciesList.ts
-msgid "Create Policy"
-msgstr "创建策略"
+#~ msgid "Create Policy"
+#~ msgstr "创建策略"
 
 #: src/admin/stages/prompt/PromptListPage.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
@@ -1482,8 +1502,8 @@ msgid "Create Service account"
 msgstr "创建服务账户"
 
 #: src/admin/flows/BoundStagesList.ts
-msgid "Create Stage"
-msgstr "创建 Stage"
+#~ msgid "Create Stage"
+#~ msgstr "创建 Stage"
 
 #: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/BoundStagesList.ts
@@ -1866,6 +1886,11 @@ msgstr "断开连接"
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "Docker URL"
 msgstr "Docker URL"
+
+#: src/admin/blueprints/BlueprintForm.ts
+#: src/admin/outposts/OutpostForm.ts
+msgid "Documentation"
+msgstr ""
 
 #: src/admin/tenants/TenantForm.ts
 #: src/admin/tenants/TenantListPage.ts
@@ -2403,6 +2428,7 @@ msgid "Finish"
 msgstr "完成"
 
 #: src/admin/flows/FlowImportForm.ts
+#: src/admin/stages/invitation/InvitationForm.ts
 msgid "Flow"
 msgstr "流程"
 
@@ -3006,6 +3032,10 @@ msgstr "失效流程"
 #~ msgid "Invitation"
 #~ msgstr "邀请"
 
+#: src/admin/stages/invitation/InvitationListPage.ts
+msgid "Invitation not limited to any flow, and can be used with any enrollment flow."
+msgstr ""
+
 #: src/admin/events/utils.ts
 msgid "Invitation used"
 msgstr "已使用邀请"
@@ -3289,6 +3319,7 @@ msgstr "正在加载"
 #: src/admin/stages/identification/IdentificationStageForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
+#: src/admin/stages/invitation/InvitationForm.ts
 #: src/admin/stages/invitation/InvitationListLink.ts
 #: src/admin/stages/password/PasswordStageForm.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
@@ -3315,6 +3346,10 @@ msgstr "本地"
 
 #: src/admin/events/TransportForm.ts
 msgid "Local (notifications will be created within authentik)"
+msgstr ""
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Local path"
 msgstr ""
 
 #~ msgid "Locale"
@@ -3944,6 +3979,14 @@ msgstr ""
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "OAuth2/OIDC"
+msgstr ""
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "OCI Registry"
+msgstr ""
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "OCI URL, in the format of oci://registry.domain.tld/path/to/manifest."
 msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
@@ -4997,6 +5040,14 @@ msgstr "安全密钥身份验证器"
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
 msgid "See documentation for a list of all variables."
 msgstr "有关所有变量的列表，请参阅文档。"
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "See more about OCI support here:"
+msgstr ""
+
+#: src/admin/outposts/OutpostForm.ts
+msgid "See more here:"
+msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
 msgid "Select a provider that this application should use. Alternatively, create a new provider."
@@ -6347,6 +6398,10 @@ msgstr "UID 起始编号"
 msgid "UPN"
 msgstr "UPN"
 
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "URL"
+msgstr ""
+
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "URL settings"
 msgstr "URL 设置"
@@ -7092,6 +7147,10 @@ msgstr "启用后，将使用全局电子邮件连接设置，而下面的连接
 msgid "When enabled, the invitation will be deleted after usage."
 msgstr "启用后，邀请将在使用后被删除。"
 
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail."
+msgstr ""
+
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr "启用后，无论用户字段大小写如何，都将匹配用户字段。"
@@ -7107,6 +7166,10 @@ msgstr "选中后，密码字段将显示在同一页面上，而不是单独的
 #: src/admin/providers/saml/SAMLProviderForm.ts
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr "选中后，传入声明的签名将根据此证书进行验证。要允许未签名的请求，请保留默认值。"
+
+#: src/admin/stages/invitation/InvitationForm.ts
+msgid "When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages."
+msgstr ""
 
 #: src/admin/policies/dummy/DummyPolicyForm.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts

@@ -764,6 +764,14 @@ msgstr "Bağlama DN"
 msgid "Bind Password"
 msgstr "Parola Bağla"
 
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "Bind existing policy"
+msgstr ""
+
+#: src/admin/flows/BoundStagesList.ts
+msgid "Bind existing stage"
+msgstr ""
+
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Bind flow"
 msgstr "Bağlama akışı"
@@ -772,7 +780,6 @@ msgstr "Bağlama akışı"
 msgid "Bind mode"
 msgstr ""
 
-#: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/BoundStagesList.ts
 msgid "Bind stage"
 msgstr "Bağlama aşaması"
@@ -869,6 +876,10 @@ msgstr "Geri arama URL'si"
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system."
 msgstr "SSH üzerinden bağlanmak için 'ssh: //' veya uzak bir sisteme bağlanırken 'https://:2376' kullanarak yerel bir docker daemonuna bağlanırken 'unix: //' biçiminde olabilir."
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Can create users"
+msgstr ""
 
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/users/GroupSelectModal.ts
@@ -1404,6 +1415,14 @@ msgstr "Kurtarma bağlantısı kopyalama"
 msgid "Create"
 msgstr "Oluştur"
 
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "Create & bind Policy"
+msgstr ""
+
+#: src/admin/flows/BoundStagesList.ts
+msgid "Create & bind Stage"
+msgstr ""
+
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Create App password"
@@ -1417,7 +1436,8 @@ msgstr "Uygulama Oluştur"
 #: src/admin/policies/BoundPoliciesList.ts
 #: src/admin/policies/BoundPoliciesList.ts
 #: src/admin/policies/BoundPoliciesList.ts
-#: src/admin/policies/BoundPoliciesList.ts
+#: src/admin/policies/PolicyWizard.ts
+#: src/admin/stages/StageWizard.ts
 msgid "Create Binding"
 msgstr "Bağlama Oluştur"
 
@@ -1458,8 +1478,8 @@ msgid "Create Outpost"
 msgstr "Üs Oluştur"
 
 #: src/admin/policies/BoundPoliciesList.ts
-msgid "Create Policy"
-msgstr "İlke Oluştur"
+#~ msgid "Create Policy"
+#~ msgstr "İlke Oluştur"
 
 #: src/admin/stages/prompt/PromptListPage.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
@@ -1474,8 +1494,8 @@ msgid "Create Service account"
 msgstr "Hizmet hesabı oluştur"
 
 #: src/admin/flows/BoundStagesList.ts
-msgid "Create Stage"
-msgstr "Aşama Oluştur"
+#~ msgid "Create Stage"
+#~ msgstr "Aşama Oluştur"
 
 #: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/BoundStagesList.ts
@@ -1858,6 +1878,11 @@ msgstr "Bağlantıyı kes"
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "Docker URL"
 msgstr "Docker URL'si"
+
+#: src/admin/blueprints/BlueprintForm.ts
+#: src/admin/outposts/OutpostForm.ts
+msgid "Documentation"
+msgstr ""
 
 #: src/admin/tenants/TenantForm.ts
 #: src/admin/tenants/TenantListPage.ts
@@ -2395,6 +2420,7 @@ msgid "Finish"
 msgstr ""
 
 #: src/admin/flows/FlowImportForm.ts
+#: src/admin/stages/invitation/InvitationForm.ts
 msgid "Flow"
 msgstr "Akış"
 
@@ -2998,6 +3024,10 @@ msgstr "Geçersizleştirme akışı"
 #~ msgid "Invitation"
 #~ msgstr "Davetiye"
 
+#: src/admin/stages/invitation/InvitationListPage.ts
+msgid "Invitation not limited to any flow, and can be used with any enrollment flow."
+msgstr ""
+
 #: src/admin/events/utils.ts
 msgid "Invitation used"
 msgstr "Kullanılan davetiye"
@@ -3281,6 +3311,7 @@ msgstr "Yükleniyor"
 #: src/admin/stages/identification/IdentificationStageForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
+#: src/admin/stages/invitation/InvitationForm.ts
 #: src/admin/stages/invitation/InvitationListLink.ts
 #: src/admin/stages/password/PasswordStageForm.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
@@ -3307,6 +3338,10 @@ msgstr "Yerel"
 
 #: src/admin/events/TransportForm.ts
 msgid "Local (notifications will be created within authentik)"
+msgstr ""
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Local path"
 msgstr ""
 
 #~ msgid "Locale"
@@ -3936,6 +3971,14 @@ msgstr ""
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "OAuth2/OIDC"
+msgstr ""
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "OCI Registry"
+msgstr ""
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "OCI URL, in the format of oci://registry.domain.tld/path/to/manifest."
 msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
@@ -4989,6 +5032,14 @@ msgstr "Güvenlik anahtarı kimlik doğrulayıcısı"
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
 msgid "See documentation for a list of all variables."
 msgstr "Tüm değişkenlerin listesi için belgelere bakın."
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "See more about OCI support here:"
+msgstr ""
+
+#: src/admin/outposts/OutpostForm.ts
+msgid "See more here:"
+msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
 msgid "Select a provider that this application should use. Alternatively, create a new provider."
@@ -6339,6 +6390,10 @@ msgstr "UID başlangıç numarası"
 msgid "UPN"
 msgstr "UPN"
 
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "URL"
+msgstr ""
+
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "URL settings"
 msgstr "URL ayarları"
@@ -7082,6 +7137,10 @@ msgstr "Etkinleştirildiğinde, genel E-posta bağlantısı ayarları kullanıl�
 msgid "When enabled, the invitation will be deleted after usage."
 msgstr "Etkinleştirildiğinde, davetiye kullanımdan sonra silinir."
 
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail."
+msgstr ""
+
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr "Etkinleştirildiğinde, kullanıcı alanları muhafazası ne olursa olsun eşleştirilir."
@@ -7097,6 +7156,10 @@ msgstr "Seçildiğinde, ayrı bir sayfa yerine aynı sayfada bir parola alanı g
 #: src/admin/providers/saml/SAMLProviderForm.ts
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr "Seçildiğinde, gelen onaylama öğesinin İmzaları bu sertifikaya göre doğrulanır. İmzasız İsteklere izin vermek için varsayılan olarak bırakın."
+
+#: src/admin/stages/invitation/InvitationForm.ts
+msgid "When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages."
+msgstr ""
 
 #: src/admin/policies/dummy/DummyPolicyForm.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts

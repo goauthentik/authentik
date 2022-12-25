@@ -49,6 +49,11 @@ export class InitialPolicyWizardPage extends WizardPage {
                         id=${`${type.component}-${type.modelName}`}
                         @change=${() => {
                             const idx = this.host.steps.indexOf("initial") + 1;
+                            // Exclude all current steps starting with type-,
+                            // this happens when the user selects a type and then goes back
+                            this.host.steps = this.host.steps.filter(
+                                (step) => !step.startsWith("type-"),
+                            );
                             this.host.steps.splice(
                                 idx,
                                 0,

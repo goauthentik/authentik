@@ -186,7 +186,12 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     }
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal size=${PFSize.Medium}>
+        return html`<ak-policy-wizard
+                createText=${t`Create & bind Policy`}
+                ?showBindingPage=${true}
+                bindingTarget=${ifDefined(this.target)}
+            ></ak-policy-wizard>
+            <ak-forms-modal size=${PFSize.Medium}>
                 <span slot="submit"> ${t`Create`} </span>
                 <span slot="header"> ${t`Create Binding`} </span>
                 <ak-policy-binding-form
@@ -196,13 +201,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 >
                 </ak-policy-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                    ${t`Create Binding`}
+                    ${t`Bind existing policy`}
                 </button>
-            </ak-forms-modal>
-            <ak-policy-wizard
-                createText=${t`Create Policy`}
-                ?showBindingPage=${true}
-                bindingTarget=${ifDefined(this.target)}
-            ></ak-policy-wizard> `;
+            </ak-forms-modal> `;
     }
 }

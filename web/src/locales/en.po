@@ -777,6 +777,14 @@ msgstr "Bind DN"
 msgid "Bind Password"
 msgstr "Bind Password"
 
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "Bind existing policy"
+msgstr "Bind existing policy"
+
+#: src/admin/flows/BoundStagesList.ts
+msgid "Bind existing stage"
+msgstr "Bind existing stage"
+
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Bind flow"
 msgstr "Bind flow"
@@ -785,7 +793,6 @@ msgstr "Bind flow"
 msgid "Bind mode"
 msgstr "Bind mode"
 
-#: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/BoundStagesList.ts
 msgid "Bind stage"
 msgstr "Bind stage"
@@ -884,6 +891,10 @@ msgstr "Callback URL"
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system."
 msgstr "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system."
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Can create users"
+msgstr "Can create users"
 
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/users/GroupSelectModal.ts
@@ -1432,6 +1443,14 @@ msgstr "Copy recovery link"
 msgid "Create"
 msgstr "Create"
 
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "Create & bind Policy"
+msgstr "Create & bind Policy"
+
+#: src/admin/flows/BoundStagesList.ts
+msgid "Create & bind Stage"
+msgstr "Create & bind Stage"
+
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Create App password"
@@ -1445,7 +1464,8 @@ msgstr "Create Application"
 #: src/admin/policies/BoundPoliciesList.ts
 #: src/admin/policies/BoundPoliciesList.ts
 #: src/admin/policies/BoundPoliciesList.ts
-#: src/admin/policies/BoundPoliciesList.ts
+#: src/admin/policies/PolicyWizard.ts
+#: src/admin/stages/StageWizard.ts
 msgid "Create Binding"
 msgstr "Create Binding"
 
@@ -1486,8 +1506,8 @@ msgid "Create Outpost"
 msgstr "Create Outpost"
 
 #: src/admin/policies/BoundPoliciesList.ts
-msgid "Create Policy"
-msgstr "Create Policy"
+#~ msgid "Create Policy"
+#~ msgstr "Create Policy"
 
 #: src/admin/stages/prompt/PromptListPage.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
@@ -1502,8 +1522,8 @@ msgid "Create Service account"
 msgstr "Create Service account"
 
 #: src/admin/flows/BoundStagesList.ts
-msgid "Create Stage"
-msgstr "Create Stage"
+#~ msgid "Create Stage"
+#~ msgstr "Create Stage"
 
 #: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/BoundStagesList.ts
@@ -1902,6 +1922,11 @@ msgstr "Disconnect"
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "Docker URL"
 msgstr "Docker URL"
+
+#: src/admin/blueprints/BlueprintForm.ts
+#: src/admin/outposts/OutpostForm.ts
+msgid "Documentation"
+msgstr "Documentation"
 
 #: src/admin/tenants/TenantForm.ts
 #: src/admin/tenants/TenantListPage.ts
@@ -2456,6 +2481,7 @@ msgid "Finish"
 msgstr "Finish"
 
 #: src/admin/flows/FlowImportForm.ts
+#: src/admin/stages/invitation/InvitationForm.ts
 msgid "Flow"
 msgstr "Flow"
 
@@ -3073,6 +3099,10 @@ msgstr "Invalidation flow"
 #~ msgid "Invitation"
 #~ msgstr "Invitation"
 
+#: src/admin/stages/invitation/InvitationListPage.ts
+msgid "Invitation not limited to any flow, and can be used with any enrollment flow."
+msgstr "Invitation not limited to any flow, and can be used with any enrollment flow."
+
 #: src/admin/events/utils.ts
 msgid "Invitation used"
 msgstr "Invitation used"
@@ -3360,6 +3390,7 @@ msgstr "Loading"
 #: src/admin/stages/identification/IdentificationStageForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
+#: src/admin/stages/invitation/InvitationForm.ts
 #: src/admin/stages/invitation/InvitationListLink.ts
 #: src/admin/stages/password/PasswordStageForm.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
@@ -3387,6 +3418,10 @@ msgstr "Local"
 #: src/admin/events/TransportForm.ts
 msgid "Local (notifications will be created within authentik)"
 msgstr "Local (notifications will be created within authentik)"
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Local path"
+msgstr "Local path"
 
 #: src/user/user-settings/details/UserDetailsForm.ts
 #~ msgid "Locale"
@@ -4026,6 +4061,14 @@ msgstr "OAuth Source {0}"
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "OAuth2/OIDC"
 msgstr "OAuth2/OIDC"
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "OCI Registry"
+msgstr "OCI Registry"
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "OCI URL, in the format of oci://registry.domain.tld/path/to/manifest."
+msgstr "OCI URL, in the format of oci://registry.domain.tld/path/to/manifest."
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "OIDC JWKS"
@@ -5118,6 +5161,14 @@ msgstr "Security key authenticator"
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
 msgid "See documentation for a list of all variables."
 msgstr "See documentation for a list of all variables."
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "See more about OCI support here:"
+msgstr "See more about OCI support here:"
+
+#: src/admin/outposts/OutpostForm.ts
+msgid "See more here:"
+msgstr "See more here:"
 
 #: src/admin/applications/ApplicationForm.ts
 msgid "Select a provider that this application should use. Alternatively, create a new provider."
@@ -6511,6 +6562,10 @@ msgstr "UID start number"
 msgid "UPN"
 msgstr "UPN"
 
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "URL"
+msgstr "URL"
+
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "URL settings"
 msgstr "URL settings"
@@ -7265,6 +7320,10 @@ msgstr "When enabled, global Email connection settings will be used and connecti
 msgid "When enabled, the invitation will be deleted after usage."
 msgstr "When enabled, the invitation will be deleted after usage."
 
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail."
+msgstr "When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail."
+
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr "When enabled, user fields are matched regardless of their casing."
@@ -7280,6 +7339,10 @@ msgstr "When selected, a password field is shown on the same page instead of a s
 #: src/admin/providers/saml/SAMLProviderForm.ts
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
+
+#: src/admin/stages/invitation/InvitationForm.ts
+msgid "When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages."
+msgstr "When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages."
 
 #: src/admin/policies/dummy/DummyPolicyForm.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
