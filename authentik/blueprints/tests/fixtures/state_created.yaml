@@ -1,10 +1,10 @@
 version: 1
 entries:
-- identifiers:
-    name: "%(id)s"
-    slug: "%(id)s"
-  model: authentik_flows.flow
-  state: created
-  attrs:
-    designation: stage_configuration
-    title: foo
+    - identifiers:
+          name: "%(id)s"
+          slug: "%(id)s"
+      model: authentik_flows.flow
+      state: created
+      attrs:
+          designation: stage_configuration
+          title: foo

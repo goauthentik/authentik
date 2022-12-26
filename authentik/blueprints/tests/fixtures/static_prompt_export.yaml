@@ -1,12 +1,12 @@
 version: 1
 entries:
-- identifiers:
-    pk: cb954fd4-65a5-4ad9-b1ee-180ee9559cf4
-  model: authentik_stages_prompt.prompt
-  attrs:
-    field_key: username
-    label: Username
-    type: username
-    required: true
-    placeholder: Username
-    order: 0
+    - identifiers:
+          pk: cb954fd4-65a5-4ad9-b1ee-180ee9559cf4
+      model: authentik_stages_prompt.prompt
+      attrs:
+          field_key: username
+          label: Username
+          type: username
+          required: true
+          placeholder: Username
+          order: 0
