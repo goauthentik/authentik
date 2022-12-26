@@ -4,12 +4,14 @@ import binascii
 import json
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta
+from functools import cached_property
 from hashlib import sha256
 from typing import Any, Optional
 from urllib.parse import urlparse, urlunparse
 
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
+from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
 from dacite.core import from_dict
 from django.db import models
 from django.http import HttpRequest
@@ -259,7 +261,8 @@ class OAuth2Provider(Provider):
         token.access_token = token.create_access_token(user, request)
         return token
 
-    def get_jwt_key(self) -> tuple[str, str]:
+    @cached_property
+    def jwt_key(self) -> tuple[str | PRIVATE_KEY_TYPES, str]:
         """Get either the configured certificate or the client secret"""
         if not self.signing_key:
             # No Certificate at all, assume HS256
@@ -267,9 +270,9 @@ class OAuth2Provider(Provider):
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
         if isinstance(private_key, RSAPrivateKey):
-            return key.key_data, JWTAlgorithms.RS256
+            return private_key, JWTAlgorithms.RS256
         if isinstance(private_key, EllipticCurvePrivateKey):
-            return key.key_data, JWTAlgorithms.ES256
+            return private_key, JWTAlgorithms.ES256
         raise Exception(f"Invalid private key type: {type(private_key)}")
 
     def get_issuer(self, request: HttpRequest) -> Optional[str]:
@@ -312,10 +315,9 @@ class OAuth2Provider(Provider):
         headers = {}
         if self.signing_key:
             headers["kid"] = self.signing_key.kid
-        key, alg = self.get_jwt_key()
+        key, alg = self.jwt_key
         # If the provider does not have an RSA Key assigned, it was switched to Symmetric
         self.refresh_from_db()
-        # pyright: reportGeneralTypeIssues=false
         return encode(payload, key, algorithm=alg, headers=headers)
 
     class Meta:

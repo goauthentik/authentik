@@ -15,6 +15,7 @@ class UserWriteStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + [
             "create_users_as_inactive",
             "create_users_group",
+            "can_create_users",
             "user_path_template",
         ]
 

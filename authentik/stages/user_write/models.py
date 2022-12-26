@@ -13,6 +13,16 @@ class UserWriteStage(Stage):
     """Writes currently pending data into the pending user, or if no user exists,
     creates a new user with the data."""
 
+    can_create_users = models.BooleanField(
+        default=True,
+        help_text=_(
+            (
+                "When set, this stage can create users. "
+                "If not enabled and no user is available, stage will fail."
+            )
+        ),
+    )
+
     create_users_as_inactive = models.BooleanField(
         default=False,
         help_text=_("When set, newly created users are inactive and cannot login."),

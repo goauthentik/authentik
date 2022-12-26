@@ -122,13 +122,8 @@ export class ApplicationViewPage extends AKElement {
                                           <dd class="pf-c-description-list__description">
                                               <div class="pf-c-description-list__text">
                                                   <a
-                                                      href=${`#/core/applications/${
-                                                          this.application.slug
-                                                      };${encodeURIComponent(
-                                                          JSON.stringify({
-                                                              page: "page-provider",
-                                                          }),
-                                                      )}`}
+                                                      href="#/core/providers/${this.application
+                                                          .providerObj?.pk}"
                                                   >
                                                       ${this.application.providerObj?.name}
                                                       (${this.application.providerObj?.verboseName})

@@ -22,9 +22,8 @@ export class WizardPage extends AKElement {
         return this.parentElement as Wizard;
     }
 
-    activeCallback: () => Promise<void> = () => {
+    activeCallback: () => Promise<void> = async () => {
         this.host.isValid = false;
-        return Promise.resolve();
     };
 
     nextCallback: () => Promise<boolean> = async () => {

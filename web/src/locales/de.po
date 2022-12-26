@@ -786,6 +786,14 @@ msgstr "Bind DN"
 msgid "Bind Password"
 msgstr "Bind Password"
 
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "Bind existing policy"
+msgstr ""
+
+#: src/admin/flows/BoundStagesList.ts
+msgid "Bind existing stage"
+msgstr ""
+
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Bind flow"
 msgstr "Ablauf-Verknüpfung"
@@ -794,7 +802,6 @@ msgstr "Ablauf-Verknüpfung"
 msgid "Bind mode"
 msgstr "Bindungsmodus"
 
-#: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/BoundStagesList.ts
 msgid "Bind stage"
 msgstr "Phasen-Verknüpfung"
@@ -891,6 +898,10 @@ msgstr "Callback URL"
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system."
 msgstr "Kann das Format 'unix://' haben, wenn eine Verbindung zu einem lokalen Docker-Daemon hergestellt wird, oder 'ssh://', wenn eine Verbindung über SSH hergestellt wird, oder 'https://:2376', wenn eine Verbindung zu einem entfernten System hergestellt wird."
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Can create users"
+msgstr ""
 
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/users/GroupSelectModal.ts
@@ -1428,6 +1439,14 @@ msgstr "Wiederherstellungslink kopieren"
 msgid "Create"
 msgstr "Erstellen"
 
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "Create & bind Policy"
+msgstr ""
+
+#: src/admin/flows/BoundStagesList.ts
+msgid "Create & bind Stage"
+msgstr ""
+
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Create App password"
@@ -1441,7 +1460,8 @@ msgstr "Anwendung erstellen"
 #: src/admin/policies/BoundPoliciesList.ts
 #: src/admin/policies/BoundPoliciesList.ts
 #: src/admin/policies/BoundPoliciesList.ts
-#: src/admin/policies/BoundPoliciesList.ts
+#: src/admin/policies/PolicyWizard.ts
+#: src/admin/stages/StageWizard.ts
 msgid "Create Binding"
 msgstr "Verknüpfung erstellen"
 
@@ -1482,8 +1502,8 @@ msgid "Create Outpost"
 msgstr "Außenposten erstellen"
 
 #: src/admin/policies/BoundPoliciesList.ts
-msgid "Create Policy"
-msgstr "Richtlinie erstellen"
+#~ msgid "Create Policy"
+#~ msgstr "Richtlinie erstellen"
 
 #: src/admin/stages/prompt/PromptListPage.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
@@ -1498,8 +1518,8 @@ msgid "Create Service account"
 msgstr "Internes Konto erstellen"
 
 #: src/admin/flows/BoundStagesList.ts
-msgid "Create Stage"
-msgstr "Stufe erstellen"
+#~ msgid "Create Stage"
+#~ msgstr "Stufe erstellen"
 
 #: src/admin/flows/BoundStagesList.ts
 #: src/admin/flows/BoundStagesList.ts
@@ -1882,6 +1902,11 @@ msgstr "Verbindung trennen"
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "Docker URL"
 msgstr "Docker URL"
+
+#: src/admin/blueprints/BlueprintForm.ts
+#: src/admin/outposts/OutpostForm.ts
+msgid "Documentation"
+msgstr ""
 
 #: src/admin/tenants/TenantForm.ts
 #: src/admin/tenants/TenantListPage.ts
@@ -2419,6 +2444,7 @@ msgid "Finish"
 msgstr "Fertig"
 
 #: src/admin/flows/FlowImportForm.ts
+#: src/admin/stages/invitation/InvitationForm.ts
 msgid "Flow"
 msgstr "Ablauf"
 
@@ -3022,6 +3048,10 @@ msgstr "Ablauf der Invalidierung"
 #~ msgid "Invitation"
 #~ msgstr "Einladung"
 
+#: src/admin/stages/invitation/InvitationListPage.ts
+msgid "Invitation not limited to any flow, and can be used with any enrollment flow."
+msgstr ""
+
 #: src/admin/events/utils.ts
 msgid "Invitation used"
 msgstr "Einladung verwendet"
@@ -3305,6 +3335,7 @@ msgstr "Wird geladen"
 #: src/admin/stages/identification/IdentificationStageForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
+#: src/admin/stages/invitation/InvitationForm.ts
 #: src/admin/stages/invitation/InvitationListLink.ts
 #: src/admin/stages/password/PasswordStageForm.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
@@ -3332,6 +3363,10 @@ msgstr "Lokal"
 #: src/admin/events/TransportForm.ts
 msgid "Local (notifications will be created within authentik)"
 msgstr "Lokal (Benachrichtigungen werden innerhalb von authentik erstellt)"
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Local path"
+msgstr ""
 
 #~ msgid "Locale"
 #~ msgstr "Gebietsschema"
@@ -3960,6 +3995,14 @@ msgstr ""
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "OAuth2/OIDC"
+msgstr ""
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "OCI Registry"
+msgstr ""
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "OCI URL, in the format of oci://registry.domain.tld/path/to/manifest."
 msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
@@ -5013,6 +5056,14 @@ msgstr "Authentifikator für Sicherheitsschlüssel"
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
 msgid "See documentation for a list of all variables."
 msgstr "Eine Liste aller Variablen finden Sie in der Dokumentation."
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "See more about OCI support here:"
+msgstr ""
+
+#: src/admin/outposts/OutpostForm.ts
+msgid "See more here:"
+msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
 msgid "Select a provider that this application should use. Alternatively, create a new provider."
@@ -6363,6 +6414,10 @@ msgstr "UID-Startnummer"
 msgid "UPN"
 msgstr "UPN"
 
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "URL"
+msgstr ""
+
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "URL settings"
 msgstr "URL-Einstellungen"
@@ -7106,6 +7161,10 @@ msgstr "Wenn diese Option aktiviert ist, werden die globalen E-Mail Verbindungse
 msgid "When enabled, the invitation will be deleted after usage."
 msgstr "Wenn diese Option aktiviert ist, wird die Einladung nach ihrer Benutzung gelöscht."
 
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail."
+msgstr ""
+
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr "Wenn diese Option aktiviert ist, werden Benutzerfelder unabhängig von ihrem Format abgeglichen."
@@ -7121,6 +7180,10 @@ msgstr "Wenn diese Option ausgewählt ist, wird ein Passwortfeld auf derselben S
 #: src/admin/providers/saml/SAMLProviderForm.ts
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr "Wenn diese Option ausgewählt ist, werden die Signaturen eingehender Behauptungen anhand dieses Zertifikats validiert. Um nicht signierte Anfragen zuzulassen, belassen Sie die Standardeinstellung."
+
+#: src/admin/stages/invitation/InvitationForm.ts
+msgid "When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages."
+msgstr ""
 
 #: src/admin/policies/dummy/DummyPolicyForm.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts

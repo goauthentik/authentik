@@ -55,6 +55,13 @@ class Invitation(SerializerModel, ExpiringModel):
 
     name = models.SlugField()
 
+    flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        default=None,
+        null=True,
+        on_delete=models.SET_DEFAULT,
+        help_text=_("When set, only the configured flow can use this invitation."),
+    )
     single_use = models.BooleanField(
         default=False,
         help_text=_("When enabled, the invitation will be deleted after usage."),

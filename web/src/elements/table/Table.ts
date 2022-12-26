@@ -12,7 +12,7 @@ import "@goauthentik/elements/table/TableSearch";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -157,6 +157,14 @@ export abstract class Table<T> extends AKElement {
             PFDropdown,
             PFPagination,
             AKGlobal,
+            css`
+                .pf-c-table thead .pf-c-table__check {
+                    min-width: 3rem;
+                }
+                .pf-c-table tbody .pf-c-table__check input {
+                    margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+                }
+            `,
         ];
     }
 
@@ -448,7 +456,8 @@ export abstract class Table<T> extends AKElement {
                                       type="checkbox"
                                       aria-label=${t`Select all rows`}
                                       .checked=${this.selectedElements.length ===
-                                      this.data?.results.length}
+                                          this.data?.results.length &&
+                                      this.selectedElements.length > 0}
                                       @input=${(ev: InputEvent) => {
                                           if ((ev.target as HTMLInputElement).checked) {
                                               this.selectedElements =

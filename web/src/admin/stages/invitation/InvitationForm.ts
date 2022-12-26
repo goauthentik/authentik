@@ -9,8 +9,15 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
-import { Invitation, StagesApi } from "@goauthentik/api";
+import {
+    FlowsApi,
+    FlowsInstancesListDesignationEnum,
+    Invitation,
+    StagesApi,
+} from "@goauthentik/api";
 
 @customElement("ak-invitation-form")
 export class InvitationForm extends ModelForm<Invitation, string> {
@@ -65,6 +72,34 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     required
                     value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
                 />
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Flow`} ?required=${true} name="flow">
+                <select class="pf-c-form-control">
+                    <option value="" ?selected=${this.instance?.flow === undefined}>
+                        ---------
+                    </option>
+                    ${until(
+                        new FlowsApi(DEFAULT_CONFIG)
+                            .flowsInstancesList({
+                                ordering: "slug",
+                                designation: FlowsInstancesListDesignationEnum.Enrollment,
+                            })
+                            .then((flows) => {
+                                return flows.results.map((flow) => {
+                                    return html`<option
+                                        value=${ifDefined(flow.pk)}
+                                        ?selected=${this.instance?.flow === flow.pk}
+                                    >
+                                        ${flow.name} (${flow.slug})
+                                    </option>`;
+                                });
+                            }),
+                        html`<option>${t`Loading...`}</option>`,
+                    )}
+                </select>
+                <p class="pf-c-form__helper-text">
+                    ${t`When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Attributes`} name="fixedData">
                 <ak-codemirror

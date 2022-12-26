@@ -110,6 +110,7 @@ If you have any questions or comments about this advisory:
     Include the new file in the `/website/sidebars.js`
 
 -   Check with the original reporter that the fix works as intended
+-   Wait for GitHub to assign a CVE
 -   Announce the release of the vulnerability via Mailing list and discord
 
 <details><summary>Mailing list template</summary>
@@ -118,7 +119,7 @@ If you have any questions or comments about this advisory:
 Subject: `Notice of upcoming authentik Security releases 2022.10.3 and 2022.11.3`
 
 ```markdown
-We'll be publishing a security Issue and accompanying Fix on _date_, 13:00 UTC with the Criticality level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more infos, see the authentik Security policy here: https://goauthentik.io/docs/security/policy.
+We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Criticality level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://goauthentik.io/docs/security/policy.
 ```
 
 </p>
@@ -128,7 +129,7 @@ We'll be publishing a security Issue and accompanying Fix on _date_, 13:00 UTC w
 <p>
 
 ```markdown
-@everyone We'll be publishing a security Issue and accompanying Fix on _date_, 13:00 UTC with the Criticality level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more infos, see the authentik Security policy here: https://goauthentik.io/docs/security/policy.
+@everyone We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Criticality level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://goauthentik.io/docs/security/policy.
 ```
 
 </p>
@@ -136,7 +137,7 @@ We'll be publishing a security Issue and accompanying Fix on _date_, 13:00 UTC w
 
 ### Creating a security release
 
--   On the date specified in the announcement, push the local `security/CVE-...` branch into a PR, and squash merge it if the pipeline passes
+-   On the date specified in the announcement, push the local `security/CVE-2022-xxxxx` branch into a PR, and squash merge it if the pipeline passes
 -   If the fix made any changes to the API schema, merge the PR to update the web API client
 -   Cherry-pick the merge commit onto the version branch
 -   If the fix made any changes to the API schema, manually install the latest version of the API client in `/web`
@@ -149,9 +150,9 @@ We'll be publishing a security Issue and accompanying Fix on _date_, 13:00 UTC w
 Subject: `Release of authentik Security releases 2022.10.3 and 2022.11.3`
 
 ```markdown
-The security advisory has been published: https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf
+The security advisory for CVE-2022-xxxxx has been published: https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf
 
-Releases with fixes are being built and will be available here: https://github.com/goauthentik/authentik/releases
+Releases 2022.10.3 and 2022.11.3 with fixes included are available here: https://github.com/goauthentik/authentik/releases
 ```
 
 </p>
@@ -163,7 +164,11 @@ Releases with fixes are being built and will be available here: https://github.c
 ```markdown
 [...existing announcement...]
 
-Edit: Advisory is here https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf, the fixed versions are currently building and will be available here: https://github.com/goauthentik/authentik/releases
+Edit:
+
+Advisory for for CVE-2022-xxxxx has been published here https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf
+
+The fixed versions 2022.10.3 and 2022.11.3 are available here: https://github.com/goauthentik/authentik/releases
 ```
 
 </p>

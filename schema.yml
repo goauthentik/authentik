@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2022.11.3
+  version: 2022.11.4
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -10249,6 +10249,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DummyPolicyRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -10323,6 +10324,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DummyPolicyRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -10626,6 +10628,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EventMatcherPolicyRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -10700,6 +10703,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EventMatcherPolicyRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -11212,6 +11216,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/HaveIBeenPwendPolicyRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -11286,6 +11291,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/HaveIBeenPwendPolicyRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -11550,6 +11556,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PasswordPolicyRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -11624,6 +11631,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PasswordPolicyRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -12144,6 +12152,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ReputationPolicyRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -12218,6 +12227,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ReputationPolicyRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -22392,6 +22402,10 @@ paths:
           type: string
           format: date-time
       - in: query
+        name: flow__slug
+        schema:
+          type: string
+      - in: query
         name: name
         schema:
           type: string
@@ -24634,6 +24648,10 @@ paths:
       operationId: stages_user_write_list
       description: UserWriteStage Viewset
       parameters:
+      - in: query
+        name: can_create_users
+        schema:
+          type: boolean
       - in: query
         name: create_users_as_inactive
         schema:
@@ -26970,7 +26988,6 @@ components:
           title: Policy uuid
         name:
           type: string
-          nullable: true
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -27004,6 +27021,7 @@ components:
       - bound_to
       - component
       - meta_model_name
+      - name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -27013,7 +27031,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -27028,6 +27046,8 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+      required:
+      - name
     DummyStage:
       type: object
       description: DummyStage Serializer
@@ -27384,7 +27404,6 @@ components:
           title: Policy uuid
         name:
           type: string
-          nullable: true
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -27422,6 +27441,7 @@ components:
       - bound_to
       - component
       - meta_model_name
+      - name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -27431,7 +27451,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -27450,6 +27470,8 @@ components:
           - $ref: '#/components/schemas/AppEnum'
           description: Match events created by selected application. When left empty,
             all applications are matched.
+      required:
+      - name
     EventRequest:
       type: object
       description: Event Serializer
@@ -27532,7 +27554,6 @@ components:
           title: Policy uuid
         name:
           type: string
-          nullable: true
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -27559,6 +27580,7 @@ components:
       - component
       - expression
       - meta_model_name
+      - name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -27568,7 +27590,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -27578,6 +27600,7 @@ components:
           minLength: 1
       required:
       - expression
+      - name
     FilePathRequest:
       type: object
       description: Serializer to upload file
@@ -28232,7 +28255,6 @@ components:
           title: Policy uuid
         name:
           type: string
-          nullable: true
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -28264,6 +28286,7 @@ components:
       - bound_to
       - component
       - meta_model_name
+      - name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -28273,7 +28296,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -28287,6 +28310,8 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+      required:
+      - name
     IdentificationChallenge:
       type: object
       description: Identification challenges with all UI elements
@@ -28527,8 +28552,18 @@ components:
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
+        flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, only the configured flow can use this invitation.
+        flow_obj:
+          allOf:
+          - $ref: '#/components/schemas/Flow'
+          readOnly: true
       required:
       - created_by
+      - flow_obj
       - name
       - pk
     InvitationRequest:
@@ -28549,6 +28584,11 @@ components:
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
+        flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, only the configured flow can use this invitation.
       required:
       - name
     InvitationStage:
@@ -32944,7 +32984,6 @@ components:
           title: Policy uuid
         name:
           type: string
-          nullable: true
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -32975,6 +33014,7 @@ components:
       - component
       - days
       - meta_model_name
+      - name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -32984,7 +33024,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -32997,6 +33037,7 @@ components:
           type: boolean
       required:
       - days
+      - name
     PasswordPolicy:
       type: object
       description: Password Policy Serializer
@@ -33008,7 +33049,6 @@ components:
           title: Policy uuid
         name:
           type: string
-          nullable: true
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -33077,6 +33117,7 @@ components:
       - bound_to
       - component
       - meta_model_name
+      - name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -33086,7 +33127,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -33138,6 +33179,8 @@ components:
           minimum: 0
           description: If the zxcvbn score is equal or less than this value, the policy
             will fail.
+      required:
+      - name
     PasswordStage:
       type: object
       description: PasswordStage Serializer
@@ -33560,7 +33603,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -33655,7 +33698,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -33705,7 +33748,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -33811,7 +33854,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -33900,6 +33943,11 @@ components:
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
+        flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, only the configured flow can use this invitation.
     PatchedInvitationStageRequest:
       type: object
       description: InvitationStage Serializer
@@ -34360,7 +34408,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -34377,7 +34425,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -34670,7 +34718,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -35122,6 +35170,10 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        can_create_users:
+          type: boolean
+          description: When set, this stage can create users. If not enabled and no
+            user is available, stage will fail.
         user_path_template:
           type: string
     PatchedWebAuthnDeviceRequest:
@@ -35381,7 +35433,6 @@ components:
           title: Policy uuid
         name:
           type: string
-          nullable: true
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -35405,6 +35456,7 @@ components:
       - bound_to
       - component
       - meta_model_name
+      - name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -35510,11 +35562,13 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
             will be logged. By default, only execution errors are logged.
+      required:
+      - name
     PolicyTestRequest:
       type: object
       description: Test policy execution for a user with context
@@ -36248,7 +36302,6 @@ components:
           title: Policy uuid
         name:
           type: string
-          nullable: true
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -36280,6 +36333,7 @@ components:
       - bound_to
       - component
       - meta_model_name
+      - name
       - pk
       - verbose_name
       - verbose_name_plural
@@ -36289,7 +36343,7 @@ components:
       properties:
         name:
           type: string
-          nullable: true
+          minLength: 1
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy
@@ -36302,6 +36356,8 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+      required:
+      - name
     ResidentKeyRequirementEnum:
       enum:
       - discouraged
@@ -38341,6 +38397,10 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        can_create_users:
+          type: boolean
+          description: When set, this stage can create users. If not enabled and no
+            user is available, stage will fail.
         user_path_template:
           type: string
       required:
@@ -38369,6 +38429,10 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        can_create_users:
+          type: boolean
+          description: When set, this stage can create users. If not enabled and no
+            user is available, stage will fail.
         user_path_template:
           type: string
       required:

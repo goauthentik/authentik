@@ -32,6 +32,7 @@ module.exports = {
                     label: "Cloud Providers",
                     items: [
                         "services/aws/index",
+                        "services/hashicorp-cloud/index",
                         "services/oracle-cloud/index",
                     ],
                 },
@@ -39,14 +40,6 @@ module.exports = {
                     type: "category",
                     label: "Dashboards",
                     items: ["services/organizr/index"],
-                },
-                {
-                    type: "category",
-                    label: "Platforms",
-                    items: [
-                        "services/budibase/index",
-                        "services/wordpress/index",
-                    ],
                 },
                 {
                     type: "category",
@@ -90,6 +83,7 @@ module.exports = {
                         "services/sonarr/index",
                         "services/tautulli/index",
                         "services/jellyfin/index",
+                        "services/weblate/index",
                     ],
                 },
                 {
@@ -97,6 +91,7 @@ module.exports = {
                     label: "Monitoring",
                     items: [
                         "services/grafana/index",
+                        "services/sentry/index",
                         "services/ubuntu-landscape/index",
                         "services/uptime-kuma/index",
                         "services/zabbix/index",

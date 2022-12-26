@@ -8,6 +8,12 @@ Resolves to the primary key of the model instance defined by id _my-policy-id_.
 
 If no matching entry can be found, an error is raised and the blueprint is invalid.
 
+#### `!Env`
+
+Example: `password: !Env my_env_var`
+
+Returns the value of the given environment variable. Can be used as a scalar with `!Env my_env_var, default` to return a default value.
+
 #### `!Find`
 
 Examples:

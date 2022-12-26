@@ -109,6 +109,8 @@ entries:
   model: authentik_policies_expression.expressionpolicy
 - identifiers:
     name: default-user-settings-write
+  attrs:
+    can_create_users: false
   id: default-user-settings-write
   model: authentik_stages_user_write.userwritestage
 - attrs:

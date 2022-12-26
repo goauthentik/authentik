@@ -4,6 +4,16 @@ context:
     policy_property: name
     policy_property_value: foo-bar-baz-qux
 entries:
+- model: authentik_sources_oauth.oauthsource
+  identifiers:
+    slug: test
+  attrs:
+    name: test
+    provider_type: github
+    consumer_key: !Env foo
+    consumer_secret: !Env [bar, baz]
+    authentication_flow: !Find [authentik_flows.Flow, [slug, default-source-authentication]]
+    enrollment_flow: !Find [authentik_flows.Flow, [slug, default-source-enrollment]]
 - attrs:
     expression: return True
   identifiers:

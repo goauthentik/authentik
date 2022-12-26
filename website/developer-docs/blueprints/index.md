@@ -33,7 +33,7 @@ To disable existing blueprints, an empty file can be mounted over the existing b
 
 Blueprints can also be stored in remote [OCI](https://opencontainers.org/) compliant registries. This includes GitHub Container Registry, Docker hub and many other registries.
 
-To download a blueprint via OCI, set the path to `https://ghcr.io/<username>/<package-name>:<ref>`. This will fetch the blueprint from an OCI package hosted on GHCR.
+To download a blueprint via OCI, set the path to `oci://ghcr.io/<username>/<package-name>:<ref>`. This will fetch the blueprint from an OCI package hosted on GHCR.
 
 To fetch blueprints from a private registry with authentication, credentials can be embedded into the URL.
 

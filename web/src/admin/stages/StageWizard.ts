@@ -1,3 +1,4 @@
+import { StageBindingForm } from "@goauthentik/admin/flows/StageBindingForm";
 import "@goauthentik/admin/stages/authenticator_duo/AuthenticatorDuoStageForm";
 import "@goauthentik/admin/stages/authenticator_sms/AuthenticatorSMSStageForm";
 import "@goauthentik/admin/stages/authenticator_static/AuthenticatorStaticStageForm";
@@ -21,6 +22,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
+import { FormWizardPage } from "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
@@ -36,7 +38,7 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { StagesApi, TypeCreate } from "@goauthentik/api";
+import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-stage-wizard-initial")
 export class InitialStageWizardPage extends WizardPage {
@@ -58,10 +60,17 @@ export class InitialStageWizardPage extends WizardPage {
                         name="type"
                         id=${`${type.component}-${type.modelName}`}
                         @change=${() => {
-                            this.host.steps = [
-                                "initial",
+                            const idx = this.host.steps.indexOf("initial") + 1;
+                            // Exclude all current steps starting with type-,
+                            // this happens when the user selects a type and then goes back
+                            this.host.steps = this.host.steps.filter(
+                                (step) => !step.startsWith("type-"),
+                            );
+                            this.host.steps.splice(
+                                idx,
+                                0,
                                 `type-${type.component}-${type.modelName}`,
-                            ];
+                            );
                             this.host.isValid = true;
                         }}
                     />
@@ -84,6 +93,12 @@ export class StageWizard extends AKElement {
     @property()
     createText = t`Create`;
 
+    @property({ type: Boolean })
+    showBindingPage = false;
+
+    @property()
+    bindingTarget?: string;
+
     @property({ attribute: false })
     stageTypes: TypeCreate[] = [];
 
@@ -96,7 +111,7 @@ export class StageWizard extends AKElement {
     render(): TemplateResult {
         return html`
             <ak-wizard
-                .steps=${["initial"]}
+                .steps=${this.showBindingPage ? ["initial", "create-binding"] : ["initial"]}
                 header=${t`New stage`}
                 description=${t`Create a new stage.`}
             >
@@ -112,6 +127,25 @@ export class StageWizard extends AKElement {
                         </ak-wizard-page-form>
                     `;
                 })}
+                ${this.showBindingPage
+                    ? html`<ak-wizard-page-form
+                          slot="create-binding"
+                          .sidebarLabel=${() => t`Create Binding`}
+                          .activePageCallback=${async (context: FormWizardPage) => {
+                              const createSlot = context.host.steps[1];
+                              const bindingForm =
+                                  context.querySelector<StageBindingForm>("ak-stage-binding-form");
+                              if (!bindingForm) return;
+                              bindingForm.instance = {
+                                  stage: (context.host.state[createSlot] as Stage).pk,
+                              } as FlowStageBinding;
+                          }}
+                      >
+                          <ak-stage-binding-form
+                              .targetPk=${this.bindingTarget}
+                          ></ak-stage-binding-form>
+                      </ak-wizard-page-form>`
+                    : html``}
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
             </ak-wizard>
         `;

@@ -12,7 +12,7 @@ Create a values.yaml file with a minimum of these settings:
 authentik:
     secret_key: "PleaseGenerateA50CharKey"
     # This sends anonymous usage-data, stack traces on errors and
-    # performance data to sentry.beryju.org, and is fully opt-in
+    # performance data to sentry.io, and is fully opt-in
     error_reporting:
         enabled: true
     postgresql:

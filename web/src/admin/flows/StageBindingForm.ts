@@ -31,7 +31,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     targetPk?: string;
 
     getSuccessMessage(): string {
-        if (this.instance) {
+        if (this.instance?.pk) {
             return t`Successfully updated binding.`;
         } else {
             return t`Successfully created binding.`;
@@ -39,9 +39,9 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     }
 
     send = (data: FlowStageBinding): Promise<FlowStageBinding> => {
-        if (this.instance) {
+        if (this.instance?.pk) {
             return new FlowsApi(DEFAULT_CONFIG).flowsBindingsUpdate({
-                fsbUuid: this.instance.pk || "",
+                fsbUuid: this.instance.pk,
                 flowStageBindingRequest: data,
             });
         } else {
@@ -67,21 +67,18 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         `;
     }
 
-    getOrder(): Promise<number> {
-        if (this.instance) {
-            return Promise.resolve(this.instance.order);
+    async getOrder(): Promise<number> {
+        if (this.instance?.pk) {
+            return this.instance.order;
         }
-        return new FlowsApi(DEFAULT_CONFIG)
-            .flowsBindingsList({
-                target: this.targetPk || "",
-            })
-            .then((bindings) => {
-                const orders = bindings.results.map((binding) => binding.order);
-                if (orders.length < 1) {
-                    return 0;
-                }
-                return Math.max(...orders) + 1;
-            });
+        const bindings = await new FlowsApi(DEFAULT_CONFIG).flowsBindingsList({
+            target: this.targetPk || "",
+        });
+        const orders = bindings.results.map((binding) => binding.order);
+        if (orders.length < 1) {
+            return 0;
+        }
+        return Math.max(...orders) + 1;
     }
 
     renderTarget(): TemplateResult {

@@ -5,6 +5,7 @@ import "@goauthentik/admin/outposts/OutpostHealth";
 import "@goauthentik/admin/outposts/OutpostHealthSimple";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { PFColor } from "@goauthentik/elements/Label";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -83,12 +84,12 @@ export class OutpostListPage extends TablePage<Outpost> {
         return [
             html`<div>${item.name}</div>
                 ${item.config.authentik_host === ""
-                    ? html`<i class="pf-icon pf-icon-warning-triangle"></i>
-                          <small
-                              >${t`Warning: authentik Domain is not configured, authentication will not work.`}</small
-                          >`
-                    : html`<i class="pf-icon pf-icon-ok"></i>
-                          <small> ${t`Logging in via ${item.config.authentik_host}.`} </small>`}`,
+                    ? html`<ak-label color=${PFColor.Orange} ?compact=${true}>
+                          ${t`Warning: authentik Domain is not configured, authentication will not work.`}
+                      </ak-label>`
+                    : html`<ak-label color=${PFColor.Green} ?compact=${true}>
+                          ${t`Logging in via ${item.config.authentik_host}.`}
+                      </ak-label>`}`,
             html`${TypeToLabel(item.type)}`,
             html`<ul>
                 ${item.providersObj?.map((p) => {

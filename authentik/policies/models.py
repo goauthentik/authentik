@@ -159,7 +159,7 @@ class Policy(SerializerModel, CreatedUpdatedModel):
 
     policy_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.TextField(blank=True, null=True)
+    name = models.TextField()
 
     execution_logging = models.BooleanField(
         default=False,

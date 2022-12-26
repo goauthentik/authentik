@@ -378,7 +378,9 @@ class FlowExecutorView(APIView):
             # an expression policy or authentik itself, so we don't
             # check if its an absolute URL or a relative one
             self.cancel()
-            return redirect(self.plan.context.get(PLAN_CONTEXT_REDIRECT))
+            return to_stage_response(
+                self.request, redirect(self.plan.context.get(PLAN_CONTEXT_REDIRECT))
+            )
         next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "authentik_core:root-redirect"
         )
