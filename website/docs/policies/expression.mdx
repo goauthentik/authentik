@@ -61,12 +61,12 @@ import Objects from "../expressions/_objects.md";
     -   `request.user`: The current user, against which the policy is applied. See [User](../user-group/user.md#object-attributes)
 
         :::warning
-        When a policy is executed in the context of a flow, this will be set to the previously authenticated user, i.e. when used with an authentication flow this will be set to _AnonymousUser_.
-
-        In flows, `context['pending_user']` should be used instead.
+        When a policy is executed in the context of a flow, this will be set to the user responsible for the request, and will not change for the duration of the flow. For that reason, using this value in authentication flow policies may not return the expected user. Use `context['pending_user']` instead; User Identification and other stages update this value during flow execution.
+        
+        If the user is not authenticated, this will be set to [`AnonymousUser`](https://docs.djangoproject.com/en/3.0/ref/contrib/auth/#django.contrib.auth.models.AnonymousUser).
         :::
 
-    -   `request.http_request`: The Django HTTP Request. See ([Django documentation](https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects))
+    -   `request.http_request`: The Django HTTP Request. See [Django documentation](https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects).
     -   `request.obj`: A Django Model instance. This is only set if the policy is ran against an object.
     -   `request.context`: A dictionary with dynamic data. This depends on the origin of the execution.
 
