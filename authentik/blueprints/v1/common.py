@@ -382,7 +382,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Context", Context)
         self.add_constructor("!Format", Format)
         self.add_constructor("!Condition", Condition)
-        self.add_constructor("!If", If) 
+        self.add_constructor("!If", If)
         self.add_constructor("!Env", Env)
 
 
