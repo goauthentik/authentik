@@ -59,7 +59,7 @@
         "@babel/preset-typescript": "^7.18.6",
         "@codemirror/lang-html": "^6.4.0",
         "@codemirror/lang-javascript": "^6.1.2",
-        "@codemirror/lang-python": "^6.1.0",
+        "@codemirror/lang-python": "^6.1.1",
         "@codemirror/lang-xml": "^6.0.1",
         "@codemirror/legacy-modes": "^6.3.1",
         "@formatjs/intl-listformat": "^7.1.7",
