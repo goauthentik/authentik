@@ -1,7 +1,7 @@
 version: 1
 entries:
-- identifiers:
-    name: "%(id)s"
-    slug: "%(id)s"
-  model: authentik_flows.flow
-  state: absent
+    - identifiers:
+          name: "%(id)s"
+          slug: "%(id)s"
+      model: authentik_flows.flow
+      state: absent

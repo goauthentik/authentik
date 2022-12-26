@@ -4,37 +4,97 @@ context:
     policy_property: name
     policy_property_value: foo-bar-baz-qux
 entries:
-- model: authentik_sources_oauth.oauthsource
-  identifiers:
-    slug: test
-  attrs:
-    name: test
-    provider_type: github
-    consumer_key: !Env foo
-    consumer_secret: !Env [bar, baz]
-    authentication_flow: !Find [authentik_flows.Flow, [slug, default-source-authentication]]
-    enrollment_flow: !Find [authentik_flows.Flow, [slug, default-source-enrollment]]
-- attrs:
-    expression: return True
-  identifiers:
-    name: !Format [foo-%s-%s-%s, !Context foo, !Context bar, qux]
-  id: policy
-  model: authentik_policies_expression.expressionpolicy
-- attrs:
-    attributes:
-      policy_pk1: !Format ["%s-%s", !Find [authentik_policies_expression.expressionpolicy, [!Context policy_property, !Context policy_property_value], [expression, return True]], suffix]
-      policy_pk2: !Format ["%s-%s", !KeyOf policy, suffix]
-      boolAnd: !Condition [AND, !Context foo, !Format ["%s", "a_string"], 1]
-      boolNand: !Condition [NAND, !Context foo, !Format ["%s", "a_string"], 1]
-      boolOr: !Condition [OR, !Context foo, !Format ["%s", "a_string"], null]
-      boolNor: !Condition [NOR, !Context foo, !Format ["%s", "a_string"], null]
-      boolXor: !Condition [XOR, !Context foo, !Format ["%s", "a_string"], 1]
-      boolXnor: !Condition [XNOR, !Context foo, !Format ["%s", "a_string"], 1]
-      boolComplex: !Condition [XNOR, !Condition [AND, !Context non_existing], !Condition [NOR, a string], !Condition [XOR, null]]
-  identifiers:
-    name: test
-  conditions:
-  - !Condition [AND, true, true, text]
-  - true
-  - text
-  model: authentik_core.group
+    - model: authentik_sources_oauth.oauthsource
+      identifiers:
+          slug: test
+      attrs:
+          name: test
+          provider_type: github
+          consumer_key: !Env foo
+          consumer_secret: !Env [bar, baz]
+          authentication_flow:
+              !Find [
+                  authentik_flows.Flow,
+                  [slug, default-source-authentication],
+              ]
+          enrollment_flow:
+              !Find [authentik_flows.Flow, [slug, default-source-enrollment]]
+    - attrs:
+          expression: return True
+      identifiers:
+          name: !Format [foo-%s-%s-%s, !Context foo, !Context bar, qux]
+      id: policy
+      model: authentik_policies_expression.expressionpolicy
+    - attrs:
+          attributes:
+              policy_pk1:
+                  !Format [
+                      "%s-%s",
+                      !Find [
+                          authentik_policies_expression.expressionpolicy,
+                          [
+                              !Context policy_property,
+                              !Context policy_property_value,
+                          ],
+                          [expression, return True],
+                      ],
+                      suffix,
+                  ]
+              policy_pk2: !Format ["%s-%s", !KeyOf policy, suffix]
+              boolAnd:
+                  !Condition [AND, !Context foo, !Format ["%s", "a_string"], 1]
+              boolNand:
+                  !Condition [NAND, !Context foo, !Format ["%s", "a_string"], 1]
+              boolOr:
+                  !Condition [
+                      OR,
+                      !Context foo,
+                      !Format ["%s", "a_string"],
+                      null,
+                  ]
+              boolNor:
+                  !Condition [
+                      NOR,
+                      !Context foo,
+                      !Format ["%s", "a_string"],
+                      null,
+                  ]
+              boolXor:
+                  !Condition [XOR, !Context foo, !Format ["%s", "a_string"], 1]
+              boolXnor:
+                  !Condition [XNOR, !Context foo, !Format ["%s", "a_string"], 1]
+              boolComplex:
+                  !Condition [
+                      XNOR,
+                      !Condition [AND, !Context non_existing],
+                      !Condition [NOR, a string],
+                      !Condition [XOR, null],
+                  ]
+              if_true_complex:
+                  !If [
+                      true,
+                      {
+                          dictionary:
+                              {
+                                  with: { keys: "and_values" },
+                                  and_nested_custom_tags:
+                                      !Format ["foo-%s", !Context foo],
+                              },
+                      },
+                      null,
+                  ]
+              if_false_complex:
+                  !If [
+                      !Condition [AND, false],
+                      null,
+                      [list, with, items, !Format ["foo-%s", !Context foo]],
+                  ]
+              if_true_simple: !If [!Context foo, true, text]
+              if_false_simple: !If [null, false, 2]
+      identifiers:
+          name: test
+      conditions:
+          - !Condition [AND, true, true, text]
+          - true
+          - text
+      model: authentik_core.group

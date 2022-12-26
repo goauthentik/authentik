@@ -45,6 +45,42 @@ Example: `name: !Format [my-policy-%s, !Context instance_name]`
 
 Format a string using python's % formatting. First argument is the format string, any remaining arguments are used for formatting.
 
+#### `!If`
+
+Minimal example:
+
+`required: !If [true, true, false] # !If [<condition>, <when true>, <when false>`
+
+Full example:
+
+```
+attributes: !If [
+    !Condition [...], # Or any valid YAML or custom tag. Evaluated as boolean in Python
+    { # When condition evaluates to true
+        dictionary:
+        {
+            with:
+            {
+                keys: "and_values"
+            },
+            and_nested_custom_tags: !Format ["foo-%s", !Context foo]
+        }
+    },
+    [ # When condition evaluates to false
+        list,
+        with,
+        items,
+        !Format ["foo-%s", !Context foo]
+    ]
+]
+```
+
+Conditionally add YAML to a blueprint.
+
+Similar to a one-line if, the first argument is the condition, which can be any valid yaml or custom tag. It will be evaluted as boolean in python. However, keep in mind that dictionaries and lists will always evaluate to `true`, unless they are empty.
+
+The second argument is used when the condition is `true`, and the third - when `false`. The YAML inside both arguments will be fully resolved, thus it is possible to use custom YAML tags and even nest them inside dictionaries and lists.
+
 #### `!Condition`
 
 Minimal example:
@@ -68,4 +104,4 @@ Requires at least one argument after the mode selection.
 
 If only a single argument is provided, its boolean representation will be returned for all normal modes and its negated boolean representation will be returned for all negated modes.
 
-Normally, it should be used to define complex conditions for the `conditions` attribute of a blueprint entry (see [the blueprint file structure](./structure.md)). However, this is essentially just a boolean evaluator so it can be used everywhere a boolean representation is required.
+Normally, it should be used to define complex conditions for use with an `!If` tag or for the `conditions` attribute of a blueprint entry (see [the blueprint file structure](./structure.md)). However, this is essentially just a boolean evaluator so it can be used everywhere a boolean representation is required.

@@ -312,6 +312,35 @@ class Condition(YAMLTag):
             raise EntryInvalidError(exc)
 
 
+class If(YAMLTag):
+    """Select YAML to use based on condition"""
+
+    condition: Any
+    when_true: Any
+    when_false: Any
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
+        super().__init__()
+        self.condition = loader.construct_object(node.value[0])
+        self.when_true = loader.construct_object(node.value[1])
+        self.when_false = loader.construct_object(node.value[2])
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        if isinstance(self.condition, YAMLTag):
+            condition = self.condition.resolve(entry, blueprint)
+        else:
+            condition = self.condition
+
+        try:
+            return entry.tag_resolver(
+                self.when_true if condition else self.when_false,
+                blueprint,
+            )
+        except TypeError as exc:
+            raise EntryInvalidError(exc)
+
+
 class BlueprintDumper(SafeDumper):
     """Dump dataclasses to yaml"""
 
@@ -353,6 +382,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Context", Context)
         self.add_constructor("!Format", Format)
         self.add_constructor("!Condition", Condition)
+        self.add_constructor("!If", If)
         self.add_constructor("!Env", Env)
 
 
