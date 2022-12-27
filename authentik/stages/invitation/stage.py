@@ -3,6 +3,7 @@ from typing import Optional
 
 from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
+from django.utils.translation import gettext_lazy as _
 
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_GET
@@ -44,7 +45,7 @@ class InvitationStageView(StageView):
         if not invite:
             self.logger.debug("invalid invitation", token=token)
             return None
-        if invite.flow and invite.flow.pk != self.executor.plan.flow_pk:
+        if invite.flow and invite.flow.pk.hex != self.executor.plan.flow_pk:
             self.logger.debug("invite for incorrect flow", expected=invite.flow.slug)
             return None
         return invite
@@ -57,7 +58,7 @@ class InvitationStageView(StageView):
         if not invite:
             if stage.continue_flow_without_invitation:
                 return self.executor.stage_ok()
-            return self.executor.stage_invalid()
+            return self.executor.stage_invalid(_("Invalid invite/invite not found"))
 
         self.executor.plan.context[INVITATION_IN_EFFECT] = True
         self.executor.plan.context[INVITATION] = invite

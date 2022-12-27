@@ -77,7 +77,7 @@ attributes: !If [
 
 Conditionally add YAML to a blueprint.
 
-Similar to a one-line if, the first argument is the condition, which can be any valid yaml or custom tag. It will be evaluted as boolean in python. However, keep in mind that dictionaries and lists will always evaluate to `true`, unless they are empty.
+Similar to a one-line if, the first argument is the condition, which can be any valid yaml or custom tag. It will be evaluated as boolean in python. However, keep in mind that dictionaries and lists will always evaluate to `true`, unless they are empty.
 
 The second argument is used when the condition is `true`, and the third - when `false`. The YAML inside both arguments will be fully resolved, thus it is possible to use custom YAML tags and even nest them inside dictionaries and lists.
 
