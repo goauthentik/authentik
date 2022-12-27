@@ -67,10 +67,9 @@ export class WizardFormPage extends WizardPage {
         return html``;
     }
 
-    firstUpdated(): void {
+    activeCallback = async () => {
         this.inputCallback();
-        this.host.isValid = false;
-    }
+    };
 
     render(): TemplateResult {
         return html`
