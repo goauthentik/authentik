@@ -5,12 +5,14 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.authorization import SecretKeyFilter
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.config import CONFIG
@@ -108,6 +110,8 @@ class TenantViewSet(UsedByMixin, ModelViewSet):
         "web_certificate",
     ]
     ordering = ["domain"]
+
+    filter_backends = [SecretKeyFilter, OrderingFilter, SearchFilter]
 
     @extend_schema(
         responses=CurrentTenantSerializer(many=False),

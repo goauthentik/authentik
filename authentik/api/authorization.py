@@ -1,9 +1,15 @@
 """API Authorization"""
+from django.conf import settings
 from django.db.models import Model
 from django.db.models.query import QuerySet
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.authentication import get_authorization_header
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
+from rest_framework_guardian.filters import ObjectPermissionsFilter
+
+from authentik.api.authentication import validate_auth
 
 
 class OwnerFilter(BaseFilterBackend):
@@ -15,6 +21,20 @@ class OwnerFilter(BaseFilterBackend):
         if request.user.is_superuser:
             return queryset
         return queryset.filter(**{self.owner_key: request.user})
+
+
+class SecretKeyFilter(DjangoFilterBackend):
+    """Allow access to all objects when authenticated with secret key as token.
+
+    Replaces both DjangoFilterBackend and ObjectPermissionsFilter"""
+
+    def filter_queryset(self, request: Request, queryset: QuerySet, view) -> QuerySet:
+        auth_header = get_authorization_header(request)
+        token = validate_auth(auth_header)
+        if token and token == settings.SECRET_KEY:
+            return queryset
+        queryset = ObjectPermissionsFilter().filter_queryset(request, queryset, view)
+        return super().filter_queryset(request, queryset, view)
 
 
 class OwnerPermissions(BasePermission):

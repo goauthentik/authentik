@@ -15,12 +15,14 @@ from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_sche
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, DateTimeField, IntegerField, SerializerMethodField
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.authorization import SecretKeyFilter
 from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
@@ -203,6 +205,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
     filterset_class = CertificateKeyPairFilter
     ordering = ["name"]
     search_fields = ["name"]
+    filter_backends = [SecretKeyFilter, OrderingFilter, SearchFilter]
 
     @extend_schema(
         parameters=[
