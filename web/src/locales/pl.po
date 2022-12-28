@@ -250,9 +250,19 @@ msgid "Active"
 msgstr "Aktywny"
 
 #: src/admin/groups/MemberSelectModal.ts
+#: src/admin/groups/RelatedGroupList.ts
 #: src/admin/users/GroupSelectModal.ts
+#: src/admin/users/RelatedUserList.ts
 msgid "Add"
 msgstr "Dodaj"
+
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Add Group"
+msgstr ""
+
+#: src/admin/users/RelatedUserList.ts
+msgid "Add User"
+msgstr ""
 
 #~ msgid ""
 #~ "Add a provider which does not support any other method. Requests will be routed\n"
@@ -276,6 +286,18 @@ msgstr "Dodaj"
 
 #~ msgid "Add a provider which supports SAML 2.0."
 #~ msgstr "Dodaj dostawcę, który wspiera SAML 2.0."
+
+#: src/admin/users/RelatedUserList.ts
+msgid "Add existing user"
+msgstr ""
+
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Add new group"
+msgstr ""
+
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Add to existing group"
+msgstr ""
 
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 msgid "Addition Group DN"
@@ -528,8 +550,12 @@ msgid "Are you sure you want to remove the selected users from the group {0}?"
 msgstr ""
 
 #: src/admin/groups/RelatedGroupList.ts
-msgid "Are you sure you want to remove users {0} from the following groups?"
+msgid "Are you sure you want to remove user {0} from the following groups?"
 msgstr ""
+
+#: src/admin/groups/RelatedGroupList.ts
+#~ msgid "Are you sure you want to remove users {0} from the following groups?"
+#~ msgstr ""
 
 #: src/admin/users/UserActiveForm.ts
 msgid "Are you sure you want to update {0} \"{1}\"?"
@@ -1388,6 +1414,7 @@ msgstr "Skopiuj link odzyskiwania"
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/groups/GroupListPage.ts
+#: src/admin/groups/RelatedGroupList.ts
 #: src/admin/outposts/OutpostListPage.ts
 #: src/admin/outposts/OutpostListPage.ts
 #: src/admin/outposts/ServiceConnectionWizard.ts
@@ -1410,7 +1437,6 @@ msgstr "Skopiuj link odzyskiwania"
 #: src/admin/tenants/TenantListPage.ts
 #: src/admin/tokens/TokenListPage.ts
 #: src/admin/tokens/TokenListPage.ts
-#: src/admin/users/RelatedUserList.ts
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
@@ -1460,6 +1486,7 @@ msgid "Create Flow"
 msgstr "Utwórz przepływ"
 
 #: src/admin/groups/GroupListPage.ts
+#: src/admin/groups/RelatedGroupList.ts
 msgid "Create Group"
 msgstr "Utwórz grupę"
 
@@ -1574,6 +1601,11 @@ msgstr "Utwórz dostawcę"
 
 #: src/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
 msgid "Create service account"
+msgstr ""
+
+#: src/admin/users/RelatedUserList.ts
+#: src/admin/users/RelatedUserList.ts
+msgid "Create user"
 msgstr ""
 
 #: src/admin/stages/user_write/UserWriteStageForm.ts
@@ -2687,6 +2719,10 @@ msgstr "Grupa(y)"
 #: src/admin/users/UserViewPage.ts
 msgid "Groups"
 msgstr "Grupy"
+
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Groups to add"
+msgstr ""
 
 #~ msgid "HS256 (Symmetric Encryption)"
 #~ msgstr "HS256 (szyfrowanie symetryczne)"
@@ -5558,6 +5594,14 @@ msgstr "Pomyślny"
 msgid "Successful Logins"
 msgstr "Pomyślne logowania"
 
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Successfully added user to group(s)."
+msgstr ""
+
+#: src/admin/users/RelatedUserList.ts
+msgid "Successfully added user(s)."
+msgstr ""
+
 #: src/admin/flows/FlowListPage.ts
 msgid "Successfully cleared flow cache"
 msgstr "Pamięć podręczna przepływu została wyczyszczona"
@@ -6943,6 +6987,10 @@ msgstr "Użytkownicy stworzeni dziennie w ciągu ostatniego miesiąca"
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed."
 msgstr "Użytkownicy w wybranej grupie mogą wykonywać zapytania wyszukiwania. Jeśli nie wybrano żadnej grupy, nie są dozwolone żadne wyszukiwania LDAP."
+
+#: src/admin/users/RelatedUserList.ts
+msgid "Users to add"
+msgstr ""
 
 #: src/admin/events/EventInfo.ts
 msgid "Using flow"

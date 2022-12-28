@@ -199,7 +199,7 @@ export class DeleteBulkForm extends ModalButton {
                     <p class="pf-c-title">
                         ${this.actionSubtext
                             ? this.actionSubtext
-                            : t`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`}}
+                            : t`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`}
                     </p>
                     <slot name="notice"></slot>
                 </form>

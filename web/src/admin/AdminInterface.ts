@@ -280,7 +280,10 @@ export class AdminInterface extends AKElement {
                 >
                     <span slot="label">${t`Users`}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/identity/groups">
+                <ak-sidebar-item
+                    path="/identity/groups"
+                    .activeWhen=${[`^/identity/groups/(?<id>${UUID_REGEX})$`]}
+                >
                     <span slot="label">${t`Groups`}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item

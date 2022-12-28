@@ -1,9 +1,13 @@
 import "@goauthentik/admin/groups/GroupForm";
+import "@goauthentik/admin/groups/GroupForm";
+import "@goauthentik/admin/users/GroupSelectModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
+import { Form } from "@goauthentik/elements/forms/Form";
+import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -11,9 +15,75 @@ import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { CoreApi, Group, User } from "@goauthentik/api";
+
+@customElement("ak-group-related-add")
+export class RelatedGroupAdd extends Form<{ groups: string[] }> {
+    @property({ attribute: false })
+    user?: User;
+
+    @state()
+    groupsToAdd: Group[] = [];
+
+    getSuccessMessage(): string {
+        return t`Successfully added user to group(s).`;
+    }
+
+    send = (data: { groups: string[] }): Promise<{ groups: string[] }> => {
+        return Promise.all(
+            data.groups.map((group) => {
+                return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+                    groupUuid: group,
+                    userAccountRequest: {
+                        pk: this.user?.pk || 0,
+                    },
+                });
+            }),
+        ).then(() => {
+            return data;
+        });
+    };
+
+    renderForm(): TemplateResult {
+        return html`<form class="pf-c-form pf-m-horizontal">
+            <ak-form-element-horizontal label=${t`Groups to add`} name="groups">
+                <div class="pf-c-input-group">
+                    <ak-user-group-select-table
+                        .confirm=${(items: Group[]) => {
+                            this.groupsToAdd = items;
+                            this.requestUpdate();
+                            return Promise.resolve();
+                        }}
+                    >
+                        <button slot="trigger" class="pf-c-button pf-m-control" type="button">
+                            <i class="fas fa-plus" aria-hidden="true"></i>
+                        </button>
+                    </ak-user-group-select-table>
+                    <div class="pf-c-form-control">
+                        <ak-chip-group>
+                            ${this.groupsToAdd.map((group) => {
+                                return html`<ak-chip
+                                    .removable=${true}
+                                    value=${ifDefined(group.pk)}
+                                    @remove=${() => {
+                                        const idx = this.groupsToAdd.indexOf(group);
+                                        this.groupsToAdd.splice(idx, 1);
+                                        this.requestUpdate();
+                                    }}
+                                >
+                                    ${group.name}
+                                </ak-chip>`;
+                            })}
+                        </ak-chip-group>
+                    </div>
+                </div>
+            </ak-form-element-horizontal>
+        </form> `;
+    }
+}
 
 @customElement("ak-group-related-list")
 export class RelatedGroupList extends Table<Group> {
@@ -86,5 +156,30 @@ export class RelatedGroupList extends Table<Group> {
                 </button>
             </ak-forms-modal>`,
         ];
+    }
+
+    renderToolbar(): TemplateResult {
+        return html`
+            ${this.targetUser
+                ? html`<ak-forms-modal>
+                      <span slot="submit"> ${t`Add`} </span>
+                      <span slot="header"> ${t`Add Group`} </span>
+                      <ak-group-related-add .user=${this.targetUser} slot="form">
+                      </ak-group-related-add>
+                      <button slot="trigger" class="pf-c-button pf-m-primary">
+                          ${t`Add to existing group`}
+                      </button>
+                  </ak-forms-modal>`
+                : html``}
+            <ak-forms-modal>
+                <span slot="submit"> ${t`Create`} </span>
+                <span slot="header"> ${t`Create Group`} </span>
+                <ak-group-form slot="form"> </ak-group-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    ${t`Add new group`}
+                </button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}
+        `;
     }
 }

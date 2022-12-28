@@ -245,9 +245,19 @@ msgid "Active"
 msgstr "Active"
 
 #: src/admin/groups/MemberSelectModal.ts
+#: src/admin/groups/RelatedGroupList.ts
 #: src/admin/users/GroupSelectModal.ts
+#: src/admin/users/RelatedUserList.ts
 msgid "Add"
 msgstr "Add"
+
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Add Group"
+msgstr "Add Group"
+
+#: src/admin/users/RelatedUserList.ts
+msgid "Add User"
+msgstr "Add User"
 
 #: src/pages/providers/ProviderWizard.ts
 #~ msgid ""
@@ -276,6 +286,18 @@ msgstr "Add"
 #: src/pages/providers/ProviderWizard.ts
 #~ msgid "Add a provider which supports SAML 2.0."
 #~ msgstr "Add a provider which supports SAML 2.0."
+
+#: src/admin/users/RelatedUserList.ts
+msgid "Add existing user"
+msgstr "Add existing user"
+
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Add new group"
+msgstr "Add new group"
+
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Add to existing group"
+msgstr "Add to existing group"
 
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 msgid "Addition Group DN"
@@ -529,8 +551,12 @@ msgid "Are you sure you want to remove the selected users from the group {0}?"
 msgstr "Are you sure you want to remove the selected users from the group {0}?"
 
 #: src/admin/groups/RelatedGroupList.ts
-msgid "Are you sure you want to remove users {0} from the following groups?"
-msgstr "Are you sure you want to remove users {0} from the following groups?"
+msgid "Are you sure you want to remove user {0} from the following groups?"
+msgstr "Are you sure you want to remove user {0} from the following groups?"
+
+#: src/admin/groups/RelatedGroupList.ts
+#~ msgid "Are you sure you want to remove users {0} from the following groups?"
+#~ msgstr "Are you sure you want to remove users {0} from the following groups?"
 
 #: src/admin/users/UserActiveForm.ts
 msgid "Are you sure you want to update {0} \"{1}\"?"
@@ -1410,6 +1436,7 @@ msgstr "Copy recovery link"
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/groups/GroupListPage.ts
+#: src/admin/groups/RelatedGroupList.ts
 #: src/admin/outposts/OutpostListPage.ts
 #: src/admin/outposts/OutpostListPage.ts
 #: src/admin/outposts/ServiceConnectionWizard.ts
@@ -1432,7 +1459,6 @@ msgstr "Copy recovery link"
 #: src/admin/tenants/TenantListPage.ts
 #: src/admin/tokens/TokenListPage.ts
 #: src/admin/tokens/TokenListPage.ts
-#: src/admin/users/RelatedUserList.ts
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
@@ -1482,6 +1508,7 @@ msgid "Create Flow"
 msgstr "Create Flow"
 
 #: src/admin/groups/GroupListPage.ts
+#: src/admin/groups/RelatedGroupList.ts
 msgid "Create Group"
 msgstr "Create Group"
 
@@ -1597,6 +1624,11 @@ msgstr "Create provider"
 #: src/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
 msgid "Create service account"
 msgstr "Create service account"
+
+#: src/admin/users/RelatedUserList.ts
+#: src/admin/users/RelatedUserList.ts
+msgid "Create user"
+msgstr "Create user"
 
 #: src/admin/stages/user_write/UserWriteStageForm.ts
 msgid "Create users as inactive"
@@ -2744,6 +2776,10 @@ msgstr "Group(s)"
 #: src/admin/users/UserViewPage.ts
 msgid "Groups"
 msgstr "Groups"
+
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Groups to add"
+msgstr "Groups to add"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #~ msgid "HS256 (Symmetric Encryption)"
@@ -5701,6 +5737,14 @@ msgstr "Successful"
 msgid "Successful Logins"
 msgstr "Successful Logins"
 
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Successfully added user to group(s)."
+msgstr "Successfully added user to group(s)."
+
+#: src/admin/users/RelatedUserList.ts
+msgid "Successfully added user(s)."
+msgstr "Successfully added user(s)."
+
 #: src/admin/flows/FlowListPage.ts
 msgid "Successfully cleared flow cache"
 msgstr "Successfully cleared flow cache"
@@ -7111,6 +7155,10 @@ msgstr "Users created per day in the last month"
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed."
 msgstr "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed."
+
+#: src/admin/users/RelatedUserList.ts
+msgid "Users to add"
+msgstr "Users to add"
 
 #: src/admin/events/EventInfo.ts
 msgid "Using flow"

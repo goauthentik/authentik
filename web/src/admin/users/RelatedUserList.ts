@@ -9,23 +9,93 @@ import { uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ActionButton";
+import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/forms/DeleteBulkForm";
+import { Form } from "@goauthentik/elements/forms/Form";
+import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { UserOption } from "@goauthentik/elements/user/utils";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { CapabilitiesEnum, CoreApi, Group, ResponseError, User } from "@goauthentik/api";
+
+@customElement("ak-user-related-add")
+export class RelatedUserAdd extends Form<{ users: number[] }> {
+    @property({ attribute: false })
+    group?: Group;
+
+    @state()
+    usersToAdd: User[] = [];
+
+    getSuccessMessage(): string {
+        return t`Successfully added user(s).`;
+    }
+
+    send = (data: { users: number[] }): Promise<{ users: number[] }> => {
+        return Promise.all(
+            data.users.map((user) => {
+                return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+                    groupUuid: this.group?.pk || "",
+                    userAccountRequest: {
+                        pk: user,
+                    },
+                });
+            }),
+        ).then(() => {
+            return data;
+        });
+    };
+
+    renderForm(): TemplateResult {
+        return html`<form class="pf-c-form pf-m-horizontal">
+            <ak-form-element-horizontal label=${t`Users to add`} name="users">
+                <div class="pf-c-input-group">
+                    <ak-group-member-select-table
+                        .confirm=${(items: User[]) => {
+                            this.usersToAdd = items;
+                            this.requestUpdate();
+                            return Promise.resolve();
+                        }}
+                    >
+                        <button slot="trigger" class="pf-c-button pf-m-control" type="button">
+                            <i class="fas fa-plus" aria-hidden="true"></i>
+                        </button>
+                    </ak-group-member-select-table>
+                    <div class="pf-c-form-control">
+                        <ak-chip-group>
+                            ${this.usersToAdd.map((user) => {
+                                return html`<ak-chip
+                                    .removable=${true}
+                                    value=${ifDefined(user.pk)}
+                                    @remove=${() => {
+                                        const idx = this.usersToAdd.indexOf(user);
+                                        this.usersToAdd.splice(idx, 1);
+                                        this.requestUpdate();
+                                    }}
+                                >
+                                    ${UserOption(user)}
+                                </ak-chip>`;
+                            })}
+                        </ak-chip-group>
+                    </div>
+                </div>
+            </ak-form-element-horizontal>
+        </form> `;
+    }
+}
 
 @customElement("ak-user-related-list")
 export class RelatedUserList extends Table<User> {
@@ -273,20 +343,48 @@ export class RelatedUserList extends Table<User> {
 
     renderToolbar(): TemplateResult {
         return html`
-            <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create User`} </span>
-                <ak-user-form slot="form"> </ak-user-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
-            </ak-forms-modal>
-            <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${t`Close`}>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Service account`} </span>
-                <ak-user-service-account slot="form"> </ak-user-service-account>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Create Service account`}
+            ${this.targetGroup
+                ? html`<ak-forms-modal>
+                      <span slot="submit"> ${t`Add`} </span>
+                      <span slot="header"> ${t`Add User`} </span>
+                      <ak-user-related-add .group=${this.targetGroup} slot="form">
+                      </ak-user-related-add>
+                      <button slot="trigger" class="pf-c-button pf-m-primary">
+                          ${t`Add existing user`}
+                      </button>
+                  </ak-forms-modal>`
+                : html``}
+            <ak-dropdown class="pf-c-dropdown">
+                <button class="pf-m-secondary pf-c-dropdown__toggle" type="button">
+                    <span class="pf-c-dropdown__toggle-text">${t`Create user`}</span>
+                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
-            </ak-forms-modal>
+                <ul class="pf-c-dropdown__menu" hidden>
+                    <li>
+                        <ak-forms-modal>
+                            <span slot="submit"> ${t`Create`} </span>
+                            <span slot="header"> ${t`Create User`} </span>
+                            <ak-user-form slot="form"> </ak-user-form>
+                            <a slot="trigger" class="pf-c-dropdown__menu-item">
+                                ${t`Create user`}
+                            </a>
+                        </ak-forms-modal>
+                    </li>
+                    <li>
+                        <ak-forms-modal
+                            .closeAfterSuccessfulSubmit=${false}
+                            .cancelText=${t`Close`}
+                        >
+                            <span slot="submit"> ${t`Create`} </span>
+                            <span slot="header"> ${t`Create Service account`} </span>
+                            <ak-user-service-account slot="form"> </ak-user-service-account>
+                            <a slot="trigger" class="pf-c-dropdown__menu-item">
+                                ${t`Create Service account`}
+                            </a>
+                        </ak-forms-modal>
+                    </li>
+                </ul>
+            </ak-dropdown>
             ${super.renderToolbar()}
         `;
     }
