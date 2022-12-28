@@ -98,6 +98,7 @@ class OutpostConsumer(AuthJsonConsumer):
         if self.channel_name not in state.channel_ids:
             state.channel_ids.append(self.channel_name)
         state.last_seen = datetime.now()
+        state.hostname = msg.args.get("hostname", "")
 
         if not self.first_msg:
             GAUGE_OUTPOSTS_CONNECTED.labels(

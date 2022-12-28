@@ -49,11 +49,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 	// Send hello message with our version
 	msg := websocketMessage{
 		Instruction: WebsocketInstructionHello,
-		Args: map[string]interface{}{
-			"version":   constants.VERSION,
-			"buildHash": constants.BUILD("tagged"),
-			"uuid":      ac.instanceUUID.String(),
-		},
+		Args:        ac.getWebsocketArgs(),
 	}
 	err = ws.WriteJSON(msg)
 	if err != nil {
@@ -163,11 +159,7 @@ func (ac *APIController) startWSHealth() {
 	for ; true; <-ticker.C {
 		aliveMsg := websocketMessage{
 			Instruction: WebsocketInstructionHello,
-			Args: map[string]interface{}{
-				"version":   constants.VERSION,
-				"buildHash": constants.BUILD("tagged"),
-				"uuid":      ac.instanceUUID.String(),
-			},
+			Args:        ac.getWebsocketArgs(),
 		}
 		if ac.wsConn == nil {
 			go ac.reconnectWS()

@@ -431,6 +431,7 @@ class OutpostState:
     version: Optional[str] = field(default=None)
     version_should: Version | LegacyVersion = field(default=OUR_VERSION)
     build_hash: str = field(default="")
+    hostname: str = field(default="")
 
     _outpost: Optional[Outpost] = field(default=None)
 

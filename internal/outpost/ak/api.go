@@ -167,6 +167,19 @@ func (a *APIController) OnRefresh() error {
 	return err
 }
 
+func (a *APIController) getWebsocketArgs() map[string]interface{} {
+	args := map[string]interface{}{
+		"version":   constants.VERSION,
+		"buildHash": constants.BUILD("tagged"),
+		"uuid":      a.instanceUUID.String(),
+	}
+	hostname, err := os.Hostname()
+	if err == nil {
+		args["hostname"] = hostname
+	}
+	return args
+}
+
 func (a *APIController) StartBackgroundTasks() error {
 	OutpostInfo.With(prometheus.Labels{
 		"outpost_name": a.Outpost.Name,

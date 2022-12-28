@@ -30179,6 +30179,9 @@ components:
       type: object
       description: Outpost health status
       properties:
+        uid:
+          type: string
+          readOnly: true
         last_seen:
           type: string
           format: date-time
@@ -30198,10 +30201,15 @@ components:
         build_hash_should:
           type: string
           readOnly: true
+        hostname:
+          type: string
+          readOnly: true
       required:
       - build_hash
       - build_hash_should
+      - hostname
       - last_seen
+      - uid
       - version
       - version_outdated
       - version_should

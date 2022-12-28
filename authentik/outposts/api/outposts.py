@@ -19,7 +19,13 @@ from authentik.core.api.utils import PassiveSerializer, is_dict
 from authentik.core.models import Provider
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST
-from authentik.outposts.models import Outpost, OutpostConfig, OutpostType, default_outpost_config
+from authentik.outposts.models import (
+    Outpost,
+    OutpostConfig,
+    OutpostState,
+    OutpostType,
+    default_outpost_config,
+)
 from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.proxy.models import ProxyProvider
 
@@ -96,6 +102,7 @@ class OutpostDefaultConfigSerializer(PassiveSerializer):
 class OutpostHealthSerializer(PassiveSerializer):
     """Outpost health status"""
 
+    uid = CharField(read_only=True)
     last_seen = DateTimeField(read_only=True)
     version = CharField(read_only=True)
     version_should = CharField(read_only=True)
@@ -104,6 +111,8 @@ class OutpostHealthSerializer(PassiveSerializer):
 
     build_hash = CharField(read_only=True, required=False)
     build_hash_should = CharField(read_only=True, required=False)
+
+    hostname = CharField(read_only=True, required=False)
 
 
 class OutpostFilter(FilterSet):
@@ -145,13 +154,16 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
         outpost: Outpost = self.get_object()
         states = []
         for state in outpost.state:
+            state: OutpostState
             states.append(
                 {
+                    "uid": state.uid,
                     "last_seen": state.last_seen,
                     "version": state.version,
                     "version_should": state.version_should,
                     "version_outdated": state.version_outdated,
                     "build_hash": state.build_hash,
+                    "hostname": state.hostname,
                     "build_hash_should": get_build_hash(),
                 }
             )
