@@ -1811,8 +1811,12 @@ msgid "Designation"
 msgstr "Tanımlama"
 
 #: src/admin/outposts/OutpostListPage.ts
-msgid "Detailed health (one instance per column, data is cached so may be out of data)"
-msgstr "Ayrıntılı sistem durumu (sütun başına bir örnek, veriler önbelleğe alınır, bu nedenle veri kalmamış olabilir)"
+#~ msgid "Detailed health (one instance per column, data is cached so may be out of data)"
+#~ msgstr "Ayrıntılı sistem durumu (sütun başına bir örnek, veriler önbelleğe alınır, bu nedenle veri kalmamış olabilir)"
+
+#: src/admin/outposts/OutpostListPage.ts
+msgid "Detailed health (one instance per column, data is cached so may be out of date)"
+msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 msgid "Details"
@@ -2793,6 +2797,10 @@ msgstr "Hizmet hesaplarını gizle"
 msgid "Hold control/command to select multiple items."
 msgstr "Birden fazla öğe seçmek için control/command tuşunu basılı tut."
 
+#: src/admin/outposts/OutpostHealth.ts
+msgid "Hostname"
+msgstr ""
+
 #: src/admin/stages/password/PasswordStageForm.ts
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr "Akış iptal edilmeden önce bir kullanıcının kaç denemesi vardır. Kullanıcıyı kilitlemek için itibar ilkesi ve user_write aşamasını kullanın."
@@ -3185,6 +3193,9 @@ msgid "Last run"
 msgstr "Son çalıştırma"
 
 #: src/admin/outposts/OutpostHealth.ts
+msgid "Last seen"
+msgstr ""
+
 #: src/admin/outposts/OutpostHealthSimple.ts
 msgid "Last seen: {0}"
 msgstr "Son görüldü: {0}"
@@ -7038,6 +7049,7 @@ msgid "Verify the user's email address by sending them a one-time-link. Can also
 msgstr "Kullanıcının e-posta adresini bir kerelik bağlantı göndererek doğrulayın. Kullanıcının orijinalliğini doğrulamak için kurtarma için de kullanılabilir."
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
+#: src/admin/outposts/OutpostHealth.ts
 msgid "Version"
 msgstr "Sürüm"
 
@@ -7045,8 +7057,8 @@ msgstr "Sürüm"
 #~ msgstr "Sürüm: {0}"
 
 #: src/admin/outposts/OutpostHealth.ts
-msgid "Version: {versionString}"
-msgstr "Sürüm: {versionString}"
+#~ msgid "Version: {versionString}"
+#~ msgstr "Sürüm: {versionString}"
 
 #: src/admin/outposts/OutpostListPage.ts
 msgid "View Deployment Info"

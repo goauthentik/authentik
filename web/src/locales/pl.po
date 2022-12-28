@@ -1817,8 +1817,12 @@ msgid "Designation"
 msgstr "Przeznaczenie"
 
 #: src/admin/outposts/OutpostListPage.ts
-msgid "Detailed health (one instance per column, data is cached so may be out of data)"
-msgstr "Szczegółowa kondycja (jedna instancja na kolumnę, dane są buforowane, więc może nie być danych)"
+#~ msgid "Detailed health (one instance per column, data is cached so may be out of data)"
+#~ msgstr "Szczegółowa kondycja (jedna instancja na kolumnę, dane są buforowane, więc może nie być danych)"
+
+#: src/admin/outposts/OutpostListPage.ts
+msgid "Detailed health (one instance per column, data is cached so may be out of date)"
+msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 msgid "Details"
@@ -2799,6 +2803,10 @@ msgstr "Ukryj konta serwisowe"
 msgid "Hold control/command to select multiple items."
 msgstr "Przytrzymaj Control/Command, aby wybrać wiele elementów."
 
+#: src/admin/outposts/OutpostHealth.ts
+msgid "Hostname"
+msgstr ""
+
 #: src/admin/stages/password/PasswordStageForm.ts
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr "Ile prób ma użytkownik przed anulowaniem przepływu. Aby zablokować użytkownika, użyj zasad reputacji i etapu user_write."
@@ -3193,6 +3201,9 @@ msgid "Last run"
 msgstr "Ostatnio uruchomiono"
 
 #: src/admin/outposts/OutpostHealth.ts
+msgid "Last seen"
+msgstr ""
+
 #: src/admin/outposts/OutpostHealthSimple.ts
 msgid "Last seen: {0}"
 msgstr "Ostatnio widziany: {0}"
@@ -7048,6 +7059,7 @@ msgid "Verify the user's email address by sending them a one-time-link. Can also
 msgstr "Zweryfikuj adres e-mail użytkownika, wysyłając mu jednorazowy link. Może być również używany do odzyskiwania w celu weryfikacji autentyczności użytkownika."
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
+#: src/admin/outposts/OutpostHealth.ts
 msgid "Version"
 msgstr "Wersja"
 
@@ -7055,8 +7067,8 @@ msgstr "Wersja"
 #~ msgstr "Wersja: {0}"
 
 #: src/admin/outposts/OutpostHealth.ts
-msgid "Version: {versionString}"
-msgstr "Wersja: {versionString}"
+#~ msgid "Version: {versionString}"
+#~ msgstr "Wersja: {versionString}"
 
 #: src/admin/outposts/OutpostListPage.ts
 msgid "View Deployment Info"

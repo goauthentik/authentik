@@ -1814,8 +1814,12 @@ msgid "Designation"
 msgstr "Désignation"
 
 #: src/admin/outposts/OutpostListPage.ts
-msgid "Detailed health (one instance per column, data is cached so may be out of data)"
-msgstr "État détaillé (une instance par colonne, les données sont mises en cache et peuvent donc être périmée)"
+#~ msgid "Detailed health (one instance per column, data is cached so may be out of data)"
+#~ msgstr "État détaillé (une instance par colonne, les données sont mises en cache et peuvent donc être périmée)"
+
+#: src/admin/outposts/OutpostListPage.ts
+msgid "Detailed health (one instance per column, data is cached so may be out of date)"
+msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 msgid "Details"
@@ -2796,6 +2800,10 @@ msgstr "Cacher les comptes de service"
 msgid "Hold control/command to select multiple items."
 msgstr "Garder ctrl/command enfoncé pour sélectionner de multiples éléments"
 
+#: src/admin/outposts/OutpostHealth.ts
+msgid "Hostname"
+msgstr ""
+
 #: src/admin/stages/password/PasswordStageForm.ts
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr "Nombre de tentatives dont dispose un utilisateur avant que le flux ne soit annulé. Pour verrouiller l'utilisateur, utilisez une politique de réputation et une étape user_write."
@@ -3186,6 +3194,9 @@ msgid "Last run"
 msgstr "Dernière exécution"
 
 #: src/admin/outposts/OutpostHealth.ts
+msgid "Last seen"
+msgstr ""
+
 #: src/admin/outposts/OutpostHealthSimple.ts
 msgid "Last seen: {0}"
 msgstr "Vu le : {0}"
@@ -7029,6 +7040,7 @@ msgid "Verify the user's email address by sending them a one-time-link. Can also
 msgstr "Vérifier l’adresse email de l’utilisateur en lui envoyant un lien à usage unique. Peut également être utilisé lors de la récupération afin de vérifier l'authenticité de l’utilisateur."
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
+#: src/admin/outposts/OutpostHealth.ts
 msgid "Version"
 msgstr "Version"
 
@@ -7036,8 +7048,8 @@ msgstr "Version"
 #~ msgstr "Version : {0}"
 
 #: src/admin/outposts/OutpostHealth.ts
-msgid "Version: {versionString}"
-msgstr "Version: {versionString}"
+#~ msgid "Version: {versionString}"
+#~ msgstr "Version: {versionString}"
 
 #: src/admin/outposts/OutpostListPage.ts
 msgid "View Deployment Info"

@@ -129,7 +129,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         return html`<td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <h3>
-                    ${t`Detailed health (one instance per column, data is cached so may be out of data)`}
+                    ${t`Detailed health (one instance per column, data is cached so may be out of date)`}
                 </h3>
                 <dl class="pf-c-description-list pf-m-3-col-on-lg">
                     ${until(

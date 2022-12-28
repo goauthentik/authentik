@@ -1819,8 +1819,12 @@ msgid "Designation"
 msgstr "指定"
 
 #: src/admin/outposts/OutpostListPage.ts
-msgid "Detailed health (one instance per column, data is cached so may be out of data)"
-msgstr "详细运行状况（每列一个实例，数据已缓存，因此可能没有数据）"
+#~ msgid "Detailed health (one instance per column, data is cached so may be out of data)"
+#~ msgstr "详细运行状况（每列一个实例，数据已缓存，因此可能没有数据）"
+
+#: src/admin/outposts/OutpostListPage.ts
+msgid "Detailed health (one instance per column, data is cached so may be out of date)"
+msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 msgid "Details"
@@ -2801,6 +2805,10 @@ msgstr "隐藏服务账户"
 msgid "Hold control/command to select multiple items."
 msgstr "按住 ctrl/command 键可选择多个项目。"
 
+#: src/admin/outposts/OutpostHealth.ts
+msgid "Hostname"
+msgstr ""
+
 #: src/admin/stages/password/PasswordStageForm.ts
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr "在取消流程之前，用户有多少次尝试。要锁定用户，请使用信誉策略和 user_write 阶段。"
@@ -3193,6 +3201,9 @@ msgid "Last run"
 msgstr "上次运行"
 
 #: src/admin/outposts/OutpostHealth.ts
+msgid "Last seen"
+msgstr ""
+
 #: src/admin/outposts/OutpostHealthSimple.ts
 msgid "Last seen: {0}"
 msgstr "最后显示：{0}"
@@ -7046,6 +7057,7 @@ msgid "Verify the user's email address by sending them a one-time-link. Can also
 msgstr "通过向用户发送一次性链接来验证用户的电子邮件地址。也可用于恢复，以验证用户的真实性。"
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
+#: src/admin/outposts/OutpostHealth.ts
 msgid "Version"
 msgstr "版本"
 
@@ -7053,8 +7065,8 @@ msgstr "版本"
 #~ msgstr "版本：{0}"
 
 #: src/admin/outposts/OutpostHealth.ts
-msgid "Version: {versionString}"
-msgstr "版本：{versionString}"
+#~ msgid "Version: {versionString}"
+#~ msgstr "版本：{versionString}"
 
 #: src/admin/outposts/OutpostListPage.ts
 msgid "View Deployment Info"

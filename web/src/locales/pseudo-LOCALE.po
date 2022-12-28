@@ -1833,7 +1833,11 @@ msgid "Designation"
 msgstr ""
 
 #: src/admin/outposts/OutpostListPage.ts
-msgid "Detailed health (one instance per column, data is cached so may be out of data)"
+#~ msgid "Detailed health (one instance per column, data is cached so may be out of data)"
+#~ msgstr ""
+
+#: src/admin/outposts/OutpostListPage.ts
+msgid "Detailed health (one instance per column, data is cached so may be out of date)"
 msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
@@ -2845,6 +2849,10 @@ msgstr ""
 msgid "Hold control/command to select multiple items."
 msgstr ""
 
+#: src/admin/outposts/OutpostHealth.ts
+msgid "Hostname"
+msgstr ""
+
 #: src/admin/stages/password/PasswordStageForm.ts
 msgid "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
 msgstr ""
@@ -3245,6 +3253,9 @@ msgid "Last run"
 msgstr ""
 
 #: src/admin/outposts/OutpostHealth.ts
+msgid "Last seen"
+msgstr ""
+
 #: src/admin/outposts/OutpostHealthSimple.ts
 msgid "Last seen: {0}"
 msgstr ""
@@ -7187,6 +7198,7 @@ msgid "Verify the user's email address by sending them a one-time-link. Can also
 msgstr ""
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
+#: src/admin/outposts/OutpostHealth.ts
 msgid "Version"
 msgstr ""
 
@@ -7195,8 +7207,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/admin/outposts/OutpostHealth.ts
-msgid "Version: {versionString}"
-msgstr ""
+#~ msgid "Version: {versionString}"
+#~ msgstr ""
 
 #: src/admin/outposts/OutpostListPage.ts
 msgid "View Deployment Info"

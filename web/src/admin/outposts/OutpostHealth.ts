@@ -8,6 +8,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { OutpostHealth } from "@goauthentik/api";
@@ -20,6 +21,7 @@ export class OutpostHealthElement extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,
+            PFDescriptionList,
             AKGlobal,
             css`
                 li {
@@ -40,21 +42,43 @@ export class OutpostHealthElement extends AKElement {
                 8,
             )})`;
         }
-        return html` <ul>
-            <li>
-                <ak-label color=${PFColor.Green}>
-                    ${t`Last seen: ${this.outpostHealth.lastSeen?.toLocaleTimeString()}`}
-                </ak-label>
-            </li>
-            <li>
-                ${this.outpostHealth.versionOutdated
-                    ? html`<ak-label color=${PFColor.Red}
-                          >${t`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`}
-                      </ak-label>`
-                    : html`<ak-label color=${PFColor.Green}
-                          >${t`Version: ${versionString}`}
-                      </ak-label>`}
-            </li>
-        </ul>`;
+        return html`<dl class="pf-c-description-list pf-m-compact">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${t`Last seen`}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-label color=${PFColor.Green} ?compact=${true}>
+                            ${this.outpostHealth.lastSeen?.toLocaleTimeString()}
+                        </ak-label>
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${t`Version`}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        ${this.outpostHealth.versionOutdated
+                            ? html`<ak-label color=${PFColor.Red} ?compact=${true}
+                                  >${t`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`}
+                              </ak-label>`
+                            : html`<ak-label color=${PFColor.Green} ?compact=${true}
+                                  >${versionString}
+                              </ak-label>`}
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${t`Hostname`}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${this.outpostHealth.hostname}</div>
+                </dd>
+            </div>
+        </dl> `;
     }
 }
