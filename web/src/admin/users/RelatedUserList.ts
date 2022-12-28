@@ -88,16 +88,11 @@ export class RelatedUserList extends Table<User> {
                 ];
             }}
             .delete=${(item: User) => {
-                const newUsers = this.targetGroup?.usersObj
-                    .filter((user) => {
-                        return user.pk != item.pk;
-                    })
-                    .map((user) => user.pk);
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsPartialUpdate({
+                return new CoreApi(DEFAULT_CONFIG).coreGroupsRemoveUserCreate({
                     groupUuid: this.targetGroup?.pk || "",
-                    patchedGroupRequest: {
-                        users: newUsers,
-                    },
+                    userAccountRequest: {
+                        pk: item.pk,
+                    }
                 });
             }}
         >

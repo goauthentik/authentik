@@ -3458,6 +3458,84 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /core/groups/{group_uuid}/add_user/:
+    post:
+      operationId: core_groups_add_user_create
+      description: Add user to group
+      parameters:
+      - in: path
+        name: group_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this group.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: User added
+        '404':
+          description: User not found
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /core/groups/{group_uuid}/remove_user/:
+    post:
+      operationId: core_groups_remove_user_create
+      description: Add user to group
+      parameters:
+      - in: path
+        name: group_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this group.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: User added
+        '404':
+          description: User not found
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /core/groups/{group_uuid}/used_by/:
     get:
       operationId: core_groups_used_by_list
@@ -37825,6 +37903,13 @@ components:
       - pk
       - uid
       - username
+    UserAccountRequest:
+      type: object
+      properties:
+        pk:
+          type: integer
+      required:
+      - pk
     UserConsent:
       type: object
       description: UserConsent Serializer

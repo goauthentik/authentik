@@ -2,13 +2,20 @@
 from json import loads
 
 from django.db.models.query import QuerySet
+from django.http import Http404
 from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from guardian.shortcuts import get_objects_for_user
+from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, JSONField
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 
+from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import is_dict
 from authentik.core.models import Group, User
@@ -134,3 +141,63 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         if self.request.user.has_perm("authentik_core.view_group"):
             return self._filter_queryset_for_list(queryset)
         return super().filter_queryset(queryset)
+
+    @permission_required(None, ["authentik_core.add_user"])
+    @extend_schema(
+        request=inline_serializer(
+            "UserAccountSerializer",
+            {
+                "pk": IntegerField(required=True),
+            },
+        ),
+        responses={
+            204: OpenApiResponse(description="User added"),
+            404: OpenApiResponse(description="User not found"),
+        },
+    )
+    @action(detail=True, methods=["POST"], pagination_class=None, filter_backends=[])
+    # pylint: disable=unused-argument, invalid-name
+    def add_user(self, request: Request, pk: str) -> Response:
+        """Add user to group"""
+        group: Group = self.get_object()
+        user: User = (
+            get_objects_for_user(request.user, "authentik_core.view_user")
+            .filter(
+                pk=request.data.get("pk"),
+            )
+            .first()
+        )
+        if not user:
+            raise Http404
+        group.users.add(user)
+        return Response(status=204)
+
+    @permission_required(None, ["authentik_core.add_user"])
+    @extend_schema(
+        request=inline_serializer(
+            "UserAccountSerializer",
+            {
+                "pk": IntegerField(required=True),
+            },
+        ),
+        responses={
+            204: OpenApiResponse(description="User added"),
+            404: OpenApiResponse(description="User not found"),
+        },
+    )
+    @action(detail=True, methods=["POST"], pagination_class=None, filter_backends=[])
+    # pylint: disable=unused-argument, invalid-name
+    def remove_user(self, request: Request, pk: str) -> Response:
+        """Add user to group"""
+        group: Group = self.get_object()
+        user: User = (
+            get_objects_for_user(request.user, "authentik_core.view_user")
+            .filter(
+                pk=request.data.get("pk"),
+            )
+            .first()
+        )
+        if not user:
+            raise Http404
+        group.users.remove(user)
+        return Response(status=204)

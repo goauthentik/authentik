@@ -52,17 +52,15 @@ export class RelatedGroupList extends Table<Group> {
         return html`<ak-forms-delete-bulk
             objectLabel=${t`Group(s)`}
             actionLabel=${t`Remove from Group(s)`}
-            actionSubtext=${t`Are you sure you want to remove users ${this.targetUser?.username} from the following groups?`}
+            actionSubtext=${t`Are you sure you want to remove user ${this.targetUser?.username} from the following groups?`}
             .objects=${this.selectedElements}
             .delete=${(item: Group) => {
-                const newGroups = this.targetUser?.groups.filter((group) => {
-                    return group != item.pk;
-                });
-                return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
-                    id: this.targetUser?.pk || 0,
-                    patchedUserRequest: {
-                        groups: newGroups,
-                    },
+                if (!this.targetUser) return;
+                return new CoreApi(DEFAULT_CONFIG).coreGroupsRemoveUserCreate({
+                    groupUuid: item.pk,
+                    userAccountRequest: {
+                        pk: this.targetUser?.pk || 0,
+                    }
                 });
             }}
         >
