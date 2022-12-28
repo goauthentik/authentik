@@ -98,6 +98,7 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
             if (!this.flowSlug) {
                 return;
             }
+            this.nextChallenge();
         });
     }
 
