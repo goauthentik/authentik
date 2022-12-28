@@ -92,7 +92,7 @@ export class RelatedUserList extends Table<User> {
                     groupUuid: this.targetGroup?.pk || "",
                     userAccountRequest: {
                         pk: item.pk,
-                    }
+                    },
                 });
             }}
         >

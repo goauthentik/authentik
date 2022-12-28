@@ -60,7 +60,7 @@ export class RelatedGroupList extends Table<Group> {
                     groupUuid: item.pk,
                     userAccountRequest: {
                         pk: this.targetUser?.pk || 0,
-                    }
+                    },
                 });
             }}
         >
