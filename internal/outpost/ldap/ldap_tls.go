@@ -24,7 +24,7 @@ func (ls *LDAPServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certifica
 			}
 			return provider.cert, nil
 		}
-		if provider.certUUID != ls.providers[0].certUUID && provider.cert != nil {
+		if provider.certUUID != ls.providers[0].certUUID || provider.cert == nil {
 			allIdenticalCerts = false
 		}
 	}
