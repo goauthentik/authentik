@@ -34,6 +34,7 @@ type ProviderInstance struct {
 
 	tlsServerName       *string
 	cert                *tls.Certificate
+	certUUID            string
 	outpostName         string
 	outpostPk           int32
 	searchAllowedGroups []*strfmt.UUID

@@ -70,13 +70,13 @@ func (ls *LDAPServer) Refresh() error {
 			outpostName:         ls.ac.Outpost.Name,
 			outpostPk:           provider.Pk,
 		}
-		if provider.Certificate.Get() != nil {
-			kp := provider.Certificate.Get()
+		if kp := provider.Certificate.Get(); kp != nil {
 			err := ls.cs.AddKeypair(*kp)
 			if err != nil {
 				ls.log.WithError(err).Warning("Failed to initially fetch certificate")
 			}
 			providers[idx].cert = ls.cs.Get(*kp)
+			providers[idx].certUUID = *kp
 		}
 		if *provider.SearchMode.Ptr() == api.LDAPAPIACCESSMODE_CACHED {
 			providers[idx].searcher = memorysearch.NewMemorySearcher(providers[idx])
