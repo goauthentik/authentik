@@ -310,6 +310,18 @@ html > form > input {
     .pf-c-dropdown__toggle::before {
         border-color: transparent;
     }
+    .pf-c-dropdown__menu {
+        --pf-c-dropdown__menu--BackgroundColor: var(--ak-dark-background);
+    }
+    .pf-c-dropdown__menu-item {
+        --pf-c-dropdown__menu-item--BackgroundColor: var(--ak-dark-background);
+        --pf-c-dropdown__menu-item--Color: var(--ak-dark-foreground);
+    }
+    .pf-c-dropdown__menu-item:hover,
+    .pf-c-dropdown__menu-item:focus {
+        --pf-c-dropdown__menu-item--BackgroundColor: var(--ak-dark-background-light-ish);
+        --pf-c-dropdown__menu-item--Color: var(--ak-dark-foreground);
+    }
     .pf-c-toggle-group__button {
         color: var(--ak-dark-foreground) !important;
     }
