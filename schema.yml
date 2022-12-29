@@ -3578,60 +3578,78 @@ paths:
       operationId: core_tenants_list
       description: Tenant Viewset
       parameters:
-      - in: query
-        name: branding_favicon
+      - name: branding_favicon
+        required: false
+        in: query
+        description: branding_favicon
         schema:
           type: string
-      - in: query
-        name: branding_logo
+      - name: branding_logo
+        required: false
+        in: query
+        description: branding_logo
         schema:
           type: string
-      - in: query
-        name: branding_title
+      - name: branding_title
+        required: false
+        in: query
+        description: branding_title
         schema:
           type: string
-      - in: query
-        name: default
-        schema:
-          type: boolean
-      - in: query
-        name: domain
+      - name: default
+        required: false
+        in: query
+        description: default
         schema:
           type: string
-      - in: query
-        name: event_retention
+      - name: domain
+        required: false
+        in: query
+        description: domain
         schema:
           type: string
-      - in: query
-        name: flow_authentication
+      - name: event_retention
+        required: false
+        in: query
+        description: event_retention
         schema:
           type: string
-          format: uuid
-      - in: query
-        name: flow_device_code
+      - name: flow_authentication
+        required: false
+        in: query
+        description: flow_authentication
         schema:
           type: string
-          format: uuid
-      - in: query
-        name: flow_invalidation
+      - name: flow_device_code
+        required: false
+        in: query
+        description: flow_device_code
         schema:
           type: string
-          format: uuid
-      - in: query
-        name: flow_recovery
+      - name: flow_invalidation
+        required: false
+        in: query
+        description: flow_invalidation
         schema:
           type: string
-          format: uuid
-      - in: query
-        name: flow_unenrollment
+      - name: flow_recovery
+        required: false
+        in: query
+        description: flow_recovery
         schema:
           type: string
-          format: uuid
-      - in: query
-        name: flow_user_settings
+      - name: flow_unenrollment
+        required: false
+        in: query
+        description: flow_unenrollment
         schema:
           type: string
-          format: uuid
+      - name: flow_user_settings
+        required: false
+        in: query
+        description: flow_user_settings
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -3656,16 +3674,18 @@ paths:
         description: A search term.
         schema:
           type: string
-      - in: query
-        name: tenant_uuid
+      - name: tenant_uuid
+        required: false
+        in: query
+        description: tenant_uuid
         schema:
           type: string
-          format: uuid
-      - in: query
-        name: web_certificate
+      - name: web_certificate
+        required: false
+        in: query
+        description: web_certificate
         schema:
           type: string
-          format: uuid
       tags:
       - core
       security:
@@ -5001,22 +5021,27 @@ paths:
       operationId: crypto_certificatekeypairs_list
       description: CertificateKeyPair Viewset
       parameters:
-      - in: query
-        name: has_key
-        schema:
-          type: boolean
+      - name: has_key
+        required: false
+        in: query
         description: Only return certificate-key pairs with keys
+        schema:
+          type: string
       - in: query
         name: include_details
         schema:
           type: boolean
           default: true
-      - in: query
-        name: managed
+      - name: managed
+        required: false
+        in: query
+        description: managed
         schema:
           type: string
-      - in: query
-        name: name
+      - name: name
+        required: false
+        in: query
+        description: name
         schema:
           type: string
       - name: ordering
