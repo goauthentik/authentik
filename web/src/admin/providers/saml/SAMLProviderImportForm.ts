@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { SentryIgnoredError } from "@goauthentik/common/errors";
+import "@goauthentik/elements/SearchSelect";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -7,11 +8,12 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
 
 import {
+    Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    FlowsInstancesListRequest,
     ProvidersApi,
     SAMLProvider,
 } from "@goauthentik/api";
@@ -45,23 +47,29 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                <select class="pf-c-form-control">
-                    ${until(
-                        new FlowsApi(DEFAULT_CONFIG)
-                            .flowsInstancesList({
-                                ordering: "slug",
-                                designation: FlowsInstancesListDesignationEnum.Authorization,
-                            })
-                            .then((flows) => {
-                                return flows.results.map((flow) => {
-                                    return html`<option value=${flow.slug}>
-                                        ${flow.name} (${flow.slug})
-                                    </option>`;
-                                });
-                            }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                        const args: FlowsInstancesListRequest = {
+                            ordering: "name",
+                            designation: FlowsInstancesListDesignationEnum.Authorization,
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
+                        return flows.results;
+                    }}
+                    .renderElement=${(flow: Flow): string => {
+                        return flow.name;
+                    }}
+                    .renderDescription=${(flow: Flow): string => {
+                        return flow.slug;
+                    }}
+                    .value=${(flow: Flow | undefined): string | undefined => {
+                        return flow?.pk;
+                    }}
+                >
+                </ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${t`Flow used when authorizing this provider.`}
                 </p>

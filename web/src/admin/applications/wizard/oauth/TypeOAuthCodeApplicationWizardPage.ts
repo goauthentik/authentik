@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/SearchSelect";
 import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { WizardFormPage } from "@goauthentik/elements/wizard/WizardFormPage";
@@ -8,13 +9,13 @@ import { t } from "@lingui/macro";
 
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { TemplateResult, html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     ClientTypeEnum,
+    Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    FlowsInstancesListRequest,
     OAuth2ProviderRequest,
     ProvidersApi,
 } from "@goauthentik/api";
@@ -46,23 +47,29 @@ export class TypeOAuthCodeApplicationWizardPage extends WizardFormPage {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                <select class="pf-c-form-control">
-                    ${until(
-                        new FlowsApi(DEFAULT_CONFIG)
-                            .flowsInstancesList({
-                                ordering: "slug",
-                                designation: FlowsInstancesListDesignationEnum.Authorization,
-                            })
-                            .then((flows) => {
-                                return flows.results.map((flow) => {
-                                    return html`<option value=${ifDefined(flow.pk)}>
-                                        ${flow.name} (${flow.slug})
-                                    </option>`;
-                                });
-                            }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                        const args: FlowsInstancesListRequest = {
+                            ordering: "name",
+                            designation: FlowsInstancesListDesignationEnum.Authorization,
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
+                        return flows.results;
+                    }}
+                    .renderElement=${(flow: Flow): string => {
+                        return flow.name;
+                    }}
+                    .renderDescription=${(flow: Flow): string => {
+                        return flow.slug;
+                    }}
+                    .value=${(flow: Flow | undefined): string | undefined => {
+                        return flow?.pk;
+                    }}
+                >
+                </ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${t`Flow used when users access this application.`}
                 </p>
