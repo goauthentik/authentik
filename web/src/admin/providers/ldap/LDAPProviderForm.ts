@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -13,9 +14,11 @@ import { until } from "lit/directives/until.js";
 
 import {
     CoreApi,
+    CoreGroupsListRequest,
     CryptoApi,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    Group,
     LDAPAPIAccessMode,
     LDAPProvider,
     ProvidersApi,
@@ -97,24 +100,29 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Search group`} name="searchGroup">
-                <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.instance?.searchGroup === undefined}>
-                        ---------
-                    </option>
-                    ${until(
-                        new CoreApi(DEFAULT_CONFIG).coreGroupsList({}).then((groups) => {
-                            return groups.results.map((group) => {
-                                return html`<option
-                                    value=${ifDefined(group.pk)}
-                                    ?selected=${this.instance?.searchGroup === group.pk}
-                                >
-                                    ${group.name}
-                                </option>`;
-                            });
-                        }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
+                        const args: CoreGroupsListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+                        return groups.results;
+                    }}
+                    .renderElement=${(group: Group): string => {
+                        return group.name;
+                    }}
+                    .value=${(group: Group | undefined): string | undefined => {
+                        return group?.pk;
+                    }}
+                    .selected=${(group: Group): boolean => {
+                        return group.pk === this.instance?.searchGroup;
+                    }}
+                    ?blankable=${true}
+                >
+                </ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${t`Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.`}
                 </p>

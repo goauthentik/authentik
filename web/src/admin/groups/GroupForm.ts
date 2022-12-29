@@ -2,6 +2,7 @@ import "@goauthentik/admin/groups/MemberSelectModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -16,7 +17,7 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import { CoreApi, Group, User } from "@goauthentik/api";
+import { CoreApi, CoreGroupsListRequest, Group, User } from "@goauthentik/api";
 
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
@@ -83,24 +84,29 @@ export class GroupForm extends ModelForm<Group, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Parent`} name="parent">
-                <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.instance?.parent === undefined}>
-                        ---------
-                    </option>
-                    ${until(
-                        new CoreApi(DEFAULT_CONFIG).coreGroupsList({}).then((groups) => {
-                            return groups.results.map((group) => {
-                                return html`<option
-                                    value=${ifDefined(group.pk)}
-                                    ?selected=${this.instance?.parent === group.pk}
-                                >
-                                    ${group.name}
-                                </option>`;
-                            });
-                        }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
+                        const args: CoreGroupsListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+                        return groups.results;
+                    }}
+                    .renderElement=${(group: Group): string => {
+                        return group.name;
+                    }}
+                    .value=${(group: Group | undefined): string | undefined => {
+                        return group?.pk;
+                    }}
+                    .selected=${(group: Group): boolean => {
+                        return group.pk === this.instance?.parent;
+                    }}
+                    ?blankable=${true}
+                >
+                </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Members`} name="users">
                 <div class="pf-c-input-group">

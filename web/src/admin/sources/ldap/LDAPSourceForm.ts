@@ -310,7 +310,6 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                 <span slot="header"> ${t`Additional settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${t`Group`} name="syncParentGroup">
-                        <!-- @ts-ignore -->
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
