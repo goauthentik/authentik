@@ -57,7 +57,9 @@ class BlueprintEntry:
     """Single entry of a blueprint"""
 
     model: Union[str, "YAMLTag"]
-    state: Union[BlueprintEntryDesiredState, "YAMLTag"] = field(default=BlueprintEntryDesiredState.PRESENT)
+    state: Union[BlueprintEntryDesiredState, "YAMLTag"] = field(
+        default=BlueprintEntryDesiredState.PRESENT
+    )
     conditions: list[Any] = field(default_factory=list)
     identifiers: dict[str, Any] = field(default_factory=dict)
     attrs: Optional[dict[str, Any]] = field(default_factory=dict)
@@ -114,6 +116,7 @@ class BlueprintEntry:
     def check_all_conditions_match(self, blueprint: "Blueprint") -> bool:
         """Check all conditions of this entry match (evaluate to True)"""
         return all(self.tag_resolver(self.conditions, blueprint))
+
 
 @dataclass
 class BlueprintMetadata:
