@@ -12,15 +12,16 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
 
 import {
     CertificateKeyPair,
     CoreApi,
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
+    Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    FlowsInstancesListRequest,
     Tenant,
 } from "@goauthentik/api";
 
@@ -144,35 +145,35 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         label=${t`Authentication flow`}
                         name="flowAuthentication"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.flowAuthentication === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation:
-                                            FlowsInstancesListDesignationEnum.Authentication,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            const selected =
-                                                this.instance?.flowAuthentication === flow.pk;
-                                            return html`<option
-                                                value=${flow.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                                const args: FlowsInstancesListRequest = {
+                                    ordering: "slug",
+                                    designation: FlowsInstancesListDesignationEnum.Authentication,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
+                                    args,
+                                );
+                                return flows.results;
+                            }}
+                            .renderElement=${(flow: Flow): string => {
+                                return flow.name;
+                            }}
+                            .renderDescription=${(flow: Flow): string => {
+                                return flow.slug;
+                            }}
+                            .value=${(flow: Flow | undefined): string | undefined => {
+                                return flow?.pk;
+                            }}
+                            .selected=${(flow: Flow): boolean => {
+                                return this.instance?.flowAuthentication === flow.pk;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.`}
                         </p>
@@ -181,64 +182,70 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         label=${t`Invalidation flow`}
                         name="flowInvalidation"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.flowInvalidation === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation: FlowsInstancesListDesignationEnum.Invalidation,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            const selected =
-                                                this.instance?.flowInvalidation === flow.pk;
-                                            return html`<option
-                                                value=${flow.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                                const args: FlowsInstancesListRequest = {
+                                    ordering: "slug",
+                                    designation: FlowsInstancesListDesignationEnum.Invalidation,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
+                                    args,
+                                );
+                                return flows.results;
+                            }}
+                            .renderElement=${(flow: Flow): string => {
+                                return flow.name;
+                            }}
+                            .renderDescription=${(flow: Flow): string => {
+                                return flow.slug;
+                            }}
+                            .value=${(flow: Flow | undefined): string | undefined => {
+                                return flow?.pk;
+                            }}
+                            .selected=${(flow: Flow): boolean => {
+                                return this.instance?.flowInvalidation === flow.pk;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
+
                         <p class="pf-c-form__helper-text">
                             ${t`Flow used to logout. If left empty, the first applicable flow sorted by the slug is used.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Recovery flow`} name="flowRecovery">
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.flowRecovery === undefined}>
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation: FlowsInstancesListDesignationEnum.Recovery,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            const selected =
-                                                this.instance?.flowRecovery === flow.pk;
-                                            return html`<option
-                                                value=${flow.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                                const args: FlowsInstancesListRequest = {
+                                    ordering: "slug",
+                                    designation: FlowsInstancesListDesignationEnum.Recovery,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
+                                    args,
+                                );
+                                return flows.results;
+                            }}
+                            .renderElement=${(flow: Flow): string => {
+                                return flow.name;
+                            }}
+                            .renderDescription=${(flow: Flow): string => {
+                                return flow.slug;
+                            }}
+                            .value=${(flow: Flow | undefined): string | undefined => {
+                                return flow?.pk;
+                            }}
+                            .selected=${(flow: Flow): boolean => {
+                                return this.instance?.flowRecovery === flow.pk;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`Recovery flow. If left empty, the first applicable flow sorted by the slug is used.`}
                         </p>
@@ -247,34 +254,35 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         label=${t`Unenrollment flow`}
                         name="flowUnenrollment"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.flowUnenrollment === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation: FlowsInstancesListDesignationEnum.Unenrollment,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            const selected =
-                                                this.instance?.flowUnenrollment === flow.pk;
-                                            return html`<option
-                                                value=${flow.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                                const args: FlowsInstancesListRequest = {
+                                    ordering: "slug",
+                                    designation: FlowsInstancesListDesignationEnum.Unenrollment,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
+                                    args,
+                                );
+                                return flows.results;
+                            }}
+                            .renderElement=${(flow: Flow): string => {
+                                return flow.name;
+                            }}
+                            .renderDescription=${(flow: Flow): string => {
+                                return flow.slug;
+                            }}
+                            .value=${(flow: Flow | undefined): string | undefined => {
+                                return flow?.pk;
+                            }}
+                            .selected=${(flow: Flow): boolean => {
+                                return this.instance?.flowUnenrollment === flow.pk;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.`}
                         </p>
@@ -283,69 +291,71 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         label=${t`User settings flow`}
                         name="flowUserSettings"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.flowUserSettings === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation:
-                                            FlowsInstancesListDesignationEnum.StageConfiguration,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            const selected =
-                                                this.instance?.flowUserSettings === flow.pk;
-                                            return html`<option
-                                                value=${flow.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                                const args: FlowsInstancesListRequest = {
+                                    ordering: "slug",
+                                    designation:
+                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
+                                    args,
+                                );
+                                return flows.results;
+                            }}
+                            .renderElement=${(flow: Flow): string => {
+                                return flow.name;
+                            }}
+                            .renderDescription=${(flow: Flow): string => {
+                                return flow.slug;
+                            }}
+                            .value=${(flow: Flow | undefined): string | undefined => {
+                                return flow?.pk;
+                            }}
+                            .selected=${(flow: Flow): boolean => {
+                                return this.instance?.flowUserSettings === flow.pk;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`If set, users are able to configure details of their profile.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Device code flow`} name="flowDeviceCode">
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.flowDeviceCode === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation:
-                                            FlowsInstancesListDesignationEnum.StageConfiguration,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            const selected =
-                                                this.instance?.flowDeviceCode === flow.pk;
-                                            return html`<option
-                                                value=${flow.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                                const args: FlowsInstancesListRequest = {
+                                    ordering: "slug",
+                                    designation:
+                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
+                                    args,
+                                );
+                                return flows.results;
+                            }}
+                            .renderElement=${(flow: Flow): string => {
+                                return flow.name;
+                            }}
+                            .renderDescription=${(flow: Flow): string => {
+                                return flow.slug;
+                            }}
+                            .value=${(flow: Flow | undefined): string | undefined => {
+                                return flow?.pk;
+                            }}
+                            .selected=${(flow: Flow): boolean => {
+                                return this.instance?.flowDeviceCode === flow.pk;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`If set, the OAuth Device Code profile can be used, and the selected flow will be used to enter the code.`}
                         </p>

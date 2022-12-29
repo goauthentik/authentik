@@ -85,7 +85,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                         const args: FlowsInstancesListRequest = {
-                            ordering: "name",
+                            ordering: "slug",
                             designation: FlowsInstancesListDesignationEnum.Authorization,
                         };
                         if (query !== undefined) {
@@ -102,6 +102,9 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                     }}
                     .value=${(flow: Flow | undefined): string | undefined => {
                         return flow?.pk;
+                    }}
+                    .selected=${(flow: Flow): boolean => {
+                        return flow.pk === this.instance?.authorizationFlow;
                     }}
                 >
                 </ak-search-select>

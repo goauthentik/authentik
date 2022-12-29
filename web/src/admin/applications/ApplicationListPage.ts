@@ -70,6 +70,9 @@ export class ApplicationListPage extends TablePage<Application> {
                     text-align: center;
                     vertical-align: middle;
                 }
+                .pf-c-sidebar.pf-m-gutter > .pf-c-sidebar__main > * + * {
+                    margin-left: calc(var(--pf-c-sidebar__main--child--MarginLeft) / 2);
+                }
             `,
         );
     }

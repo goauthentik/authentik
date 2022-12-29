@@ -50,7 +50,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                         const args: FlowsInstancesListRequest = {
-                            ordering: "name",
+                            ordering: "slug",
                             designation: FlowsInstancesListDesignationEnum.Authorization,
                         };
                         if (query !== undefined) {

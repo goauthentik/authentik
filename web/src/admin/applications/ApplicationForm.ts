@@ -1,6 +1,7 @@
 import "@goauthentik/admin/providers/ProviderWizard";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import { first, groupBy } from "@goauthentik/common/utils";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
@@ -20,6 +21,7 @@ import {
     CoreApi,
     PolicyEngineMode,
     Provider,
+    ProvidersAllListRequest,
     ProvidersApi,
 } from "@goauthentik/api";
 
@@ -78,29 +80,6 @@ export class ApplicationForm extends ModelForm<Application, string> {
         return app;
     };
 
-    groupProviders(providers: Provider[]): TemplateResult {
-        const m = new Map<string, Provider[]>();
-        providers.forEach((p) => {
-            if (!m.has(p.verboseName || "")) {
-                m.set(p.verboseName || "", []);
-            }
-            const tProviders = m.get(p.verboseName || "") || [];
-            tProviders.push(p);
-        });
-        return html`
-            ${Array.from(m).map(([group, providers]) => {
-                return html`<optgroup label=${group}>
-                    ${providers.map((p) => {
-                        const selected = this.instance?.provider === p.pk || this.provider === p.pk;
-                        return html`<option ?selected=${selected} value=${ifDefined(p.pk)}>
-                            ${p.name}
-                        </option>`;
-                    })}
-                </optgroup>`;
-            })}
-        `;
-    }
-
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
@@ -132,17 +111,32 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Provider`} name="provider">
-                <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.instance?.provider === undefined}>
-                        ---------
-                    </option>
-                    ${until(
-                        new ProvidersApi(DEFAULT_CONFIG).providersAllList({}).then((providers) => {
-                            return this.groupProviders(providers.results);
-                        }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Provider[]> => {
+                        const args: ProvidersAllListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const items = await new ProvidersApi(DEFAULT_CONFIG).providersAllList(args);
+                        return items.results;
+                    }}
+                    .renderElement=${(item: Provider): string => {
+                        return item.name;
+                    }}
+                    .value=${(item: Provider | undefined): number | undefined => {
+                        return item?.pk;
+                    }}
+                    .groupBy=${(items: Provider[]) => {
+                        return groupBy(items, (item) => item.verboseName);
+                    }}
+                    .selected=${(item: Provider): boolean => {
+                        return this.instance?.provider === item.pk;
+                    }}
+                    ?blankable=${true}
+                >
+                </ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${t`Select a provider that this application should use. Alternatively, create a new provider.`}
                 </p>

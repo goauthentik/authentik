@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
@@ -8,13 +9,14 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     EventsApi,
     NotificationTransport,
     NotificationTransportModeEnum,
+    NotificationWebhookMapping,
     PropertymappingsApi,
+    PropertymappingsNotificationListRequest,
 } from "@goauthentik/api";
 
 @customElement("ak-event-transport-form")
@@ -132,26 +134,33 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 label=${t`Webhook Mapping`}
                 name="webhookMapping"
             >
-                <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.instance?.webhookMapping === undefined}>
-                        ---------
-                    </option>
-                    ${until(
-                        new PropertymappingsApi(DEFAULT_CONFIG)
-                            .propertymappingsNotificationList({})
-                            .then((mappings) => {
-                                return mappings.results.map((mapping) => {
-                                    return html`<option
-                                        value=${ifDefined(mapping.pk)}
-                                        ?selected=${this.instance?.webhookMapping === mapping.pk}
-                                    >
-                                        ${mapping.name}
-                                    </option>`;
-                                });
-                            }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (
+                        query?: string,
+                    ): Promise<NotificationWebhookMapping[]> => {
+                        const args: PropertymappingsNotificationListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const items = await new PropertymappingsApi(
+                            DEFAULT_CONFIG,
+                        ).propertymappingsNotificationList(args);
+                        return items.results;
+                    }}
+                    .renderElement=${(item: NotificationWebhookMapping): string => {
+                        return item.name;
+                    }}
+                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
+                        return item?.pk;
+                    }}
+                    .selected=${(item: NotificationWebhookMapping): boolean => {
+                        return this.instance?.webhookMapping === item.pk;
+                    }}
+                    ?blankable=${true}
+                >
+                </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="sendOnce">
                 <div class="pf-c-check">

@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
@@ -8,9 +9,14 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
-import { CryptoApi, DockerServiceConnection, OutpostsApi } from "@goauthentik/api";
+import {
+    CertificateKeyPair,
+    CryptoApi,
+    CryptoCertificatekeypairsListRequest,
+    DockerServiceConnection,
+    OutpostsApi,
+} from "@goauthentik/api";
 
 @customElement("ak-service-connection-docker-form")
 export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnection, string> {
@@ -79,34 +85,33 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 label=${t`TLS Verification Certificate`}
                 name="tlsVerification"
             >
-                <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.instance?.tlsVerification === undefined}>
-                        ---------
-                    </option>
-                    ${until(
-                        new CryptoApi(DEFAULT_CONFIG)
-                            .cryptoCertificatekeypairsList({
-                                ordering: "name",
-                                includeDetails: false,
-                            })
-                            .then((certs) => {
-                                return certs.results.map((cert) => {
-                                    return html`<option
-                                        value=${ifDefined(cert.pk)}
-                                        ?selected=${this.instance?.tlsVerification === cert.pk}
-                                    >
-                                        ${cert.name}
-                                    </option>`;
-                                });
-                            }),
-                        html`<option
-                            value=${ifDefined(this.instance?.tlsVerification || undefined)}
-                            ?selected=${this.instance?.tlsVerification !== undefined}
-                        >
-                            ${t`Loading...`}
-                        </option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<CertificateKeyPair[]> => {
+                        const args: CryptoCertificatekeypairsListRequest = {
+                            ordering: "name",
+                            hasKey: true,
+                            includeDetails: false,
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const certificates = await new CryptoApi(
+                            DEFAULT_CONFIG,
+                        ).cryptoCertificatekeypairsList(args);
+                        return certificates.results;
+                    }}
+                    .renderElement=${(item: CertificateKeyPair): string => {
+                        return item.name;
+                    }}
+                    .value=${(item: CertificateKeyPair | undefined): string | undefined => {
+                        return item?.pk;
+                    }}
+                    .selected=${(item: CertificateKeyPair): boolean => {
+                        return this.instance?.tlsVerification === item.pk;
+                    }}
+                    ?blankable=${true}
+                >
+                </ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${t`CA which the endpoint's Certificate is verified against. Can be left empty for no validation.`}
                 </p>
@@ -115,34 +120,33 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 label=${t`TLS Authentication Certificate/SSH Keypair`}
                 name="tlsAuthentication"
             >
-                <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.instance?.tlsAuthentication === undefined}>
-                        ---------
-                    </option>
-                    ${until(
-                        new CryptoApi(DEFAULT_CONFIG)
-                            .cryptoCertificatekeypairsList({
-                                ordering: "name",
-                                includeDetails: false,
-                            })
-                            .then((certs) => {
-                                return certs.results.map((cert) => {
-                                    return html`<option
-                                        value=${ifDefined(cert.pk)}
-                                        ?selected=${this.instance?.tlsAuthentication === cert.pk}
-                                    >
-                                        ${cert.name}
-                                    </option>`;
-                                });
-                            }),
-                        html`<option
-                            value=${ifDefined(this.instance?.tlsAuthentication || undefined)}
-                            ?selected=${this.instance?.tlsAuthentication !== undefined}
-                        >
-                            ${t`Loading...`}
-                        </option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<CertificateKeyPair[]> => {
+                        const args: CryptoCertificatekeypairsListRequest = {
+                            ordering: "name",
+                            hasKey: true,
+                            includeDetails: false,
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const certificates = await new CryptoApi(
+                            DEFAULT_CONFIG,
+                        ).cryptoCertificatekeypairsList(args);
+                        return certificates.results;
+                    }}
+                    .renderElement=${(item: CertificateKeyPair): string => {
+                        return item.name;
+                    }}
+                    .value=${(item: CertificateKeyPair | undefined): string | undefined => {
+                        return item?.pk;
+                    }}
+                    .selected=${(item: CertificateKeyPair): boolean => {
+                        return this.instance?.tlsAuthentication === item.pk;
+                    }}
+                    ?blankable=${true}
+                >
+                </ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${t`Certificate/Key used for authentication. Can be left empty for no authentication.`}
                 </p>

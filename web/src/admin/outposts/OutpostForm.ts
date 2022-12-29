@@ -1,6 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
+import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import YAML from "yaml";
@@ -12,7 +14,14 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import { Outpost, OutpostTypeEnum, OutpostsApi, ProvidersApi } from "@goauthentik/api";
+import {
+    Outpost,
+    OutpostTypeEnum,
+    OutpostsApi,
+    OutpostsServiceConnectionsAllListRequest,
+    ProvidersApi,
+    ServiceConnection,
+} from "@goauthentik/api";
 
 @customElement("ak-outpost-form")
 export class OutpostForm extends ModelForm<Outpost, string> {
@@ -134,32 +143,38 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Integration`} name="serviceConnection">
-                <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.instance?.serviceConnection === undefined}>
-                        ---------
-                    </option>
-                    ${until(
-                        new OutpostsApi(DEFAULT_CONFIG)
-                            .outpostsServiceConnectionsAllList({
-                                ordering: "name",
-                            })
-                            .then((scs) => {
-                                return scs.results.map((sc) => {
-                                    let selected = this.instance?.serviceConnection === sc.pk;
-                                    if (scs.results.length === 1 && !this.instance) {
-                                        selected = true;
-                                    }
-                                    return html`<option
-                                        value=${ifDefined(sc.pk)}
-                                        ?selected=${selected}
-                                    >
-                                        ${sc.name} (${sc.verboseName})
-                                    </option>`;
-                                });
-                            }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<ServiceConnection[]> => {
+                        const args: OutpostsServiceConnectionsAllListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const items = await new OutpostsApi(
+                            DEFAULT_CONFIG,
+                        ).outpostsServiceConnectionsAllList(args);
+                        return items.results;
+                    }}
+                    .renderElement=${(item: ServiceConnection): string => {
+                        return item.name;
+                    }}
+                    .value=${(item: ServiceConnection | undefined): string | undefined => {
+                        return item?.pk;
+                    }}
+                    .groupBy=${(items: ServiceConnection[]) => {
+                        return groupBy(items, (item) => item.verboseName);
+                    }}
+                    .selected=${(item: ServiceConnection, items: ServiceConnection[]): boolean => {
+                        let selected = this.instance?.serviceConnection === sc.pk;
+                        if (items.length === 1 && !this.instance) {
+                            selected = true;
+                        }
+                        return selected;
+                    }}
+                    ?blankable=${true}
+                >
+                </ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${t`Selecting an integration enables the management of the outpost by authentik.`}
                 </p>

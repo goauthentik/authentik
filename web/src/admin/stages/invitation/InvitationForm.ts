@@ -78,7 +78,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                         const args: FlowsInstancesListRequest = {
-                            ordering: "name",
+                            ordering: "slug",
                             designation: FlowsInstancesListDesignationEnum.Enrollment,
                         };
                         if (query !== undefined) {
