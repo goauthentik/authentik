@@ -5,7 +5,7 @@ from enum import Enum
 from functools import reduce
 from operator import ixor
 from os import getenv
-from typing import Any, Literal, Optional
+from typing import Any, Literal, Optional, Union
 from uuid import UUID
 
 from django.apps import apps
@@ -56,8 +56,8 @@ class BlueprintEntryDesiredState(Enum):
 class BlueprintEntry:
     """Single entry of a blueprint"""
 
-    model: str
-    state: BlueprintEntryDesiredState = field(default=BlueprintEntryDesiredState.PRESENT)
+    model: Union[str, "YAMLTag"]
+    state: Union[BlueprintEntryDesiredState, "YAMLTag"] = field(default=BlueprintEntryDesiredState.PRESENT)
     conditions: list[Any] = field(default_factory=list)
     identifiers: dict[str, Any] = field(default_factory=dict)
     attrs: Optional[dict[str, Any]] = field(default_factory=dict)
@@ -103,10 +103,17 @@ class BlueprintEntry:
         """Get attributes of this entry, with all yaml tags resolved"""
         return self.tag_resolver(self.identifiers, blueprint)
 
+    def get_state(self, blueprint: "Blueprint") -> BlueprintEntryDesiredState:
+        """Get the blueprint state, with yaml tags resolved if present"""
+        return BlueprintEntryDesiredState(self.tag_resolver(self.state, blueprint))
+
+    def get_model(self, blueprint: "Blueprint") -> str:
+        """Get the blueprint model, with yaml tags resolved if present"""
+        return str(self.tag_resolver(self.model, blueprint))
+
     def check_all_conditions_match(self, blueprint: "Blueprint") -> bool:
         """Check all conditions of this entry match (evaluate to True)"""
         return all(self.tag_resolver(self.conditions, blueprint))
-
 
 @dataclass
 class BlueprintMetadata:

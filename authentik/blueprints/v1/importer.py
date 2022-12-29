@@ -148,7 +148,7 @@ class Importer:
             self.logger.debug("One or more conditions of this entry are not fulfilled, skipping")
             return None
 
-        model_app_label, model_name = entry.model.split(".")
+        model_app_label, model_name = entry.get_model(self.__import).split(".")
         model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
         # Don't use isinstance since we don't want to check for inheritance
         if not is_model_allowed(model):
@@ -184,7 +184,7 @@ class Importer:
         serializer_kwargs = {}
         model_instance = existing_models.first()
         if not isinstance(model(), BaseMetaModel) and model_instance:
-            if entry.state == BlueprintEntryDesiredState.CREATED:
+            if entry.get_state(self.__import) == BlueprintEntryDesiredState.CREATED:
                 self.logger.debug("instance exists, skipping")
                 return None
             self.logger.debug(
@@ -237,7 +237,7 @@ class Importer:
         """Apply (create/update) models yaml"""
         self.__pk_map = {}
         for entry in self.__import.entries:
-            model_app_label, model_name = entry.model.split(".")
+            model_app_label, model_name = entry.get_model(self.__import).split(".")
             try:
                 model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
             except LookupError:
@@ -254,7 +254,8 @@ class Importer:
             if not serializer:
                 continue
 
-            if entry.state in [
+            state = entry.get_state(self.__import)
+            if state in [
                 BlueprintEntryDesiredState.PRESENT,
                 BlueprintEntryDesiredState.CREATED,
             ]:
@@ -263,7 +264,7 @@ class Importer:
                     self.__pk_map[entry.identifiers["pk"]] = model.pk
                 entry._state = BlueprintEntryState(model)
                 self.logger.debug("updated model", model=model)
-            elif entry.state == BlueprintEntryDesiredState.ABSENT:
+            elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Optional[Model] = serializer.instance
                 if instance:
                     instance.delete()

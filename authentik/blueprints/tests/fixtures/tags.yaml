@@ -4,7 +4,8 @@ context:
     policy_property: name
     policy_property_value: foo-bar-baz-qux
 entries:
-    - model: authentik_sources_oauth.oauthsource
+    - model: !Format ["%s", authentik_sources_oauth.oauthsource]
+      state: !Format ["%s", present]
       identifiers:
           slug: test
       attrs:
