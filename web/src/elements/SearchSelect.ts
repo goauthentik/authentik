@@ -149,7 +149,11 @@ export class SearchSelect<T> extends AKElement {
                 style="position: fixed; inset: 0px auto auto 0px; z-index: 9999; transform: translate(${pos.x}px, ${pos.y +
                 this.offsetHeight}px); width: ${pos.width}px;"
             >
-                <ul class="pf-c-dropdown__menu pf-m-static" role="listbox">
+                <ul
+                    class="pf-c-dropdown__menu pf-m-static"
+                    role="listbox"
+                    style="max-height:50vh;overflow-y:auto;"
+                >
                     ${this.blankable
                         ? html`
                               <li>
