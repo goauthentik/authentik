@@ -2,6 +2,7 @@ import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils"
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/common/helpers/plex";
 import { first, randomString } from "@goauthentik/common/utils";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -15,8 +16,10 @@ import { until } from "lit/directives/until.js";
 
 import {
     CapabilitiesEnum,
+    Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    FlowsInstancesListRequest,
     PlexSource,
     SourcesApi,
     UserMatchingModeEnum,
@@ -328,42 +331,43 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         ?required=${true}
                         name="authenticationFlow"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.authenticationFlow === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation:
-                                            FlowsInstancesListDesignationEnum.Authentication,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            let selected =
-                                                this.instance?.authenticationFlow === flow.pk;
-                                            if (
-                                                !this.instance?.pk &&
-                                                !this.instance?.authenticationFlow &&
-                                                flow.slug === "default-source-authentication"
-                                            ) {
-                                                selected = true;
-                                            }
-                                            return html`<option
-                                                value=${ifDefined(flow.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                                const args: FlowsInstancesListRequest = {
+                                    ordering: "slug",
+                                    designation: FlowsInstancesListDesignationEnum.Authentication,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
+                                    args,
+                                );
+                                return flows.results;
+                            }}
+                            .renderElement=${(flow: Flow): string => {
+                                return flow.name;
+                            }}
+                            .renderDescription=${(flow: Flow): TemplateResult => {
+                                return html`${flow.slug}`;
+                            }}
+                            .value=${(flow: Flow | undefined): string | undefined => {
+                                return flow?.pk;
+                            }}
+                            .selected=${(flow: Flow): boolean => {
+                                let selected = this.instance?.enrollmentFlow === flow.pk;
+                                if (
+                                    !this.instance?.pk &&
+                                    !this.instance?.enrollmentFlow &&
+                                    flow.slug === "default-source-authentication"
+                                ) {
+                                    selected = true;
+                                }
+                                return selected;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`Flow to use when authenticating existing users.`}
                         </p>
@@ -373,41 +377,43 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                         ?required=${true}
                         name="enrollmentFlow"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.enrollmentFlow === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation: FlowsInstancesListDesignationEnum.Enrollment,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            let selected =
-                                                this.instance?.enrollmentFlow === flow.pk;
-                                            if (
-                                                !this.instance?.pk &&
-                                                !this.instance?.enrollmentFlow &&
-                                                flow.slug === "default-source-enrollment"
-                                            ) {
-                                                selected = true;
-                                            }
-                                            return html`<option
-                                                value=${ifDefined(flow.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                                const args: FlowsInstancesListRequest = {
+                                    ordering: "slug",
+                                    designation: FlowsInstancesListDesignationEnum.Enrollment,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
+                                    args,
+                                );
+                                return flows.results;
+                            }}
+                            .renderElement=${(flow: Flow): string => {
+                                return flow.name;
+                            }}
+                            .renderDescription=${(flow: Flow): TemplateResult => {
+                                return html`${flow.slug}`;
+                            }}
+                            .value=${(flow: Flow | undefined): string | undefined => {
+                                return flow?.pk;
+                            }}
+                            .selected=${(flow: Flow): boolean => {
+                                let selected = this.instance?.enrollmentFlow === flow.pk;
+                                if (
+                                    !this.instance?.pk &&
+                                    !this.instance?.enrollmentFlow &&
+                                    flow.slug === "default-source-enrollment"
+                                ) {
+                                    selected = true;
+                                }
+                                return selected;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`Flow to use when enrolling new users.`}
                         </p>

@@ -498,8 +498,8 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             .renderElement=${(flow: Flow): string => {
                                 return flow.name;
                             }}
-                            .renderDescription=${(flow: Flow): string => {
-                                return flow.slug;
+                            .renderDescription=${(flow: Flow): TemplateResult => {
+                                return html`${flow.slug}`;
                             }}
                             .value=${(flow: Flow | undefined): string | undefined => {
                                 return flow?.pk;
@@ -542,8 +542,8 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             .renderElement=${(flow: Flow): string => {
                                 return flow.name;
                             }}
-                            .renderDescription=${(flow: Flow): string => {
-                                return flow.slug;
+                            .renderDescription=${(flow: Flow): TemplateResult => {
+                                return html`${flow.slug}`;
                             }}
                             .value=${(flow: Flow | undefined): string | undefined => {
                                 return flow?.pk;
@@ -588,8 +588,8 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             .renderElement=${(flow: Flow): string => {
                                 return flow.name;
                             }}
-                            .renderDescription=${(flow: Flow): string => {
-                                return flow.slug;
+                            .renderDescription=${(flow: Flow): TemplateResult => {
+                                return html`${flow.slug}`;
                             }}
                             .value=${(flow: Flow | undefined): string | undefined => {
                                 return flow?.pk;

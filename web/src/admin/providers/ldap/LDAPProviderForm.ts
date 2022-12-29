@@ -18,8 +18,10 @@ import {
     CoreGroupsListRequest,
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
+    Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    FlowsInstancesListRequest,
     Group,
     LDAPAPIAccessMode,
     LDAPProvider,
@@ -71,32 +73,47 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                <select class="pf-c-form-control">
-                    ${until(
-                        tenant().then((t) => {
-                            return new FlowsApi(DEFAULT_CONFIG)
-                                .flowsInstancesList({
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Authentication,
-                                })
-                                .then((flows) => {
-                                    return flows.results.map((flow) => {
-                                        let selected = flow.pk === t.flowAuthentication;
-                                        if (this.instance?.authorizationFlow === flow.pk) {
-                                            selected = true;
-                                        }
-                                        return html`<option
-                                            value=${ifDefined(flow.pk)}
-                                            ?selected=${selected}
-                                        >
-                                            ${flow.name} (${flow.slug})
-                                        </option>`;
-                                    });
-                                });
-                        }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                ${until(
+                    tenant().then((t) => {
+                        return html`
+                            <ak-search-select
+                                .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                                    const args: FlowsInstancesListRequest = {
+                                        ordering: "slug",
+                                        designation:
+                                            FlowsInstancesListDesignationEnum.Authentication,
+                                    };
+                                    if (query !== undefined) {
+                                        args.search = query;
+                                    }
+                                    const flows = await new FlowsApi(
+                                        DEFAULT_CONFIG,
+                                    ).flowsInstancesList(args);
+                                    return flows.results;
+                                }}
+                                .renderElement=${(flow: Flow): string => {
+                                    return flow.name;
+                                }}
+                                .renderDescription=${(flow: Flow): TemplateResult => {
+                                    return html`${flow.slug}`;
+                                }}
+                                .value=${(flow: Flow | undefined): string | undefined => {
+                                    return flow?.pk;
+                                }}
+                                .selected=${(flow: Flow): boolean => {
+                                    let selected = flow.pk === t.flowAuthentication;
+                                    if (this.instance?.authorizationFlow === flow.pk) {
+                                        selected = true;
+                                    }
+                                    return selected;
+                                }}
+                                ?blankable=${true}
+                            >
+                            </ak-search-select>
+                        `;
+                    }),
+                    html`<option>${t`Loading...`}</option>`,
+                )}
                 <p class="pf-c-form__helper-text">
                     ${t`Flow used for users to authenticate. Currently only identification and password stages are supported.`}
                 </p>

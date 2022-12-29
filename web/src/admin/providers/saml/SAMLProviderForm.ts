@@ -22,7 +22,9 @@ import {
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     PropertymappingsApi,
+    PropertymappingsSamlListRequest,
     ProvidersApi,
+    SAMLPropertyMapping,
     SAMLProvider,
     SignatureAlgorithmEnum,
     SpBindingEnum,
@@ -87,8 +89,8 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                     .renderElement=${(flow: Flow): string => {
                         return flow.name;
                     }}
-                    .renderDescription=${(flow: Flow): string => {
-                        return flow.slug;
+                    .renderDescription=${(flow: Flow): TemplateResult => {
+                        return html`${flow.slug}`;
                     }}
                     .value=${(flow: Flow | undefined): string | undefined => {
                         return flow?.pk;
@@ -276,32 +278,35 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         label=${t`NameID Property Mapping`}
                         name="nameIdMapping"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.nameIdMapping === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new PropertymappingsApi(DEFAULT_CONFIG)
-                                    .propertymappingsSamlList({
-                                        ordering: "saml_name",
-                                    })
-                                    .then((mappings) => {
-                                        return mappings.results.map((mapping) => {
-                                            return html`<option
-                                                value=${ifDefined(mapping.pk)}
-                                                ?selected=${this.instance?.nameIdMapping ===
-                                                mapping.pk}
-                                            >
-                                                ${mapping.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (
+                                query?: string,
+                            ): Promise<SAMLPropertyMapping[]> => {
+                                const args: PropertymappingsSamlListRequest = {
+                                    ordering: "saml_name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const items = await new PropertymappingsApi(
+                                    DEFAULT_CONFIG,
+                                ).propertymappingsSamlList(args);
+                                return items.results;
+                            }}
+                            .renderElement=${(item: SAMLPropertyMapping): string => {
+                                return item.name;
+                            }}
+                            .value=${(
+                                item: SAMLPropertyMapping | undefined,
+                            ): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: SAMLPropertyMapping): boolean => {
+                                return this.instance?.nameIdMapping === item.pk;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected.`}
                         </p>

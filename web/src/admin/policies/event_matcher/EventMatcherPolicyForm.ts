@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -11,7 +12,7 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import { AdminApi, EventMatcherPolicy, EventsApi, PoliciesApi } from "@goauthentik/api";
+import { AdminApi, EventMatcherPolicy, EventsApi, PoliciesApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-policy-event-matcher-form")
 export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string> {
@@ -72,27 +73,27 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                 <span slot="header"> ${t`Policy-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${t`Action`} name="action">
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.action === undefined}>
-                                ---------
-                            </option>
-                            ${until(
-                                new EventsApi(DEFAULT_CONFIG)
-                                    .eventsEventsActionsList()
-                                    .then((actions) => {
-                                        return actions.map((action) => {
-                                            return html`<option
-                                                value=${action.component}
-                                                ?selected=${this.instance?.action ===
-                                                action.component}
-                                            >
-                                                ${action.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<TypeCreate[]> => {
+                                const items = await new EventsApi(
+                                    DEFAULT_CONFIG,
+                                ).eventsEventsActionsList();
+                                return items.filter((item) =>
+                                    query ? item.name.includes(query) : true,
+                                );
+                            }}
+                            .renderElement=${(item: TypeCreate): string => {
+                                return item.name;
+                            }}
+                            .value=${(item: TypeCreate | undefined): string | undefined => {
+                                return item?.component;
+                            }}
+                            .selected=${(item: TypeCreate): boolean => {
+                                return this.instance?.action === item.component;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`Match created events with this action type. When left empty, all action types will be matched.`}
                         </p>

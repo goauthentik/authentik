@@ -2,6 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -12,12 +13,11 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 
-import { BlueprintInstance, ManagedApi } from "@goauthentik/api";
+import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
 enum blueprintSource {
     local,
@@ -133,30 +133,36 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 <div class="pf-c-card__footer">
                     ${this.source === blueprintSource.local
                         ? html`<ak-form-element-horizontal label=${t`Path`} name="path">
-                              <select class="pf-c-form-control">
-                                  ${until(
-                                      new ManagedApi(DEFAULT_CONFIG)
-                                          .managedBlueprintsAvailableList()
-                                          .then((files) => {
-                                              return files.map((file) => {
-                                                  let name = file.path;
-                                                  if (file.meta && file.meta.name) {
-                                                      name = `${name} (${file.meta.name})`;
-                                                  }
-                                                  const selected =
-                                                      file.path === this.instance?.path;
-                                                  return html`<option
-                                                      ?selected=${selected}
-                                                      value=${file.path}
-                                                  >
-                                                      ${name}
-                                                  </option>`;
-                                              });
-                                          }),
-                                      html`<option>${t`Loading...`}</option>`,
-                                  )}
-                              </select></ak-form-element-horizontal
-                          >`
+                              <ak-search-select
+                                  .fetchObjects=${async (
+                                      query?: string,
+                                  ): Promise<BlueprintFile[]> => {
+                                      const items = await new ManagedApi(
+                                          DEFAULT_CONFIG,
+                                      ).managedBlueprintsAvailableList();
+                                      return items.filter((item) =>
+                                          query ? item.path.includes(query) : true,
+                                      );
+                                  }}
+                                  .renderElement=${(item: BlueprintFile): string => {
+                                      const name = item.path;
+                                      if (item.meta && item.meta.name) {
+                                          return `${name} (${item.meta.name})`;
+                                      }
+                                      return name;
+                                  }}
+                                  .value=${(
+                                      item: BlueprintFile | undefined,
+                                  ): string | undefined => {
+                                      return item?.path;
+                                  }}
+                                  .selected=${(item: BlueprintFile): boolean => {
+                                      return this.instance?.path === item.path;
+                                  }}
+                                  ?blankable=${true}
+                              >
+                              </ak-search-select>
+                          </ak-form-element-horizontal>`
                         : html``}
                     ${this.source === blueprintSource.oci
                         ? html`<ak-form-element-horizontal label=${t`URL`} name="path">

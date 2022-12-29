@@ -19,7 +19,9 @@ import {
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
+    NotificationWebhookMapping,
     PropertymappingsApi,
+    PropertymappingsNotificationListRequest,
     ProviderEnum,
     StagesApi,
 } from "@goauthentik/api";
@@ -160,26 +162,33 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Mapping`} name="mapping">
-                <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.instance?.mapping === undefined}>
-                        ---------
-                    </option>
-                    ${until(
-                        new PropertymappingsApi(DEFAULT_CONFIG)
-                            .propertymappingsNotificationList({})
-                            .then((mappings) => {
-                                return mappings.results.map((mapping) => {
-                                    return html`<option
-                                        value=${ifDefined(mapping.pk)}
-                                        ?selected=${this.instance?.mapping === mapping.pk}
-                                    >
-                                        ${mapping.name}
-                                    </option>`;
-                                });
-                            }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (
+                        query?: string,
+                    ): Promise<NotificationWebhookMapping[]> => {
+                        const args: PropertymappingsNotificationListRequest = {
+                            ordering: "saml_name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const items = await new PropertymappingsApi(
+                            DEFAULT_CONFIG,
+                        ).propertymappingsNotificationList(args);
+                        return items.results;
+                    }}
+                    .renderElement=${(item: NotificationWebhookMapping): string => {
+                        return item.name;
+                    }}
+                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
+                        return item?.pk;
+                    }}
+                    .selected=${(item: NotificationWebhookMapping): boolean => {
+                        return this.instance?.mapping === item.pk;
+                    }}
+                    ?blankable=${true}
+                >
+                </ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${t`Modify the payload sent to the custom provider.`}
                 </p>
@@ -279,8 +288,8 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                             .renderElement=${(flow: Flow): string => {
                                 return flow.name;
                             }}
-                            .renderDescription=${(flow: Flow): string => {
-                                return flow.slug;
+                            .renderDescription=${(flow: Flow): TemplateResult => {
+                                return html`${flow.slug}`;
                             }}
                             .value=${(flow: Flow | undefined): string | undefined => {
                                 return flow?.pk;
