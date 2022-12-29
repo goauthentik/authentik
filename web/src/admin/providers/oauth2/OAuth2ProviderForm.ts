@@ -14,8 +14,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import {
+    CertificateKeyPair,
     ClientTypeEnum,
     CryptoApi,
+    CryptoCertificatekeypairsListRequest,
     Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
@@ -186,39 +188,42 @@ ${this.instance?.redirectUris}</textarea
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Signing Key`} name="signingKey">
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.signingKey === undefined}>
-                                ---------
-                            </option>
-                            ${until(
-                                new CryptoApi(DEFAULT_CONFIG)
-                                    .cryptoCertificatekeypairsList({
-                                        ordering: "name",
-                                        hasKey: true,
-                                        includeDetails: false,
-                                    })
-                                    .then((keys) => {
-                                        return keys.results.map((key) => {
-                                            let selected = this.instance?.signingKey === key.pk;
-                                            if (!this.instance && keys.results.length === 1) {
-                                                selected = true;
-                                            }
-                                            return html`<option
-                                                value=${ifDefined(key.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${key.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option
-                                    value=${ifDefined(this.instance?.signingKey || undefined)}
-                                    ?selected=${this.instance?.signingKey !== undefined}
-                                >
-                                    ${t`Loading...`}
-                                </option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (
+                                query?: string,
+                            ): Promise<CertificateKeyPair[]> => {
+                                const args: CryptoCertificatekeypairsListRequest = {
+                                    ordering: "name",
+                                    hasKey: true,
+                                    includeDetails: false,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const certificates = await new CryptoApi(
+                                    DEFAULT_CONFIG,
+                                ).cryptoCertificatekeypairsList(args);
+                                return certificates.results;
+                            }}
+                            .renderElement=${(item: CertificateKeyPair): string => {
+                                return item.name;
+                            }}
+                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(
+                                item: CertificateKeyPair,
+                                items: CertificateKeyPair[],
+                            ): boolean => {
+                                let selected = this.instance?.signingKey === item.pk;
+                                if (!this.instance && items.length === 1) {
+                                    selected = true;
+                                }
+                                return selected;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">${t`Key used to sign the tokens.`}</p>
                     </ak-form-element-horizontal>
                 </div>

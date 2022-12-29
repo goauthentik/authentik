@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -11,12 +12,13 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import {
+    CertificateKeyPair,
     CoreApi,
     CryptoApi,
+    CryptoCertificatekeypairsListRequest,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     Tenant,
@@ -388,39 +390,35 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Web Certificate`} name="webCertificate">
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.webCertificate === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new CryptoApi(DEFAULT_CONFIG)
-                                    .cryptoCertificatekeypairsList({
-                                        ordering: "name",
-                                        hasKey: true,
-                                        includeDetails: false,
-                                    })
-                                    .then((keys) => {
-                                        return keys.results.map((key) => {
-                                            return html`<option
-                                                value=${ifDefined(key.pk)}
-                                                ?selected=${this.instance?.webCertificate ===
-                                                key.pk}
-                                            >
-                                                ${key.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option
-                                    value=${ifDefined(this.instance?.webCertificate || undefined)}
-                                    ?selected=${this.instance?.webCertificate !== undefined}
-                                >
-                                    ${t`Loading...`}
-                                </option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (
+                                query?: string,
+                            ): Promise<CertificateKeyPair[]> => {
+                                const args: CryptoCertificatekeypairsListRequest = {
+                                    ordering: "name",
+                                    hasKey: true,
+                                    includeDetails: false,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const certificates = await new CryptoApi(
+                                    DEFAULT_CONFIG,
+                                ).cryptoCertificatekeypairsList(args);
+                                return certificates.results;
+                            }}
+                            .renderElement=${(item: CertificateKeyPair): string => {
+                                return item.name;
+                            }}
+                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: CertificateKeyPair): boolean => {
+                                return item.pk === this.instance?.webCertificate;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

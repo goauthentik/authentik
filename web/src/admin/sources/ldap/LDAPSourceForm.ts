@@ -13,9 +13,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import {
+    CertificateKeyPair,
     CoreApi,
     CoreGroupsListRequest,
     CryptoApi,
+    CryptoCertificatekeypairsListRequest,
     Group,
     LDAPSource,
     LDAPSourceRequest,
@@ -149,39 +151,35 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         label=${t`TLS Verification Certificate`}
                         name="peerCertificate"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.peerCertificate === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new CryptoApi(DEFAULT_CONFIG)
-                                    .cryptoCertificatekeypairsList({
-                                        ordering: "name",
-                                        includeDetails: false,
-                                    })
-                                    .then((keys) => {
-                                        return keys.results.map((key) => {
-                                            const selected =
-                                                this.instance?.peerCertificate === key.pk;
-                                            return html`<option
-                                                value=${ifDefined(key.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${key.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option
-                                    value=${ifDefined(this.instance?.peerCertificate || undefined)}
-                                    ?selected=${this.instance?.peerCertificate !== undefined}
-                                >
-                                    ${t`Loading...`}
-                                </option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (
+                                query?: string,
+                            ): Promise<CertificateKeyPair[]> => {
+                                const args: CryptoCertificatekeypairsListRequest = {
+                                    ordering: "name",
+                                    hasKey: true,
+                                    includeDetails: false,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const certificates = await new CryptoApi(
+                                    DEFAULT_CONFIG,
+                                ).cryptoCertificatekeypairsList(args);
+                                return certificates.results;
+                            }}
+                            .renderElement=${(item: CertificateKeyPair): string => {
+                                return item.name;
+                            }}
+                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: CertificateKeyPair): boolean => {
+                                return item.pk === this.instance?.peerCertificate;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.`}
                         </p>

@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/SearchSelect";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -20,7 +21,9 @@ import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import {
+    CertificateKeyPair,
     CryptoApi,
+    CryptoCertificatekeypairsListRequest,
     Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
@@ -346,35 +349,35 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 <span slot="header">${t`Advanced protocol settings`}</span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${t`Certificate`} name="certificate">
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.certificate === undefined}>
-                                ---------
-                            </option>
-                            ${until(
-                                new CryptoApi(DEFAULT_CONFIG)
-                                    .cryptoCertificatekeypairsList({
-                                        ordering: "name",
-                                        hasKey: true,
-                                        includeDetails: false,
-                                    })
-                                    .then((keys) => {
-                                        return keys.results.map((key) => {
-                                            return html`<option
-                                                value=${ifDefined(key.pk)}
-                                                ?selected=${this.instance?.certificate === key.pk}
-                                            >
-                                                ${key.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option
-                                    value=${ifDefined(this.instance?.certificate || undefined)}
-                                    ?selected=${this.instance?.certificate !== undefined}
-                                >
-                                    ${t`Loading...`}
-                                </option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (
+                                query?: string,
+                            ): Promise<CertificateKeyPair[]> => {
+                                const args: CryptoCertificatekeypairsListRequest = {
+                                    ordering: "name",
+                                    hasKey: true,
+                                    includeDetails: false,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const certificates = await new CryptoApi(
+                                    DEFAULT_CONFIG,
+                                ).cryptoCertificatekeypairsList(args);
+                                return certificates.results;
+                            }}
+                            .renderElement=${(item: CertificateKeyPair): string => {
+                                return item.name;
+                            }}
+                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: CertificateKeyPair): boolean => {
+                                return item.pk === this.instance?.certificate;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Scopes`} name="propertyMappings">
                         <select class="pf-c-form-control" multiple>

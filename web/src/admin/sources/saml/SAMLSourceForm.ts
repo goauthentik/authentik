@@ -16,7 +16,9 @@ import { until } from "lit/directives/until.js";
 import {
     BindingTypeEnum,
     CapabilitiesEnum,
+    CertificateKeyPair,
     CryptoApi,
+    CryptoCertificatekeypairsListRequest,
     DigestAlgorithmEnum,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
@@ -260,34 +262,35 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         </select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Signing keypair`} name="signingKp">
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.signingKp === undefined}>
-                                ---------
-                            </option>
-                            ${until(
-                                new CryptoApi(DEFAULT_CONFIG)
-                                    .cryptoCertificatekeypairsList({
-                                        ordering: "name",
-                                        includeDetails: false,
-                                    })
-                                    .then((keys) => {
-                                        return keys.results.map((key) => {
-                                            return html`<option
-                                                value=${ifDefined(key.pk)}
-                                                ?selected=${this.instance?.signingKp === key.pk}
-                                            >
-                                                ${key.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option
-                                    value=${ifDefined(this.instance?.signingKp || undefined)}
-                                    ?selected=${this.instance?.signingKp !== undefined}
-                                >
-                                    ${t`Loading...`}
-                                </option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (
+                                query?: string,
+                            ): Promise<CertificateKeyPair[]> => {
+                                const args: CryptoCertificatekeypairsListRequest = {
+                                    ordering: "name",
+                                    hasKey: true,
+                                    includeDetails: false,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const certificates = await new CryptoApi(
+                                    DEFAULT_CONFIG,
+                                ).cryptoCertificatekeypairsList(args);
+                                return certificates.results;
+                            }}
+                            .renderElement=${(item: CertificateKeyPair): string => {
+                                return item.name;
+                            }}
+                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: CertificateKeyPair): boolean => {
+                                return item.pk === this.instance?.signingKp;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`Keypair which is used to sign outgoing requests. Leave empty to disable signing.`}
                         </p>

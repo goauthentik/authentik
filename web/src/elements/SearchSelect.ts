@@ -52,13 +52,13 @@ export class SearchSelect<T> extends AKElement {
     value!: (element: T | undefined) => unknown;
 
     @property({ attribute: false })
-    selected?: (element: T) => boolean;
+    selected?: (element: T, elements: T[]) => boolean;
 
     firstUpdated(): void {
         this.fetchObjects(this.query).then((objects) => {
             this.objects = objects;
             this.objects.forEach((obj) => {
-                if (this.selected && this.selected(obj)) {
+                if (this.selected && this.selected(obj, this.objects)) {
                     this.selectedObject = obj;
                 }
             });
