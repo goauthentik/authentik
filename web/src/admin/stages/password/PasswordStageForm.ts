@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -9,12 +10,13 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     BackendsEnum,
+    Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    FlowsInstancesListRequest,
     PasswordStage,
     StagesApi,
 } from "@goauthentik/api";
@@ -118,41 +120,44 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                         ?required=${true}
                         name="configureFlow"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.configureFlow === undefined}
-                            >
-                                ---------
-                            </option>
-                            ${until(
-                                new FlowsApi(DEFAULT_CONFIG)
-                                    .flowsInstancesList({
-                                        ordering: "slug",
-                                        designation:
-                                            FlowsInstancesListDesignationEnum.StageConfiguration,
-                                    })
-                                    .then((flows) => {
-                                        return flows.results.map((flow) => {
-                                            let selected = this.instance?.configureFlow === flow.pk;
-                                            if (
-                                                !this.instance?.pk &&
-                                                !this.instance?.configureFlow &&
-                                                flow.slug === "default-password-change"
-                                            ) {
-                                                selected = true;
-                                            }
-                                            return html`<option
-                                                value=${ifDefined(flow.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${flow.name} (${flow.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                                const args: FlowsInstancesListRequest = {
+                                    ordering: "slug",
+                                    designation:
+                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
+                                    args,
+                                );
+                                return flows.results;
+                            }}
+                            .renderElement=${(flow: Flow): string => {
+                                return flow.name;
+                            }}
+                            .renderDescription=${(flow: Flow): string => {
+                                return flow.slug;
+                            }}
+                            .value=${(flow: Flow | undefined): string | undefined => {
+                                return flow?.pk;
+                            }}
+                            .selected=${(flow: Flow): boolean => {
+                                let selected = this.instance?.configureFlow === flow.pk;
+                                if (
+                                    !this.instance?.pk &&
+                                    !this.instance?.configureFlow &&
+                                    flow.slug === "default-password-change"
+                                ) {
+                                    selected = true;
+                                }
+                                return selected;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${t`Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password.`}
                         </p>
