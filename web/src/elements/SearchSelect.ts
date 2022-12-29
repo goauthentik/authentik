@@ -1,3 +1,4 @@
+import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
@@ -45,21 +46,31 @@ export class SearchSelect<T> extends AKElement {
     renderElement!: (element: T) => string;
 
     @property({ attribute: false })
+    renderDescription?: (element: T) => TemplateResult;
+
+    @property({ attribute: false })
     value!: (element: T | undefined) => unknown;
 
     @property({ attribute: false })
-    selected!: (element: T) => boolean;
+    selected?: (element: T) => boolean;
 
     firstUpdated(): void {
         this.fetchObjects(this.query).then((objects) => {
             this.objects = objects;
             this.objects.forEach((obj) => {
-                if (this.selected(obj)) {
+                if (this.selected && this.selected(obj)) {
                     this.selectedObject = obj;
                 }
             });
         });
     }
+
+    @property({ attribute: false })
+    groupBy: (items: T[]) => [string, T[]][] = (items: T[]): [string, T[]][] => {
+        return groupBy(items, () => {
+            return "";
+        });
+    };
 
     menuId: string;
 
@@ -86,6 +97,50 @@ export class SearchSelect<T> extends AKElement {
      */
     renderMenu(): void {
         const pos = this.getBoundingClientRect();
+        let groupedItems = this.groupBy(this.objects);
+        let shouldRenderGroups = true;
+        if (groupedItems.length === 1) {
+            if (groupedItems[0].length < 1 || groupedItems[0][0] === "") {
+                shouldRenderGroups = false;
+            }
+        }
+        if (groupedItems.length === 0) {
+            shouldRenderGroups = false;
+            groupedItems = [["", []]];
+        }
+        const renderGroup = (items: T[]): TemplateResult => {
+            return html`${items.map((obj) => {
+                let desc = undefined;
+                if (this.renderDescription) {
+                    desc = this.renderDescription(obj);
+                }
+                return html`
+                    <li>
+                        <button
+                            class="pf-c-dropdown__menu-item ${desc === undefined
+                                ? ""
+                                : "pf-m-description"}"
+                            role="option"
+                            @click=${() => {
+                                this.selectedObject = obj;
+                                this.open = false;
+                            }}
+                        >
+                            ${desc === undefined
+                                ? this.renderElement(obj)
+                                : html`
+                                      <div class="pf-c-dropdown__menu-item-main">
+                                          ${this.renderElement(obj)}
+                                      </div>
+                                      <div class="pf-c-dropdown__menu-item-description">
+                                          ${desc}
+                                      </div>
+                                  `}
+                        </button>
+                    </li>
+                `;
+            })}`;
+        };
         render(
             html`<div
                 class="pf-c-dropdown pf-m-expanded"
@@ -97,7 +152,7 @@ export class SearchSelect<T> extends AKElement {
                 <ul class="pf-c-dropdown__menu pf-m-static" role="listbox">
                     ${this.blankable
                         ? html`
-                              <li role="presentation">
+                              <li>
                                   <button
                                       class="pf-c-dropdown__menu-item"
                                       role="option"
@@ -111,22 +166,18 @@ export class SearchSelect<T> extends AKElement {
                               </li>
                           `
                         : html``}
-                    ${this.objects.map((obj) => {
-                        return html`
-                            <li role="presentation">
-                                <button
-                                    class="pf-c-dropdown__menu-item"
-                                    role="option"
-                                    @click=${() => {
-                                        this.selectedObject = obj;
-                                        this.open = false;
-                                    }}
-                                >
-                                    ${this.renderElement(obj)}
-                                </button>
-                            </li>
-                        `;
-                    })}
+                    ${shouldRenderGroups
+                        ? html`${groupedItems.map(([group, items]) => {
+                              return html`
+                                  <section class="pf-c-dropdown__group">
+                                      <h1 class="pf-c-dropdown__group-title">${group}</h1>
+                                      <ul>
+                                          ${renderGroup(items)}
+                                      </ul>
+                                  </section>
+                              `;
+                          })}`
+                        : html`${renderGroup(groupedItems[0][1])}`}
                 </ul>
             </div>`,
             document.body,
