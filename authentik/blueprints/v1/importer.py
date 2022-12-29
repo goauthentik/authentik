@@ -268,7 +268,7 @@ class Importer:
                 self.logger.debug("updated model", model=model)
             elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Optional[Model] = serializer.instance
-                if instance:
+                if instance.pk:
                     instance.delete()
                     self.logger.debug("deleted model", mode=instance)
                     continue
