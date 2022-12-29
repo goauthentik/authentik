@@ -10,7 +10,6 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     AuthTypeEnum,
@@ -286,10 +285,10 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
-                                return flow.name;
+                                return flow.slug;
                             }}
                             .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.slug}`;
+                                return html`${flow.name}`;
                             }}
                             .value=${(flow: Flow | undefined): string | undefined => {
                                 return flow?.pk;

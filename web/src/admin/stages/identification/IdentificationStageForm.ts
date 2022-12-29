@@ -247,10 +247,10 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
-                                return flow.name;
+                                return flow.slug;
                             }}
                             .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.slug}`;
+                                return html`${flow.name}`;
                             }}
                             .value=${(flow: Flow | undefined): string | undefined => {
                                 return flow?.pk;
@@ -281,10 +281,10 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
-                                return flow.name;
+                                return flow.slug;
                             }}
                             .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.slug}`;
+                                return html`${flow.name}`;
                             }}
                             .value=${(flow: Flow | undefined): string | undefined => {
                                 return flow?.pk;
@@ -315,10 +315,10 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
-                                return flow.name;
+                                return flow.slug;
                             }}
                             .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.slug}`;
+                                return html`${flow.name}`;
                             }}
                             .value=${(flow: Flow | undefined): string | undefined => {
                                 return flow?.pk;
