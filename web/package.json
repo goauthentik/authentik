@@ -105,7 +105,7 @@
         "mermaid": "^9.3.0",
         "moment": "^2.29.4",
         "prettier": "^2.8.1",
-        "pyright": "^1.1.285",
+        "pyright": "^1.1.286",
         "rapidoc": "^9.3.3",
         "rollup": "^2.79.1",
         "rollup-plugin-copy": "^3.4.0",
