@@ -107,7 +107,6 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                                     }
                                     return selected;
                                 }}
-                                ?blankable=${true}
                             >
                             </ak-search-select>
                         `;

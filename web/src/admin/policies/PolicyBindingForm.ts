@@ -96,21 +96,6 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         }
     };
 
-    groupPolicies(policies: Policy[]): TemplateResult {
-        return html`
-            ${groupBy<Policy>(policies, (p) => p.verboseName || "").map(([group, policies]) => {
-                return html`<optgroup label=${group}>
-                    ${policies.map((p) => {
-                        const selected = this.instance?.policy === p.pk;
-                        return html`<option ?selected=${selected} value=${ifDefined(p.pk)}>
-                            ${p.name}
-                        </option>`;
-                    })}
-                </optgroup>`;
-            })}
-        `;
-    }
-
     async getOrder(): Promise<number> {
         if (this.instance?.pk) {
             return this.instance.order;
