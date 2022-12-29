@@ -1,24 +1,25 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import "@goauthentik/elements/Divider";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { UserOption } from "@goauthentik/elements/user/utils";
 
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
 
 import {
     AuthenticatorDuoStage,
     AuthenticatorDuoStageManualDeviceImportRequest,
     CoreApi,
+    CoreUsersListRequest,
     StagesApi,
+    User,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-duo-device-import-form")
@@ -50,22 +51,29 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
 
     renderFormManual(): TemplateResult {
         return html`<ak-form-element-horizontal label=${t`User`} ?required=${true} name="username">
-                <select class="pf-c-form-control">
-                    ${until(
-                        new CoreApi(DEFAULT_CONFIG)
-                            .coreUsersList({
-                                ordering: "username",
-                            })
-                            .then((users) => {
-                                return users.results.map((user) => {
-                                    return html`<option value=${user.username}>
-                                        ${UserOption(user)}
-                                    </option>`;
-                                });
-                            }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<User[]> => {
+                        const args: CoreUsersListRequest = {
+                            ordering: "username",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
+                        return users.results;
+                    }}
+                    .renderElement=${(user: User): string => {
+                        return user.username;
+                    }}
+                    .renderDescription=${(user: User): TemplateResult => {
+                        return html`${user.name}`;
+                    }}
+                    .value=${(user: User | undefined): string | undefined => {
+                        return user?.username;
+                    }}
+                >
+                </ak-search-select>
+
                 <p class="pf-c-form__helper-text">
                     ${t`The user in authentik this device will be assigned to.`}
                 </p>

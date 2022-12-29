@@ -3,7 +3,6 @@ import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import { UserOption } from "@goauthentik/elements/user/utils";
 
 import { t } from "@lingui/macro";
 
@@ -21,6 +20,7 @@ import {
     CoreGroupsListRequest,
     CoreUsersListRequest,
     Group,
+    PoliciesAllListRequest,
     PoliciesApi,
     Policy,
     PolicyBinding,
@@ -181,28 +181,40 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                         name="policy"
                         ?hidden=${this.policyGroupUser !== target.policy}
                     >
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.policy === undefined}>
-                                ---------
-                            </option>
-                            ${until(
-                                new PoliciesApi(DEFAULT_CONFIG)
-                                    .policiesAllList({
-                                        ordering: "name",
-                                    })
-                                    .then((policies) => {
-                                        return this.groupPolicies(policies.results);
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </select>
+                        <ak-search-select
+                            .groupBy=${(items: Policy[]) => {
+                                return groupBy(items, (policy) => policy.verboseNamePlural);
+                            }}
+                            .fetchObjects=${async (query?: string): Promise<Policy[]> => {
+                                const args: PoliciesAllListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const policies = await new PoliciesApi(
+                                    DEFAULT_CONFIG,
+                                ).policiesAllList(args);
+                                return policies.results;
+                            }}
+                            .renderElement=${(policy: Policy): string => {
+                                return policy.name;
+                            }}
+                            .value=${(policy: Policy | undefined): string | undefined => {
+                                return policy?.pk;
+                            }}
+                            .selected=${(policy: Policy): boolean => {
+                                return policy.pk === this.instance?.policy;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Group`}
                         name="group"
                         ?hidden=${this.policyGroupUser !== target.group}
                     >
-                        <!-- @ts-ignore -->
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
@@ -220,7 +232,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                                 return group.name;
                             }}
                             .value=${(group: Group | undefined): string | undefined => {
-                                return group ? group.pk : undefined;
+                                return group?.pk;
                             }}
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.group;
@@ -239,7 +251,6 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                         name="user"
                         ?hidden=${this.policyGroupUser !== target.user}
                     >
-                        <!-- @ts-ignore -->
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<User[]> => {
                                 const args: CoreUsersListRequest = {
@@ -252,10 +263,13 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                                 return users.results;
                             }}
                             .renderElement=${(user: User): string => {
-                                return UserOption(user);
+                                return user.username;
+                            }}
+                            .renderDescription=${(user: User): TemplateResult => {
+                                return html`${user.name}`;
                             }}
                             .value=${(user: User | undefined): number | undefined => {
-                                return user ? user.pk : undefined;
+                                return user?.pk;
                             }}
                             .selected=${(user: User): boolean => {
                                 return user.pk === this.instance?.user;

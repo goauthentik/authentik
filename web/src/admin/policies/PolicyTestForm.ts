@@ -2,25 +2,26 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/elements/SearchSelect";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { UserOption } from "@goauthentik/elements/user/utils";
 import YAML from "yaml";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import {
     CoreApi,
+    CoreUsersListRequest,
     PoliciesApi,
     Policy,
     PolicyTestRequest,
     PolicyTestResult,
+    User,
 } from "@goauthentik/api";
 
 @customElement("ak-policy-test-form")
@@ -119,26 +120,31 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${t`User`} ?required=${true} name="user">
-                <select class="pf-c-form-control">
-                    ${until(
-                        new CoreApi(DEFAULT_CONFIG)
-                            .coreUsersList({
-                                ordering: "username",
-                            })
-                            .then((users) => {
-                                return users.results.map((user) => {
-                                    return html`<option
-                                        ?selected=${this.request?.user.toString() ===
-                                        user.pk.toString()}
-                                        value=${user.pk}
-                                    >
-                                        ${UserOption(user)}
-                                    </option>`;
-                                });
-                            }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<User[]> => {
+                        const args: CoreUsersListRequest = {
+                            ordering: "username",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
+                        return users.results;
+                    }}
+                    .renderElement=${(user: User): string => {
+                        return user.username;
+                    }}
+                    .renderDescription=${(user: User): TemplateResult => {
+                        return html`${user.name}`;
+                    }}
+                    .value=${(user: User | undefined): number | undefined => {
+                        return user?.pk;
+                    }}
+                    .selected=${(user: User): boolean => {
+                        return this.request?.user.toString() === user.pk.toString();
+                    }}
+                >
+                </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Context`} name="context">
                 <ak-codemirror
