@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
+import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
@@ -16,6 +17,7 @@ import {
     InvalidResponseActionEnum,
     PolicyEngineMode,
     Stage,
+    StagesAllListRequest,
     StagesApi,
 } from "@goauthentik/api";
 
@@ -50,22 +52,6 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             });
         }
     };
-
-    groupStages(stages: Stage[]): TemplateResult {
-        return html`
-            <option value="">---------</option>
-            ${groupBy<Stage>(stages, (s) => s.verboseName || "").map(([group, stages]) => {
-                return html`<optgroup label=${group}>
-                    ${stages.map((stage) => {
-                        const selected = this.instance?.stage === stage.pk;
-                        return html`<option ?selected=${selected} value=${ifDefined(stage.pk)}>
-                            ${stage.name}
-                        </option>`;
-                    })}
-                </optgroup>`;
-            })}
-        `;
-    }
 
     async getOrder(): Promise<number> {
         if (this.instance?.pk) {
@@ -117,18 +103,31 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         return html`<form class="pf-c-form pf-m-horizontal">
             ${this.renderTarget()}
             <ak-form-element-horizontal label=${t`Stage`} ?required=${true} name="stage">
-                <select class="pf-c-form-control">
-                    ${until(
-                        new StagesApi(DEFAULT_CONFIG)
-                            .stagesAllList({
-                                ordering: "name",
-                            })
-                            .then((stages) => {
-                                return this.groupStages(stages.results);
-                            }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Stage[]> => {
+                        const args: StagesAllListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const stages = await new StagesApi(DEFAULT_CONFIG).stagesAllList(args);
+                        return stages.results;
+                    }}
+                    .groupBy=${(items: Stage[]) => {
+                        return groupBy(items, (stage) => stage.verboseNamePlural);
+                    }}
+                    .renderElement=${(stage: Stage): string => {
+                        return stage.name;
+                    }}
+                    .value=${(stage: Stage | undefined): string | undefined => {
+                        return stage?.pk;
+                    }}
+                    .selected=${(stage: Stage): boolean => {
+                        return stage.pk === this.instance?.stage;
+                    }}
+                >
+                </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Order`} ?required=${true} name="order">
                 <!-- @ts-ignore -->
