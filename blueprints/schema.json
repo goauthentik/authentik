@@ -61,7 +61,6 @@
                             "authentik_events.notificationwebhookmapping",
                             "authentik_flows.flow",
                             "authentik_flows.flowstagebinding",
-                            "authentik_flows.flowtoken",
                             "authentik_outposts.dockerserviceconnection",
                             "authentik_outposts.kubernetesserviceconnection",
                             "authentik_outposts.outpost",

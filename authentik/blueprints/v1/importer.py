@@ -34,7 +34,7 @@ from authentik.core.models import (
     Source,
     UserSourceConnection,
 )
-from authentik.flows.models import Stage
+from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
@@ -60,6 +60,8 @@ def is_model_allowed(model: type[Model]) -> bool:
         PolicyBindingModel,
         # Classes that have other dependencies
         AuthenticatedSession,
+        # Classes which are only internally managed
+        FlowToken,
     )
     return model not in excluded_models and issubclass(model, (SerializerModel, BaseMetaModel))
 
