@@ -29,4 +29,4 @@ func UserAgent() string {
 	return fmt.Sprintf("authentik@%s", FullVersion())
 }
 
-const VERSION = "2022.12.0"
+const VERSION = "2022.12.1"
