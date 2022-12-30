@@ -93,7 +93,7 @@ export class Tabs extends AKElement {
     }
 
     render(): TemplateResult {
-        const pages = Array.from(this.querySelectorAll("[slot^='page-']"));
+        const pages = Array.from(this.querySelectorAll(":scope > [slot^='page-']"));
         if (window.location.hash.includes(ROUTE_SEPARATOR)) {
             const params = getURLParams();
             if (this.pageIdentifier in params) {
