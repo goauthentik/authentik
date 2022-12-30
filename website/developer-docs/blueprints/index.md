@@ -13,6 +13,11 @@ Blueprints offer a new way to template, automate and distribute authentik config
 Blueprints are yaml files, whose format is described further in [File structure](./v1/structure). Blueprints can be applied in one of two ways:
 
 -   As a Blueprint instance, which is a YAML file mounted into the authentik (worker) container. This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
+
+    :::info
+    Starting with authentik 2022.12.1, authentik listens for file modification/creation events in the blueprint directory and will automatically trigger a discovery when a new blueprint file is created, and trigger a blueprint apply when a file is modified.
+    :::
+
 -   As a Flow import, which is a YAML file uploaded via the Browser/API. This file is validated and applied directly after being uploaded, but is not further monitored/applied.
 
 Starting with authentik 2022.8, blueprints are used to manage authentik default flows and other system objects. These blueprints can be disabled/replaced with custom blueprints in certain circumstances.
