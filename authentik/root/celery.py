@@ -99,6 +99,9 @@ def worker_ready_hook(*args, **kwargs):
             task.delay()
         except ProgrammingError as exc:
             LOGGER.warning("Startup task failed", task=task, exc=exc)
+    from authentik.blueprints.v1.tasks import start_blueprint_watcher
+
+    start_blueprint_watcher()
 
 
 # Using a string here means the worker doesn't have to serialize

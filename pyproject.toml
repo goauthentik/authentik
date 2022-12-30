@@ -155,6 +155,7 @@ webauthn = "*"
 wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
+watchdog = "*"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"

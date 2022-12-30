@@ -436,6 +436,7 @@ _LOGGING_HANDLER_MAP = {
     "asyncio": "WARNING",
     "redis": "WARNING",
     "silk": "INFO",
+    "fsevents": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false

@@ -10,6 +10,13 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
+from watchdog.events import (
+    FileCreatedEvent,
+    FileModifiedEvent,
+    FileSystemEvent,
+    FileSystemEventHandler,
+)
+from watchdog.observers import Observer
 from yaml import load
 from yaml.error import YAMLError
 
@@ -32,6 +39,7 @@ from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
+_file_watcher_started = False
 
 
 @dataclass
@@ -43,6 +51,39 @@ class BlueprintFile:
     hash: str
     last_m: int
     meta: Optional[BlueprintMetadata] = field(default=None)
+
+
+def start_blueprint_watcher():
+    """Start blueprint watcher, if it's not running already."""
+    # This function might be called twice since it's called on celery startup
+    # pylint: disable=global-statement
+    global _file_watcher_started
+    if _file_watcher_started:
+        return
+    observer = Observer()
+    observer.schedule(BlueprintEventHandler(), CONFIG.y("blueprints_dir"), recursive=True)
+    observer.start()
+    _file_watcher_started = True
+
+
+class BlueprintEventHandler(FileSystemEventHandler):
+    """Event handler for blueprint events"""
+
+    def on_any_event(self, event: FileSystemEvent):
+        if not isinstance(event, (FileCreatedEvent, FileModifiedEvent)):
+            return
+        if event.is_directory:
+            return
+        if isinstance(event, FileCreatedEvent):
+            LOGGER.debug("new blueprint file created, starting discovery")
+            blueprints_discover.delay()
+        if isinstance(event, FileModifiedEvent):
+            path = Path(event.src_path)
+            root = Path(CONFIG.y("blueprints_dir")).absolute()
+            rel_path = str(path.relative_to(root))
+            for instance in BlueprintInstance.objects.filter(path=rel_path):
+                LOGGER.debug("modified blueprint file, starting apply", instance=instance)
+                apply_blueprint.delay(instance.pk.hex)
 
 
 @CELERY_APP.task(
@@ -60,8 +101,7 @@ def blueprints_find():
     """Find blueprints and return valid ones"""
     blueprints = []
     root = Path(CONFIG.y("blueprints_dir"))
-    for file in root.glob("**/*.yaml"):
-        path = Path(file)
+    for path in root.glob("**/*.yaml"):
         LOGGER.debug("found blueprint", path=str(path))
         with open(path, "r", encoding="utf-8") as blueprint_file:
             try:
