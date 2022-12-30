@@ -7,14 +7,13 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
-from guardian.shortcuts import get_anonymous_user
 from rest_framework.fields import BooleanField, CharField, ChoiceField, IntegerField, empty
 from rest_framework.serializers import ValidationError
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyBindingModel, PolicyEngineMode
@@ -47,21 +46,23 @@ class PromptChallengeResponse(ChallengeResponse):
     """Validate response, fields are dynamically created based
     on the stage"""
 
+    stage_instance: PromptStage
+
     component = CharField(default="ak-stage-prompt")
 
     def __init__(self, *args, **kwargs):
-        stage: PromptStage = kwargs.pop("stage", None)
+        stage: PromptStage = kwargs.pop("stage_instance", None)
         plan: FlowPlan = kwargs.pop("plan", None)
         request: HttpRequest = kwargs.pop("request", None)
         user: User = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
-        self.stage = stage
+        self.stage_instance = stage
         self.plan = plan
         self.request = request
-        if not self.stage:
+        if not self.stage_instance:
             return
         # list() is called so we only load the fields once
-        fields = list(self.stage.fields.all())
+        fields = list(self.stage_instance.fields.all())
         for field in fields:
             field: Prompt
             current = field.get_placeholder(
@@ -97,7 +98,7 @@ class PromptChallengeResponse(ChallengeResponse):
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         # Check if we have any static or hidden fields, and ensure they
         # still have the same value
-        static_hidden_fields: QuerySet[Prompt] = self.stage.fields.filter(
+        static_hidden_fields: QuerySet[Prompt] = self.stage_instance.fields.filter(
             type__in=[FieldTypes.HIDDEN, FieldTypes.STATIC, FieldTypes.TEXT_READ_ONLY]
         )
         for static_hidden in static_hidden_fields:
@@ -109,12 +110,17 @@ class PromptChallengeResponse(ChallengeResponse):
             attrs[static_hidden.field_key] = default
 
         # Check if we have two password fields, and make sure they are the same
-        password_fields: QuerySet[Prompt] = self.stage.fields.filter(type=FieldTypes.PASSWORD)
+        password_fields: QuerySet[Prompt] = self.stage_instance.fields.filter(
+            type=FieldTypes.PASSWORD
+        )
         if password_fields.exists() and password_fields.count() == 2:
             self._validate_password_fields(*[field.field_key for field in password_fields])
 
-        user = self.plan.context.get(PLAN_CONTEXT_PENDING_USER, get_anonymous_user())
-        engine = ListPolicyEngine(self.stage.validation_policies.all(), user, self.request)
+        engine = ListPolicyEngine(
+            self.stage_instance.validation_policies.all(),
+            self.stage.get_pending_user(),
+            self.request,
+        )
         engine.mode = PolicyEngineMode.MODE_ALL
         engine.request.context[PLAN_CONTEXT_PROMPT] = attrs
         engine.use_cache = False
@@ -194,7 +200,8 @@ class PromptStageView(ChallengeStageView):
             instance=None,
             data=data,
             request=self.request,
-            stage=self.executor.current_stage,
+            stage_instance=self.executor.current_stage,
+            stage=self,
             plan=self.executor.plan,
             user=self.get_pending_user(),
         )

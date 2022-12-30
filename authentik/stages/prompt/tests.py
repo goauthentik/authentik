@@ -10,11 +10,15 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.stages.prompt.models import FieldTypes, InlineFileField, Prompt, PromptStage
-from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptChallengeResponse
+from authentik.stages.prompt.stage import (
+    PLAN_CONTEXT_PROMPT,
+    PromptChallengeResponse,
+    PromptStageView,
+)
 
 
 class TestPromptStage(FlowTestCase):
@@ -106,6 +110,11 @@ class TestPromptStage(FlowTestCase):
 
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
+        self.request = RequestFactory().get("/")
+        self.request.user = create_test_admin_user()
+        self.flow_executor = FlowExecutorView(request=self.request)
+        self.stage_view = PromptStageView(self.flow_executor, request=self.request)
+
     def test_inline_file_field(self):
         """test InlineFileField"""
         with self.assertRaises(ValidationError):
@@ -148,7 +157,11 @@ class TestPromptStage(FlowTestCase):
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
         challenge_response = PromptChallengeResponse(
-            None, stage=self.stage, plan=plan, data=self.prompt_data
+            None,
+            stage_instance=self.stage,
+            plan=plan,
+            data=self.prompt_data,
+            stage=self.stage_view,
         )
         self.assertEqual(challenge_response.is_valid(), True)
 
@@ -160,7 +173,7 @@ class TestPromptStage(FlowTestCase):
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
         challenge_response = PromptChallengeResponse(
-            None, stage=self.stage, plan=plan, data=self.prompt_data
+            None, stage_instance=self.stage, plan=plan, data=self.prompt_data, stage=self.stage_view
         )
         self.assertEqual(challenge_response.is_valid(), False)
 
@@ -180,7 +193,7 @@ class TestPromptStage(FlowTestCase):
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
         challenge_response = PromptChallengeResponse(
-            None, stage=self.stage, plan=plan, data=self.prompt_data
+            None, stage_instance=self.stage, plan=plan, data=self.prompt_data, stage=self.stage_view
         )
         self.assertEqual(challenge_response.is_valid(), True)
 
@@ -208,7 +221,7 @@ class TestPromptStage(FlowTestCase):
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         self.prompt_data["password2_prompt"] = "qwerqwerqr"
         challenge_response = PromptChallengeResponse(
-            None, stage=self.stage, plan=plan, data=self.prompt_data
+            None, stage_instance=self.stage, plan=plan, data=self.prompt_data, stage=self.stage_view
         )
         self.assertEqual(challenge_response.is_valid(), False)
         self.assertEqual(
@@ -222,7 +235,7 @@ class TestPromptStage(FlowTestCase):
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         self.prompt_data["username_prompt"] = user.username
         challenge_response = PromptChallengeResponse(
-            None, stage=self.stage, plan=plan, data=self.prompt_data
+            None, stage_instance=self.stage, plan=plan, data=self.prompt_data, stage=self.stage_view
         )
         self.assertEqual(challenge_response.is_valid(), False)
         self.assertEqual(
@@ -237,7 +250,7 @@ class TestPromptStage(FlowTestCase):
         self.prompt_data["hidden_prompt"] = "foo"
         self.prompt_data["static_prompt"] = "foo"
         challenge_response = PromptChallengeResponse(
-            None, stage=self.stage, plan=plan, data=self.prompt_data
+            None, stage_instance=self.stage, plan=plan, data=self.prompt_data, stage=self.stage_view
         )
         self.assertEqual(challenge_response.is_valid(), True)
         self.assertNotEqual(challenge_response.validated_data["hidden_prompt"], "foo")
