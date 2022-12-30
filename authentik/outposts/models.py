@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
 from model_utils.managers import InheritanceManager
-from packaging.version import LegacyVersion, Version, parse
+from packaging.version import Version, parse
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -429,7 +429,7 @@ class OutpostState:
     channel_ids: list[str] = field(default_factory=list)
     last_seen: Optional[datetime] = field(default=None)
     version: Optional[str] = field(default=None)
-    version_should: Version | LegacyVersion = field(default=OUR_VERSION)
+    version_should: Version = field(default=OUR_VERSION)
     build_hash: str = field(default="")
     hostname: str = field(default="")
 
