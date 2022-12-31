@@ -13,7 +13,7 @@ pgAdmin is a management tool for PostgreSQL and derivative relational databases 
 :::
 
 :::note
-This is based on authentik 2022.3.3 and pgAdmin4 v6.19
+This is based on authentik 2022.3.3 and pgAdmin4 snapshot
 :::
 
 ## Preparation
@@ -80,7 +80,7 @@ In the code above the following placeholders have been used:
 -   `<display-name>`: The name that is displayed on the Login Button
 -   `<client-id>`: The Client ID from step 1
 -   `<client-secret>`: The Client Secret from step 1
--   `<app-slug>`: The App Slug from step 2
+-   `<app-slug>`: The App Slug from step 2, it should be `pgadmin` if you did not change it
 -   `<fontawesome-icon>`: An icon name from [fontawesome](https://fontawesome.com). Only brand icons seem to be supported. This icon is displayed in front of the `<display-name>`. E.g.: _fa-github_.
 -   `<button-color>`: Sets the color of the Login Button. Should be in Hex format, E.g.: _#fd4b2d_
 
