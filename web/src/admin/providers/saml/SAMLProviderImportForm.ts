@@ -66,7 +66,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                         return html`${flow.name}`;
                     }}
                     .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
+                        return flow?.slug;
                     }}
                 >
                 </ak-search-select>
