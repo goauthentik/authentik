@@ -35,7 +35,10 @@ export class Diagram extends AKElement {
         const matcher = window.matchMedia("(prefers-color-scheme: light)");
         const handler = (ev?: MediaQueryListEvent) => {
             mermaid.initialize({
-                logLevel: "fatal",
+                // The type definition for this says number
+                // but the example use strings
+                // and numbers don't work
+                logLevel: "fatal" as unknown as number,
                 startOnLoad: false,
                 theme: ev?.matches || matcher.matches ? "default" : "dark",
                 flowchart: {

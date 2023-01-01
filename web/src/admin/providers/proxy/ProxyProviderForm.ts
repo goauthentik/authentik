@@ -279,6 +279,8 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                             ${t`Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.`}
                         </p>
                     </ak-form-element-horizontal>`;
+            case ProxyMode.UnknownDefaultOpenApi:
+                return html`<p>${t`Unknown proxy mode`}</p>`;
         }
     }
 

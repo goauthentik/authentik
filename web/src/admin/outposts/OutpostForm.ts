@@ -107,6 +107,10 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                             </option>`;
                         });
                     });
+            case OutpostTypeEnum.UnknownDefaultOpenApi:
+                return Promise.resolve([
+                    html` <option value="">${t`Unknown outpost type`}</option>`,
+                ]);
         }
     }
 

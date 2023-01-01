@@ -27,8 +27,9 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { OAuthSource, ProviderTypeEnum, SourcesApi } from "@goauthentik/api";
 
 export function ProviderToLabel(provider?: ProviderTypeEnum): string {
-    if (!provider) return "";
     switch (provider) {
+        case undefined:
+            return "";
         case ProviderTypeEnum.Apple:
             return "Apple";
         case ProviderTypeEnum.Azuread:
@@ -51,6 +52,10 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "Reddit";
         case ProviderTypeEnum.Twitter:
             return "Twitter";
+        case ProviderTypeEnum.Twitch:
+            return "Twitch";
+        case ProviderTypeEnum.UnknownDefaultOpenApi:
+            return t`Unknown provider type`;
     }
 }
 

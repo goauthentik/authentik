@@ -27,6 +27,8 @@ export function IntentToLabel(intent: IntentEnum): string {
             return t`Recovery`;
         case IntentEnum.Verification:
             return t`Verification`;
+        case IntentEnum.UnknownDefaultOpenApi:
+            return t`Unknown intent`;
     }
 }
 

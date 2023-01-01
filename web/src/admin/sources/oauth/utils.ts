@@ -15,5 +15,7 @@ export function UserMatchingModeToLabel(mode?: UserMatchingModeEnum): string {
             return t`Link to a user with identical username. Can have security implications when a username is used with another source`;
         case UserMatchingModeEnum.UsernameDeny:
             return t`Use the user's username, but deny enrollment when the username already exists`;
+        case UserMatchingModeEnum.UnknownDefaultOpenApi:
+            return t`Unknown user matching mode`;
     }
 }

@@ -202,7 +202,7 @@ export abstract class Table<T> extends AKElement {
                 let comp = (item: T) => {
                     return JSON.stringify(item) === jsonRes;
                 };
-                if ("pk" in res) {
+                if (Object.hasOwn(res as object, "pk")) {
                     comp = (item: T) => {
                         return (
                             (item as unknown as { pk: string | number }).pk ===

@@ -18,6 +18,8 @@ export function DesignationToLabel(designation: FlowDesignationEnum): string {
             return t`Stage Configuration`;
         case FlowDesignationEnum.Unenrollment:
             return t`Unenrollment`;
+        case FlowDesignationEnum.UnknownDefaultOpenApi:
+            return t`Unknown designation`;
     }
 }
 
@@ -33,5 +35,7 @@ export function LayoutToLabel(layout: LayoutEnum): string {
             return t`Sidebar left`;
         case LayoutEnum.SidebarRight:
             return t`Sidebar right`;
+        case LayoutEnum.UnknownDefaultOpenApi:
+            return t`Unknown layout`;
     }
 }

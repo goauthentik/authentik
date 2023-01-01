@@ -27,6 +27,22 @@ jobs:
       - name: Eslint
         working-directory: web/
         run: npm run lint
+  lint-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3.5.1
+        with:
+          node-version: '16'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      - working-directory: web/
+        run: npm ci
+      - name: Generate API
+        run: make gen-client-ts
+      - name: TSC
+        working-directory: web/
+        run: npm run tsc
   lint-prettier:
     runs-on: ubuntu-latest
     steps:

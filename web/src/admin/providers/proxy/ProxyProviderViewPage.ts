@@ -47,6 +47,8 @@ export function ModeToLabel(action?: ProxyMode): string {
             return t`Forward auth (single application)`;
         case ProxyMode.ForwardDomain:
             return t`Forward auth (domain-level)`;
+        case ProxyMode.UnknownDefaultOpenApi:
+            return t`Unknown proxy mode`;
     }
 }
 
@@ -57,6 +59,8 @@ export function isForward(mode: ProxyMode): boolean {
         case ProxyMode.ForwardSingle:
         case ProxyMode.ForwardDomain:
             return true;
+        case ProxyMode.UnknownDefaultOpenApi:
+            return false;
     }
 }
 

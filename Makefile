@@ -126,7 +126,7 @@ gen: gen-build gen-clean gen-client-ts
 web-build: web-install
 	cd web && npm run build
 
-web: web-lint-fix web-lint
+web: web-lint-fix web-lint web-check-compile
 
 web-install:
 	cd web && npm ci
@@ -143,6 +143,9 @@ web-lint-fix:
 web-lint:
 	cd web && npm run lint
 	cd web && npm run lit-analyse
+
+web-check-compile:
+	cd web && npm run tsc
 
 web-extract:
 	cd web && npm run extract
