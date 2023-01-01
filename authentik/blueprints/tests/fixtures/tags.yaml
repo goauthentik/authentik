@@ -3,6 +3,9 @@ context:
     foo: bar
     policy_property: name
     policy_property_value: foo-bar-baz-qux
+    sequence:
+    - foo
+    - bar
 entries:
     - model: !Format ["%s", authentik_sources_oauth.oauthsource]
       state: !Format ["%s", present]
@@ -92,6 +95,41 @@ entries:
                   ]
               if_true_simple: !If [!Context foo, true, text]
               if_false_simple: !If [null, false, 2]
+              for: !For [
+                  !Context sequence,
+                  [
+                      !For [
+                          !ForItem 1,
+                          {
+                              key1: [
+                                  !Format ["str: %s, letter: %s", !ForItem 1, !ForItem 0],
+                                  !ForItem 1,
+                                  !ForItem 0,
+                                  !For [
+                                      !ForItem 2,
+                                      {
+                                        inner_inner_for_item: !Format ["%s", !ForItem 0]
+                                      }
+                                  ]
+                              ],
+                              key2: !ForItem 0
+                          }
+                      ],
+                      !For [
+                          !ForItem 1,
+                          {
+                              key1: {
+                                  inner_key1: !Format ["letter: %s, str: %s", !ForItem 0, !ForItem 1],
+                                  inner_key2: !ForItem 0,
+                                  inner_key3: !ForItem 1
+                              },
+                              key2: !ForItem 0
+                          }
+                      ],
+                      !ForItem 0,
+                      !Format ["%s-%s", !Context foo, !ForItem 0]
+                  ]
+              ]
       identifiers:
           name: test
       conditions:

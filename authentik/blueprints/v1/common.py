@@ -1,11 +1,12 @@
 """transfer common classes"""
 from collections import OrderedDict
+from copy import deepcopy
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from functools import reduce
 from operator import ixor
 from os import getenv
-from typing import Any, Literal, Optional, Union
+from typing import Any, Iterable, Literal, Optional, Union
 from uuid import UUID
 
 from django.apps import apps
@@ -69,6 +70,9 @@ class BlueprintEntry:
 
     _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)
 
+    def __post_init__(self, *args, **kwargs) -> None:
+        self.__tag_contexts: list["YAMLTagContext"] = []
+
     @staticmethod
     def from_model(model: SerializerModel, *extra_identifier_names: str) -> "BlueprintEntry":
         """Convert a SerializerModel instance to a blueprint Entry"""
@@ -85,17 +89,50 @@ class BlueprintEntry:
             attrs=all_attrs,
         )
 
+    def _get_tag_context(
+        self,
+        depth: int = 0,
+        context_tag_type: Optional[type["YAMLTagContext"] | tuple["YAMLTagContext", ...]] = None,
+    ) -> "YAMLTagContext":
+        """Get a YAMLTagContex object located at a certain depth in the tag tree"""
+        if depth < 0:
+            raise ValueError("depth must be a positive number or zero")
+
+        if context_tag_type:
+            contexts = [x for x in self.__tag_contexts if isinstance(x, context_tag_type)]
+        else:
+            contexts = self.__tag_contexts
+
+        try:
+            return contexts[-(depth + 1)]
+        except IndexError:
+            raise ValueError(f"invalid depth: {depth}. Max depth: {len(contexts) - 1}")
+
     def tag_resolver(self, value: Any, blueprint: "Blueprint") -> Any:
         """Check if we have any special tags that need handling"""
+        val = deepcopy(value)
+
+        if isinstance(value, YAMLTagContext):
+            # Only add the tag context if it has not already been added.
+            # This can happen in some edge cases where a sequence sits between
+            # nested context tags
+            if not self.__tag_contexts or self.__tag_contexts[-1] is not value:
+                self.__tag_contexts.append(value)
+
         if isinstance(value, YAMLTag):
-            return value.resolve(self, blueprint)
+            val = value.resolve(self, blueprint)
+
         if isinstance(value, dict):
             for key, inner_value in value.items():
-                value[key] = self.tag_resolver(inner_value, blueprint)
+                val[key] = self.tag_resolver(inner_value, blueprint)
         if isinstance(value, list):
             for idx, inner_value in enumerate(value):
-                value[idx] = self.tag_resolver(inner_value, blueprint)
-        return value
+                val[idx] = self.tag_resolver(inner_value, blueprint)
+
+        if isinstance(value, YAMLTagContext):
+            self.__tag_contexts.pop()
+
+        return val
 
     def get_attrs(self, blueprint: "Blueprint") -> dict[str, Any]:
         """Get attributes of this entry, with all yaml tags resolved"""
@@ -142,6 +179,14 @@ class YAMLTag:
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         """Implement yaml tag logic"""
+        raise NotImplementedError
+
+
+class YAMLTagContext:
+    """Base class for all YAML Tag Contexts"""
+
+    def get_context(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        """Implement yaml tag context logic"""
         raise NotImplementedError
 
 
@@ -351,6 +396,78 @@ class If(YAMLTag):
             raise EntryInvalidError(exc)
 
 
+class ForItem(YAMLTag):
+    """Get the current item of a For tag context"""
+
+    depth: int
+    attr: Optional[str]
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
+        super().__init__()
+        self.attr = None
+        if isinstance(node, ScalarNode):
+            self.depth = int(node.value)
+        if isinstance(node, SequenceNode):
+            self.depth = int(node.value[0].value)
+            self.attr = str(node.value[1].value)
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        try:
+            context_tag: For = entry._get_tag_context(depth=self.depth, context_tag_type=For)
+        except ValueError:
+            if self.depth == 0:
+                raise EntryInvalidError("ForItem tags are only usable inside a For tag")
+            else:
+                raise EntryInvalidError(f"Invalid ForItem tag depth: {self.depth}")
+
+        item = context_tag.get_context(entry, blueprint)
+
+        if self.attr:
+            try:
+                item = getattr(item, self.attr)
+            except AttributeError as exc:
+                raise EntryInvalidError(exc)
+
+        return item
+
+
+class For(YAMLTag, YAMLTagContext):
+    """Iterate over an iterable."""
+
+    iterable: YAMLTag | Iterable
+    item_body: Any
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
+        super().__init__()
+        self.iterable = loader.construct_object(node.value[0])
+        self.item_body = loader.construct_object(node.value[1])
+        self.__current_context: Optional[Any] = None
+
+    # pylint: disable=unused-argument
+    def get_context(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        return self.__current_context
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        if isinstance(self.iterable, YAMLTag):
+            iterable = self.iterable.resolve(entry, blueprint)
+        else:
+            iterable = self.iterable
+
+        result = []
+
+        self.__current_context = None
+
+        for item in iterable:
+            self.__current_context = item
+            result.append(entry.tag_resolver(self.item_body, blueprint))
+
+        self.__current_context = None
+
+        return result
+
+
 class BlueprintDumper(SafeDumper):
     """Dump dataclasses to yaml"""
 
@@ -394,6 +511,8 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Condition", Condition)
         self.add_constructor("!If", If)
         self.add_constructor("!Env", Env)
+        self.add_constructor("!For", For)
+        self.add_constructor("!ForItem", ForItem)
 
 
 class EntryInvalidError(SentryIgnoredException):

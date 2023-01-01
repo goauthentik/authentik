@@ -162,6 +162,150 @@ class TestBlueprintsV1(TransactionTestCase):
                     "if_false_complex": ["list", "with", "items", "foo-bar"],
                     "if_true_simple": True,
                     "if_false_simple": 2,
+                    "for": [
+                        [
+                            [
+                                {
+                                    "key1": [
+                                        "str: foo, letter: f",
+                                        "foo",
+                                        "f",
+                                        [
+                                            { "inner_inner_for_item": "f" },
+                                            { "inner_inner_for_item": "o" },
+                                            { "inner_inner_for_item": "o" }
+                                        ]
+                                    ],
+                                    "key2":  "f"
+                                },
+                                {
+                                    "key1": [
+                                        "str: foo, letter: o",
+                                        "foo",
+                                        "o",
+                                        [
+                                            { "inner_inner_for_item": "f" },
+                                            { "inner_inner_for_item": "o" },
+                                            { "inner_inner_for_item": "o" }
+                                        ]
+                                    ],
+                                    "key2":  "o"
+                                },
+                                {
+                                    "key1": [
+                                        "str: foo, letter: o",
+                                        "foo",
+                                        "o",
+                                        [
+                                            { "inner_inner_for_item": "f" },
+                                            { "inner_inner_for_item": "o" },
+                                            { "inner_inner_for_item": "o" }
+                                        ]
+                                    ],
+                                    "key2":  "o"
+                                }
+                            ],
+                            [
+                                {
+                                    "key1": {
+                                        "inner_key1": "letter: f, str: foo",
+                                        "inner_key2": "f",
+                                        "inner_key3": "foo",
+                                    },
+                                    "key2": "f"
+                                },
+                                {
+                                    "key1": {
+                                        "inner_key1": "letter: o, str: foo",
+                                        "inner_key2": "o",
+                                        "inner_key3": "foo",
+                                    },
+                                    "key2": "o"
+                                },
+                                {
+                                    "key1": {
+                                        "inner_key1": "letter: o, str: foo",
+                                        "inner_key2": "o",
+                                        "inner_key3": "foo",
+                                    },
+                                    "key2": "o"
+                                },
+                            ],
+                            "foo",
+                            "bar-foo"
+                        ],
+                        [
+                            [
+                                {
+                                    "key1": [
+                                        "str: bar, letter: b",
+                                        "bar",
+                                        "b",
+                                        [
+                                            { "inner_inner_for_item": "b" },
+                                            { "inner_inner_for_item": "a" },
+                                            { "inner_inner_for_item": "r" }
+                                        ]
+                                    ],
+                                    "key2":  "b"
+                                },
+                                {
+                                    "key1": [
+                                        "str: bar, letter: a",
+                                        "bar",
+                                        "a",
+                                        [
+                                            { "inner_inner_for_item": "b" },
+                                            { "inner_inner_for_item": "a" },
+                                            { "inner_inner_for_item": "r" }
+                                        ]
+                                    ],
+                                    "key2":  "a"
+                                },
+                                {
+                                    "key1": [
+                                        "str: bar, letter: r",
+                                        "bar",
+                                        "r",
+                                        [
+                                            { "inner_inner_for_item": "b" },
+                                            { "inner_inner_for_item": "a" },
+                                            { "inner_inner_for_item": "r" }
+                                        ]
+                                    ],
+                                    "key2":  "r"
+                                }
+                            ],
+                            [
+                                {
+                                    "key1": {
+                                        "inner_key1": "letter: b, str: bar",
+                                        "inner_key2": "b",
+                                        "inner_key3": "bar",
+                                    },
+                                    "key2": "b"
+                                },
+                                {
+                                    "key1": {
+                                        "inner_key1": "letter: a, str: bar",
+                                        "inner_key2": "a",
+                                        "inner_key3": "bar",
+                                    },
+                                    "key2": "a"
+                                },
+                                {
+                                    "key1": {
+                                        "inner_key1": "letter: r, str: bar",
+                                        "inner_key2": "r",
+                                        "inner_key3": "bar",
+                                    },
+                                    "key2": "r"
+                                },
+                            ],
+                            "bar",
+                            "bar-bar"
+                        ]
+                    ]
                 }
             )
         )
