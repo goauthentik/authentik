@@ -85,6 +85,7 @@ jobs:
       - lint-eslint
       - lint-prettier
       - lint-lit-analyse
+      - lint-build
     runs-on: ubuntu-latest
     steps:
       - run: echo mark
