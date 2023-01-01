@@ -16,6 +16,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik.core.api.utils import PassiveSerializer
+from authentik.lib.utils.reflection import get_env
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
 
@@ -69,7 +70,7 @@ class SystemSerializer(PassiveSerializer):
         return {
             "python_version": python_version,
             "gunicorn_version": ".".join(str(x) for x in gunicorn_version),
-            "environment": "kubernetes" if SERVICE_HOST_ENV_NAME in os.environ else "compose",
+            "environment": get_env(),
             "architecture": platform.machine(),
             "platform": platform.platform(),
             "uname": " ".join(platform.uname()),

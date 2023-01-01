@@ -48,14 +48,14 @@ def get_apps():
 
 def get_env() -> str:
     """Get environment in which authentik is currently running"""
-    if SERVICE_HOST_ENV_NAME in os.environ:
-        return "kubernetes"
     if "CI" in os.environ:
         return "ci"
-    if Path("/tmp/authentik-mode").exists():  # nosec
-        return "compose"
     if CONFIG.y_bool("debug"):
         return "dev"
+    if SERVICE_HOST_ENV_NAME in os.environ:
+        return "kubernetes"
+    if Path("/tmp/authentik-mode").exists():  # nosec
+        return "compose"
     if "AK_APPLIANCE" in os.environ:
         return os.environ["AK_APPLIANCE"]
     return "custom"
