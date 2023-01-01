@@ -57,7 +57,7 @@ class EmailStageView(ChallengeStageView):
 
     def get_token(self) -> FlowToken:
         """Get token"""
-        pending_user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        pending_user = self.get_pending_user()
         current_stage: EmailStage = self.executor.current_stage
         valid_delta = timedelta(
             minutes=current_stage.token_expiry + 1
@@ -82,7 +82,7 @@ class EmailStageView(ChallengeStageView):
     def send_email(self):
         """Helper function that sends the actual email. Implies that you've
         already checked that there is a pending user."""
-        pending_user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        pending_user = self.get_pending_user()
         email = self.executor.plan.context.get(PLAN_CONTEXT_EMAIL_OVERRIDE, None)
         if not email:
             email = pending_user.email
@@ -109,8 +109,9 @@ class EmailStageView(ChallengeStageView):
         ) and self.executor.plan.context.get(PLAN_CONTEXT_IS_RESTORED, False):
             messages.success(request, _("Successfully verified Email."))
             if self.executor.current_stage.activate_user_on_success:
-                self.executor.plan.context[PLAN_CONTEXT_PENDING_USER].is_active = True
-                self.executor.plan.context[PLAN_CONTEXT_PENDING_USER].save()
+                user = self.get_pending_user()
+                user.is_active = True
+                user.save()
             return self.executor.stage_ok()
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             self.logger.debug("No pending user")
