@@ -8,6 +8,7 @@ from django.http import HttpRequest
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.evaluator import BaseEvaluator
+from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.types import PolicyRequest
 
 
@@ -38,7 +39,7 @@ class PropertyMappingEvaluator(BaseEvaluator):
 
     def handle_error(self, exc: Exception, expression_source: str):
         """Exception Handler"""
-        error_string = "\n".join(format_tb(exc.__traceback__) + [str(exc)])
+        error_string = exception_to_string(exc)
         event = Event.new(
             EventAction.PROPERTY_MAPPING_EXCEPTION,
             expression=expression_source,

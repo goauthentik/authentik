@@ -10,6 +10,7 @@ import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
+import "@goauthentik/flow/stages/FlowErrorStage";
 import "@goauthentik/flow/stages/RedirectStage";
 import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";
 // Import webauthn-related stages to prevent issues on safari
@@ -45,6 +46,7 @@ import {
     ChallengeTypes,
     CurrentTenant,
     FlowChallengeResponseRequest,
+    FlowErrorChallenge,
     FlowsApi,
     LayoutEnum,
     RedirectChallenge,
@@ -106,10 +108,6 @@ export class FlowExecutor extends AKElement implements StageHost {
             }
             :host {
                 position: relative;
-            }
-            .ak-exception {
-                font-family: monospace;
-                overflow-x: scroll;
             }
             .pf-c-drawer__content {
                 background-color: transparent;
@@ -254,27 +252,13 @@ export class FlowExecutor extends AKElement implements StageHost {
         } else if (error instanceof Error) {
             body = error.message;
         }
-        this.challenge = {
-            type: ChallengeChoices.Shell,
-            body: `<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    ${t`Whoops!`}
-                </h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <h3>${t`Something went wrong! Please try again later.`}</h3>
-                <pre class="ak-exception">${body}</pre>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                    <li class="pf-c-login__main-footer-links-item">
-                        <a class="pf-c-button pf-m-primary pf-m-block" href="/">
-                            ${t`Return`}
-                        </a>
-                    </li>
-                </ul>
-            </footer>`,
-        } as ChallengeTypes;
+        const challenge: FlowErrorChallenge = {
+            type: ChallengeChoices.Native,
+            component: "ak-stage-flow-error",
+            error: body,
+            requestId: "",
+        };
+        this.challenge = challenge as ChallengeTypes;
     }
 
     async renderChallengeNativeElement(): Promise<TemplateResult> {
@@ -395,6 +379,12 @@ export class FlowExecutor extends AKElement implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-flow-provider-oauth2-code-finish>`;
+            // Internal stages
+            case "ak-stage-flow-error":
+                return html`<ak-stage-flow-error
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-flow-error>`;
             default:
                 break;
         }

@@ -4,9 +4,8 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -20,7 +19,23 @@ import { FlowChallengeResponseRequest, FlowErrorChallenge } from "@goauthentik/a
 @customElement("ak-stage-flow-error")
 export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, AKGlobal];
+        return [
+            PFBase,
+            PFLogin,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            AKGlobal,
+            css`
+                pre {
+                    overflow-x: scroll;
+                    max-width: calc(
+                        35rem - var(--pf-c-login__main-body--PaddingRight) -
+                            var(--pf-c-login__main-body--PaddingRight)
+                    );
+                }
+            `,
+        ];
     }
 
     render(): TemplateResult {
@@ -32,29 +47,22 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
-                        <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${t`Not you?`}</a
-                            >
-                        </div>
-                    </ak-form-static>
-                    <div class="pf-c-form__group">
-                        <p>
-                            ${this.challenge?.error
-                                ? this.challenge.error
-                                : t`Something went wrong! Please try again later.`}
-                        </p>
-                        ${this.challenge?.traceback
-                            ? html`<pre class="ak-exception">
-${this.challenge.error}${this.challenge.traceback}</pre
-                              >`
-                            : html``}
-                    </div>
+                    <h3 class="pf-c-title pf-m-3xl">
+                        ${this.challenge?.error
+                            ? this.challenge.error
+                            : t`Something went wrong! Please try again later.`}
+                    </h3>
+                    ${this.challenge?.traceback
+                        ? html`<div class="pf-c-form__group">
+                              <pre class="ak-exception">${this.challenge.traceback}</pre>
+                          </div>`
+                        : html``}
+                    ${this.challenge?.requestId
+                        ? html`<div class="pf-c-form__group">
+                              <p>${t`Request ID`}</p>
+                              <code>${this.challenge.requestId}</code>
+                          </div>`
+                        : html``}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">

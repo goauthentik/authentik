@@ -1,9 +1,9 @@
 """Challenge helpers"""
 from dataclasses import asdict, is_dataclass
 from enum import Enum
-from traceback import format_tb
 from typing import TYPE_CHECKING, Optional, TypedDict
 from uuid import UUID
+from rest_framework.request import Request
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from rest_framework.fields import CharField, ChoiceField, DictField
 
 from authentik.core.api.utils import PassiveSerializer
+from authentik.lib.utils.errors import exception_to_string
 
 if TYPE_CHECKING:
     from authentik.flows.stage import StageView
@@ -90,32 +91,31 @@ class WithUserInfoChallenge(Challenge):
     pending_user_avatar = CharField()
 
 
-class FlowErrorChallenge(WithUserInfoChallenge):
+class FlowErrorChallenge(Challenge):
     """Challenge class when an unhandled error occurs during a stage. Normal users
     are shown an error message, superusers are shown a full stacktrace."""
 
-    component = CharField(default="xak-flow-error")
+    type = CharField(default=ChallengeTypes.NATIVE.value)
+    component = CharField(default="ak-stage-flow-error")
 
     request_id = CharField()
 
     error = CharField(required=False)
     traceback = CharField(required=False)
 
-    def __init__(self, *args, **kwargs):
-        request = kwargs.pop("request", None)
-        error = kwargs.pop("error", None)
-        super().__init__(*args, **kwargs)
+    def __init__(self, request: Optional[Request] = None, error: Optional[Exception] = None):
+        super().__init__(data={})
         if not request or not error:
             return
-        self.request_id = request.request_id
+        self.initial_data["request_id"] = request.request_id
         from authentik.core.models import USER_ATTRIBUTE_DEBUG
 
         if request.user and request.user.is_authenticated:
             if request.user.is_superuser or request.user.group_attributes(request).get(
                 USER_ATTRIBUTE_DEBUG, False
             ):
-                self.error = error
-                self.traceback = "".join(format_tb(self.error.__traceback__))
+                self.initial_data["error"] = str(error)
+                self.initial_data["traceback"] = exception_to_string(error)
 
 
 class AccessDeniedChallenge(WithUserInfoChallenge):

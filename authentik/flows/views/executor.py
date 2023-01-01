@@ -255,7 +255,7 @@ class FlowExecutorView(APIView):
             message=exception_to_string(exc),
         ).from_http(self.request)
         challenge = FlowErrorChallenge(self.request, exc)
-        challenge.is_valid()
+        challenge.is_valid(raise_exception=True)
         return to_stage_response(self.request, HttpChallengeResponse(challenge))
 
     @extend_schema(

@@ -25,6 +25,7 @@ import {
     ChallengeTypes,
     CurrentTenant,
     FlowChallengeResponseRequest,
+    FlowErrorChallenge,
     FlowsApi,
     RedirectChallenge,
     ResponseError,
@@ -123,27 +124,13 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
         if (error instanceof Error) {
             body = error.message;
         }
-        this.challenge = {
-            type: ChallengeChoices.Shell,
-            body: `<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    ${t`Whoops!`}
-                </h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <h3>${t`Something went wrong! Please try again later.`}</h3>
-                <pre class="ak-exception">${body}</pre>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                    <li class="pf-c-login__main-footer-links-item">
-                        <a class="pf-c-button pf-m-primary pf-m-block" href="/">
-                            ${t`Return`}
-                        </a>
-                    </li>
-                </ul>
-            </footer>`,
-        } as ChallengeTypes;
+        const challenge: FlowErrorChallenge = {
+            type: ChallengeChoices.Native,
+            component: "ak-stage-flow-error",
+            error: body,
+            requestId: "",
+        };
+        this.challenge = challenge as ChallengeTypes;
     }
 
     globalRefresh(): void {
