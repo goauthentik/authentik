@@ -1,5 +1,4 @@
 """Property Mapping Evaluator"""
-from traceback import format_tb
 from typing import Optional
 
 from django.db.models import Model

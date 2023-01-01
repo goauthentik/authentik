@@ -2,7 +2,7 @@
 from os import chmod, unlink
 from pathlib import Path
 from shutil import rmtree
-from tempfile import gettempdir, mkdtemp, mkstemp
+from tempfile import mkdtemp, mkstemp
 from typing import Any
 
 from django.conf import settings
