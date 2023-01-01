@@ -209,6 +209,13 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(
         parameters=[
+            # Override the type for `has_key` above
+            OpenApiParameter(
+                "has_key",
+                bool,
+                required=False,
+                description="Only return certificate-key pairs with keys",
+            ),
             OpenApiParameter("include_details", bool, default=True),
         ]
     )

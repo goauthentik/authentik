@@ -5021,12 +5021,11 @@ paths:
       operationId: crypto_certificatekeypairs_list
       description: CertificateKeyPair Viewset
       parameters:
-      - name: has_key
-        required: false
-        in: query
-        description: Only return certificate-key pairs with keys
+      - in: query
+        name: has_key
         schema:
-          type: string
+          type: boolean
+        description: Only return certificate-key pairs with keys
       - in: query
         name: include_details
         schema:
