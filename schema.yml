@@ -26358,7 +26358,6 @@ components:
           type: string
         js_url:
           type: string
-          readOnly: true
       required:
       - js_url
       - pending_user

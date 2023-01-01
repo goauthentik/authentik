@@ -20,7 +20,7 @@ class CaptchaChallenge(WithUserInfoChallenge):
     """Site public key"""
 
     site_key = CharField()
-    js_url = CharField(read_only=True)
+    js_url = CharField()
     component = CharField(default="ak-stage-captcha")
 
 

@@ -22,7 +22,7 @@ class TestCaptchaStage(FlowTestCase):
         self.user = create_test_admin_user()
         self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
 
-        self.stage = CaptchaStage.objects.create(
+        self.stage: CaptchaStage = CaptchaStage.objects.create(
             name="captcha",
             public_key=RECAPTCHA_PUBLIC_KEY,
             private_key=RECAPTCHA_PRIVATE_KEY,
@@ -41,3 +41,22 @@ class TestCaptchaStage(FlowTestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    def test_urls(self):
+        """Test URLs captcha"""
+        self.stage.js_url = "https://test.goauthentik.io/test.js"
+        self.stage.api_url = "https://test.goauthentik.io/test"
+        self.stage.save()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            js_url="https://test.goauthentik.io/test.js",
+        )
