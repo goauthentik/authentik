@@ -12,7 +12,7 @@ class DummyStageSerializer(StageSerializer):
     class Meta:
 
         model = DummyStage
-        fields = StageSerializer.Meta.fields
+        fields = StageSerializer.Meta.fields + ["throw_error"]
 
 
 class DummyStageViewSet(UsedByMixin, ModelViewSet):

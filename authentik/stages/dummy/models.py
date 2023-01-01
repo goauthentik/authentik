@@ -1,5 +1,5 @@
 """dummy stage models"""
-
+from django.db import models
 from django.utils.translation import gettext as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -9,6 +9,8 @@ from authentik.flows.models import Stage
 
 class DummyStage(Stage):
     """Used for debugging."""
+
+    throw_error = models.BooleanField(default=False)
 
     __debug_only__ = True
 

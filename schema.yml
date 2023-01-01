@@ -21607,6 +21607,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: throw_error
+        schema:
+          type: boolean
       tags:
       - stages
       security:
@@ -27177,6 +27181,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+        throw_error:
+          type: boolean
       required:
       - component
       - meta_model_name
@@ -27195,6 +27201,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSetRequest'
+        throw_error:
+          type: boolean
       required:
       - name
     DuoDevice:
@@ -33739,6 +33747,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSetRequest'
+        throw_error:
+          type: boolean
     PatchedDuoDeviceRequest:
       type: object
       description: Serializer for Duo authenticator devices

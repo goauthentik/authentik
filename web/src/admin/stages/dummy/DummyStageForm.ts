@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
@@ -51,6 +52,16 @@ export class DummyStageForm extends ModelForm<DummyStage, string> {
                     class="pf-c-form-control"
                     required
                 />
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="throwError">
+                <div class="pf-c-check">
+                    <input
+                        type="checkbox"
+                        class="pf-c-check__input"
+                        ?checked=${first(this.instance?.throwError, false)}
+                    />
+                    <label class="pf-c-check__label"> ${t`Throw error?`} </label>
+                </div>
             </ak-form-element-horizontal>
         </form>`;
     }
