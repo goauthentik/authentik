@@ -1,7 +1,8 @@
 """email tests"""
 from os import chmod, unlink
 from pathlib import Path
-from tempfile import gettempdir, mkstemp
+from shutil import rmtree
+from tempfile import gettempdir, mkdtemp, mkstemp
 from typing import Any
 
 from django.conf import settings
@@ -20,11 +21,17 @@ def get_templates_setting(temp_dir: str) -> dict[str, Any]:
 class TestEmailStageTemplates(TestCase):
     """Email tests"""
 
+    def setUp(self) -> None:
+        self.dir = mkdtemp()
+
+    def tearDown(self) -> None:
+        rmtree(self.dir)
+
     def test_custom_template(self):
         """Test with custom template"""
-        with self.settings(TEMPLATES=get_templates_setting(gettempdir())):
-            _, file = mkstemp(suffix=".html")
-            _, file2 = mkstemp(suffix=".html")
+        with self.settings(TEMPLATES=get_templates_setting(self.dir)):
+            _, file = mkstemp(suffix=".html", dir=self.dir)
+            _, file2 = mkstemp(suffix=".html", dir=self.dir)
             chmod(file2, 0o000)  # Remove all permissions so we can't read the file
             choices = get_template_choices()
             self.assertEqual(choices[-1][0], Path(file).name)
