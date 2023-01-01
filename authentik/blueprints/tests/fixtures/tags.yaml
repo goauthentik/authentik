@@ -102,13 +102,13 @@ entries:
                           !ForItem 1,
                           {
                               key1: [
-                                  !Format ["str: %s, letter: %s", !ForItem 1, !ForItem 0],
+                                  !Format ["str: %s, str_index: %d, letter: %s", !ForItem 1, !ForItemIndex 1, !ForItem 0],
                                   !ForItem 1,
                                   !ForItem 0,
                                   !For [
                                       !ForItem 2,
                                       {
-                                        inner_inner_for_item: !Format ["%s", !ForItem 0]
+                                        inner_inner_for_item: !Format ["%d-%s", !ForItemIndex 0, !ForItem 0]
                                       }
                                   ]
                               ],
@@ -119,7 +119,7 @@ entries:
                           !ForItem 1,
                           {
                               key1: {
-                                  inner_key1: !Format ["letter: %s, str: %s", !ForItem 0, !ForItem 1],
+                                  inner_key1: !Format ["letter: %s, str: %s, str_index: %d", !ForItem 0, !ForItem 1, !ForItemIndex 1],
                                   inner_key2: !ForItem 0,
                                   inner_key3: !ForItem 1
                               },

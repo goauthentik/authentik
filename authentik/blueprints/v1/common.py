@@ -396,7 +396,7 @@ class If(YAMLTag):
             raise EntryInvalidError(exc)
 
 
-class ForItem(YAMLTag):
+class BaseForItem(YAMLTag):
     """Get the current item of a For tag context"""
 
     depth: int
@@ -411,11 +411,25 @@ class ForItem(YAMLTag):
             context_tag: For = entry._get_tag_context(depth=self.depth, context_tag_type=For)
         except ValueError:
             if self.depth == 0:
-                raise EntryInvalidError("ForItem tags are only usable inside a For tag")
+                raise EntryInvalidError(
+                    f"{self.__class__.__name__} tags are only usable inside a For tag"
+                )
             else:
-                raise EntryInvalidError(f"Invalid ForItem tag depth: {self.depth}")
+                raise EntryInvalidError(
+                    f"Invalid {self.__class__.__name__} tag depth: {self.depth}"
+                )
 
         return context_tag.get_context(entry, blueprint)
+
+
+class ForItemIndex(BaseForItem):
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        return super().resolve(entry, blueprint)[0]
+
+
+class ForItem(BaseForItem):
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        return super().resolve(entry, blueprint)[1]
 
 
 class For(YAMLTag, YAMLTagContext):
@@ -445,7 +459,7 @@ class For(YAMLTag, YAMLTagContext):
 
         self.__current_context = None
 
-        for item in iterable:
+        for item in tuple(enumerate(iterable)):
             self.__current_context = item
             result.append(entry.tag_resolver(self.item_body, blueprint))
 
@@ -499,6 +513,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Env", Env)
         self.add_constructor("!For", For)
         self.add_constructor("!ForItem", ForItem)
+        self.add_constructor("!ForItemIndex", ForItemIndex)
 
 
 class EntryInvalidError(SentryIgnoredException):

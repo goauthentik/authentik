@@ -167,39 +167,39 @@ class TestBlueprintsV1(TransactionTestCase):
                             [
                                 {
                                     "key1": [
-                                        "str: foo, letter: f",
+                                        "str: foo, str_index: 0, letter: f",
                                         "foo",
                                         "f",
                                         [
-                                            { "inner_inner_for_item": "f" },
-                                            { "inner_inner_for_item": "o" },
-                                            { "inner_inner_for_item": "o" }
+                                            { "inner_inner_for_item": "0-f" },
+                                            { "inner_inner_for_item": "1-o" },
+                                            { "inner_inner_for_item": "2-o" }
                                         ]
                                     ],
                                     "key2":  "f"
                                 },
                                 {
                                     "key1": [
-                                        "str: foo, letter: o",
+                                        "str: foo, str_index: 0, letter: o",
                                         "foo",
                                         "o",
                                         [
-                                            { "inner_inner_for_item": "f" },
-                                            { "inner_inner_for_item": "o" },
-                                            { "inner_inner_for_item": "o" }
+                                            { "inner_inner_for_item": "0-f" },
+                                            { "inner_inner_for_item": "1-o" },
+                                            { "inner_inner_for_item": "2-o" }
                                         ]
                                     ],
                                     "key2":  "o"
                                 },
                                 {
                                     "key1": [
-                                        "str: foo, letter: o",
+                                        "str: foo, str_index: 0, letter: o",
                                         "foo",
                                         "o",
                                         [
-                                            { "inner_inner_for_item": "f" },
-                                            { "inner_inner_for_item": "o" },
-                                            { "inner_inner_for_item": "o" }
+                                            { "inner_inner_for_item": "0-f" },
+                                            { "inner_inner_for_item": "1-o" },
+                                            { "inner_inner_for_item": "2-o" }
                                         ]
                                     ],
                                     "key2":  "o"
@@ -208,7 +208,7 @@ class TestBlueprintsV1(TransactionTestCase):
                             [
                                 {
                                     "key1": {
-                                        "inner_key1": "letter: f, str: foo",
+                                        "inner_key1": "letter: f, str: foo, str_index: 0",
                                         "inner_key2": "f",
                                         "inner_key3": "foo",
                                     },
@@ -216,7 +216,7 @@ class TestBlueprintsV1(TransactionTestCase):
                                 },
                                 {
                                     "key1": {
-                                        "inner_key1": "letter: o, str: foo",
+                                        "inner_key1": "letter: o, str: foo, str_index: 0",
                                         "inner_key2": "o",
                                         "inner_key3": "foo",
                                     },
@@ -224,7 +224,7 @@ class TestBlueprintsV1(TransactionTestCase):
                                 },
                                 {
                                     "key1": {
-                                        "inner_key1": "letter: o, str: foo",
+                                        "inner_key1": "letter: o, str: foo, str_index: 0",
                                         "inner_key2": "o",
                                         "inner_key3": "foo",
                                     },
@@ -238,39 +238,39 @@ class TestBlueprintsV1(TransactionTestCase):
                             [
                                 {
                                     "key1": [
-                                        "str: bar, letter: b",
+                                        "str: bar, str_index: 1, letter: b",
                                         "bar",
                                         "b",
                                         [
-                                            { "inner_inner_for_item": "b" },
-                                            { "inner_inner_for_item": "a" },
-                                            { "inner_inner_for_item": "r" }
+                                            { "inner_inner_for_item": "0-b" },
+                                            { "inner_inner_for_item": "1-a" },
+                                            { "inner_inner_for_item": "2-r" }
                                         ]
                                     ],
                                     "key2":  "b"
                                 },
                                 {
                                     "key1": [
-                                        "str: bar, letter: a",
+                                        "str: bar, str_index: 1, letter: a",
                                         "bar",
                                         "a",
                                         [
-                                            { "inner_inner_for_item": "b" },
-                                            { "inner_inner_for_item": "a" },
-                                            { "inner_inner_for_item": "r" }
+                                            { "inner_inner_for_item": "0-b" },
+                                            { "inner_inner_for_item": "1-a" },
+                                            { "inner_inner_for_item": "2-r" }
                                         ]
                                     ],
                                     "key2":  "a"
                                 },
                                 {
                                     "key1": [
-                                        "str: bar, letter: r",
+                                        "str: bar, str_index: 1, letter: r",
                                         "bar",
                                         "r",
                                         [
-                                            { "inner_inner_for_item": "b" },
-                                            { "inner_inner_for_item": "a" },
-                                            { "inner_inner_for_item": "r" }
+                                            { "inner_inner_for_item": "0-b" },
+                                            { "inner_inner_for_item": "1-a" },
+                                            { "inner_inner_for_item": "2-r" }
                                         ]
                                     ],
                                     "key2":  "r"
@@ -279,7 +279,7 @@ class TestBlueprintsV1(TransactionTestCase):
                             [
                                 {
                                     "key1": {
-                                        "inner_key1": "letter: b, str: bar",
+                                        "inner_key1": "letter: b, str: bar, str_index: 1",
                                         "inner_key2": "b",
                                         "inner_key3": "bar",
                                     },
@@ -287,7 +287,7 @@ class TestBlueprintsV1(TransactionTestCase):
                                 },
                                 {
                                     "key1": {
-                                        "inner_key1": "letter: a, str: bar",
+                                        "inner_key1": "letter: a, str: bar, str_index: 1",
                                         "inner_key2": "a",
                                         "inner_key3": "bar",
                                     },
@@ -295,7 +295,7 @@ class TestBlueprintsV1(TransactionTestCase):
                                 },
                                 {
                                     "key1": {
-                                        "inner_key1": "letter: r, str: bar",
+                                        "inner_key1": "letter: r, str: bar, str_index: 1",
                                         "inner_key2": "r",
                                         "inner_key3": "bar",
                                     },
