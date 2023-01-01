@@ -17,7 +17,7 @@ from rest_framework_guardian.filters import ObjectPermissionsFilter
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import is_dict
+from authentik.core.api.utils import PassiveSerializer, is_dict
 from authentik.core.models import Group, User
 
 
@@ -120,6 +120,12 @@ class GroupFilter(FilterSet):
         fields = ["name", "is_superuser", "members_by_pk", "attributes", "members_by_username"]
 
 
+class UserAccountSerializer(PassiveSerializer):
+    """Account adding/removing operations"""
+
+    pk = IntegerField(required=True)
+
+
 class GroupViewSet(UsedByMixin, ModelViewSet):
     """Group Viewset"""
 
@@ -144,12 +150,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required(None, ["authentik_core.add_user"])
     @extend_schema(
-        request=inline_serializer(
-            "UserAccountSerializer",
-            {
-                "pk": IntegerField(required=True),
-            },
-        ),
+        request=UserAccountSerializer,
         responses={
             204: OpenApiResponse(description="User added"),
             404: OpenApiResponse(description="User not found"),
@@ -174,12 +175,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required(None, ["authentik_core.add_user"])
     @extend_schema(
-        request=inline_serializer(
-            "UserAccountSerializer",
-            {
-                "pk": IntegerField(required=True),
-            },
-        ),
+        request=UserAccountSerializer,
         responses={
             204: OpenApiResponse(description="User added"),
             404: OpenApiResponse(description="User not found"),

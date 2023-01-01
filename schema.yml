@@ -37940,6 +37940,7 @@ components:
       - username
     UserAccountRequest:
       type: object
+      description: Account adding/removing operations
       properties:
         pk:
           type: integer
