@@ -400,17 +400,11 @@ class ForItem(YAMLTag):
     """Get the current item of a For tag context"""
 
     depth: int
-    attr: Optional[str]
 
     # pylint: disable=unused-argument
-    def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
+    def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
         super().__init__()
-        self.attr = None
-        if isinstance(node, ScalarNode):
-            self.depth = int(node.value)
-        if isinstance(node, SequenceNode):
-            self.depth = int(node.value[0].value)
-            self.attr = str(node.value[1].value)
+        self.depth = int(node.value)
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         try:
@@ -421,15 +415,7 @@ class ForItem(YAMLTag):
             else:
                 raise EntryInvalidError(f"Invalid ForItem tag depth: {self.depth}")
 
-        item = context_tag.get_context(entry, blueprint)
-
-        if self.attr:
-            try:
-                item = getattr(item, self.attr)
-            except AttributeError as exc:
-                raise EntryInvalidError(exc)
-
-        return item
+        return context_tag.get_context(entry, blueprint)
 
 
 class For(YAMLTag, YAMLTagContext):
