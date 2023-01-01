@@ -75,16 +75,23 @@ export class SearchSelect<T> extends AKElement {
         });
     };
 
-    menuId: string;
+    dropdownContainer: HTMLDivElement;
 
     constructor() {
         super();
-        this.menuId = btoa(Math.random().toString()).substring(10, 15);
+        this.dropdownContainer = document.createElement("div");
+    }
+
+    connectedCallback(): void {
+        super.connectedCallback();
+        this.dropdownContainer = document.createElement("div");
+        this.dropdownContainer.dataset["managedBy"] = "ak-search-select";
+        document.body.append(this.dropdownContainer);
     }
 
     disconnectedCallback(): void {
         super.disconnectedCallback();
-        document.querySelectorAll(`#${this.menuId}`).forEach((e) => e.remove());
+        this.dropdownContainer.remove();
     }
 
     /*
@@ -148,7 +155,6 @@ export class SearchSelect<T> extends AKElement {
             html`<div
                 class="pf-c-dropdown pf-m-expanded"
                 ?hidden=${!this.open}
-                id="${this.menuId}"
                 style="position: fixed; inset: 0px auto auto 0px; z-index: 9999; transform: translate(${pos.x}px, ${pos.y +
                 this.offsetHeight}px); width: ${pos.width}px;"
             >
@@ -187,7 +193,7 @@ export class SearchSelect<T> extends AKElement {
                         : html`${renderGroup(groupedItems[0][1])}`}
                 </ul>
             </div>`,
-            document.body,
+            this.dropdownContainer,
             { host: this },
         );
     }

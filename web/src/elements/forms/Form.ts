@@ -163,7 +163,7 @@ export class Form<T> extends AKElement {
             } else if (element.tagName.toLowerCase() === "ak-search-select") {
                 const select = element as unknown as SearchSelect<unknown>;
                 try {
-                    json[element.name] = select.value(select.selectedObject);
+                    json[element.name] = select.value(select.selectedObject) || "";
                 } catch {
                     console.debug("authentik/form: SearchSelect.value error");
                 }
