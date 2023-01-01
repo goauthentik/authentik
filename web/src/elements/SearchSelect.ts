@@ -65,6 +65,9 @@ export class SearchSelect<T> extends AKElement {
         });
     }
 
+    @property()
+    emptyOption = "---------";
+
     @property({ attribute: false })
     groupBy: (items: T[]) => [string, T[]][] = (items: T[]): [string, T[]][] => {
         return groupBy(items, () => {
@@ -165,7 +168,7 @@ export class SearchSelect<T> extends AKElement {
                                           this.open = false;
                                       }}
                                   >
-                                      ---------
+                                      ${this.emptyOption}
                                   </button>
                               </li>
                           `
@@ -212,7 +215,11 @@ export class SearchSelect<T> extends AKElement {
                                 this.renderMenu();
                             }, 200);
                         }}
-                        .value=${this.selectedObject ? this.renderElement(this.selectedObject) : ""}
+                        .value=${this.selectedObject
+                            ? this.renderElement(this.selectedObject)
+                            : this.blankable
+                            ? this.emptyOption
+                            : ""}
                     />
                 </div>
             </div>
