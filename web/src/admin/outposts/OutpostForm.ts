@@ -166,7 +166,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         return groupBy(items, (item) => item.verboseName);
                     }}
                     .selected=${(item: ServiceConnection, items: ServiceConnection[]): boolean => {
-                        let selected = this.instance?.serviceConnection === sc.pk;
+                        let selected = this.instance?.serviceConnection === item.pk;
                         if (items.length === 1 && !this.instance) {
                             selected = true;
                         }
