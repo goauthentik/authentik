@@ -134,6 +134,7 @@ export class SidebarItem extends AKElement {
             if (match !== null) {
                 return true;
             }
+            return false;
         });
     }
 

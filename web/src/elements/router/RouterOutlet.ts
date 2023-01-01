@@ -101,6 +101,7 @@ export class RouterOutlet extends AKElement {
                 console.debug("authentik/router: found match ", matchedRoute);
                 return true;
             }
+            return false;
         });
         if (!matchedRoute) {
             console.debug(`authentik/router: route "${activeUrl}" not defined`);

@@ -108,12 +108,12 @@ export abstract class AKChart<T> extends AKElement {
             const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
             if (!canvas) {
                 console.warn("Failed to get canvas element");
-                return false;
+                return;
             }
             const ctx = canvas.getContext("2d");
             if (!ctx) {
                 console.warn("failed to get 2d context");
-                return false;
+                return;
             }
             this.chart = this.configureChart(r, ctx);
         });

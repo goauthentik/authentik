@@ -33,6 +33,16 @@
             "DOM.Iterable",
             "WebWorker"
         ],
+        "noUnusedLocals": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "strictBindCallApply": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "alwaysStrict": true,
+        "noImplicitAny": true,
         "plugins": [
             {
                 "name": "ts-lit-plugin",

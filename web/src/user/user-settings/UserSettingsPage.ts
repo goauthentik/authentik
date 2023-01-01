@@ -102,6 +102,7 @@ export class UserSettingsPage extends AKElement {
                                                 configureUrl=${ifDefined(pwStage[0].configureUrl)}
                                             ></ak-user-settings-password>`;
                                         }
+                                        return html``;
                                     }),
                                 )}
                             </div>
