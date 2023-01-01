@@ -162,7 +162,11 @@ class TestBlueprintsV1(TransactionTestCase):
                     "if_false_complex": ["list", "with", "items", "foo-bar"],
                     "if_true_simple": True,
                     "if_false_simple": 2,
-                    "for": [
+                    "for_mapping": [
+                        "key1: value",
+                        "key2: 2"
+                    ],
+                    "for_sequence": [
                         [
                             [
                                 {

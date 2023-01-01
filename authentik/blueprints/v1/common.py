@@ -6,7 +6,7 @@ from enum import Enum
 from functools import reduce
 from operator import ixor
 from os import getenv
-from typing import Any, Iterable, Literal, Optional, Union
+from typing import Any, Iterable, Literal, Mapping, Optional, Union
 from uuid import UUID
 
 from django.apps import apps
@@ -455,11 +455,21 @@ class For(YAMLTag, YAMLTagContext):
         else:
             iterable = self.iterable
 
+        if not isinstance(iterable, Iterable):
+            raise EntryInvalidError(
+                f"{self.__class__.__name__}'s iterable must be an iterable such as a sequence or a mapping"
+        )
+
+        if isinstance(iterable, Mapping):
+            iterable = tuple(iterable.items())
+        else:
+            iterable = tuple(enumerate(iterable))
+
         result = []
 
         self.__current_context = None
 
-        for item in tuple(enumerate(iterable)):
+        for item in iterable:
             self.__current_context = item
             result.append(entry.tag_resolver(self.item_body, blueprint))
 

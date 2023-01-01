@@ -6,6 +6,9 @@ context:
     sequence:
     - foo
     - bar
+    mapping:
+      key1: value
+      key2: 2
 entries:
     - model: !Format ["%s", authentik_sources_oauth.oauthsource]
       state: !Format ["%s", present]
@@ -95,7 +98,11 @@ entries:
                   ]
               if_true_simple: !If [!Context foo, true, text]
               if_false_simple: !If [null, false, 2]
-              for: !For [
+              for_mapping: !For [
+                  !Context mapping,
+                  !Format ["%s: %s", !ForItemIndex 0, !ForItem 0]
+              ]
+              for_sequence: !For [
                   !Context sequence,
                   [
                       !For [
