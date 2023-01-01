@@ -2,7 +2,11 @@
 title: Captcha stage
 ---
 
-This stage adds a form of verification using [Google's ReCaptcha](https://www.google.com/recaptcha/intro/v3.html) or compatible services.
+This stage adds a form of verification using [Google's ReCaptcha](https://www.google.com/recaptcha/intro/v3.html) or compatible services. Currently supported implementations:
+
+-   ReCaptcha
+-   hCaptcha
+-   Turnstile
 
 ### Google ReCaptcha
 

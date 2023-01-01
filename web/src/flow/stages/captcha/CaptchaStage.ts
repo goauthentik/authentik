@@ -1,13 +1,16 @@
+///<reference types="@hcaptcha/types"/>
+///<reference types="turnstile-types"/>
 import "@goauthentik/elements/EmptyState";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
+import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -26,6 +29,11 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
+    handlers = [this.handleGReCaptcha, this.handleHCaptcha, this.handleTurnstile];
+
+    @state()
+    error?: string;
+
     firstUpdated(): void {
         const script = document.createElement("script");
         script.src = this.challenge.jsUrl;
@@ -35,22 +43,85 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         document.body.appendChild(captchaContainer);
         script.onload = () => {
             console.debug("authentik/stages/captcha: script loaded");
-            grecaptcha.ready(() => {
-                if (!this.challenge?.siteKey) return;
-                console.debug("authentik/stages/captcha: ready");
-                const captchaId = grecaptcha.render(captchaContainer, {
-                    sitekey: this.challenge.siteKey,
-                    callback: (token) => {
-                        this.host?.submit({
-                            token: token,
-                        });
-                    },
-                    size: "invisible",
-                });
-                grecaptcha.execute(captchaId);
+            let found = false;
+            let lastError = undefined;
+            this.handlers.forEach((handler) => {
+                let handlerFound = false;
+                try {
+                    console.debug(`authentik/stages/captcha[${handler.name}]: trying handler`);
+                    handlerFound = handler.apply(this, [captchaContainer]);
+                    if (handlerFound) {
+                        console.debug(
+                            `authentik/stages/captcha[${handler.name}]: handler succeeded`,
+                        );
+                        found = true;
+                    }
+                } catch (exc) {
+                    console.debug(
+                        `authentik/stages/captcha[${handler.name}]: handler failed: ${exc}`,
+                    );
+                    if (handlerFound) {
+                        lastError = exc;
+                    }
+                }
             });
+            if (!found && lastError) {
+                this.error = (lastError as Error).toString();
+            }
         };
         document.head.appendChild(script);
+    }
+
+    handleGReCaptcha(container: HTMLDivElement): boolean {
+        if (!Object.hasOwn(window, "grecaptcha")) {
+            return false;
+        }
+        grecaptcha.ready(() => {
+            const captchaId = grecaptcha.render(container, {
+                sitekey: this.challenge.siteKey,
+                callback: (token) => {
+                    this.host?.submit({
+                        token: token,
+                    });
+                },
+                size: "invisible",
+            });
+            grecaptcha.execute(captchaId);
+        });
+        return true;
+    }
+
+    handleHCaptcha(container: HTMLDivElement): boolean {
+        if (!Object.hasOwn(window, "hcaptcha")) {
+            return false;
+        }
+        const captchaId = hcaptcha.render(container, {
+            sitekey: this.challenge.siteKey,
+            size: "invisible",
+            callback: (token) => {
+                this.host?.submit({
+                    token: token,
+                });
+            },
+        });
+        hcaptcha.execute(captchaId);
+        return true;
+    }
+
+    handleTurnstile(container: HTMLDivElement): boolean {
+        if (!Object.hasOwn(window, "turnstile")) {
+            return false;
+        }
+        window.turnstile.render(container, {
+            sitekey: this.challenge.siteKey,
+            size: "invisible",
+            callback: (token) => {
+                this.host?.submit({
+                    token: token,
+                });
+            },
+        });
+        return true;
     }
 
     render(): TemplateResult {
@@ -73,9 +144,12 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                             >
                         </div>
                     </ak-form-static>
-                    <div class="ak-loading">
-                        <ak-spinner size=${PFSize.XLarge}></ak-spinner>
-                    </div>
+                    ${this.error
+                        ? html`<ak-stage-access-denied-icon errorMessage=${ifDefined(this.error)}>
+                          </ak-stage-access-denied-icon>`
+                        : html`<div>
+                              <ak-spinner size=${PFSize.XLarge}></ak-spinner>
+                          </div>`}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
