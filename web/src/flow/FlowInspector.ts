@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_FLOW_ADVANCE } from "@goauthentik/common/constants";
+import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 
@@ -9,6 +9,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
@@ -31,6 +32,7 @@ export class FlowInspector extends AKElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,
+            PFButton,
             PFStack,
             PFCard,
             PFNotificationDrawer,
@@ -111,6 +113,25 @@ export class FlowInspector extends AKElement {
                 <div class="pf-c-notification-drawer__header">
                     <div class="text">
                         <h1 class="pf-c-notification-drawer__header-title">${t`Flow inspector`}</h1>
+                    </div>
+                    <div class="pf-c-notification-drawer__header-action">
+                        <div class="pf-c-notification-drawer__header-action-close">
+                            <button
+                                @click=${() => {
+                                    this.dispatchEvent(
+                                        new CustomEvent(EVENT_FLOW_INSPECTOR_TOGGLE, {
+                                            bubbles: true,
+                                            composed: true,
+                                        }),
+                                    );
+                                }}
+                                class="pf-c-button pf-m-plain"
+                                type="button"
+                                aria-label=${t`Close`}
+                            >
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="pf-c-notification-drawer__body">

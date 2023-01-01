@@ -1,5 +1,9 @@
 import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
-import { EVENT_FLOW_ADVANCE, TITLE_DEFAULT } from "@goauthentik/common/constants";
+import {
+    EVENT_FLOW_ADVANCE,
+    EVENT_FLOW_INSPECTOR_TOGGLE,
+    TITLE_DEFAULT,
+} from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
@@ -160,6 +164,9 @@ export class FlowExecutor extends AKElement implements StageHost {
         if (window.location.search.includes("inspector")) {
             this.inspectorOpen = !this.inspectorOpen;
         }
+        this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
+            this.inspectorOpen = !this.inspectorOpen;
+        });
         tenant().then((tenant) => (this.tenant = tenant));
     }
 
