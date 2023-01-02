@@ -11,7 +11,6 @@ from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 
-from authentik.core.models import User
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
