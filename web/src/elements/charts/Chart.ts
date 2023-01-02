@@ -78,18 +78,6 @@ export abstract class AKChart<T> extends AKElement {
 
     constructor() {
         super();
-        window.addEventListener("resize", () => {
-            if (this.chart) {
-                this.chart.resize();
-            }
-        });
-        window.addEventListener(EVENT_REFRESH, () => {
-            this.apiRequest().then((r: T) => {
-                if (!this.chart) return;
-                this.chart.data = this.getChartData(r);
-                this.chart.update();
-            });
-        });
         const matcher = window.matchMedia("(prefers-color-scheme: light)");
         const handler = (ev?: MediaQueryListEvent) => {
             if (ev?.matches || matcher.matches) {
@@ -101,6 +89,33 @@ export abstract class AKChart<T> extends AKElement {
         };
         matcher.addEventListener("change", handler);
         handler();
+    }
+
+    connectedCallback(): void {
+        super.connectedCallback();
+        window.addEventListener("resize", this.resizeHandler);
+        this.addEventListener(EVENT_REFRESH, this.refreshHandler);
+    }
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+        window.removeEventListener("resize", this.resizeHandler);
+        this.removeEventListener(EVENT_REFRESH, this.refreshHandler);
+    }
+
+    refreshHandler(): void {
+        this.apiRequest().then((r: T) => {
+            if (!this.chart) return;
+            this.chart.data = this.getChartData(r);
+            this.chart.update();
+        });
+    }
+
+    resizeHandler(): void {
+        if (!this.chart) {
+            return;
+        }
+        this.chart.resize();
     }
 
     firstUpdated(): void {

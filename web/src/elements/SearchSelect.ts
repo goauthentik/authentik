@@ -1,5 +1,7 @@
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
+import { PreventFormSubmit } from "@goauthentik/elements/forms/Form";
 
 import { t } from "@lingui/macro";
 
@@ -18,7 +20,7 @@ export class SearchSelect<T> extends AKElement {
     query?: string;
 
     @property({ attribute: false })
-    objects: T[] = [];
+    objects?: T[];
 
     @property({ attribute: false })
     selectedObject?: T;
@@ -54,17 +56,6 @@ export class SearchSelect<T> extends AKElement {
     @property({ attribute: false })
     selected?: (element: T, elements: T[]) => boolean;
 
-    firstUpdated(): void {
-        this.fetchObjects(this.query).then((objects) => {
-            this.objects = objects;
-            this.objects.forEach((obj) => {
-                if (this.selected && this.selected(obj, this.objects)) {
-                    this.selectedObject = obj;
-                }
-            });
-        });
-    }
-
     @property()
     emptyOption = "---------";
 
@@ -82,15 +73,40 @@ export class SearchSelect<T> extends AKElement {
         this.dropdownContainer = document.createElement("div");
     }
 
+    toForm(): unknown {
+        if (!this.objects) {
+            return new PreventFormSubmit(t`Loading options...`);
+        }
+        return this.value(this.selectedObject) || "";
+    }
+
+    firstUpdated(): void {
+        this.updateData();
+    }
+
+    updateData(): void {
+        this.fetchObjects(this.query).then((objects) => {
+            this.objects = objects;
+            this.objects.forEach((obj) => {
+                if (this.selected && this.selected(obj, this.objects || [])) {
+                    this.selectedObject = obj;
+                }
+            });
+        });
+    }
+
     connectedCallback(): void {
         super.connectedCallback();
         this.dropdownContainer = document.createElement("div");
         this.dropdownContainer.dataset["managedBy"] = "ak-search-select";
         document.body.append(this.dropdownContainer);
+        this.updateData();
+        this.addEventListener(EVENT_REFRESH, this.updateData);
     }
 
     disconnectedCallback(): void {
         super.disconnectedCallback();
+        this.removeEventListener(EVENT_REFRESH, this.updateData);
         this.dropdownContainer.remove();
     }
 
@@ -106,6 +122,9 @@ export class SearchSelect<T> extends AKElement {
      * the pf-c-dropdown CSS needs to be loaded on the body.
      */
     renderMenu(): void {
+        if (!this.objects) {
+            return;
+        }
         const pos = this.getBoundingClientRect();
         let groupedItems = this.groupBy(this.objects);
         let shouldRenderGroups = true;
@@ -209,7 +228,7 @@ export class SearchSelect<T> extends AKElement {
                         placeholder=${this.placeholder}
                         @input=${(ev: InputEvent) => {
                             this.query = (ev.target as HTMLInputElement).value;
-                            this.firstUpdated();
+                            this.updateData();
                         }}
                         @focus=${() => {
                             this.open = true;

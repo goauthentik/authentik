@@ -23,6 +23,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ResponseError, ValidationError } from "@goauthentik/api";
 
+export class PreventFormSubmit {
+    // Stub class which can be returned by form elements to prevent the form from submitting
+    constructor(public message: string) {}
+}
+
 export class APIError extends Error {
     constructor(public response: ValidationError) {
         super();
@@ -162,11 +167,17 @@ export class Form<T> extends AKElement {
                 json[element.name] = element.checked;
             } else if (element.tagName.toLowerCase() === "ak-search-select") {
                 const select = element as unknown as SearchSelect<unknown>;
+                let value: unknown;
                 try {
-                    json[element.name] = select.value(select.selectedObject) || "";
+                    value = select.toForm();
                 } catch {
                     console.debug("authentik/form: SearchSelect.value error");
+                    return;
                 }
+                if (value instanceof PreventFormSubmit) {
+                    throw new Error(value.message);
+                }
+                json[element.name] = value;
             } else {
                 for (let v = 0; v < values.length; v++) {
                     this.serializeFieldRecursive(element, values[v], json);
