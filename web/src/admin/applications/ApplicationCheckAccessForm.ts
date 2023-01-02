@@ -1,8 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/SearchSelect";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
 

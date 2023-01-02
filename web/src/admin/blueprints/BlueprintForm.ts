@@ -2,10 +2,10 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
 import { t } from "@lingui/macro";

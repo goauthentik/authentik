@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/SearchSelect";
 import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/forms/SearchSelect";
 import { WizardFormPage } from "@goauthentik/elements/wizard/WizardFormPage";
 import "@goauthentik/elements/wizard/WizardFormPage";
 

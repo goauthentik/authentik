@@ -1,9 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { dateTimeLocal, first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
 
