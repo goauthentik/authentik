@@ -47,6 +47,8 @@ class SAMLProviderSerializer(ProviderSerializer):
 
     def get_url_download_metadata(self, instance: SAMLProvider) -> str:
         """Get metadata download URL"""
+        if "request" not in self._context:
+            return ""
         request: HttpRequest = self._context["request"]._request
         return request.build_absolute_uri(
             reverse("authentik_api:samlprovider-metadata", kwargs={"pk": instance.pk}) + "?download"
@@ -54,6 +56,8 @@ class SAMLProviderSerializer(ProviderSerializer):
 
     def get_url_sso_post(self, instance: SAMLProvider) -> str:
         """Get SSO Post URL"""
+        if "request" not in self._context:
+            return ""
         request: HttpRequest = self._context["request"]._request
         try:
             return request.build_absolute_uri(
@@ -67,6 +71,8 @@ class SAMLProviderSerializer(ProviderSerializer):
 
     def get_url_sso_redirect(self, instance: SAMLProvider) -> str:
         """Get SSO Redirect URL"""
+        if "request" not in self._context:
+            return ""
         request: HttpRequest = self._context["request"]._request
         try:
             return request.build_absolute_uri(
@@ -80,6 +86,8 @@ class SAMLProviderSerializer(ProviderSerializer):
 
     def get_url_sso_init(self, instance: SAMLProvider) -> str:
         """Get SSO IDP-Initiated URL"""
+        if "request" not in self._context:
+            return ""
         request: HttpRequest = self._context["request"]._request
         try:
             return request.build_absolute_uri(
