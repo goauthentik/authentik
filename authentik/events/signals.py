@@ -39,6 +39,11 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
     request.session[SESSION_LOGIN_EVENT] = event
 
 
+def get_login_event(request: HttpRequest) -> Optional[Event]:
+    """Wrapper to get login event that can be mocked in tests"""
+    return request.session.get(SESSION_LOGIN_EVENT, None)
+
+
 @receiver(user_logged_out)
 # pylint: disable=unused-argument
 def on_user_logged_out(sender, request: HttpRequest, user: User, **_):

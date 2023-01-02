@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
-from authentik.events.signals import SESSION_LOGIN_EVENT
+from authentik.events.signals import get_login_event
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.request_parser import AuthNRequest
@@ -132,8 +132,8 @@ class AssertionProcessor:
             auth_n_context, f"{{{NS_SAML_ASSERTION}}}AuthnContextClassRef"
         )
         auth_n_context_class_ref.text = "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified"
-        if SESSION_LOGIN_EVENT in self.http_request.session:
-            event: Event = self.http_request.session[SESSION_LOGIN_EVENT]
+        event = get_login_event(self.http_request)
+        if event:
             method = event.context.get(PLAN_CONTEXT_METHOD, "")
             method_args = event.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
             if method == "password":

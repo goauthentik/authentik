@@ -27,6 +27,11 @@ class OAuthTestCase(TestCase):
         cls.keypair = create_test_cert()
         super().setUpClass()
 
+    def assert_non_none_or_unset(self, container: dict, key: str):
+        """Check that a key, if set, is not none"""
+        if key in container:
+            self.assertIsNotNone(container[key])
+
     def validate_jwt(self, token: RefreshToken, provider: OAuth2Provider) -> dict[str, Any]:
         """Validate that all required fields are set"""
         key, alg = provider.jwt_key
@@ -39,6 +44,10 @@ class OAuthTestCase(TestCase):
             audience=provider.client_id,
         )
         id_token = token.id_token.to_dict()
+        self.assert_non_none_or_unset(id_token, "at_hash")
+        self.assert_non_none_or_unset(id_token, "nonce")
+        self.assert_non_none_or_unset(id_token, "c_hash")
+        self.assert_non_none_or_unset(id_token, "amr")
         for key in self.required_jwt_keys:
             self.assertIsNotNone(jwt[key], f"Key {key} is missing in access_token")
             self.assertIsNotNone(id_token[key], f"Key {key} is missing in id_token")

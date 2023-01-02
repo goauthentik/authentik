@@ -1,10 +1,13 @@
 """Test authorize view"""
+from unittest.mock import MagicMock, patch
+
 from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.timezone import now
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import ChallengeTypes
 from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.utils.time import timedelta_from_string
@@ -17,6 +20,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD
 
 
 class TestAuthorize(OAuthTestCase):
@@ -302,40 +306,51 @@ class TestAuthorize(OAuthTestCase):
         state = generate_id()
         user = create_test_admin_user()
         self.client.force_login(user)
-        # Step 1, initiate params and get redirect to flow
-        self.client.get(
-            reverse("authentik_providers_oauth2:authorize"),
-            data={
-                "response_type": "id_token",
-                "client_id": "test",
-                "state": state,
-                "scope": "openid",
-                "redirect_uri": "http://localhost",
-            },
-        )
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-        )
-        token: RefreshToken = RefreshToken.objects.filter(user=user).first()
-        expires = timedelta_from_string(provider.access_code_validity).total_seconds()
-        self.assertJSONEqual(
-            response.content.decode(),
-            {
-                "component": "xak-flow-redirect",
-                "type": ChallengeTypes.REDIRECT.value,
-                "to": (
-                    f"http://localhost#access_token={token.access_token}"
-                    f"&id_token={provider.encode(token.id_token.to_dict())}&token_type=bearer"
-                    f"&expires_in={int(expires)}&state={state}"
-                ),
-            },
-        )
-        jwt = self.validate_jwt(token, provider)
-        self.assertAlmostEqual(
-            jwt["exp"] - now().timestamp(),
-            expires,
-            delta=5,
-        )
+        with patch(
+            "authentik.providers.oauth2.models.get_login_event",
+            MagicMock(
+                return_value=Event(
+                    action=EventAction.LOGIN,
+                    context={PLAN_CONTEXT_METHOD: "password"},
+                    created=now(),
+                )
+            ),
+        ):
+            # Step 1, initiate params and get redirect to flow
+            self.client.get(
+                reverse("authentik_providers_oauth2:authorize"),
+                data={
+                    "response_type": "id_token",
+                    "client_id": "test",
+                    "state": state,
+                    "scope": "openid",
+                    "redirect_uri": "http://localhost",
+                },
+            )
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            )
+            token: RefreshToken = RefreshToken.objects.filter(user=user).first()
+            expires = timedelta_from_string(provider.access_code_validity).total_seconds()
+            self.assertJSONEqual(
+                response.content.decode(),
+                {
+                    "component": "xak-flow-redirect",
+                    "type": ChallengeTypes.REDIRECT.value,
+                    "to": (
+                        f"http://localhost#access_token={token.access_token}"
+                        f"&id_token={provider.encode(token.id_token.to_dict())}&token_type=bearer"
+                        f"&expires_in={int(expires)}&state={state}"
+                    ),
+                },
+            )
+            jwt = self.validate_jwt(token, provider)
+            self.assertEqual(jwt["amr"], ["pwd"])
+            self.assertAlmostEqual(
+                jwt["exp"] - now().timestamp(),
+                expires,
+                delta=5,
+            )
 
     def test_full_form_post_id_token(self):
         """Test full authorization (form_post response)"""

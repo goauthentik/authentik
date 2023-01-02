@@ -22,8 +22,7 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
-from authentik.events.models import Event
-from authentik.events.signals import SESSION_LOGIN_EVENT
+from authentik.events.signals import get_login_event
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
@@ -419,6 +418,8 @@ class IDToken:
             id_dict.pop("nonce")
         if not self.c_hash:
             id_dict.pop("c_hash")
+        if not self.amr:
+            id_dict.pop("amr")
         id_dict.pop("claims")
         id_dict.update(self.claims)
         return id_dict
@@ -503,8 +504,8 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
         # Fallback in case we can't find any login events
         auth_time = now
-        if SESSION_LOGIN_EVENT in request.session:
-            auth_event: Event = request.session[SESSION_LOGIN_EVENT]
+        auth_event = get_login_event(request)
+        if auth_event:
             auth_time = auth_event.created
             # Also check which method was used for authentication
             method = auth_event.context.get(PLAN_CONTEXT_METHOD, "")
@@ -526,6 +527,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
             exp=exp_time,
             iat=iat_time,
             auth_time=auth_timestamp,
+            amr=amr if amr else None,
         )
 
         # Include (or not) user standard claims in the id_token.
