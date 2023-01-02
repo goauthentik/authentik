@@ -1,9 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { dateTimeLocal, first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
+import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
 
@@ -82,20 +83,23 @@ export class TokenForm extends ModelForm<Token, string> {
                 </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Intent`} ?required=${true} name="intent">
-                <select class="pf-c-form-control">
-                    <option
-                        value=${IntentEnum.Api}
-                        ?selected=${this.instance?.intent === IntentEnum.Api}
-                    >
-                        ${t`API Token (can be used to access the API programmatically)`}
-                    </option>
-                    <option
-                        value=${IntentEnum.AppPassword}
-                        ?selected=${this.instance?.intent === IntentEnum.AppPassword}
-                    >
-                        ${t`App password (can be used to login using a flow executor)`}
-                    </option>
-                </select>
+                <ak-radio
+                    .options=${[
+                        {
+                            label: t`API Token`,
+                            value: IntentEnum.Api,
+                            default: true,
+                            description: html`${t`Used to access the API programmatically`}`,
+                        },
+                        {
+                            label: t`App password.`,
+                            value: IntentEnum.AppPassword,
+                            description: html`${t`Used to login using a flow executor`}`,
+                        },
+                    ]}
+                    .value=${this.instance?.intent}
+                >
+                </ak-radio>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Description`} name="description">
                 <input

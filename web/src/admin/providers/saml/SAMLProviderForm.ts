@@ -1,8 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
+import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { t } from "@lingui/macro";
@@ -130,20 +131,21 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         ?required=${true}
                         name="spBinding"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=${SpBindingEnum.Redirect}
-                                ?selected=${this.instance?.spBinding === SpBindingEnum.Redirect}
-                            >
-                                ${t`Redirect`}
-                            </option>
-                            <option
-                                value=${SpBindingEnum.Post}
-                                ?selected=${this.instance?.spBinding === SpBindingEnum.Post}
-                            >
-                                ${t`Post`}
-                            </option>
-                        </select>
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: t`Redirect`,
+                                    value: SpBindingEnum.Redirect,
+                                    default: true,
+                                },
+                                {
+                                    label: t`Post`,
+                                    value: SpBindingEnum.Post,
+                                },
+                            ]}
+                            .value=${this.instance?.spBinding}
+                        >
+                        </ak-radio>
                         <p class="pf-c-form__helper-text">
                             ${t`Determines how authentik sends the response back to the Service Provider.`}
                         </p>
@@ -366,81 +368,62 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         ?required=${true}
                         name="digestAlgorithm"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=${DigestAlgorithmEnum._200009Xmldsigsha1}
-                                ?selected=${this.instance?.digestAlgorithm ===
-                                DigestAlgorithmEnum._200009Xmldsigsha1}
-                            >
-                                ${t`SHA1`}
-                            </option>
-                            <option
-                                value=${DigestAlgorithmEnum._200104Xmlencsha256}
-                                ?selected=${this.instance?.digestAlgorithm ===
-                                    DigestAlgorithmEnum._200104Xmlencsha256 ||
-                                this.instance?.digestAlgorithm === undefined}
-                            >
-                                ${t`SHA256`}
-                            </option>
-                            <option
-                                value=${DigestAlgorithmEnum._200104XmldsigMoresha384}
-                                ?selected=${this.instance?.digestAlgorithm ===
-                                DigestAlgorithmEnum._200104XmldsigMoresha384}
-                            >
-                                ${t`SHA384`}
-                            </option>
-                            <option
-                                value=${DigestAlgorithmEnum._200104Xmlencsha512}
-                                ?selected=${this.instance?.digestAlgorithm ===
-                                DigestAlgorithmEnum._200104Xmlencsha512}
-                            >
-                                ${t`SHA512`}
-                            </option>
-                        </select>
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: "SHA1",
+                                    value: DigestAlgorithmEnum._200009Xmldsigsha1,
+                                },
+                                {
+                                    label: "SHA256",
+                                    value: DigestAlgorithmEnum._200104Xmlencsha256,
+                                    default: true,
+                                },
+                                {
+                                    label: "SHA384",
+                                    value: DigestAlgorithmEnum._200104XmldsigMoresha384,
+                                },
+                                {
+                                    label: "SHA512",
+                                    value: DigestAlgorithmEnum._200104Xmlencsha512,
+                                },
+                            ]}
+                            .value=${this.instance?.digestAlgorithm}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Signature algorithm`}
                         ?required=${true}
                         name="signatureAlgorithm"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=${SignatureAlgorithmEnum._200009XmldsigrsaSha1}
-                                ?selected=${this.instance?.signatureAlgorithm ===
-                                SignatureAlgorithmEnum._200009XmldsigrsaSha1}
-                            >
-                                ${t`RSA-SHA1`}
-                            </option>
-                            <option
-                                value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha256}
-                                ?selected=${this.instance?.signatureAlgorithm ===
-                                    SignatureAlgorithmEnum._200104XmldsigMorersaSha256 ||
-                                this.instance?.signatureAlgorithm === undefined}
-                            >
-                                ${t`RSA-SHA256`}
-                            </option>
-                            <option
-                                value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha384}
-                                ?selected=${this.instance?.signatureAlgorithm ===
-                                SignatureAlgorithmEnum._200104XmldsigMorersaSha384}
-                            >
-                                ${t`RSA-SHA384`}
-                            </option>
-                            <option
-                                value=${SignatureAlgorithmEnum._200104XmldsigMorersaSha512}
-                                ?selected=${this.instance?.signatureAlgorithm ===
-                                SignatureAlgorithmEnum._200104XmldsigMorersaSha512}
-                            >
-                                ${t`RSA-SHA512`}
-                            </option>
-                            <option
-                                value=${SignatureAlgorithmEnum._200009XmldsigdsaSha1}
-                                ?selected=${this.instance?.signatureAlgorithm ===
-                                SignatureAlgorithmEnum._200009XmldsigdsaSha1}
-                            >
-                                ${t`DSA-SHA1`}
-                            </option>
-                        </select>
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: "RSA-SHA1",
+                                    value: SignatureAlgorithmEnum._200009XmldsigrsaSha1,
+                                },
+                                {
+                                    label: "RSA-SHA256",
+                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha256,
+                                    default: true,
+                                },
+                                {
+                                    label: "RSA-SHA384",
+                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha384,
+                                },
+                                {
+                                    label: "RSA-SHA512",
+                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha512,
+                                },
+                                {
+                                    label: "DSA-SHA1",
+                                    value: SignatureAlgorithmEnum._200009XmldsigdsaSha1,
+                                },
+                            ]}
+                            .value=${this.instance?.signatureAlgorithm}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

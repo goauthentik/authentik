@@ -1,11 +1,11 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import "@goauthentik/elements/Divider";
-import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/SearchSelect";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { t } from "@lingui/macro";

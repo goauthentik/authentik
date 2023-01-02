@@ -1,12 +1,13 @@
 import "@goauthentik/admin/providers/ProviderWizard";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/ProxyForm";
+import "@goauthentik/elements/forms/Radio";
+import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
 
@@ -153,20 +154,23 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 ?required=${true}
                 name="policyEngineMode"
             >
-                <select class="pf-c-form-control">
-                    <option
-                        value=${PolicyEngineMode.Any}
-                        ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.Any}
-                    >
-                        ${t`ANY, any policy must match to grant access.`}
-                    </option>
-                    <option
-                        value=${PolicyEngineMode.All}
-                        ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.All}
-                    >
-                        ${t`ALL, all policies must match to grant access.`}
-                    </option>
-                </select>
+                <ak-radio
+                    .options=${[
+                        {
+                            label: "ANY",
+                            value: PolicyEngineMode.Any,
+                            default: true,
+                            description: html`${t`Any policy must match to grant access`}`,
+                        },
+                        {
+                            label: "ALL",
+                            value: PolicyEngineMode.All,
+                            description: html`${t`All policies must match to grant access`}`,
+                        },
+                    ]}
+                    .value=${this.instance?.policyEngineMode}
+                >
+                </ak-radio>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`UI settings`} </span>

@@ -1,8 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
+import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
 
@@ -165,35 +166,34 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Invalid response action`}
+                label=${t`Invalid response behavior`}
                 ?required=${true}
                 name="invalidResponseAction"
             >
-                <select class="pf-c-form-control">
-                    <option
-                        value=${InvalidResponseActionEnum.Retry}
-                        ?selected=${this.instance?.invalidResponseAction ===
-                        InvalidResponseActionEnum.Retry}
-                    >
-                        ${t`RETRY returns the error message and a similar challenge to the executor.`}
-                    </option>
-                    <option
-                        value=${InvalidResponseActionEnum.Restart}
-                        ?selected=${this.instance?.invalidResponseAction ===
-                        InvalidResponseActionEnum.Restart}
-                    >
-                        ${t`RESTART restarts the flow from the beginning.`}
-                    </option>
-                    <option
-                        value=${InvalidResponseActionEnum.RestartWithContext}
-                        ?selected=${this.instance?.invalidResponseAction ===
-                        InvalidResponseActionEnum.RestartWithContext}
-                    >
-                        ${t`RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context.`}
-                    </option>
-                </select>
+                <ak-radio
+                    .options=${[
+                        {
+                            label: "RETRY",
+                            value: InvalidResponseActionEnum.Retry,
+                            default: true,
+                            description: html`${t`Returns the error message and a similar challenge to the executor`}`,
+                        },
+                        {
+                            label: "RESTART",
+                            value: InvalidResponseActionEnum.Restart,
+                            description: html`${t`Restarts the flow from the beginning`}`,
+                        },
+                        {
+                            label: "RESTART_WITH_CONTEXT",
+                            value: InvalidResponseActionEnum.RestartWithContext,
+                            description: html`${t`Restarts the flow from the beginning, while keeping the flow context`}`,
+                        },
+                    ]}
+                    .value=${this.instance?.invalidResponseAction}
+                >
+                </ak-radio>
                 <p class="pf-c-form__helper-text">
-                    ${t`Configure how the flow executor should handle an invalid response to a challenge.`}
+                    ${t`Configure how the flow executor should handle an invalid response to a challenge given by this bound stage.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
@@ -201,20 +201,23 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 ?required=${true}
                 name="policyEngineMode"
             >
-                <select class="pf-c-form-control">
-                    <option
-                        value=${PolicyEngineMode.Any}
-                        ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.Any}
-                    >
-                        ${t`ANY, any policy must match to include this stage access.`}
-                    </option>
-                    <option
-                        value=${PolicyEngineMode.All}
-                        ?selected=${this.instance?.policyEngineMode === PolicyEngineMode.All}
-                    >
-                        ${t`ALL, all policies must match to include this stage access.`}
-                    </option>
-                </select>
+                <ak-radio
+                    .options=${[
+                        {
+                            label: "ANY",
+                            value: PolicyEngineMode.Any,
+                            default: true,
+                            description: html`${t`Any policy must match to grant access`}`,
+                        },
+                        {
+                            label: "ALL",
+                            value: PolicyEngineMode.All,
+                            description: html`${t`All policies must match to grant access`}`,
+                        },
+                    ]}
+                    .value=${this.instance?.policyEngineMode}
+                >
+                </ak-radio>
             </ak-form-element-horizontal>
         </form>`;
     }

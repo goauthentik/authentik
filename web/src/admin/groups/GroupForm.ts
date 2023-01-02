@@ -2,11 +2,11 @@ import "@goauthentik/admin/groups/MemberSelectModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/SearchSelect";
 import { UserOption } from "@goauthentik/elements/user/utils";
 import YAML from "yaml";
 

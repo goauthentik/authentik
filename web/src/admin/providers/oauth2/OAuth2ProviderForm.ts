@@ -1,9 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, randomString } from "@goauthentik/common/utils";
-import "@goauthentik/elements/SearchSelect";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
+import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { t } from "@lingui/macro";
@@ -365,21 +366,21 @@ ${this.instance?.redirectUris}</textarea
                         ?required=${true}
                         name="issuerMode"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value="${IssuerModeEnum.PerProvider}"
-                                ?selected=${this.instance?.issuerMode ===
-                                IssuerModeEnum.PerProvider}
-                            >
-                                ${t`Each provider has a different issuer, based on the application slug.`}
-                            </option>
-                            <option
-                                value="${IssuerModeEnum.Global}"
-                                ?selected=${this.instance?.issuerMode === IssuerModeEnum.Global}
-                            >
-                                ${t`Same identifier is used for all providers`}
-                            </option>
-                        </select>
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: t`Each provider has a different issuer, based on the application slug`,
+                                    value: IssuerModeEnum.PerProvider,
+                                    default: true,
+                                },
+                                {
+                                    label: t`Same identifier is used for all providers`,
+                                    value: IssuerModeEnum.Global,
+                                },
+                            ]}
+                            .value=${this.instance?.issuerMode}
+                        >
+                        </ak-radio>
                         <p class="pf-c-form__helper-text">
                             ${t`Configure how the issuer field of the ID Token should be filled.`}
                         </p>

@@ -65,7 +65,16 @@ export class ModalForm extends ModalButton {
                     </h1>
                 </div>
             </section>
-            <section class="pf-c-modal-box__body">
+            <section
+                class="pf-c-modal-box__body"
+                @scroll=${() => {
+                    window.dispatchEvent(
+                        new CustomEvent("scroll", {
+                            bubbles: true,
+                        }),
+                    );
+                }}
+            >
                 <slot name="form"></slot>
             </section>
             <footer class="pf-c-modal-box__footer">
