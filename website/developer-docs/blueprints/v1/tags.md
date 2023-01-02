@@ -108,9 +108,9 @@ Normally, it should be used to define complex conditions for use with an `!If` t
 
 #### `!Enumerate`, `!Index` and `!Value`
 
-These tags collectively make it possible to iterate over objects which support it. Any iterable python object is supported. Such objects are sequences, mappings and even strings.
+These tags collectively make it possible to iterate over objects which support iteration. Any iterable Python object is supported. Such objects are sequences (`[]`), mappings (`{}`) and even strings.
 
-1. Enumerate tag:
+1. `!Enumerate` tag:
 
 This tag takes 3 arguments:
 
@@ -118,13 +118,13 @@ This tag takes 3 arguments:
 !Enumerate [<iterable>, <output_object_type>, <single_item_yaml>]
 ```
 
--   **iterable**: Any Python iterable or a custom tag that resolves to such iterable
--   **output_object_type**: "SEQ" or "MAP". Controls whether the returned YAML will be a mapping or a sequence.
--   **single_item_yaml**: The YAML to use to create a single entry in output object
+-   **iterable**: Any Python iterable or custom tag that resolves to such iterable
+-   **output_object_type**: `SEQ` or `MAP`. Controls whether the returned YAML will be a mapping or a sequence.
+-   **single_item_yaml**: The YAML to use to create a single entry in the output object
 
-2. `!Index`
+2. `!Index` tag:
 
-:::warning
+:::info
 This tag is only valid inside an `!Enumerate` tag
 :::
 
@@ -140,9 +140,9 @@ Accesses the `!Enumerate` tag's iterable and resolves to the index of the item c
 
 For example, given a sequence like this - `["a", "b", "c"]`, this tag will resolve to `0` on the first `!Enumerate` tag iteration, `1` on the second and so on. However, if given a mapping like this - `{"key1": "value1", "key2": "value2", "key3": "value3"}`, it will first resolve to `key1`, then to `key2` and so on.
 
-3. `!Value`
+3. `!Value` tag:
 
-:::warning
+:::info
 This tag is only valid inside an `!Enumerate` tag
 :::
 
@@ -181,10 +181,10 @@ Similarly, a mapping can be generated like so:
 ```
 configuration_stages: !Enumerate [
     !Context list_of_totp_stage_names,
-    MAP, # Output a mao
+    MAP, # Output a map
     [
-        !Index 0, # The key to assign for each entry
-        !Value 0, # The value to assign of each entry
+        !Index 0, # The key to assign to each entry
+        !Value 0, # The value to assign to each entry
     ]
 ]
 ```
@@ -198,6 +198,10 @@ configuration_stages:
 ```
 
 Full example:
+
+:::warning
+Note that an `!Enumeration` tag's iterable can never be an `!Item` or `!Value` tag with a depth of `0`. Minimum depth allowed is `1`. This is because a depth of `0` refers to the `!Enumeration` tag the `!Item` or `!Value` tag is in, and an `!Enumeration` tag cannot iterate over itself.
+:::
 
 ```
 example: !Enumerate [
