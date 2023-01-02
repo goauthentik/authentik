@@ -481,16 +481,14 @@ class EnumeratedItem(YAMLTag):
             context_tag: Enumerate = entry._get_tag_context(
                 depth=self.depth, context_tag_type=Enumerate
             )
-        except ValueError:
+        except ValueError as exc:
             if self.depth == 0:
                 raise EntryInvalidError(
                     f"{self.__class__.__name__} tags are only usable "
                     f"inside an {Enumerate.__name__} tag"
                 )
             else:
-                raise EntryInvalidError(
-                    f"Invalid {self.__class__.__name__} tag depth: {self.depth}"
-                )
+                raise EntryInvalidError(f"{self.__class__.__name__} tag: {exc}")
 
         return context_tag.get_context(entry, blueprint)
 
