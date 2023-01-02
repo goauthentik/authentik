@@ -32,8 +32,8 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
         return t`Successfully added user to group(s).`;
     }
 
-    send = (data: { groups: string[] }): Promise<{ groups: string[] }> => {
-        return Promise.all(
+    send = async (data: { groups: string[] }): Promise<{ groups: string[] }> => {
+        await Promise.all(
             data.groups.map((group) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
                     groupUuid: group,
@@ -42,9 +42,8 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
                     },
                 });
             }),
-        ).then(() => {
-            return data;
-        });
+        );
+        return data;
     };
 
     renderForm(): TemplateResult {

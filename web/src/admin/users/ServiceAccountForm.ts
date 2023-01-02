@@ -20,16 +20,13 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         return t`Successfully created user.`;
     }
 
-    send = (data: UserServiceAccountRequest): Promise<UserServiceAccountResponse> => {
-        return new CoreApi(DEFAULT_CONFIG)
-            .coreUsersServiceAccountCreate({
-                userServiceAccountRequest: data,
-            })
-            .then((result) => {
-                this.result = result;
-                (this.parentElement as ModalForm).showSubmitButton = false;
-                return result;
-            });
+    send = async (data: UserServiceAccountRequest): Promise<UserServiceAccountResponse> => {
+        const result = await new CoreApi(DEFAULT_CONFIG).coreUsersServiceAccountCreate({
+            userServiceAccountRequest: data,
+        });
+        this.result = result;
+        (this.parentElement as ModalForm).showSubmitButton = false;
+        return result;
     };
 
     resetForm(): void {

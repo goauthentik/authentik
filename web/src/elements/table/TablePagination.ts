@@ -28,8 +28,9 @@ export class TablePagination extends AKElement {
     pages?: Pagination;
 
     @property({ attribute: false })
-    // eslint-disable-next-line
-    pageChangeHandler: (page: number) => void = (page: number) => {};
+    pageChangeHandler: (page: number) => void = () => {
+        return;
+    };
 
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, PFPagination, AKGlobal];

@@ -26,23 +26,19 @@ export class FlowImportForm extends Form<Flow> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    // eslint-disable-next-line
-    send = (data: Flow): Promise<FlowImportResult> => {
+    send = async (): Promise<FlowImportResult> => {
         const file = this.getFormFiles()["flow"];
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
-        return new FlowsApi(DEFAULT_CONFIG)
-            .flowsInstancesImportCreate({
-                file: file,
-            })
-            .then((result) => {
-                if (!result.success) {
-                    this.result = result;
-                    throw new SentryIgnoredError("Failed to import flow");
-                }
-                return result;
-            });
+        const result = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesImportCreate({
+            file: file,
+        });
+        if (!result.success) {
+            this.result = result;
+            throw new SentryIgnoredError("Failed to import flow");
+        }
+        return result;
     };
 
     renderResult(): TemplateResult {

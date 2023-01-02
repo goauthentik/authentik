@@ -27,8 +27,7 @@ export class Radio<T> extends AKElement {
     value?: T;
 
     @property({ attribute: false })
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onChange: (value: T) => void = (value: T) => {
+    onChange: (value: T) => void = () => {
         return;
     };
 

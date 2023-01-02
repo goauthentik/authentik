@@ -37,15 +37,14 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         return t`Successfully sent test-request.`;
     }
 
-    send = (data: PolicyTestRequest): Promise<PropertyMappingTestResult> => {
+    send = async (data: PolicyTestRequest): Promise<PropertyMappingTestResult> => {
         this.request = data;
-        return new PropertymappingsApi(DEFAULT_CONFIG)
-            .propertymappingsAllTestCreate({
-                pmUuid: this.mapping?.pk || "",
-                policyTestRequest: data,
-                formatResult: true,
-            })
-            .then((result) => (this.result = result));
+        const result = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTestCreate({
+            pmUuid: this.mapping?.pk || "",
+            policyTestRequest: data,
+            formatResult: true,
+        });
+        return (this.result = result);
     };
 
     renderResult(): TemplateResult {

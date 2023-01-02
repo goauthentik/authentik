@@ -13,7 +13,7 @@ export class UserChart extends AKChart<UserMetrics> {
     @property({ type: Number })
     userId?: number;
 
-    apiRequest(): Promise<UserMetrics> {
+    async apiRequest(): Promise<UserMetrics> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersMetricsRetrieve({
             id: this.userId || 0,
         });

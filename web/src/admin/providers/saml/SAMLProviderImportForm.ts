@@ -24,7 +24,6 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
         return t`Successfully imported provider.`;
     }
 
-    // eslint-disable-next-line
     send = (data: SAMLProvider): Promise<void> => {
         const file = this.getFormFiles()["metadata"];
         if (!file) {

@@ -39,14 +39,13 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         return t`Successfully sent test-request.`;
     }
 
-    send = (data: PolicyTestRequest): Promise<PolicyTestResult> => {
+    send = async (data: PolicyTestRequest): Promise<PolicyTestResult> => {
         this.request = data;
-        return new PoliciesApi(DEFAULT_CONFIG)
-            .policiesAllTestCreate({
-                policyUuid: this.policy?.pk || "",
-                policyTestRequest: data,
-            })
-            .then((result) => (this.result = result));
+        const result = await new PoliciesApi(DEFAULT_CONFIG).policiesAllTestCreate({
+            policyUuid: this.policy?.pk || "",
+            policyTestRequest: data,
+        });
+        return (this.result = result);
     };
 
     static get styles(): CSSResult[] {

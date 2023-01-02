@@ -44,8 +44,8 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return t`Successfully added user(s).`;
     }
 
-    send = (data: { users: number[] }): Promise<{ users: number[] }> => {
-        return Promise.all(
+    send = async (data: { users: number[] }): Promise<{ users: number[] }> => {
+        await Promise.all(
             data.users.map((user) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
                     groupUuid: this.group?.pk || "",
@@ -54,9 +54,8 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
                     },
                 });
             }),
-        ).then(() => {
-            return data;
-        });
+        );
+        return data;
     };
 
     renderForm(): TemplateResult {

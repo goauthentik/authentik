@@ -58,8 +58,7 @@ export class WizardFormPage extends WizardPage {
         return response;
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    nextDataCallback: (data: KeyUnknown) => Promise<boolean> = async (data): Promise<boolean> => {
+    nextDataCallback: (data: KeyUnknown) => Promise<boolean> = async (): Promise<boolean> => {
         return false;
     };
 

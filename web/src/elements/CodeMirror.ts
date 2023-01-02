@@ -18,7 +18,7 @@ import YAML from "yaml";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-codemirror")
-export class CodeMirrorTextarea extends AKElement {
+export class CodeMirrorTextarea<T> extends AKElement {
     @property({ type: Boolean })
     readOnly = false;
 
@@ -39,7 +39,7 @@ export class CodeMirrorTextarea extends AKElement {
 
     @property()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
-    set value(v: any) {
+    set value(v: T | string) {
         if (v === null || v === undefined) return;
         // Value might be an object if within an iron-form, as that calls the getter of value
         // in the beginning and the calls this setter on reset
@@ -59,15 +59,14 @@ export class CodeMirrorTextarea extends AKElement {
         }
         if (this.editor) {
             this.editor.dispatch({
-                changes: { from: 0, to: this.editor.state.doc.length, insert: textValue },
+                changes: { from: 0, to: this.editor.state.doc.length, insert: textValue as string },
             });
         } else {
-            this._value = textValue;
+            this._value = textValue as string;
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    get value(): any {
+    get value(): T | string {
         try {
             switch (this.mode.toLowerCase()) {
                 case "yaml":

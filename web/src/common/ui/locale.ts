@@ -7,8 +7,7 @@ import { t } from "@lingui/macro";
 
 interface Locale {
     locale: Messages;
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    plurals: Function;
+    plurals: (n: string | number, ord?: boolean | undefined) => string;
 }
 
 export const LOCALES: {
