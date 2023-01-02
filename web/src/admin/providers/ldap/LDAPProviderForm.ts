@@ -3,6 +3,7 @@ import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
@@ -146,44 +147,49 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Bind mode`} name="bindMode">
-                <select class="pf-c-form-control">
-                    <option
-                        value="${LDAPAPIAccessMode.Cached}"
-                        ?selected=${this.instance?.bindMode === LDAPAPIAccessMode.Cached}
-                    >
-                        ${t`Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires.`}
-                    </option>
-                    <option
-                        value="${LDAPAPIAccessMode.Direct}"
-                        ?selected=${this.instance?.bindMode === LDAPAPIAccessMode.Direct}
-                    >
-                        ${t`Direct binding, always execute the configured bind flow to authenticate the user.`}
-                    </option>
-                </select>
+                <ak-radio
+                    .options=${[
+                        {
+                            label: t`Cached binding`,
+                            value: LDAPAPIAccessMode.Cached,
+                            default: true,
+                            description: html`${t`Flow is executed and session is cached in memory. Flow is executed when session expires`}`,
+                        },
+                        {
+                            label: t`Direct binding`,
+                            value: LDAPAPIAccessMode.Direct,
+                            description: html`${t`Always execute the configured bind flow to authenticate the user`}`,
+                        },
+                    ]}
+                    .value=${this.instance?.bindMode}
+                >
+                </ak-radio>
                 <p class="pf-c-form__helper-text">
                     ${t`Configure how the outpost authenticates requests.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Search mode`} name="searchMode">
-                <select class="pf-c-form-control">
-                    <option
-                        value="${LDAPAPIAccessMode.Cached}"
-                        ?selected=${this.instance?.searchMode === LDAPAPIAccessMode.Cached}
-                    >
-                        ${t`Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes.`}
-                    </option>
-                    <option
-                        value="${LDAPAPIAccessMode.Direct}"
-                        ?selected=${this.instance?.searchMode === LDAPAPIAccessMode.Direct}
-                    >
-                        ${t`Direct querying, always returns the latest data, but slower than cached querying.`}
-                    </option>
-                </select>
+                <ak-radio
+                    .options=${[
+                        {
+                            label: t`Cached querying`,
+                            value: LDAPAPIAccessMode.Cached,
+                            default: true,
+                            description: html`${t`The outpost holds all users and groups in-memory and will refresh every 5 Minutes`}`,
+                        },
+                        {
+                            label: t`Direct querying`,
+                            value: LDAPAPIAccessMode.Direct,
+                            description: html`${t`Always returns the latest data, but slower than cached querying`}`,
+                        },
+                    ]}
+                    .value=${this.instance?.searchMode}
+                >
+                </ak-radio>
                 <p class="pf-c-form__helper-text">
                     ${t`Configure how the outpost queries the core authentik server's users.`}
                 </p>
             </ak-form-element-horizontal>
-
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Protocol settings`} </span>
                 <div slot="body" class="pf-c-form">

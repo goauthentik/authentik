@@ -3,6 +3,7 @@ import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
@@ -106,20 +107,21 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                 ?required=${true}
                 name="authType"
             >
-                <select class="pf-c-form-control">
-                    <option
-                        value="${AuthTypeEnum.Basic}"
-                        ?selected=${this.instance?.authType === AuthTypeEnum.Basic}
-                    >
-                        ${t`Basic Auth`}
-                    </option>
-                    <option
-                        value="${AuthTypeEnum.Bearer}"
-                        ?selected=${this.instance?.authType === AuthTypeEnum.Bearer}
-                    >
-                        ${t`Bearer Token`}
-                    </option>
-                </select>
+                <ak-radio
+                    .options=${[
+                        {
+                            label: t`Basic Auth`,
+                            value: AuthTypeEnum.Basic,
+                            default: true,
+                        },
+                        {
+                            label: t`Bearer Token`,
+                            value: AuthTypeEnum.Bearer,
+                        },
+                    ]}
+                    .value=${this.instance?.authType}
+                >
+                </ak-radio>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`External API URL`}

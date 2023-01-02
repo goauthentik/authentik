@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
@@ -48,29 +49,6 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
         }
     };
 
-    renderSeverity(): TemplateResult {
-        return html`
-            <option
-                value=${SeverityEnum.Alert}
-                ?selected=${this.instance?.severity === SeverityEnum.Alert}
-            >
-                ${t`Alert`}
-            </option>
-            <option
-                value=${SeverityEnum.Warning}
-                ?selected=${this.instance?.severity === SeverityEnum.Warning}
-            >
-                ${t`Warning`}
-            </option>
-            <option
-                value=${SeverityEnum.Notice}
-                ?selected=${this.instance?.severity === SeverityEnum.Notice}
-            >
-                ${t`Notice`}
-            </option>
-        `;
-    }
-
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
@@ -107,10 +85,12 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Transports`} ?required=${true} name="transports">
-                <select name="users" class="pf-c-form-control" multiple>
+                <select class="pf-c-form-control" multiple>
                     ${until(
                         new EventsApi(DEFAULT_CONFIG)
-                            .eventsTransportsList({})
+                            .eventsTransportsList({
+                                ordering: "name",
+                            })
                             .then((transports) => {
                                 return transports.results.map((transport) => {
                                     const selected = Array.from(
@@ -137,9 +117,25 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Severity`} ?required=${true} name="severity">
-                <select class="pf-c-form-control">
-                    ${this.renderSeverity()}
-                </select>
+                <ak-radio
+                    .options=${[
+                        {
+                            label: "Alert",
+                            value: SeverityEnum.Alert,
+                            default: true,
+                        },
+                        {
+                            label: t`Warning`,
+                            value: SeverityEnum.Warning,
+                        },
+                        {
+                            label: t`Notice`,
+                            value: SeverityEnum.Notice,
+                        },
+                    ]}
+                    .value=${this.instance?.severity}
+                >
+                </ak-radio>
             </ak-form-element-horizontal>
         </form>`;
     }
