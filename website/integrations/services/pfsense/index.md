@@ -72,12 +72,12 @@ Change the following fields
 -   Port value: 389
 -   Transport: Standard TCP
 -   Base DN: `DC=ldap,DC=goauthentik,DC=io`
--   Authentication containers: `OU=users,DC=ldap,DC=goauthentik,DC=io`
+-   Authentication containers: `OU=users;DC=ldap;DC=goauthentik;DC=io`
 -   Bind anonymous: **unticked**
 -   Bind credentials:
     -   User DN: `cn=pfsense-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
     -   Password: `<pfsense-user password from step 2>`
--   Extended Query: &(objectClass=user)
+-   Group member attribute: memberOf
 -   Allow unauthenticated bind: **unticked**
 
 ## pfSense secure setup (with SSL)
