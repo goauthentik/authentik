@@ -397,43 +397,7 @@ class If(YAMLTag):
             raise EntryInvalidError(exc)
 
 
-class BaseForItem(YAMLTag):
-    """Get the current item of a For tag context"""
-
-    depth: int
-
-    # pylint: disable=unused-argument
-    def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
-        super().__init__()
-        self.depth = int(node.value)
-
-    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        try:
-            context_tag: For = entry._get_tag_context(depth=self.depth, context_tag_type=For)
-        except ValueError:
-            if self.depth == 0:
-                raise EntryInvalidError(
-                    f"{self.__class__.__name__} tags are only usable inside a For tag"
-                )
-            else:
-                raise EntryInvalidError(
-                    f"Invalid {self.__class__.__name__} tag depth: {self.depth}"
-                )
-
-        return context_tag.get_context(entry, blueprint)
-
-
-class ForItemIndex(BaseForItem):
-    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        return super().resolve(entry, blueprint)[0]
-
-
-class ForItem(BaseForItem):
-    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        return super().resolve(entry, blueprint)[1]
-
-
-class For(YAMLTag, YAMLTagContext):
+class Enumerate(YAMLTag, YAMLTagContext):
     """Iterate over an iterable."""
 
     iterable: YAMLTag | Iterable
@@ -502,6 +466,49 @@ class For(YAMLTag, YAMLTagContext):
         return result
 
 
+class EnumeratedItem(YAMLTag):
+    """Get the current item value and index provided by an Enumerate tag context"""
+
+    depth: int
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
+        super().__init__()
+        self.depth = int(node.value)
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        try:
+            context_tag: Enumerate = entry._get_tag_context(
+                depth=self.depth, context_tag_type=Enumerate
+            )
+        except ValueError:
+            if self.depth == 0:
+                raise EntryInvalidError(
+                    f"{self.__class__.__name__} tags are only usable "
+                    f"inside an {Enumerate.__name__} tag"
+                )
+            else:
+                raise EntryInvalidError(
+                    f"Invalid {self.__class__.__name__} tag depth: {self.depth}"
+                )
+
+        return context_tag.get_context(entry, blueprint)
+
+
+class Index(EnumeratedItem):
+    """Get the current item index provided by an Enumerate tag context"""
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        return super().resolve(entry, blueprint)[0]
+
+
+class Value(EnumeratedItem):
+    """Get the current item value provided by an Enumerate tag context"""
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        return super().resolve(entry, blueprint)[1]
+
+
 class BlueprintDumper(SafeDumper):
     """Dump dataclasses to yaml"""
 
@@ -545,9 +552,9 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Condition", Condition)
         self.add_constructor("!If", If)
         self.add_constructor("!Env", Env)
-        self.add_constructor("!For", For)
-        self.add_constructor("!ForItem", ForItem)
-        self.add_constructor("!ForItemIndex", ForItemIndex)
+        self.add_constructor("!Enumerate", Enumerate)
+        self.add_constructor("!Value", Value)
+        self.add_constructor("!Index", Index)
 
 
 class EntryInvalidError(SentryIgnoredException):

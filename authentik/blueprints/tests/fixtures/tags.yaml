@@ -98,53 +98,53 @@ entries:
                   ]
               if_true_simple: !If [!Context foo, true, text]
               if_false_simple: !If [null, false, 2]
-              for_mapping: !For [
+              for_mapping: !Enumerate [
                   !Context mapping,
                   MAP,
-                  [!Format ["prefix-%s", !ForItemIndex 0], !Format ["other-prefix-%s", !ForItem 0]]
+                  [!Format ["prefix-%s", !Index 0], !Format ["other-prefix-%s", !Value 0]]
               ]
-              for_sequence: !For [
+              for_sequence: !Enumerate [
                   !Context mapping,
                   SEQ,
-                  !Format ["%s: %s", !ForItemIndex 0, !ForItem 0]
+                  !Format ["%s: %s", !Index 0, !Value 0]
               ]
-              for_sequence_complex: !For [
+              for_sequence_complex: !Enumerate [
                   !Context sequence,
                   SEQ,
                   [
-                      !For [
-                          !ForItem 1,
+                      !Enumerate [
+                          !Value 1,
                           SEQ,
                           {
                               key1: [
-                                  !Format ["str: %s, str_index: %d, letter: %s", !ForItem 1, !ForItemIndex 1, !ForItem 0],
-                                  !ForItem 1,
-                                  !ForItem 0,
-                                  !For [
-                                      !ForItem 2,
+                                  !Format ["str: %s, str_index: %d, letter: %s", !Value 1, !Index 1, !Value 0],
+                                  !Value 1,
+                                  !Value 0,
+                                  !Enumerate [
+                                      !Value 2,
                                       SEQ,
                                       {
-                                        inner_inner_for_item: !Format ["%d-%s", !ForItemIndex 0, !ForItem 0]
+                                        inner_inner_for_item: !Format ["%d-%s", !Index 0, !Value 0]
                                       }
                                   ]
                               ],
-                              key2: !ForItem 0
+                              key2: !Value 0
                           }
                       ],
-                      !For [
-                          !ForItem 1,
+                      !Enumerate [
+                          !Value 1,
                           SEQ,
                           {
                               key1: {
-                                  inner_key1: !Format ["letter: %s, str: %s, str_index: %d", !ForItem 0, !ForItem 1, !ForItemIndex 1],
-                                  inner_key2: !ForItem 0,
-                                  inner_key3: !ForItem 1
+                                  inner_key1: !Format ["letter: %s, str: %s, str_index: %d", !Value 0, !Value 1, !Index 1],
+                                  inner_key2: !Value 0,
+                                  inner_key3: !Value 1
                               },
-                              key2: !ForItem 0
+                              key2: !Value 0
                           }
                       ],
-                      !ForItem 0,
-                      !Format ["%s-%s", !Context foo, !ForItem 0]
+                      !Value 0,
+                      !Format ["%s-%s", !Context foo, !Value 0]
                   ]
               ]
       identifiers:
