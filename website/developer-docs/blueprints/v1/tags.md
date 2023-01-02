@@ -105,3 +105,127 @@ Requires at least one argument after the mode selection.
 If only a single argument is provided, its boolean representation will be returned for all normal modes and its negated boolean representation will be returned for all negated modes.
 
 Normally, it should be used to define complex conditions for use with an `!If` tag or for the `conditions` attribute of a blueprint entry (see [the blueprint file structure](./structure.md)). However, this is essentially just a boolean evaluator so it can be used everywhere a boolean representation is required.
+
+#### `!Enumerate`, `!Index` and `!Value`
+
+These tags collectively make it possible to iterate over objects which support it. Any iterable python object is supported. Such objects are sequences, mappings and even strings.
+
+1. Enumerate tag:
+
+This tag takes 3 arguments:
+
+```
+!Enumerate [<iterable>, <output_object_type>, <single_item_yaml>]
+```
+
+- **iterable**: Any Python iterable or a custom tag that resolves to such iterable
+- **output_object_type**: "SEQ" or "MAP". Controls whether the returned YAML will be a mapping or a sequence.
+- **single_item_yaml**: The YAML to use to create a single entry in output object
+
+2. `!Index`
+
+:::warning
+This tag is only valid inside an `!Enumerate` tag
+:::
+
+This tag takes 1 argument:
+
+```
+!Index <depth>
+```
+
+- **depth**: Must be >= 0. A depth of 0 refers to the `!Enumerate` tag this tag is located in. A depth of 1 refers to one `!Enumerate` tag above that (to be used when multiple `!Enumerate` tags are nested inside each other).
+
+Accesses the `!Enumerate` tag's iterable and resolves to the index of the item currently being iterated (in case `!Enumerate` is iterating over a sequence), or the mapping key (in case `!Enumerate` is iterating over a mapping).
+
+For example, given a sequence like this - `["a", "b", "c"]`, this tag will resolve to `0` on the first `!Enumerate` tag iteration, `1` on the second and so on. However, if given a mapping like this - `{"key1": "value1", "key2": "value2", "key3": "value3"}`, it will first resolve to `key1`, then to `key2` and so on.
+
+3. `!Value`
+
+:::warning
+This tag is only valid inside an `!Enumerate` tag
+:::
+
+This tag takes 1 argument:
+
+```
+!Value <depth>
+```
+
+- **depth**: Must be >= 0. A depth of 0 refers to the `!Enumerate` tag this tag is located in. A depth of 1 refers to one `!Enumerate` tag above that (to be used when multiple `!Enumerate` tags are nested inside each other).
+
+Accesses the `!Enumerate` tag's iterable and resolves to the value of the item currently being iterated.
+
+For example, given a sequence like this - `["a", "b", "c"]`, this tag will resolve to `a` on the first `!Enumerate` tag iteration, `b` on the second and so on. If given a mapping like this - `{"key1": "value1", "key2": "value2", "key3": "value3"}`, it will first resolve to `value1`, then to `value2` and so on.
+
+
+Minimal examples:
+
+```
+configuration_stages: !Enumerate [
+    !Context list_of_totp_stage_names,
+    SEQ, # Output a sequence
+    !Find [authentik_stages_authenticator_totp.authenticatortotpstage, [name, !Value 0]] # The value of each item in the sequence
+]
+```
+
+The above example will resolve to something like this:
+
+```
+configuration_stages:
+- !Find [authentik_stages_authenticator_totp.authenticatortotpstage, [name, <stage_name_1>]]
+- !Find [authentik_stages_authenticator_static.authenticatorstaticstage, [name, <stage_name_2>]]
+```
+
+Similarly, a mapping can be generated like so:
+
+```
+configuration_stages: !Enumerate [
+    !Context list_of_totp_stage_names,
+    MAP, # Output a mao
+    [
+        !Index 0, # The key to assign for each entry
+        !Value 0, # The value to assign of each entry
+    ]
+]
+```
+
+The above example will resolve to something like this:
+
+```
+configuration_stages:
+  0: <stage_name_1>
+  1: <stage_name_2>
+```
+
+Full example:
+
+```
+example: !Enumerate [
+    !Context sequence, # ["foo", "bar"]
+    MAP, # Output a map
+    [
+        !Index 0, # Use the indexes of the items in the sequence as keys
+        !Enumerate [ # Nested enumeration
+            # Iterate over each item of the parent enumerate tag.
+            # Notice depth is 1, not 0, since we are inside the nested enumeration tag!
+            !Value 1,
+            SEQ, # Output a sequence
+            !Format ["%s: (index: %d, letter: %s)", !Value 1, !Index 0, !Value 0]
+        ]
+    ]
+]
+```
+
+The above example will resolve to something like this:
+
+```
+'0':
+- 'foo: (index: 0, letter: f)'
+- 'foo: (index: 1, letter: o)'
+- 'foo: (index: 2, letter: o)'
+'1':
+- 'bar: (index: 0, letter: b)'
+- 'bar: (index: 1, letter: a)'
+- 'bar: (index: 2, letter: r)'
+```
