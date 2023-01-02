@@ -10,7 +10,7 @@ import { AdminApi, LoginMetrics } from "@goauthentik/api";
 
 @customElement("ak-charts-admin-login-authorization")
 export class AdminLoginAuthorizeChart extends AKChart<LoginMetrics> {
-    apiRequest(): Promise<LoginMetrics> {
+    async apiRequest(): Promise<LoginMetrics> {
         return new AdminApi(DEFAULT_CONFIG).adminMetricsRetrieve();
     }
 

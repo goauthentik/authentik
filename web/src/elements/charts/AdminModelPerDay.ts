@@ -16,7 +16,7 @@ export class AdminModelPerDay extends AKChart<Coordinate[]> {
     @property({ attribute: false })
     query?: { [key: string]: unknown } | undefined;
 
-    apiRequest(): Promise<Coordinate[]> {
+    async apiRequest(): Promise<Coordinate[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsPerMonthList({
             action: this.action,
             query: JSON.stringify(this.query || {}),

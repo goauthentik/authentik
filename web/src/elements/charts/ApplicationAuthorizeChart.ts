@@ -13,7 +13,7 @@ export class ApplicationAuthorizeChart extends AKChart<Coordinate[]> {
     @property()
     applicationSlug!: string;
 
-    apiRequest(): Promise<Coordinate[]> {
+    async apiRequest(): Promise<Coordinate[]> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsMetricsList({
             slug: this.applicationSlug,
         });

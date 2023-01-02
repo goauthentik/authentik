@@ -51,8 +51,7 @@ export class MFADevicesPage extends Table<Device> {
 
     checkbox = true;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Device>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
         return {
             pagination: {

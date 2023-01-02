@@ -40,8 +40,7 @@ export class DeleteObjectsTable<T> extends Table<T> {
         return super.styles.concat(PFList);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async apiEndpoint(page: number): Promise<PaginatedResponse<T>> {
+    async apiEndpoint(): Promise<PaginatedResponse<T>> {
         return Promise.resolve({
             pagination: {
                 count: this.objects.length,
@@ -114,10 +113,9 @@ export class DeleteObjectsTable<T> extends Table<T> {
 }
 
 @customElement("ak-forms-delete-bulk")
-export class DeleteBulkForm extends ModalButton {
+export class DeleteBulkForm<T> extends ModalButton {
     @property({ attribute: false })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    objects: any[] = [];
+    objects: T[] = [];
 
     @property()
     objectLabel?: string;
@@ -129,8 +127,7 @@ export class DeleteBulkForm extends ModalButton {
     actionSubtext?: string;
 
     @property({ attribute: false })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    metadata: (item: any) => BulkDeleteMetadata = (item: any) => {
+    metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
         const rec = item as Record<string, unknown>;
         const meta = [];
         if (Object.prototype.hasOwnProperty.call(rec, "name")) {
@@ -143,33 +140,30 @@ export class DeleteBulkForm extends ModalButton {
     };
 
     @property({ attribute: false })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    usedBy?: (item: any) => Promise<UsedBy[]>;
+    usedBy?: (item: T) => Promise<UsedBy[]>;
 
     @property({ attribute: false })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    delete!: (item: any) => Promise<any>;
+    delete!: (item: T) => Promise<T>;
 
-    confirm(): Promise<void> {
-        return Promise.all(
-            this.objects.map((item) => {
-                return this.delete(item);
-            }),
-        )
-            .then(() => {
-                this.onSuccess();
-                this.open = false;
-                this.dispatchEvent(
-                    new CustomEvent(EVENT_REFRESH, {
-                        bubbles: true,
-                        composed: true,
-                    }),
-                );
-            })
-            .catch((e) => {
-                this.onError(e);
-                throw e;
-            });
+    async confirm(): Promise<void> {
+        try {
+            await Promise.all(
+                this.objects.map((item) => {
+                    return this.delete(item);
+                }),
+            );
+            this.onSuccess();
+            this.open = false;
+            this.dispatchEvent(
+                new CustomEvent(EVENT_REFRESH, {
+                    bubbles: true,
+                    composed: true,
+                }),
+            );
+        } catch (e) {
+            this.onError(e as Error);
+            throw e;
+        }
     }
 
     onSuccess(): void {

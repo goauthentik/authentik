@@ -16,8 +16,7 @@ export class UserDeviceList extends MFADevicesPage {
     @property({ type: Number })
     userId?: number;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Device>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         return new AuthenticatorsApi(DEFAULT_CONFIG)
             .authenticatorsAdminAllList({
                 user: this.userId,
