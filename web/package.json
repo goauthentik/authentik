@@ -85,7 +85,7 @@
         "@squoosh/cli": "^0.7.2",
         "@trivago/prettier-plugin-sort-imports": "^4.0.0",
         "@types/chart.js": "^2.9.37",
-        "@types/codemirror": "5.60.5",
+        "@types/codemirror": "5.60.6",
         "@types/grecaptcha": "^3.0.4",
         "@typescript-eslint/eslint-plugin": "^5.47.1",
         "@typescript-eslint/parser": "^5.47.1",
