@@ -100,13 +100,21 @@ entries:
               if_false_simple: !If [null, false, 2]
               for_mapping: !For [
                   !Context mapping,
-                  !Format ["%s: %s", !ForItemIndex 0, !ForItem 0]
+                  MAP,
+                  [!Format ["prefix-%s", !ForItemIndex 0], !Format ["other-prefix-%s", !ForItem 0]]
               ]
               for_sequence: !For [
+                  !Context mapping,
+                  SEQ,
+                  !Format ["%s: %s", !ForItemIndex 0, !ForItem 0]
+              ]
+              for_sequence_complex: !For [
                   !Context sequence,
+                  SEQ,
                   [
                       !For [
                           !ForItem 1,
+                          SEQ,
                           {
                               key1: [
                                   !Format ["str: %s, str_index: %d, letter: %s", !ForItem 1, !ForItemIndex 1, !ForItem 0],
@@ -114,6 +122,7 @@ entries:
                                   !ForItem 0,
                                   !For [
                                       !ForItem 2,
+                                      SEQ,
                                       {
                                         inner_inner_for_item: !Format ["%d-%s", !ForItemIndex 0, !ForItem 0]
                                       }
@@ -124,6 +133,7 @@ entries:
                       ],
                       !For [
                           !ForItem 1,
+                          SEQ,
                           {
                               key1: {
                                   inner_key1: !Format ["letter: %s, str: %s, str_index: %d", !ForItem 0, !ForItem 1, !ForItemIndex 1],

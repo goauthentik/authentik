@@ -9,6 +9,7 @@ from os import getenv
 from typing import Any, Iterable, Literal, Mapping, Optional, Union
 from uuid import UUID
 
+from deepmerge import always_merger
 from django.apps import apps
 from django.db.models import Model, Q
 from rest_framework.fields import Field
@@ -437,13 +438,25 @@ class For(YAMLTag, YAMLTagContext):
 
     iterable: YAMLTag | Iterable
     item_body: Any
+    output_body: Literal["SEQ", "MAP"]
+
+    _OUTPUT_BODIES = {
+        "SEQ": (list, lambda a, b: [*a, b]),
+        "MAP": (
+            dict,
+            lambda a, b: always_merger.merge(
+                a, {b[0]: b[1]} if isinstance(b, (tuple, list)) else b
+            ),
+        ),
+    }
 
     # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
         self.iterable = loader.construct_object(node.value[0])
-        self.item_body = loader.construct_object(node.value[1])
-        self.__current_context: Optional[Any] = None
+        self.output_body = node.value[1].value
+        self.item_body = loader.construct_object(node.value[2])
+        self.__current_context: tuple[Any, Any] = tuple()
 
     # pylint: disable=unused-argument
     def get_context(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
@@ -458,22 +471,33 @@ class For(YAMLTag, YAMLTagContext):
         if not isinstance(iterable, Iterable):
             raise EntryInvalidError(
                 f"{self.__class__.__name__}'s iterable must be an iterable such as a sequence or a mapping"
-        )
+            )
 
         if isinstance(iterable, Mapping):
             iterable = tuple(iterable.items())
         else:
             iterable = tuple(enumerate(iterable))
 
-        result = []
+        try:
+            output_class, add_fn = self._OUTPUT_BODIES[self.output_body.upper()]
+        except KeyError as exc:
+            raise EntryInvalidError(exc)
 
-        self.__current_context = None
+        result = output_class()
 
-        for item in iterable:
-            self.__current_context = item
-            result.append(entry.tag_resolver(self.item_body, blueprint))
+        self.__current_context = tuple()
 
-        self.__current_context = None
+        try:
+            for item in iterable:
+                self.__current_context = item
+                resolved_body = entry.tag_resolver(self.item_body, blueprint)
+                result = add_fn(result, resolved_body)
+                if not isinstance(result, output_class):
+                    raise EntryInvalidError(
+                        f"Invalid {self.__class__.__name__} item found: {resolved_body}"
+                    )
+        finally:
+            self.__current_context = tuple()
 
         return result
 

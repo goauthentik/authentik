@@ -162,11 +162,15 @@ class TestBlueprintsV1(TransactionTestCase):
                     "if_false_complex": ["list", "with", "items", "foo-bar"],
                     "if_true_simple": True,
                     "if_false_simple": 2,
-                    "for_mapping": [
+                    "for_mapping": {
+                        "prefix-key1": "other-prefix-value",
+                        "prefix-key2": "other-prefix-2",
+                    },
+                    "for_sequence": [
                         "key1: value",
                         "key2: 2"
                     ],
-                    "for_sequence": [
+                    "for_sequence_complex": [
                         [
                             [
                                 {
