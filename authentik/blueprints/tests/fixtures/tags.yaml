@@ -98,53 +98,47 @@ entries:
                   ]
               if_true_simple: !If [!Context foo, true, text]
               if_false_simple: !If [null, false, 2]
-              for_mapping: !Enumerate [
+              enumerate_mapping_to_mapping: !Enumerate [
                   !Context mapping,
                   MAP,
                   [!Format ["prefix-%s", !Index 0], !Format ["other-prefix-%s", !Value 0]]
               ]
-              for_sequence: !Enumerate [
+              enumerate_mapping_to_sequence: !Enumerate [
                   !Context mapping,
                   SEQ,
-                  !Format ["%s: %s", !Index 0, !Value 0]
+                  !Format ["prefixed-pair-%s-%s", !Index 0, !Value 0]
               ]
-              for_sequence_complex: !Enumerate [
+              enumerate_sequence_to_sequence: !Enumerate [
                   !Context sequence,
                   SEQ,
+                  !Format ["prefixed-items-%s-%s", !Index 0, !Value 0]
+              ]
+              enumerate_sequence_to_mapping: !Enumerate [
+                  !Context sequence,
+                  MAP,
+                  [!Format ["index: %d", !Index 0], !Value 0]
+              ]
+              nested_complex_enumeration: !Enumerate [
+                  !Context sequence,
+                  MAP,
                   [
+                      !Index 0,
                       !Enumerate [
-                          !Value 1,
-                          SEQ,
-                          {
-                              key1: [
-                                  !Format ["str: %s, str_index: %d, letter: %s", !Value 1, !Index 1, !Value 0],
-                                  !Value 1,
-                                  !Value 0,
-                                  !Enumerate [
-                                      !Value 2,
-                                      SEQ,
-                                      {
-                                        inner_inner_for_item: !Format ["%d-%s", !Index 0, !Value 0]
-                                      }
-                                  ]
-                              ],
-                              key2: !Value 0
-                          }
-                      ],
-                      !Enumerate [
-                          !Value 1,
-                          SEQ,
-                          {
-                              key1: {
-                                  inner_key1: !Format ["letter: %s, str: %s, str_index: %d", !Value 0, !Value 1, !Index 1],
-                                  inner_key2: !Value 0,
-                                  inner_key3: !Value 1
-                              },
-                              key2: !Value 0
-                          }
-                      ],
-                      !Value 0,
-                      !Format ["%s-%s", !Context foo, !Value 0]
+                          !Context mapping,
+                          MAP,
+                          [
+                              !Format ["%s", !Index 0],
+                              [
+                                  !Enumerate [!Value 2, SEQ, !Format ["prefixed-%s", !Value 0]],
+                                  {
+                                    outer_value: !Value 1,
+                                    outer_index: !Index 1,
+                                    middle_value: !Value 0,
+                                    middle_index: !Index 0
+                                  }
+                              ]
+                          ]
+                      ]
                   ]
               ]
       identifiers:

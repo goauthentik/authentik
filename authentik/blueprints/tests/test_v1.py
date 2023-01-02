@@ -162,158 +162,64 @@ class TestBlueprintsV1(TransactionTestCase):
                     "if_false_complex": ["list", "with", "items", "foo-bar"],
                     "if_true_simple": True,
                     "if_false_simple": 2,
-                    "for_mapping": {
+                    "enumerate_mapping_to_mapping": {
                         "prefix-key1": "other-prefix-value",
                         "prefix-key2": "other-prefix-2",
                     },
-                    "for_sequence": [
-                        "key1: value",
-                        "key2: 2"
+                    "enumerate_mapping_to_sequence": [
+                        "prefixed-pair-key1-value",
+                        "prefixed-pair-key2-2"
                     ],
-                    "for_sequence_complex": [
-                        [
-                            [
+                    "enumerate_sequence_to_sequence": [
+                        "prefixed-items-0-foo",
+                        "prefixed-items-1-bar"
+                    ],
+                    "enumerate_sequence_to_mapping": {
+                        "index: 0": "foo",
+                        "index: 1": "bar"
+                    },
+                    "nested_complex_enumeration": {
+                        "0": {
+                            "key1": [
+                                ["prefixed-f", "prefixed-o", "prefixed-o"],
                                 {
-                                    "key1": [
-                                        "str: foo, str_index: 0, letter: f",
-                                        "foo",
-                                        "f",
-                                        [
-                                            { "inner_inner_for_item": "0-f" },
-                                            { "inner_inner_for_item": "1-o" },
-                                            { "inner_inner_for_item": "2-o" }
-                                        ]
-                                    ],
-                                    "key2":  "f"
-                                },
-                                {
-                                    "key1": [
-                                        "str: foo, str_index: 0, letter: o",
-                                        "foo",
-                                        "o",
-                                        [
-                                            { "inner_inner_for_item": "0-f" },
-                                            { "inner_inner_for_item": "1-o" },
-                                            { "inner_inner_for_item": "2-o" }
-                                        ]
-                                    ],
-                                    "key2":  "o"
-                                },
-                                {
-                                    "key1": [
-                                        "str: foo, str_index: 0, letter: o",
-                                        "foo",
-                                        "o",
-                                        [
-                                            { "inner_inner_for_item": "0-f" },
-                                            { "inner_inner_for_item": "1-o" },
-                                            { "inner_inner_for_item": "2-o" }
-                                        ]
-                                    ],
-                                    "key2":  "o"
+                                    "outer_value": "foo",
+                                    "outer_index": 0,
+                                    "middle_value": "value",
+                                    "middle_index": "key1",
                                 }
                             ],
-                            [
+                            "key2": [
+                                ["prefixed-f", "prefixed-o", "prefixed-o"],
                                 {
-                                    "key1": {
-                                        "inner_key1": "letter: f, str: foo, str_index: 0",
-                                        "inner_key2": "f",
-                                        "inner_key3": "foo",
-                                    },
-                                    "key2": "f"
-                                },
+                                    "outer_value": "foo",
+                                    "outer_index": 0,
+                                    "middle_value": 2,
+                                    "middle_index": "key2",
+                                }
+                            ]
+                        },
+                        "1": {
+                            "key1": [
+                                ["prefixed-b", "prefixed-a", "prefixed-r"],
                                 {
-                                    "key1": {
-                                        "inner_key1": "letter: o, str: foo, str_index: 0",
-                                        "inner_key2": "o",
-                                        "inner_key3": "foo",
-                                    },
-                                    "key2": "o"
-                                },
-                                {
-                                    "key1": {
-                                        "inner_key1": "letter: o, str: foo, str_index: 0",
-                                        "inner_key2": "o",
-                                        "inner_key3": "foo",
-                                    },
-                                    "key2": "o"
-                                },
-                            ],
-                            "foo",
-                            "bar-foo"
-                        ],
-                        [
-                            [
-                                {
-                                    "key1": [
-                                        "str: bar, str_index: 1, letter: b",
-                                        "bar",
-                                        "b",
-                                        [
-                                            { "inner_inner_for_item": "0-b" },
-                                            { "inner_inner_for_item": "1-a" },
-                                            { "inner_inner_for_item": "2-r" }
-                                        ]
-                                    ],
-                                    "key2":  "b"
-                                },
-                                {
-                                    "key1": [
-                                        "str: bar, str_index: 1, letter: a",
-                                        "bar",
-                                        "a",
-                                        [
-                                            { "inner_inner_for_item": "0-b" },
-                                            { "inner_inner_for_item": "1-a" },
-                                            { "inner_inner_for_item": "2-r" }
-                                        ]
-                                    ],
-                                    "key2":  "a"
-                                },
-                                {
-                                    "key1": [
-                                        "str: bar, str_index: 1, letter: r",
-                                        "bar",
-                                        "r",
-                                        [
-                                            { "inner_inner_for_item": "0-b" },
-                                            { "inner_inner_for_item": "1-a" },
-                                            { "inner_inner_for_item": "2-r" }
-                                        ]
-                                    ],
-                                    "key2":  "r"
+                                    "outer_value": "bar",
+                                    "outer_index": 1,
+                                    "middle_value": "value",
+                                    "middle_index": "key1",
                                 }
                             ],
-                            [
+                            "key2": [
+                                ["prefixed-b", "prefixed-a", "prefixed-r"],
                                 {
-                                    "key1": {
-                                        "inner_key1": "letter: b, str: bar, str_index: 1",
-                                        "inner_key2": "b",
-                                        "inner_key3": "bar",
-                                    },
-                                    "key2": "b"
-                                },
-                                {
-                                    "key1": {
-                                        "inner_key1": "letter: a, str: bar, str_index: 1",
-                                        "inner_key2": "a",
-                                        "inner_key3": "bar",
-                                    },
-                                    "key2": "a"
-                                },
-                                {
-                                    "key1": {
-                                        "inner_key1": "letter: r, str: bar, str_index: 1",
-                                        "inner_key2": "r",
-                                        "inner_key3": "bar",
-                                    },
-                                    "key2": "r"
-                                },
-                            ],
-                            "bar",
-                            "bar-bar"
-                        ]
-                    ]
+                                    "outer_value": "bar",
+                                    "outer_index": 1,
+                                    "middle_value": 2,
+                                    "middle_index": "key2",
+                                }
+                            ]
+                        },
+                    }
                 }
             )
         )
