@@ -436,7 +436,8 @@ class Enumerate(YAMLTag, YAMLTagContext):
 
         if not isinstance(iterable, Iterable):
             raise EntryInvalidError(
-                f"{self.__class__.__name__}'s iterable must be an iterable such as a sequence or a mapping"
+                f"{self.__class__.__name__}'s iterable must be an iterable "
+                "such as a sequence or a mapping"
             )
 
         if isinstance(iterable, Mapping):
@@ -492,8 +493,8 @@ class EnumeratedItem(YAMLTag):
                     f"{self.__class__.__name__} tags are only usable "
                     f"inside an {Enumerate.__name__} tag"
                 )
-            else:
-                raise EntryInvalidError(f"{self.__class__.__name__} tag: {exc}")
+
+            raise EntryInvalidError(f"{self.__class__.__name__} tag: {exc}")
 
         return context_tag.get_context(entry, blueprint)
 

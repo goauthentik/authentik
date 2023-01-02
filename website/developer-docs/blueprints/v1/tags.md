@@ -118,9 +118,9 @@ This tag takes 3 arguments:
 !Enumerate [<iterable>, <output_object_type>, <single_item_yaml>]
 ```
 
-- **iterable**: Any Python iterable or a custom tag that resolves to such iterable
-- **output_object_type**: "SEQ" or "MAP". Controls whether the returned YAML will be a mapping or a sequence.
-- **single_item_yaml**: The YAML to use to create a single entry in output object
+-   **iterable**: Any Python iterable or a custom tag that resolves to such iterable
+-   **output_object_type**: "SEQ" or "MAP". Controls whether the returned YAML will be a mapping or a sequence.
+-   **single_item_yaml**: The YAML to use to create a single entry in output object
 
 2. `!Index`
 
@@ -134,7 +134,7 @@ This tag takes 1 argument:
 !Index <depth>
 ```
 
-- **depth**: Must be >= 0. A depth of 0 refers to the `!Enumerate` tag this tag is located in. A depth of 1 refers to one `!Enumerate` tag above that (to be used when multiple `!Enumerate` tags are nested inside each other).
+-   **depth**: Must be >= 0. A depth of 0 refers to the `!Enumerate` tag this tag is located in. A depth of 1 refers to one `!Enumerate` tag above that (to be used when multiple `!Enumerate` tags are nested inside each other).
 
 Accesses the `!Enumerate` tag's iterable and resolves to the index of the item currently being iterated (in case `!Enumerate` is iterating over a sequence), or the mapping key (in case `!Enumerate` is iterating over a mapping).
 
@@ -152,12 +152,11 @@ This tag takes 1 argument:
 !Value <depth>
 ```
 
-- **depth**: Must be >= 0. A depth of 0 refers to the `!Enumerate` tag this tag is located in. A depth of 1 refers to one `!Enumerate` tag above that (to be used when multiple `!Enumerate` tags are nested inside each other).
+-   **depth**: Must be >= 0. A depth of 0 refers to the `!Enumerate` tag this tag is located in. A depth of 1 refers to one `!Enumerate` tag above that (to be used when multiple `!Enumerate` tags are nested inside each other).
 
 Accesses the `!Enumerate` tag's iterable and resolves to the value of the item currently being iterated.
 
 For example, given a sequence like this - `["a", "b", "c"]`, this tag will resolve to `a` on the first `!Enumerate` tag iteration, `b` on the second and so on. If given a mapping like this - `{"key1": "value1", "key2": "value2", "key3": "value3"}`, it will first resolve to `value1`, then to `value2` and so on.
-
 
 Minimal examples:
 
