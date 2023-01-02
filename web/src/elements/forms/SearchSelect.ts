@@ -66,11 +66,25 @@ export class SearchSelect<T> extends AKElement {
         });
     };
 
+    scrollHandler?: () => void;
+    observer: IntersectionObserver;
+
     dropdownContainer: HTMLDivElement;
 
     constructor() {
         super();
         this.dropdownContainer = document.createElement("div");
+        this.observer = new IntersectionObserver(() => {
+            this.open = false;
+            this.shadowRoot
+                ?.querySelectorAll<HTMLInputElement>(
+                    ".pf-c-form-control.pf-c-select__toggle-typeahead",
+                )
+                .forEach((input) => {
+                    input.blur();
+                });
+        });
+        this.observer.observe(this);
     }
 
     toForm(): unknown {
@@ -102,12 +116,20 @@ export class SearchSelect<T> extends AKElement {
         document.body.append(this.dropdownContainer);
         this.updateData();
         this.addEventListener(EVENT_REFRESH, this.updateData);
+        this.scrollHandler = () => {
+            this.requestUpdate();
+        };
+        window.addEventListener("scroll", this.scrollHandler);
     }
 
     disconnectedCallback(): void {
         super.disconnectedCallback();
         this.removeEventListener(EVENT_REFRESH, this.updateData);
+        if (this.scrollHandler) {
+            window.removeEventListener("scroll", this.scrollHandler);
+        }
         this.dropdownContainer.remove();
+        this.observer.disconnect();
     }
 
     /*
@@ -238,7 +260,7 @@ export class SearchSelect<T> extends AKElement {
                             setTimeout(() => {
                                 this.open = false;
                                 this.renderMenu();
-                            }, 200);
+                            }, 100);
                         }}
                         .value=${this.selectedObject
                             ? this.renderElement(this.selectedObject)
