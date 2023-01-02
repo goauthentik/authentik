@@ -114,11 +114,7 @@ class BlueprintEntry:
         val = deepcopy(value)
 
         if isinstance(value, YAMLTagContext):
-            # Only add the tag context if it has not already been added.
-            # This can happen in some edge cases where a sequence sits between
-            # nested context tags
-            if not self.__tag_contexts or self.__tag_contexts[-1] is not value:
-                self.__tag_contexts.append(value)
+            self.__tag_contexts.append(value)
 
         if isinstance(value, YAMLTag):
             val = value.resolve(self, blueprint)
@@ -427,6 +423,12 @@ class Enumerate(YAMLTag, YAMLTagContext):
         return self.__current_context
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        if isinstance(self.iterable, EnumeratedItem) and self.iterable.depth == 0:
+            raise EntryInvalidError(
+                f"{self.__class__.__name__} tag's iterable references this tag's context. "
+                "This is a noop. Check you are setting depth bigger than 0."
+            )
+
         if isinstance(self.iterable, YAMLTag):
             iterable = self.iterable.resolve(entry, blueprint)
         else:
@@ -471,6 +473,8 @@ class EnumeratedItem(YAMLTag):
 
     depth: int
 
+    _SUPPORTED_CONTEXT_TAGS = (Enumerate,)
+
     # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
         super().__init__()
@@ -479,7 +483,8 @@ class EnumeratedItem(YAMLTag):
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         try:
             context_tag: Enumerate = entry._get_tag_context(
-                depth=self.depth, context_tag_type=Enumerate
+                depth=self.depth,
+                context_tag_type=EnumeratedItem._SUPPORTED_CONTEXT_TAGS,
             )
         except ValueError as exc:
             if self.depth == 0:
@@ -497,14 +502,24 @@ class Index(EnumeratedItem):
     """Get the current item index provided by an Enumerate tag context"""
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        return super().resolve(entry, blueprint)[0]
+        context = super().resolve(entry, blueprint)
+
+        try:
+            return context[0]
+        except IndexError:  # pragma: no cover
+            raise EntryInvalidError(f"Empty/invalid context: {context}")
 
 
 class Value(EnumeratedItem):
     """Get the current item value provided by an Enumerate tag context"""
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        return super().resolve(entry, blueprint)[1]
+        context = super().resolve(entry, blueprint)
+
+        try:
+            return context[1]
+        except IndexError:  # pragma: no cover
+            raise EntryInvalidError(f"Empty/invalid context: {context}")
 
 
 class BlueprintDumper(SafeDumper):
