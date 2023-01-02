@@ -168,16 +168,13 @@ class TestBlueprintsV1(TransactionTestCase):
                     },
                     "enumerate_mapping_to_sequence": [
                         "prefixed-pair-key1-value",
-                        "prefixed-pair-key2-2"
+                        "prefixed-pair-key2-2",
                     ],
                     "enumerate_sequence_to_sequence": [
                         "prefixed-items-0-foo",
-                        "prefixed-items-1-bar"
+                        "prefixed-items-1-bar",
                     ],
-                    "enumerate_sequence_to_mapping": {
-                        "index: 0": "foo",
-                        "index: 1": "bar"
-                    },
+                    "enumerate_sequence_to_mapping": {"index: 0": "foo", "index: 1": "bar"},
                     "nested_complex_enumeration": {
                         "0": {
                             "key1": [
@@ -187,7 +184,7 @@ class TestBlueprintsV1(TransactionTestCase):
                                     "outer_index": 0,
                                     "middle_value": "value",
                                     "middle_index": "key1",
-                                }
+                                },
                             ],
                             "key2": [
                                 ["prefixed-f", "prefixed-o", "prefixed-o"],
@@ -196,8 +193,8 @@ class TestBlueprintsV1(TransactionTestCase):
                                     "outer_index": 0,
                                     "middle_value": 2,
                                     "middle_index": "key2",
-                                }
-                            ]
+                                },
+                            ],
                         },
                         "1": {
                             "key1": [
@@ -207,7 +204,7 @@ class TestBlueprintsV1(TransactionTestCase):
                                     "outer_index": 1,
                                     "middle_value": "value",
                                     "middle_index": "key1",
-                                }
+                                },
                             ],
                             "key2": [
                                 ["prefixed-b", "prefixed-a", "prefixed-r"],
@@ -216,10 +213,10 @@ class TestBlueprintsV1(TransactionTestCase):
                                     "outer_index": 1,
                                     "middle_value": 2,
                                     "middle_index": "key2",
-                                }
-                            ]
+                                },
+                            ],
                         },
-                    }
+                    },
                 }
             )
         )
