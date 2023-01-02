@@ -77,7 +77,7 @@ Change the following fields
 -   Bind credentials:
     -   User DN: `cn=pfsense-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
     -   Password: `<pfsense-user password from step 2>`
--   Group member attribute: memberOf
+-   Group member attribute: 'memberOf'
 -   Allow unauthenticated bind: **unticked**
 
 ## pfSense secure setup (with SSL)
