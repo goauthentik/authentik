@@ -1,6 +1,6 @@
 """transfer common classes"""
 from collections import OrderedDict
-from copy import deepcopy
+from copy import copy
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from functools import reduce
@@ -111,7 +111,7 @@ class BlueprintEntry:
 
     def tag_resolver(self, value: Any, blueprint: "Blueprint") -> Any:
         """Check if we have any special tags that need handling"""
-        val = deepcopy(value)
+        val = copy(value)
 
         if isinstance(value, YAMLTagContext):
             self.__tag_contexts.append(value)
