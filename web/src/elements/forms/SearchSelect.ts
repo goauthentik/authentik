@@ -1,5 +1,5 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { groupBy } from "@goauthentik/common/utils";
+import { groupBy, randomString } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/Form";
 
@@ -68,7 +68,7 @@ export class SearchSelect<T> extends AKElement {
 
     scrollHandler?: () => void;
     observer: IntersectionObserver;
-
+    dropdownUID: string;
     dropdownContainer: HTMLDivElement;
 
     constructor() {
@@ -85,6 +85,7 @@ export class SearchSelect<T> extends AKElement {
                 });
         });
         this.observer.observe(this);
+        this.dropdownUID = `dropdown-${randomString(10)}`;
     }
 
     toForm(): unknown {
@@ -203,6 +204,7 @@ export class SearchSelect<T> extends AKElement {
                     class="pf-c-dropdown__menu pf-m-static"
                     role="listbox"
                     style="max-height:50vh;overflow-y:auto;"
+                    id=${this.dropdownUID}
                 >
                     ${this.blankable
                         ? html`
@@ -256,11 +258,18 @@ export class SearchSelect<T> extends AKElement {
                             this.open = true;
                             this.renderMenu();
                         }}
-                        @blur=${() => {
-                            setTimeout(() => {
-                                this.open = false;
-                                this.renderMenu();
-                            }, 100);
+                        @blur=${(ev: FocusEvent) => {
+                            // Check if we're loosing focus to one of our dropdown items, and if such don't blur
+                            if (ev.relatedTarget instanceof HTMLButtonElement) {
+                                const parentMenu = ev.relatedTarget.closest(
+                                    "ul.pf-c-dropdown__menu.pf-m-static",
+                                );
+                                if (parentMenu && parentMenu.id === this.dropdownUID) {
+                                    return;
+                                }
+                            }
+                            this.open = false;
+                            this.renderMenu();
                         }}
                         .value=${this.selectedObject
                             ? this.renderElement(this.selectedObject)
