@@ -74,10 +74,8 @@ See https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/r
 Create a group for each different level of quota you want users to have. Set a custom attribute, for example called `nextcloud_quota`, to the quota you want, for example `15 GB`.
 
 Afterwards, create a custom SAML Property Mapping with the name `SAML Nextcloud Quota`.
-
-Set the _SAML Attribute Name_ to `nextcloud_quota`.
-
-Set the _Expression_ to:
+-   Set the _SAML Attribute Name_ to `nextcloud_quota`.
+-   Set the _Expression_ to:
 
 ```python
 return user.group_attributes().get("nextcloud_quota", "1 GB")
@@ -93,11 +91,9 @@ In Nextcloud,  go to `Settings`, then `SSO & SAML Authentication`Under `Attribut
 
 To give authentik users admin access to your Nextcloud instance, you need to create a custom Property Mapping that maps an authentik group to "admin". It has to be mapped to "admin" as this is static in Nextcloud and cannot be changed.
 
-Create a custom SAML Property Mapping with the name `http://schemas.xmlsoap.org/claims/Group`.
-
-Set the _SAML Attribute Name_ to `http://schemas.xmlsoap.org/claims/Group`.
-
-Set the _Expression_ to:
+Create a custom SAML Property Mapping with the name `http://schemas.xmlsoap.org/claims/Group`. 
+-   Set the _SAML Attribute Name_ to `http://schemas.xmlsoap.org/claims/Group`. 
+-   Set the _Expression_ to:
 
 ```python
 for group in user.ak_groups.all():
