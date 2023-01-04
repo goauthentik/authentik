@@ -422,3 +422,51 @@ class TestProviderSAML(SeleniumTestCase):
             self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
             "Permission denied",
         )
+
+    @retry()
+    @apply_blueprint(
+        "default/10-flow-default-authentication-flow.yaml",
+        "default/10-flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
+        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @apply_blueprint(
+        "system/providers-saml.yaml",
+    )
+    @reconcile_app("authentik_crypto")
+    def test_slo(self):
+        """test SAML Provider flow SP-initiated flow (implicit consent)"""
+        # Bootstrap all needed objects
+        authorization_flow = Flow.objects.get(
+            slug="default-provider-authorization-implicit-consent"
+        )
+        provider: SAMLProvider = SAMLProvider.objects.create(
+            name="saml-test",
+            acs_url="http://localhost:9009/saml/acs",
+            audience="authentik-e2e",
+            issuer="authentik-e2e",
+            sp_binding=SAMLBindings.POST,
+            authorization_flow=authorization_flow,
+            signing_kp=create_test_cert(),
+        )
+        provider.property_mappings.set(SAMLPropertyMapping.objects.all())
+        provider.save()
+        app = Application.objects.create(
+            name="SAML",
+            slug="authentik-saml",
+            provider=provider,
+        )
+        self.container = self.setup_client(provider)
+        self.driver.get("http://localhost:9009")
+        self.login()
+        self.wait_for_url("http://localhost:9009/")
+
+        self.driver.get("http://localhost:9009/saml/logout")
+        self.wait_for_url(
+            self.url(
+                "authentik_core:if-session-end",
+                application_slug=app.slug,
+            )
+        )

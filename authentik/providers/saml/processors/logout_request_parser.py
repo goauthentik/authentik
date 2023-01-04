@@ -42,6 +42,7 @@ class LogoutRequestParser:
         issuers = root.findall(f"{{{NS_SAML_PROTOCOL}}}Issuer")
         if len(issuers) > 0:
             request.issuer = issuers[0].text
+        request.relay_state = relay_state
         return request
 
     def parse(self, saml_request: str, relay_state: Optional[str] = None) -> LogoutRequest:
