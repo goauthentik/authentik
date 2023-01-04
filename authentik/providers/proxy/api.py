@@ -61,13 +61,13 @@ class ProxyProviderSerializer(ProviderSerializer):
             raise ValidationError(_("Internal host cannot be empty when forward auth is disabled."))
         return attrs
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict):
         instance: ProxyProvider = super().create(validated_data)
         instance.set_oauth_defaults()
         instance.save()
         return instance
 
-    def update(self, instance: ProxyProvider, validated_data):
+    def update(self, instance: ProxyProvider, validated_data: dict):
         instance = super().update(instance, validated_data)
         instance.set_oauth_defaults()
         instance.save()
