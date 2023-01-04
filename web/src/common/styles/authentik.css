@@ -17,6 +17,17 @@
     --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
 }
 
+::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--ak-accent);
+}
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
 html {
     --pf-c-nav__link--PaddingTop: 0.5rem;
     --pf-c-nav__link--PaddingRight: 0.5rem;
