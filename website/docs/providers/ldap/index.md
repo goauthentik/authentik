@@ -72,11 +72,15 @@ The following stages are supported:
 -   [Password](../../flow/stages/password/index.md)
 -   [Authenticator validation](../../flow/stages/authenticator_validate/index.md)
 
-    Note: Authenticator validation currently only supports DUO devices
+    Note: Authenticator validation currently only supports DUO, TOTP and static authenticators.
+
+    For code-based authenticators, the code must be given as part of the bind password, separated by a semicolon. For example for the password `example-password` and the code `123456`, the input must be `example-password;123456`.
+
+    SMS-based authenticators are not supported as they require a code to be sent from authentik, which is not possible during the bind.
 
 #### Direct bind
 
-In this mode, the outpost will always execute the configured flow when a new bind request arrives.
+In this mode, the outpost will always execute the configured flow when a new bind request is received.
 
 #### Cached bind
 
