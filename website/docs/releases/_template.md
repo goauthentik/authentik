@@ -1,6 +1,6 @@
 ---
 title: Release xxxx.x
-slug: "xxxx.x"
+slug: "/releases/xxxx.x"
 ---
 
 ## Breaking changes

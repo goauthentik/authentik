@@ -315,6 +315,32 @@ export class SAMLProviderViewPage extends AKElement {
                                               value="${ifDefined(this.provider.urlSsoInit)}"
                                           />
                                       </div>
+                                      <div class="pf-c-form__group">
+                                          <label class="pf-c-form__label">
+                                              <span class="pf-c-form__label-text"
+                                                  >${t`SLO URL (Post)`}</span
+                                              >
+                                          </label>
+                                          <input
+                                              class="pf-c-form-control"
+                                              readonly
+                                              type="text"
+                                              value="${ifDefined(this.provider.urlSloPost)}"
+                                          />
+                                      </div>
+                                      <div class="pf-c-form__group">
+                                          <label class="pf-c-form__label">
+                                              <span class="pf-c-form__label-text"
+                                                  >${t`SLO URL (Redirect)`}</span
+                                              >
+                                          </label>
+                                          <input
+                                              class="pf-c-form-control"
+                                              readonly
+                                              type="text"
+                                              value="${ifDefined(this.provider.urlSloRedirect)}"
+                                          />
+                                      </div>
                                   </form>
                               </div>
                           </div>`

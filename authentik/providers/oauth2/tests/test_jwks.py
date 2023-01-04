@@ -1,7 +1,6 @@
 """JWKS tests"""
 import json
 
-from django.test import RequestFactory
 from django.urls.base import reverse
 from jwt import PyJWKSet
 
@@ -13,10 +12,6 @@ from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 class TestJWKS(OAuthTestCase):
     """Test JWKS view"""
-
-    def setUp(self) -> None:
-        super().setUp()
-        self.factory = RequestFactory()
 
     def test_rs256(self):
         """Test JWKS request with RS256"""

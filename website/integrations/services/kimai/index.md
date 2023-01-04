@@ -72,7 +72,7 @@ kimai:
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                 # the "single logout" feature was not yet tested, if you want to help, please let me know!
                 singleLogoutService:
-                    url: "https://authentik.company/if/session-end/<application-slug>/"
+                    url: "https://authentik.company/application/saml/<application-slug>/slo/binding/redirect/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                 # Signing certificate from *Advanced protocol settings*
                 x509cert: "XXXXXXXXXXXXXXXXXXXXXXXXXXX=="

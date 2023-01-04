@@ -1,7 +1,7 @@
 """Test Requests and Responses against schema"""
 from base64 import b64encode
 
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
@@ -10,7 +10,7 @@ from authentik.lib.tests.utils import get_request
 from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
-from authentik.providers.saml.processors.request_parser import AuthNRequestParser
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.request import RequestProcessor
 
@@ -35,7 +35,6 @@ class TestSchema(TestCase):
             signing_kp=cert,
             pre_authentication_flow=create_test_flow(),
         )
-        self.factory = RequestFactory()
 
     def test_request_schema(self):
         """Test generated AuthNRequest against Schema"""

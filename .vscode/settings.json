@@ -14,7 +14,9 @@
         "webauthn",
         "traefik",
         "passwordless",
-        "kubernetes"
+        "kubernetes",
+        "sso",
+        "slo"
     ],
     "python.linting.pylintEnabled": true,
     "todo-tree.tree.showCountsInTree": true,

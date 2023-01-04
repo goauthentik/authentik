@@ -2,7 +2,7 @@
 from base64 import b64encode
 
 from django.http.request import QueryDict
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
@@ -11,7 +11,7 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.tests.utils import get_request
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
-from authentik.providers.saml.processors.request_parser import AuthNRequestParser
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.constants import (
@@ -91,7 +91,6 @@ class TestAuthNRequest(TestCase):
             pre_authentication_flow=create_test_flow(),
             signing_kp=cert,
         )
-        self.factory = RequestFactory()
 
     def test_signed_valid(self):
         """Test generated AuthNRequest with valid signature"""

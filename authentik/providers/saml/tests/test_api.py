@@ -9,6 +9,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation
+from authentik.lib.generators import generate_id
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.tests.test_metadata import METADATA_SIMPLE
 
@@ -21,14 +22,26 @@ class TestSAMLProviderAPI(APITestCase):
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
+    def test_detail(self):
+        """Test detail"""
+        provider = SAMLProvider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+        )
+        Application.objects.create(name=generate_id(), provider=provider, slug=generate_id())
+        response = self.client.get(
+            reverse("authentik_api:samlprovider-detail", kwargs={"pk": provider.pk}),
+        )
+        self.assertEqual(200, response.status_code)
+
     def test_metadata(self):
         """Test metadata export (normal)"""
         self.client.logout()
         provider = SAMLProvider.objects.create(
-            name="test",
+            name=generate_id(),
             authorization_flow=create_test_flow(),
         )
-        Application.objects.create(name="test", provider=provider, slug="test")
+        Application.objects.create(name=generate_id(), provider=provider, slug=generate_id())
         response = self.client.get(
             reverse("authentik_api:samlprovider-metadata", kwargs={"pk": provider.pk}),
         )
@@ -38,10 +51,10 @@ class TestSAMLProviderAPI(APITestCase):
         """Test metadata export (download)"""
         self.client.logout()
         provider = SAMLProvider.objects.create(
-            name="test",
+            name=generate_id(),
             authorization_flow=create_test_flow(),
         )
-        Application.objects.create(name="test", provider=provider, slug="test")
+        Application.objects.create(name=generate_id(), provider=provider, slug=generate_id())
         response = self.client.get(
             reverse("authentik_api:samlprovider-metadata", kwargs={"pk": provider.pk})
             + "?download",
@@ -54,7 +67,7 @@ class TestSAMLProviderAPI(APITestCase):
         self.client.logout()
         # Provider without application
         provider = SAMLProvider.objects.create(
-            name="test",
+            name=generate_id(),
             authorization_flow=create_test_flow(),
         )
         response = self.client.get(
@@ -75,7 +88,7 @@ class TestSAMLProviderAPI(APITestCase):
                 reverse("authentik_api:samlprovider-import-metadata"),
                 {
                     "file": metadata,
-                    "name": "test",
+                    "name": generate_id(),
                     "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).slug,
                 },
                 format="multipart",
@@ -92,7 +105,7 @@ class TestSAMLProviderAPI(APITestCase):
                 reverse("authentik_api:samlprovider-import-metadata"),
                 {
                     "file": metadata,
-                    "name": "test",
+                    "name": generate_id(),
                     "authorization_flow": create_test_flow().slug,
                 },
                 format="multipart",
@@ -104,7 +117,7 @@ class TestSAMLProviderAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:samlprovider-import-metadata"),
             {
-                "name": "test",
+                "name": generate_id(),
             },
             format="multipart",
         )
@@ -114,11 +127,11 @@ class TestSAMLProviderAPI(APITestCase):
     def test_preview(self):
         """Test Preview API Endpoint"""
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="test",
+            name=generate_id(),
             authorization_flow=create_test_flow(),
         )
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
-        Application.objects.create(name="test", provider=provider, slug="test")
+        Application.objects.create(name=generate_id(), provider=provider, slug=generate_id())
         response = self.client.get(
             reverse("authentik_api:samlprovider-preview-user", kwargs={"pk": provider.pk})
         )

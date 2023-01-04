@@ -39,9 +39,9 @@ Set the following values:
 ```env
 SAML_ENABLED=True
 SAML_PATH=os.path.join(os.path.dirname(file), 'saml')
-SAML_METADATA_URL=https://authentik.company/api/v3/providers/saml/<provider-id>/metadata/?download
+SAML_METADATA_URL=https://authentik.company/application/saml/<application-slug>/metadata/
 SAML_METADATA_CACHE_LIFETIME=1
-SAML_LOGOUT_URL=https://authentik.company/if/session-end/<application-slug>/
+SAML_LOGOUT_URL=https://authentik.company/application/saml/<application-slug>/slo/binding/redirect/
 SAML_SP_ENTITY_ID=pdns-admin
 SAML_SP_CONTACT_NAME=me
 SAML_SP_CONTACT_MAIL=me

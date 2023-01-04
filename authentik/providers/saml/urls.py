@@ -1,7 +1,7 @@
 """authentik SAML IDP URLs"""
 from django.urls import path
 
-from authentik.providers.saml.views import sso
+from authentik.providers.saml.views import metadata, slo, sso
 
 urlpatterns = [
     # SSO Bindings
@@ -20,5 +20,22 @@ urlpatterns = [
         "<slug:application_slug>/sso/binding/init/",
         sso.SAMLSSOBindingInitView.as_view(),
         name="sso-init",
+    ),
+    # SLO Bindings
+    path(
+        "<slug:application_slug>/slo/redirect/",
+        slo.SAMLSLOBindingRedirectView.as_view(),
+        name="slo-redirect",
+    ),
+    path(
+        "<slug:application_slug>/slo/post/",
+        slo.SAMLSLOBindingPOSTView.as_view(),
+        name="slo-post",
+    ),
+    # Metadata
+    path(
+        "<slug:application_slug>/metadata/",
+        metadata.MetadataDownload.as_view(),
+        name="metadata-download",
     ),
 ]
