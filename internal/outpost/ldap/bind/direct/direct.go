@@ -64,7 +64,6 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 
 	fe.Answers[flow.StageIdentification] = username
 	fe.Answers[flow.StagePassword] = req.BindPW
-	fe.CheckPasswordMFA()
 
 	passed, err := fe.Execute()
 	flags := flags.UserFlags{

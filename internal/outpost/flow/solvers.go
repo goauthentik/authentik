@@ -8,9 +8,9 @@ import (
 	"goauthentik.io/api/v3"
 )
 
-func (fe *FlowExecutor) CheckPasswordMFA() {
+func (fe *FlowExecutor) checkPasswordMFA() {
 	password := fe.getAnswer(StagePassword)
-	if !strings.Contains(password, CodePasswordSeparator) {
+	if !strings.Contains(password, CodePasswordSeparator) || fe.Answers[StageAuthenticatorValidate] != "" {
 		return
 	}
 	idx := strings.LastIndex(password, CodePasswordSeparator)
@@ -46,6 +46,7 @@ func (fe *FlowExecutor) solveChallenge_AuthenticatorValidate(challenge *api.Chal
 		}
 		if devCh.DeviceClass == string(api.DEVICECLASSESENUM_STATIC) ||
 			devCh.DeviceClass == string(api.DEVICECLASSESENUM_TOTP) {
+			fe.checkPasswordMFA()
 			// Only use code-based devices if we have a code in the entered password,
 			// and we haven't selected a push device yet
 			if deviceChallenge == nil && fe.getAnswer(StageAuthenticatorValidate) != "" {
