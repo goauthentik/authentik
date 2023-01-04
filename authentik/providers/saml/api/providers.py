@@ -44,6 +44,8 @@ class SAMLProviderSerializer(ProviderSerializer):
     url_sso_post = SerializerMethodField()
     url_sso_redirect = SerializerMethodField()
     url_sso_init = SerializerMethodField()
+    url_slo_post = SerializerMethodField()
+    url_slo_redirect = SerializerMethodField()
 
     def get_url_download_metadata(self, instance: SAMLProvider) -> str:
         """Get metadata download URL"""
@@ -99,6 +101,36 @@ class SAMLProviderSerializer(ProviderSerializer):
         except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
             return "-"
 
+    def get_url_slo_post(self, instance: SAMLProvider) -> str:
+        """Get SLO POST URL"""
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:slo-post",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+            return "-"
+
+    def get_url_slo_redirect(self, instance: SAMLProvider) -> str:
+        """Get SLO redirect URL"""
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:slo-redirect",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+            return "-"
+
     class Meta:
 
         model = SAMLProvider
@@ -120,6 +152,8 @@ class SAMLProviderSerializer(ProviderSerializer):
             "url_sso_post",
             "url_sso_redirect",
             "url_sso_init",
+            "url_slo_post",
+            "url_slo_redirect",
         ]
 
 

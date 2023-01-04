@@ -115,21 +115,21 @@ msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/flows/FlowForm.ts
-msgid "ALL, all policies must match to grant access."
-msgstr ""
+#~ msgid "ALL, all policies must match to grant access."
+#~ msgstr ""
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "ALL, all policies must match to include this stage access."
-msgstr ""
+#~ msgid "ALL, all policies must match to include this stage access."
+#~ msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/flows/FlowForm.ts
-msgid "ANY, any policy must match to grant access."
-msgstr ""
+#~ msgid "ANY, any policy must match to grant access."
+#~ msgstr ""
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "ANY, any policy must match to include this stage access."
-msgstr ""
+#~ msgid "ANY, any policy must match to include this stage access."
+#~ msgstr ""
 
 #: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
 msgid "API"
@@ -156,8 +156,12 @@ msgid "API Requests"
 msgstr ""
 
 #: src/admin/tokens/TokenForm.ts
-msgid "API Token (can be used to access the API programmatically)"
+msgid "API Token"
 msgstr ""
+
+#: src/admin/tokens/TokenForm.ts
+#~ msgid "API Token (can be used to access the API programmatically)"
+#~ msgstr ""
 
 #: src/admin/stages/captcha/CaptchaStageForm.ts
 msgid "API URL"
@@ -360,12 +364,18 @@ msgid "Affected model:"
 msgstr ""
 
 #: src/admin/events/RuleForm.ts
-msgid "Alert"
-msgstr ""
+#~ msgid "Alert"
+#~ msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #~ msgid "Algorithm used to sign the JWT Tokens."
 #~ msgstr ""
+
+#: src/admin/applications/ApplicationForm.ts
+#: src/admin/flows/FlowForm.ts
+#: src/admin/flows/StageBindingForm.ts
+msgid "All policies must match to grant access"
+msgstr ""
 
 #: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Allow IDP-initiated logins"
@@ -417,8 +427,16 @@ msgstr ""
 msgid "Alternatively, if your current device has Duo installed, click on this link:"
 msgstr ""
 
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "Always execute the configured bind flow to authenticate the user"
+msgstr ""
+
 #: src/admin/stages/consent/ConsentStageForm.ts
 msgid "Always require consent"
+msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "Always returns the latest data, but slower than cached querying"
 msgstr ""
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
@@ -427,6 +445,12 @@ msgstr ""
 
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Any HTML can be used."
+msgstr ""
+
+#: src/admin/applications/ApplicationForm.ts
+#: src/admin/flows/FlowForm.ts
+#: src/admin/flows/StageBindingForm.ts
+msgid "Any policy must match to grant access"
 msgstr ""
 
 #: src/admin/events/EventInfo.ts
@@ -439,7 +463,15 @@ msgid "App password"
 msgstr ""
 
 #: src/admin/tokens/TokenForm.ts
-msgid "App password (can be used to login using a flow executor)"
+#~ msgid "App password (can be used to login using a flow executor)"
+#~ msgstr ""
+
+#: src/admin/tokens/TokenForm.ts
+msgid "App password."
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Appearance settings"
 msgstr ""
 
 #: src/admin/admin-overview/TopApplicationsTable.ts
@@ -782,6 +814,10 @@ msgstr ""
 msgid "Bearer Token"
 msgstr ""
 
+#: src/admin/flows/FlowForm.ts
+msgid "Behavior settings"
+msgstr ""
+
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 msgid "Bind CN"
 msgstr ""
@@ -871,12 +907,16 @@ msgid "CA which the endpoint's Certificate is verified against. Can be left empt
 msgstr ""
 
 #: src/admin/flows/FlowForm.ts
-msgid "CONTINUE will either follow the ?next parameter or redirect to the default interface."
+#~ msgid "CONTINUE will either follow the ?next parameter or redirect to the default interface."
+#~ msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "Cached binding"
 msgstr ""
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
-msgstr ""
+#~ msgid "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
+#~ msgstr ""
 
 #: src/admin/admin-overview/charts/FlowStatusChart.ts
 msgid "Cached flows"
@@ -887,8 +927,12 @@ msgid "Cached policies"
 msgstr ""
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
+msgid "Cached querying"
 msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+#~ msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
+#~ msgstr ""
 
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Caddy (Standalone)"
@@ -1161,6 +1205,7 @@ msgstr ""
 #: src/admin/users/UserListPage.ts
 #: src/elements/notifications/NotificationDrawer.ts
 #: src/elements/wizard/Wizard.ts
+#: src/flow/FlowInspector.ts
 msgid "Close"
 msgstr ""
 
@@ -1237,8 +1282,12 @@ msgid "Configure how the NameID value will be created. When left empty, the Name
 msgstr ""
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "Configure how the flow executor should handle an invalid response to a challenge."
+msgid "Configure how the flow executor should handle an invalid response to a challenge given by this bound stage."
 msgstr ""
+
+#: src/admin/flows/StageBindingForm.ts
+#~ msgid "Configure how the flow executor should handle an invalid response to a challenge."
+#~ msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
@@ -1667,8 +1716,8 @@ msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "DSA-SHA1"
-msgstr ""
+#~ msgid "DSA-SHA1"
+#~ msgstr ""
 
 #: src/admin/AdminInterface.ts
 msgid "Dashboards"
@@ -1891,7 +1940,15 @@ msgid "Digits"
 msgstr ""
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "Direct binding, always execute the configured bind flow to authenticate the user."
+msgid "Direct binding"
+msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+#~ msgid "Direct binding, always execute the configured bind flow to authenticate the user."
+#~ msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "Direct querying"
 msgstr ""
 
 #: src/pages/providers/ldap/LDAPProviderForm.ts
@@ -1899,8 +1956,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "Direct querying, always returns the latest data, but slower than cached querying."
-msgstr ""
+#~ msgid "Direct querying, always returns the latest data, but slower than cached querying."
+#~ msgstr ""
 
 #: src/admin/AdminInterface.ts
 msgid "Directory"
@@ -1977,8 +2034,12 @@ msgid "Download signing certificate"
 msgstr ""
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
+msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider, or all providers use the same certificate."
 msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+#~ msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
+#~ msgstr ""
 
 #: src/pages/policies/PolicyWizard.ts
 #~ msgid "Dummy"
@@ -2025,8 +2086,12 @@ msgid "Duration after which events will be deleted from the database."
 msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Each provider has a different issuer, based on the application slug."
+msgid "Each provider has a different issuer, based on the application slug"
 msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Each provider has a different issuer, based on the application slug."
+#~ msgstr ""
 
 #: src/admin/applications/ApplicationViewPage.ts
 #: src/admin/applications/ApplicationViewPage.ts
@@ -2140,8 +2205,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/admin/flows/FlowForm.ts
-msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-msgstr ""
+#~ msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+#~ msgstr ""
 
 #: src/admin/blueprints/BlueprintForm.ts
 #: src/admin/blueprints/BlueprintListPage.ts
@@ -2518,6 +2583,10 @@ msgstr ""
 #: src/flow/FlowInspector.ts
 #: src/flow/FlowInspector.ts
 msgid "Flow inspector"
+msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "Flow is executed and session is cached in memory. Flow is executed when session expires"
 msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
@@ -3063,6 +3132,10 @@ msgstr ""
 msgid "Include claims in id_token"
 msgstr ""
 
+#: src/admin/flows/FlowForm.ts
+msgid "Increases compatibility with password managers and mobile devices."
+msgstr ""
+
 #: src/admin/outposts/OutpostForm.ts
 #: src/admin/outposts/OutpostListPage.ts
 msgid "Integration"
@@ -3110,7 +3183,11 @@ msgid ""
 msgstr ""
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "Invalid response action"
+#~ msgid "Invalid response action"
+#~ msgstr ""
+
+#: src/admin/flows/StageBindingForm.ts
+msgid "Invalid response behavior"
 msgstr ""
 
 #: src/admin/flows/utils.ts
@@ -3358,82 +3435,29 @@ msgstr ""
 msgid "Loading"
 msgstr ""
 
-#: src/admin/applications/ApplicationCheckAccessForm.ts
-#: src/admin/applications/ApplicationForm.ts
-#: src/admin/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
-#: src/admin/blueprints/BlueprintForm.ts
+#: src/elements/forms/SearchSelect.ts
+msgid "Loading options..."
+msgstr ""
+
 #: src/admin/events/RuleForm.ts
-#: src/admin/events/RuleForm.ts
-#: src/admin/events/TransportForm.ts
-#: src/admin/flows/StageBindingForm.ts
 #: src/admin/flows/StageBindingForm.ts
 #: src/admin/groups/GroupForm.ts
-#: src/admin/groups/GroupForm.ts
 #: src/admin/outposts/OutpostForm.ts
-#: src/admin/outposts/OutpostForm.ts
-#: src/admin/outposts/ServiceConnectionDockerForm.ts
-#: src/admin/outposts/ServiceConnectionDockerForm.ts
-#: src/admin/policies/PolicyBindingForm.ts
-#: src/admin/policies/PolicyTestForm.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
-#: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
-#: src/admin/property-mappings/PropertyMappingTestForm.ts
-#: src/admin/providers/ldap/LDAPProviderForm.ts
-#: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-#: src/admin/providers/proxy/ProxyProviderForm.ts
-#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/providers/saml/SAMLProviderImportForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
-#: src/admin/sources/ldap/LDAPSourceForm.ts
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-#: src/admin/sources/plex/PlexSourceForm.ts
-#: src/admin/sources/plex/PlexSourceForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
-#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
-#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-#: src/admin/stages/authenticator_static/AuthenticatorStaticStageForm.ts
-#: src/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-#: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 #: src/admin/stages/email/EmailStageForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
-#: src/admin/stages/identification/IdentificationStageForm.ts
-#: src/admin/stages/identification/IdentificationStageForm.ts
-#: src/admin/stages/identification/IdentificationStageForm.ts
-#: src/admin/stages/identification/IdentificationStageForm.ts
-#: src/admin/stages/invitation/InvitationForm.ts
 #: src/admin/stages/invitation/InvitationListLink.ts
-#: src/admin/stages/password/PasswordStageForm.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tokens/TokenForm.ts
 #: src/admin/users/UserForm.ts
-#: src/admin/users/UserResetEmailForm.ts
 #: src/elements/Spinner.ts
 msgid "Loading..."
 msgstr ""
@@ -3519,12 +3543,12 @@ msgid "Long-running operations which authentik executes in the background."
 msgstr ""
 
 #: src/admin/flows/FlowForm.ts
-msgid "MESSAGE will notify the user the flow isn't applicable."
-msgstr ""
+#~ msgid "MESSAGE will notify the user the flow isn't applicable."
+#~ msgstr ""
 
 #: src/admin/flows/FlowForm.ts
-msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
-msgstr ""
+#~ msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
+#~ msgstr ""
 
 #: src/admin/users/UserViewPage.ts
 msgid "MFA Authenticators"
@@ -4005,7 +4029,6 @@ msgstr ""
 msgid "Not used by any other object."
 msgstr ""
 
-#: src/flow/stages/FlowErrorStage.ts
 #: src/flow/stages/access_denied/AccessDeniedStage.ts
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flow/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -4548,7 +4571,15 @@ msgid "Post binding"
 msgstr ""
 
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "Post binding (auto-submit)"
+#~ msgid "Post binding (auto-submit)"
+#~ msgstr ""
+
+#: src/admin/sources/saml/SAMLSourceForm.ts
+msgid "Post binding but the request is automatically sent and the user doesn't have to confirm."
+msgstr ""
+
+#: src/admin/sources/saml/SAMLSourceForm.ts
+msgid "Post-auto binding"
 msgstr ""
 
 #: src/flow/FlowExecutor.ts
@@ -4714,16 +4745,16 @@ msgstr ""
 #~ msgstr ""
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "RESTART restarts the flow from the beginning."
-msgstr ""
+#~ msgid "RESTART restarts the flow from the beginning."
+#~ msgstr ""
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context."
-msgstr ""
+#~ msgid "RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context."
+#~ msgstr ""
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "RETRY returns the error message and a similar challenge to the executor."
-msgstr ""
+#~ msgid "RETRY returns the error message and a similar challenge to the executor."
+#~ msgstr ""
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #~ msgid "RS256 (Asymmetric Encryption)"
@@ -4735,23 +4766,23 @@ msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "RSA-SHA1"
-msgstr ""
+#~ msgid "RSA-SHA1"
+#~ msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "RSA-SHA256"
-msgstr ""
+#~ msgid "RSA-SHA256"
+#~ msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "RSA-SHA384"
-msgstr ""
+#~ msgid "RSA-SHA384"
+#~ msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "RSA-SHA512"
-msgstr ""
+#~ msgid "RSA-SHA512"
+#~ msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "Raw JWKS data."
@@ -4913,6 +4944,10 @@ msgstr ""
 msgid "Request"
 msgstr ""
 
+#: src/flow/stages/FlowErrorStage.ts
+msgid "Request ID"
+msgstr ""
+
 #: src/flow/stages/access_denied/AccessDeniedStage.ts
 msgid "Request has been denied."
 msgstr ""
@@ -4962,6 +4997,14 @@ msgstr ""
 #~ msgid "Resources"
 #~ msgstr ""
 
+#: src/admin/flows/StageBindingForm.ts
+msgid "Restarts the flow from the beginning"
+msgstr ""
+
+#: src/admin/flows/StageBindingForm.ts
+msgid "Restarts the flow from the beginning, while keeping the flow context"
+msgstr ""
+
 #: src/admin/events/EventInfo.ts
 #: src/admin/property-mappings/PropertyMappingTestForm.ts
 msgid "Result"
@@ -4981,8 +5024,8 @@ msgstr ""
 
 #: src/flow/FlowExecutor.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
-msgid "Return"
-msgstr ""
+#~ msgid "Return"
+#~ msgstr ""
 
 #: src/elements/router/Router404.ts
 msgid "Return home"
@@ -4997,6 +5040,10 @@ msgstr ""
 #: src/pages/policies/PolicyWizard.ts
 #~ msgid "Return true if request IP/target username's score is below a certain threshold."
 #~ msgstr ""
+
+#: src/admin/flows/StageBindingForm.ts
+msgid "Returns the error message and a similar challenge to the executor"
+msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Revoked?"
@@ -5040,27 +5087,35 @@ msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "SHA1"
-msgstr ""
+#~ msgid "SHA1"
+#~ msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "SHA256"
-msgstr ""
+#~ msgid "SHA256"
+#~ msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "SHA384"
-msgstr ""
+#~ msgid "SHA384"
+#~ msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "SHA512"
-msgstr ""
+#~ msgid "SHA512"
+#~ msgstr ""
 
 #: src/admin/sources/saml/SAMLSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceViewPage.ts
 msgid "SLO URL"
+msgstr ""
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "SLO URL (Post)"
+msgstr ""
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "SLO URL (Redirect)"
 msgstr ""
 
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
@@ -5217,7 +5272,7 @@ msgstr ""
 #~ msgid "Select an identification method."
 #~ msgstr ""
 
-#: src/elements/SearchSelect.ts
+#: src/elements/forms/SearchSelect.ts
 msgid "Select an object."
 msgstr ""
 
@@ -5492,9 +5547,7 @@ msgstr ""
 msgid "Slug"
 msgstr ""
 
-#: src/flow/FlowExecutor.ts
 #: src/flow/stages/FlowErrorStage.ts
-#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Something went wrong! Please try again later."
 msgstr ""
 
@@ -5509,6 +5562,10 @@ msgstr ""
 #: 
 #~ msgid "Source name"
 #~ msgstr ""
+
+#: src/admin/stages/identification/IdentificationStageForm.ts
+msgid "Source settings"
+msgstr ""
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
@@ -6269,6 +6326,10 @@ msgstr ""
 msgid "The new application wizard greatly simplifies the steps required to create applications and providers."
 msgstr ""
 
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "The outpost holds all users and groups in-memory and will refresh every 5 Minutes"
+msgstr ""
+
 #: src/pages/policies/reputation/ReputationPolicyForm.ts
 #~ msgid ""
 #~ "The policy passes when the reputation score is above the threshold, and\n"
@@ -6375,6 +6436,10 @@ msgstr ""
 
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Threshold"
+msgstr ""
+
+#: src/admin/stages/dummy/DummyStageForm.ts
+msgid "Throw error?"
 msgstr ""
 
 #: src/admin/stages/email/EmailStageForm.ts
@@ -6668,6 +6733,39 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+#: src/admin/flows/utils.ts
+msgid "Unknown designation"
+msgstr ""
+
+#: src/admin/tokens/TokenListPage.ts
+msgid "Unknown intent"
+msgstr ""
+
+#: src/admin/flows/utils.ts
+msgid "Unknown layout"
+msgstr ""
+
+#: src/admin/outposts/OutpostForm.ts
+msgid "Unknown outpost type"
+msgstr ""
+
+#: src/admin/sources/oauth/OAuthSourceViewPage.ts
+msgid "Unknown provider type"
+msgstr ""
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+msgid "Unknown proxy mode"
+msgstr ""
+
+#: src/admin/outposts/OutpostListPage.ts
+msgid "Unknown type"
+msgstr ""
+
+#: src/admin/sources/oauth/utils.ts
+msgid "Unknown user matching mode"
+msgstr ""
+
 #: 
 #~ msgid "Unmanaged"
 #~ msgstr ""
@@ -6927,6 +7025,14 @@ msgstr ""
 
 #: src/admin/tenants/TenantForm.ts
 msgid "Use this tenant for each domain that doesn't have a dedicated tenant."
+msgstr ""
+
+#: src/admin/tokens/TokenForm.ts
+msgid "Used to access the API programmatically"
+msgstr ""
+
+#: src/admin/tokens/TokenForm.ts
+msgid "Used to login using a flow executor"
 msgstr ""
 
 #: src/admin/applications/ApplicationCheckAccessForm.ts
@@ -7402,7 +7508,19 @@ msgstr ""
 
 #: src/flow/FlowExecutor.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
-msgid "Whoops!"
+#~ msgid "Whoops!"
+#~ msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Will either follow the ?next parameter or redirect to the default interface"
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Will follow the ?next parameter if set, otherwise show a message"
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Will notify the user the flow isn't applicable"
 msgstr ""
 
 #: src/admin/sources/saml/SAMLSourceForm.ts

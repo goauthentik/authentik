@@ -123,21 +123,21 @@ msgstr "ACS URL"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/flows/FlowForm.ts
-msgid "ALL, all policies must match to grant access."
-msgstr "ALL，所有策略必须匹配才能授予访问权限。"
+#~ msgid "ALL, all policies must match to grant access."
+#~ msgstr "ALL，所有策略必须匹配才能授予访问权限。"
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "ALL, all policies must match to include this stage access."
-msgstr "ALL，所有策略必须匹配才能包含此阶段访问权限。"
+#~ msgid "ALL, all policies must match to include this stage access."
+#~ msgstr "ALL，所有策略必须匹配才能包含此阶段访问权限。"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/flows/FlowForm.ts
-msgid "ANY, any policy must match to grant access."
-msgstr "ANY，任何策略都必须匹配才能授予访问权限。"
+#~ msgid "ANY, any policy must match to grant access."
+#~ msgstr "ANY，任何策略都必须匹配才能授予访问权限。"
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "ANY, any policy must match to include this stage access."
-msgstr "ANY，任何策略都必须匹配才能包含此阶段访问权限。"
+#~ msgid "ANY, any policy must match to include this stage access."
+#~ msgstr "ANY，任何策略都必须匹配才能包含此阶段访问权限。"
 
 #: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
 msgid "API"
@@ -164,8 +164,12 @@ msgid "API Requests"
 msgstr "API 请求"
 
 #: src/admin/tokens/TokenForm.ts
-msgid "API Token (can be used to access the API programmatically)"
-msgstr "API 令牌（可用于以编程方式访问 API）"
+msgid "API Token"
+msgstr ""
+
+#: src/admin/tokens/TokenForm.ts
+#~ msgid "API Token (can be used to access the API programmatically)"
+#~ msgstr "API 令牌（可用于以编程方式访问 API）"
 
 #: src/admin/stages/captcha/CaptchaStageForm.ts
 msgid "API URL"
@@ -366,11 +370,17 @@ msgid "Affected model:"
 msgstr "受影响的模型："
 
 #: src/admin/events/RuleForm.ts
-msgid "Alert"
-msgstr "注意"
+#~ msgid "Alert"
+#~ msgstr "注意"
 
 #~ msgid "Algorithm used to sign the JWT Tokens."
 #~ msgstr "用于对JWT令牌进行签名的算法。"
+
+#: src/admin/applications/ApplicationForm.ts
+#: src/admin/flows/FlowForm.ts
+#: src/admin/flows/StageBindingForm.ts
+msgid "All policies must match to grant access"
+msgstr ""
 
 #: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Allow IDP-initiated logins"
@@ -422,9 +432,17 @@ msgstr ""
 msgid "Alternatively, if your current device has Duo installed, click on this link:"
 msgstr "或者，如果您当前的设备已安装 Duo，请单击此链接："
 
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "Always execute the configured bind flow to authenticate the user"
+msgstr ""
+
 #: src/admin/stages/consent/ConsentStageForm.ts
 msgid "Always require consent"
 msgstr "始终需要征得同意"
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "Always returns the latest data, but slower than cached querying"
+msgstr ""
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "An example setup can look like this:"
@@ -433,6 +451,12 @@ msgstr "设置示例如下所示："
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Any HTML can be used."
 msgstr "任何HTML都可以使用。"
+
+#: src/admin/applications/ApplicationForm.ts
+#: src/admin/flows/FlowForm.ts
+#: src/admin/flows/StageBindingForm.ts
+msgid "Any policy must match to grant access"
+msgstr ""
 
 #: src/admin/events/EventInfo.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
@@ -444,8 +468,16 @@ msgid "App password"
 msgstr "应用密码"
 
 #: src/admin/tokens/TokenForm.ts
-msgid "App password (can be used to login using a flow executor)"
-msgstr "应用程序密码（可用于使用流程执行器登录）"
+#~ msgid "App password (can be used to login using a flow executor)"
+#~ msgstr "应用程序密码（可用于使用流程执行器登录）"
+
+#: src/admin/tokens/TokenForm.ts
+msgid "App password."
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Appearance settings"
+msgstr ""
 
 #: src/admin/admin-overview/TopApplicationsTable.ts
 #: src/admin/providers/ProviderListPage.ts
@@ -783,6 +815,10 @@ msgstr "基本身份验证"
 msgid "Bearer Token"
 msgstr "不记名令牌"
 
+#: src/admin/flows/FlowForm.ts
+msgid "Behavior settings"
+msgstr ""
+
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 msgid "Bind CN"
 msgstr "Bind CN"
@@ -871,12 +907,16 @@ msgid "CA which the endpoint's Certificate is verified against. Can be left empt
 msgstr "验证终端节点证书所依据的 CA。可以留空以表示不进行验证。"
 
 #: src/admin/flows/FlowForm.ts
-msgid "CONTINUE will either follow the ?next parameter or redirect to the default interface."
+#~ msgid "CONTINUE will either follow the ?next parameter or redirect to the default interface."
+#~ msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "Cached binding"
 msgstr ""
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
-msgstr ""
+#~ msgid "Cached binding, flow is executed and session is cached in memory. Flow is executed when session expires."
+#~ msgstr ""
 
 #: src/admin/admin-overview/charts/FlowStatusChart.ts
 msgid "Cached flows"
@@ -887,8 +927,12 @@ msgid "Cached policies"
 msgstr "缓存策略"
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
-msgstr "缓存查询，前哨将所有用户和组保存在内存中，并将每5分钟刷新一次。"
+msgid "Cached querying"
+msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+#~ msgid "Cached querying, the outpost holds all users and groups in-memory and will refresh every 5 Minutes."
+#~ msgstr "缓存查询，前哨将所有用户和组保存在内存中，并将每5分钟刷新一次。"
 
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Caddy (Standalone)"
@@ -1161,6 +1205,7 @@ msgstr "客户机类型"
 #: src/admin/users/UserListPage.ts
 #: src/elements/notifications/NotificationDrawer.ts
 #: src/elements/wizard/Wizard.ts
+#: src/flow/FlowInspector.ts
 msgid "Close"
 msgstr "关闭"
 
@@ -1234,8 +1279,12 @@ msgid "Configure how the NameID value will be created. When left empty, the Name
 msgstr "配置如何创建 NameID 值。如果留空，将遵守传入请求的 NameIdPolicy。"
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "Configure how the flow executor should handle an invalid response to a challenge."
-msgstr "配置流程执行器应如何处理对质询的无效响应。"
+msgid "Configure how the flow executor should handle an invalid response to a challenge given by this bound stage."
+msgstr ""
+
+#: src/admin/flows/StageBindingForm.ts
+#~ msgid "Configure how the flow executor should handle an invalid response to a challenge."
+#~ msgstr "配置流程执行器应如何处理对质询的无效响应。"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
@@ -1657,8 +1706,8 @@ msgstr "定制"
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "DSA-SHA1"
-msgstr "DSA-SHA1"
+#~ msgid "DSA-SHA1"
+#~ msgstr "DSA-SHA1"
 
 #: src/admin/AdminInterface.ts
 msgid "Dashboards"
@@ -1876,15 +1925,23 @@ msgid "Digits"
 msgstr "数字"
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "Direct binding, always execute the configured bind flow to authenticate the user."
+msgid "Direct binding"
+msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+#~ msgid "Direct binding, always execute the configured bind flow to authenticate the user."
+#~ msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "Direct querying"
 msgstr ""
 
 #~ msgid "Direct querying, always execute the configured bind flow to authenticate the user."
 #~ msgstr ""
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "Direct querying, always returns the latest data, but slower than cached querying."
-msgstr "直接查询，总是返回最新数据，但比缓存查询慢。"
+#~ msgid "Direct querying, always returns the latest data, but slower than cached querying."
+#~ msgstr "直接查询，总是返回最新数据，但比缓存查询慢。"
 
 #: src/admin/AdminInterface.ts
 msgid "Directory"
@@ -1955,8 +2012,12 @@ msgid "Download signing certificate"
 msgstr "下载签名证书"
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
-msgstr "由于协议限制，只有在 Outpost 有单个提供者时才使用此证书。"
+msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider, or all providers use the same certificate."
+msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+#~ msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider."
+#~ msgstr "由于协议限制，只有在 Outpost 有单个提供者时才使用此证书。"
 
 #~ msgid "Dummy"
 #~ msgstr "占位"
@@ -2001,8 +2062,12 @@ msgid "Duration after which events will be deleted from the database."
 msgstr "事件将从数据库中删除的持续时间。"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Each provider has a different issuer, based on the application slug."
-msgstr "根据应用程序 slug，每个提供商都有不同的颁发者。"
+msgid "Each provider has a different issuer, based on the application slug"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Each provider has a different issuer, based on the application slug."
+#~ msgstr "根据应用程序 slug，每个提供商都有不同的颁发者。"
 
 #: src/admin/applications/ApplicationViewPage.ts
 #: src/admin/applications/ApplicationViewPage.ts
@@ -2110,8 +2175,8 @@ msgstr "启用 StartTLS"
 #~ msgstr "启用 TOTP"
 
 #: src/admin/flows/FlowForm.ts
-msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-msgstr "启用兼容模式，增加与移动设备上密码管理器的兼容性。"
+#~ msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+#~ msgstr "启用兼容模式，增加与移动设备上密码管理器的兼容性。"
 
 #: src/admin/blueprints/BlueprintForm.ts
 #: src/admin/blueprints/BlueprintListPage.ts
@@ -2480,6 +2545,10 @@ msgstr "流程执行"
 #: src/flow/FlowInspector.ts
 msgid "Flow inspector"
 msgstr "流程检查器"
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "Flow is executed and session is cached in memory. Flow is executed when session expires"
+msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
@@ -3014,6 +3083,10 @@ msgstr "对于不访问userinfo端点的应用程序，将来自作用域的用�
 msgid "Include claims in id_token"
 msgstr "在 id_token 中包含声明"
 
+#: src/admin/flows/FlowForm.ts
+msgid "Increases compatibility with password managers and mobile devices."
+msgstr ""
+
 #: src/admin/outposts/OutpostForm.ts
 #: src/admin/outposts/OutpostListPage.ts
 msgid "Integration"
@@ -3062,8 +3135,12 @@ msgstr ""
 "他们试图以一个身份登入的用户名。"
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "Invalid response action"
-msgstr "响应操作无效"
+#~ msgid "Invalid response action"
+#~ msgstr "响应操作无效"
+
+#: src/admin/flows/StageBindingForm.ts
+msgid "Invalid response behavior"
+msgstr ""
 
 #: src/admin/flows/utils.ts
 msgid "Invalidation"
@@ -3305,82 +3382,29 @@ msgstr "加载服务器"
 msgid "Loading"
 msgstr "正在加载"
 
-#: src/admin/applications/ApplicationCheckAccessForm.ts
-#: src/admin/applications/ApplicationForm.ts
-#: src/admin/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
-#: src/admin/blueprints/BlueprintForm.ts
+#: src/elements/forms/SearchSelect.ts
+msgid "Loading options..."
+msgstr ""
+
 #: src/admin/events/RuleForm.ts
-#: src/admin/events/RuleForm.ts
-#: src/admin/events/TransportForm.ts
-#: src/admin/flows/StageBindingForm.ts
 #: src/admin/flows/StageBindingForm.ts
 #: src/admin/groups/GroupForm.ts
-#: src/admin/groups/GroupForm.ts
 #: src/admin/outposts/OutpostForm.ts
-#: src/admin/outposts/OutpostForm.ts
-#: src/admin/outposts/ServiceConnectionDockerForm.ts
-#: src/admin/outposts/ServiceConnectionDockerForm.ts
-#: src/admin/policies/PolicyBindingForm.ts
-#: src/admin/policies/PolicyTestForm.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
-#: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
-#: src/admin/property-mappings/PropertyMappingTestForm.ts
-#: src/admin/providers/ldap/LDAPProviderForm.ts
-#: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-#: src/admin/providers/proxy/ProxyProviderForm.ts
-#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/providers/saml/SAMLProviderImportForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
-#: src/admin/sources/ldap/LDAPSourceForm.ts
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-#: src/admin/sources/plex/PlexSourceForm.ts
-#: src/admin/sources/plex/PlexSourceForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
-#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
-#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-#: src/admin/stages/authenticator_static/AuthenticatorStaticStageForm.ts
-#: src/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-#: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 #: src/admin/stages/email/EmailStageForm.ts
 #: src/admin/stages/identification/IdentificationStageForm.ts
-#: src/admin/stages/identification/IdentificationStageForm.ts
-#: src/admin/stages/identification/IdentificationStageForm.ts
-#: src/admin/stages/identification/IdentificationStageForm.ts
-#: src/admin/stages/identification/IdentificationStageForm.ts
-#: src/admin/stages/invitation/InvitationForm.ts
 #: src/admin/stages/invitation/InvitationListLink.ts
-#: src/admin/stages/password/PasswordStageForm.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tenants/TenantForm.ts
-#: src/admin/tokens/TokenForm.ts
 #: src/admin/users/UserForm.ts
-#: src/admin/users/UserResetEmailForm.ts
 #: src/elements/Spinner.ts
 msgid "Loading..."
 msgstr "载入中……"
@@ -3465,12 +3489,12 @@ msgid "Long-running operations which authentik executes in the background."
 msgstr "authentik 在后台执行的长时间运行的操作。"
 
 #: src/admin/flows/FlowForm.ts
-msgid "MESSAGE will notify the user the flow isn't applicable."
-msgstr ""
+#~ msgid "MESSAGE will notify the user the flow isn't applicable."
+#~ msgstr ""
 
 #: src/admin/flows/FlowForm.ts
-msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
-msgstr ""
+#~ msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
+#~ msgstr ""
 
 #: src/admin/users/UserViewPage.ts
 msgid "MFA Authenticators"
@@ -3948,7 +3972,6 @@ msgstr "尚未同步。"
 msgid "Not used by any other object."
 msgstr "不被任何其他对象使用。"
 
-#: src/flow/stages/FlowErrorStage.ts
 #: src/flow/stages/access_denied/AccessDeniedStage.ts
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flow/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -4467,8 +4490,16 @@ msgid "Post binding"
 msgstr "Post binding"
 
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "Post binding (auto-submit)"
-msgstr "Post binding（自动提交）"
+#~ msgid "Post binding (auto-submit)"
+#~ msgstr "Post binding（自动提交）"
+
+#: src/admin/sources/saml/SAMLSourceForm.ts
+msgid "Post binding but the request is automatically sent and the user doesn't have to confirm."
+msgstr ""
+
+#: src/admin/sources/saml/SAMLSourceForm.ts
+msgid "Post-auto binding"
+msgstr ""
 
 #: src/flow/FlowExecutor.ts
 msgid "Powered by authentik"
@@ -4630,16 +4661,16 @@ msgstr "快速行动"
 #~ msgstr "RESTART 从头开始重新启动流程，同时保留流程上下文。"
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "RESTART restarts the flow from the beginning."
-msgstr "RESTART 从头开始重新启动流程。"
+#~ msgid "RESTART restarts the flow from the beginning."
+#~ msgstr "RESTART 从头开始重新启动流程。"
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context."
-msgstr ""
+#~ msgid "RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context."
+#~ msgstr ""
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "RETRY returns the error message and a similar challenge to the executor."
-msgstr "RETRY 向执行器返回错误消息和类似的质询。"
+#~ msgid "RETRY returns the error message and a similar challenge to the executor."
+#~ msgstr "RETRY 向执行器返回错误消息和类似的质询。"
 
 #~ msgid "RS256 (Asymmetric Encryption)"
 #~ msgstr "RS256（非对称加密）"
@@ -4649,23 +4680,23 @@ msgstr "RETRY 向执行器返回错误消息和类似的质询。"
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "RSA-SHA1"
-msgstr "RSA-SHA1"
+#~ msgid "RSA-SHA1"
+#~ msgstr "RSA-SHA1"
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "RSA-SHA256"
-msgstr "RSA-SHA256"
+#~ msgid "RSA-SHA256"
+#~ msgstr "RSA-SHA256"
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "RSA-SHA384"
-msgstr "RSA-SHA384"
+#~ msgid "RSA-SHA384"
+#~ msgstr "RSA-SHA384"
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "RSA-SHA512"
-msgstr "RSA-SHA512"
+#~ msgid "RSA-SHA512"
+#~ msgstr "RSA-SHA512"
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "Raw JWKS data."
@@ -4819,6 +4850,10 @@ msgstr "声誉得分"
 msgid "Request"
 msgstr "请求"
 
+#: src/flow/stages/FlowErrorStage.ts
+msgid "Request ID"
+msgstr ""
+
 #: src/flow/stages/access_denied/AccessDeniedStage.ts
 msgid "Request has been denied."
 msgstr "请求被拒绝。"
@@ -4866,6 +4901,14 @@ msgstr "常驻钥匙要求"
 #~ msgid "Resources"
 #~ msgstr "资源"
 
+#: src/admin/flows/StageBindingForm.ts
+msgid "Restarts the flow from the beginning"
+msgstr ""
+
+#: src/admin/flows/StageBindingForm.ts
+msgid "Restarts the flow from the beginning, while keeping the flow context"
+msgstr ""
+
 #: src/admin/events/EventInfo.ts
 #: src/admin/property-mappings/PropertyMappingTestForm.ts
 msgid "Result"
@@ -4884,8 +4927,8 @@ msgstr "重试身份验证"
 
 #: src/flow/FlowExecutor.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
-msgid "Return"
-msgstr "返回"
+#~ msgid "Return"
+#~ msgstr "返回"
 
 #: src/elements/router/Router404.ts
 msgid "Return home"
@@ -4899,6 +4942,10 @@ msgstr "返回设备选择器"
 
 #~ msgid "Return true if request IP/target username's score is below a certain threshold."
 #~ msgstr "如果请求 IP/目标用户名的分数低于特定阈值则返回真。 "
+
+#: src/admin/flows/StageBindingForm.ts
+msgid "Returns the error message and a similar challenge to the executor"
+msgstr ""
 
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Revoked?"
@@ -4940,28 +4987,36 @@ msgstr "SAML 详情"
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "SHA1"
-msgstr "SHA1"
+#~ msgid "SHA1"
+#~ msgstr "SHA1"
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "SHA256"
-msgstr "SHA256"
+#~ msgid "SHA256"
+#~ msgstr "SHA256"
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "SHA384"
-msgstr "SHA384"
+#~ msgid "SHA384"
+#~ msgstr "SHA384"
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "SHA512"
-msgstr "SHA512"
+#~ msgid "SHA512"
+#~ msgstr "SHA512"
 
 #: src/admin/sources/saml/SAMLSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceViewPage.ts
 msgid "SLO URL"
 msgstr "SLO URL"
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "SLO URL (Post)"
+msgstr ""
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "SLO URL (Redirect)"
+msgstr ""
 
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "SMS"
@@ -5115,7 +5170,7 @@ msgstr "选择注册流程"
 #~ msgid "Select an identification method."
 #~ msgstr "选择一种识别方法。"
 
-#: src/elements/SearchSelect.ts
+#: src/elements/forms/SearchSelect.ts
 msgid "Select an object."
 msgstr "选择一个对象。"
 
@@ -5382,9 +5437,7 @@ msgstr ""
 msgid "Slug"
 msgstr "Slug"
 
-#: src/flow/FlowExecutor.ts
 #: src/flow/stages/FlowErrorStage.ts
-#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Something went wrong! Please try again later."
 msgstr "发生错误，请稍后重试。"
 
@@ -5397,6 +5450,10 @@ msgstr "源链接"
 
 #~ msgid "Source name"
 #~ msgstr "源名称"
+
+#: src/admin/stages/identification/IdentificationStageForm.ts
+msgid "Source settings"
+msgstr ""
 
 #~ msgid "Source {0}"
 #~ msgstr "源 {0}"
@@ -6132,6 +6189,10 @@ msgstr "以下对象使用 {objName}"
 msgid "The new application wizard greatly simplifies the steps required to create applications and providers."
 msgstr ""
 
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "The outpost holds all users and groups in-memory and will refresh every 5 Minutes"
+msgstr ""
+
 #~ msgid ""
 #~ "The policy passes when the reputation score is above the threshold, and\n"
 #~ "doesn't pass when either or both of the selected options are equal or less than the\n"
@@ -6248,6 +6309,10 @@ msgstr ""
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Threshold"
 msgstr "阈值"
+
+#: src/admin/stages/dummy/DummyStageForm.ts
+msgid "Throw error?"
+msgstr ""
 
 #: src/admin/stages/email/EmailStageForm.ts
 msgid "Time in minutes the token sent is valid."
@@ -6534,6 +6599,39 @@ msgstr "引用令牌的唯一标识符。"
 msgid "Unknown"
 msgstr "未知"
 
+#: src/admin/flows/utils.ts
+msgid "Unknown designation"
+msgstr ""
+
+#: src/admin/tokens/TokenListPage.ts
+msgid "Unknown intent"
+msgstr ""
+
+#: src/admin/flows/utils.ts
+msgid "Unknown layout"
+msgstr ""
+
+#: src/admin/outposts/OutpostForm.ts
+msgid "Unknown outpost type"
+msgstr ""
+
+#: src/admin/sources/oauth/OAuthSourceViewPage.ts
+msgid "Unknown provider type"
+msgstr ""
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+msgid "Unknown proxy mode"
+msgstr ""
+
+#: src/admin/outposts/OutpostListPage.ts
+msgid "Unknown type"
+msgstr ""
+
+#: src/admin/sources/oauth/utils.ts
+msgid "Unknown user matching mode"
+msgstr ""
+
 #~ msgid "Unmanaged"
 #~ msgstr "非托管"
 
@@ -6793,6 +6891,14 @@ msgstr "将此提供程序与 nginx 的 auth_request 或 traefik 的 ForwardAuth
 #: src/admin/tenants/TenantForm.ts
 msgid "Use this tenant for each domain that doesn't have a dedicated tenant."
 msgstr "对于没有专用租户的每个域，请使用此租户。"
+
+#: src/admin/tokens/TokenForm.ts
+msgid "Used to access the API programmatically"
+msgstr ""
+
+#: src/admin/tokens/TokenForm.ts
+msgid "Used to login using a flow executor"
+msgstr ""
 
 #: src/admin/applications/ApplicationCheckAccessForm.ts
 #: src/admin/events/EventInfo.ts
@@ -7261,8 +7367,20 @@ msgstr "使用代理或转发身份验证（单个应用程序）模式时，将
 
 #: src/flow/FlowExecutor.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
-msgid "Whoops!"
-msgstr "噢！"
+#~ msgid "Whoops!"
+#~ msgstr "噢！"
+
+#: src/admin/flows/FlowForm.ts
+msgid "Will either follow the ?next parameter or redirect to the default interface"
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Will follow the ?next parameter if set, otherwise show a message"
+msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+msgid "Will notify the user the flow isn't applicable"
+msgstr ""
 
 #: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Windows"

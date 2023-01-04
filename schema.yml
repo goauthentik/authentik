@@ -36671,6 +36671,12 @@ components:
         url_sso_init:
           type: string
           readOnly: true
+        url_slo_post:
+          type: string
+          readOnly: true
+        url_slo_redirect:
+          type: string
+          readOnly: true
       required:
       - acs_url
       - assigned_application_name
@@ -36681,6 +36687,8 @@ components:
       - name
       - pk
       - url_download_metadata
+      - url_slo_post
+      - url_slo_redirect
       - url_sso_init
       - url_sso_post
       - url_sso_redirect
