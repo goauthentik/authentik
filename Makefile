@@ -6,15 +6,6 @@ NPM_VERSION = $(shell python -m scripts.npm_version)
 
 all: lint-fix lint test gen web
 
-test-integration:
-	coverage run manage.py test tests/integration
-
-test-e2e-provider:
-	coverage run manage.py test tests/e2e/test_provider*
-
-test-e2e-rest:
-	coverage run manage.py test tests/e2e/test_flows* tests/e2e/test_source*
-
 test-go:
 	go test -timeout 0 -v -race -cover ./...
 

@@ -102,14 +102,28 @@ jobs:
         uses: helm/kind-action@v1.5.0
       - name: run integration
         run: |
-          poetry run make test-integration
+          poetry run coverage run manage.py test tests/integration
           poetry run coverage xml
       - if: ${{ always() }}
         uses: codecov/codecov-action@v3
         with:
           flags: integration
-  test-e2e-provider:
+  test-e2e:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - name: e2e-proxy
+            glob: tests/e2e/test_provider_proxy*
+          - name: e2e-oauth
+            glob: tests/e2e/test_provider_oauth2* tests/e2e/test_source_oauth*
+          - name: e2e-saml
+            glob: tests/e2e/test_provider_saml* tests/e2e/test_source_saml*
+          - name: e2e-ldap
+            glob: tests/e2e/test_provider_ldap*
+          - name: e2e-flows
+            glob: tests/e2e/test_flows*
     steps:
       - uses: actions/checkout@v3
       - name: Setup authentik env
@@ -131,36 +145,7 @@ jobs:
           npm run build
       - name: run e2e
         run: |
-          poetry run make test-e2e-provider
-          poetry run coverage xml
-      - if: ${{ always() }}
-        uses: codecov/codecov-action@v3
-        with:
-          flags: e2e
-  test-e2e-rest:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup authentik env
-        uses: ./.github/actions/setup
-      - name: Setup e2e env (chrome, etc)
-        run: |
-          docker-compose -f tests/e2e/docker-compose.yml up -d
-      - id: cache-web
-        uses: actions/cache@v3
-        with:
-          path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**') }}
-      - name: prepare web ui
-        if: steps.cache-web.outputs.cache-hit != 'true'
-        working-directory: web/
-        run: |
-          npm ci
-          make -C .. gen-client-ts
-          npm run build
-      - name: run e2e
-        run: |
-          poetry run make test-e2e-rest
+          poetry run coverage run manage.py test ${{ matrix.job.glob }}
           poetry run coverage xml
       - if: ${{ always() }}
         uses: codecov/codecov-action@v3
@@ -173,8 +158,7 @@ jobs:
       - test-migrations-from-stable
       - test-unittest
       - test-integration
-      - test-e2e-rest
-      - test-e2e-provider
+      - test-e2e
     runs-on: ubuntu-latest
     steps:
       - run: echo mark
