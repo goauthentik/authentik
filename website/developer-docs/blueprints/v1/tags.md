@@ -162,9 +162,9 @@ Minimal examples:
 
 ```
 configuration_stages: !Enumerate [
-    !Context list_of_totp_stage_names,
+    !Context map_of_totp_stage_names_and_types,
     SEQ, # Output a sequence
-    !Find [authentik_stages_authenticator_totp.authenticatortotpstage, [name, !Value 0]] # The value of each item in the sequence
+    !Find [!Format ["authentik_stages_authenticator_%s.authenticator%sstage", !Index 0, Index 0], [name, !Value 0]] # The value of each item in the sequence
 ]
 ```
 
@@ -172,14 +172,14 @@ The above example will resolve to something like this:
 
 ```
 configuration_stages:
-- !Find [authentik_stages_authenticator_totp.authenticatortotpstage, [name, <stage_name_1>]]
-- !Find [authentik_stages_authenticator_static.authenticatorstaticstage, [name, <stage_name_2>]]
+- !Find [authentik_stages_authenticator_<stage_type_1>.authenticator<stage_type_1>stage, [name, <stage_name_1>]]
+- !Find [authentik_stages_authenticator_<stage_type_2>.authenticator<stage_type_2>stage, [name, <stage_name_2>]]
 ```
 
 Similarly, a mapping can be generated like so:
 
 ```
-configuration_stages: !Enumerate [
+example: !Enumerate [
     !Context list_of_totp_stage_names,
     MAP, # Output a map
     [
@@ -192,7 +192,7 @@ configuration_stages: !Enumerate [
 The above example will resolve to something like this:
 
 ```
-configuration_stages:
+example:
   0: <stage_name_1>
   1: <stage_name_2>
 ```
