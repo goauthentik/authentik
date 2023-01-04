@@ -5,12 +5,14 @@ title: SAML Provider
 This provider allows you to integrate enterprise software using the SAML2 Protocol. It supports signed requests and uses [Property Mappings](../property-mappings/#saml-property-mapping) to determine which fields are exposed and what values they return. This makes it possible to expose vendor-specific fields.
 Default fields are exposed through auto-generated Property Mappings, which are prefixed with "authentik default".
 
-| Endpoint               | URL                                                          |
-| ---------------------- | ------------------------------------------------------------ |
-| SSO (Redirect binding) | `/application/saml/<application slug>/sso/binding/redirect/` |
-| SSO (POST binding)     | `/application/saml/<application slug>/sso/binding/post/`     |
-| IdP-initiated login    | `/application/saml/<application slug>/sso/binding/init/`     |
-| Metadata Download      | `/api/v3/providers/saml/<provider uid>/metadata/?download/`  |
+| Endpoint                  | URL                                                          |
+| ------------------------- | ------------------------------------------------------------ |
+| SSO (Redirect binding)    | `/application/saml/<application slug>/sso/binding/redirect/` |
+| SSO (POST binding)        | `/application/saml/<application slug>/sso/binding/post/`     |
+| SSO (IdP-initiated login) | `/application/saml/<application slug>/sso/binding/init/`     |
+| SLO (Redirect binding)    | `/application/saml/<application slug>/slo/binding/redirect/` |
+| SLO (POST binding)        | `/application/saml/<application slug>/slo/binding/post/`     |
+| Metadata Download         | `/application/saml/<application slug>/metadata/`             |
 
 You can download the metadata through the Webinterface, this link might be handy if your software wants to download the metadata directly.
 
