@@ -9,9 +9,7 @@ ENV_GIT_HASH_KEY = "GIT_BUILD_HASH"
 def get_build_hash(fallback: Optional[str] = None) -> str:
     """Get build hash"""
     build_hash = environ.get(ENV_GIT_HASH_KEY, fallback if fallback else "")
-    if build_hash == "" and fallback:
-        return fallback
-    return build_hash
+    return fallback if build_hash == "" and fallback else build_hash
 
 
 def get_full_version() -> str:

@@ -73,6 +73,9 @@ class TestUserWriteStage(FlowTestCase):
             "username": "test-user-new",
             "password": new_password,
             "attributes.some.custom-attribute": "test",
+            "attributes": {
+                "foo": "bar",
+            },
             "some_ignored_attribute": "bar",
         }
         session = self.client.session
@@ -89,6 +92,7 @@ class TestUserWriteStage(FlowTestCase):
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(new_password))
         self.assertEqual(user_qs.first().attributes["some"]["custom-attribute"], "test")
+        self.assertEqual(user_qs.first().attributes["foo"], "bar")
         self.assertNotIn("some_ignored_attribute", user_qs.first().attributes)
 
     @patch(

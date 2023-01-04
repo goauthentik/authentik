@@ -19,7 +19,7 @@ def model_tester_factory(test_model: type[Stage]) -> Callable:
     def tester(self: TestModels):
         try:
             model_class = None
-            if test_model._meta.abstract:
+            if test_model._meta.abstract:  # pragma: no cover
                 return
             model_class = test_model()
             self.assertTrue(issubclass(model_class.serializer, BaseSerializer))
