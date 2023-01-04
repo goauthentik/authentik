@@ -26,8 +26,8 @@ class TestBlueprintOCI(TransactionTestCase):
 
             self.assertEqual(
                 BlueprintInstance(
-                    path="https://ghcr.io/goauthentik/blueprints/test:latest"
-                ).retrieve_oci(),
+                    path="oci://ghcr.io/goauthentik/blueprints/test:latest"
+                ).retrieve(),
                 "foo",
             )
 
@@ -40,7 +40,7 @@ class TestBlueprintOCI(TransactionTestCase):
 
             with self.assertRaises(BlueprintRetrievalFailed):
                 BlueprintInstance(
-                    path="https://ghcr.io/goauthentik/blueprints/test:latest"
+                    path="oci://ghcr.io/goauthentik/blueprints/test:latest"
                 ).retrieve_oci()
 
     def test_manifests_error_response(self):
@@ -53,7 +53,7 @@ class TestBlueprintOCI(TransactionTestCase):
 
             with self.assertRaises(BlueprintRetrievalFailed):
                 BlueprintInstance(
-                    path="https://ghcr.io/goauthentik/blueprints/test:latest"
+                    path="oci://ghcr.io/goauthentik/blueprints/test:latest"
                 ).retrieve_oci()
 
     def test_no_matching_blob(self):
@@ -72,7 +72,7 @@ class TestBlueprintOCI(TransactionTestCase):
             )
             with self.assertRaises(BlueprintRetrievalFailed):
                 BlueprintInstance(
-                    path="https://ghcr.io/goauthentik/blueprints/test:latest"
+                    path="oci://ghcr.io/goauthentik/blueprints/test:latest"
                 ).retrieve_oci()
 
     def test_blob_error(self):
@@ -93,5 +93,5 @@ class TestBlueprintOCI(TransactionTestCase):
 
             with self.assertRaises(BlueprintRetrievalFailed):
                 BlueprintInstance(
-                    path="https://ghcr.io/goauthentik/blueprints/test:latest"
+                    path="oci://ghcr.io/goauthentik/blueprints/test:latest"
                 ).retrieve_oci()

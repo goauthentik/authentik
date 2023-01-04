@@ -16,7 +16,7 @@ def serializer_tester_factory(test_model: Type[SerializerModel]) -> Callable:
     """Test serializer"""
 
     def tester(self: TestModels):
-        if test_model._meta.abstract:
+        if test_model._meta.abstract:  # pragma: no cover
             return
         model_class = test_model()
         self.assertTrue(isinstance(model_class, SerializerModel))

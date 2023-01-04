@@ -68,7 +68,7 @@ class ConfigView(APIView):
             caps.append(Capabilities.CAN_GEO_IP)
         if CONFIG.y_bool("impersonation"):
             caps.append(Capabilities.CAN_IMPERSONATE)
-        if settings.DEBUG:
+        if settings.DEBUG:  # pragma: no cover
             caps.append(Capabilities.CAN_DEBUG)
         return caps
 

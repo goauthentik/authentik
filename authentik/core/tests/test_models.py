@@ -35,7 +35,7 @@ def source_tester_factory(test_model: type[Stage]) -> Callable:
 
     def tester(self: TestModels):
         model_class = None
-        if test_model._meta.abstract:
+        if test_model._meta.abstract:  # pragma: no cover
             model_class = test_model.__bases__[0]()
         else:
             model_class = test_model()
