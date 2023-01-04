@@ -13,6 +13,7 @@ from authentik.sources.saml.processors.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_METADATA,
+    NS_SAML_PROTOCOL,
     NS_SIGNATURE,
     SAML_BINDING_POST,
     SAML_BINDING_REDIRECT,
@@ -35,7 +36,7 @@ class MetadataProcessor:
         self.provider = provider
         self.http_request = request
         self.force_binding = None
-        self.xml_id = sha256(f"{provider.name}-{provider.pk}".encode("ascii")).hexdigest()
+        self.xml_id = "_" + sha256(f"{provider.name}-{provider.pk}".encode("ascii")).hexdigest()
 
     def get_signing_key_descriptor(self) -> Optional[Element]:
         """Get Signing KeyDescriptor, if enabled for the provider"""
@@ -143,9 +144,7 @@ class MetadataProcessor:
         idp_sso_descriptor = SubElement(
             entity_descriptor, f"{{{NS_SAML_METADATA}}}IDPSSODescriptor"
         )
-        idp_sso_descriptor.attrib[
-            "protocolSupportEnumeration"
-        ] = "urn:oasis:names:tc:SAML:2.0:protocol"
+        idp_sso_descriptor.attrib["protocolSupportEnumeration"] = NS_SAML_PROTOCOL
 
         signing_descriptor = self.get_signing_key_descriptor()
         if signing_descriptor is not None:
