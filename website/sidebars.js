@@ -23,6 +23,7 @@ module.exports = {
                 "installation/reverse-proxy",
                 "installation/automated-install",
                 "installation/air-gapped",
+                "installation/monitoring",
             ],
         },
         {
