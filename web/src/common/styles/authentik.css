@@ -123,7 +123,9 @@ html > form > input {
         --pf-global--Color--100: var(--ak-dark-foreground);
         --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
         --pf-global--link--Color: var(--ak-dark-foreground-link);
-        --pf-c-radio__label--Color: var(--ak-dark-foreground-link);
+    }
+    .pf-c-radio {
+        --pf-c-radio__label--Color: var(--ak-dark-foreground);
     }
     /* Global page background colour */
     .pf-c-page {
