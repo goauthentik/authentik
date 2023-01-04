@@ -36,7 +36,7 @@ func (fe *FlowExecutor) solveChallenge_AuthenticatorValidate(challenge *api.Chal
 	for _, devCh := range challenge.AuthenticatorValidationChallenge.DeviceChallenges {
 		if devCh.DeviceClass == string(api.DEVICECLASSESENUM_DUO) {
 			deviceChallenge = &devCh
-			devId, err := strconv.Atoi(deviceChallenge.DeviceUid)
+			devId, err := strconv.ParseInt(deviceChallenge.DeviceUid, 10, 32)
 			if err != nil {
 				return api.FlowChallengeResponseRequest{}, errors.New("failed to convert duo device id to int")
 			}
