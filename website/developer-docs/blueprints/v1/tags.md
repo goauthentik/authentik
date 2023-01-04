@@ -164,7 +164,7 @@ Minimal examples:
 configuration_stages: !Enumerate [
     !Context map_of_totp_stage_names_and_types,
     SEQ, # Output a sequence
-    !Find [!Format ["authentik_stages_authenticator_%s.authenticator%sstage", !Index 0, Index 0], [name, !Value 0]] # The value of each item in the sequence
+    !Find [!Format ["authentik_stages_authenticator_%s.authenticator%sstage", !Index 0, !Index 0], [name, !Value 0]] # The value of each item in the sequence
 ]
 ```
 
