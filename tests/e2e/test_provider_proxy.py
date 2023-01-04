@@ -138,8 +138,9 @@ class TestProviderProxy(SeleniumTestCase):
     def test_proxy_basic_auth(self):
         """Test simple outpost setup with single provider"""
         cred = generate_id()
+        attr = "basic-password"  # nosec
         self.user.attributes["basic-username"] = cred
-        self.user.attributes["basic-password"] = cred
+        self.user.attributes[attr] = cred
         self.user.save()
 
         proxy: ProxyProvider = ProxyProvider.objects.create(
@@ -151,7 +152,7 @@ class TestProviderProxy(SeleniumTestCase):
             external_host="http://localhost:9000",
             basic_auth_enabled=True,
             basic_auth_user_attribute="basic-username",
-            basic_auth_password_attribute="basic-password",  # nosec
+            basic_auth_password_attribute=attr,
         )
         # Ensure OAuth2 Params are set
         proxy.set_oauth_defaults()
