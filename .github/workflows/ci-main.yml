@@ -109,21 +109,21 @@ jobs:
         with:
           flags: integration
   test-e2e:
-    name: test-${{ matrix.job.name }}
+    name: test-e2e (${{ matrix.job.name }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         job:
-          - name: e2e-proxy
+          - name: proxy
             glob: tests/e2e/test_provider_proxy*
-          - name: e2e-oauth
+          - name: oauth
             glob: tests/e2e/test_provider_oauth2* tests/e2e/test_source_oauth*
-          - name: e2e-saml
+          - name: saml
             glob: tests/e2e/test_provider_saml* tests/e2e/test_source_saml*
-          - name: e2e-ldap
+          - name: ldap
             glob: tests/e2e/test_provider_ldap*
-          - name: e2e-flows
+          - name: flows
             glob: tests/e2e/test_flows*
     steps:
       - uses: actions/checkout@v3

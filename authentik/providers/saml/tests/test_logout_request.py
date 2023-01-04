@@ -1,8 +1,8 @@
 """logout request tests"""
 from django.test import TestCase
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_cert, create_test_flow
-from authentik.managed.manager import ObjectManager
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
 from authentik.sources.saml.models import SAMLSource
@@ -29,8 +29,8 @@ POST_LOGOUT_REQUEST = (
 class TestLogoutRequest(TestCase):
     """Test LogoutRequest generator and parser"""
 
+    @apply_blueprint("system/providers-saml.yaml")
     def setUp(self):
-        ObjectManager().run()
         cert = create_test_cert()
         self.provider: SAMLProvider = SAMLProvider.objects.create(
             authorization_flow=create_test_flow(),
