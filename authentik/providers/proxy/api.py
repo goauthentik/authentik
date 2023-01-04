@@ -1,6 +1,7 @@
 """ProxyProvider API Views"""
 from typing import Any, Optional
 
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField, ReadOnlyField, SerializerMethodField
@@ -39,22 +40,34 @@ class ProxyProviderSerializer(ProviderSerializer):
     redirect_uris = CharField(read_only=True)
     outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
 
+    def validate_basic_auth_enabled(self, value: bool) -> bool:
+        """Ensure user and password attributes are set"""
+        if value:
+            if (
+                self.initial_data.get("basic_auth_password_attribute", "") == ""
+                or self.initial_data.get("basic_auth_user_attribute", "") == ""
+            ):
+                raise ValidationError(
+                    _("User and password attributes must be set when basic auth is enabled.")
+                )
+        return value
+
     def validate(self, attrs) -> dict[Any, str]:
         """Check that internal_host is set when mode is Proxy"""
         if (
             attrs.get("mode", ProxyMode.PROXY) == ProxyMode.PROXY
             and attrs.get("internal_host", "") == ""
         ):
-            raise ValidationError("Internal host cannot be empty when forward auth is disabled.")
+            raise ValidationError(_("Internal host cannot be empty when forward auth is disabled."))
         return attrs
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict):
         instance: ProxyProvider = super().create(validated_data)
         instance.set_oauth_defaults()
         instance.save()
         return instance
 
-    def update(self, instance: ProxyProvider, validated_data):
+    def update(self, instance: ProxyProvider, validated_data: dict):
         instance = super().update(instance, validated_data)
         instance.set_oauth_defaults()
         instance.save()

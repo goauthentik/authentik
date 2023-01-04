@@ -47,7 +47,6 @@ class TestProviderLDAP(SeleniumTestCase):
 
     def _prepare(self) -> User:
         """prepare user, provider, app and container"""
-        # set additionalHeaders to test later
         self.user.attributes["extraAttribute"] = "bar"
         self.user.save()
 
