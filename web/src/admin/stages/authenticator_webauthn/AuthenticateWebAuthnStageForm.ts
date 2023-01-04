@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
@@ -74,86 +75,75 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                         ?required=${true}
                         name="userVerification"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value="${UserVerificationEnum.Required}"
-                                ?selected=${this.instance?.userVerification ===
-                                UserVerificationEnum.Required}
-                            >
-                                ${t`User verification must occur.`}
-                            </option>
-                            <option
-                                value="${UserVerificationEnum.Preferred}"
-                                ?selected=${this.instance?.userVerification ===
-                                UserVerificationEnum.Preferred}
-                            >
-                                ${t`User verification is preferred if available, but not required.`}
-                            </option>
-                            <option
-                                value="${UserVerificationEnum.Discouraged}"
-                                ?selected=${this.instance?.userVerification ===
-                                UserVerificationEnum.Discouraged}
-                            >
-                                ${t`User verification should not occur.`}
-                            </option>
-                        </select>
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: t`User verification must occur.`,
+                                    value: UserVerificationEnum.Required,
+                                    default: true,
+                                },
+                                {
+                                    label: t`User verification is preferred if available, but not required.`,
+                                    value: UserVerificationEnum.Preferred,
+                                },
+                                {
+                                    label: t`User verification should not occur.`,
+                                    value: UserVerificationEnum.Discouraged,
+                                },
+                            ]}
+                            .value=${this.instance?.userVerification}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Resident key requirement`}
                         ?required=${true}
                         name="residentKeyRequirement"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value="${ResidentKeyRequirementEnum.Discouraged}"
-                                ?selected=${this.instance?.residentKeyRequirement ===
-                                ResidentKeyRequirementEnum.Discouraged}
-                            >
-                                ${t`The authenticator should not create a dedicated credential`}
-                            </option>
-                            <option
-                                value="${ResidentKeyRequirementEnum.Preferred}"
-                                ?selected=${this.instance?.residentKeyRequirement ===
-                                ResidentKeyRequirementEnum.Preferred}
-                            >
-                                ${t`The authenticator can create and store a dedicated credential, but if it doesn't that's alright too`}
-                            </option>
-                            <option
-                                value="${ResidentKeyRequirementEnum.Required}"
-                                ?selected=${this.instance?.residentKeyRequirement ===
-                                ResidentKeyRequirementEnum.Required}
-                            >
-                                ${t`The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur`}
-                            </option>
-                        </select>
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: t`The authenticator should not create a dedicated credential`,
+                                    value: ResidentKeyRequirementEnum.Required,
+                                    default: true,
+                                },
+                                {
+                                    label: t`The authenticator can create and store a dedicated credential, but if it doesn't that's alright too`,
+                                    value: ResidentKeyRequirementEnum.Preferred,
+                                },
+                                {
+                                    label: t`The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur`,
+                                    value: ResidentKeyRequirementEnum.Discouraged,
+                                },
+                            ]}
+                            .value=${this.instance?.residentKeyRequirement}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Authenticator Attachment`}
                         ?required=${true}
                         name="authenticatorAttachment"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value=""
-                                ?selected=${this.instance?.authenticatorAttachment === null}
-                            >
-                                ${t`No preference is sent`}
-                            </option>
-                            <option
-                                value="${AuthenticatorAttachmentEnum.Platform}"
-                                ?selected=${this.instance?.authenticatorAttachment ===
-                                AuthenticatorAttachmentEnum.Platform}
-                            >
-                                ${t`A non-removable authenticator, like TouchID or Windows Hello`}
-                            </option>
-                            <option
-                                value="${AuthenticatorAttachmentEnum.CrossPlatform}"
-                                ?selected=${this.instance?.authenticatorAttachment ===
-                                AuthenticatorAttachmentEnum.CrossPlatform}
-                            >
-                                ${t`A "roaming" authenticator, like a YubiKey`}
-                            </option>
-                        </select>
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: t`No preference is sent`,
+                                    value: null,
+                                    default: true,
+                                },
+                                {
+                                    label: t`A non-removable authenticator, like TouchID or Windows Hello`,
+                                    value: AuthenticatorAttachmentEnum.Platform,
+                                },
+                                {
+                                    label: t`A "roaming" authenticator, like a YubiKey`,
+                                    value: AuthenticatorAttachmentEnum.CrossPlatform,
+                                },
+                            ]}
+                            .value=${this.instance?.authenticatorAttachment}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
                         <ak-search-select
