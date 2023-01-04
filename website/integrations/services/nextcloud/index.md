@@ -52,7 +52,7 @@ Set the following values:
 -   Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
 -   Identifier of the IdP entity (must be a URI): `https://authentik.company`
 -   URL Target of the IdP where the SP will send the Authentication Request Message: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
--   URL Location of IdP where the SP will send the SLO Request: `https://authentik.company/if/session-end/<application-slug>/`
+-   URL Location of IdP where the SP will send the SLO Request: `https://authentik.company/application/saml/<application-slug>/slo/binding/redirect`
 -   Public X.509 certificate of the IdP: Copy the PEM of the Selected Signing Certificate
 
 Under Attribute mapping, set these values:
