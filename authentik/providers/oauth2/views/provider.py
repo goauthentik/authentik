@@ -17,7 +17,12 @@ from authentik.providers.oauth2.constants import (
     GRANT_TYPE_REFRESH_TOKEN,
     SCOPE_OPENID,
 )
-from authentik.providers.oauth2.models import OAuth2Provider, ResponseTypes, ScopeMapping
+from authentik.providers.oauth2.models import (
+    OAuth2Provider,
+    ResponseMode,
+    ResponseTypes,
+    ScopeMapping,
+)
 from authentik.providers.oauth2.utils import cors_allow
 
 LOGGER = get_logger()
@@ -72,6 +77,11 @@ class ProviderInfoView(View):
                 ResponseTypes.CODE_TOKEN,
                 ResponseTypes.CODE_ID_TOKEN,
                 ResponseTypes.CODE_ID_TOKEN_TOKEN,
+            ],
+            "response_modes_supported": [
+                ResponseMode.QUERY,
+                ResponseMode.FRAGMENT,
+                ResponseMode.FORM_POST,
             ],
             "jwks_uri": self.request.build_absolute_uri(
                 reverse(

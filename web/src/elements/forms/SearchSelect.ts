@@ -259,7 +259,7 @@ export class SearchSelect<T> extends AKElement {
                             this.renderMenu();
                         }}
                         @blur=${(ev: FocusEvent) => {
-                            // Check if we're loosing focus to one of our dropdown items, and if such don't blur
+                            // Check if we're losing focus to one of our dropdown items, and if such don't blur
                             if (ev.relatedTarget instanceof HTMLButtonElement) {
                                 const parentMenu = ev.relatedTarget.closest(
                                     "ul.pf-c-dropdown__menu.pf-m-static",
