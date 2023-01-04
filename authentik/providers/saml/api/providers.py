@@ -28,9 +28,9 @@ from authentik.core.models import Provider
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
-from authentik.providers.saml.processors.request_parser import AuthNRequest
 from authentik.sources.saml.processors.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
 
 LOGGER = get_logger()
