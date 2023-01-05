@@ -18,7 +18,7 @@ Example:
 user_email_local = regex_replace(request.user.email, '(.+)@.+', '')
 ```
 
-### `list_flatten(value: list[Any] | Any) -> Optional[Any}`
+### `list_flatten(value: list[Any] | Any) -> Optional[Any]`
 
 Flatten a list by either returning its first element, None if the list is empty, or the passed in object if its not a list.
 

@@ -29,7 +29,11 @@ ak_message("Access denied")
 return False
 ```
 
-### `ak_call_policy(name: str, **kwargs) -> PolicyResult` (2021.12+)
+### `ak_call_policy(name: str, **kwargs) -> PolicyResult`
+
+:::info
+Requires authentik 2021.12
+:::
 
 Call another policy with the name _name_. Current request is passed to policy. Key-word arguments
 can be used to modify the request's context.
@@ -87,7 +91,10 @@ Additionally, when the policy is executed from a flow, every variable from the f
 This includes the following:
 
 -   `context['flow_plan']`: The actual flow plan itself, can be used to inject stages.
--   `context['redirect']`: The URL the user should be redirected to after the flow execution succeeds. (Optional)
+
+    -   `context['flow_plan'].context`: The context of the currently active flow, which differs from the policy context. Some fields of flow plan context are passed to the root context, and updated from it, like 'prompt_data', but not every variable
+    -   `context['flow_plan'].context['redirect']`: The URL the user should be redirected to after the flow execution succeeds. (Optional)
+
 -   `context['prompt_data']`: Data which has been saved from a prompt stage or an external source. (Optional)
 -   `context['application']`: The application the user is in the process of authorizing. (Optional)
 -   `context['source']`: The source the user is authenticating/enrolling with. (Optional)
