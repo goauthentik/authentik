@@ -417,10 +417,7 @@ ${this.instance?.redirectUris}</textarea
                             )}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Deprecated. Instead of using this field, configure the JWKS data/URL in Sources.`}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${t`JWTs signed by certificates configured here can be used to authenticate to the provider.`}
+                            ${t`JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.`}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${t`Hold control/command to select multiple items.`}

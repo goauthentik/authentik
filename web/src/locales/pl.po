@@ -388,7 +388,6 @@ msgstr "Zezwalaj na logowanie inicjowane przez IDP"
 msgid "Allow friends to authenticate via Plex, even if you don't share any servers"
 msgstr "Zezwalaj znajomym na uwierzytelnianie przez Plex, nawet jeśli nie udostępniasz żadnych serwerów"
 
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Allow up to N occurrences in the HIBP database."
 msgstr "Dopuść do N wystąpień w bazie danych HIBP."
@@ -401,7 +400,6 @@ msgstr "Zezwalaj użytkownikom na korzystanie z aplikacji na podstawie właściw
 msgid "Allowed Redirect URIs"
 msgstr "Dozwolone URI przekierowania"
 
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Allowed count"
 msgstr "Dozwolona liczba"
@@ -1110,12 +1108,12 @@ msgid "Checkbox"
 msgstr "Pole wyboru"
 
 #: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
-msgid ""
-"Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.\n"
-"Note that only a part of the hash of the password is sent, the full comparison is done clientside."
-msgstr ""
-"Sprawdza wartość z żądania zasad względem interfejsu API Have I been Pwned i na tej podstawie odrzuca żądanie.\n"
-"Zwróć uwagę, że wysyłana jest tylko część skrótu hasła, pełne porównanie odbywa się po stronie klienta."
+#~ msgid ""
+#~ "Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.\n"
+#~ "Note that only a part of the hash of the password is sent, the full comparison is done clientside."
+#~ msgstr ""
+#~ "Sprawdza wartość z żądania zasad względem interfejsu API Have I been Pwned i na tej podstawie odrzuca żądanie.\n"
+#~ "Zwróć uwagę, że wysyłana jest tylko część skrótu hasła, pełne porównanie odbywa się po stronie klienta."
 
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 msgid "Checks if the request's user's password has been changed in the last x days, and denys based on settings."
@@ -1841,8 +1839,8 @@ msgid "Deny the user access"
 msgstr "Odmów użytkownikowi dostępu"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Deprecated. Instead of using this field, configure the JWKS data/URL in Sources."
-msgstr "Przestarzałe. Zamiast używać tego pola, skonfiguruj dane/adres URL JWKS w Źródłach."
+#~ msgid "Deprecated. Instead of using this field, configure the JWKS data/URL in Sources."
+#~ msgstr "Przestarzałe. Zamiast używać tego pola, skonfiguruj dane/adres URL JWKS w Źródłach."
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/wizard/InitialApplicationWizardPage.ts
@@ -2323,7 +2321,6 @@ msgstr "Wykonuje fragment kodu Pythona, aby określić, czy zezwolić, czy odrzu
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Execution logging"
@@ -2490,7 +2487,6 @@ msgstr "Pole"
 msgid "Field Key"
 msgstr "Klucz pola"
 
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Field key to check, field keys defined in Prompt stages are available."
 msgstr "Klucz pola do sprawdzenia, dostępne są klucze pola zdefiniowane w etapach monitu."
@@ -3205,8 +3201,12 @@ msgstr ""
 #~ msgstr "Algorytm JWT"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "JWTs signed by certificates configured here can be used to authenticate to the provider."
-msgstr "JWTs podpisane przez certyfikaty skonfigurowane tutaj mogą służyć do uwierzytelniania u dostawcy."
+#~ msgid "JWTs signed by certificates configured here can be used to authenticate to the provider."
+#~ msgstr "JWTs podpisane przez certyfikaty skonfigurowane tutaj mogą służyć do uwierzytelniania u dostawcy."
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider."
+msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Key used to sign the tokens."
@@ -3685,7 +3685,6 @@ msgstr "Moje aplikacje"
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 #: src/admin/property-mappings/PropertyMappingLDAPForm.ts
@@ -4315,7 +4314,6 @@ msgstr "Hasło"
 #~ msgid "Password expiry policy"
 #~ msgstr "Zasada wygaśnięcia hasła"
 
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Password field"
 msgstr "Pole hasła"
@@ -4474,7 +4472,6 @@ msgstr "Zasada {0}"
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Policy-specific settings"
 msgstr "Ustawienia specyficzne zasady"
@@ -5735,7 +5732,6 @@ msgstr "Pomyślnie utworzono placówkę."
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Successfully created policy."
@@ -5917,7 +5913,6 @@ msgstr "Pomyślnie zaktualizowano hasło."
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Successfully updated policy."
@@ -7343,7 +7338,6 @@ msgstr ""
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."

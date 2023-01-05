@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-04 17:12+0000\n"
+"POT-Creation-Date: 2023-01-05 12:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -537,11 +537,17 @@ msgstr ""
 msgid "Dummy Policies"
 msgstr ""
 
-#: authentik/policies/event_matcher/models.py:80
+#: authentik/policies/event_matcher/api.py:18
+msgid ""
+"Match events created by selected application. When left empty, all "
+"applications are matched."
+msgstr ""
+
+#: authentik/policies/event_matcher/models.py:79
 msgid "Event Matcher Policy"
 msgstr ""
 
-#: authentik/policies/event_matcher/models.py:81
+#: authentik/policies/event_matcher/models.py:80
 msgid "Event Matcher Policies"
 msgstr ""
 
@@ -567,30 +573,6 @@ msgstr ""
 
 #: authentik/policies/expression/models.py:42
 msgid "Expression Policies"
-msgstr ""
-
-#: authentik/policies/hibp/models.py:23
-#: authentik/policies/password/models.py:27
-msgid "Field key to check, field keys defined in Prompt stages are available."
-msgstr ""
-
-#: authentik/policies/hibp/models.py:51
-#: authentik/policies/password/models.py:72
-msgid "Password not set in context"
-msgstr ""
-
-#: authentik/policies/hibp/models.py:64
-#: authentik/policies/password/models.py:134
-#, python-format
-msgid "Password exists on %(count)d online lists."
-msgstr ""
-
-#: authentik/policies/hibp/models.py:70
-msgid "Have I Been Pwned Policy"
-msgstr ""
-
-#: authentik/policies/hibp/models.py:71
-msgid "Have I Been Pwned Policies"
 msgstr ""
 
 #: authentik/policies/models.py:23
@@ -633,6 +615,10 @@ msgstr ""
 msgid "Policies"
 msgstr ""
 
+#: authentik/policies/password/models.py:27
+msgid "Field key to check, field keys defined in Prompt stages are available."
+msgstr ""
+
 #: authentik/policies/password/models.py:44
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
 msgstr ""
@@ -640,6 +626,15 @@ msgstr ""
 #: authentik/policies/password/models.py:49
 msgid ""
 "If the zxcvbn score is equal or less than this value, the policy will fail."
+msgstr ""
+
+#: authentik/policies/password/models.py:72
+msgid "Password not set in context"
+msgstr ""
+
+#: authentik/policies/password/models.py:134
+#, python-format
+msgid "Password exists on %(count)d online lists."
 msgstr ""
 
 #: authentik/policies/password/models.py:154
@@ -947,6 +942,14 @@ msgstr ""
 
 #: authentik/providers/oauth2/views/userinfo.py:50
 msgid "authentik API Access on behalf of your user"
+msgstr ""
+
+#: authentik/providers/proxy/api.py:51
+msgid "User and password attributes must be set when basic auth is enabled."
+msgstr ""
+
+#: authentik/providers/proxy/api.py:61
+msgid "Internal host cannot be empty when forward auth is disabled."
 msgstr ""
 
 #: authentik/providers/proxy/models.py:54

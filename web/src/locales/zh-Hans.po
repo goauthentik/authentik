@@ -390,7 +390,6 @@ msgstr "允许 IDP 发起的登录"
 msgid "Allow friends to authenticate via Plex, even if you don't share any servers"
 msgstr "允许好友通过 Plex 进行身份验证，即使您不共享任何服务器。"
 
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Allow up to N occurrences in the HIBP database."
 msgstr "HIBP 数据库中最多允许 N 次出现。"
@@ -403,7 +402,6 @@ msgstr "允许用户根据属性使用应用程序、强制使用密码标准以
 msgid "Allowed Redirect URIs"
 msgstr "允许的重定向 URI"
 
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Allowed count"
 msgstr "允许的计数"
@@ -1112,12 +1110,12 @@ msgid "Checkbox"
 msgstr "复选框"
 
 #: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
-msgid ""
-"Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.\n"
-"Note that only a part of the hash of the password is sent, the full comparison is done clientside."
-msgstr ""
-"根据 Have I been Pwned API 检查策略请求中的值，以此拒绝请求。\n"
-"请注意，只有一部分密码哈希值被发送，完整的比较是在客户端完成的。"
+#~ msgid ""
+#~ "Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.\n"
+#~ "Note that only a part of the hash of the password is sent, the full comparison is done clientside."
+#~ msgstr ""
+#~ "根据 Have I been Pwned API 检查策略请求中的值，以此拒绝请求。\n"
+#~ "请注意，只有一部分密码哈希值被发送，完整的比较是在客户端完成的。"
 
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 msgid "Checks if the request's user's password has been changed in the last x days, and denys based on settings."
@@ -1843,8 +1841,8 @@ msgid "Deny the user access"
 msgstr "拒绝用户访问"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Deprecated. Instead of using this field, configure the JWKS data/URL in Sources."
-msgstr "已弃用。请在身份来源中配置 JWKS 数据 / URL 代替此字段。"
+#~ msgid "Deprecated. Instead of using this field, configure the JWKS data/URL in Sources."
+#~ msgstr "已弃用。请在身份来源中配置 JWKS 数据 / URL 代替此字段。"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/wizard/InitialApplicationWizardPage.ts
@@ -2325,7 +2323,6 @@ msgstr "执行 Python 代码段以确定是允许还是拒绝请求。"
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Execution logging"
@@ -2492,7 +2489,6 @@ msgstr "字段"
 msgid "Field Key"
 msgstr "字段键"
 
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Field key to check, field keys defined in Prompt stages are available."
 msgstr "要检查的字段键，可以使用输入阶段中定义的字段键。"
@@ -3205,8 +3201,12 @@ msgstr ""
 #~ msgstr "JWT 算法"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "JWTs signed by certificates configured here can be used to authenticate to the provider."
-msgstr "此处配置的证书签名的 JWT 可以用于此提供程序的身份验证。"
+#~ msgid "JWTs signed by certificates configured here can be used to authenticate to the provider."
+#~ msgstr "此处配置的证书签名的 JWT 可以用于此提供程序的身份验证。"
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider."
+msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Key used to sign the tokens."
@@ -3685,7 +3685,6 @@ msgstr "我的应用"
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 #: src/admin/property-mappings/PropertyMappingLDAPForm.ts
@@ -4315,7 +4314,6 @@ msgstr "密码"
 #~ msgid "Password expiry policy"
 #~ msgstr "密码过期策略"
 
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Password field"
 msgstr "密码字段"
@@ -4472,7 +4470,6 @@ msgstr "策略 {0}"
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Policy-specific settings"
 msgstr "特定策略设置"
@@ -5733,7 +5730,6 @@ msgstr "已成功创建前哨。"
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Successfully created policy."
@@ -5915,7 +5911,6 @@ msgstr "已成功更新密码。"
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Successfully updated policy."
@@ -7341,7 +7336,6 @@ msgstr ""
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."

@@ -384,7 +384,6 @@ msgstr "IDP tarafından başlatılan oturumlara izin ver"
 msgid "Allow friends to authenticate via Plex, even if you don't share any servers"
 msgstr "Herhangi bir sunucu paylaşmasan bile arkadaşlarının Plex aracılığıyla kimlik doğrulamasına izin ver"
 
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Allow up to N occurrences in the HIBP database."
 msgstr "HIBP veritabanında N oluşumuna kadar izin ver."
@@ -397,7 +396,6 @@ msgstr "Kullanıcıların özelliklere göre Uygulamaları kullanmasına, Parola
 msgid "Allowed Redirect URIs"
 msgstr "İzin Verilen Yeniden Yönlendirme URI'leri"
 
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Allowed count"
 msgstr "İzin verilen sayısı"
@@ -1104,12 +1102,12 @@ msgid "Checkbox"
 msgstr "Onay Kutusu"
 
 #: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
-msgid ""
-"Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.\n"
-"Note that only a part of the hash of the password is sent, the full comparison is done clientside."
-msgstr ""
-"İlke isteğindeki bir değeri Pwned Oldum API'sine karşı denetler ve isteği buna dayanarak reddeder.\n"
-"Parolanın karma yalnızca bir kısmının gönderildiğini unutmayın, tam karşılaştırma istemci tarafında yapılır."
+#~ msgid ""
+#~ "Checks a value from the policy request against the Have I been Pwned API, and denys the request based upon that.\n"
+#~ "Note that only a part of the hash of the password is sent, the full comparison is done clientside."
+#~ msgstr ""
+#~ "İlke isteğindeki bir değeri Pwned Oldum API'sine karşı denetler ve isteği buna dayanarak reddeder.\n"
+#~ "Parolanın karma yalnızca bir kısmının gönderildiğini unutmayın, tam karşılaştırma istemci tarafında yapılır."
 
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 msgid "Checks if the request's user's password has been changed in the last x days, and denys based on settings."
@@ -1835,8 +1833,8 @@ msgid "Deny the user access"
 msgstr "Kullanıcı erişimini engelle"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Deprecated. Instead of using this field, configure the JWKS data/URL in Sources."
-msgstr ""
+#~ msgid "Deprecated. Instead of using this field, configure the JWKS data/URL in Sources."
+#~ msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/wizard/InitialApplicationWizardPage.ts
@@ -2317,7 +2315,6 @@ msgstr "Bir isteğe izin verip reddedilmeyeceğini belirlemek için python parç
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Execution logging"
@@ -2484,7 +2481,6 @@ msgstr "Alan"
 msgid "Field Key"
 msgstr "Alan Anahtarı"
 
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Field key to check, field keys defined in Prompt stages are available."
 msgstr "Alan tuşu kontrol etmek için, İstem aşamalarında tanımlanan alan tuşları mevcuttur."
@@ -3197,7 +3193,11 @@ msgstr ""
 #~ msgstr "JWT Algoritması"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "JWTs signed by certificates configured here can be used to authenticate to the provider."
+#~ msgid "JWTs signed by certificates configured here can be used to authenticate to the provider."
+#~ msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider."
 msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
@@ -3677,7 +3677,6 @@ msgstr "Uygulamalarım"
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 #: src/admin/property-mappings/PropertyMappingLDAPForm.ts
@@ -4307,7 +4306,6 @@ msgstr "Parola"
 #~ msgid "Password expiry policy"
 #~ msgstr ""
 
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Password field"
 msgstr "Parola alanı"
@@ -4464,7 +4462,6 @@ msgstr "İlke {0}"
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Policy-specific settings"
 msgstr "İlke özel ayarlar"
@@ -5725,7 +5722,6 @@ msgstr "Üs başarıyla oluşturdu."
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Successfully created policy."
@@ -5907,7 +5903,6 @@ msgstr "Parola başarıyla güncellendi."
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "Successfully updated policy."
@@ -7331,7 +7326,6 @@ msgstr ""
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
-#: src/admin/policies/hibp/HaveIBeenPwnedPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 msgid "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
