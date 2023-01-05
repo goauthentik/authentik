@@ -265,10 +265,10 @@ class Importer:
                     )
                 else:
                     instance = serializer.save()
+                    self.logger.debug("updated model", model=instance)
                 if "pk" in entry.identifiers:
                     self.__pk_map[entry.identifiers["pk"]] = instance.pk
                 entry._state = BlueprintEntryState(instance)
-                self.logger.debug("updated model", model=instance)
             elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Optional[Model] = serializer.instance
                 if instance.pk:

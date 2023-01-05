@@ -16,6 +16,7 @@ entries:
     name: default-local-transport
 - model: authentik_core.group
   id: group
+  state: created
   identifiers:
     name: authentik Admins
 

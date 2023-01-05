@@ -1,0 +1,38 @@
+version: 1
+metadata:
+  name: authentik Bootstrap
+  labels:
+    int.goauthentik.io/bootstrap: "true"
+context:
+  username: akadmin
+  group_name: authentik Admins
+entries:
+  - model: authentik_core.group
+    state: created
+    identifiers:
+      name: !Context group_name
+    attrs:
+      is_superuser: true
+    id: admin-group
+  - model: authentik_core.user
+    state: created
+    identifiers:
+      username: !Context username
+    attrs:
+      password: !Env AUTHENTIK_BOOTSTRAP_PASSWORD
+      name: authentik Default Admin
+      groups:
+        - !KeyOf admin-group
+  - model: authentik_blueprints.metausersetpassword
+    conditions:
+      - !If [!Env AUTHENTIK_BOOTSTRAP_PASSWORD, True, False]
+    attrs:
+      user_identifiers:
+        username: !Context username
+      raw_password: !Env AUTHENTIK_BOOTSTRAP_PASSWORD
+  - model: authentik_blueprints.blueprintinstance
+    identifiers:
+      metadata:
+        labels:
+          int.goauthentik.io/bootstrap: "true"
+    state: absent
