@@ -59,19 +59,18 @@ These are the current packages:
 authentik
 ├── admin - Administrative tasks and APIs, no models (Version updates, Metrics, system tasks)
 ├── api - General API Configuration (Routes, Schema and general API utilities)
+├── blueprints - Handle managed models and their state.
 ├── core - Core authentik functionality, central routes, core Models
 ├── crypto - Cryptography, currently used to generate and hold Certificates and Private Keys
 ├── events - Event Log, middleware and signals to generate signals
 ├── flows - Flows, the FlowPlanner and the FlowExecutor, used for all flows for authentication, authorization, etc
 ├── lib - Generic library of functions, few dependencies on other packages.
-├── managed - Handle managed models and their state.
 ├── outposts - Configure and deploy outposts on kubernetes and docker.
 ├── policies - General PolicyEngine
 │   ├── dummy - A Dummy policy used for testing
 │   ├── event_matcher - Match events based on different criteria
 │   ├── expiry - Check when a user's password was last set
 │   ├── expression - Execute any arbitrary python code
-│   ├── hibp - Check a password against HaveIBeenPwned
 │   ├── password - Check a password against several rules
 │   └── reputation - Check the user's/client's reputation
 ├── providers

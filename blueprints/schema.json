@@ -69,7 +69,6 @@
                             "authentik_policies_event_matcher.eventmatcherpolicy",
                             "authentik_policies_expiry.passwordexpirypolicy",
                             "authentik_policies_expression.expressionpolicy",
-                            "authentik_policies_hibp.haveibeenpwendpolicy",
                             "authentik_policies_password.passwordpolicy",
                             "authentik_policies_reputation.reputation",
                             "authentik_policies_reputation.reputationpolicy",

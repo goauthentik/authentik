@@ -33,7 +33,6 @@ class EventMatcherPolicy(Policy):
         ),
     )
     app = models.TextField(
-        choices=app_choices(),
         blank=True,
         default="",
         help_text=_(
