@@ -2596,6 +2596,42 @@
                                 "$ref": "#/$defs/model_authentik_blueprints.metaapplyblueprint"
                             }
                         }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_blueprints.metausersetpassword"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_blueprints.metausersetpassword"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_blueprints.metausersetpassword"
+                            }
+                        }
                     }
                 ]
             }
@@ -8531,6 +8567,26 @@
                 "required": {
                     "type": "boolean",
                     "title": "Required"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_blueprints.metausersetpassword": {
+            "type": "object",
+            "properties": {
+                "user_identifiers": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "User identifiers"
+                },
+                "raw_password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Raw password"
+                },
+                "set_unusable": {
+                    "type": "boolean",
+                    "title": "Set unusable"
                 }
             },
             "required": []
