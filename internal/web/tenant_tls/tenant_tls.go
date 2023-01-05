@@ -64,7 +64,7 @@ func (w *Watcher) Check() {
 func (w *Watcher) GetCertificate(ch *tls.ClientHelloInfo) (*tls.Certificate, error) {
 	var bestSelection *api.Tenant
 	for _, t := range w.tenants {
-		if !t.WebCertificate.IsSet() {
+		if t.WebCertificate.Get() == nil {
 			continue
 		}
 		if *t.Default {
