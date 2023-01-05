@@ -64,7 +64,7 @@ entries:
     id: default-recovery-user-write
     model: authentik_stages_user_write.userwritestage
     attrs:
-      can_create_users: false
+      user_creation_mode: never_create
   - identifiers:
       name: default-recovery-identification
     id: default-recovery-identification
