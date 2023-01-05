@@ -9,18 +9,21 @@ from authentik.core.models import Group
 from authentik.flows.models import Stage
 
 
+class UserCreationMode(models.TextChoices):
+    """Behavior of user_write stage when a user is not set in the flow context"""
+
+    NEVER_CREATE = "never_create"
+    CREATE_WHEN_REQUIRED = "create_when_required"
+    ALWAYS_CREATE = "always_create"
+
+
 class UserWriteStage(Stage):
     """Writes currently pending data into the pending user, or if no user exists,
     creates a new user with the data."""
 
-    can_create_users = models.BooleanField(
-        default=True,
-        help_text=_(
-            (
-                "When set, this stage can create users. "
-                "If not enabled and no user is available, stage will fail."
-            )
-        ),
+    user_creation_mode = models.TextField(
+        choices=UserCreationMode.choices,
+        default=UserCreationMode.CREATE_WHEN_REQUIRED,
     )
 
     create_users_as_inactive = models.BooleanField(

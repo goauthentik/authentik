@@ -1,8 +1,10 @@
+import { UserCreationModeEnum } from "@goauthentik/api/dist/models/UserCreationModeEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
@@ -60,17 +62,28 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                 <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="canCreateUsers">
-                        <div class="pf-c-check">
-                            <input
-                                type="checkbox"
-                                class="pf-c-check__input"
-                                ?checked=${first(this.instance?.canCreateUsers, false)}
-                            />
-                            <label class="pf-c-check__label"> ${t`Can create users`} </label>
-                        </div>
-                        <p class="pf-c-form__helper-text">
-                            ${t`When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail.`}
-                        </p>
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: t`Never create users`,
+                                    value: UserCreationModeEnum.NeverCreate,
+                                    description: html`${t`When no user is present in the flow context, the stage will fail.`}`,
+                                },
+                                {
+                                    label: t`Create users when required`,
+                                    value: UserCreationModeEnum.CreateWhenRequired,
+                                    default: true,
+                                    description: html`${t`When no user is present in the the flow context, a new user is created.`}`,
+                                },
+                                {
+                                    label: t`Always create new users`,
+                                    value: UserCreationModeEnum.AlwaysCreate,
+                                    description: html`${t`Create a new user even if a user is in the flow context.`}`,
+                                },
+                            ]}
+                            .value=${this.instance?.userCreationMode}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="createUsersAsInactive">
                         <div class="pf-c-check">

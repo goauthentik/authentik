@@ -24410,10 +24410,6 @@ paths:
       description: UserWriteStage Viewset
       parameters:
       - in: query
-        name: can_create_users
-        schema:
-          type: boolean
-      - in: query
         name: create_users_as_inactive
         schema:
           type: boolean
@@ -24455,6 +24451,14 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: user_creation_mode
+        schema:
+          type: string
+          enum:
+          - always_create
+          - create_when_required
+          - never_create
       - in: query
         name: user_path_template
         schema:
@@ -34806,6 +34810,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSetRequest'
+        user_creation_mode:
+          $ref: '#/components/schemas/UserCreationModeEnum'
         create_users_as_inactive:
           type: boolean
           description: When set, newly created users are inactive and cannot login.
@@ -34814,10 +34820,6 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
-        can_create_users:
-          type: boolean
-          description: When set, this stage can create users. If not enabled and no
-            user is available, stage will fail.
         user_path_template:
           type: string
     PatchedWebAuthnDeviceRequest:
@@ -37507,6 +37509,12 @@ components:
       - application
       - pk
       - user
+    UserCreationModeEnum:
+      enum:
+      - never_create
+      - create_when_required
+      - always_create
+      type: string
     UserDeleteStage:
       type: object
       description: UserDeleteStage Serializer
@@ -38049,6 +38057,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+        user_creation_mode:
+          $ref: '#/components/schemas/UserCreationModeEnum'
         create_users_as_inactive:
           type: boolean
           description: When set, newly created users are inactive and cannot login.
@@ -38057,10 +38067,6 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
-        can_create_users:
-          type: boolean
-          description: When set, this stage can create users. If not enabled and no
-            user is available, stage will fail.
         user_path_template:
           type: string
       required:
@@ -38081,6 +38087,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSetRequest'
+        user_creation_mode:
+          $ref: '#/components/schemas/UserCreationModeEnum'
         create_users_as_inactive:
           type: boolean
           description: When set, newly created users are inactive and cannot login.
@@ -38089,10 +38097,6 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
-        can_create_users:
-          type: boolean
-          description: When set, this stage can create users. If not enabled and no
-            user is available, stage will fail.
         user_path_template:
           type: string
       required:

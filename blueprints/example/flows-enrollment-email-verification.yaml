@@ -114,7 +114,7 @@ entries:
     model: authentik_stages_user_write.userwritestage
     attrs:
       create_users_as_inactive: true
-      can_create_users: true
+      user_creation_mode: always_create
   - identifiers:
       target: !KeyOf flow
       stage: !KeyOf default-enrollment-prompt-first

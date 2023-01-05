@@ -429,6 +429,10 @@ msgstr "Also known as EntityID."
 msgid "Alternatively, if your current device has Duo installed, click on this link:"
 msgstr "Alternatively, if your current device has Duo installed, click on this link:"
 
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Always create new users"
+msgstr "Always create new users"
+
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Always execute the configured bind flow to authenticate the user"
 msgstr "Always execute the configured bind flow to authenticate the user"
@@ -961,8 +965,8 @@ msgid "Can be in the format of 'unix://' when connecting to a local docker daemo
 msgstr "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system."
 
 #: src/admin/stages/user_write/UserWriteStageForm.ts
-msgid "Can create users"
-msgstr "Can create users"
+#~ msgid "Can create users"
+#~ msgstr "Can create users"
 
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/users/GroupSelectModal.ts
@@ -1651,6 +1655,10 @@ msgstr "Create a new source."
 msgid "Create a new stage."
 msgstr "Create a new stage."
 
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Create a new user even if a user is in the flow context."
+msgstr "Create a new user even if a user is in the flow context."
+
 #: src/admin/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Create application"
 msgstr "Create application"
@@ -1680,6 +1688,10 @@ msgstr "Create user"
 #: src/admin/stages/user_write/UserWriteStageForm.ts
 msgid "Create users as inactive"
 msgstr "Create users as inactive"
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Create users when required"
+msgstr "Create users when required"
 
 #: src/admin/outposts/ServiceConnectionWizard.ts
 #: src/admin/policies/PolicyWizard.ts
@@ -3849,6 +3861,10 @@ msgstr "Negate result"
 #: src/admin/policies/PolicyBindingForm.ts
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "Negates the outcome of the binding. Messages are unaffected."
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Never create users"
+msgstr "Never create users"
 
 #: src/admin/applications/wizard/ApplicationWizard.ts
 msgid "New application"
@@ -7482,8 +7498,8 @@ msgid "When enabled, the invitation will be deleted after usage."
 msgstr "When enabled, the invitation will be deleted after usage."
 
 #: src/admin/stages/user_write/UserWriteStageForm.ts
-msgid "When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail."
-msgstr "When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail."
+#~ msgid "When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail."
+#~ msgstr "When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail."
 
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
@@ -7492,6 +7508,14 @@ msgstr "When enabled, user fields are matched regardless of their casing."
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "When multiple stages are selected, the user can choose which one they want to enroll."
 msgstr "When multiple stages are selected, the user can choose which one they want to enroll."
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "When no user is present in the flow context, the stage will fail."
+msgstr "When no user is present in the flow context, the stage will fail."
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "When no user is present in the the flow context, a new user is created."
+msgstr "When no user is present in the the flow context, a new user is created."
 
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."

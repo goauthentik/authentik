@@ -15,6 +15,7 @@ from authentik.flows.stage import StageView
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
+from authentik.stages.user_write.models import UserCreationMode
 from authentik.stages.user_write.signals import user_write
 
 PLAN_CONTEXT_GROUPS = "groups"
@@ -56,8 +57,11 @@ class UserWriteStageView(StageView):
             path = User.default_path()
         if not self.request.user.is_anonymous:
             self.executor.plan.context.setdefault(PLAN_CONTEXT_PENDING_USER, self.request.user)
-        if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
-            if not self.executor.current_stage.can_create_users:
+        if (
+            PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context
+            or self.executor.current_stage.user_creation_mode == UserCreationMode.ALWAYS_CREATE
+        ):
+            if self.executor.current_stage.user_creation_mode == UserCreationMode.NEVER_CREATE:
                 return None, False
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
                 is_active=not self.executor.current_stage.create_users_as_inactive,

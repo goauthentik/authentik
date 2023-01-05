@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-05 12:01+0000\n"
+"POT-Creation-Date: 2023-01-05 13:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1918,31 +1918,31 @@ msgstr ""
 msgid "User Logout Stages"
 msgstr ""
 
-#: authentik/stages/user_write/models.py:28
+#: authentik/stages/user_write/models.py:31
 msgid "When set, newly created users are inactive and cannot login."
 msgstr ""
 
-#: authentik/stages/user_write/models.py:36
+#: authentik/stages/user_write/models.py:39
 msgid "Optionally add newly created users to this group."
 msgstr ""
 
-#: authentik/stages/user_write/models.py:62
+#: authentik/stages/user_write/models.py:65
 msgid "User Write Stage"
 msgstr ""
 
-#: authentik/stages/user_write/models.py:63
+#: authentik/stages/user_write/models.py:66
 msgid "User Write Stages"
 msgstr ""
 
-#: authentik/stages/user_write/stage.py:117
+#: authentik/stages/user_write/stage.py:121
 msgid "No Pending data."
 msgstr ""
 
-#: authentik/stages/user_write/stage.py:123
+#: authentik/stages/user_write/stage.py:127
 msgid "No user found and can't create new user."
 msgstr ""
 
-#: authentik/stages/user_write/stage.py:150
+#: authentik/stages/user_write/stage.py:154
 msgid "Failed to save user"
 msgstr ""
 
