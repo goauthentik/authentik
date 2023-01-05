@@ -73,7 +73,6 @@ INSTALLED_APPS = [
     "authentik.policies.event_matcher",
     "authentik.policies.expiry",
     "authentik.policies.expression",
-    "authentik.policies.hibp",
     "authentik.policies.password",
     "authentik.policies.reputation",
     "authentik.policies",
