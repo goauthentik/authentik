@@ -3,6 +3,12 @@ context:
     foo: bar
     policy_property: name
     policy_property_value: foo-bar-baz-qux
+    sequence:
+    - foo
+    - bar
+    mapping:
+      key1: value
+      key2: 2
 entries:
     - model: !Format ["%s", authentik_sources_oauth.oauthsource]
       state: !Format ["%s", present]
@@ -92,6 +98,49 @@ entries:
                   ]
               if_true_simple: !If [!Context foo, true, text]
               if_false_simple: !If [null, false, 2]
+              enumerate_mapping_to_mapping: !Enumerate [
+                  !Context mapping,
+                  MAP,
+                  [!Format ["prefix-%s", !Index 0], !Format ["other-prefix-%s", !Value 0]]
+              ]
+              enumerate_mapping_to_sequence: !Enumerate [
+                  !Context mapping,
+                  SEQ,
+                  !Format ["prefixed-pair-%s-%s", !Index 0, !Value 0]
+              ]
+              enumerate_sequence_to_sequence: !Enumerate [
+                  !Context sequence,
+                  SEQ,
+                  !Format ["prefixed-items-%s-%s", !Index 0, !Value 0]
+              ]
+              enumerate_sequence_to_mapping: !Enumerate [
+                  !Context sequence,
+                  MAP,
+                  [!Format ["index: %d", !Index 0], !Value 0]
+              ]
+              nested_complex_enumeration: !Enumerate [
+                  !Context sequence,
+                  MAP,
+                  [
+                      !Index 0,
+                      !Enumerate [
+                          !Context mapping,
+                          MAP,
+                          [
+                              !Format ["%s", !Index 0],
+                              [
+                                  !Enumerate [!Value 2, SEQ, !Format ["prefixed-%s", !Value 0]],
+                                  {
+                                    outer_value: !Value 1,
+                                    outer_index: !Index 1,
+                                    middle_value: !Value 0,
+                                    middle_index: !Index 0
+                                  }
+                              ]
+                          ]
+                      ]
+                  ]
+              ]
       identifiers:
           name: test
       conditions:

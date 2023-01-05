@@ -1,13 +1,15 @@
 """transfer common classes"""
 from collections import OrderedDict
+from copy import copy
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from functools import reduce
 from operator import ixor
 from os import getenv
-from typing import Any, Literal, Optional, Union
+from typing import Any, Iterable, Literal, Mapping, Optional, Union
 from uuid import UUID
 
+from deepmerge import always_merger
 from django.apps import apps
 from django.db.models import Model, Q
 from rest_framework.fields import Field
@@ -69,6 +71,9 @@ class BlueprintEntry:
 
     _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)
 
+    def __post_init__(self, *args, **kwargs) -> None:
+        self.__tag_contexts: list["YAMLTagContext"] = []
+
     @staticmethod
     def from_model(model: SerializerModel, *extra_identifier_names: str) -> "BlueprintEntry":
         """Convert a SerializerModel instance to a blueprint Entry"""
@@ -85,17 +90,46 @@ class BlueprintEntry:
             attrs=all_attrs,
         )
 
+    def _get_tag_context(
+        self,
+        depth: int = 0,
+        context_tag_type: Optional[type["YAMLTagContext"] | tuple["YAMLTagContext", ...]] = None,
+    ) -> "YAMLTagContext":
+        """Get a YAMLTagContex object located at a certain depth in the tag tree"""
+        if depth < 0:
+            raise ValueError("depth must be a positive number or zero")
+
+        if context_tag_type:
+            contexts = [x for x in self.__tag_contexts if isinstance(x, context_tag_type)]
+        else:
+            contexts = self.__tag_contexts
+
+        try:
+            return contexts[-(depth + 1)]
+        except IndexError:
+            raise ValueError(f"invalid depth: {depth}. Max depth: {len(contexts) - 1}")
+
     def tag_resolver(self, value: Any, blueprint: "Blueprint") -> Any:
         """Check if we have any special tags that need handling"""
+        val = copy(value)
+
+        if isinstance(value, YAMLTagContext):
+            self.__tag_contexts.append(value)
+
         if isinstance(value, YAMLTag):
-            return value.resolve(self, blueprint)
+            val = value.resolve(self, blueprint)
+
         if isinstance(value, dict):
             for key, inner_value in value.items():
-                value[key] = self.tag_resolver(inner_value, blueprint)
+                val[key] = self.tag_resolver(inner_value, blueprint)
         if isinstance(value, list):
             for idx, inner_value in enumerate(value):
-                value[idx] = self.tag_resolver(inner_value, blueprint)
-        return value
+                val[idx] = self.tag_resolver(inner_value, blueprint)
+
+        if isinstance(value, YAMLTagContext):
+            self.__tag_contexts.pop()
+
+        return val
 
     def get_attrs(self, blueprint: "Blueprint") -> dict[str, Any]:
         """Get attributes of this entry, with all yaml tags resolved"""
@@ -142,6 +176,14 @@ class YAMLTag:
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         """Implement yaml tag logic"""
+        raise NotImplementedError
+
+
+class YAMLTagContext:
+    """Base class for all YAML Tag Contexts"""
+
+    def get_context(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        """Implement yaml tag context logic"""
         raise NotImplementedError
 
 
@@ -351,6 +393,136 @@ class If(YAMLTag):
             raise EntryInvalidError(exc)
 
 
+class Enumerate(YAMLTag, YAMLTagContext):
+    """Iterate over an iterable."""
+
+    iterable: YAMLTag | Iterable
+    item_body: Any
+    output_body: Literal["SEQ", "MAP"]
+
+    _OUTPUT_BODIES = {
+        "SEQ": (list, lambda a, b: [*a, b]),
+        "MAP": (
+            dict,
+            lambda a, b: always_merger.merge(
+                a, {b[0]: b[1]} if isinstance(b, (tuple, list)) else b
+            ),
+        ),
+    }
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
+        super().__init__()
+        self.iterable = loader.construct_object(node.value[0])
+        self.output_body = node.value[1].value
+        self.item_body = loader.construct_object(node.value[2])
+        self.__current_context: tuple[Any, Any] = tuple()
+
+    # pylint: disable=unused-argument
+    def get_context(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        return self.__current_context
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        if isinstance(self.iterable, EnumeratedItem) and self.iterable.depth == 0:
+            raise EntryInvalidError(
+                f"{self.__class__.__name__} tag's iterable references this tag's context. "
+                "This is a noop. Check you are setting depth bigger than 0."
+            )
+
+        if isinstance(self.iterable, YAMLTag):
+            iterable = self.iterable.resolve(entry, blueprint)
+        else:
+            iterable = self.iterable
+
+        if not isinstance(iterable, Iterable):
+            raise EntryInvalidError(
+                f"{self.__class__.__name__}'s iterable must be an iterable "
+                "such as a sequence or a mapping"
+            )
+
+        if isinstance(iterable, Mapping):
+            iterable = tuple(iterable.items())
+        else:
+            iterable = tuple(enumerate(iterable))
+
+        try:
+            output_class, add_fn = self._OUTPUT_BODIES[self.output_body.upper()]
+        except KeyError as exc:
+            raise EntryInvalidError(exc)
+
+        result = output_class()
+
+        self.__current_context = tuple()
+
+        try:
+            for item in iterable:
+                self.__current_context = item
+                resolved_body = entry.tag_resolver(self.item_body, blueprint)
+                result = add_fn(result, resolved_body)
+                if not isinstance(result, output_class):
+                    raise EntryInvalidError(
+                        f"Invalid {self.__class__.__name__} item found: {resolved_body}"
+                    )
+        finally:
+            self.__current_context = tuple()
+
+        return result
+
+
+class EnumeratedItem(YAMLTag):
+    """Get the current item value and index provided by an Enumerate tag context"""
+
+    depth: int
+
+    _SUPPORTED_CONTEXT_TAGS = (Enumerate,)
+
+    # pylint: disable=unused-argument
+    def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
+        super().__init__()
+        self.depth = int(node.value)
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        try:
+            context_tag: Enumerate = entry._get_tag_context(
+                depth=self.depth,
+                context_tag_type=EnumeratedItem._SUPPORTED_CONTEXT_TAGS,
+            )
+        except ValueError as exc:
+            if self.depth == 0:
+                raise EntryInvalidError(
+                    f"{self.__class__.__name__} tags are only usable "
+                    f"inside an {Enumerate.__name__} tag"
+                )
+
+            raise EntryInvalidError(f"{self.__class__.__name__} tag: {exc}")
+
+        return context_tag.get_context(entry, blueprint)
+
+
+class Index(EnumeratedItem):
+    """Get the current item index provided by an Enumerate tag context"""
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        context = super().resolve(entry, blueprint)
+
+        try:
+            return context[0]
+        except IndexError:  # pragma: no cover
+            raise EntryInvalidError(f"Empty/invalid context: {context}")
+
+
+class Value(EnumeratedItem):
+    """Get the current item value provided by an Enumerate tag context"""
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        context = super().resolve(entry, blueprint)
+
+        try:
+            return context[1]
+        except IndexError:  # pragma: no cover
+            raise EntryInvalidError(f"Empty/invalid context: {context}")
+
+
 class BlueprintDumper(SafeDumper):
     """Dump dataclasses to yaml"""
 
@@ -394,6 +566,9 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Condition", Condition)
         self.add_constructor("!If", If)
         self.add_constructor("!Env", Env)
+        self.add_constructor("!Enumerate", Enumerate)
+        self.add_constructor("!Value", Value)
+        self.add_constructor("!Index", Index)
 
 
 class EntryInvalidError(SentryIgnoredException):
