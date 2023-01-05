@@ -35,33 +35,6 @@ def fix_duplicates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         Token.objects.using(db_alias).filter(identifier=ident["identifier"]).delete()
 
 
-def create_default_user_token(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    from authentik.core.models import TokenIntents
-
-    User = apps.get_model("authentik_core", "User")
-    Token = apps.get_model("authentik_core", "Token")
-
-    db_alias = schema_editor.connection.alias
-
-    akadmin = User.objects.using(db_alias).filter(username="akadmin")
-    if not akadmin.exists():
-        return
-    key = None
-    if "AK_ADMIN_TOKEN" in environ:
-        key = environ["AK_ADMIN_TOKEN"]
-    if "AUTHENTIK_BOOTSTRAP_TOKEN" in environ:
-        key = environ["AUTHENTIK_BOOTSTRAP_TOKEN"]
-    if not key:
-        return
-    Token.objects.using(db_alias).create(
-        identifier="authentik-bootstrap-token",
-        user=akadmin.first(),
-        intent=TokenIntents.INTENT_API,
-        expiring=False,
-        key=key,
-    )
-
-
 class Migration(migrations.Migration):
 
     replaces = [
@@ -196,9 +169,6 @@ class Migration(migrations.Migration):
                 "verbose_name": "Authenticated Session",
                 "verbose_name_plural": "Authenticated Sessions",
             },
-        ),
-        migrations.RunPython(
-            code=create_default_user_token,
         ),
         migrations.AlterField(
             model_name="token",
