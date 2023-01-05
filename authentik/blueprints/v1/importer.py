@@ -186,9 +186,6 @@ class Importer:
         serializer_kwargs = {}
         model_instance = existing_models.first()
         if not isinstance(model(), BaseMetaModel) and model_instance:
-            if entry.get_state(self.__import) == BlueprintEntryDesiredState.CREATED:
-                self.logger.debug("instance exists, skipping")
-                return None
             self.logger.debug(
                 "initialise serializer with instance",
                 model=model,
@@ -257,15 +254,21 @@ class Importer:
                 continue
 
             state = entry.get_state(self.__import)
-            if state in [
-                BlueprintEntryDesiredState.PRESENT,
-                BlueprintEntryDesiredState.CREATED,
-            ]:
-                model = serializer.save()
+            if state in [BlueprintEntryDesiredState.PRESENT, BlueprintEntryDesiredState.CREATED]:
+                instance = serializer.instance
+                if serializer.instance and serializer.instance.pk and state == BlueprintEntryDesiredState.CREATED:
+                    self.logger.debug(
+                        "instance exists, skipping",
+                        model=model,
+                        instance=instance,
+                        pk=instance.pk,
+                    )
+                else:
+                    instance = serializer.save()
                 if "pk" in entry.identifiers:
-                    self.__pk_map[entry.identifiers["pk"]] = model.pk
-                entry._state = BlueprintEntryState(model)
-                self.logger.debug("updated model", model=model)
+                    self.__pk_map[entry.identifiers["pk"]] = instance.pk
+                entry._state = BlueprintEntryState(instance)
+                self.logger.debug("updated model", model=instance)
             elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Optional[Model] = serializer.instance
                 if instance.pk:
