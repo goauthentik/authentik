@@ -64,3 +64,4 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
     def import_models(self):
         super().import_models()
         self.import_module("authentik.blueprints.v1.meta.apply_blueprint")
+        self.import_module("authentik.blueprints.v1.meta.user_set_password")
