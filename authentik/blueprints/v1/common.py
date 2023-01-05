@@ -287,15 +287,12 @@ class Format(YAMLTag):
 class Find(YAMLTag):
     """Find any object"""
 
-    model_name: str
+    model_name: str | YAMLTag
     conditions: list[list]
-
-    model_class: type[Model]
 
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
-        self.model_name = node.value[0].value
-        self.model_class = apps.get_model(*self.model_name.split("."))
+        self.model_name = loader.construct_object(node.value[0])
         self.conditions = []
         for raw_node in node.value[1:]:
             values = []
@@ -304,6 +301,13 @@ class Find(YAMLTag):
             self.conditions.append(values)
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        if isinstance(self.model_name, YAMLTag):
+            model_name = self.model_name.resolve(entry, blueprint)
+        else:
+            model_name = self.model_name
+
+        model_class = apps.get_model(*model_name.split("."))
+
         query = Q()
         for cond in self.conditions:
             if isinstance(cond[0], YAMLTag):
@@ -315,7 +319,7 @@ class Find(YAMLTag):
             else:
                 query_value = cond[1]
             query &= Q(**{query_key: query_value})
-        instance = self.model_class.objects.filter(query).first()
+        instance = model_class.objects.filter(query).first()
         if instance:
             return instance.pk
         return None
