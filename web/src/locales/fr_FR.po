@@ -429,6 +429,10 @@ msgstr ""
 msgid "Alternatively, if your current device has Duo installed, click on this link:"
 msgstr "Sinon, si Duo est installé sur cet appareil, cliquez sur ce lien :"
 
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Always create new users"
+msgstr ""
+
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Always execute the configured bind flow to authenticate the user"
 msgstr ""
@@ -951,8 +955,8 @@ msgid "Can be in the format of 'unix://' when connecting to a local docker daemo
 msgstr ""
 
 #: src/admin/stages/user_write/UserWriteStageForm.ts
-msgid "Can create users"
-msgstr ""
+#~ msgid "Can create users"
+#~ msgstr ""
 
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/users/GroupSelectModal.ts
@@ -1628,6 +1632,10 @@ msgstr "Créer une nouvelle source."
 msgid "Create a new stage."
 msgstr "Créer une nouvelle étape."
 
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Create a new user even if a user is in the flow context."
+msgstr ""
+
 #: src/admin/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Create application"
 msgstr ""
@@ -1657,6 +1665,10 @@ msgstr ""
 #: src/admin/stages/user_write/UserWriteStageForm.ts
 msgid "Create users as inactive"
 msgstr "Créer des utilisateurs inactifs"
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Create users when required"
+msgstr ""
 
 #: src/admin/outposts/ServiceConnectionWizard.ts
 #: src/admin/policies/PolicyWizard.ts
@@ -3769,6 +3781,10 @@ msgstr "Inverser le résultat"
 #: src/admin/policies/PolicyBindingForm.ts
 msgid "Negates the outcome of the binding. Messages are unaffected."
 msgstr "Inverse le résultat de la liaison. Les messages ne sont pas affectés."
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "Never create users"
+msgstr ""
 
 #: src/admin/applications/wizard/ApplicationWizard.ts
 msgid "New application"
@@ -7290,8 +7306,8 @@ msgid "When enabled, the invitation will be deleted after usage."
 msgstr "Si activée, l'invitation sera supprimée après utilisation."
 
 #: src/admin/stages/user_write/UserWriteStageForm.ts
-msgid "When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail."
-msgstr ""
+#~ msgid "When enabled, this stage has the ability to create new users. If no user is available in the flow with this disabled, the stage will fail."
+#~ msgstr ""
 
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "When enabled, user fields are matched regardless of their casing."
@@ -7300,6 +7316,14 @@ msgstr "Si activé, les champs de l'utilisateur sont mis en correspondance en ig
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "When multiple stages are selected, the user can choose which one they want to enroll."
 msgstr "Lorsque plusieurs étapes sont sélectionnées, les utilisateurs peuvent choisir celle qu’ils souhaient utiliser pour s’enrôler."
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "When no user is present in the flow context, the stage will fail."
+msgstr ""
+
+#: src/admin/stages/user_write/UserWriteStageForm.ts
+msgid "When no user is present in the the flow context, a new user is created."
+msgstr ""
 
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."

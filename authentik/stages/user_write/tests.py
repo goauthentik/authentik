@@ -14,7 +14,7 @@ from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_key
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
-from authentik.stages.user_write.models import UserWriteStage
+from authentik.stages.user_write.models import UserCreationMode, UserWriteStage
 from authentik.stages.user_write.stage import PLAN_CONTEXT_GROUPS, UserWriteStageView
 
 
@@ -26,7 +26,7 @@ class TestUserWriteStage(FlowTestCase):
         self.flow = create_test_flow()
         self.group = Group.objects.create(name="test-group")
         self.other_group = Group.objects.create(name="other-group")
-        self.stage = UserWriteStage.objects.create(
+        self.stage: UserWriteStage = UserWriteStage.objects.create(
             name="write", create_users_as_inactive=True, create_users_group=self.group
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
@@ -164,7 +164,7 @@ class TestUserWriteStage(FlowTestCase):
 
     def test_no_create(self):
         """Test can_create_users set to false"""
-        self.stage.can_create_users = False
+        self.stage.user_creation_mode = UserCreationMode.NEVER_CREATE
         self.stage.save()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
