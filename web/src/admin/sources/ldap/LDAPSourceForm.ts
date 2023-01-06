@@ -157,7 +157,6 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             ): Promise<CertificateKeyPair[]> => {
                                 const args: CryptoCertificatekeypairsListRequest = {
                                     ordering: "name",
-                                    hasKey: true,
                                     includeDetails: false,
                                 };
                                 if (query !== undefined) {
