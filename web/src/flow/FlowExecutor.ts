@@ -501,6 +501,7 @@ export class FlowExecutor extends AKElement implements StageHost {
                                             <div class="pf-c-brand ak-brand">
                                                 <img
                                                     src="${first(this.tenant?.brandingLogo, "")}"
+                                                    alt="authentik Logo"
                                                 />
                                             </div>
                                         </header>
