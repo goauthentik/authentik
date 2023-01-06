@@ -3,6 +3,7 @@ from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
 
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.lib.config import CONFIG
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.root.celery import CELERY_APP
@@ -27,11 +28,14 @@ def ldap_sync_all():
 
 
 @CELERY_APP.task(
-    bind=True, base=MonitoredTask, soft_time_limit=60 * 60 * 2, task_time_limit=60 * 60 * 2
+    bind=True,
+    base=MonitoredTask,
+    soft_time_limit=60 * 60 * int(CONFIG.y("ldap.task_timeout_hours")),
+    task_time_limit=60 * 60 * int(CONFIG.y("ldap.task_timeout_hours")),
 )
 def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str):
     """Synchronization of an LDAP Source"""
-    self.result_timeout_hours = 2
+    self.result_timeout_hours = int(CONFIG.y("ldap.task_timeout_hours"))
     try:
         source: LDAPSource = LDAPSource.objects.get(pk=source_pk)
     except LDAPSource.DoesNotExist:

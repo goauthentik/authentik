@@ -252,6 +252,16 @@ The setting can be used as follows:
 AUTHENTIK_FOOTER_LINKS='[{"name": "Link Name","href":"https://goauthentik.io"}]'
 ```
 
+### `AUTHENTIK_LDAP__TLS__TASK_TIMEOUT_HOURS`
+
+:::info
+Requires authentik 2023.1
+:::
+
+Timeout in hours for LDAP synchronization tasks.
+
+Defaults to `2`.
+
 ### `AUTHENTIK_LDAP__TLS__CIPHERS`
 
 :::info
