@@ -21,13 +21,13 @@ class CertificateBuilder:
 
     _use_ec_private_key: bool
 
-    def __init__(self, use_ec_private_key=False):
+    def __init__(self, name: str, use_ec_private_key=False):
         self._use_ec_private_key = use_ec_private_key
         self.__public_key = None
         self.__private_key = None
         self.__builder = None
         self.__certificate = None
-        self.common_name = "authentik Self-signed Certificate"
+        self.common_name = name
         self.cert = CertificateKeyPair()
 
     def save(self) -> CertificateKeyPair:

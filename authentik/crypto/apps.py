@@ -27,20 +27,16 @@ class AuthentikCryptoConfig(ManagedAppConfig):
         from authentik.crypto.builder import CertificateBuilder
         from authentik.crypto.models import CertificateKeyPair
 
-        builder = CertificateBuilder()
-        builder.common_name = "goauthentik.io"
+        builder = CertificateBuilder("authentik Internal JWT Certificate")
         builder.build(
             subject_alt_names=["goauthentik.io"],
             validity_days=360,
         )
         if not cert:
-
             cert = CertificateKeyPair()
-        cert.certificate_data = builder.certificate
-        cert.key_data = builder.private_key
-        cert.name = "authentik Internal JWT Certificate"
-        cert.managed = MANAGED_KEY
-        cert.save()
+        builder.cert = cert
+        builder.cert.managed = MANAGED_KEY
+        builder.save()
 
     def reconcile_managed_jwt_cert(self):
         """Ensure managed JWT certificate"""
@@ -63,10 +59,6 @@ class AuthentikCryptoConfig(ManagedAppConfig):
         name = "authentik Self-signed Certificate"
         if CertificateKeyPair.objects.filter(name=name).exists():
             return
-        builder = CertificateBuilder()
+        builder = CertificateBuilder(name)
         builder.build(subject_alt_names=[f"{generate_id()}.self-signed.goauthentik.io"])
-        CertificateKeyPair.objects.create(
-            name="authentik Self-signed Certificate",
-            certificate_data=builder.certificate,
-            key_data=builder.private_key,
-        )
+        builder.save()

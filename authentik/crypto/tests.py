@@ -14,7 +14,7 @@ from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
 from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
 from authentik.lib.config import CONFIG
-from authentik.lib.generators import generate_key
+from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.models import OAuth2Provider
 
 
@@ -54,8 +54,8 @@ class TestCrypto(APITestCase):
 
     def test_builder(self):
         """Test Builder"""
-        builder = CertificateBuilder()
-        builder.common_name = "test-cert"
+        name = generate_id()
+        builder = CertificateBuilder(name)
         with self.assertRaises(ValueError):
             builder.save()
         builder.build(
@@ -64,7 +64,7 @@ class TestCrypto(APITestCase):
         )
         instance = builder.save()
         now = datetime.datetime.today()
-        self.assertEqual(instance.name, "test-cert")
+        self.assertEqual(instance.name, name)
         self.assertEqual((instance.certificate.not_valid_after - now).days, 2)
 
     def test_builder_api(self):
@@ -193,8 +193,8 @@ class TestCrypto(APITestCase):
 
     def test_discovery(self):
         """Test certificate discovery"""
-        builder = CertificateBuilder()
-        builder.common_name = "test-cert"
+        name = generate_id()
+        builder = CertificateBuilder(name)
         with self.assertRaises(ValueError):
             builder.save()
         builder.build(

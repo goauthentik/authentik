@@ -236,8 +236,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         data = CertificateGenerationSerializer(data=request.data)
         if not data.is_valid():
             return Response(data.errors, status=400)
-        builder = CertificateBuilder()
-        builder.common_name = data.validated_data["common_name"]
+        builder = CertificateBuilder(data.validated_data["common_name"])
         builder.build(
             subject_alt_names=data.validated_data.get("subject_alt_name", "").split(","),
             validity_days=int(data.validated_data["validity_days"]),
