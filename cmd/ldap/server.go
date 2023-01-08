@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"goauthentik.io/internal/common"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/debug"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap"
@@ -30,14 +31,14 @@ func main() {
 		DisableHTMLEscape: true,
 	})
 	go debug.EnableDebugServer()
-	akURL, found := os.LookupEnv("AUTHENTIK_HOST")
-	if !found {
+	akURL := config.Get().AuthentikHost
+	if akURL == "" {
 		fmt.Println("env AUTHENTIK_HOST not set!")
 		fmt.Println(helpMessage)
 		os.Exit(1)
 	}
-	akToken, found := os.LookupEnv("AUTHENTIK_TOKEN")
-	if !found {
+	akToken := config.Get().AuthentikToken
+	if akToken == "" {
 		fmt.Println("env AUTHENTIK_TOKEN not set!")
 		fmt.Println(helpMessage)
 		os.Exit(1)
