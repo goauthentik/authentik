@@ -24,12 +24,16 @@ func EnableDebugServer() {
 	h.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 	h.HandleFunc("/debug/pprof/trace", pprof.Trace)
 	h.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		h.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+		_ = h.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 			tpl, err := route.GetPathTemplate()
 			if err != nil {
 				return nil
 			}
-			w.Write([]byte(fmt.Sprintf("<a href='%[1]s'>%[1]s</a><br>", tpl)))
+			_, err = w.Write([]byte(fmt.Sprintf("<a href='%[1]s'>%[1]s</a><br>", tpl)))
+			if err != nil {
+				l.WithError(err).Warning("failed to write index")
+				return nil
+			}
 			return nil
 		})
 	})
