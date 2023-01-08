@@ -32,9 +32,8 @@ func main() {
 		},
 		DisableHTMLEscape: true,
 	})
-	go debug.EnableDebugServer()
+	debug.EnableDebugServer()
 	l := log.WithField("logger", "authentik.root")
-	config.Get().Setup("./authentik/lib/default.yml", "./local.env.yml")
 
 	if config.Get().ErrorReporting.Enabled {
 		err := sentry.Init(sentry.ClientOptions{

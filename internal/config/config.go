@@ -18,7 +18,7 @@ var cfg *Config
 func Get() *Config {
 	if cfg == nil {
 		c := defaultConfig()
-		c.Setup()
+		c.Setup("./authentik/lib/default.yml", "./local.env.yml")
 		cfg = c
 	}
 	return cfg

@@ -30,7 +30,7 @@ func main() {
 		},
 		DisableHTMLEscape: true,
 	})
-	go debug.EnableDebugServer()
+	debug.EnableDebugServer()
 	akURL := config.Get().AuthentikHost
 	if akURL == "" {
 		fmt.Println("env AUTHENTIK_HOST not set!")

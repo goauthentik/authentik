@@ -2,12 +2,14 @@ package config
 
 type Config struct {
 	// Core specific config
-	SecretKey      string               `yaml:"secret_key" env:"AUTHENTIK_SECRET_KEY"`
 	Paths          PathsConfig          `yaml:"paths"`
 	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL"`
 	ErrorReporting ErrorReportingConfig `yaml:"error_reporting"`
 	Redis          RedisConfig          `yaml:"redis"`
 	Outposts       OutpostConfig        `yaml:"outposts"`
+
+	// Config for core and embedded outpost
+	SecretKey string `yaml:"secret_key" env:"AUTHENTIK_SECRET_KEY"`
 
 	// Config for both core and outposts
 	Debug  bool         `yaml:"debug" env:"AUTHENTIK_DEBUG"`
@@ -16,8 +18,9 @@ type Config struct {
 	// Outpost specific config
 	// These are only relevant for proxy/ldap outposts, and cannot be set via YAML
 	// They are loaded via this config loader to support file:// schemas
-	AuthentikHost  string `env:"AUTHENTIK_HOST"`
-	AuthentikToken string `env:"AUTHENTIK_TOKEN"`
+	AuthentikHost     string `env:"AUTHENTIK_HOST"`
+	AuthentikToken    string `env:"AUTHENTIK_TOKEN"`
+	AuthentikInsecure bool   `env:"AUTHENTIK_INSECURE"`
 }
 
 type RedisConfig struct {
