@@ -77,10 +77,11 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         if group_uniq not in self.group_cache:
             groups = Group.objects.filter(**{f"attributes__{LDAP_UNIQUENESS}": group_uniq})
             if not groups.exists():
-                self.message(
-                    f"Group does not exist in our DB yet, run sync_groups first: '{group_dn}'",
-                    group=group_dn,
-                )
+                if self._source.sync_groups:
+                    self.message(
+                        f"Group does not exist in our DB yet, run sync_groups first: '{group_dn}'",
+                        group=group_dn,
+                    )
                 return None
             self.group_cache[group_uniq] = groups.first()
         return self.group_cache[group_uniq]
