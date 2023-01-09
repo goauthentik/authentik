@@ -106,7 +106,7 @@
         "lit": "^2.5.0",
         "mermaid": "^9.3.0",
         "moment": "^2.29.4",
-        "prettier": "^2.8.1",
+        "prettier": "^2.8.2",
         "pyright": "^1.1.287",
         "rapidoc": "^9.3.3",
         "rollup": "^2.79.1",
