@@ -50,6 +50,7 @@ RUN go build -o /work/authentik ./cmd/server/
 FROM docker.io/maxmindinc/geoipupdate:v4.10 as geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City"
+ENV GEOIPUPDATE_VERBOSE="true"
 
 RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     --mount=type=secret,id=GEOIPUPDATE_LICENSE_KEY \
@@ -57,7 +58,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "\
         export GEOIPUPDATE_ACCOUNT_ID=$(cat /run/secrets/GEOIPUPDATE_ACCOUNT_ID); \
         export GEOIPUPDATE_LICENSE_KEY=$(cat /run/secrets/GEOIPUPDATE_LICENSE_KEY); \
-        /usr/bin/entry.sh || exit 0 \
+        /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0 \
     "
 
 # Stage 6: Run
