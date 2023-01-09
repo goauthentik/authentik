@@ -1,6 +1,7 @@
 package debug
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/pprof"
@@ -23,6 +24,12 @@ func EnableDebugServer() {
 	h.HandleFunc("/debug/pprof/profile", pprof.Profile)
 	h.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 	h.HandleFunc("/debug/pprof/trace", pprof.Trace)
+	h.HandleFunc("/debug/dump_config", func(w http.ResponseWriter, r *http.Request) {
+		enc := json.NewEncoder(w)
+		enc.SetEscapeHTML(true)
+		enc.SetIndent("", "\t")
+		enc.Encode(config.Get())
+	})
 	h.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		_ = h.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 			tpl, err := route.GetPathTemplate()

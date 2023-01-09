@@ -135,7 +135,7 @@ func (c *Config) parseScheme(rawVal string) string {
 		if err != nil {
 			return u.RawQuery
 		}
-		return string(d)
+		return strings.TrimSpace(string(d))
 	}
 	return rawVal
 }
