@@ -3,6 +3,7 @@ import { ActionToLabel } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -55,6 +56,10 @@ export class EventListPage extends TablePage<Event> {
     }
 
     row(item: EventWithContext): TemplateResult[] {
+        let geo: KeyUnknown | undefined = undefined;
+        if (Object.hasOwn(item.context, "geo")) {
+            geo = item.context.geo as KeyUnknown;
+        }
         return [
             html`<div>${ActionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
@@ -67,7 +72,8 @@ export class EventListPage extends TablePage<Event> {
                           : html``}`
                 : html`-`,
             html`<span>${item.created?.toLocaleString()}</span>`,
-            html`<span>${item.clientIp || t`-`}</span>`,
+            html` <div>${item.clientIp || t`-`}</div>
+                ${geo ? html`<small>${geo.city}, ${geo.country}</small> ` : html``}`,
             html`<span>${item.tenant?.name || t`-`}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <i class="fas fa-share-square"></i>
