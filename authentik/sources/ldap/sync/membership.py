@@ -22,6 +22,9 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
 
     def sync(self) -> int:
         """Iterate over all Users and assign Groups using memberOf Field"""
+        if not self._source.sync_groups:
+            self.message("Group syncing is disabled for this Source")
+            return -1
         groups = self._source.connection.extend.standard.paged_search(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
