@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="blueprintinstance",
             name="path",
-            field=models.TextField(blank=True),
+            field=models.TextField(blank=True, default=""),
         ),
     ]

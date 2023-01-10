@@ -25918,6 +25918,7 @@ components:
           type: string
         path:
           type: string
+          default: ''
         context:
           type: object
           additionalProperties: {}
@@ -25951,7 +25952,6 @@ components:
       - managed_models
       - metadata
       - name
-      - path
       - pk
       - status
     BlueprintInstanceRequest:
@@ -25963,6 +25963,7 @@ components:
           minLength: 1
         path:
           type: string
+          default: ''
         context:
           type: object
           additionalProperties: {}
@@ -25972,7 +25973,6 @@ components:
           type: string
       required:
       - name
-      - path
     BlueprintInstanceStatusEnum:
       enum:
       - successful
@@ -33150,6 +33150,7 @@ components:
           minLength: 1
         path:
           type: string
+          default: ''
         context:
           type: object
           additionalProperties: {}

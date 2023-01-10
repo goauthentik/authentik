@@ -64,9 +64,6 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     }
 
     send = (data: BlueprintInstance): Promise<BlueprintInstance> => {
-        if (!data.path) {
-            data.path = "";
-        }
         if (this.instance?.pk) {
             return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsUpdate({
                 instanceUuid: this.instance.pk,

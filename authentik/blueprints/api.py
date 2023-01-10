@@ -52,6 +52,11 @@ class BlueprintInstanceSerializer(ModelSerializer):
             raise ValidationError(_("Failed to validate blueprint"), *[x["msg"] for x in logs])
         return content
 
+    def validate(self, attrs: dict) -> dict:
+        if attrs.get("path", "") == "" and attrs.get("content", "") == "":
+            raise ValidationError(_("Either path or content must be set."))
+        return super().validate(attrs)
+
     class Meta:
 
         model = BlueprintInstance

@@ -62,7 +62,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
     name = models.TextField()
     metadata = models.JSONField(default=dict)
-    path = models.TextField(blank=True)
+    path = models.TextField(default="", blank=True)
     content = models.TextField(default="", blank=True)
     context = models.JSONField(default=dict)
     last_applied = models.DateTimeField(auto_now=True)
