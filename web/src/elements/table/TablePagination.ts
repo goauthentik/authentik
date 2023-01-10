@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -33,7 +33,23 @@ export class TablePagination extends AKElement {
     };
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFPagination, AKGlobal];
+        return [
+            PFBase,
+            PFButton,
+            PFPagination,
+            AKGlobal,
+            css`
+                @media (prefers-color-scheme: dark) {
+                    .pf-c-pagination__nav-control .pf-c-button {
+                        color: var(--pf-c-button--m-plain--disabled--Color);
+                        --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);
+                    }
+                    .pf-c-pagination__nav-control .pf-c-button:disabled {
+                        color: var(--pf-c-button--disabled--Color);
+                    }
+                }
+            `,
+        ];
     }
 
     render(): TemplateResult {
