@@ -28,6 +28,9 @@ export class CodeMirrorTextarea<T> extends AKElement {
     @property()
     name?: string;
 
+    @property({ type: Boolean })
+    parseValue = true;
+
     editor?: EditorView;
 
     _value?: string;
@@ -67,6 +70,9 @@ export class CodeMirrorTextarea<T> extends AKElement {
     }
 
     get value(): T | string {
+        if (!this.parseValue) {
+            return this.getInnerValue();
+        }
         try {
             switch (this.mode.toLowerCase()) {
                 case "yaml":

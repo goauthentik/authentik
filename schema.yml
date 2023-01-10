@@ -25918,6 +25918,7 @@ components:
           type: string
         path:
           type: string
+          default: ''
         context:
           type: object
           additionalProperties: {}
@@ -25943,13 +25944,14 @@ components:
           type: object
           additionalProperties: {}
           readOnly: true
+        content:
+          type: string
       required:
       - last_applied
       - last_applied_hash
       - managed_models
       - metadata
       - name
-      - path
       - pk
       - status
     BlueprintInstanceRequest:
@@ -25961,15 +25963,16 @@ components:
           minLength: 1
         path:
           type: string
-          minLength: 1
+          default: ''
         context:
           type: object
           additionalProperties: {}
         enabled:
           type: boolean
+        content:
+          type: string
       required:
       - name
-      - path
     BlueprintInstanceStatusEnum:
       enum:
       - successful
@@ -33147,12 +33150,14 @@ components:
           minLength: 1
         path:
           type: string
-          minLength: 1
+          default: ''
         context:
           type: object
           additionalProperties: {}
         enabled:
           type: boolean
+        content:
+          type: string
     PatchedCaptchaStageRequest:
       type: object
       description: CaptchaStage Serializer
