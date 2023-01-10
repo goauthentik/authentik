@@ -1,7 +1,7 @@
+import "@goauthentik/admin/admin-overview/charts/AdminModelPerDay";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/cards/AggregatePromiseCard";
-import "@goauthentik/elements/charts/AdminModelPerDay";
 
 import { t } from "@lingui/macro";
 

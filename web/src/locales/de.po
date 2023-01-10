@@ -47,6 +47,8 @@ msgstr "(Format: hours=-1;minutes=-2;seconds=-3)."
 msgid "(Format: hours=1;minutes=2;seconds=3)."
 msgstr "(Format: hours=-1;minutes=-2;seconds=-3)."
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/applications/ApplicationListPage.ts
 #: src/admin/applications/ApplicationListPage.ts
 #: src/admin/events/EventListPage.ts
@@ -212,6 +214,7 @@ msgstr "Zugangstoken-URL"
 msgid "Access token validity"
 msgstr "Zugangstokengültigkeit"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/elements/events/ObjectChangelog.ts
@@ -516,7 +519,7 @@ msgstr ""
 msgid "Application already has access to the following permissions:"
 msgstr ""
 
-#: src/elements/charts/UserChart.ts
+#: src/admin/users/UserChart.ts
 msgid "Application authorizations"
 msgstr "Applikationsgenehmigungen"
 
@@ -738,7 +741,7 @@ msgid "Authorization flow"
 msgstr "Autorisierungsablauf"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-#: src/elements/charts/ApplicationAuthorizeChart.ts
+#: src/admin/applications/ApplicationAuthorizeChart.ts
 msgid "Authorizations"
 msgstr "Berechtigungen"
 
@@ -879,6 +882,10 @@ msgstr "Verknüpfung"
 msgid "Binding Type"
 msgstr "Verknüpfungstyp"
 
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Blueprint"
+msgstr ""
+
 #: src/admin/blueprints/BlueprintListPage.ts
 msgid "Blueprint(s)"
 msgstr ""
@@ -937,12 +944,12 @@ msgstr ""
 #~ msgstr "Zwischengespeicherte Bindung, Flow wird ausgeführt und Sitzung wird im Arbeitsspeicher zwischengespeichert. Flow wird ausgeführt, wenn die Sitzung abläuft."
 
 #: src/admin/admin-overview/charts/FlowStatusChart.ts
-msgid "Cached flows"
-msgstr "Gecachte Abläufe"
+#~ msgid "Cached flows"
+#~ msgstr "Gecachte Abläufe"
 
 #: src/admin/admin-overview/charts/PolicyStatusChart.ts
-msgid "Cached policies"
-msgstr "Gecachte Richtlinien"
+#~ msgid "Cached policies"
+#~ msgstr "Gecachte Richtlinien"
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Cached querying"
@@ -1098,6 +1105,10 @@ msgstr ""
 msgid "Check outposts."
 msgstr "Outposts prüfen"
 
+#: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Check release notes"
+msgstr ""
+
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Check static rules"
 msgstr ""
@@ -1202,6 +1213,7 @@ msgstr "Token kopieren"
 msgid "Client ID"
 msgstr "Client-ID"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/elements/events/ObjectChangelog.ts
@@ -1705,6 +1717,7 @@ msgstr "Erstellt von"
 #~ msgid "Created {0}"
 #~ msgstr "{0} erstellt"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -2074,6 +2087,10 @@ msgstr ""
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Duo activation"
 msgstr "Duo-Aktivierung"
+
+#: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
+msgid "Duo activation QR code"
+msgstr ""
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Duo authenticator"
@@ -2453,7 +2470,7 @@ msgid "External host"
 msgstr "Externer Host"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-#: src/elements/charts/UserChart.ts
+#: src/admin/users/UserChart.ts
 msgid "Failed Logins"
 msgstr "Fehlgeschlagene Anmeldungen"
 
@@ -2637,7 +2654,6 @@ msgid "Flow(s)"
 msgstr "Ablauf/Abläufe"
 
 #: src/admin/AdminInterface.ts
-#: src/admin/admin-overview/AdminOverviewPage.ts
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/stages/StageListPage.ts
 msgid "Flows"
@@ -2812,7 +2828,6 @@ msgid "Group(s)"
 msgstr "Gruppe(n)"
 
 #: src/admin/AdminInterface.ts
-#: src/admin/admin-overview/AdminOverviewPage.ts
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/users/UserForm.ts
 #: src/admin/users/UserViewPage.ts
@@ -3131,6 +3146,10 @@ msgstr "Integrationsschlüssel"
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Intent"
 msgstr "Zweck"
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Internal"
+msgstr ""
 
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Internal Host"
@@ -3540,6 +3559,10 @@ msgstr "Machine-to-Machine-Authentifizierungseinstellungen"
 msgid "Make sure to keep these tokens in a safe place."
 msgstr "Bewahren Sie diese Tokens an einem sicheren Ort auf."
 
+#: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Manage users"
+msgstr ""
+
 #: src/admin/crypto/CertificateKeyPairListPage.ts
 msgid "Managed by authentik"
 msgstr "Verwaltet durch Authentik"
@@ -3891,6 +3914,7 @@ msgstr "Nein"
 msgid "No Applications available."
 msgstr "Keine Anwendungen vorhanden."
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
 msgid "No Events found."
@@ -3929,6 +3953,7 @@ msgstr "Keine Integrationen aktiv"
 msgid "No log messages."
 msgstr "Keine Logeinträge."
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
 msgid "No matching events could be found."
@@ -4106,9 +4131,9 @@ msgstr ""
 msgid "OIDC well-known configuration URL. Can be used to automatically configure the URLs above."
 msgstr "Bekannte OIDC-Konfigurations-URL. Kann verwendet werden, um die obigen URLs automatisch zu konfigurieren."
 
-#: src/pages/admin-overview/cards/SystemStatusCard.ts
-#~ msgid "OK"
-#~ msgstr "OK"
+#: src/admin/admin-overview/cards/SystemStatusCard.ts
+msgid "OK"
+msgstr "OK"
 
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
@@ -4123,7 +4148,7 @@ msgstr "Objektfeld"
 msgid "Object uniqueness field"
 msgstr "Feld für die Eindeutigkeit des Objekts"
 
-#: src/elements/charts/AdminModelPerDay.ts
+#: src/admin/admin-overview/charts/AdminModelPerDay.ts
 msgid "Objects created"
 msgstr "Objekte erstellt"
 
@@ -4134,6 +4159,7 @@ msgstr ""
 #~ msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
 #~ msgstr "Die Einwilligung erlischt in. (Format: Stunden=1;Minuten=2;Sekunden=3)."
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -4742,6 +4768,10 @@ msgstr "Richtlinien neu bewerten"
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Receive a push notification on your device."
 msgstr "Erhalten Sie eine Push-Benachrichtigung auf Ihrem Gerät."
+
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
+msgid "Recent events"
+msgstr ""
 
 #: src/admin/flows/utils.ts
 #: src/admin/tokens/TokenListPage.ts
@@ -5685,7 +5715,7 @@ msgid "Successful"
 msgstr "Erfolgreich"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-#: src/elements/charts/UserChart.ts
+#: src/admin/users/UserChart.ts
 msgid "Successful Logins"
 msgstr "Erfolgreiche Anmeldungen"
 
@@ -6030,12 +6060,12 @@ msgid "Superuser privileges?"
 msgstr "Administrationsrechte?"
 
 #: src/admin/admin-overview/charts/GroupCountStatusChart.ts
-msgid "Superuser-groups"
-msgstr "Superuser-Gruppen"
+#~ msgid "Superuser-groups"
+#~ msgstr "Superuser-Gruppen"
 
 #: src/admin/admin-overview/charts/UserCountStatusChart.ts
-msgid "Superusers"
-msgstr "Administratoren"
+#~ msgid "Superusers"
+#~ msgstr "Administratoren"
 
 #: src/admin/events/utils.ts
 msgid "Suspicious request"
@@ -6134,6 +6164,7 @@ msgstr "Aufgabe mit Warnungen beendet"
 msgid "Template"
 msgstr "Schablone"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 msgid "Tenant"
 msgstr "Umgebung"
@@ -6444,20 +6475,20 @@ msgid "Tokens sent via SMS."
 msgstr "Per SMS versendete Token."
 
 #: src/admin/admin-overview/charts/FlowStatusChart.ts
-msgid "Total flows"
-msgstr "Abläufe insgesamt"
+#~ msgid "Total flows"
+#~ msgstr "Abläufe insgesamt"
 
 #: src/admin/admin-overview/charts/GroupCountStatusChart.ts
-msgid "Total groups"
-msgstr "Gruppen insgesamt"
+#~ msgid "Total groups"
+#~ msgstr "Gruppen insgesamt"
 
 #: src/admin/admin-overview/charts/PolicyStatusChart.ts
-msgid "Total policies"
-msgstr "Richtlinien insgesamt"
+#~ msgid "Total policies"
+#~ msgstr "Richtlinien insgesamt"
 
 #: src/admin/admin-overview/charts/UserCountStatusChart.ts
-msgid "Total users"
-msgstr "Benutzer insgesamt"
+#~ msgid "Total users"
+#~ msgstr "Benutzer insgesamt"
 
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Traditional authenticator"
@@ -6598,8 +6629,8 @@ msgid "Unauthenticated URLs"
 msgstr "Nicht authentifizierte URLs"
 
 #: src/admin/admin-overview/charts/PolicyStatusChart.ts
-msgid "Unbound policies"
-msgstr "Ungebundene Richtlinien"
+#~ msgid "Unbound policies"
+#~ msgstr "Ungebundene Richtlinien"
 
 #: src/admin/flows/utils.ts
 msgid "Unenrollment"
@@ -6927,6 +6958,7 @@ msgstr ""
 msgid "Used to login using a flow executor"
 msgstr ""
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/applications/ApplicationCheckAccessForm.ts
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventListPage.ts
@@ -7112,7 +7144,6 @@ msgstr "Benutzername: Wie bei der Texteingabe, prüft jedoch auf doppelte Benutz
 
 #: src/admin/AdminInterface.ts
 #: src/admin/AdminInterface.ts
-#: src/admin/admin-overview/AdminOverviewPage.ts
 #: src/admin/groups/GroupViewPage.ts
 #: src/admin/users/UserListPage.ts
 msgid "Users"
@@ -7579,7 +7610,7 @@ msgstr "\"{0}\", sollte \"{1}\" sein"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
-#: src/elements/charts/AdminModelPerDay.ts
+#: src/admin/admin-overview/charts/AdminModelPerDay.ts
 msgid "{ago} days ago"
 msgstr "vor {ago} Tagen"
 

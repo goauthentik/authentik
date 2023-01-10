@@ -31,6 +31,8 @@ msgstr "(Biçim: saat=-1; dakika=-2; ikincil=-3)."
 msgid "(Format: hours=1;minutes=2;seconds=3)."
 msgstr "(Biçim: saat=1; dakika=2; saniye= 3)."
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/applications/ApplicationListPage.ts
 #: src/admin/applications/ApplicationListPage.ts
 #: src/admin/events/EventListPage.ts
@@ -196,6 +198,7 @@ msgstr "Erişim belirteci URL'si"
 msgid "Access token validity"
 msgstr "Erişim belirteci geçerliliği"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/elements/events/ObjectChangelog.ts
@@ -494,7 +497,7 @@ msgstr ""
 msgid "Application already has access to the following permissions:"
 msgstr ""
 
-#: src/elements/charts/UserChart.ts
+#: src/admin/users/UserChart.ts
 msgid "Application authorizations"
 msgstr "Uygulama yetkilendirmeleri"
 
@@ -716,7 +719,7 @@ msgid "Authorization flow"
 msgstr "Yetkilendirme akışı"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-#: src/elements/charts/ApplicationAuthorizeChart.ts
+#: src/admin/applications/ApplicationAuthorizeChart.ts
 msgid "Authorizations"
 msgstr "Yetkilendirmeler"
 
@@ -857,6 +860,10 @@ msgstr "Ciltleme"
 msgid "Binding Type"
 msgstr "Bağlama Tipi"
 
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Blueprint"
+msgstr ""
+
 #: src/admin/blueprints/BlueprintListPage.ts
 msgid "Blueprint(s)"
 msgstr ""
@@ -915,12 +922,12 @@ msgstr ""
 #~ msgstr ""
 
 #: src/admin/admin-overview/charts/FlowStatusChart.ts
-msgid "Cached flows"
-msgstr "Önbelleğe alınmış akışlar"
+#~ msgid "Cached flows"
+#~ msgstr "Önbelleğe alınmış akışlar"
 
 #: src/admin/admin-overview/charts/PolicyStatusChart.ts
-msgid "Cached policies"
-msgstr "Önbelleğe alınan ilkeler"
+#~ msgid "Cached policies"
+#~ msgstr "Önbelleğe alınan ilkeler"
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Cached querying"
@@ -1074,6 +1081,10 @@ msgstr ""
 msgid "Check outposts."
 msgstr "İleri üsleri kontrol edin."
 
+#: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Check release notes"
+msgstr ""
+
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Check static rules"
 msgstr ""
@@ -1178,6 +1189,7 @@ msgstr "Belirteci kopyalamak için tıklayın"
 msgid "Client ID"
 msgstr "Müşteri Kimliği"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/elements/events/ObjectChangelog.ts
@@ -1681,6 +1693,7 @@ msgstr "Tarafından yaratıldı"
 #~ msgid "Created {0}"
 #~ msgstr "Oluşturuldu {0}"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -2050,6 +2063,10 @@ msgstr ""
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Duo activation"
 msgstr "İkili aktivasyon"
+
+#: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
+msgid "Duo activation QR code"
+msgstr ""
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Duo authenticator"
@@ -2429,7 +2446,7 @@ msgid "External host"
 msgstr "Harici ana bilgisayar"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-#: src/elements/charts/UserChart.ts
+#: src/admin/users/UserChart.ts
 msgid "Failed Logins"
 msgstr "Başarısız Oturum Açma"
 
@@ -2613,7 +2630,6 @@ msgid "Flow(s)"
 msgstr "Akış (ler)"
 
 #: src/admin/AdminInterface.ts
-#: src/admin/admin-overview/AdminOverviewPage.ts
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/stages/StageListPage.ts
 msgid "Flows"
@@ -2788,7 +2804,6 @@ msgid "Group(s)"
 msgstr "Grup (ler)"
 
 #: src/admin/AdminInterface.ts
-#: src/admin/admin-overview/AdminOverviewPage.ts
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/users/UserForm.ts
 #: src/admin/users/UserViewPage.ts
@@ -3105,6 +3120,10 @@ msgstr "Entegrasyon anahtarı"
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Intent"
 msgstr "Niyet"
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Internal"
+msgstr ""
 
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Internal Host"
@@ -3516,6 +3535,10 @@ msgstr ""
 msgid "Make sure to keep these tokens in a safe place."
 msgstr "Bu belirteçleri güvenli bir yerde tuttuğunuzdan emin olun."
 
+#: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Manage users"
+msgstr ""
+
 #: src/admin/crypto/CertificateKeyPairListPage.ts
 msgid "Managed by authentik"
 msgstr "Auentik tarafından yönetiliyor"
@@ -3867,6 +3890,7 @@ msgstr "Hayır"
 msgid "No Applications available."
 msgstr "Kullanılabilir Uygulama yok."
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
 msgid "No Events found."
@@ -3905,6 +3929,7 @@ msgstr "Entegrasyon etkin"
 msgid "No log messages."
 msgstr ""
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
 msgid "No matching events could be found."
@@ -4082,9 +4107,9 @@ msgstr ""
 msgid "OIDC well-known configuration URL. Can be used to automatically configure the URLs above."
 msgstr ""
 
-#: src/pages/admin-overview/cards/SystemStatusCard.ts
-#~ msgid "OK"
-#~ msgstr "OK"
+#: src/admin/admin-overview/cards/SystemStatusCard.ts
+msgid "OK"
+msgstr "OK"
 
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
@@ -4099,7 +4124,7 @@ msgstr "Nesne alanı"
 msgid "Object uniqueness field"
 msgstr "Nesne benzersizliği alanı"
 
-#: src/elements/charts/AdminModelPerDay.ts
+#: src/admin/admin-overview/charts/AdminModelPerDay.ts
 msgid "Objects created"
 msgstr "Oluşturulan nesneler"
 
@@ -4110,6 +4135,7 @@ msgstr ""
 #~ msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
 #~ msgstr "Onay sona erdikten sonra ofset. (Biçim: saat=1; dakika=2; saniye/= 3)."
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -4718,6 +4744,10 @@ msgstr "İlkeleri yeniden değerlendirin"
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Receive a push notification on your device."
 msgstr "Cihazınızda anında iletme bildirimi alın."
+
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
+msgid "Recent events"
+msgstr ""
 
 #: src/admin/flows/utils.ts
 #: src/admin/tokens/TokenListPage.ts
@@ -5661,7 +5691,7 @@ msgid "Successful"
 msgstr "Başarılı"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-#: src/elements/charts/UserChart.ts
+#: src/admin/users/UserChart.ts
 msgid "Successful Logins"
 msgstr "Başarılı Oturum Açma"
 
@@ -6006,12 +6036,12 @@ msgid "Superuser privileges?"
 msgstr "Süper kullanıcı ayrıcalıkları mı?"
 
 #: src/admin/admin-overview/charts/GroupCountStatusChart.ts
-msgid "Superuser-groups"
-msgstr "Süper kullanıcı grupları"
+#~ msgid "Superuser-groups"
+#~ msgstr "Süper kullanıcı grupları"
 
 #: src/admin/admin-overview/charts/UserCountStatusChart.ts
-msgid "Superusers"
-msgstr "Süper Kullanıcılar"
+#~ msgid "Superusers"
+#~ msgstr "Süper Kullanıcılar"
 
 #: src/admin/events/utils.ts
 msgid "Suspicious request"
@@ -6110,6 +6140,7 @@ msgstr "Görev uyarılarla tamamlandı"
 msgid "Template"
 msgstr "Şablon"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 msgid "Tenant"
 msgstr "Sakin"
@@ -6420,20 +6451,20 @@ msgid "Tokens sent via SMS."
 msgstr "Belirteçler SMS ile gönderildi."
 
 #: src/admin/admin-overview/charts/FlowStatusChart.ts
-msgid "Total flows"
-msgstr "Toplam akışlar"
+#~ msgid "Total flows"
+#~ msgstr "Toplam akışlar"
 
 #: src/admin/admin-overview/charts/GroupCountStatusChart.ts
-msgid "Total groups"
-msgstr "Toplam gruplar"
+#~ msgid "Total groups"
+#~ msgstr "Toplam gruplar"
 
 #: src/admin/admin-overview/charts/PolicyStatusChart.ts
-msgid "Total policies"
-msgstr "Toplam ilkeler"
+#~ msgid "Total policies"
+#~ msgstr "Toplam ilkeler"
 
 #: src/admin/admin-overview/charts/UserCountStatusChart.ts
-msgid "Total users"
-msgstr "Toplam kullanıcı"
+#~ msgid "Total users"
+#~ msgstr "Toplam kullanıcı"
 
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Traditional authenticator"
@@ -6574,8 +6605,8 @@ msgid "Unauthenticated URLs"
 msgstr "Kimliği Doğrulanmamış URL'ler"
 
 #: src/admin/admin-overview/charts/PolicyStatusChart.ts
-msgid "Unbound policies"
-msgstr "Bağlanmayan ilkeler"
+#~ msgid "Unbound policies"
+#~ msgstr "Bağlanmayan ilkeler"
 
 #: src/admin/flows/utils.ts
 msgid "Unenrollment"
@@ -6903,6 +6934,7 @@ msgstr ""
 msgid "Used to login using a flow executor"
 msgstr ""
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/applications/ApplicationCheckAccessForm.ts
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventListPage.ts
@@ -7088,7 +7120,6 @@ msgstr "Kullanıcı adı: Metin girişi ile aynı, ancak yinelenen kullanıcı a
 
 #: src/admin/AdminInterface.ts
 #: src/admin/AdminInterface.ts
-#: src/admin/admin-overview/AdminOverviewPage.ts
 #: src/admin/groups/GroupViewPage.ts
 #: src/admin/users/UserListPage.ts
 msgid "Users"
@@ -7555,7 +7586,7 @@ msgstr "{0}, {1} olmalıdır"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
-#: src/elements/charts/AdminModelPerDay.ts
+#: src/admin/admin-overview/charts/AdminModelPerDay.ts
 msgid "{ago} days ago"
 msgstr "{ago} gün önce"
 
