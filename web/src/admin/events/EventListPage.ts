@@ -64,10 +64,14 @@ export class EventListPage extends TablePage<Event> {
             html`<div>${ActionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
             item.user?.username
-                ? html`<a href="#/identity/users/${item.user.pk}"> ${item.user?.username} </a>
+                ? html`<div>
+                          <a href="#/identity/users/${item.user.pk}">${item.user?.username}</a>
+                      </div>
                       ${item.user.on_behalf_of
                           ? html`<small>
-                                ${t`On behalf of ${item.user.on_behalf_of.username}`}
+                                <a href="#/identity/users/${item.user.on_behalf_of.pk}"
+                                    >${t`On behalf of ${item.user.on_behalf_of.username}`}</a
+                                >
                             </small>`
                           : html``}`
                 : html`-`,
