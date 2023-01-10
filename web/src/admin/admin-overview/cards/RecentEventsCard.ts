@@ -2,7 +2,6 @@ import "@goauthentik/admin/events/EventInfo";
 import { ActionToLabel } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
-import { truncate } from "@goauthentik/common/utils";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
