@@ -7,7 +7,6 @@ import "@goauthentik/admin/admin-overview/cards/WorkerStatusCard";
 import "@goauthentik/admin/admin-overview/charts/AdminLoginAuthorizeChart";
 import "@goauthentik/admin/admin-overview/charts/LDAPSyncStatusChart";
 import "@goauthentik/admin/admin-overview/charts/OutpostStatusChart";
-import "@goauthentik/admin/admin-overview/charts/PolicyStatusChart";
 import { VERSION } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
