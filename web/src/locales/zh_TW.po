@@ -33,6 +33,8 @@ msgstr "(格式： hours=-1;minutes=-2;seconds=-3)."
 msgid "(Format: hours=1;minutes=2;seconds=3)."
 msgstr "(格式： hours=1;minutes=2;seconds=3)."
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/applications/ApplicationListPage.ts
 #: src/admin/applications/ApplicationListPage.ts
 #: src/admin/events/EventListPage.ts
@@ -198,6 +200,7 @@ msgstr "访问令牌 URL"
 msgid "Access token validity"
 msgstr "访问令牌有效性"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/elements/events/ObjectChangelog.ts
@@ -500,7 +503,7 @@ msgstr ""
 msgid "Application already has access to the following permissions:"
 msgstr ""
 
-#: src/elements/charts/UserChart.ts
+#: src/admin/users/UserChart.ts
 msgid "Application authorizations"
 msgstr "应用程序授权"
 
@@ -722,7 +725,7 @@ msgid "Authorization flow"
 msgstr "授权流程"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-#: src/elements/charts/ApplicationAuthorizeChart.ts
+#: src/admin/applications/ApplicationAuthorizeChart.ts
 msgid "Authorizations"
 msgstr "授权"
 
@@ -863,6 +866,10 @@ msgstr "绑定"
 msgid "Binding Type"
 msgstr "绑定类型"
 
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Blueprint"
+msgstr ""
+
 #: src/admin/blueprints/BlueprintListPage.ts
 msgid "Blueprint(s)"
 msgstr ""
@@ -921,12 +928,12 @@ msgstr ""
 #~ msgstr ""
 
 #: src/admin/admin-overview/charts/FlowStatusChart.ts
-msgid "Cached flows"
-msgstr "缓存的流程"
+#~ msgid "Cached flows"
+#~ msgstr "缓存的流程"
 
 #: src/admin/admin-overview/charts/PolicyStatusChart.ts
-msgid "Cached policies"
-msgstr "缓存策略"
+#~ msgid "Cached policies"
+#~ msgstr "缓存策略"
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Cached querying"
@@ -1082,6 +1089,10 @@ msgstr ""
 msgid "Check outposts."
 msgstr "检查  outposts."
 
+#: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Check release notes"
+msgstr ""
+
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Check static rules"
 msgstr ""
@@ -1186,6 +1197,7 @@ msgstr "点击复制令牌"
 msgid "Client ID"
 msgstr "客户端 ID"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/elements/events/ObjectChangelog.ts
@@ -1689,6 +1701,7 @@ msgstr "由... 创建"
 #~ msgid "Created {0}"
 #~ msgstr "已创建 {0}"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -2058,6 +2071,10 @@ msgstr ""
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Duo activation"
 msgstr "Duo 激活"
+
+#: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
+msgid "Duo activation QR code"
+msgstr ""
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Duo authenticator"
@@ -2437,7 +2454,7 @@ msgid "External host"
 msgstr "外部主机"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-#: src/elements/charts/UserChart.ts
+#: src/admin/users/UserChart.ts
 msgid "Failed Logins"
 msgstr "登入失败"
 
@@ -2621,7 +2638,6 @@ msgid "Flow(s)"
 msgstr "流程"
 
 #: src/admin/AdminInterface.ts
-#: src/admin/admin-overview/AdminOverviewPage.ts
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/stages/StageListPage.ts
 msgid "Flows"
@@ -2796,7 +2812,6 @@ msgid "Group(s)"
 msgstr "组"
 
 #: src/admin/AdminInterface.ts
-#: src/admin/admin-overview/AdminOverviewPage.ts
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/users/UserForm.ts
 #: src/admin/users/UserViewPage.ts
@@ -3113,6 +3128,10 @@ msgstr "集成密钥"
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Intent"
 msgstr "意图"
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Internal"
+msgstr ""
 
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Internal Host"
@@ -3524,6 +3543,10 @@ msgstr ""
 msgid "Make sure to keep these tokens in a safe place."
 msgstr "确保将这些令牌保存在安全的地方。"
 
+#: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Manage users"
+msgstr ""
+
 #: src/admin/crypto/CertificateKeyPairListPage.ts
 msgid "Managed by authentik"
 msgstr "由 authentik 管理"
@@ -3875,6 +3898,7 @@ msgstr "No"
 msgid "No Applications available."
 msgstr "没有可用的应用程序。"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
 msgid "No Events found."
@@ -3913,6 +3937,7 @@ msgstr "没有激活的集成"
 msgid "No log messages."
 msgstr "没有日志消息。"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
 msgid "No matching events could be found."
@@ -4090,9 +4115,9 @@ msgstr ""
 msgid "OIDC well-known configuration URL. Can be used to automatically configure the URLs above."
 msgstr ""
 
-#: src/pages/admin-overview/cards/SystemStatusCard.ts
-#~ msgid "OK"
-#~ msgstr "OK"
+#: src/admin/admin-overview/cards/SystemStatusCard.ts
+msgid "OK"
+msgstr "OK"
 
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
@@ -4107,7 +4132,7 @@ msgstr "对象字段"
 msgid "Object uniqueness field"
 msgstr "对象唯一性字段"
 
-#: src/elements/charts/AdminModelPerDay.ts
+#: src/admin/admin-overview/charts/AdminModelPerDay.ts
 msgid "Objects created"
 msgstr "已创建对象"
 
@@ -4118,6 +4143,7 @@ msgstr ""
 #~ msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
 #~ msgstr "偏移量，在此之后同意过期。（格式：hours=1;minutes=2;seconds=3）。"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -4726,6 +4752,10 @@ msgstr "重新评估策略"
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Receive a push notification on your device."
 msgstr "在您的设备上接收推送通知。"
+
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
+msgid "Recent events"
+msgstr ""
 
 #: src/admin/flows/utils.ts
 #: src/admin/tokens/TokenListPage.ts
@@ -5669,7 +5699,7 @@ msgid "Successful"
 msgstr "成功"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-#: src/elements/charts/UserChart.ts
+#: src/admin/users/UserChart.ts
 msgid "Successful Logins"
 msgstr "成功登入"
 
@@ -6014,12 +6044,12 @@ msgid "Superuser privileges?"
 msgstr "超级用户权限？"
 
 #: src/admin/admin-overview/charts/GroupCountStatusChart.ts
-msgid "Superuser-groups"
-msgstr "超级用户组"
+#~ msgid "Superuser-groups"
+#~ msgstr "超级用户组"
 
 #: src/admin/admin-overview/charts/UserCountStatusChart.ts
-msgid "Superusers"
-msgstr "超级用户"
+#~ msgid "Superusers"
+#~ msgstr "超级用户"
 
 #: src/admin/events/utils.ts
 msgid "Suspicious request"
@@ -6118,6 +6148,7 @@ msgstr "任务已完成，但出现警告"
 msgid "Template"
 msgstr "“模板”"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 msgid "Tenant"
 msgstr "租户"
@@ -6428,20 +6459,20 @@ msgid "Tokens sent via SMS."
 msgstr "通过短信发送的令牌。"
 
 #: src/admin/admin-overview/charts/FlowStatusChart.ts
-msgid "Total flows"
-msgstr "总流程"
+#~ msgid "Total flows"
+#~ msgstr "总流程"
 
 #: src/admin/admin-overview/charts/GroupCountStatusChart.ts
-msgid "Total groups"
-msgstr "组总数"
+#~ msgid "Total groups"
+#~ msgstr "组总数"
 
 #: src/admin/admin-overview/charts/PolicyStatusChart.ts
-msgid "Total policies"
-msgstr "总策略数"
+#~ msgid "Total policies"
+#~ msgstr "总策略数"
 
 #: src/admin/admin-overview/charts/UserCountStatusChart.ts
-msgid "Total users"
-msgstr "用户总数"
+#~ msgid "Total users"
+#~ msgstr "用户总数"
 
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Traditional authenticator"
@@ -6582,8 +6613,8 @@ msgid "Unauthenticated URLs"
 msgstr "未经身份验证的 URL"
 
 #: src/admin/admin-overview/charts/PolicyStatusChart.ts
-msgid "Unbound policies"
-msgstr "未绑定策略"
+#~ msgid "Unbound policies"
+#~ msgstr "未绑定策略"
 
 #: src/admin/flows/utils.ts
 msgid "Unenrollment"
@@ -6911,6 +6942,7 @@ msgstr ""
 msgid "Used to login using a flow executor"
 msgstr ""
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/applications/ApplicationCheckAccessForm.ts
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventListPage.ts
@@ -7096,7 +7128,6 @@ msgstr "用户名：与文本输入相同，但检查并防止用户名重复。
 
 #: src/admin/AdminInterface.ts
 #: src/admin/AdminInterface.ts
-#: src/admin/admin-overview/AdminOverviewPage.ts
 #: src/admin/groups/GroupViewPage.ts
 #: src/admin/users/UserListPage.ts
 msgid "Users"
@@ -7565,7 +7596,7 @@ msgstr "{0}，应该是 {1}"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
-#: src/elements/charts/AdminModelPerDay.ts
+#: src/admin/admin-overview/charts/AdminModelPerDay.ts
 msgid "{ago} days ago"
 msgstr "{ago} 天前"
 

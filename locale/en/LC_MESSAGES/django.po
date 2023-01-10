@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-05 13:59+0000\n"
+"POT-Creation-Date: 2023-01-10 22:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,15 +31,23 @@ msgstr ""
 msgid "Validation Error"
 msgstr ""
 
-#: authentik/blueprints/models.py:42
+#: authentik/blueprints/api.py:52
+msgid "Failed to validate blueprint"
+msgstr ""
+
+#: authentik/blueprints/api.py:57
+msgid "Either path or content must be set."
+msgstr ""
+
+#: authentik/blueprints/models.py:30
 msgid "Managed by authentik"
 msgstr ""
 
-#: authentik/blueprints/models.py:155
+#: authentik/blueprints/models.py:113
 msgid "Blueprint Instance"
 msgstr ""
 
-#: authentik/blueprints/models.py:156
+#: authentik/blueprints/models.py:114
 msgid "Blueprint Instances"
 msgstr ""
 
