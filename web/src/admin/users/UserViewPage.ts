@@ -1,5 +1,6 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
 import "@goauthentik/admin/users/UserActiveForm";
+import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
@@ -13,7 +14,6 @@ import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/charts/UserChart";
 import "@goauthentik/elements/events/ObjectChangelog";
 import "@goauthentik/elements/events/UserEvents";
 import "@goauthentik/elements/forms/ModalForm";
