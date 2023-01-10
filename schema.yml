@@ -25963,7 +25963,6 @@ components:
           minLength: 1
         path:
           type: string
-          minLength: 1
         context:
           type: object
           additionalProperties: {}
@@ -33151,7 +33150,6 @@ components:
           minLength: 1
         path:
           type: string
-          minLength: 1
         context:
           type: object
           additionalProperties: {}

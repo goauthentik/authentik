@@ -15,4 +15,9 @@ class Migration(migrations.Migration):
             name="content",
             field=models.TextField(blank=True, default=""),
         ),
+        migrations.AlterField(
+            model_name="blueprintinstance",
+            name="path",
+            field=models.TextField(blank=True),
+        ),
     ]

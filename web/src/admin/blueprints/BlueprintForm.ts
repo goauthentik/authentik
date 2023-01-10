@@ -207,6 +207,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                         ? html`<ak-form-element-horizontal label=${t`Blueprint`} name="content">
                               <ak-codemirror
                                   mode="yaml"
+                                  .parseValue=${false}
                                   value="${ifDefined(this.instance?.content)}"
                               ></ak-codemirror>
                           </ak-form-element-horizontal>`

@@ -22,7 +22,7 @@ Blueprints are yaml files, whose format is described further in [File structure]
 
 Starting with authentik 2022.8, blueprints are used to manage authentik default flows and other system objects. These blueprints can be disabled/replaced with custom blueprints in certain circumstances.
 
-## Storage - Local
+## Storage - File
 
 The authentik container by default looks for blueprints in `/blueprints`. Underneath this directory, there are a couple default subdirectories:
 
@@ -49,3 +49,13 @@ To push a blueprint to an OCI-compatible registry, [ORAS](https://oras.land/) ca
 ```
 oras push ghcr.io/<username>/blueprint/<blueprint name>:latest <yaml file>:application/vnd.goauthentik.blueprint.v1+yaml
 ```
+
+## Storage - Internal
+
+:::info
+Requires authentik 2023.1
+:::
+
+Blueprints can be stored in authentik's database, which allows blueprints to be managed via external configuration management tools like Terraform.
+
+Modifying the contents of a blueprint will trigger its reconciliation. Blueprints are validated on submission to prevent invalid blueprints from being saved.
