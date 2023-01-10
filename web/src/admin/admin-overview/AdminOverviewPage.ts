@@ -168,12 +168,12 @@ export class AdminOverviewPage extends AKElement {
                         >
                             <ak-admin-status-card-workers> </ak-admin-status-card-workers>
                         </div>
-                        <div class="pf-l-grid__item pf-m-12-col row-divider">
-                            <hr />
-                        </div>
                     </div>
                     <div class="pf-l-grid__item pf-m-6-col">
                         <ak-recent-events pageSize="6"></ak-recent-events>
+                    </div>
+                    <div class="pf-l-grid__item pf-m-12-col row-divider">
+                        <hr />
                     </div>
                     <!-- row 3 -->
                     <div
