@@ -28,7 +28,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
     @property()
     name?: string;
 
-    @property({type: Boolean})
+    @property({ type: Boolean })
     parseValue = true;
 
     editor?: EditorView;

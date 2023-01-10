@@ -34,7 +34,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
         const inst = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsRetrieve({
             instanceUuid: pk,
         });
-        if (inst.path.startsWith("oci://")) {
+        if (inst.path?.startsWith("oci://")) {
             this.source = blueprintSource.oci;
         }
         if (inst.content !== "") {
