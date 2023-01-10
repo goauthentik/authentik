@@ -73,7 +73,7 @@ export class RecentEventsCard extends Table<Event> {
             geo = item.context.geo as KeyUnknown;
         }
         return [
-            html`<div>${ActionToLabel(item.action)}</div>
+            html`<div><a href="${`#/events/log/${item.pk}`}">${ActionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
             item.user?.username
                 ? html`<div>
