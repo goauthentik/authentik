@@ -1,4 +1,5 @@
 """Serializer mixin for managed models"""
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -11,6 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.decorators import permission_required
 from authentik.blueprints.models import BlueprintInstance, BlueprintRetrievalFailed
+from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
@@ -39,6 +41,16 @@ class BlueprintInstanceSerializer(ModelSerializer):
         except BlueprintRetrievalFailed as exc:
             raise ValidationError(exc) from exc
         return path
+
+    def validate_content(self, content: str) -> str:
+        """Ensure content (if set) is a valid blueprint"""
+        if content == "":
+            return content
+        context = self.instance.context if self.instance else {}
+        valid, logs = Importer(content, context).validate()
+        if not valid:
+            raise ValidationError(_("Failed to validate blueprint"), *[x["msg"] for x in logs])
+        return content
 
     class Meta:
 
