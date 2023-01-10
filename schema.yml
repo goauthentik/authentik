@@ -25943,6 +25943,8 @@ components:
           type: object
           additionalProperties: {}
           readOnly: true
+        content:
+          type: string
       required:
       - last_applied
       - last_applied_hash
@@ -25967,6 +25969,8 @@ components:
           additionalProperties: {}
         enabled:
           type: boolean
+        content:
+          type: string
       required:
       - name
       - path
@@ -33153,6 +33157,8 @@ components:
           additionalProperties: {}
         enabled:
           type: boolean
+        content:
+          type: string
     PatchedCaptchaStageRequest:
       type: object
       description: CaptchaStage Serializer

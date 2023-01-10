@@ -63,6 +63,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
     name = models.TextField()
     metadata = models.JSONField(default=dict)
     path = models.TextField()
+    content = models.TextField(default="", blank=True)
     context = models.JSONField(default=dict)
     last_applied = models.DateTimeField(auto_now=True)
     last_applied_hash = models.TextField()
@@ -94,7 +95,9 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
         """Retrieve blueprint contents"""
         if self.path.startswith("oci://"):
             return self.retrieve_oci()
-        return self.retrieve_file()
+        if self.path != "":
+            return self.retrieve_file()
+        return self.content
 
     @property
     def serializer(self) -> Serializer:

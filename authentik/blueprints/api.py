@@ -54,6 +54,7 @@ class BlueprintInstanceSerializer(ModelSerializer):
             "enabled",
             "managed_models",
             "metadata",
+            "content",
         ]
         extra_kwargs = {
             "status": {"read_only": True},
