@@ -1,4 +1,3 @@
-import "@goauthentik/admin/providers/ProviderWizard";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
@@ -139,15 +138,8 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Select a provider that this application should use. Alternatively, create a new provider.`}
+                    ${t`Select a provider that this application should use.`}
                 </p>
-                <ak-provider-wizard
-                    .finalHandler=${async () => {
-                        this.requestUpdate();
-                    }}
-                    createText=${t`Create provider`}
-                >
-                </ak-provider-wizard>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Policy engine mode`}
