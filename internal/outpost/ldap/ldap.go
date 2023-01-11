@@ -1,6 +1,7 @@
 package ldap
 
 import (
+	"context"
 	"crypto/tls"
 	"net"
 	"sync"
@@ -40,6 +41,7 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 	}
 	ls.defaultCert = &defaultCert
 	s.BindFunc("", ls)
+	s.UnbindFunc("", ls)
 	s.SearchFunc("", ls)
 	return ls
 }
@@ -92,9 +94,13 @@ func (ls *LDAPServer) Start() error {
 	return nil
 }
 
-func (ls *LDAPServer) TimerFlowCacheExpiry() {
+func (ls *LDAPServer) Stop() error {
+	return nil
+}
+
+func (ls *LDAPServer) TimerFlowCacheExpiry(ctx context.Context) {
 	for _, p := range ls.providers {
-		ls.log.WithField("flow", p.flowSlug).Debug("Pre-heating flow cache")
-		p.binder.TimerFlowCacheExpiry()
+		ls.log.WithField("flow", p.authenticationFlowSlug).Debug("Pre-heating flow cache")
+		p.binder.TimerFlowCacheExpiry(ctx)
 	}
 }

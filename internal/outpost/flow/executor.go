@@ -143,6 +143,10 @@ func (fe *FlowExecutor) GetSession() *http.Cookie {
 	return fe.session
 }
 
+func (fe *FlowExecutor) SetSession(s *http.Cookie) {
+	fe.session = s
+}
+
 // WarmUp Ensure authentik's flow cache is warmed up
 func (fe *FlowExecutor) WarmUp() error {
 	gcsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.get_challenge")
