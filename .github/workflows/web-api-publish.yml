@@ -32,7 +32,7 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         id: cpr
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
           branch: update-web-api-client
           commit-message: "web: bump API Client version"
           title: "web: bump API Client version"
