@@ -172,7 +172,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 >
                 </ak-radio>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group>
                 <span slot="header"> ${t`UI settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${t`Launch URL`} name="metaLaunchUrl">
@@ -186,14 +186,19 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="openInNewTab">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.openInNewTab, false)}
                             />
-                            <label class="pf-c-check__label"> ${t`Open in new tab`} </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Open in new tab`}</span>
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`If checked, the launch URL will open in a new browser tab or window from the user's application library.`}
                         </p>
@@ -218,20 +223,28 @@ export class ApplicationForm extends ModelForm<Application, string> {
                                     ${this.instance?.metaIcon
                                         ? html`
                                               <ak-form-element-horizontal>
-                                                  <div class="pf-c-check">
+                                                  <label class="pf-c-switch">
                                                       <input
+                                                          class="pf-c-switch__input"
                                                           type="checkbox"
-                                                          class="pf-c-check__input"
                                                           @change=${(ev: Event) => {
                                                               const target =
                                                                   ev.target as HTMLInputElement;
                                                               this.clearIcon = target.checked;
                                                           }}
                                                       />
-                                                      <label class="pf-c-check__label">
+                                                      <span class="pf-c-switch__toggle">
+                                                          <span class="pf-c-switch__toggle-icon">
+                                                              <i
+                                                                  class="fas fa-check"
+                                                                  aria-hidden="true"
+                                                              ></i>
+                                                          </span>
+                                                      </span>
+                                                      <span class="pf-c-switch__label">
                                                           ${t`Clear icon`}
-                                                      </label>
-                                                  </div>
+                                                      </span>
+                                                  </label>
                                                   <p class="pf-c-form__helper-text">
                                                       ${t`Delete currently set icon.`}
                                                   </p>

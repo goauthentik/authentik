@@ -19,6 +19,7 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ResponseError, ValidationError } from "@goauthentik/api";
@@ -60,6 +61,7 @@ export class Form<T> extends AKElement {
             PFAlert,
             PFInputGroup,
             PFFormControl,
+            PFSwitch,
             AKGlobal,
             css`
                 select[multiple] {

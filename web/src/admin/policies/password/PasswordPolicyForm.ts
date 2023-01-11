@@ -233,14 +233,19 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="executionLogging">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
-                        ?checked=${first(this.instance?.executionLogging, false)}
+                        ?checked=${first(this.instance?.executionLogging, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Execution logging`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Execution logging`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
                 </p>
