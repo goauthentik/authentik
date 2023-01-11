@@ -1,8 +1,10 @@
 """Application API Views"""
+from datetime import timedelta
 from typing import Optional
 
 from django.core.cache import cache
 from django.db.models import QuerySet
+from django.db.models.functions import ExtractDay
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
@@ -259,10 +261,10 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         """Metrics for application logins"""
         app = self.get_object()
         return Response(
-            get_objects_for_user(request.user, "authentik_events.view_event")
-            .filter(
+            get_objects_for_user(request.user, "authentik_events.view_event").filter(
                 action=EventAction.AUTHORIZE_APPLICATION,
                 context__authorized_application__pk=app.pk.hex,
             )
-            .get_events_per_hour()
+            # 3 data points per day, so 8 hour spans
+            .get_events_per(timedelta(days=7), ExtractDay, 7 * 3)
         )

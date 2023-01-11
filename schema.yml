@@ -28957,25 +28957,25 @@ components:
       type: object
       description: Login Metrics per 1h
       properties:
-        logins_per_1h:
+        logins:
           type: array
           items:
             $ref: '#/components/schemas/Coordinate'
           readOnly: true
-        logins_failed_per_1h:
+        logins_failed:
           type: array
           items:
             $ref: '#/components/schemas/Coordinate'
           readOnly: true
-        authorizations_per_1h:
+        authorizations:
           type: array
           items:
             $ref: '#/components/schemas/Coordinate'
           readOnly: true
       required:
-      - authorizations_per_1h
-      - logins_failed_per_1h
-      - logins_per_1h
+      - authorizations
+      - logins
+      - logins_failed
     LoginSource:
       type: object
       description: Serializer for Login buttons of sources
@@ -37741,25 +37741,25 @@ components:
       type: object
       description: User Metrics
       properties:
-        logins_per_1h:
+        logins:
           type: array
           items:
             $ref: '#/components/schemas/Coordinate'
           readOnly: true
-        logins_failed_per_1h:
+        logins_failed:
           type: array
           items:
             $ref: '#/components/schemas/Coordinate'
           readOnly: true
-        authorizations_per_1h:
+        authorizations:
           type: array
           items:
             $ref: '#/components/schemas/Coordinate'
           readOnly: true
       required:
-      - authorizations_per_1h
-      - logins_failed_per_1h
-      - logins_per_1h
+      - authorizations
+      - logins
+      - logins_failed
     UserOAuthSourceConnection:
       type: object
       description: OAuth Source Serializer

@@ -1,9 +1,11 @@
 """Events API Views"""
+from datetime import timedelta
 from json import loads
 
 import django_filters
 from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform
+from django.db.models.functions import ExtractDay
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -178,7 +180,7 @@ class EventViewSet(ModelViewSet):
             get_objects_for_user(request.user, "authentik_events.view_event")
             .filter(action=filtered_action)
             .filter(**query)
-            .get_events_per_day()
+            .get_events_per(timedelta(weeks=4), ExtractDay, 30)
         )
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})

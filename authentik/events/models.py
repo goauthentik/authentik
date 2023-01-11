@@ -11,8 +11,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Count, ExpressionWrapper, F
 from django.db.models.fields import DurationField
-from django.db.models.functions import ExtractHour
-from django.db.models.functions.datetime import ExtractDay
+from django.db.models.functions import Extract
 from django.db.models.manager import Manager
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
@@ -111,48 +110,36 @@ class EventAction(models.TextChoices):
 class EventQuerySet(QuerySet):
     """Custom events query set with helper functions"""
 
-    def get_events_per_hour(self) -> list[dict[str, int]]:
+    def get_events_per(
+        self,
+        time_since: timedelta,
+        extract: Extract,
+        data_points: int,
+    ) -> list[dict[str, int]]:
         """Get event count by hour in the last day, fill with zeros"""
-        date_from = now() - timedelta(days=1)
+        _now = now()
+        max_since = timedelta(days=60)
+        # Allow maximum of 60 days to limit load
+        if time_since.total_seconds() > max_since.total_seconds():
+            time_since = max_since
+        date_from = _now - time_since
         result = (
             self.filter(created__gte=date_from)
-            .annotate(age=ExpressionWrapper(now() - F("created"), output_field=DurationField()))
-            .annotate(age_hours=ExtractHour("age"))
-            .values("age_hours")
+            .annotate(age=ExpressionWrapper(_now - F("created"), output_field=DurationField()))
+            .annotate(age_interval=extract("age"))
+            .values("age_interval")
             .annotate(count=Count("pk"))
-            .order_by("age_hours")
+            .order_by("age_interval")
         )
-        data = Counter({int(d["age_hours"]): d["count"] for d in result})
+        data = Counter({int(d["age_interval"]): d["count"] for d in result})
         results = []
-        _now = now()
-        for hour in range(0, -24, -1):
+        interval_timdelta = time_since / data_points
+        for interval in range(1, -data_points, -1):
             results.append(
                 {
-                    "x_cord": time.mktime((_now + timedelta(hours=hour)).timetuple()) * 1000,
-                    "y_cord": data[hour * -1],
-                }
-            )
-        return results
-
-    def get_events_per_day(self) -> list[dict[str, int]]:
-        """Get event count by hour in the last day, fill with zeros"""
-        date_from = now() - timedelta(weeks=4)
-        result = (
-            self.filter(created__gte=date_from)
-            .annotate(age=ExpressionWrapper(now() - F("created"), output_field=DurationField()))
-            .annotate(age_days=ExtractDay("age"))
-            .values("age_days")
-            .annotate(count=Count("pk"))
-            .order_by("age_days")
-        )
-        data = Counter({int(d["age_days"]): d["count"] for d in result})
-        results = []
-        _now = now()
-        for day in range(0, -30, -1):
-            results.append(
-                {
-                    "x_cord": time.mktime((_now + timedelta(days=day)).timetuple()) * 1000,
-                    "y_cord": data[day * -1],
+                    "x_cord": time.mktime((_now + (interval_timdelta * interval)).timetuple())
+                    * 1000,
+                    "y_cord": data[interval * -1],
                 }
             )
         return results
@@ -165,13 +152,14 @@ class EventManager(Manager):
         """use custom queryset"""
         return EventQuerySet(self.model, using=self._db)
 
-    def get_events_per_hour(self) -> list[dict[str, int]]:
+    def get_events_per(
+        self,
+        time_since: timedelta,
+        extract: Extract,
+        data_points: int,
+    ) -> list[dict[str, int]]:
         """Wrap method from queryset"""
-        return self.get_queryset().get_events_per_hour()
-
-    def get_events_per_day(self) -> list[dict[str, int]]:
-        """Wrap method from queryset"""
-        return self.get_queryset().get_events_per_day()
+        return self.get_queryset().get_events_per(time_since, extract, data_points)
 
 
 class Event(SerializerModel, ExpiringModel):
