@@ -80,7 +80,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate API
         run: make gen-client-go
-      - name: Building Docker Image
+      - name: Build Docker Image
         uses: docker/build-push-action@v3
         with:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}

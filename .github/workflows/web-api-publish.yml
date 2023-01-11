@@ -28,8 +28,7 @@ jobs:
         run: |
           export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
           npm i @goauthentik/api@$VERSION
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+      - uses: peter-evans/create-pull-request@v4
         id: cpr
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
@@ -39,3 +38,8 @@ jobs:
           body: "web: bump API Client version"
           delete-branch: true
           signoff: true
+      - uses: peter-evans/enable-pull-request-automerge@v2
+        with:
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash

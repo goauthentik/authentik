@@ -27,7 +27,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Building Docker Image
+      - name: Build Docker Image
         uses: docker/build-push-action@v3
         with:
           push: ${{ github.event_name == 'release' }}
@@ -75,7 +75,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Building Docker Image
+      - name: Build Docker Image
         uses: docker/build-push-action@v3
         with:
           push: ${{ github.event_name == 'release' }}
