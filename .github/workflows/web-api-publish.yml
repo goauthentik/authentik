@@ -38,6 +38,7 @@ jobs:
           body: "web: bump API Client version"
           delete-branch: true
           signoff: true
+          team-reviewers: "@goauthentik/core"
       - uses: peter-evans/enable-pull-request-automerge@v2
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
