@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
-import { ChartData } from "chart.js";
+import { ChartData, Tick } from "chart.js";
 
 import { t } from "@lingui/macro";
 
@@ -19,6 +19,13 @@ export class UserChart extends AKChart<UserMetrics> {
         });
     }
 
+    timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
+        const valueStamp = ticks[index];
+        const delta = Date.now() - valueStamp.value;
+        const ago = Math.round(delta / 1000 / 3600 / 24);
+        return t`${ago} days ago`;
+    }
+
     getChartData(data: UserMetrics): ChartData {
         return {
             datasets: [
@@ -27,7 +34,7 @@ export class UserChart extends AKChart<UserMetrics> {
                     backgroundColor: "rgba(201, 25, 11, .5)",
                     spanGaps: true,
                     data:
-                        data.loginsFailedPer1h?.map((cord) => {
+                        data.loginsFailed?.map((cord) => {
                             return {
                                 x: cord.xCord || 0,
                                 y: cord.yCord || 0,
@@ -39,7 +46,7 @@ export class UserChart extends AKChart<UserMetrics> {
                     backgroundColor: "rgba(189, 229, 184, .5)",
                     spanGaps: true,
                     data:
-                        data.loginsPer1h?.map((cord) => {
+                        data.logins?.map((cord) => {
                             return {
                                 x: cord.xCord || 0,
                                 y: cord.yCord || 0,
@@ -51,7 +58,7 @@ export class UserChart extends AKChart<UserMetrics> {
                     backgroundColor: "rgba(43, 154, 243, .5)",
                     spanGaps: true,
                     data:
-                        data.authorizationsPer1h?.map((cord) => {
+                        data.authorizations?.map((cord) => {
                             return {
                                 x: cord.xCord || 0,
                                 y: cord.yCord || 0,

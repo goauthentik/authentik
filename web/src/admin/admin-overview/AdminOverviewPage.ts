@@ -180,7 +180,7 @@ export class AdminOverviewPage extends AKElement {
                     >
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-server"
-                            header=${t`Logins and authorizations over the last 24 hours`}
+                            header=${t`Logins and authorizations over the last week (per 8 hours)`}
                         >
                             <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
                         </ak-aggregate-card>
