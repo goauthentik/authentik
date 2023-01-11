@@ -393,12 +393,10 @@ export class RelatedUserList extends Table<User> {
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">
                     <div class="pf-c-input-group">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
-                                class="pf-c-check__input"
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                id="hide-service-accounts"
-                                name="hide-service-accounts"
                                 ?checked=${this.hideServiceAccounts}
                                 @change=${() => {
                                     this.hideServiceAccounts = !this.hideServiceAccounts;
@@ -409,10 +407,13 @@ export class RelatedUserList extends Table<User> {
                                     });
                                 }}
                             />
-                            <label class="pf-c-check__label" for="hide-service-accounts">
-                                ${t`Hide service-accounts`}
-                            </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Hide service-accounts`}</span>
+                        </label>
                     </div>
                 </div>
             </div>`;
