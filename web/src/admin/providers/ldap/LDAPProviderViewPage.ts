@@ -13,8 +13,7 @@ import "@goauthentik/elements/events/ObjectChangelog";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { until } from "lit-html/directives/until.js";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -30,7 +29,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { LDAPProvider, ProvidersApi } from "@goauthentik/api";
+import { LDAPProvider, ProvidersApi, SessionUser } from "@goauthentik/api";
 
 @customElement("ak-provider-ldap-view")
 export class LDAPProviderViewPage extends AKElement {
@@ -50,6 +49,9 @@ export class LDAPProviderViewPage extends AKElement {
 
     @property({ attribute: false })
     provider?: LDAPProvider;
+
+    @state()
+    me?: SessionUser;
 
     static get styles(): CSSResult[] {
         return [
@@ -73,6 +75,9 @@ export class LDAPProviderViewPage extends AKElement {
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
+        });
+        me().then((user) => {
+            this.me = user;
         });
     }
 
@@ -185,18 +190,13 @@ export class LDAPProviderViewPage extends AKElement {
                                 <label class="pf-c-form__label">
                                     <span class="pf-c-form__label-text">${t`Bind DN`}</span>
                                 </label>
-                                <!-- @ts-ignore -->
                                 <input
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value=${until(
-                                        me().then((m) => {
-                                            return `cn=${
-                                                m.user.username
-                                            },ou=users,${this.provider?.baseDn?.toLowerCase()}`;
-                                        }),
-                                    )}
+                                    value=${`cn=${
+                                        this.me?.user.username
+                                    },ou=users,${this.provider?.baseDn?.toLowerCase()}`}
                                 />
                             </div>
                             <div class="pf-c-form__group">

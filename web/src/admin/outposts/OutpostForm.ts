@@ -1,21 +1,21 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
-import { groupBy } from "@goauthentik/common/utils";
+import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
-import YAML from "yaml";
 
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import {
     Outpost,
+    OutpostDefaultConfig,
     OutpostTypeEnum,
     OutpostsApi,
     OutpostsServiceConnectionsAllListRequest,
@@ -31,16 +31,19 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     @property({ type: Boolean })
     embedded = false;
 
-    loadInstance(pk: string): Promise<Outpost> {
-        return new OutpostsApi(DEFAULT_CONFIG)
-            .outpostsInstancesRetrieve({
-                uuid: pk,
-            })
-            .then((o) => {
-                this.type = o.type || OutpostTypeEnum.Proxy;
-                return o;
-            });
+    async loadInstance(pk: string): Promise<Outpost> {
+        const o = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
+            uuid: pk,
+        });
+        this.type = o.type || OutpostTypeEnum.Proxy;
+        this.defaultConfig = await new OutpostsApi(
+            DEFAULT_CONFIG,
+        ).outpostsInstancesDefaultSettingsRetrieve();
+        return o;
     }
+
+    @state()
+    defaultConfig?: OutpostDefaultConfig;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -205,20 +208,9 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Configuration`} name="config">
-                <!-- @ts-ignore -->
                 <ak-codemirror
                     mode="yaml"
-                    value="${until(
-                        new OutpostsApi(DEFAULT_CONFIG)
-                            .outpostsInstancesDefaultSettingsRetrieve()
-                            .then((config) => {
-                                let fc = config.config;
-                                if (this.instance) {
-                                    fc = this.instance.config;
-                                }
-                                return YAML.stringify(fc);
-                            }),
-                    )}"
+                    value="${first(this.instance?.config, this.defaultConfig)}"
                 ></ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${t`Set custom attributes using YAML or JSON.`}

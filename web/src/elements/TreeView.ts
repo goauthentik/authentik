@@ -197,7 +197,6 @@ export class TreeView extends AKElement {
         const rootItem = this.parse(this.items);
         return html`<div class="pf-c-tree-view pf-m-guides">
             <ul class="pf-c-tree-view__list" role="tree">
-                <!-- @ts-ignore -->
                 <ak-treeview-node
                     .item=${rootItem}
                     activePath=${this.activePath}

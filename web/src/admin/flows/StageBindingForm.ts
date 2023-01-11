@@ -8,7 +8,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
@@ -24,14 +24,19 @@ import {
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
-    loadInstance(pk: string): Promise<FlowStageBinding> {
-        return new FlowsApi(DEFAULT_CONFIG).flowsBindingsRetrieve({
+    async loadInstance(pk: string): Promise<FlowStageBinding> {
+        const binding = await new FlowsApi(DEFAULT_CONFIG).flowsBindingsRetrieve({
             fsbUuid: pk,
         });
+        this.defaultOrder = await this.getOrder();
+        return binding;
     }
 
     @property()
     targetPk?: string;
+
+    @state()
+    defaultOrder = 0;
 
     getSuccessMessage(): string {
         if (this.instance?.pk) {
@@ -131,10 +136,9 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Order`} ?required=${true} name="order">
-                <!-- @ts-ignore -->
                 <input
                     type="number"
-                    value="${until(this.getOrder())}"
+                    value="${first(this.instance?.order, this.defaultOrder)}"
                     class="pf-c-form-control"
                     required
                 />
