@@ -40,6 +40,9 @@ export class AggregateCard extends AKElement {
                 .subtext {
                     font-size: var(--pf-global--FontSize--sm);
                 }
+                .pf-c-card__body {
+                    overflow-x: scroll;
+                }
             `,
         ]);
     }
