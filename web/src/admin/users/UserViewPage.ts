@@ -276,7 +276,9 @@ export class UserViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Actions over the last 24 hours`}</div>
+                        <div class="pf-c-card__title">
+                            ${t`Actions over the last week (per 8 hours)`}
+                        </div>
                         <div class="pf-c-card__body">
                             <ak-charts-user userId=${this.user.pk || 0}> </ak-charts-user>
                         </div>

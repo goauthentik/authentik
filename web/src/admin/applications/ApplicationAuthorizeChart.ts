@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
-import { ChartData } from "chart.js";
+import { ChartData, Tick } from "chart.js";
 
 import { t } from "@lingui/macro";
 
@@ -17,6 +17,13 @@ export class ApplicationAuthorizeChart extends AKChart<Coordinate[]> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsMetricsList({
             slug: this.applicationSlug,
         });
+    }
+
+    timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
+        const valueStamp = ticks[index];
+        const delta = Date.now() - valueStamp.value;
+        const ago = Math.round(delta / 1000 / 3600 / 24);
+        return t`${ago} days ago`;
     }
 
     getChartData(data: Coordinate[]): ChartData {

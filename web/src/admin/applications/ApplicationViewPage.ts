@@ -225,7 +225,9 @@ export class ApplicationViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Logins over the last 24 hours`}</div>
+                        <div class="pf-c-card__title">
+                            ${t`Logins over the last week (per 8 hours)`}
+                        </div>
                         <div class="pf-c-card__body">
                             ${this.application &&
                             html` <ak-charts-application-authorize

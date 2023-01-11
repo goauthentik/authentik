@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart, RGBAColor } from "@goauthentik/elements/charts/Chart";
-import { ChartData } from "chart.js";
+import { ChartData, Tick } from "chart.js";
 
 import { t } from "@lingui/macro";
 
@@ -14,6 +14,13 @@ export class AdminLoginAuthorizeChart extends AKChart<LoginMetrics> {
         return new AdminApi(DEFAULT_CONFIG).adminMetricsRetrieve();
     }
 
+    timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
+        const valueStamp = ticks[index];
+        const delta = Date.now() - valueStamp.value;
+        const ago = Math.round(delta / 1000 / 3600 / 24);
+        return t`${ago} day(s) ago`;
+    }
+
     getChartData(data: LoginMetrics): ChartData {
         return {
             datasets: [
@@ -25,7 +32,7 @@ export class AdminLoginAuthorizeChart extends AKChart<LoginMetrics> {
                     fill: "origin",
                     cubicInterpolationMode: "monotone",
                     tension: 0.4,
-                    data: data.authorizationsPer1h.map((cord) => {
+                    data: data.authorizations.map((cord) => {
                         return {
                             x: cord.xCord,
                             y: cord.yCord,
@@ -40,7 +47,7 @@ export class AdminLoginAuthorizeChart extends AKChart<LoginMetrics> {
                     fill: "origin",
                     cubicInterpolationMode: "monotone",
                     tension: 0.4,
-                    data: data.loginsFailedPer1h.map((cord) => {
+                    data: data.loginsFailed.map((cord) => {
                         return {
                             x: cord.xCord,
                             y: cord.yCord,
@@ -55,7 +62,7 @@ export class AdminLoginAuthorizeChart extends AKChart<LoginMetrics> {
                     fill: "origin",
                     cubicInterpolationMode: "monotone",
                     tension: 0.4,
-                    data: data.loginsPer1h.map((cord) => {
+                    data: data.logins.map((cord) => {
                         return {
                             x: cord.xCord,
                             y: cord.yCord,
