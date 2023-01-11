@@ -135,16 +135,21 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                 ${t`Re-authenticate with plex`}
             </button>
             <ak-form-element-horizontal name="allowFriends">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.allowFriends, true)}
                     />
-                    <label class="pf-c-check__label">
-                        ${t`Allow friends to authenticate via Plex, even if you don't share any servers`}
-                    </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label"
+                        >${t`Allow friends to authenticate via Plex, even if you don't share any servers`}</span
+                    >
+                </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Allowed servers`}
@@ -191,14 +196,19 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="enabled">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.enabled, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Enabled`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Enabled`}</span>
+                </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`User matching mode`}
@@ -272,19 +282,27 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                             ${this.instance?.icon
                                 ? html`
                                       <ak-form-element-horizontal>
-                                          <div class="pf-c-check">
+                                          <label class="pf-c-switch">
                                               <input
+                                                  class="pf-c-switch__input"
                                                   type="checkbox"
-                                                  class="pf-c-check__input"
                                                   @change=${(ev: Event) => {
                                                       const target = ev.target as HTMLInputElement;
                                                       this.clearIcon = target.checked;
                                                   }}
                                               />
-                                              <label class="pf-c-check__label">
+                                              <span class="pf-c-switch__toggle">
+                                                  <span class="pf-c-switch__toggle-icon">
+                                                      <i
+                                                          class="fas fa-check"
+                                                          aria-hidden="true"
+                                                      ></i>
+                                                  </span>
+                                              </span>
+                                              <span class="pf-c-switch__label">
                                                   ${t`Clear icon`}
-                                              </label>
-                                          </div>
+                                              </span>
+                                          </label>
                                           <p class="pf-c-form__helper-text">
                                               ${t`Delete currently set icon.`}
                                           </p>

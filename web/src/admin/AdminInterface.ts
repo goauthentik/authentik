@@ -243,14 +243,14 @@ export class AdminInterface extends AKElement {
                 <ak-sidebar-item path="/policy/policies">
                     <span slot="label">${t`Policies`}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/policy/reputation">
-                    <span slot="label">${t`Reputation scores`}</span>
-                </ak-sidebar-item>
                 <ak-sidebar-item path="/core/property-mappings">
                     <span slot="label">${t`Property Mappings`}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/blueprints/instances">
                     <span slot="label">${t`Blueprints`}</span>
+                </ak-sidebar-item>
+                <ak-sidebar-item path="/policy/reputation">
+                    <span slot="label">${t`Reputation scores`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>

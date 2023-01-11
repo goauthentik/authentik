@@ -54,14 +54,19 @@ export class DummyStageForm extends ModelForm<DummyStage, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="throwError">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.throwError, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Throw error?`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Throw error?`}</span>
+                </label>
             </ak-form-element-horizontal>
         </form>`;
     }

@@ -56,14 +56,19 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="local">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.local, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Local`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Local`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`If enabled, use the local connection. Required Docker socket/Kubernetes Integration.`}
                 </p>
@@ -79,16 +84,21 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="verifySsl">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.verifySsl, true)}
                     />
-                    <label class="pf-c-check__label">
-                        ${t`Verify Kubernetes API SSL Certificate`}
-                    </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label"
+                        >${t`Verify Kubernetes API SSL Certificate`}</span
+                    >
+                </label>
             </ak-form-element-horizontal>
         </form>`;
     }

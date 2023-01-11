@@ -163,14 +163,19 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="sendOnce">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.sendOnce, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Send once`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Send once`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`Only send notification once, for example when sending a webhook into a chat channel.`}
                 </p>

@@ -57,19 +57,24 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
                 <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="continueFlowWithoutInvitation">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(
                                     this.instance?.continueFlowWithoutInvitation,
                                     true,
                                 )}
                             />
-                            <label class="pf-c-check__label">
-                                ${t`Continue flow without invitation`}
-                            </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${t`Continue flow without invitation`}</span
+                            >
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.`}
                         </p>

@@ -204,16 +204,21 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="internalHostSslValidation">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.internalHostSslValidation, true)}
                             />
-                            <label class="pf-c-check__label">
-                                ${t`Internal host SSL Validation`}
-                            </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${t`Internal host SSL Validation`}</span
+                            >
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`Validate SSL Certificates of upstream servers.`}
                         </p>
@@ -437,20 +442,25 @@ ${this.instance?.skipPathRegex}</textarea
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal name="basicAuthEnabled">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.basicAuthEnabled, false)}
                                 @change=${(ev: Event) => {
                                     const el = ev.target as HTMLInputElement;
                                     this.showHttpBasic = el.checked;
                                 }}
                             />
-                            <label class="pf-c-check__label">
-                                ${t`Set HTTP-Basic Authentication`}
-                            </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${t`Set HTTP-Basic Authentication`}</span
+                            >
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`Set a custom HTTP-Basic Authentication header based on values from authentik.`}
                         </p>

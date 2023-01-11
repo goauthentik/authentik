@@ -117,14 +117,19 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="singleUse">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.singleUse, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Single use`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Single use`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`When enabled, the invitation will be deleted after usage.`}
                 </p>

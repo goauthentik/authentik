@@ -51,7 +51,6 @@ export class OAuth2DeviceCode extends BaseStage<
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["code"]}
                     >
-                        <!-- @ts-ignore -->
                         <input
                             type="text"
                             name="code"

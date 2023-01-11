@@ -233,14 +233,19 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="executionLogging">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
-                        ?checked=${first(this.instance?.executionLogging, false)}
+                        ?checked=${first(this.instance?.executionLogging, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Execution logging`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Execution logging`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
                 </p>
@@ -262,32 +267,42 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
             </ak-form-element-horizontal>
 
             <ak-form-element-horizontal name="checkStaticRules">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.checkStaticRules, true)}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showStatic = el.checked;
                         }}
                     />
-                    <label class="pf-c-check__label"> ${t`Check static rules`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Check static rules`}</span>
+                </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="checkHaveIBeenPwned">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.checkHaveIBeenPwned, true)}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showHIBP = el.checked;
                         }}
                     />
-                    <label class="pf-c-check__label"> ${t`Check haveibeenpwned.com`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Check haveibeenpwned.com`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`For more info see:`}
                     <a href="https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange"
@@ -296,18 +311,23 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="checkZxcvbn">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.checkZxcvbn, true)}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showZxcvbn = el.checked;
                         }}
                     />
-                    <label class="pf-c-check__label"> ${t`Check zxcvbn`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Check zxcvbn`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`Password strength estimator created by Dropbox, see:`}
                     <a href="https://github.com/dropbox/zxcvbn#readme">dropbox/zxcvbn</a>

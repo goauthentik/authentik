@@ -8,9 +8,8 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
@@ -35,23 +34,21 @@ enum target {
 
 @customElement("ak-policy-binding-form")
 export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
-    loadInstance(pk: string): Promise<PolicyBinding> {
-        return new PoliciesApi(DEFAULT_CONFIG)
-            .policiesBindingsRetrieve({
-                policyBindingUuid: pk,
-            })
-            .then((binding) => {
-                if (binding?.policyObj) {
-                    this.policyGroupUser = target.policy;
-                }
-                if (binding?.groupObj) {
-                    this.policyGroupUser = target.group;
-                }
-                if (binding?.userObj) {
-                    this.policyGroupUser = target.user;
-                }
-                return binding;
-            });
+    async loadInstance(pk: string): Promise<PolicyBinding> {
+        const binding = await new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRetrieve({
+            policyBindingUuid: pk,
+        });
+        if (binding?.policyObj) {
+            this.policyGroupUser = target.policy;
+        }
+        if (binding?.groupObj) {
+            this.policyGroupUser = target.group;
+        }
+        if (binding?.userObj) {
+            this.policyGroupUser = target.user;
+        }
+        this.defaultOrder = await this.getOrder();
+        return binding;
     }
 
     @property()
@@ -62,6 +59,9 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
 
     @property({ type: Boolean })
     policyOnly = false;
+
+    @state()
+    defaultOrder = 0;
 
     getSuccessMessage(): string {
         if (this.instance?.pk) {
@@ -277,33 +277,42 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                 value=${ifDefined(this.instance?.target || this.targetPk)}
             />
             <ak-form-element-horizontal name="enabled">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.enabled, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Enabled`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Enabled`}</span>
+                </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="negate">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.negate, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Negate result`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Negate result`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`Negates the outcome of the binding. Messages are unaffected.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Order`} ?required=${true} name="order">
-                <!-- @ts-ignore -->
                 <input
                     type="number"
-                    value="${until(this.getOrder())}"
+                    value="${first(this.instance?.order, this.defaultOrder)}"
                     class="pf-c-form-control"
                     required
                 />

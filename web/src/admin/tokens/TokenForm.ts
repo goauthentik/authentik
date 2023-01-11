@@ -109,14 +109,19 @@ export class TokenForm extends ModelForm<Token, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="expiring">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.expiring, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Expiring?`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Expiring`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`If this is selected, the token will expire. Upon expiration, the token will be rotated.`}
                 </p>
