@@ -135,16 +135,21 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                 ${t`Re-authenticate with plex`}
             </button>
             <ak-form-element-horizontal name="allowFriends">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.allowFriends, true)}
                     />
-                    <label class="pf-c-check__label">
-                        ${t`Allow friends to authenticate via Plex, even if you don't share any servers`}
-                    </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label"
+                        >${t`Allow friends to authenticate via Plex, even if you don't share any servers`}</span
+                    >
+                </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Allowed servers`}

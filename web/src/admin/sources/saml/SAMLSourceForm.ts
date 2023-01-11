@@ -317,16 +317,21 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                 <span slot="header"> ${t`Advanced protocol settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="allowIdpInitiated">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.allowIdpInitiated, false)}
                             />
-                            <label class="pf-c-check__label">
-                                ${t` Allow IDP-initiated logins`}
-                            </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${t` Allow IDP-initiated logins`}</span
+                            >
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.`}
                         </p>

@@ -85,24 +85,34 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
                 <span slot="header"> ${t`Policy-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="checkIp">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.checkIp, false)}
                             />
-                            <label class="pf-c-check__label"> ${t`Check IP`} </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Check IP`}</span>
+                        </label>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="checkUsername">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.checkUsername, false)}
                             />
-                            <label class="pf-c-check__label"> ${t`Check Username`} </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Check Username`}</span>
+                        </label>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Threshold`}
