@@ -113,7 +113,7 @@ class InvalidStageError(SentryIgnoredException):
 
 @method_decorator(xframe_options_sameorigin, name="dispatch")
 class FlowExecutorView(APIView):
-    """Stage 1 Flow executor, passing requests to Stage Views"""
+    """Flow executor, passing requests to Stage Views"""
 
     permission_classes = [AllowAny]
 

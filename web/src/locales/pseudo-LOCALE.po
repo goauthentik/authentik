@@ -229,7 +229,11 @@ msgid "Actions"
 msgstr ""
 
 #: src/admin/users/UserViewPage.ts
-msgid "Actions over the last 24 hours"
+#~ msgid "Actions over the last 24 hours"
+#~ msgstr ""
+
+#: src/admin/users/UserViewPage.ts
+msgid "Actions over the last week (per 8 hours)"
 msgstr ""
 
 #: src/admin/users/RelatedUserList.ts
@@ -807,6 +811,10 @@ msgstr ""
 msgid "Based on the username"
 msgstr ""
 
+#: src/admin/admin-overview/cards/VersionStatusCard.ts
+msgid "Based on {0}"
+msgstr ""
+
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Basic Auth"
 msgstr ""
@@ -891,8 +899,8 @@ msgid "Browser"
 msgstr ""
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
-msgid "Build hash:"
-msgstr ""
+#~ msgid "Build hash:"
+#~ msgstr ""
 
 #: 
 #~ msgid "Build hash: {0}"
@@ -1162,8 +1170,8 @@ msgid "Clear all"
 msgstr ""
 
 #: src/admin/flows/FlowForm.ts
-msgid "Clear background image"
-msgstr ""
+#~ msgid "Clear background image"
+#~ msgstr ""
 
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/flows/FlowListPage.ts
@@ -1173,6 +1181,7 @@ msgid "Clear cache"
 msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/flows/FlowForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
@@ -1667,7 +1676,6 @@ msgstr ""
 msgid "Create group"
 msgstr ""
 
-#: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
 #: src/admin/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
 #: src/admin/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
@@ -2409,14 +2417,15 @@ msgstr ""
 msgid "Expires?"
 msgstr ""
 
+#: src/admin/tokens/TokenForm.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Expiring"
 msgstr ""
 
 #: src/admin/tokens/TokenForm.ts
-msgid "Expiring?"
-msgstr ""
+#~ msgid "Expiring?"
+#~ msgstr ""
 
 #: src/admin/crypto/CertificateKeyPairListPage.ts
 #: src/admin/stages/invitation/InvitationListPage.ts
@@ -3542,11 +3551,19 @@ msgid "Logins"
 msgstr ""
 
 #: src/admin/admin-overview/AdminOverviewPage.ts
-msgid "Logins and authorizations over the last 24 hours"
+#~ msgid "Logins and authorizations over the last 24 hours"
+#~ msgstr ""
+
+#: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Logins and authorizations over the last week (per 8 hours)"
 msgstr ""
 
 #: src/admin/applications/ApplicationViewPage.ts
-msgid "Logins over the last 24 hours"
+#~ msgid "Logins over the last 24 hours"
+#~ msgstr ""
+
+#: src/admin/applications/ApplicationViewPage.ts
+msgid "Logins over the last week (per 8 hours)"
 msgstr ""
 
 #: src/admin/admin-overview/DashboardUserPage.ts
@@ -4215,8 +4232,12 @@ msgid "On behalf of {0}"
 msgstr ""
 
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
-msgid "Only fail the policy, don't invalidate user's password."
+msgid "Only fail the policy, don't invalidate user's password"
 msgstr ""
+
+#: src/admin/policies/expiry/ExpiryPolicyForm.ts
+#~ msgid "Only fail the policy, don't invalidate user's password."
+#~ msgstr ""
 
 #: src/admin/events/TransportForm.ts
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
@@ -5296,8 +5317,12 @@ msgid "See more here:"
 msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
-msgid "Select a provider that this application should use. Alternatively, create a new provider."
+msgid "Select a provider that this application should use."
 msgstr ""
+
+#: src/admin/applications/ApplicationForm.ts
+#~ msgid "Select a provider that this application should use. Alternatively, create a new provider."
+#~ msgstr ""
 
 #: src/elements/table/Table.ts
 msgid "Select all rows"
@@ -7737,10 +7762,20 @@ msgstr ""
 msgid "{0}: {1}"
 msgstr ""
 
+#: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
+msgid "{ago} day(s) ago"
+msgstr ""
+
 #: src/admin/admin-overview/charts/AdminModelPerDay.ts
+#: src/admin/applications/ApplicationAuthorizeChart.ts
+#: src/admin/users/UserChart.ts
 msgid "{ago} days ago"
 msgstr ""
 
 #: src/elements/charts/Chart.ts
-msgid "{ago} hours ago"
+msgid "{ago} hour(s) ago"
 msgstr ""
+
+#: src/elements/charts/Chart.ts
+#~ msgid "{ago} hours ago"
+#~ msgstr ""

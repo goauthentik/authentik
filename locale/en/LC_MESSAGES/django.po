@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-10 22:35+0000\n"
+"POT-Creation-Date: 2023-01-11 13:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,11 +69,11 @@ msgstr ""
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr ""
 
-#: authentik/core/api/users.py:112
+#: authentik/core/api/users.py:113
 msgid "No leading or trailing slashes allowed."
 msgstr ""
 
-#: authentik/core/api/users.py:115
+#: authentik/core/api/users.py:116
 msgid "No empty segments in user path allowed."
 msgstr ""
 
@@ -284,89 +284,89 @@ msgstr ""
 msgid "Certificate-Key Pairs"
 msgstr ""
 
-#: authentik/events/models.py:300
+#: authentik/events/models.py:288
 msgid "Event"
 msgstr ""
 
-#: authentik/events/models.py:301
+#: authentik/events/models.py:289
 msgid "Events"
 msgstr ""
 
-#: authentik/events/models.py:307
+#: authentik/events/models.py:295
 msgid "authentik inbuilt notifications"
 msgstr ""
 
-#: authentik/events/models.py:308
+#: authentik/events/models.py:296
 msgid "Generic Webhook"
 msgstr ""
 
-#: authentik/events/models.py:309
+#: authentik/events/models.py:297
 msgid "Slack Webhook (Slack/Discord)"
 msgstr ""
 
-#: authentik/events/models.py:310
+#: authentik/events/models.py:298
 msgid "Email"
 msgstr ""
 
-#: authentik/events/models.py:328
+#: authentik/events/models.py:316
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
 
-#: authentik/events/models.py:388
+#: authentik/events/models.py:376
 msgid "Severity"
 msgstr ""
 
-#: authentik/events/models.py:393
+#: authentik/events/models.py:381
 msgid "Dispatched for user"
 msgstr ""
 
-#: authentik/events/models.py:477
+#: authentik/events/models.py:465
 msgid "Notification Transport"
 msgstr ""
 
-#: authentik/events/models.py:478
+#: authentik/events/models.py:466
 msgid "Notification Transports"
 msgstr ""
 
-#: authentik/events/models.py:484
+#: authentik/events/models.py:472
 msgid "Notice"
 msgstr ""
 
-#: authentik/events/models.py:485
+#: authentik/events/models.py:473
 msgid "Warning"
 msgstr ""
 
-#: authentik/events/models.py:486
+#: authentik/events/models.py:474
 msgid "Alert"
 msgstr ""
 
-#: authentik/events/models.py:512
+#: authentik/events/models.py:500
 msgid "Notification"
 msgstr ""
 
-#: authentik/events/models.py:513
+#: authentik/events/models.py:501
 msgid "Notifications"
 msgstr ""
 
-#: authentik/events/models.py:533
+#: authentik/events/models.py:521
 msgid "Controls which severity level the created notifications will have."
 msgstr ""
 
-#: authentik/events/models.py:559
+#: authentik/events/models.py:547
 msgid "Notification Rule"
 msgstr ""
 
-#: authentik/events/models.py:560
+#: authentik/events/models.py:548
 msgid "Notification Rules"
 msgstr ""
 
-#: authentik/events/models.py:581
+#: authentik/events/models.py:569
 msgid "Webhook Mapping"
 msgstr ""
 
-#: authentik/events/models.py:582
+#: authentik/events/models.py:570
 msgid "Webhook Mappings"
 msgstr ""
 

@@ -43,6 +43,12 @@ export class AggregateCard extends AKElement {
                 .pf-c-card__body {
                     overflow-x: scroll;
                 }
+                .pf-c-card__header,
+                .pf-c-card__title,
+                .pf-c-card__body,
+                .pf-c-card__footer {
+                    padding-bottom: 0;
+                }
             `,
         ]);
     }

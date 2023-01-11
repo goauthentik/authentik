@@ -234,8 +234,12 @@ msgid "Actions"
 msgstr "Eylemler"
 
 #: src/admin/users/UserViewPage.ts
-msgid "Actions over the last 24 hours"
-msgstr "Son 24 saat içinde yapılan eylemler"
+#~ msgid "Actions over the last 24 hours"
+#~ msgstr "Son 24 saat içinde yapılan eylemler"
+
+#: src/admin/users/UserViewPage.ts
+msgid "Actions over the last week (per 8 hours)"
+msgstr ""
 
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
@@ -802,6 +806,10 @@ msgstr "Kullanıcının UPN'sine göre, yalnızca kullanıcı 'upn' özniteliği
 msgid "Based on the username"
 msgstr "Kullanıcı adına göre"
 
+#: src/admin/admin-overview/cards/VersionStatusCard.ts
+msgid "Based on {0}"
+msgstr ""
+
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Basic Auth"
 msgstr "Temel Auth"
@@ -886,8 +894,8 @@ msgid "Browser"
 msgstr "Tarayıcı"
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
-msgid "Build hash:"
-msgstr "Derleme karması:"
+#~ msgid "Build hash:"
+#~ msgstr "Derleme karması:"
 
 #~ msgid "Build hash: {0}"
 #~ msgstr "Yapı karması: {0}"
@@ -1154,8 +1162,8 @@ msgid "Clear all"
 msgstr "Hepsini temizle"
 
 #: src/admin/flows/FlowForm.ts
-msgid "Clear background image"
-msgstr "Arka plan resmi temizle"
+#~ msgid "Clear background image"
+#~ msgstr "Arka plan resmi temizle"
 
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/flows/FlowListPage.ts
@@ -1165,6 +1173,7 @@ msgid "Clear cache"
 msgstr "Önbelleği temizle"
 
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/flows/FlowForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
@@ -1651,7 +1660,6 @@ msgstr ""
 msgid "Create group"
 msgstr "Grup oluştur"
 
-#: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
 #: src/admin/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
 #: src/admin/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
@@ -2364,14 +2372,15 @@ msgstr "Geçerlilik süresi"
 msgid "Expires?"
 msgstr "Son kullanma tarihi mi?"
 
+#: src/admin/tokens/TokenForm.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Expiring"
 msgstr "Süresi Doluyor"
 
 #: src/admin/tokens/TokenForm.ts
-msgid "Expiring?"
-msgstr "Süresi mi?"
+#~ msgid "Expiring?"
+#~ msgstr "Süresi mi?"
 
 #: src/admin/crypto/CertificateKeyPairListPage.ts
 #: src/admin/stages/invitation/InvitationListPage.ts
@@ -3480,12 +3489,20 @@ msgid "Logins"
 msgstr "Oturum Açma"
 
 #: src/admin/admin-overview/AdminOverviewPage.ts
-msgid "Logins and authorizations over the last 24 hours"
+#~ msgid "Logins and authorizations over the last 24 hours"
+#~ msgstr ""
+
+#: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Logins and authorizations over the last week (per 8 hours)"
 msgstr ""
 
 #: src/admin/applications/ApplicationViewPage.ts
-msgid "Logins over the last 24 hours"
-msgstr "Son 24 saat içinde oturum açma"
+#~ msgid "Logins over the last 24 hours"
+#~ msgstr "Son 24 saat içinde oturum açma"
+
+#: src/admin/applications/ApplicationViewPage.ts
+msgid "Logins over the last week (per 8 hours)"
+msgstr ""
 
 #: src/admin/admin-overview/DashboardUserPage.ts
 msgid "Logins per day in the last month"
@@ -4143,8 +4160,12 @@ msgid "On behalf of {0}"
 msgstr "{0} adına"
 
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
-msgid "Only fail the policy, don't invalidate user's password."
-msgstr "Yalnızca ilkeyi başarısız say, kullanıcının parolasını geçersiz kılma."
+msgid "Only fail the policy, don't invalidate user's password"
+msgstr ""
+
+#: src/admin/policies/expiry/ExpiryPolicyForm.ts
+#~ msgid "Only fail the policy, don't invalidate user's password."
+#~ msgstr "Yalnızca ilkeyi başarısız say, kullanıcının parolasını geçersiz kılma."
 
 #: src/admin/events/TransportForm.ts
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
@@ -5187,8 +5208,12 @@ msgid "See more here:"
 msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
-msgid "Select a provider that this application should use. Alternatively, create a new provider."
-msgstr "Bu uygulamanın kullanması gereken bir sağlayıcı seçin. Alternatif olarak, yeni bir sağlayıcı oluşturun."
+msgid "Select a provider that this application should use."
+msgstr ""
+
+#: src/admin/applications/ApplicationForm.ts
+#~ msgid "Select a provider that this application should use. Alternatively, create a new provider."
+#~ msgstr "Bu uygulamanın kullanması gereken bir sağlayıcı seçin. Alternatif olarak, yeni bir sağlayıcı oluşturun."
 
 #: src/elements/table/Table.ts
 msgid "Select all rows"
@@ -7586,10 +7611,20 @@ msgstr "{0}, {1} olmalıdır"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
+msgid "{ago} day(s) ago"
+msgstr ""
+
 #: src/admin/admin-overview/charts/AdminModelPerDay.ts
+#: src/admin/applications/ApplicationAuthorizeChart.ts
+#: src/admin/users/UserChart.ts
 msgid "{ago} days ago"
 msgstr "{ago} gün önce"
 
 #: src/elements/charts/Chart.ts
-msgid "{ago} hours ago"
-msgstr "{ago} saat önce"
+msgid "{ago} hour(s) ago"
+msgstr ""
+
+#: src/elements/charts/Chart.ts
+#~ msgid "{ago} hours ago"
+#~ msgstr "{ago} saat önce"

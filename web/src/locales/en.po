@@ -229,8 +229,12 @@ msgid "Actions"
 msgstr "Actions"
 
 #: src/admin/users/UserViewPage.ts
-msgid "Actions over the last 24 hours"
-msgstr "Actions over the last 24 hours"
+#~ msgid "Actions over the last 24 hours"
+#~ msgstr "Actions over the last 24 hours"
+
+#: src/admin/users/UserViewPage.ts
+msgid "Actions over the last week (per 8 hours)"
+msgstr "Actions over the last week (per 8 hours)"
 
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
@@ -815,6 +819,10 @@ msgstr "Based on the User's UPN, only works if user has a 'upn' attribute set. U
 msgid "Based on the username"
 msgstr "Based on the username"
 
+#: src/admin/admin-overview/cards/VersionStatusCard.ts
+msgid "Based on {0}"
+msgstr "Based on {0}"
+
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Basic Auth"
 msgstr "Basic Auth"
@@ -899,8 +907,8 @@ msgid "Browser"
 msgstr "Browser"
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
-msgid "Build hash:"
-msgstr "Build hash:"
+#~ msgid "Build hash:"
+#~ msgstr "Build hash:"
 
 #: 
 #~ msgid "Build hash: {0}"
@@ -1174,8 +1182,8 @@ msgid "Clear all"
 msgstr "Clear all"
 
 #: src/admin/flows/FlowForm.ts
-msgid "Clear background image"
-msgstr "Clear background image"
+#~ msgid "Clear background image"
+#~ msgstr "Clear background image"
 
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/flows/FlowListPage.ts
@@ -1185,6 +1193,7 @@ msgid "Clear cache"
 msgstr "Clear cache"
 
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/flows/FlowForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
@@ -1679,7 +1688,6 @@ msgstr "Create application"
 msgid "Create group"
 msgstr "Create group"
 
-#: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
 #: src/admin/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
 #: src/admin/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
@@ -2423,14 +2431,15 @@ msgstr "Expires on"
 msgid "Expires?"
 msgstr "Expires?"
 
+#: src/admin/tokens/TokenForm.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Expiring"
 msgstr "Expiring"
 
 #: src/admin/tokens/TokenForm.ts
-msgid "Expiring?"
-msgstr "Expiring?"
+#~ msgid "Expiring?"
+#~ msgstr "Expiring?"
 
 #: src/admin/crypto/CertificateKeyPairListPage.ts
 #: src/admin/stages/invitation/InvitationListPage.ts
@@ -3560,12 +3569,20 @@ msgid "Logins"
 msgstr "Logins"
 
 #: src/admin/admin-overview/AdminOverviewPage.ts
-msgid "Logins and authorizations over the last 24 hours"
-msgstr "Logins and authorizations over the last 24 hours"
+#~ msgid "Logins and authorizations over the last 24 hours"
+#~ msgstr "Logins and authorizations over the last 24 hours"
+
+#: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Logins and authorizations over the last week (per 8 hours)"
+msgstr "Logins and authorizations over the last week (per 8 hours)"
 
 #: src/admin/applications/ApplicationViewPage.ts
-msgid "Logins over the last 24 hours"
-msgstr "Logins over the last 24 hours"
+#~ msgid "Logins over the last 24 hours"
+#~ msgstr "Logins over the last 24 hours"
+
+#: src/admin/applications/ApplicationViewPage.ts
+msgid "Logins over the last week (per 8 hours)"
+msgstr "Logins over the last week (per 8 hours)"
 
 #: src/admin/admin-overview/DashboardUserPage.ts
 msgid "Logins per day in the last month"
@@ -4233,8 +4250,12 @@ msgid "On behalf of {0}"
 msgstr "On behalf of {0}"
 
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
-msgid "Only fail the policy, don't invalidate user's password."
-msgstr "Only fail the policy, don't invalidate user's password."
+msgid "Only fail the policy, don't invalidate user's password"
+msgstr "Only fail the policy, don't invalidate user's password"
+
+#: src/admin/policies/expiry/ExpiryPolicyForm.ts
+#~ msgid "Only fail the policy, don't invalidate user's password."
+#~ msgstr "Only fail the policy, don't invalidate user's password."
 
 #: src/admin/events/TransportForm.ts
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
@@ -5316,8 +5337,12 @@ msgid "See more here:"
 msgstr "See more here:"
 
 #: src/admin/applications/ApplicationForm.ts
-msgid "Select a provider that this application should use. Alternatively, create a new provider."
-msgstr "Select a provider that this application should use. Alternatively, create a new provider."
+msgid "Select a provider that this application should use."
+msgstr "Select a provider that this application should use."
+
+#: src/admin/applications/ApplicationForm.ts
+#~ msgid "Select a provider that this application should use. Alternatively, create a new provider."
+#~ msgstr "Select a provider that this application should use. Alternatively, create a new provider."
 
 #: src/elements/table/Table.ts
 msgid "Select all rows"
@@ -7773,10 +7798,20 @@ msgstr "{0}, should be {1}"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
+msgid "{ago} day(s) ago"
+msgstr "{ago} day(s) ago"
+
 #: src/admin/admin-overview/charts/AdminModelPerDay.ts
+#: src/admin/applications/ApplicationAuthorizeChart.ts
+#: src/admin/users/UserChart.ts
 msgid "{ago} days ago"
 msgstr "{ago} days ago"
 
 #: src/elements/charts/Chart.ts
-msgid "{ago} hours ago"
-msgstr "{ago} hours ago"
+msgid "{ago} hour(s) ago"
+msgstr "{ago} hour(s) ago"
+
+#: src/elements/charts/Chart.ts
+#~ msgid "{ago} hours ago"
+#~ msgstr "{ago} hours ago"
