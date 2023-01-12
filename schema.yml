@@ -34360,6 +34360,14 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
+        jwks_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
         token_validity:
           type: string
           minLength: 1
@@ -35771,6 +35779,14 @@ components:
           readOnly: true
         cookie_domain:
           type: string
+        jwks_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
         token_validity:
           type: string
           description: 'Tokens not valid on or after current time + this value (Format:
@@ -35849,6 +35865,14 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
+        jwks_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
         token_validity:
           type: string
           minLength: 1

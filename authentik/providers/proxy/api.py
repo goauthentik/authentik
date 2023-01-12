@@ -88,6 +88,7 @@ class ProxyProviderSerializer(ProviderSerializer):
             "mode",
             "redirect_uris",
             "cookie_domain",
+            "jwks_sources",
             "token_validity",
             "outpost_set",
         ]
