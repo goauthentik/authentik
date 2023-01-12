@@ -52,9 +52,8 @@ class TokenIntrospectionParams:
         if not provider:
             raise TokenIntrospectionError
 
-        try:
-            token: RefreshToken = RefreshToken.objects.get(provider=provider, **token_filter)
-        except RefreshToken.DoesNotExist:
+        token: RefreshToken = RefreshToken.objects.filter(provider=provider, **token_filter).first()
+        if not token:
             LOGGER.debug("Token does not exist", token=raw_token)
             raise TokenIntrospectionError()
 
@@ -77,9 +76,7 @@ class TokenIntrospectionView(View):
 
             response_dic = {}
             if self.params.id_token:
-                token_dict = self.params.id_token.to_dict()
-                for k in ("aud", "sub", "exp", "iat", "iss"):
-                    response_dic[k] = token_dict[k]
+                response_dic.update(self.params.id_token.to_dict())
             response_dic["active"] = True
             response_dic["client_id"] = self.params.token.provider.client_id
 

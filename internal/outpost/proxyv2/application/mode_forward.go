@@ -49,7 +49,7 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		return
 	}
 	// Check if we're authenticated, or the request path is on the allowlist
-	claims, err := a.getClaims(r)
+	claims, err := a.checkAuth(rw, r)
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
 		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
@@ -100,7 +100,7 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 		return
 	}
 	// Check if we're authenticated, or the request path is on the allowlist
-	claims, err := a.getClaims(r)
+	claims, err := a.checkAuth(rw, r)
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
 		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
@@ -139,7 +139,7 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 		return
 	}
 
-	claims, err := a.getClaims(r)
+	claims, err := a.checkAuth(rw, r)
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
 		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
@@ -175,7 +175,7 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 	r.URL.Host = r.Host
 	fwd := r.URL
 	// Check if we're authenticated, or the request path is on the allowlist
-	claims, err := a.getClaims(r)
+	claims, err := a.checkAuth(rw, r)
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
 		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))

@@ -33,7 +33,7 @@ func (a *Application) configureProxy() error {
 	rp.ErrorHandler = a.newProxyErrorHandler()
 	rp.ModifyResponse = a.proxyModifyResponse
 	a.mux.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		claims, err := a.getClaims(r)
+		claims, err := a.checkAuth(rw, r)
 		if claims == nil && a.IsAllowlisted(r.URL) {
 			a.log.Trace("path can be accessed without authentication")
 		} else if claims == nil && err != nil {
@@ -67,7 +67,7 @@ func (a *Application) configureProxy() error {
 func (a *Application) proxyModifyRequest(ou *url.URL) func(req *http.Request) {
 	return func(r *http.Request) {
 		r.Header.Set("X-Forwarded-Host", r.Host)
-		claims, _ := a.getClaims(r)
+		claims, _ := a.checkAuth(nil, r)
 		r.URL.Scheme = ou.Scheme
 		r.URL.Host = ou.Host
 		if claims != nil && claims.Proxy != nil && claims.Proxy.BackendOverride != "" {
