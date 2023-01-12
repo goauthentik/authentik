@@ -137,8 +137,8 @@ func (sb *SessionBinder) Bind(username string, req *bind.Request) (ldap.LDAPResu
 	}
 	logger.Debug("No session found for user, executing flow")
 	result, err, cookie := sb.DirectBinder.BindNoClean(username, req)
-	// Only cache the result if there's been an error
-	if err == nil {
+	// Only cache the result if there was no error and we succeeded
+	if err == nil && result == ldap.LDAPResultSuccess {
 		if cookie == nil {
 			//login did succeed, but cookie died?!
 			logger.Error("user session not set after bind")
