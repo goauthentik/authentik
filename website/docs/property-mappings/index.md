@@ -12,6 +12,7 @@ SAML Property Mappings allow you embed information into the SAML AuthN request. 
 
 LDAP Property Mappings are used when you define a LDAP Source. These mappings define which LDAP property maps to which authentik property. By default, the following mappings are created:
 
+-   authentik default Active Directory Mapping: active
 -   authentik default Active Directory Mapping: givenName
 -   authentik default Active Directory Mapping: sAMAccountName
 -   authentik default Active Directory Mapping: sn

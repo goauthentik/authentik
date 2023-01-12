@@ -53,6 +53,14 @@ entries:
       object_field: "attributes.sn"
       expression: |
         return list_flatten(ldap.get('sn'))
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/ms-active
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "authentik default Active Directory Mapping: active"
+      object_field: "attributes.active"
+      expression: |
+        return ldap.get('userAccountControl') & 2 == 0
   # OpenLDAP specific mappings
   - identifiers:
       managed: goauthentik.io/sources/ldap/openldap-uid
