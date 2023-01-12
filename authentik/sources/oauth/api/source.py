@@ -1,5 +1,7 @@
 """OAuth Source Serializer"""
 from django.urls.base import reverse_lazy
+from django_filters.filters import BooleanFilter
+from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_field
 from requests import RequestException
@@ -111,28 +113,44 @@ class OAuthSourceSerializer(SourceSerializer):
         extra_kwargs = {"consumer_secret": {"write_only": True}}
 
 
+class OAuthSourceFilter(FilterSet):
+    """OAuth Source filter set"""
+
+    has_jwks = BooleanFilter(label="Only return sources with JWKS data", method="filter_has_jwks")
+
+    # pylint: disable=unused-argument
+    def filter_has_jwks(self, queryset, name, value):  # pragma: no cover
+        """Only return sources with JWKS data"""
+        return queryset.exclude(oidc_jwks__iexact="{}")
+
+    class Meta:
+
+        model = OAuthSource
+        fields = [
+            "name",
+            "slug",
+            "enabled",
+            "authentication_flow",
+            "enrollment_flow",
+            "policy_engine_mode",
+            "user_matching_mode",
+            "provider_type",
+            "request_token_url",
+            "authorization_url",
+            "access_token_url",
+            "profile_url",
+            "consumer_key",
+            "additional_scopes",
+        ]
+
+
 class OAuthSourceViewSet(UsedByMixin, ModelViewSet):
     """Source Viewset"""
 
     queryset = OAuthSource.objects.all()
     serializer_class = OAuthSourceSerializer
     lookup_field = "slug"
-    filterset_fields = [
-        "name",
-        "slug",
-        "enabled",
-        "authentication_flow",
-        "enrollment_flow",
-        "policy_engine_mode",
-        "user_matching_mode",
-        "provider_type",
-        "request_token_url",
-        "authorization_url",
-        "access_token_url",
-        "profile_url",
-        "consumer_key",
-        "additional_scopes",
-    ]
+    filterset_class = OAuthSourceFilter
     search_fields = ["name", "slug"]
     ordering = ["name"]
 

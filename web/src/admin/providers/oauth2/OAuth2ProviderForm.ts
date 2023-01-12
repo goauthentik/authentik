@@ -400,6 +400,7 @@ ${this.instance?.redirectUris}</textarea
                                 new SourcesApi(DEFAULT_CONFIG)
                                     .sourcesOauthList({
                                         ordering: "name",
+                                        hasJwks: true,
                                     })
                                     .then((sources) => {
                                         return sources.results.map((source) => {

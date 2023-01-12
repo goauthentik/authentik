@@ -16203,6 +16203,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: has_jwks
+        schema:
+          type: boolean
+        description: Only return sources with JWKS data
+      - in: query
         name: name
         schema:
           type: string
