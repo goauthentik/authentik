@@ -31,6 +31,7 @@ import {
     ProvidersApi,
     ProxyMode,
     ProxyProvider,
+    SourcesApi,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-proxy-form")
@@ -385,7 +386,10 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         >
                         </ak-search-select>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Scopes`} name="propertyMappings">
+                    <ak-form-element-horizontal
+                        label=${t`Additional scopes`}
+                        name="propertyMappings"
+                    >
                         <select class="pf-c-form-control" multiple>
                             ${until(
                                 new PropertymappingsApi(DEFAULT_CONFIG)
@@ -440,7 +444,11 @@ ${this.instance?.skipPathRegex}</textarea
                             ${t`When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions.`}
                         </p>
                     </ak-form-element-horizontal>
-
+                </div>
+            </ak-form-group>
+            <ak-form-group>
+                <span slot="header">${t`Authentication settings`}</span>
+                <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="basicAuthEnabled">
                         <label class="pf-c-switch">
                             <input
@@ -466,6 +474,38 @@ ${this.instance?.skipPathRegex}</textarea
                         </p>
                     </ak-form-element-horizontal>
                     ${this.showHttpBasic ? this.renderHttpBasic() : html``}
+                    <ak-form-element-horizontal label=${t`Trusted OIDC Sources`} name="jwksSources">
+                        <select class="pf-c-form-control" multiple>
+                            ${until(
+                                new SourcesApi(DEFAULT_CONFIG)
+                                    .sourcesOauthList({
+                                        ordering: "name",
+                                    })
+                                    .then((sources) => {
+                                        return sources.results.map((source) => {
+                                            const selected = (
+                                                this.instance?.jwksSources || []
+                                            ).some((su) => {
+                                                return su == source.pk;
+                                            });
+                                            return html`<option
+                                                value=${source.pk}
+                                                ?selected=${selected}
+                                            >
+                                                ${source.name} (${source.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Hold control/command to select multiple items.`}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
         </form>`;
