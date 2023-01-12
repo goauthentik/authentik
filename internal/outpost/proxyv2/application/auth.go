@@ -28,13 +28,15 @@ func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claim
 	if bearer != "" {
 		a.log.Trace("checking bearer token")
 		tc := a.attemptBearerAuth(r, bearer)
-		s.Values[constants.SessionClaims] = tc.Claims
-		err := s.Save(r, rw)
-		if err != nil {
-			return nil, err
+		if tc != nil {
+			s.Values[constants.SessionClaims] = tc.Claims
+			err := s.Save(r, rw)
+			if err != nil {
+				return nil, err
+			}
+			r.Header.Del("Authorization")
+			return &tc.Claims, nil
 		}
-		r.Header.Del("Authorization")
-		return &tc.Claims, nil
 	}
 
 	return nil, fmt.Errorf("failed to get claims from session")
@@ -72,6 +74,7 @@ func (a *Application) checkAuthHeaderBearer(r *http.Request) string {
 
 type TokenIntrospectionResponse struct {
 	Claims
+	Scope    string `json:"scope"`
 	Active   bool   `json:"active"`
 	ClientID string `json:"client_id"`
 }
@@ -101,6 +104,10 @@ func (a *Application) attemptBearerAuth(r *http.Request, token string) *TokenInt
 	}
 	if !intro.Active {
 		a.log.Warning("token is not active")
+		return nil
+	}
+	if !strings.Contains(intro.Scope, "openid") || !strings.Contains(intro.Scope, "profile") {
+		a.log.Error("token missing openid or profile scope")
 		return nil
 	}
 	intro.RawToken = token

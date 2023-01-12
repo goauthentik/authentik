@@ -15,7 +15,6 @@ import (
 
 func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	// https://goauthentik.io/docs/providers/proxy/proxy
-
 	headers.Set("X-authentik-username", c.PreferredUsername)
 	headers.Set("X-authentik-groups", strings.Join(c.Groups, "|"))
 	headers.Set("X-authentik-email", c.Email)

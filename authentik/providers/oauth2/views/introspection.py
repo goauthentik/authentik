@@ -73,13 +73,12 @@ class TokenIntrospectionView(View):
         """Introspection handler"""
         try:
             self.params = TokenIntrospectionParams.from_request(request)
-
-            response_dic = {}
+            response = {}
             if self.params.id_token:
-                response_dic.update(self.params.id_token.to_dict())
-            response_dic["active"] = True
-            response_dic["client_id"] = self.params.token.provider.client_id
-
-            return TokenResponse(response_dic)
+                response.update(self.params.id_token.to_dict())
+            response["active"] = True
+            response["scope"] = " ".join(self.params.token.scope)
+            response["client_id"] = self.params.token.provider.client_id
+            return TokenResponse(response)
         except TokenIntrospectionError:
             return TokenResponse({"active": False})
