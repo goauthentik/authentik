@@ -1,0 +1,19 @@
+{% extends "base/skeleton.html" %}
+
+{% load static %}
+
+{% block head %}
+<script src="{% static 'dist/enterprise/rac/index.js' %}?version={{ version }}" type="module"></script>
+<meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<link rel="icon" href="{{ tenant.branding_favicon }}">
+<link rel="shortcut icon" href="{{ tenant.branding_favicon }}">
+{% include "base/header_js.html" %}
+{% endblock %}
+
+{% block body %}
+<ak-message-container></ak-message-container>
+<ak-rac>
+  <ak-loading></ak-loading>
+</ak-rac>
+{% endblock %}

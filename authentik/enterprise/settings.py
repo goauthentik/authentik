@@ -10,3 +10,7 @@ CELERY_BEAT_SCHEDULE = {
         "options": {"queue": "authentik_scheduled"},
     }
 }
+
+INSTALLED_APPS = [
+    "authentik.enterprise.rac",
+]

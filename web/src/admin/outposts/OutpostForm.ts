@@ -21,6 +21,7 @@ import {
     OutpostsServiceConnectionsAllListRequest,
     PaginatedLDAPProviderList,
     PaginatedProxyProviderList,
+    PaginatedRACProviderList,
     PaginatedRadiusProviderList,
     ProvidersApi,
     ServiceConnection,
@@ -38,7 +39,8 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     providers?:
         | PaginatedProxyProviderList
         | PaginatedLDAPProviderList
-        | PaginatedRadiusProviderList;
+        | PaginatedRadiusProviderList
+        | PaginatedRACProviderList;
 
     defaultConfig?: OutpostDefaultConfig;
 
@@ -69,6 +71,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 break;
             case OutpostTypeEnum.Radius:
                 this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersRadiusList({
+                    ordering: "name",
+                    applicationIsnull: false,
+                });
+                break;
+            case OutpostTypeEnum.Rac:
+                this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersEnterpriseRacList({
                     ordering: "name",
                     applicationIsnull: false,
                 });
@@ -132,6 +140,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         ?selected=${this.instance?.type === OutpostTypeEnum.Radius}
                     >
                         ${msg("Radius")}
+                    </option>
+                    <option
+                        value=${OutpostTypeEnum.Rac}
+                        ?selected=${this.instance?.type === OutpostTypeEnum.Rac}
+                    >
+                        ${msg("RAC")}
                     </option>
                 </select>
             </ak-form-element-horizontal>

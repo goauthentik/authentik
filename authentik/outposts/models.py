@@ -90,11 +90,12 @@ class OutpostModel(Model):
 
 
 class OutpostType(models.TextChoices):
-    """Outpost types, currently only the reverse proxy is available"""
+    """Outpost types"""
 
     PROXY = "proxy"
     LDAP = "ldap"
     RADIUS = "radius"
+    RAC = "rac"
 
 
 def default_outpost_config(host: Optional[str] = None):
