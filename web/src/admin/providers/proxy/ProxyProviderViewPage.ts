@@ -10,9 +10,11 @@ import MDNginxStandalone from "@goauthentik/docs/providers/proxy/_nginx_standalo
 import MDTraefikCompose from "@goauthentik/docs/providers/proxy/_traefik_compose.md";
 import MDTraefikIngress from "@goauthentik/docs/providers/proxy/_traefik_ingress.md";
 import MDTraefikStandalone from "@goauthentik/docs/providers/proxy/_traefik_standalone.md";
+import MDHeaderAuthentication from "@goauthentik/docs/providers/proxy/header_authentication.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
@@ -184,6 +186,9 @@ export class ProxyProviderViewPage extends AKElement {
             <section slot="page-overview" data-tab-title="${t`Overview`}">
                 ${this.renderTabOverview()}
             </section>
+            <section slot="page-authentication" data-tab-title="${t`Authentication`}">
+                ${this.renderTabAuthentication()}
+            </section>
             <section
                 slot="page-changelog"
                 data-tab-title="${t`Changelog`}"
@@ -200,6 +205,37 @@ export class ProxyProviderViewPage extends AKElement {
                 </div>
             </section>
         </ak-tabs>`;
+    }
+
+    renderTabAuthentication(): TemplateResult {
+        if (!this.provider) {
+            return html``;
+        }
+        return html`<div
+            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+        >
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                <div class="pf-c-card__body">
+                    <dl class="pf-c-description-list pf-m-3-col-on-lg">
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`Client ID`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    <pre>${this.provider.clientId}</pre>
+                                </div>
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                <div class="pf-c-card__body">
+                    <ak-markdown .md=${MDHeaderAuthentication}></ak-markdown>
+                </div>
+            </div>
+        </div>`;
     }
 
     renderTabOverview(): TemplateResult {

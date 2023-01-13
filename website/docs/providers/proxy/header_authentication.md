@@ -29,7 +29,7 @@ Access control is done with the policies bound to the application being accessed
 
 If the received credentials are invalid, a normal authentication flow is initiated. If the credentials are correct, the Authorization header is removed to prevent sending the credentials to the proxied application.
 
-:::caution
+:::danger
 It is **strongly** recommended that the client sending requests with HTTP-Basic authentication persists the cookies returned by the outpost. If this is not the case, every request must be authenticated independently, which will increase load on the authentik server and encounter a performance hit.
 :::
 
