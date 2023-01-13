@@ -34599,7 +34599,7 @@ components:
         scope_name:
           type: string
           minLength: 1
-          description: Scope used by the client
+          description: Scope name requested by the client
         description:
           type: string
           description: Description shown to the user when consenting. If left empty,
@@ -36604,7 +36604,7 @@ components:
           readOnly: true
         scope_name:
           type: string
-          description: Scope used by the client
+          description: Scope name requested by the client
         description:
           type: string
           description: Description shown to the user when consenting. If left empty,
@@ -36640,7 +36640,7 @@ components:
         scope_name:
           type: string
           minLength: 1
-          description: Scope used by the client
+          description: Scope name requested by the client
         description:
           type: string
           description: Description shown to the user when consenting. If left empty,
