@@ -12,6 +12,7 @@ import (
 
 type OIDCEndpoint struct {
 	oauth2.Endpoint
+	TokenIntrospection string
 	EndSessionEndpoint string
 	JwksUri            string
 }
@@ -67,5 +68,6 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string) OIDCEndpoin
 	ep.AuthURL = authU.String()
 	ep.EndSessionEndpoint = endU.String()
 	ep.JwksUri = jwksU.String()
+	ep.TokenIntrospection = p.OidcConfiguration.IntrospectionEndpoint
 	return ep
 }

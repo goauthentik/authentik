@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-11 13:08+0000\n"
+"POT-Creation-Date: 2023-01-13 14:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: authentik/admin/api/tasks.py:115
+#: authentik/admin/api/tasks.py:126
 #, python-format
 msgid "Successfully re-scheduled Task %(name)s!"
 msgstr ""
@@ -952,11 +952,11 @@ msgstr ""
 msgid "authentik API Access on behalf of your user"
 msgstr ""
 
-#: authentik/providers/proxy/api.py:51
+#: authentik/providers/proxy/api.py:52
 msgid "User and password attributes must be set when basic auth is enabled."
 msgstr ""
 
-#: authentik/providers/proxy/api.py:61
+#: authentik/providers/proxy/api.py:62
 msgid "Internal host cannot be empty when forward auth is disabled."
 msgstr ""
 
@@ -991,11 +991,11 @@ msgstr ""
 msgid "HTTP-Basic Password Key"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:151
+#: authentik/providers/proxy/models.py:152
 msgid "Proxy Provider"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:152
+#: authentik/providers/proxy/models.py:153
 msgid "Proxy Providers"
 msgstr ""
 

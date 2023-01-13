@@ -8,6 +8,7 @@ from django.urls import reverse
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id, generate_key
+from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT
 from authentik.providers.oauth2.models import IDToken, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
@@ -57,6 +58,8 @@ class TesOAuth2Introspection(OAuthTestCase):
         self.assertJSONEqual(
             res.content.decode(),
             {
+                "acr": ACR_AUTHENTIK_DEFAULT,
+                "auth_time": None,
                 "aud": None,
                 "sub": "bar",
                 "exp": None,
@@ -64,6 +67,7 @@ class TesOAuth2Introspection(OAuthTestCase):
                 "iss": "foo",
                 "active": True,
                 "client_id": self.provider.client_id,
+                "scope": " ".join(self.token.scope),
             },
         )
 

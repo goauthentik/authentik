@@ -37,6 +37,7 @@ class OpenIDConnectConfigurationSerializer(PassiveSerializer):
 class ProxyProviderSerializer(ProviderSerializer):
     """ProxyProvider Serializer"""
 
+    client_id = CharField(read_only=True)
     redirect_uris = CharField(read_only=True)
     outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
 
@@ -77,6 +78,7 @@ class ProxyProviderSerializer(ProviderSerializer):
 
         model = ProxyProvider
         fields = ProviderSerializer.Meta.fields + [
+            "client_id",
             "internal_host",
             "external_host",
             "internal_host_ssl_validation",
@@ -88,6 +90,7 @@ class ProxyProviderSerializer(ProviderSerializer):
             "mode",
             "redirect_uris",
             "cookie_domain",
+            "jwks_sources",
             "token_validity",
             "outpost_set",
         ]

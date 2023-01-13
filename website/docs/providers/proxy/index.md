@@ -24,9 +24,12 @@ The proxy outpost sets the following user-specific headers:
 
     The hashed identifier of the currently logged in user.
 
-Additionally, you can set `additionalHeaders` on groups or users to set additional headers.
+Additionally, you can set `additionalHeaders` attribute on groups or users to set additional headers:
 
-If you enable _Set HTTP-Basic Authentication_ option, the HTTP Authorization header is being set.
+```yaml
+additionalHeaders:
+    X-test-header: test-value
+```
 
 Besides these user-specific headers, some application specific headers are also set:
 

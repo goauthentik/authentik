@@ -330,6 +330,10 @@ msgstr "Ek grup DN, Base DN için eklenmiş."
 msgid "Additional scope mappings, which are passed to the proxy."
 msgstr "Proxy'ye iletilen ek kapsam eşlemeleri."
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Additional scopes"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #~ msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
 #~ msgstr "OAuth Sağlayıcıya iletilecek ek kapsamlar, boşlukla ayrılmış."
@@ -665,6 +669,7 @@ msgstr "Plex ile kimlik doğrulaması..."
 
 #: src/admin/flows/FlowForm.ts
 #: src/admin/flows/utils.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Authentication"
 msgstr "Kimlik Doğrulama"
 
@@ -685,6 +690,10 @@ msgstr "Kimlik doğrulama akışı"
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Authentication method"
+msgstr ""
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Authentication settings"
 msgstr ""
 
 #: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
@@ -1194,6 +1203,7 @@ msgstr "Belirteci kopyalamak için tıklayın"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
 msgid "Client ID"
 msgstr "Müşteri Kimliği"
@@ -2084,6 +2094,10 @@ msgstr "Duo kimlik doğrulayıcı"
 msgid "Duo push-notifications"
 msgstr "Duo push-bildirimleri"
 
+#: src/admin/system-tasks/SystemTaskListPage.ts
+msgid "Duration"
+msgstr ""
+
 #: src/admin/tenants/TenantForm.ts
 msgid "Duration after which events will be deleted from the database."
 msgstr "Olayların veritabanından silineceği süre."
@@ -2885,6 +2899,7 @@ msgstr "Hizmet hesaplarını gizle"
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
@@ -3237,6 +3252,7 @@ msgstr ""
 #~ msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider."
 msgstr ""
 
@@ -3426,6 +3442,7 @@ msgstr ""
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
@@ -5136,7 +5153,6 @@ msgid "Scope which the client can specify to access these properties."
 msgstr "İstemcinin bu özelliklere erişmek için belirtebileceği kapsam."
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Scopes"
@@ -5290,6 +5306,14 @@ msgstr "Parolayı test etmek için arka uçların seçimi."
 msgid "Send Email again."
 msgstr "E-postayı tekrar gönder."
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Send HTTP-Basic Authentication"
+msgstr ""
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Send a custom HTTP-Basic Authentication header based on values from authentik."
+msgstr ""
+
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
 msgid "Send link"
@@ -5378,12 +5402,12 @@ msgid "Sessions"
 msgstr "Oturumlar"
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "Set HTTP-Basic Authentication"
-msgstr "HTTP-Temel Kimlik Doğrulamasını Ayarla"
+#~ msgid "Set HTTP-Basic Authentication"
+#~ msgstr "HTTP-Temel Kimlik Doğrulamasını Ayarla"
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
-msgstr "authentik değerlerine göre özel bir HTTP-Basic Kimlik Doğrulama başlığı ayarlayın."
+#~ msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
+#~ msgstr "authentik değerlerine göre özel bir HTTP-Basic Kimlik Doğrulama başlığı ayarlayın."
 
 #: src/admin/groups/GroupForm.ts
 #: src/admin/outposts/OutpostForm.ts
@@ -6516,6 +6540,7 @@ msgid "Transports"
 msgstr "Aktarıcılar"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Trusted OIDC Sources"
 msgstr ""
 
@@ -7598,6 +7623,10 @@ msgstr "{2} içinden {0} - {1}"
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
 msgid "{0} is available!"
 msgstr "{0} kullanılabilir!"
+
+#: src/admin/system-tasks/SystemTaskListPage.ts
+msgid "{0} seconds"
+msgstr ""
 
 #: src/elements/notifications/NotificationDrawer.ts
 msgid "{0} unread"

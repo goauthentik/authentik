@@ -64,7 +64,7 @@ import Objects from "../expressions/_objects.md";
 
     -   `request.user`: The current user, against which the policy is applied. See [User](../user-group/user.md#object-attributes)
 
-        :::warning
+        :::caution
         When a policy is executed in the context of a flow, this will be set to the user initiaing request, and will only be changed by a `user_login` stage. For that reason, using this value in authentication flow policies may not return the expected user. Use `context['pending_user']` instead; User Identification and other stages update this value during flow execution.
 
         If the user is not authenticated, this will be set to a user called _AnonymousUser_, which is an instance of [authentik.core.models.User](https://docs.djangoproject.com/en/4.1/ref/contrib/auth/#django.contrib.auth.models.User) (authentik uses django-guardian for per-object permissions, [see](https://django-guardian.readthedocs.io/en/stable/)).

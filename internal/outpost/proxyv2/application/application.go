@@ -120,7 +120,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	}))
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-			c, _ := a.getClaims(r)
+			c, _ := a.checkAuth(rw, r)
 			user := ""
 			if c != nil {
 				user = c.PreferredUsername

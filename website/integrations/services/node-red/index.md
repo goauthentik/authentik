@@ -14,7 +14,7 @@ Node-RED is a programming tool for wiring together hardware devices, APIs and on
 It provides a browser-based editor that makes it easy to wire together flows using the wide range of nodes in the palette that can be deployed to its runtime in a single-click.
 :::
 
-:::warning
+:::caution
 This requires modification of the Node-RED settings.js and installing additional Passport-js packages, see [Securing Node-RED](https://nodered.org/docs/user-guide/runtime/securing-node-red#oauthopenid-based-authentication) documentation for further details.
 :::
 

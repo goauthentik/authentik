@@ -16203,6 +16203,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: has_jwks
+        schema:
+          type: boolean
+        description: Only return sources with JWKS data
+      - in: query
         name: name
         schema:
           type: string
@@ -34360,6 +34365,14 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
+        jwks_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
         token_validity:
           type: string
           minLength: 1
@@ -35729,6 +35742,9 @@ components:
         meta_model_name:
           type: string
           readOnly: true
+        client_id:
+          type: string
+          readOnly: true
         internal_host:
           type: string
           format: uri
@@ -35771,6 +35787,14 @@ components:
           readOnly: true
         cookie_domain:
           type: string
+        jwks_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
         token_validity:
           type: string
           description: 'Tokens not valid on or after current time + this value (Format:
@@ -35784,6 +35808,7 @@ components:
       - assigned_application_name
       - assigned_application_slug
       - authorization_flow
+      - client_id
       - component
       - external_host
       - meta_model_name
@@ -35849,6 +35874,14 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
+        jwks_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to
+              authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
         token_validity:
           type: string
           minLength: 1

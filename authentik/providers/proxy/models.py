@@ -126,6 +126,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         """Ensure all OAuth2-related settings are correct"""
         self.client_type = ClientTypes.CONFIDENTIAL
         self.signing_key = None
+        self.include_claims_in_id_token = True
         scopes = ScopeMapping.objects.filter(
             managed__in=[
                 "goauthentik.io/providers/oauth2/scope-openid",

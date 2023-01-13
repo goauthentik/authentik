@@ -336,6 +336,10 @@ msgstr "额外的Group DN，优先于Base DN。"
 msgid "Additional scope mappings, which are passed to the proxy."
 msgstr "传递给代理的其他作用域映射。"
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Additional scopes"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #~ msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
 #~ msgstr "要传递给 OAuth 提供程序的其他作用域，用空格分隔。"
@@ -671,6 +675,7 @@ msgstr "正在使用 Plex 进行身份验证..."
 
 #: src/admin/flows/FlowForm.ts
 #: src/admin/flows/utils.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Authentication"
 msgstr "身份验证"
 
@@ -691,6 +696,10 @@ msgstr "身份验证流程"
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Authentication method"
+msgstr ""
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Authentication settings"
 msgstr ""
 
 #: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
@@ -1202,6 +1211,7 @@ msgstr "点击复制令牌"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
 msgid "Client ID"
 msgstr "客户端 ID"
@@ -2092,6 +2102,10 @@ msgstr "Duo 身份验证器"
 msgid "Duo push-notifications"
 msgstr "二重奏推送通知"
 
+#: src/admin/system-tasks/SystemTaskListPage.ts
+msgid "Duration"
+msgstr ""
+
 #: src/admin/tenants/TenantForm.ts
 msgid "Duration after which events will be deleted from the database."
 msgstr "事件将从数据库中删除的持续时间。"
@@ -2893,6 +2907,7 @@ msgstr "隐藏服务账户"
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
@@ -3245,6 +3260,7 @@ msgstr ""
 #~ msgstr "此处配置的证书签名的 JWT 可以用于此提供程序的身份验证。"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider."
 msgstr ""
 
@@ -3434,6 +3450,7 @@ msgstr ""
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
@@ -5144,7 +5161,6 @@ msgid "Scope which the client can specify to access these properties."
 msgstr "客户端可以指定的访问这些属性的范围。"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Scopes"
@@ -5298,6 +5314,14 @@ msgstr "选择用于测试密码的后端。"
 msgid "Send Email again."
 msgstr "再次发送电子邮件。"
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Send HTTP-Basic Authentication"
+msgstr ""
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Send a custom HTTP-Basic Authentication header based on values from authentik."
+msgstr ""
+
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
 msgid "Send link"
@@ -5386,12 +5410,12 @@ msgid "Sessions"
 msgstr "会话"
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "Set HTTP-Basic Authentication"
-msgstr "设置 HTTP 基本身份验证"
+#~ msgid "Set HTTP-Basic Authentication"
+#~ msgstr "设置 HTTP 基本身份验证"
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
-msgstr "根据来自 authentik 的值设置自定义 HTTP-Basic 身份验证标头。"
+#~ msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
+#~ msgstr "根据来自 authentik 的值设置自定义 HTTP-Basic 身份验证标头。"
 
 #: src/admin/groups/GroupForm.ts
 #: src/admin/outposts/OutpostForm.ts
@@ -6524,6 +6548,7 @@ msgid "Transports"
 msgstr "传输"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Trusted OIDC Sources"
 msgstr ""
 
@@ -7608,6 +7633,10 @@ msgstr "{0} - {1} of {2}"
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
 msgid "{0} is available!"
 msgstr "{0} 可用！"
+
+#: src/admin/system-tasks/SystemTaskListPage.ts
+msgid "{0} seconds"
+msgstr ""
 
 #: src/elements/notifications/NotificationDrawer.ts
 msgid "{0} unread"

@@ -1,7 +1,6 @@
 package application
 
 import (
-	"fmt"
 	"net/http"
 	"net/url"
 	"path"
@@ -75,26 +74,6 @@ func (a *Application) redirect(rw http.ResponseWriter, r *http.Request) {
 	}
 	a.log.WithField("redirect", redirect).Trace("final redirect")
 	http.Redirect(rw, r, redirect, http.StatusFound)
-}
-
-// getClaims Get claims which are currently in session
-// Returns an error if the session can't be loaded or the claims can't be parsed/type-cast
-func (a *Application) getClaims(r *http.Request) (*Claims, error) {
-	s, err := a.sessions.Get(r, constants.SessionName)
-	if err != nil {
-		// err == user has no session/session is not valid, reject
-		return nil, fmt.Errorf("invalid session")
-	}
-	claims, ok := s.Values[constants.SessionClaims]
-	if claims == nil || !ok {
-		// no claims saved, reject
-		return nil, fmt.Errorf("invalid session")
-	}
-	c, ok := claims.(Claims)
-	if !ok {
-		return nil, fmt.Errorf("invalid session")
-	}
-	return &c, nil
 }
 
 // toString Generic to string function, currently supports actual strings and integers

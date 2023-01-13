@@ -14,7 +14,7 @@ type ErrorPageData struct {
 }
 
 func (a *Application) ErrorPage(rw http.ResponseWriter, r *http.Request, err string) {
-	claims, _ := a.getClaims(r)
+	claims, _ := a.checkAuth(rw, r)
 	data := ErrorPageData{
 		Title:       "Bad Gateway",
 		Message:     "Error proxying to upstream server",
