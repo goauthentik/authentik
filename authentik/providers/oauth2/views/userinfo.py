@@ -110,6 +110,8 @@ class UserInfoView(View):
             return HttpResponseBadRequest()
         claims = self.get_claims(self.token)
         claims["sub"] = self.token.id_token.sub
+        if self.token.id_token.nonce:
+            claims["nonce"] = self.token.id_token.nonce
         response = TokenResponse(claims)
         return response
 
