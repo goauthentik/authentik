@@ -334,6 +334,10 @@ msgstr "Dodatkowa DN grupy, poprzedzona podstawową DN."
 msgid "Additional scope mappings, which are passed to the proxy."
 msgstr "Dodatkowe mapowania zakresu, które są przekazywane do serwera proxy."
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Additional scopes"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #~ msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
 #~ msgstr "Dodatkowe zakresy do przekazania do dostawcy OAuth, oddzielone spacją."
@@ -669,6 +673,7 @@ msgstr "Uwierzytelnianie z Plex..."
 
 #: src/admin/flows/FlowForm.ts
 #: src/admin/flows/utils.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Authentication"
 msgstr "Uwierzytelnianie"
 
@@ -689,6 +694,10 @@ msgstr "Przepływ uwierzytelniania"
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Authentication method"
+msgstr ""
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Authentication settings"
 msgstr ""
 
 #: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
@@ -1200,6 +1209,7 @@ msgstr "Kliknij, aby skopiować token"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
 msgid "Client ID"
 msgstr "Client ID"
@@ -2090,6 +2100,10 @@ msgstr "Uwierzytelniacz Duo"
 msgid "Duo push-notifications"
 msgstr "Powiadomienia push Duo"
 
+#: src/admin/system-tasks/SystemTaskListPage.ts
+msgid "Duration"
+msgstr ""
+
 #: src/admin/tenants/TenantForm.ts
 msgid "Duration after which events will be deleted from the database."
 msgstr "Czas, po którym zdarzenia zostaną usunięte z bazy danych."
@@ -2891,6 +2905,7 @@ msgstr "Ukryj konta serwisowe"
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
@@ -3245,6 +3260,7 @@ msgstr ""
 #~ msgstr "JWTs podpisane przez certyfikaty skonfigurowane tutaj mogą służyć do uwierzytelniania u dostawcy."
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider."
 msgstr ""
 
@@ -3434,6 +3450,7 @@ msgstr ""
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
@@ -5146,7 +5163,6 @@ msgid "Scope which the client can specify to access these properties."
 msgstr "Zakres, który klient może określić, aby uzyskać dostęp do tych właściwości."
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Scopes"
@@ -5300,6 +5316,14 @@ msgstr "Wybór backendów do testowania hasła."
 msgid "Send Email again."
 msgstr "Wyślij e-mail ponownie."
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Send HTTP-Basic Authentication"
+msgstr ""
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Send a custom HTTP-Basic Authentication header based on values from authentik."
+msgstr ""
+
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
 msgid "Send link"
@@ -5388,12 +5412,12 @@ msgid "Sessions"
 msgstr "Sesje"
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "Set HTTP-Basic Authentication"
-msgstr "Ustaw HTTP-Basic Authentication"
+#~ msgid "Set HTTP-Basic Authentication"
+#~ msgstr "Ustaw HTTP-Basic Authentication"
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
-msgstr "Ustaw niestandardowy nagłówek HTTP-Basic Authentication na podstawie wartości z authentik."
+#~ msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
+#~ msgstr "Ustaw niestandardowy nagłówek HTTP-Basic Authentication na podstawie wartości z authentik."
 
 #: src/admin/groups/GroupForm.ts
 #: src/admin/outposts/OutpostForm.ts
@@ -6526,6 +6550,7 @@ msgid "Transports"
 msgstr "Transporty"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Trusted OIDC Sources"
 msgstr "Zaufane źródła OIDC"
 
@@ -7610,6 +7635,10 @@ msgstr "{0} - {1} z {2}"
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
 msgid "{0} is available!"
 msgstr "{0} jest dostępny!"
+
+#: src/admin/system-tasks/SystemTaskListPage.ts
+msgid "{0} seconds"
+msgstr ""
 
 #: src/elements/notifications/NotificationDrawer.ts
 msgid "{0} unread"
