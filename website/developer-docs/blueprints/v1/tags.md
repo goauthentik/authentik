@@ -199,7 +199,7 @@ example:
 
 Full example:
 
-:::warning
+:::caution
 Note that an `!Enumeration` tag's iterable can never be an `!Item` or `!Value` tag with a depth of `0`. Minimum depth allowed is `1`. This is because a depth of `0` refers to the `!Enumeration` tag the `!Item` or `!Value` tag is in, and an `!Enumeration` tag cannot iterate over itself.
 :::
 

@@ -14,7 +14,7 @@ e uptime and future planning. TrueCommand also identifies and pinpoints errors o
 me when resolving issues.
 :::
 
-:::warning
+:::caution
 This setup assumes you will be using HTTPS as TrueCommand generates ACS and Redirect URLs based on the complete URL.
 :::
 

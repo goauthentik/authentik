@@ -64,6 +64,7 @@ module.exports = {
                     },
                     items: [
                         "providers/proxy/custom_headers",
+                        "providers/proxy/header_authentication",
                         "providers/proxy/forward_auth",
                     ],
                 },

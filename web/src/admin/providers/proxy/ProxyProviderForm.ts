@@ -466,11 +466,11 @@ ${this.instance?.skipPathRegex}</textarea
                                 </span>
                             </span>
                             <span class="pf-c-switch__label"
-                                >${t`Set HTTP-Basic Authentication`}</span
+                                >${t`Send HTTP-Basic Authentication`}</span
                             >
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${t`Set a custom HTTP-Basic Authentication header based on values from authentik.`}
+                            ${t`Send a custom HTTP-Basic Authentication header based on values from authentik.`}
                         </p>
                     </ak-form-element-horizontal>
                     ${this.showHttpBasic ? this.renderHttpBasic() : html``}

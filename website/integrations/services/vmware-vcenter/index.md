@@ -12,11 +12,11 @@ From https://en.wikipedia.org/wiki/VCenter
 vCenter Server is the centralized management utility for VMware, and is used to manage virtual machines, multiple ESXi hosts, and all dependent components from a single centralized location. VMware vMotion and svMotion require the use of vCenter and ESXi hosts.
 :::
 
-:::warning
+:::caution
 This requires authentik 0.10.3 or newer.
 :::
 
-:::warning
+:::caution
 This requires VMware vCenter 7.0.0 or newer.
 :::
 
@@ -68,7 +68,7 @@ Create an application which uses this provider. Optionally apply access restrict
 
 Set the Launch URL to `https://vcenter.company/ui/login/oauth2`. This will skip vCenter's User Prompt and directly log you in.
 
-:::warning
+:::caution
 This Launch URL only works for vCenter < 7.0u2. If you're running 7.0u2 or later, set the launch URL to `https://vcenter.company/ui/login`
 :::
 
