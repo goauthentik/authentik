@@ -37157,6 +37157,9 @@ components:
         task_finish_timestamp:
           type: string
           format: date-time
+        task_duration:
+          type: integer
+          readOnly: true
         status:
           $ref: '#/components/schemas/TaskStatusEnum'
         messages:
@@ -37166,6 +37169,7 @@ components:
       - messages
       - status
       - task_description
+      - task_duration
       - task_finish_timestamp
       - task_name
     TaskStatusEnum:
