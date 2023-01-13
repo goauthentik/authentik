@@ -65,7 +65,7 @@
         "@codemirror/legacy-modes": "^6.3.1",
         "@formatjs/intl-listformat": "^7.1.7",
         "@fortawesome/fontawesome-free": "^6.2.1",
-        "@goauthentik/api": "^2022.12.2-1673461163",
+        "@goauthentik/api": "^2022.12.2-1673612527",
         "@hcaptcha/types": "^1.0.3",
         "@jackfranklin/rollup-plugin-markdown": "^0.4.0",
         "@lingui/cli": "^3.15.0",
