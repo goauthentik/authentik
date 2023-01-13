@@ -124,6 +124,7 @@ class ProviderInfoView(View):
             "auth_time",
             "acr",
             "amr",
+            "nonce",
         ]
         for scope in ScopeMapping.objects.filter(provider=provider).order_by("scope_name"):
             value = None
