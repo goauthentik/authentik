@@ -9,7 +9,6 @@ import (
 
 const HeaderAuthorization = "Authorization"
 const AuthBearer = "Bearer "
-const AuthBasic = "Basic "
 
 // checkAuth Get claims which are currently in session
 // Returns an error if the session can't be loaded or the claims can't be parsed/type-cast
@@ -38,6 +37,7 @@ func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claim
 			r.Header.Del(HeaderAuthorization)
 			return &tc.Claims, nil
 		}
+		a.log.Trace("no/invalid bearer token")
 	}
 	// Check basic auth if set
 	username, password, basicSet := r.BasicAuth()
@@ -45,7 +45,7 @@ func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claim
 		a.log.Trace("checking basic auth")
 		tc := a.attemptBasicAuth(username, password)
 		if tc != nil {
-			s.Values[constants.SessionClaims] = tc
+			s.Values[constants.SessionClaims] = *tc
 			err := s.Save(r, rw)
 			if err != nil {
 				return nil, err
@@ -53,6 +53,7 @@ func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claim
 			r.Header.Del(HeaderAuthorization)
 			return tc, nil
 		}
+		a.log.Trace("no/invalid basic auth")
 	}
 
 	return nil, fmt.Errorf("failed to get claims from session")

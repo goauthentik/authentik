@@ -37,6 +37,7 @@ func (a *Application) configureProxy() error {
 		if claims == nil && a.IsAllowlisted(r.URL) {
 			a.log.Trace("path can be accessed without authentication")
 		} else if claims == nil && err != nil {
+			a.log.WithError(err).Trace("no claims")
 			a.redirectToStart(rw, r)
 			return
 		} else {

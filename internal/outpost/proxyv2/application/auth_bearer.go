@@ -12,7 +12,7 @@ func (a *Application) checkAuthHeaderBearer(r *http.Request) string {
 	if auth == "" {
 		return ""
 	}
-	if len(auth) < len(AuthBearer) || strings.EqualFold(auth[:len(AuthBearer)], AuthBearer) {
+	if len(auth) < len(AuthBearer) || !strings.EqualFold(auth[:len(AuthBearer)], AuthBearer) {
 		return ""
 	}
 	return auth[len(AuthBearer):]
@@ -38,7 +38,7 @@ func (a *Application) attemptBearerAuth(r *http.Request, token string) *TokenInt
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	res, err := a.httpClient.Do(req)
-	if err != nil {
+	if err != nil || res.StatusCode > 200 {
 		a.log.WithError(err).Warning("failed to send introspection request")
 		return nil
 	}
