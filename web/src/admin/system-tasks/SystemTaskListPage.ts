@@ -84,6 +84,16 @@ export class SystemTaskListPage extends TablePage<Task> {
                     <dl class="pf-c-description-list pf-m-horizontal">
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`Duration`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${t`${Math.round(item.taskDuration)} seconds`}
+                                </div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
                                 <span class="pf-c-description-list__text">${t`Messages`}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
