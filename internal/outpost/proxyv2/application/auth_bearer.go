@@ -5,17 +5,19 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 
 func (a *Application) checkAuthHeaderBearer(r *http.Request) string {
-	auth := r.Header.Get(HeaderAuthorization)
+	auth := r.Header.Get(constants.HeaderAuthorization)
 	if auth == "" {
 		return ""
 	}
-	if len(auth) < len(AuthBearer) || !strings.EqualFold(auth[:len(AuthBearer)], AuthBearer) {
+	if len(auth) < len(constants.AuthBearer) || !strings.EqualFold(auth[:len(constants.AuthBearer)], constants.AuthBearer) {
 		return ""
 	}
-	return auth[len(AuthBearer):]
+	return auth[len(constants.AuthBearer):]
 }
 
 type TokenIntrospectionResponse struct {

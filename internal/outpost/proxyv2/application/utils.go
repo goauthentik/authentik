@@ -36,6 +36,7 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 		a.log.WithError(err).Warning("failed to decode session")
 	}
 	if r.Header.Get(constants.HeaderNoRedirect) == "true" {
+		rw.WriteHeader(401)
 		er := a.errorTemplates.Execute(rw, ErrorPageData{
 			Title:       "Unauthenticated",
 			Message:     fmt.Sprintf("Due to '%s' being set, no redirect is performed.", constants.HeaderNoRedirect),
