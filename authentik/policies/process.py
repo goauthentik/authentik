@@ -138,5 +138,5 @@ class PolicyProcess(PROCESS_CLASS):
         try:
             self.connection.send(self.profiling_wrapper())
         except Exception as exc:  # pylint: disable=broad-except
-            LOGGER.warning("Policy failed to run", exc=exc)
+            LOGGER.warning("Policy failed to run", exc=exception_to_string(exc))
             self.connection.send(PolicyResult(False, str(exc)))
