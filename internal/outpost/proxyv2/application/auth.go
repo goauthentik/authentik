@@ -8,9 +8,6 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 
-const HeaderAuthorization = "Authorization"
-const AuthBearer = "Bearer "
-
 // checkAuth Get claims which are currently in session
 // Returns an error if the session can't be loaded or the claims can't be parsed/type-cast
 func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claims, error) {
@@ -70,7 +67,7 @@ func (a *Application) getClaimsFromSession(r *http.Request) *Claims {
 }
 
 func (a *Application) getClaimsFromCache(r *http.Request) *Claims {
-	key := r.Header.Get(HeaderAuthorization)
+	key := r.Header.Get(constants.HeaderAuthorization)
 	item := a.authHeaderCache.Get(key)
 	if item != nil && !item.IsExpired() {
 		v := item.Value()
@@ -88,12 +85,12 @@ func (a *Application) saveAndCacheClaims(rw http.ResponseWriter, r *http.Request
 		return nil, err
 	}
 
-	key := r.Header.Get(HeaderAuthorization)
+	key := r.Header.Get(constants.HeaderAuthorization)
 	item := a.authHeaderCache.Get(key)
 	// Don't set when the key is already found
 	if item == nil {
 		a.authHeaderCache.Set(key, claims, time.Second*60)
 	}
-	r.Header.Del(HeaderAuthorization)
+	r.Header.Del(constants.HeaderAuthorization)
 	return &claims, nil
 }

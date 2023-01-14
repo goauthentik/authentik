@@ -1,6 +1,7 @@
 package application
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"path"
@@ -33,6 +34,16 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to decode session")
+	}
+	if r.Header.Get(constants.HeaderNoRedirect) == "true" {
+		er := a.errorTemplates.Execute(rw, ErrorPageData{
+			Title:       "Unauthenticated",
+			Message:     fmt.Sprintf("Due to '%s' being set, no redirect is performed.", constants.HeaderNoRedirect),
+			ProxyPrefix: "/outpost.goauthentik.io",
+		})
+		if er != nil {
+			http.Error(rw, "Internal Server Error", http.StatusInternalServerError)
+		}
 	}
 
 	redirectUrl := urlPathSet(a.proxyConfig.ExternalHost, r.URL.Path)

@@ -2,6 +2,8 @@
 title: Header authentication
 ---
 
+## Sending authentication
+
 ### Send HTTP Basic authentication
 
 Proxy providers have the option to _Send HTTP-Basic Authentication_ to the upstream authentication. When the option in the provider is enabled, two attributes must be specified. These attributes are the keys of values which can be saved on a user or group level that contain the credentials.
@@ -16,6 +18,10 @@ app_password: admin-password
 These credentials are only retrieved when the user authenticates to the proxy.
 
 If the user does not have a matching attribute, authentik falls back to using the user's email address as username, and the password will be empty if not found.
+
+## Receiving authentication
+
+It is recommended to set the `X-Authentik-No-Redirect` header to `true` to prevent redirects when sending requests via the below methods. This prevents additional load when unauthenticated requests are retried and all get redirected to a flow executor.
 
 ### Receiving HTTP Basic authentication
 
