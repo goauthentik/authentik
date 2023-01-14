@@ -112,7 +112,9 @@ class TokenParams:
             engine.build()
             result = engine.result
             if not result.passing:
-                LOGGER.info("User not authenticated for application", user=self.user, app=app)
+                LOGGER.info(
+                    "User not authenticated for application", user=self.user, app_slug=app.slug
+                )
                 raise TokenError("invalid_grant")
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
@@ -303,10 +305,10 @@ class TokenParams:
         source: Optional[OAuthSource] = None
         parsed_key: Optional[PyJWK] = None
         for source in self.provider.jwks_sources.all():
-            LOGGER.debug("verifying jwt with source", source=source.name)
+            LOGGER.debug("verifying jwt with source", source=source.slug)
             keys = source.oidc_jwks.get("keys", [])
             for key in keys:
-                LOGGER.debug("verifying jwt with key", source=source.name, key=key.get("kid"))
+                LOGGER.debug("verifying jwt with key", source=source.slug, key=key.get("kid"))
                 try:
                     parsed_key = PyJWK.from_dict(key)
                     token = decode(
@@ -320,11 +322,13 @@ class TokenParams:
                 # AttributeError is raised when the configured JWK is a private key
                 # and not a public key
                 except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
-                    LOGGER.warning("failed to validate jwt", exc=exc)
+                    LOGGER.warning("failed to verify jwt", exc=exc, source=source.slug)
 
         if not token:
             LOGGER.warning("No token could be verified")
             raise TokenError("invalid_grant")
+
+        LOGGER.debug("successfully verified jwt with source", source=source.slug)
 
         if "exp" in token:
             exp = datetime.fromtimestamp(token["exp"])

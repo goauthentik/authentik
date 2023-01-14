@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
 from django.views import View
 from structlog.stdlib import get_logger
-
+from guardian.shortcuts import get_anonymous_user
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
 from authentik.providers.oauth2.constants import (
@@ -130,7 +130,7 @@ class ProviderInfoView(View):
             value = None
             try:
                 value = scope.evaluate(
-                    user=self.request.user,
+                    user=get_anonymous_user(),
                     request=self.request,
                     provider=provider,
                 )
