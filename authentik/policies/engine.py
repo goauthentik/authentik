@@ -52,6 +52,8 @@ class PolicyEngine:
         self.empty_result = True
         if not isinstance(pbm, PolicyBindingModel):  # pragma: no cover
             raise ValueError(f"{pbm} is not instance of PolicyBindingModel")
+        if not user:
+            raise ValueError("User must be set")
         self.__pbm = pbm
         self.request = PolicyRequest(user)
         self.request.obj = pbm
