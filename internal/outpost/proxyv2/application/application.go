@@ -113,9 +113,9 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 			return l
 		}
 		if c.PreferredUsername != "" {
-			return l.WithField("request_username", c.PreferredUsername)
+			return l.WithField("user", c.PreferredUsername)
 		}
-		return l.WithField("request_username", c.Sub)
+		return l.WithField("user", c.Sub)
 	}))
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
