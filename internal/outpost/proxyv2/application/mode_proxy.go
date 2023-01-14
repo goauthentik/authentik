@@ -33,6 +33,13 @@ func (a *Application) configureProxy() error {
 	rp.ErrorHandler = a.newProxyErrorHandler()
 	rp.ModifyResponse = a.proxyModifyResponse
 	a.mux.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		defer func() {
+			err := recover()
+			if err == nil || err == http.ErrAbortHandler {
+				return
+			}
+			log.WithError(err.(error)).Error("recover in reverse proxy")
+		}()
 		claims, err := a.checkAuth(rw, r)
 		if claims == nil && a.IsAllowlisted(r.URL) {
 			a.log.Trace("path can be accessed without authentication")
@@ -45,13 +52,6 @@ func (a *Application) configureProxy() error {
 		}
 		before := time.Now()
 		rp.ServeHTTP(rw, r)
-		defer func() {
-			err := recover()
-			if err == nil || err == http.ErrAbortHandler {
-				return
-			}
-			log.WithError(err.(error)).Error("recover in reverse proxy")
-		}()
 		after := time.Since(before)
 
 		metrics.UpstreamTiming.With(prometheus.Labels{
@@ -68,9 +68,9 @@ func (a *Application) configureProxy() error {
 func (a *Application) proxyModifyRequest(ou *url.URL) func(req *http.Request) {
 	return func(r *http.Request) {
 		r.Header.Set("X-Forwarded-Host", r.Host)
-		claims, _ := a.checkAuth(nil, r)
 		r.URL.Scheme = ou.Scheme
 		r.URL.Host = ou.Host
+		claims := a.getClaimsFromSession(r)
 		if claims != nil && claims.Proxy != nil && claims.Proxy.BackendOverride != "" {
 			u, err := url.Parse(claims.Proxy.BackendOverride)
 			if err != nil {
@@ -85,6 +85,6 @@ func (a *Application) proxyModifyRequest(ou *url.URL) func(req *http.Request) {
 }
 
 func (a *Application) proxyModifyResponse(res *http.Response) error {
-	res.Header.Set("X-Powered-By", "authentik_proxy2")
+	res.Header.Set("X-Powered-By", "goauthentik.io")
 	return nil
 }

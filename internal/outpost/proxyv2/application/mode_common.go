@@ -29,6 +29,9 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	headers.Set("X-authentik-meta-app", a.proxyConfig.AssignedApplicationSlug)
 	headers.Set("X-authentik-meta-version", constants.OutpostUserAgent())
 
+	if c.Proxy == nil {
+		return
+	}
 	userAttributes := c.Proxy.UserAttributes
 	// Attempt to set basic auth based on user's attributes
 	if *a.proxyConfig.BasicAuthEnabled {

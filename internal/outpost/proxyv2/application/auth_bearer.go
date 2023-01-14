@@ -52,10 +52,6 @@ func (a *Application) attemptBearerAuth(r *http.Request, token string) *TokenInt
 		a.log.Warning("token is not active")
 		return nil
 	}
-	if !strings.Contains(intro.Scope, "openid") || !strings.Contains(intro.Scope, "profile") {
-		a.log.Error("token missing openid or profile scope")
-		return nil
-	}
 	intro.RawToken = token
 	a.log.Trace("successfully introspected bearer token")
 	return &intro

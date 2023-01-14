@@ -104,23 +104,18 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	}
 	a.sessions = a.getStore(p, externalHost)
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
-		s, err := a.sessions.Get(r, constants.SessionName)
-		if err != nil {
+		c := a.getClaimsFromSession(r)
+		if c == nil {
 			return l
 		}
-		claims, ok := s.Values[constants.SessionClaims]
-		if claims == nil || !ok {
-			return l
+		if c.PreferredUsername != "" {
+			return l.WithField("request_username", c.PreferredUsername)
 		}
-		c, ok := claims.(Claims)
-		if !ok {
-			return l
-		}
-		return l.WithField("request_username", c.PreferredUsername)
+		return l.WithField("request_username", c.Sub)
 	}))
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-			c, _ := a.checkAuth(rw, r)
+			c := a.getClaimsFromSession(r)
 			user := ""
 			if c != nil {
 				user = c.PreferredUsername
