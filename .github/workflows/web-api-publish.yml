@@ -41,6 +41,7 @@ jobs:
           delete-branch: true
           signoff: true
           team-reviewers: "@goauthentik/core"
+          author: authentik bot <github-bot@goauthentik.io>
       - uses: peter-evans/enable-pull-request-automerge@v2
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
