@@ -35,6 +35,7 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string) OIDCEndpoin
 		},
 		EndSessionEndpoint: endUrl,
 		JwksUri:            jwksUrl,
+		TokenIntrospection: p.OidcConfiguration.IntrospectionEndpoint,
 	}
 	authU, err := url.Parse(authUrl)
 	if err != nil {
@@ -68,6 +69,5 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string) OIDCEndpoin
 	ep.AuthURL = authU.String()
 	ep.EndSessionEndpoint = endU.String()
 	ep.JwksUri = jwksU.String()
-	ep.TokenIntrospection = p.OidcConfiguration.IntrospectionEndpoint
 	return ep
 }
