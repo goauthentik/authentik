@@ -18,6 +18,7 @@ import (
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
+	"github.com/jellydator/ttlcache/v3"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
@@ -48,7 +49,8 @@ type Application struct {
 	mux *mux.Router
 	ak  *ak.APIController
 
-	errorTemplates *template.Template
+	errorTemplates  *template.Template
+	authHeaderCache *ttlcache.Cache[string, Claims]
 }
 
 func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore, ak *ak.APIController) (*Application, error) {
@@ -90,18 +92,20 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	}
 	mux := mux.NewRouter()
 	a := &Application{
-		Host:           externalHost.Host,
-		log:            muxLogger,
-		outpostName:    ak.Outpost.Name,
-		endpoint:       endpoint,
-		oauthConfig:    oauth2Config,
-		tokenVerifier:  verifier,
-		proxyConfig:    p,
-		httpClient:     c,
-		mux:            mux,
-		errorTemplates: templates.GetTemplates(),
-		ak:             ak,
+		Host:            externalHost.Host,
+		log:             muxLogger,
+		outpostName:     ak.Outpost.Name,
+		endpoint:        endpoint,
+		oauthConfig:     oauth2Config,
+		tokenVerifier:   verifier,
+		proxyConfig:     p,
+		httpClient:      c,
+		mux:             mux,
+		errorTemplates:  templates.GetTemplates(),
+		ak:              ak,
+		authHeaderCache: ttlcache.New(ttlcache.WithDisableTouchOnHit[string, Claims]()),
 	}
+	go a.authHeaderCache.Start()
 	a.sessions = a.getStore(p, externalHost)
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
 		c := a.getClaimsFromSession(r)
@@ -214,6 +218,10 @@ func (a *Application) ProxyConfig() api.ProxyOutpostConfig {
 
 func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	a.mux.ServeHTTP(rw, r)
+}
+
+func (a *Application) Stop() {
+	a.authHeaderCache.Stop()
 }
 
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {

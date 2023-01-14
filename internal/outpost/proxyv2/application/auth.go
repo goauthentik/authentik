@@ -3,6 +3,7 @@ package application
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
@@ -13,8 +14,6 @@ const AuthBearer = "Bearer "
 // checkAuth Get claims which are currently in session
 // Returns an error if the session can't be loaded or the claims can't be parsed/type-cast
 func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claims, error) {
-	s, _ := a.sessions.Get(r, constants.SessionName)
-
 	c := a.getClaimsFromSession(r)
 	if c != nil {
 		return c, nil
@@ -23,19 +22,18 @@ func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claim
 	if rw == nil {
 		return nil, fmt.Errorf("no response writer")
 	}
+	// Check TTL cache
+	c = a.getClaimsFromCache(r)
+	if c != nil {
+		return c, nil
+	}
 	// Check bearer token if set
 	bearer := a.checkAuthHeaderBearer(r)
 	if bearer != "" {
 		a.log.Trace("checking bearer token")
 		tc := a.attemptBearerAuth(r, bearer)
 		if tc != nil {
-			s.Values[constants.SessionClaims] = tc.Claims
-			err := s.Save(r, rw)
-			if err != nil {
-				return nil, err
-			}
-			r.Header.Del(HeaderAuthorization)
-			return &tc.Claims, nil
+			return a.saveAndCacheClaims(rw, r, tc.Claims)
 		}
 		a.log.Trace("no/invalid bearer token")
 	}
@@ -45,13 +43,7 @@ func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claim
 		a.log.Trace("checking basic auth")
 		tc := a.attemptBasicAuth(username, password)
 		if tc != nil {
-			s.Values[constants.SessionClaims] = *tc
-			err := s.Save(r, rw)
-			if err != nil {
-				return nil, err
-			}
-			r.Header.Del(HeaderAuthorization)
-			return tc, nil
+			return a.saveAndCacheClaims(rw, r, *tc)
 		}
 		a.log.Trace("no/invalid basic auth")
 	}
@@ -75,4 +67,33 @@ func (a *Application) getClaimsFromSession(r *http.Request) *Claims {
 		return nil
 	}
 	return &c
+}
+
+func (a *Application) getClaimsFromCache(r *http.Request) *Claims {
+	key := r.Header.Get(HeaderAuthorization)
+	item := a.authHeaderCache.Get(key)
+	if item != nil && !item.IsExpired() {
+		v := item.Value()
+		return &v
+	}
+	return nil
+}
+
+func (a *Application) saveAndCacheClaims(rw http.ResponseWriter, r *http.Request, claims Claims) (*Claims, error) {
+	s, _ := a.sessions.Get(r, constants.SessionName)
+
+	s.Values[constants.SessionClaims] = claims
+	err := s.Save(r, rw)
+	if err != nil {
+		return nil, err
+	}
+
+	key := r.Header.Get(HeaderAuthorization)
+	item := a.authHeaderCache.Get(key)
+	// Don't set when the key is already found
+	if item == nil {
+		a.authHeaderCache.Set(key, claims, time.Second*60)
+	}
+	r.Header.Del(HeaderAuthorization)
+	return &claims, nil
 }
