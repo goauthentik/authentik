@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.utils.timezone import datetime, now
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from guardian.shortcuts import get_anonymous_user
 from jwt import PyJWK, PyJWTError, decode
 from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
@@ -104,7 +105,8 @@ class TokenParams:
         with Hub.current.start_span(
             op="authentik.providers.oauth2.token.policy",
         ):
-            engine = PolicyEngine(app, self.user, request)
+            user = self.user if self.user else get_anonymous_user()
+            engine = PolicyEngine(app, user, request)
             engine.request.context["oauth_scopes"] = self.scope
             engine.request.context["oauth_grant_type"] = self.grant_type
             engine.request.context["oauth_code_verifier"] = self.code_verifier
