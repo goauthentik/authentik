@@ -4,6 +4,7 @@ from typing import Any
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
 from django.views import View
+from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 from guardian.shortcuts import get_anonymous_user
 from authentik.core.exceptions import PropertyMappingExpressionException
