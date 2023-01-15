@@ -16,7 +16,6 @@ from authentik.sources.saml.processors.constants import NS_SAML_PROTOCOL
 class LogoutRequest:
     """Logout Request"""
 
-    # pylint: disable=invalid-name
     id: Optional[str] = None
 
     issuer: Optional[str] = None

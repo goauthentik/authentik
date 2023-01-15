@@ -256,7 +256,6 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         responses={200: CertificateDataSerializer(many=False)},
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def view_certificate(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs certificate and log access"""
         certificate: CertificateKeyPair = self.get_object()
@@ -287,7 +286,6 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         responses={200: CertificateDataSerializer(many=False)},
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def view_private_key(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs private key and log access"""
         certificate: CertificateKeyPair = self.get_object()

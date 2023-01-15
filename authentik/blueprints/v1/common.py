@@ -66,7 +66,6 @@ class BlueprintEntry:
     identifiers: dict[str, Any] = field(default_factory=dict)
     attrs: Optional[dict[str, Any]] = field(default_factory=dict)
 
-    # pylint: disable=invalid-name
     id: Optional[str] = None
 
     _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)

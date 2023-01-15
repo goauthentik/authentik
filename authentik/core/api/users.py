@@ -404,9 +404,8 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 return Response(data={"non_field_errors": [str(exc)]}, status=400)
 
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name
-    def me(self, request: Request) -> Response:
+    @action(url_path="me", detail=False, pagination_class=None, filter_backends=[])
+    def user_me(self, request: Request) -> Response:
         """Get information about current user"""
         context = {"request": request}
         serializer = SessionUserSerializer(
@@ -434,7 +433,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, methods=["POST"])
-    # pylint: disable=invalid-name, unused-argument
     def set_password(self, request: Request, pk: int) -> Response:
         """Set password for user"""
         user: User = self.get_object()
@@ -452,7 +450,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
     @extend_schema(responses={200: UserMetricsSerializer(many=False)})
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def metrics(self, request: Request, pk: int) -> Response:
         """User metrics per 1h"""
         user: User = self.get_object()
@@ -468,7 +465,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def recovery(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""
         link, _ = self._create_recovery_link()
@@ -493,7 +489,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def recovery_email(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""
         for_user: User = self.get_object()

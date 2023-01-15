@@ -80,7 +80,6 @@ class NotificationTransportViewSet(UsedByMixin, ModelViewSet):
         request=OpenApiTypes.NONE,
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["post"])
-    # pylint: disable=invalid-name, unused-argument
     def test(self, request: Request, pk=None) -> Response:
         """Send example notification using selected transport. Requires
         Modify permissions."""
