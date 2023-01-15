@@ -4,7 +4,7 @@ from json import loads
 from typing import Any, Optional
 
 from django.contrib.auth import update_session_auth_hash
-from django.db.models.functions import ExtractDay
+from django.db.models.functions import ExtractHour
 from django.db.models.query import QuerySet
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
@@ -213,7 +213,7 @@ class UserMetricsSerializer(PassiveSerializer):
                 action=EventAction.LOGIN, user__pk=user.pk
             )
             # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractDay, 7 * 3)
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
 
     @extend_schema_field(CoordinateSerializer(many=True))
@@ -225,7 +225,7 @@ class UserMetricsSerializer(PassiveSerializer):
                 action=EventAction.LOGIN_FAILED, context__username=user.username
             )
             # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractDay, 7 * 3)
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
 
     @extend_schema_field(CoordinateSerializer(many=True))
@@ -237,7 +237,7 @@ class UserMetricsSerializer(PassiveSerializer):
                 action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk
             )
             # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractDay, 7 * 3)
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
 
 

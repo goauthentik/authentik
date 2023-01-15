@@ -4,7 +4,7 @@ from typing import Optional
 
 from django.core.cache import cache
 from django.db.models import QuerySet
-from django.db.models.functions import ExtractDay
+from django.db.models.functions import ExtractHour
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
@@ -263,5 +263,5 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 context__authorized_application__pk=app.pk.hex,
             )
             # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractDay, 7 * 3)
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )

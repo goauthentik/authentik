@@ -133,12 +133,11 @@ class EventQuerySet(QuerySet):
         )
         data = Counter({int(d["age_interval"]): d["count"] for d in result})
         results = []
-        interval_timdelta = time_since / data_points
+        interval_delta = time_since / data_points
         for interval in range(1, -data_points, -1):
             results.append(
                 {
-                    "x_cord": time.mktime((_now + (interval_timdelta * interval)).timetuple())
-                    * 1000,
+                    "x_cord": time.mktime((_now + (interval_delta * interval)).timetuple()) * 1000,
                     "y_cord": data[interval * -1],
                 }
             )
