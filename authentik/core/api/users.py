@@ -403,7 +403,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 return Response(data={"non_field_errors": [str(exc)]}, status=400)
 
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
-    @action(url_path="me", detail=False, pagination_class=None, filter_backends=[])
+    @action(url_path="me", url_name="me", detail=False, pagination_class=None, filter_backends=[])
     def user_me(self, request: Request) -> Response:
         """Get information about current user"""
         context = {"request": request}
