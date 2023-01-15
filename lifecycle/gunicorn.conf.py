@@ -82,7 +82,7 @@ else:
 workers = int(CONFIG.y("web.workers", default_workers))
 threads = int(CONFIG.y("web.threads", 4))
 
-# pylint: disable=unused-argument
+
 def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):
     """Tell prometheus to use worker number instead of process ID for multiprocess"""
     from prometheus_client import values
@@ -90,7 +90,6 @@ def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):
     values.ValueClass = MultiProcessValue(lambda: worker._worker_id)
 
 
-# pylint: disable=unused-argument
 def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):
     """Remove pid dbs when worker is shutdown"""
     from prometheus_client import multiprocess

@@ -144,7 +144,6 @@ class ProviderInfoView(View):
             default_claims.extend(value.keys())
         return default_claims
 
-    # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """OpenID-compliant Provider Info"""
         return JsonResponse(self.get_info(self.provider), json_dumps_params={"indent": 2})

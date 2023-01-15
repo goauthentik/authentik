@@ -209,7 +209,6 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         ],
     )
     @action(methods=["GET"], detail=True, permission_classes=[AllowAny])
-    # pylint: disable=invalid-name, unused-argument
     def metadata(self, request: Request, pk: int) -> Response:
         """Return metadata as XML string"""
         # We don't use self.get_object() on purpose as this view is un-authenticated
@@ -282,7 +281,6 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, methods=["GET"])
-    # pylint: disable=invalid-name, unused-argument
     def preview_user(self, request: Request, pk: int) -> Response:
         """Preview user data for provider"""
         provider: SAMLProvider = self.get_object()

@@ -4,7 +4,7 @@ from json import loads
 from typing import Any, Optional
 
 from django.contrib.auth import update_session_auth_hash
-from django.db.models.functions import ExtractDay
+from django.db.models.functions import ExtractHour
 from django.db.models.query import QuerySet
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
@@ -213,7 +213,7 @@ class UserMetricsSerializer(PassiveSerializer):
                 action=EventAction.LOGIN, user__pk=user.pk
             )
             # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractDay, 7 * 3)
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
 
     @extend_schema_field(CoordinateSerializer(many=True))
@@ -225,7 +225,7 @@ class UserMetricsSerializer(PassiveSerializer):
                 action=EventAction.LOGIN_FAILED, context__username=user.username
             )
             # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractDay, 7 * 3)
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
 
     @extend_schema_field(CoordinateSerializer(many=True))
@@ -237,7 +237,7 @@ class UserMetricsSerializer(PassiveSerializer):
                 action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk
             )
             # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractDay, 7 * 3)
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
 
 
@@ -269,7 +269,6 @@ class UsersFilter(FilterSet):
         queryset=Group.objects.all(),
     )
 
-    # pylint: disable=unused-argument
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
         try:
@@ -404,9 +403,8 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 return Response(data={"non_field_errors": [str(exc)]}, status=400)
 
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name
-    def me(self, request: Request) -> Response:
+    @action(url_path="me", url_name="me", detail=False, pagination_class=None, filter_backends=[])
+    def user_me(self, request: Request) -> Response:
         """Get information about current user"""
         context = {"request": request}
         serializer = SessionUserSerializer(
@@ -434,7 +432,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, methods=["POST"])
-    # pylint: disable=invalid-name, unused-argument
     def set_password(self, request: Request, pk: int) -> Response:
         """Set password for user"""
         user: User = self.get_object()
@@ -452,7 +449,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
     @extend_schema(responses={200: UserMetricsSerializer(many=False)})
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def metrics(self, request: Request, pk: int) -> Response:
         """User metrics per 1h"""
         user: User = self.get_object()
@@ -468,7 +464,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def recovery(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""
         link, _ = self._create_recovery_link()
@@ -493,7 +488,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def recovery_email(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""
         for_user: User = self.get_object()

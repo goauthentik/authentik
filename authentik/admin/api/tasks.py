@@ -79,7 +79,6 @@ class TaskViewSet(ViewSet):
             ),
         ],
     )
-    # pylint: disable=invalid-name
     def retrieve(self, request: Request, pk=None) -> Response:
         """Get a single system task"""
         task = TaskInfo.by_name(pk)
@@ -110,7 +109,6 @@ class TaskViewSet(ViewSet):
         ],
     )
     @action(detail=True, methods=["post"])
-    # pylint: disable=invalid-name
     def retry(self, request: Request, pk=None) -> Response:
         """Retry task"""
         task = TaskInfo.by_name(pk)

@@ -148,7 +148,6 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(responses={200: OutpostHealthSerializer(many=True)})
     @action(methods=["GET"], detail=True, pagination_class=None)
-    # pylint: disable=invalid-name, unused-argument
     def health(self, request: Request, pk: int) -> Response:
         """Get outposts current health"""
         outpost: Outpost = self.get_object()

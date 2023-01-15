@@ -374,7 +374,6 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         )
         return response
 
-    # pylint: disable=unused-argument
     def challenge_valid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
         # All validation is done by the serializer
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)

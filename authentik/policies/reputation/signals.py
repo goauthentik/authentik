@@ -37,7 +37,6 @@ def update_score(request: HttpRequest, identifier: str, amount: int):
 
 
 @receiver(login_failed)
-# pylint: disable=unused-argument
 def handle_failed_login(sender, request, credentials, **_):
     """Lower Score for failed login attempts"""
     if "username" in credentials:
@@ -45,14 +44,12 @@ def handle_failed_login(sender, request, credentials, **_):
 
 
 @receiver(identification_failed)
-# pylint: disable=unused-argument
 def handle_identification_failed(sender, request, uid_field: str, **_):
     """Lower Score for failed identification attempts"""
     update_score(request, uid_field, -1)
 
 
 @receiver(user_logged_in)
-# pylint: disable=unused-argument
 def handle_successful_login(sender, request, user, **_):
     """Raise score for successful attempts"""
     update_score(request, user.username, 1)

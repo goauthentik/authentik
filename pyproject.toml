@@ -62,10 +62,19 @@ exclude_lines = [
 ]
 show_missing = true
 
+[tool.pylint.basic]
+good-names = [
+  "pk",
+  "id",
+  "i",
+  "j",
+  "k",
+  "_",
+]
+
 [tool.pylint.master]
 disable = [
   "arguments-differ",
-  "fixme",
   "locally-disabled",
   "too-many-ancestors",
   "too-few-public-methods",
@@ -74,6 +83,7 @@ disable = [
   "similarities",
   "cyclic-import",
   "protected-access",
+  "unused-argument",
   "raise-missing-from",
   # To preserve django's translation function we need to use %-formatting
   "consider-using-f-string",

@@ -3,7 +3,6 @@ from logging import Logger
 from os import getpid
 
 
-# pylint: disable=unused-argument
 def add_process_id(logger: Logger, method_name: str, event_dict):
     """Add the current process ID"""
     event_dict["pid"] = getpid()

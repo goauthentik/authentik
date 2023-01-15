@@ -23,7 +23,6 @@ UPDATE_TRIGGERING_MODELS = (
 
 
 @receiver(pre_save, sender=Outpost)
-# pylint: disable=unused-argument
 def pre_save_outpost(sender, instance: Outpost, **_):
     """Pre-save checks for an outpost, if the name or config.kubernetes_namespace changes,
     we call down and then wait for the up after save"""
@@ -43,7 +42,6 @@ def pre_save_outpost(sender, instance: Outpost, **_):
 
 
 @receiver(m2m_changed, sender=Outpost.providers.through)
-# pylint: disable=unused-argument
 def m2m_changed_update(sender, instance: Model, action: str, **_):
     """Update outpost on m2m change, when providers are added or removed"""
     if action in ["post_add", "post_remove", "post_clear"]:
@@ -51,7 +49,6 @@ def m2m_changed_update(sender, instance: Model, action: str, **_):
 
 
 @receiver(post_save)
-# pylint: disable=unused-argument
 def post_save_update(sender, instance: Model, created: bool, **_):
     """If an Outpost is saved, Ensure that token is created/updated
 
@@ -70,7 +67,6 @@ def post_save_update(sender, instance: Model, created: bool, **_):
 
 
 @receiver(pre_delete, sender=Outpost)
-# pylint: disable=unused-argument
 def pre_delete_cleanup(sender, instance: Outpost, **_):
     """Ensure that Outpost's user is deleted (which will delete the token through cascade)"""
     instance.user.delete()

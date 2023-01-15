@@ -1,7 +1,7 @@
 """authentik administration metrics"""
 from datetime import timedelta
 
-from django.db.models.functions import ExtractDay
+from django.db.models.functions import ExtractHour
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.fields import IntegerField, SerializerMethodField
@@ -37,7 +37,7 @@ class LoginMetricsSerializer(PassiveSerializer):
                 action=EventAction.LOGIN
             )
             # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractDay, 7 * 3)
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
 
     @extend_schema_field(CoordinateSerializer(many=True))
@@ -49,7 +49,7 @@ class LoginMetricsSerializer(PassiveSerializer):
                 action=EventAction.LOGIN_FAILED
             )
             # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractDay, 7 * 3)
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
 
     @extend_schema_field(CoordinateSerializer(many=True))
@@ -61,7 +61,7 @@ class LoginMetricsSerializer(PassiveSerializer):
                 action=EventAction.AUTHORIZE_APPLICATION
             )
             # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractDay, 7 * 3)
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
 
 

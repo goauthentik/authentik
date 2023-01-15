@@ -101,7 +101,6 @@ class AuditMiddleware:
         self.disconnect(request)
         return response
 
-    # pylint: disable=unused-argument
     def process_exception(self, request: HttpRequest, exception: Exception):
         """Disconnect handlers in case of exception"""
         self.disconnect(request)
@@ -125,7 +124,6 @@ class AuditMiddleware:
             thread.run()
 
     @staticmethod
-    # pylint: disable=unused-argument
     def post_save_handler(
         user: User, request: HttpRequest, sender, instance: Model, created: bool, **_
     ):
@@ -137,7 +135,6 @@ class AuditMiddleware:
         EventNewThread(action, request, user=user, model=model_to_dict(instance)).run()
 
     @staticmethod
-    # pylint: disable=unused-argument
     def pre_delete_handler(user: User, request: HttpRequest, sender, instance: Model, **_):
         """Signal handler for all object's pre_delete"""
         if not should_log_model(instance):  # pragma: no cover

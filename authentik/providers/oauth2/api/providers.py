@@ -83,7 +83,6 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         }
     )
     @action(methods=["GET"], detail=True)
-    # pylint: disable=invalid-name
     def setup_urls(self, request: Request, pk: int) -> str:
         """Get Providers setup URLs"""
         provider = get_object_or_404(OAuth2Provider, pk=pk)
@@ -140,7 +139,6 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, methods=["GET"])
-    # pylint: disable=invalid-name, unused-argument
     def preview_user(self, request: Request, pk: int) -> Response:
         """Preview user data for provider"""
         provider: OAuth2Provider = self.get_object()

@@ -19,7 +19,6 @@ LOGGER = get_logger()
 class StageMarker:
     """Base stage marker class, no extra attributes, and has no special handler."""
 
-    # pylint: disable=unused-argument
     def process(
         self,
         plan: "FlowPlan",

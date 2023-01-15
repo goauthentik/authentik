@@ -48,7 +48,6 @@ class Action(Enum):
 class MessageStage(StageView):
     """Show a pre-configured message after the flow is done"""
 
-    # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Show a pre-configured message after the flow is done"""
         message = getattr(self.executor.current_stage, "message", "")
@@ -209,7 +208,6 @@ class SourceFlowManager:
             response.error_message = error.messages
         return response
 
-    # pylint: disable=unused-argument
     def get_stages_to_append(self, flow: Flow) -> list[Stage]:
         """Hook to override stages which are appended to the flow"""
         if not self.source.enrollment_flow:
@@ -264,7 +262,6 @@ class SourceFlowManager:
             flow_slug=flow.slug,
         )
 
-    # pylint: disable=unused-argument
     def handle_auth(
         self,
         connection: UserSourceConnection,

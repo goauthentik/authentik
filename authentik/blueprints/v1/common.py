@@ -66,7 +66,6 @@ class BlueprintEntry:
     identifiers: dict[str, Any] = field(default_factory=dict)
     attrs: Optional[dict[str, Any]] = field(default_factory=dict)
 
-    # pylint: disable=invalid-name
     id: Optional[str] = None
 
     _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)
@@ -192,7 +191,6 @@ class KeyOf(YAMLTag):
 
     id_from: str
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
         super().__init__()
         self.id_from = node.value
@@ -219,7 +217,6 @@ class Env(YAMLTag):
     key: str
     default: Optional[Any]
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
         super().__init__()
         self.default = None
@@ -239,7 +236,6 @@ class Context(YAMLTag):
     key: str
     default: Optional[Any]
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
         super().__init__()
         self.default = None
@@ -262,7 +258,6 @@ class Format(YAMLTag):
     format_string: str
     args: list[Any]
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
         self.format_string = node.value[0].value
@@ -342,7 +337,6 @@ class Condition(YAMLTag):
         "XNOR": lambda args: not (reduce(ixor, args) if len(args) > 1 else args[0]),
     }
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
         self.mode = node.value[0].value
@@ -375,7 +369,6 @@ class If(YAMLTag):
     when_true: Any
     when_false: Any
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
         self.condition = loader.construct_object(node.value[0])
@@ -414,7 +407,6 @@ class Enumerate(YAMLTag, YAMLTagContext):
         ),
     }
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
         self.iterable = loader.construct_object(node.value[0])
@@ -422,7 +414,6 @@ class Enumerate(YAMLTag, YAMLTagContext):
         self.item_body = loader.construct_object(node.value[2])
         self.__current_context: tuple[Any, Any] = tuple()
 
-    # pylint: disable=unused-argument
     def get_context(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         return self.__current_context
 
@@ -480,7 +471,6 @@ class EnumeratedItem(YAMLTag):
 
     _SUPPORTED_CONTEXT_TAGS = (Enumerate,)
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
         super().__init__()
         self.depth = int(node.value)

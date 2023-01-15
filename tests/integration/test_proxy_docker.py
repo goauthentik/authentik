@@ -65,18 +65,20 @@ class TestProxyDocker(ChannelsLiveServerTestCase):
             external_host="http://localhost",
             authorization_flow=create_test_flow(),
         )
-        authentication_kp = CertificateKeyPair.objects.create(
-            name="docker-authentication",
-            # pylint: disable=consider-using-with
-            certificate_data=open(f"{self.ssl_folder}/client/cert.pem", encoding="utf8").read(),
-            # pylint: disable=consider-using-with
-            key_data=open(f"{self.ssl_folder}/client/key.pem", encoding="utf8").read(),
-        )
-        verification_kp = CertificateKeyPair.objects.create(
-            name="docker-verification",
-            # pylint: disable=consider-using-with
-            certificate_data=open(f"{self.ssl_folder}/client/ca.pem", encoding="utf8").read(),
-        )
+        with (
+            open(f"{self.ssl_folder}/client/cert.pem", encoding="utf8") as cert,
+            open(f"{self.ssl_folder}/client/key.pem", encoding="utf8") as key,
+        ):
+            authentication_kp = CertificateKeyPair.objects.create(
+                name="docker-authentication",
+                certificate_data=cert.read(),
+                key_data=key.read(),
+            )
+        with open(f"{self.ssl_folder}/client/ca.pem", encoding="utf8") as authority:
+            verification_kp = CertificateKeyPair.objects.create(
+                name="docker-verification",
+                certificate_data=authority.read(),
+            )
         self.service_connection = DockerServiceConnection.objects.create(
             url="https://localhost:2376",
             tls_verification=verification_kp,

@@ -30,14 +30,12 @@ CELERY_APP = Celery("authentik")
 CTX_TASK_ID = ContextVar(STRUCTLOG_KEY_PREFIX + "task_id", default=Ellipsis)
 
 
-# pylint: disable=unused-argument
 @setup_logging.connect
 def config_loggers(*args, **kwargs):
     """Apply logging settings from settings.py to celery"""
     dictConfig(settings.LOGGING)
 
 
-# pylint: disable=unused-argument
 @after_task_publish.connect
 def after_task_publish_hook(sender=None, headers=None, body=None, **kwargs):
     """Log task_id after it was published"""
@@ -45,7 +43,6 @@ def after_task_publish_hook(sender=None, headers=None, body=None, **kwargs):
     LOGGER.info("Task published", task_id=info.get("id", ""), task_name=info.get("task", ""))
 
 
-# pylint: disable=unused-argument
 @task_prerun.connect
 def task_prerun_hook(task_id: str, task, *args, **kwargs):
     """Log task_id on worker"""
@@ -54,7 +51,6 @@ def task_prerun_hook(task_id: str, task, *args, **kwargs):
     LOGGER.info("Task started", task_id=task_id, task_name=task.__name__)
 
 
-# pylint: disable=unused-argument
 @task_postrun.connect
 def task_postrun_hook(task_id, task, *args, retval=None, state=None, **kwargs):
     """Log task_id on worker"""
@@ -62,7 +58,6 @@ def task_postrun_hook(task_id, task, *args, retval=None, state=None, **kwargs):
     LOGGER.info("Task finished", task_id=task_id, task_name=task.__name__, state=state)
 
 
-# pylint: disable=unused-argument
 @task_failure.connect
 @task_internal_error.connect
 def task_error_hook(task_id, exception: Exception, traceback, *args, **kwargs):
