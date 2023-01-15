@@ -83,7 +83,6 @@ class EventsFilter(django_filters.FilterSet):
         label="Tenant name",
     )
 
-    # pylint: disable=unused-argument
     def filter_context_model_pk(self, queryset, name, value):
         """Because we store the PK as UUID.hex,
         we need to remove the dashes that a client may send. We can't use a

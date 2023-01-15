@@ -112,7 +112,6 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         }
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["GET"])
-    # pylint: disable=unused-argument
     def view_key(self, request: Request, identifier: str) -> Response:
         """Return token key and log access"""
         token: Token = self.get_object()
@@ -134,7 +133,6 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    # pylint: disable=unused-argument
     def set_key(self, request: Request, identifier: str) -> Response:
         """Return token key and log access"""
         token: Token = self.get_object()

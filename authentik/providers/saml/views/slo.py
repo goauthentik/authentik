@@ -39,7 +39,6 @@ class SAMLSLOView(PolicyAccessView):
         """Handler to verify the SAML Request. Must be implemented by a subclass"""
         raise NotImplementedError
 
-    # pylint: disable=unused-argument
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Verify the SAML Request, and if valid initiate the FlowPlanner for the application"""
         # Call the method handler, which checks the SAML

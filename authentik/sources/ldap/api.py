@@ -100,7 +100,6 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         }
     )
     @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=unused-argument
     def sync_status(self, request: Request, slug: str) -> Response:
         """Get source's sync status"""
         source = self.get_object()

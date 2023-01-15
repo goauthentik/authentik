@@ -187,7 +187,6 @@ class CertificateKeyPairFilter(FilterSet):
         label="Only return certificate-key pairs with keys", method="filter_has_key"
     )
 
-    # pylint: disable=unused-argument
     def filter_has_key(self, queryset, name, value):  # pragma: no cover
         """Only return certificate-key pairs with keys"""
         return queryset.exclude(key_data__exact="")

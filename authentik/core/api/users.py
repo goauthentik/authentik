@@ -269,7 +269,6 @@ class UsersFilter(FilterSet):
         queryset=Group.objects.all(),
     )
 
-    # pylint: disable=unused-argument
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
         try:

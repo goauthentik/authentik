@@ -91,7 +91,6 @@ class ChallengeStageView(StageView):
             )
         return HttpChallengeResponse(challenge)
 
-    # pylint: disable=unused-argument
     def post(self, request: Request, *args, **kwargs) -> HttpResponse:
         """Handle challenge response"""
         challenge: ChallengeResponse = self.get_response_instance(data=request.data)

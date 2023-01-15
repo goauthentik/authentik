@@ -91,7 +91,6 @@ class ServiceConnectionViewSet(
 
     @extend_schema(responses={200: ServiceConnectionStateSerializer(many=False)})
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=unused-argument, invalid-name
     def state(self, request: Request, pk: str) -> Response:
         """Get the service connection's state"""
         connection = self.get_object()

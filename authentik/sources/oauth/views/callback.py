@@ -70,12 +70,10 @@ class OAuthCallback(OAuthClientMixin, View):
             access_token=self.token.get("access_token"),
         )
 
-    # pylint: disable=unused-argument
     def get_callback_url(self, source: OAuthSource) -> str:
         "Return callback url if different than the current url."
         return ""
 
-    # pylint: disable=unused-argument
     def get_error_redirect(self, source: OAuthSource, reason: str) -> str:
         "Return url to redirect on login failure."
         return settings.LOGIN_URL
@@ -87,7 +85,6 @@ class OAuthCallback(OAuthClientMixin, View):
         """Create a dict of User data"""
         raise NotImplementedError()
 
-    # pylint: disable=unused-argument
     def get_user_id(self, info: dict[str, Any]) -> Optional[str]:
         """Return unique identifier from the profile info."""
         if "id" in info:

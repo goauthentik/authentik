@@ -20,7 +20,6 @@ if TYPE_CHECKING:
 
 
 @receiver(post_save)
-# pylint: disable=unused-argument
 def post_save_application(sender: type[Model], instance, created: bool, **_):
     """Clear user's application cache upon application creation"""
     from authentik.core.api.applications import user_app_cache_key
@@ -36,7 +35,6 @@ def post_save_application(sender: type[Model], instance, created: bool, **_):
 
 
 @receiver(user_logged_in)
-# pylint: disable=unused-argument
 def user_logged_in_session(sender, request: HttpRequest, user: "User", **_):
     """Create an AuthenticatedSession from request"""
     from authentik.core.models import AuthenticatedSession
@@ -47,7 +45,6 @@ def user_logged_in_session(sender, request: HttpRequest, user: "User", **_):
 
 
 @receiver(user_logged_out)
-# pylint: disable=unused-argument
 def user_logged_out_session(sender, request: HttpRequest, user: "User", **_):
     """Delete AuthenticatedSession if it exists"""
     from authentik.core.models import AuthenticatedSession

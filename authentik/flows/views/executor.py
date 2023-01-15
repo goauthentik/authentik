@@ -166,7 +166,7 @@ class FlowExecutorView(APIView):
         self._logger.debug("f(exec): restored flow plan from token", plan=plan)
         return plan
 
-    # pylint: disable=unused-argument, too-many-return-statements
+    # pylint: disable=too-many-return-statements
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         with Hub.current.start_span(
             op="authentik.flow.executor.dispatch", description=self.flow.slug

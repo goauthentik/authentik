@@ -18,7 +18,6 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
     permanent = False
     params = None
 
-    # pylint: disable=unused-argument
     def get_additional_parameters(self, source: OAuthSource) -> dict[str, Any]:
         "Return additional redirect parameters for this source."
         return self.params or {}

@@ -96,7 +96,6 @@ class GroupFilter(FilterSet):
         queryset=User.objects.all(),
     )
 
-    # pylint: disable=unused-argument
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
         try:
@@ -157,7 +156,6 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, methods=["POST"], pagination_class=None, filter_backends=[])
-    # pylint: disable=unused-argument, invalid-name
     def add_user(self, request: Request, pk: str) -> Response:
         """Add user to group"""
         group: Group = self.get_object()
@@ -182,7 +180,6 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, methods=["POST"], pagination_class=None, filter_backends=[])
-    # pylint: disable=unused-argument, invalid-name
     def remove_user(self, request: Request, pk: str) -> Response:
         """Add user to group"""
         group: Group = self.get_object()

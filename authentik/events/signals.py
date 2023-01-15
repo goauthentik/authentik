@@ -22,7 +22,6 @@ SESSION_LOGIN_EVENT = "login_event"
 
 
 @receiver(user_logged_in)
-# pylint: disable=unused-argument
 def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
     """Log successful login"""
     kwargs = {}
@@ -45,14 +44,12 @@ def get_login_event(request: HttpRequest) -> Optional[Event]:
 
 
 @receiver(user_logged_out)
-# pylint: disable=unused-argument
 def on_user_logged_out(sender, request: HttpRequest, user: User, **_):
     """Log successfully logout"""
     Event.new(EventAction.LOGOUT).from_http(request, user=user)
 
 
 @receiver(user_write)
-# pylint: disable=unused-argument
 def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any], **kwargs):
     """Log User write"""
     data["created"] = kwargs.get("created", False)
@@ -60,7 +57,6 @@ def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any]
 
 
 @receiver(login_failed)
-# pylint: disable=unused-argument
 def on_login_failed(
     signal,
     sender,
@@ -74,7 +70,6 @@ def on_login_failed(
 
 
 @receiver(invitation_used)
-# pylint: disable=unused-argument
 def on_invitation_used(sender, request: HttpRequest, invitation: Invitation, **_):
     """Log Invitation usage"""
     Event.new(EventAction.INVITE_USED, invitation_uuid=invitation.invite_uuid.hex).from_http(
@@ -83,21 +78,18 @@ def on_invitation_used(sender, request: HttpRequest, invitation: Invitation, **_
 
 
 @receiver(password_changed)
-# pylint: disable=unused-argument
 def on_password_changed(sender, user: User, password: str, **_):
     """Log password change"""
     Event.new(EventAction.PASSWORD_SET).from_http(None, user=user)
 
 
 @receiver(post_save, sender=Event)
-# pylint: disable=unused-argument
 def event_post_save_notification(sender, instance: Event, **_):
     """Start task to check if any policies trigger an notification on this event"""
     event_notification_handler.delay(instance.event_uuid.hex)
 
 
 @receiver(pre_delete, sender=User)
-# pylint: disable=unused-argument
 def event_user_pre_delete_cleanup(sender, instance: User, **_):
     """If gdpr_compliance is enabled, remove all the user's events"""
     gdpr_cleanup.delay(instance.pk)

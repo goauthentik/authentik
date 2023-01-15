@@ -227,7 +227,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         methods=["POST"],
         parser_classes=(MultiPartParser,),
     )
-    # pylint: disable=unused-argument
     def set_icon(self, request: Request, slug: str):
         """Set application icon"""
         app: Application = self.get_object()
@@ -247,7 +246,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         methods=["POST"],
     )
-    # pylint: disable=unused-argument
     def set_icon_url(self, request: Request, slug: str):
         """Set application icon (as URL)"""
         app: Application = self.get_object()
@@ -256,7 +254,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     @permission_required("authentik_core.view_application", ["authentik_events.view_event"])
     @extend_schema(responses={200: CoordinateSerializer(many=True)})
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=unused-argument
     def metrics(self, request: Request, slug: str):
         """Metrics for application logins"""
         app = self.get_object()

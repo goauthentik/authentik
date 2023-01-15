@@ -118,7 +118,6 @@ class OAuthSourceFilter(FilterSet):
 
     has_jwks = BooleanFilter(label="Only return sources with JWKS data", method="filter_has_jwks")
 
-    # pylint: disable=unused-argument
     def filter_has_jwks(self, queryset, name, value):  # pragma: no cover
         """Only return sources with JWKS data"""
         return queryset.exclude(oidc_jwks__iexact="{}")

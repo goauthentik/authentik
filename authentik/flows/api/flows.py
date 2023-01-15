@@ -210,7 +210,6 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=unused-argument
     def export(self, request: Request, slug: str) -> Response:
         """Export flow to .yaml file"""
         flow = self.get_object()
@@ -221,7 +220,6 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(responses={200: FlowDiagramSerializer()})
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["get"])
-    # pylint: disable=unused-argument
     def diagram(self, request: Request, slug: str) -> Response:
         """Return diagram for flow with slug `slug`, in the format used by flowchart.js"""
         diagram = FlowDiagram(self.get_object(), request.user)
@@ -245,7 +243,6 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         methods=["POST"],
         parser_classes=(MultiPartParser,),
     )
-    # pylint: disable=unused-argument
     def set_background(self, request: Request, slug: str):
         """Set Flow background"""
         flow: Flow = self.get_object()
@@ -265,7 +262,6 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         methods=["POST"],
     )
-    # pylint: disable=unused-argument
     def set_background_url(self, request: Request, slug: str):
         """Set Flow background (as URL)"""
         flow: Flow = self.get_object()
@@ -278,7 +274,6 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=unused-argument
     def execute(self, request: Request, slug: str):
         """Execute flow for current user"""
         # Because we pre-plan the flow here, and not in the planner, we need to manually clear

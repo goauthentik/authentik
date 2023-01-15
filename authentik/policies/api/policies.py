@@ -144,7 +144,6 @@ class PolicyViewSet(
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    # pylint: disable=unused-argument, invalid-name
     def test(self, request: Request, pk: str) -> Response:
         """Test policy"""
         policy = self.get_object()

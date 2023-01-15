@@ -318,7 +318,6 @@ class AuthorizationFlowInitView(PolicyAccessView):
         request.context["oauth_response_type"] = self.params.response_type
         return request
 
-    # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Start FlowPLanner, return to flow executor shell"""
         # After we've checked permissions, and the user has access, check if we need
@@ -429,7 +428,6 @@ class OAuthFulfillmentStage(StageView):
         """Wrapper when this stage gets hit with a post request"""
         return self.get(request, *args, **kwargs)
 
-    # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """final Stage of an OAuth2 Flow"""
         if PLAN_CONTEXT_PARAMS not in self.executor.plan.context:
