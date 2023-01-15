@@ -27,11 +27,14 @@ func (a *Application) configureProxy() error {
 	if err != nil {
 		return err
 	}
-	rp := &httputil.ReverseProxy{Director: a.proxyModifyRequest(u)}
 	rsp := sentry.StartSpan(context.TODO(), "authentik.outposts.proxy.application_transport")
-	rp.Transport = web.NewTracingTransport(rsp.Context(), a.getUpstreamTransport())
-	rp.ErrorHandler = a.newProxyErrorHandler()
-	rp.ModifyResponse = a.proxyModifyResponse
+	rp := &httputil.ReverseProxy{
+		Director:       a.proxyModifyRequest(u),
+		Transport:      web.NewTracingTransport(rsp.Context(), a.getUpstreamTransport()),
+		ErrorHandler:   a.newProxyErrorHandler(),
+		ModifyResponse: a.proxyModifyResponse,
+		FlushInterval:  -1,
+	}
 	a.mux.PathPrefix("/").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		defer func() {
 			err := recover()
