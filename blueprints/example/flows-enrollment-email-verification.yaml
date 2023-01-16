@@ -106,8 +106,6 @@ entries:
       name: default-enrollment-user-login
     id: default-enrollment-user-login
     model: authentik_stages_user_login.userloginstage
-    attrs:
-      session_duration: seconds=0
   - identifiers:
       name: default-enrollment-user-write
     id: default-enrollment-user-write

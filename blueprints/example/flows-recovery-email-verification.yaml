@@ -77,8 +77,6 @@ entries:
       name: default-recovery-user-login
     id: default-recovery-user-login
     model: authentik_stages_user_login.userloginstage
-    attrs:
-      session_duration: seconds=0
   - identifiers:
       name: Change your password
     id: stages-prompt-password
