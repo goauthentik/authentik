@@ -92,9 +92,7 @@ entries:
   identifiers:
     name: stage-default-oobe-password
   model: authentik_stages_prompt.promptstage
-- attrs:
-    session_duration: seconds=0
-  id: stage-default-authentication-login
+- id: stage-default-authentication-login
   identifiers:
     name: default-authentication-login
   model: authentik_stages_user_login.userloginstage

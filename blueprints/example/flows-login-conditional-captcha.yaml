@@ -17,8 +17,6 @@ entries:
       name: default-authentication-login
     id: default-authentication-login
     model: authentik_stages_user_login.userloginstage
-    attrs:
-      session_duration: seconds=0
   - identifiers:
       name: default-authentication-flow-captcha
     id: default-authentication-flow-captcha

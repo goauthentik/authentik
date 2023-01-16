@@ -38,9 +38,7 @@ entries:
     name: default-authentication-identification
   id: default-authentication-identification
   model: authentik_stages_identification.identificationstage
-- attrs:
-    session_duration: seconds=0
-  identifiers:
+- identifiers:
     name: default-authentication-login
   id: default-authentication-login
   model: authentik_stages_user_login.userloginstage

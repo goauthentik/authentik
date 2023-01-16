@@ -20,9 +20,7 @@ entries:
     name: default-source-authentication-if-sso
   id: default-source-authentication-if-sso
   model: authentik_policies_expression.expressionpolicy
-- attrs:
-    session_duration: seconds=0
-  identifiers:
+- identifiers:
     name: default-source-authentication-login
   id: default-source-authentication-login
   model: authentik_stages_user_login.userloginstage
