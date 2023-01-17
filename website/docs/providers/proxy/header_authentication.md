@@ -21,11 +21,9 @@ If the user does not have a matching attribute, authentik falls back to using th
 
 ## Receiving authentication
 
-By default, when the proxy provider receives credentials that aren't valid for itself, it will start a normal authentication flow, and redirect to the flow start page. Some applications might require a 401 response to prompt for credentials.
+By default, when *Receive header authentication* is enabled, authentik will intercept the authorization header. If the authorization header value is invalid, an error response will be shown with a 401 status code.
 
-To always return a 401 response when authentication headers are missing/invalid, you can either set the `X-Authentik-No-Redirect` header to any value or the query parameter `x-authentik-no-redirect` to any value.
-
-This is the default behaviour as some applications use the Authorization header for themselves, and as such if the proxy provider would check it, these applications would be inaccessible.
+If the proxied application requires usage of the "Authorization" header, the setting should be disabled.
 
 ### Receiving HTTP Basic authentication
 

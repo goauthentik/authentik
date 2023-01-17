@@ -74,6 +74,13 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         ),
     )
 
+    receive_header_auth = models.BooleanField(
+        default=True,
+        help_text=_(
+            "When enabled, this provider will intercept the authorization header and authenticate "
+            "requests based on its value."
+        ),
+    )
     basic_auth_enabled = models.BooleanField(
         default=False,
         verbose_name=_("Set HTTP-Basic Authentication"),
