@@ -35,7 +35,18 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		a.log.WithError(err).Warning("failed to decode session")
 	}
+
 	if r.Header.Get(constants.HeaderNoRedirect) == "true" {
+		rw.WriteHeader(401)
+		er := a.errorTemplates.Execute(rw, ErrorPageData{
+			Title:       "Unauthenticated",
+			Message:     fmt.Sprintf("Due to '%s' being set, no redirect is performed.", constants.HeaderNoRedirect),
+			ProxyPrefix: "/outpost.goauthentik.io",
+		})
+		if er != nil {
+			http.Error(rw, "Internal Server Error", http.StatusInternalServerError)
+		}
+	} else if strings.HasPrefix(r.UserAgent(), "VLC") {
 		rw.WriteHeader(401)
 		er := a.errorTemplates.Execute(rw, ErrorPageData{
 			Title:       "Unauthenticated",
