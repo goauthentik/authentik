@@ -41,3 +41,7 @@ LDAP property mappings can be used to convert the raw LDAP response into an auth
 By default, authentik ships with some pre-configured mappings for the most common LDAP setups.
 
 You can assign the value of a mapping to any user attribute, or save it as a custom attribute by prefixing the object field with `attribute.` Keep in mind though, data types from the LDAP server will be carried over. This means that with some implementations, where fields are stored as array in LDAP, they will be saved as array in authentik. To prevent this, use the built-in `list_flatten` function.
+
+## Troubleshooting
+
+To troubleshoot LDAP sources and their synchronization, see [LDAP Troubleshooting](../../../docs/troubleshooting/ldap_source)
