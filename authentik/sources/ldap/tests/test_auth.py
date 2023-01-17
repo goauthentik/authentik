@@ -37,7 +37,6 @@ class LDAPSyncTests(TestCase):
                 | Q(name__startswith="authentik default Active Directory Mapping")
             )
         )
-        self.source.save()
         connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source)

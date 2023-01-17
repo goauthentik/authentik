@@ -124,7 +124,7 @@ jobs:
           - name: saml
             glob: tests/e2e/test_provider_saml* tests/e2e/test_source_saml*
           - name: ldap
-            glob: tests/e2e/test_provider_ldap*
+            glob: tests/e2e/test_provider_ldap* tests/e2e/test_source_ldap*
           - name: flows
             glob: tests/e2e/test_flows*
     steps:
