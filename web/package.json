@@ -88,7 +88,7 @@
         "@types/codemirror": "5.60.6",
         "@types/grecaptcha": "^3.0.4",
         "@typescript-eslint/eslint-plugin": "^5.48.1",
-        "@typescript-eslint/parser": "^5.48.1",
+        "@typescript-eslint/parser": "^5.48.2",
         "@webcomponents/webcomponentsjs": "^2.7.0",
         "babel-plugin-macros": "^3.1.0",
         "babel-plugin-tsconfig-paths": "^1.0.3",
