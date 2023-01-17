@@ -449,6 +449,26 @@ ${this.instance?.skipPathRegex}</textarea
             <ak-form-group>
                 <span slot="header">${t`Authentication settings`}</span>
                 <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal name="interceptHeaderAuth">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.interceptHeaderAuth, true)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${t`Intercept header authentication`}</span
+                            >
+                        </label>
+                        <p class="pf-c-form__helper-text">
+                            ${t`When enabled, authentik will intercept the Authorization header to authenticate the request.`}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="basicAuthEnabled">
                         <label class="pf-c-switch">
                             <input
