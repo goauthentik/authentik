@@ -21,7 +21,11 @@ If the user does not have a matching attribute, authentik falls back to using th
 
 ## Receiving authentication
 
-It is recommended to set the `X-Authentik-No-Redirect` header to `true` to prevent redirects when sending requests via the below methods. This prevents additional load when unauthenticated requests are retried and all get redirected to a flow executor.
+By default, when the proxy provider receives credentials that aren't valid for itself, it will start a normal authentication flow, and redirect to the flow start page. Some applications might require a 401 response to prompt for credentials.
+
+To always return a 401 response when authentication headers are missing/invalid, you can either set the `X-Authentik-No-Redirect` header to any value or the query parameter `x-authentik-no-redirect` to any value.
+
+This is the default behaviour as some applications use the Authorization header for themselves, and as such if the proxy provider would check it, these applications would be inaccessible.
 
 ### Receiving HTTP Basic authentication
 
