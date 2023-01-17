@@ -41,7 +41,7 @@ ec_crv_map = {
 class JWKSView(View):
     """Show RSA Key data for Provider"""
 
-    def get_jwk_for_key(self, key: CertificateKeyPair) -> Optional[dict]:
+    def get_jwk_for_key(self, key: CertificateKeyPair, exclude_x5=False) -> Optional[dict]:
         """Convert a certificate-key pair into JWK"""
         private_key = key.private_key
         key_data = None
@@ -72,17 +72,20 @@ class JWKSView(View):
             }
         else:
             return key_data
-        key_data["x5c"] = [b64encode(key.certificate.public_bytes(Encoding.DER)).decode("utf-8")]
-        key_data["x5t"] = (
-            urlsafe_b64encode(key.certificate.fingerprint(hashes.SHA1()))  # nosec
-            .decode("utf-8")
-            .rstrip("=")
-        )
-        key_data["x5t#S256"] = (
-            urlsafe_b64encode(key.certificate.fingerprint(hashes.SHA256()))
-            .decode("utf-8")
-            .rstrip("=")
-        )
+        if not exclude_x5:
+            key_data["x5c"] = [
+                b64encode(key.certificate.public_bytes(Encoding.DER)).decode("utf-8")
+            ]
+            key_data["x5t"] = (
+                urlsafe_b64encode(key.certificate.fingerprint(hashes.SHA1()))  # nosec
+                .decode("utf-8")
+                .rstrip("=")
+            )
+            key_data["x5t#S256"] = (
+                urlsafe_b64encode(key.certificate.fingerprint(hashes.SHA256()))
+                .decode("utf-8")
+                .rstrip("=")
+            )
         return key_data
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
@@ -94,7 +97,7 @@ class JWKSView(View):
         response_data = {}
 
         if signing_key:
-            jwk = self.get_jwk_for_key(signing_key)
+            jwk = self.get_jwk_for_key(signing_key, "exclude_x5" in self.request.GET)
             if jwk:
                 response_data["keys"] = [jwk]
 
