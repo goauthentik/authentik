@@ -13,7 +13,7 @@ pgAdmin is a management tool for PostgreSQL and derivative relational databases 
 :::
 
 :::note
-This is based on authentik 2022.3.3 and pgAdmin4 snapshot
+This is based on authentik 2022.3.3 and pgAdmin4 6.19
 :::
 
 ## Preparation
