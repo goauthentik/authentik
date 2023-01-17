@@ -102,7 +102,7 @@ class TaskInfo:
         key = CACHE_KEY_PREFIX + self.task_name
         if self.result.uid:
             key += f"/{self.result.uid}"
-            self.task_name += f"_{self.result.uid}"
+            self.task_name += f"/{self.result.uid}"
         self.set_prom_metrics()
         cache.set(key, self, timeout=timeout_hours * 60 * 60)
 
