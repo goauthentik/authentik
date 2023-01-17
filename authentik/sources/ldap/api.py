@@ -17,9 +17,7 @@ from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.events.monitored_tasks import TaskInfo
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
-from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
-from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
-from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
+from authentik.sources.ldap.tasks import SYNC_CLASSES
 
 
 class LDAPSourceSerializer(SourceSerializer):
@@ -104,13 +102,9 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         """Get source's sync status"""
         source = self.get_object()
         results = []
-        for sync_class in [
-            UserLDAPSynchronizer,
-            GroupLDAPSynchronizer,
-            MembershipLDAPSynchronizer,
-        ]:
+        for sync_class in SYNC_CLASSES:
             sync_name = sync_class.__name__.replace("LDAPSynchronizer", "").lower()
-            task = TaskInfo.by_name(f"ldap_sync_{source.slug}_{sync_name}")
+            task = TaskInfo.by_name(f"ldap_sync/{source.slug}_{sync_name}")
             if task:
                 results.append(task)
         return Response(TaskSerializer(results, many=True).data)

@@ -13,17 +13,18 @@ from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 
 LOGGER = get_logger()
+SYNC_CLASSES = [
+    UserLDAPSynchronizer,
+    GroupLDAPSynchronizer,
+    MembershipLDAPSynchronizer,
+]
 
 
 @CELERY_APP.task()
 def ldap_sync_all():
     """Sync all sources"""
     for source in LDAPSource.objects.filter(enabled=True):
-        for sync_class in [
-            UserLDAPSynchronizer,
-            GroupLDAPSynchronizer,
-            MembershipLDAPSynchronizer,
-        ]:
+        for sync_class in SYNC_CLASSES:
             ldap_sync.delay(source.pk, class_to_path(sync_class))
 
 

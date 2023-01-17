@@ -284,6 +284,7 @@ module.exports = {
                 "troubleshooting/image_upload",
                 "troubleshooting/missing_permission",
                 "troubleshooting/missing_admin_group",
+                "troubleshooting/ldap_source",
             ],
         },
         {
