@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="proxyprovider",
-            name="receive_header_auth",
+            name="intercept_header_auth",
             field=models.BooleanField(
                 default=True,
                 help_text="When enabled, this provider will intercept the authorization header and authenticate requests based on its value.",

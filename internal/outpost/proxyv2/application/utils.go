@@ -34,7 +34,7 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		a.log.WithError(err).Warning("failed to decode session")
 	}
-	if r.Header.Get(constants.HeaderAuthorization) != "" && *a.proxyConfig.ReceiveHeaderAuth {
+	if r.Header.Get(constants.HeaderAuthorization) != "" && *a.proxyConfig.InterceptHeaderAuth {
 		rw.WriteHeader(401)
 		er := a.errorTemplates.Execute(rw, ErrorPageData{
 			Title:       "Unauthenticated",

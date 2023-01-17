@@ -74,7 +74,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         ),
     )
 
-    receive_header_auth = models.BooleanField(
+    intercept_header_auth = models.BooleanField(
         default=True,
         help_text=_(
             "When enabled, this provider will intercept the authorization header and authenticate "

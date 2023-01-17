@@ -34363,7 +34363,7 @@ components:
           - $ref: '#/components/schemas/ProxyMode'
           description: Enable support for forwardAuth in traefik and nginx auth_request.
             Exclusive with internal_host.
-        receive_header_auth:
+        intercept_header_auth:
           type: boolean
           description: When enabled, this provider will intercept the authorization
             header and authenticate requests based on its value.
@@ -35685,7 +35685,7 @@ components:
           format: double
           nullable: true
           readOnly: true
-        receive_header_auth:
+        intercept_header_auth:
           type: boolean
           description: When enabled, this provider will intercept the authorization
             header and authenticate requests based on its value.
@@ -35790,7 +35790,7 @@ components:
           - $ref: '#/components/schemas/ProxyMode'
           description: Enable support for forwardAuth in traefik and nginx auth_request.
             Exclusive with internal_host.
-        receive_header_auth:
+        intercept_header_auth:
           type: boolean
           description: When enabled, this provider will intercept the authorization
             header and authenticate requests based on its value.
@@ -35884,7 +35884,7 @@ components:
           - $ref: '#/components/schemas/ProxyMode'
           description: Enable support for forwardAuth in traefik and nginx auth_request.
             Exclusive with internal_host.
-        receive_header_auth:
+        intercept_header_auth:
           type: boolean
           description: When enabled, this provider will intercept the authorization
             header and authenticate requests based on its value.

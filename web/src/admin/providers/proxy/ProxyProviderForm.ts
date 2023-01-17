@@ -449,12 +449,12 @@ ${this.instance?.skipPathRegex}</textarea
             <ak-form-group>
                 <span slot="header">${t`Authentication settings`}</span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal name="receiveHeaderAuth">
+                    <ak-form-element-horizontal name="interceptHeaderAuth">
                         <label class="pf-c-switch">
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.receiveHeaderAuth, true)}
+                                ?checked=${first(this.instance?.interceptHeaderAuth, true)}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -462,7 +462,7 @@ ${this.instance?.skipPathRegex}</textarea
                                 </span>
                             </span>
                             <span class="pf-c-switch__label"
-                                >${t`Receive header authentication`}</span
+                                >${t`Intercept header authentication`}</span
                             >
                         </label>
                         <p class="pf-c-form__helper-text">
