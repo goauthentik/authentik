@@ -100,10 +100,10 @@ class JWKSView(View):
             key.certificate.fingerprint(hashes.SHA1())
         ).decode(  # nosec
             "utf-8"
-        )
+        ).rstrip("=")
         key_data["x5t#S256"] = urlsafe_b64encode(
             key.certificate.fingerprint(hashes.SHA256())
-        ).decode("utf-8")
+        ).decode("utf-8").rstrip("=")
         return key_data
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
