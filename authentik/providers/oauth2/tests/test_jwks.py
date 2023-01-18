@@ -1,6 +1,9 @@
 """JWKS tests"""
+import base64
 import json
 
+from cryptography.hazmat.backends import default_backend
+from cryptography.x509 import load_der_x509_certificate
 from django.urls.base import reverse
 from jwt import PyJWKSet
 
@@ -54,6 +57,8 @@ class TestJWKS(OAuthTestCase):
         body = json.loads(response.content.decode())
         self.assertEqual(len(body["keys"]), 1)
         PyJWKSet.from_dict(body)
+        key = body["keys"][0]
+        load_der_x509_certificate(base64.b64decode(key["x5c"][0]), default_backend()).public_key()
 
     def test_hs256(self):
         """Test JWKS request with HS256"""
