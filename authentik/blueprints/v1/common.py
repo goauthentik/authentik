@@ -94,7 +94,7 @@ class BlueprintEntry:
         depth: int = 0,
         context_tag_type: Optional[type["YAMLTagContext"] | tuple["YAMLTagContext", ...]] = None,
     ) -> "YAMLTagContext":
-        """Get a YAMLTagContex object located at a certain depth in the tag tree"""
+        """Get a YAMLTagContext object located at a certain depth in the tag tree"""
         if depth < 0:
             raise ValueError("depth must be a positive number or zero")
 

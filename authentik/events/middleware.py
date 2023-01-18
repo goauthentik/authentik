@@ -12,12 +12,21 @@ from django.http import HttpRequest, HttpResponse
 from django_otp.plugins.otp_static.models import StaticToken
 from guardian.models import UserObjectPermission
 
-from authentik.core.models import AuthenticatedSession, User
+from authentik.core.models import (
+    AuthenticatedSession,
+    PropertyMapping,
+    Provider,
+    Source,
+    User,
+    UserSourceConnection,
+)
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
-from authentik.flows.models import FlowToken
+from authentik.flows.models import FlowToken, Stage
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
+from authentik.outposts.models import OutpostServiceConnection
+from authentik.policies.models import Policy, PolicyBindingModel
 
 IGNORED_MODELS = (
     Event,
@@ -27,6 +36,14 @@ IGNORED_MODELS = (
     StaticToken,
     Session,
     FlowToken,
+    Provider,
+    Source,
+    PropertyMapping,
+    UserSourceConnection,
+    Stage,
+    OutpostServiceConnection,
+    Policy,
+    PolicyBindingModel,
 )
 
 
@@ -34,7 +51,7 @@ def should_log_model(model: Model) -> bool:
     """Return true if operation on `model` should be logged"""
     if model.__module__.startswith("silk"):
         return False
-    return not isinstance(model, IGNORED_MODELS)
+    return model.__class__ not in IGNORED_MODELS
 
 
 class EventNewThread(Thread):
