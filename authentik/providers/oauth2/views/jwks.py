@@ -15,26 +15,18 @@ from cryptography.hazmat.primitives.serialization import Encoding
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views import View
+from jwt.utils import to_base64url_uint
 
 from authentik.core.models import Application
 from authentik.crypto.models import CertificateKeyPair
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
-
-
-def b64_enc(number: int) -> str:
-    """Convert number to base64-encoded octet-value"""
-    length = ((number).bit_length() + 7) // 8
-    number_bytes = number.to_bytes(length, "big")
-    final = urlsafe_b64encode(number_bytes).rstrip(b"=")
-    return final.decode("ascii")
-
 
 # See https://notes.salrahman.com/generate-es256-es384-es512-private-keys/
 # and _CURVE_TYPES in the same file as the below curve files
 ec_crv_map = {
     SECP256R1: "P-256",
     SECP384R1: "P-384",
-    SECP521R1: "P-512",
+    SECP521R1: "P-521",
 }
 
 
@@ -55,8 +47,8 @@ class JWKSView(View):
                 "kty": "RSA",
                 "alg": JWTAlgorithms.RS256,
                 "use": "sig",
-                "n": b64_enc(public_numbers.n),
-                "e": b64_enc(public_numbers.e),
+                "n": to_base64url_uint(public_numbers.n).decode(),
+                "e": to_base64url_uint(public_numbers.e).decode(),
             }
         elif isinstance(private_key, EllipticCurvePrivateKey):
             public_key: EllipticCurvePublicKey = private_key.public_key()
@@ -66,8 +58,8 @@ class JWKSView(View):
                 "kty": "EC",
                 "alg": JWTAlgorithms.ES256,
                 "use": "sig",
-                "x": b64_enc(public_numbers.x),
-                "y": b64_enc(public_numbers.y),
+                "x": to_base64url_uint(public_numbers.x).decode(),
+                "y": to_base64url_uint(public_numbers.y).decode(),
                 "crv": ec_crv_map.get(type(public_key.curve), public_key.curve.name),
             }
         else:
