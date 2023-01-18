@@ -51,10 +51,10 @@ class JWKSView(View):
             public_key: RSAPublicKey = private_key.public_key()
             public_numbers = public_key.public_numbers()
             key_data = {
+                "kid": key.kid,
                 "kty": "RSA",
                 "alg": JWTAlgorithms.RS256,
                 "use": "sig",
-                "kid": key.kid,
                 "n": b64_enc(public_numbers.n),
                 "e": b64_enc(public_numbers.e),
             }
@@ -62,10 +62,10 @@ class JWKSView(View):
             public_key: EllipticCurvePublicKey = private_key.public_key()
             public_numbers = public_key.public_numbers()
             key_data = {
+                "kid": key.kid,
                 "kty": "EC",
                 "alg": JWTAlgorithms.ES256,
                 "use": "sig",
-                "kid": key.kid,
                 "x": b64_enc(public_numbers.x),
                 "y": b64_enc(public_numbers.y),
                 "crv": ec_crv_map.get(type(public_key.curve), public_key.curve.name),

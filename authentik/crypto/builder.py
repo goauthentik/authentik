@@ -57,7 +57,10 @@ class CertificateBuilder:
         one_day = datetime.timedelta(1, 0, 0)
         self.__private_key = self.generate_private_key()
         self.__public_key = self.__private_key.public_key()
-        alt_names: list[x509.GeneralName] = [x509.DNSName(x) for x in subject_alt_names or []]
+        alt_names: list[x509.GeneralName] = []
+        for alt_name in subject_alt_names:
+            if alt_name.strip() != "":
+                alt_names.append(x509.DNSName(alt_name))
         self.__builder = (
             x509.CertificateBuilder()
             .subject_name(
@@ -76,12 +79,15 @@ class CertificateBuilder:
                     ]
                 )
             )
-            .add_extension(x509.SubjectAlternativeName(alt_names), critical=True)
             .not_valid_before(datetime.datetime.today() - one_day)
             .not_valid_after(datetime.datetime.today() + datetime.timedelta(days=validity_days))
             .serial_number(int(uuid.uuid4()))
             .public_key(self.__public_key)
         )
+        if alt_names:
+            self.__builder = self.__builder.add_extension(
+                x509.SubjectAlternativeName(alt_names), critical=True
+            )
         self.__certificate = self.__builder.sign(
             private_key=self.__private_key,
             algorithm=hashes.SHA256(),
