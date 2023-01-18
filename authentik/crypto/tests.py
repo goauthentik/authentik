@@ -4,6 +4,8 @@ from json import loads
 from os import makedirs
 from tempfile import TemporaryDirectory
 
+from cryptography.x509.extensions import SubjectAlternativeName
+from cryptography.x509.general_name import DNSName
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -70,11 +72,43 @@ class TestCrypto(APITestCase):
     def test_builder_api(self):
         """Test Builder (via API)"""
         self.client.force_login(create_test_admin_user())
+        name = generate_id()
         self.client.post(
             reverse("authentik_api:certificatekeypair-generate"),
-            data={"common_name": "foo", "subject_alt_name": "bar,baz", "validity_days": 3},
+            data={"common_name": name, "subject_alt_name": "bar,baz", "validity_days": 3},
         )
-        self.assertTrue(CertificateKeyPair.objects.filter(name="foo").exists())
+        key = CertificateKeyPair.objects.filter(name=name).first()
+        self.assertIsNotNone(key)
+        ext: SubjectAlternativeName = key.certificate.extensions[0].value
+        self.assertIsInstance(ext, SubjectAlternativeName)
+        self.assertIsInstance(ext[0], DNSName)
+        self.assertEqual(ext[0].value, "bar")
+        self.assertIsInstance(ext[1], DNSName)
+        self.assertEqual(ext[1].value, "baz")
+
+    def test_builder_api_empty_san(self):
+        """Test Builder (via API)"""
+        self.client.force_login(create_test_admin_user())
+        name = generate_id()
+        self.client.post(
+            reverse("authentik_api:certificatekeypair-generate"),
+            data={"common_name": name, "subject_alt_name": "", "validity_days": 3},
+        )
+        key = CertificateKeyPair.objects.filter(name=name).first()
+        self.assertIsNotNone(key)
+        self.assertEqual(len(key.certificate.extensions), 0)
+
+    def test_builder_api_empty_san_multiple(self):
+        """Test Builder (via API)"""
+        self.client.force_login(create_test_admin_user())
+        name = generate_id()
+        self.client.post(
+            reverse("authentik_api:certificatekeypair-generate"),
+            data={"common_name": name, "subject_alt_name": ", ", "validity_days": 3},
+        )
+        key = CertificateKeyPair.objects.filter(name=name).first()
+        self.assertIsNotNone(key)
+        self.assertEqual(len(key.certificate.extensions), 0)
 
     def test_builder_api_invalid(self):
         """Test Builder (via API) (invalid)"""
