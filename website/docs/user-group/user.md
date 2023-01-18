@@ -46,6 +46,7 @@ The User object has the following attributes:
 
 -   `username`: User's username.
 -   `email` User's email.
+-   `uid` User's unique ID
 -   `name` User's display name.
 -   `is_staff` Boolean field if user is staff.
 -   `is_active` Boolean field if user is active.
