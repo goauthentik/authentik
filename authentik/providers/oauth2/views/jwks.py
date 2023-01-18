@@ -15,7 +15,7 @@ from cryptography.hazmat.primitives.serialization import Encoding
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views import View
-from jwt.utils import to_base64url_uint
+from jwt.utils import base64url_encode
 
 from authentik.core.models import Application
 from authentik.crypto.models import CertificateKeyPair
@@ -28,6 +28,36 @@ ec_crv_map = {
     SECP384R1: "P-384",
     SECP521R1: "P-521",
 }
+min_length_map = {
+    SECP256R1: 32,
+    SECP384R1: 48,
+    SECP521R1: 66,
+}
+
+# https://github.com/jpadilla/pyjwt/issues/709
+def bytes_from_int(val: int, min_length: int = 0) -> bytes:
+    """Custom bytes_from_int that accepts a minimum length"""
+    remaining = val
+    byte_length = 0
+
+    while remaining != 0:
+        remaining >>= 8
+        byte_length += 1
+    length = max([byte_length, min_length])
+    return val.to_bytes(length, "big", signed=False)
+
+
+def to_base64url_uint(val: int, min_length: int = 0) -> bytes:
+    """Custom to_base64url_uint that accepts a minimum length"""
+    if val < 0:
+        raise ValueError("Must be a positive integer")
+
+    int_bytes = bytes_from_int(val, min_length)
+
+    if len(int_bytes) == 0:
+        int_bytes = b"\x00"
+
+    return base64url_encode(int_bytes)
 
 
 class JWKSView(View):
@@ -53,14 +83,15 @@ class JWKSView(View):
         elif isinstance(private_key, EllipticCurvePrivateKey):
             public_key: EllipticCurvePublicKey = private_key.public_key()
             public_numbers = public_key.public_numbers()
+            curve_type = type(public_key.curve)
             key_data = {
                 "kid": key.kid,
                 "kty": "EC",
                 "alg": JWTAlgorithms.ES256,
                 "use": "sig",
-                "x": to_base64url_uint(public_numbers.x).decode(),
-                "y": to_base64url_uint(public_numbers.y).decode(),
-                "crv": ec_crv_map.get(type(public_key.curve), public_key.curve.name),
+                "x": to_base64url_uint(public_numbers.x, min_length_map[curve_type]).decode(),
+                "y": to_base64url_uint(public_numbers.y, min_length_map[curve_type]).decode(),
+                "crv": ec_crv_map.get(curve_type, public_key.curve.name),
             }
         else:
             return key_data

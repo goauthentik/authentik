@@ -86,7 +86,7 @@ class TestJWKS(OAuthTestCase):
         self.assertEqual(len(body["keys"]), 1)
         PyJWKSet.from_dict(body)
 
-    def test_x5c_cords(self):
+    def test_ecdsa_coords_mismatched(self):
         """Test JWKS request with ES256"""
         cert = CertificateKeyPair.objects.create(
             name=generate_id(),
@@ -106,5 +106,4 @@ class TestJWKS(OAuthTestCase):
         )
         body = json.loads(response.content.decode())
         self.assertEqual(len(body["keys"]), 1)
-        print(body)
         PyJWKSet.from_dict(body)
