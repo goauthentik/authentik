@@ -58,7 +58,7 @@ class CertificateBuilder:
         self.__private_key = self.generate_private_key()
         self.__public_key = self.__private_key.public_key()
         alt_names: list[x509.GeneralName] = []
-        for alt_name in subject_alt_names:
+        for alt_name in subject_alt_names or []:
             if alt_name.strip() != "":
                 alt_names.append(x509.DNSName(alt_name))
         self.__builder = (
