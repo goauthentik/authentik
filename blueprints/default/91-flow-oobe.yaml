@@ -33,7 +33,7 @@ entries:
     type: email
   id: prompt-field-email
   identifiers:
-    field_key: email
+    field_key: admin_email
     label: Email
   model: authentik_stages_prompt.prompt
 - attrs:
@@ -66,6 +66,8 @@ entries:
       # by injecting "pending_user"
       akadmin = ak_user_by(username="akadmin")
       context["flow_plan"].context["pending_user"] = akadmin
+      # Remap the email value
+      context["prompt_data"]["email"] = context["prompt_data"]["admin_email"]
       return True
   id: policy-default-oobe-prefill-user
   identifiers:
