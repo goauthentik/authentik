@@ -17,6 +17,9 @@ outputs:
   sha:
     description: "sha"
     value: ${{ steps.ev.outputs.sha }}
+  shortHash:
+    description: "shortHash"
+    value: ${{ steps.ev.outputs.shortHash }}
   version:
     description: "version"
     value: ${{ steps.ev.outputs.version }}
@@ -53,6 +56,7 @@ runs:
             print("branchNameContainer=%s" % safe_branch_name, file=_output)
             print("timestamp=%s" % int(time()), file=_output)
             print("sha=%s" % os.environ["GITHUB_SHA"], file=_output)
+            print("shortHash=%s" % os.environ["GITHUB_SHA"][:7], file=_output)
             print("shouldBuild=%s" % should_build, file=_output)
             print("version=%s" % version, file=_output)
             print("versionFamily=%s" % version_family, file=_output)
