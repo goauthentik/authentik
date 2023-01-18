@@ -26,7 +26,7 @@ import "@goauthentik/flow/stages/password/PasswordStage";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, render } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -458,38 +458,43 @@ export class FlowExecutor extends AKElement implements StageHost {
         }
     }
 
+    renderBackgroundOverlay(): TemplateResult {
+        const overlaySVG = html`<svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="pf-c-background-image__filter"
+            width="0"
+            height="0"
+            style="display:none;"
+        >
+            <filter id="image_overlay">
+                <feColorMatrix
+                    in="SourceGraphic"
+                    type="matrix"
+                    values="1.3 0 0 0 0 0 1.3 0 0 0 0 0 1.3 0 0 0 0 0 1 0"
+                />
+                <feComponentTransfer color-interpolation-filters="sRGB" result="duotone">
+                    <feFuncR
+                        type="table"
+                        tableValues="0.086274509803922 0.43921568627451"
+                    ></feFuncR>
+                    <feFuncG
+                        type="table"
+                        tableValues="0.086274509803922 0.43921568627451"
+                    ></feFuncG>
+                    <feFuncB
+                        type="table"
+                        tableValues="0.086274509803922 0.43921568627451"
+                    ></feFuncB>
+                    <feFuncA type="table" tableValues="0 1"></feFuncA>
+                </feComponentTransfer>
+            </filter>
+        </svg>`;
+        render(overlaySVG, document.body);
+        return overlaySVG;
+    }
+
     render(): TemplateResult {
-        return html`<div class="pf-c-background-image">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="pf-c-background-image__filter"
-                    width="0"
-                    height="0"
-                >
-                    <filter id="image_overlay">
-                        <feColorMatrix
-                            in="SourceGraphic"
-                            type="matrix"
-                            values="1.3 0 0 0 0 0 1.3 0 0 0 0 0 1.3 0 0 0 0 0 1 0"
-                        />
-                        <feComponentTransfer color-interpolation-filters="sRGB" result="duotone">
-                            <feFuncR
-                                type="table"
-                                tableValues="0.086274509803922 0.43921568627451"
-                            ></feFuncR>
-                            <feFuncG
-                                type="table"
-                                tableValues="0.086274509803922 0.43921568627451"
-                            ></feFuncG>
-                            <feFuncB
-                                type="table"
-                                tableValues="0.086274509803922 0.43921568627451"
-                            ></feFuncB>
-                            <feFuncA type="table" tableValues="0 1"></feFuncA>
-                        </feComponentTransfer>
-                    </filter>
-                </svg>
-            </div>
+        return html`<div class="pf-c-background-image">${this.renderBackgroundOverlay()}</div>
             <div class="pf-c-page__drawer">
                 <div class="pf-c-drawer ${this.inspectorOpen ? "pf-m-expanded" : "pf-m-collapsed"}">
                     <div class="pf-c-drawer__main">
