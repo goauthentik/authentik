@@ -110,7 +110,7 @@ addopts = "-p no:celery --junitxml=unittest.xml"
 
 [tool.poetry]
 name = "authentik"
-version = "2022.12.2"
+version = "2023.1.0"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
