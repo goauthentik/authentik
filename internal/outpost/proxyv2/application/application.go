@@ -70,19 +70,29 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		ks = oidc.NewRemoteKeySet(ctx, p.OidcConfiguration.JwksUri)
 	}
 
-	var verifier = oidc.NewVerifier(p.OidcConfiguration.Issuer, ks, &oidc.Config{
-		ClientID:             *p.ClientId,
-		SupportedSigningAlgs: []string{"RS256", "HS256"},
-	})
-
 	redirectUri, _ := url.Parse(p.ExternalHost)
 	redirectUri.Path = path.Join(redirectUri.Path, "/outpost.goauthentik.io/callback")
 	redirectUri.RawQuery = url.Values{
 		CallbackSignature: []string{"true"},
 	}.Encode()
 
+	managed := false
+	if ak.Outpost.Managed.IsSet() {
+		m := *ak.Outpost.Managed.Get()
+		managed = m == "goauthentik.io/outposts/embedded"
+	}
 	// Configure an OpenID Connect aware OAuth2 client.
-	endpoint := GetOIDCEndpoint(p, ak.Outpost.Config["authentik_host"].(string))
+	endpoint := GetOIDCEndpoint(
+		p,
+		ak.Outpost.Config["authentik_host"].(string),
+		managed,
+	)
+
+	verifier := oidc.NewVerifier(endpoint.Issuer, ks, &oidc.Config{
+		ClientID:             *p.ClientId,
+		SupportedSigningAlgs: []string{"RS256", "HS256"},
+	})
+
 	oauth2Config := oauth2.Config{
 		ClientID:     *p.ClientId,
 		ClientSecret: *p.ClientSecret,
