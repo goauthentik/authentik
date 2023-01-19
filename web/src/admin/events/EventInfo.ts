@@ -255,7 +255,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                     <div class="pf-l-flex">
                         <div class="pf-l-flex__item">
                             <h3>${t`Exception`}</h3>
-                            <code>${this.event.context.message}</code>
+                            <pre>${this.event.context.message}</pre>
                         </div>
                     </div>
                     <ak-expand>${this.defaultResponse()}</ak-expand>`;
@@ -263,7 +263,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                 return html`<div class="pf-l-flex">
                         <div class="pf-l-flex__item">
                             <h3>${t`Exception`}</h3>
-                            <code>${this.event.context.message || this.event.context.error}</code>
+                            <pre>${this.event.context.message || this.event.context.error}</pre>
                         </div>
                         <div class="pf-l-flex__item">
                             <h3>${t`Expression`}</h3>
@@ -393,6 +393,13 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                     return html`<span>${t`No additional data available.`}</span>`;
                 }
                 return this.defaultResponse();
+            case EventActions.SystemTaskException:
+                return html`<div class="pf-l-flex">
+                    <div class="pf-l-flex__item">
+                        <h3>${t`Exception`}</h3>
+                        <pre>${this.event.context.message}</pre>
+                    </div>
+                </div>`;
             default:
                 return this.defaultResponse();
         }
