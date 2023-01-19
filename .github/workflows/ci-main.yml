@@ -118,9 +118,9 @@ jobs:
           - name: proxy
             glob: tests/e2e/test_provider_proxy*
           - name: oauth
-            glob: tests/e2e/test_provider_oauth2_!(oidc) tests/e2e/test_source_oauth*
+            glob: tests/e2e/test_provider_oauth2* tests/e2e/test_source_oauth*
           - name: oauth-oidc
-            glob: tests/e2e/test_provider_oauth2_oidc*
+            glob: tests/e2e/test_provider_oidc*
           - name: saml
             glob: tests/e2e/test_provider_saml* tests/e2e/test_source_saml*
           - name: ldap
@@ -148,7 +148,6 @@ jobs:
           npm run build
       - name: run e2e
         run: |
-          shopt -s extglob
           poetry run coverage run manage.py test ${{ matrix.job.glob }}
           poetry run coverage xml
       - if: ${{ always() }}
