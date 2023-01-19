@@ -80,6 +80,39 @@ class AuthenticatorSMSStageTests(FlowTestCase):
             phone_number_required=False,
         )
 
+    def test_stage_context_data(self):
+        """test stage context data"""
+        self.client.get(
+            reverse("authentik_flows:configure", kwargs={"stage_uuid": self.stage.stage_uuid}),
+        )
+        sms_send_mock = MagicMock()
+        with (
+            patch(
+                (
+                    "authentik.stages.authenticator_sms.stage."
+                    "AuthenticatorSMSStageView._has_phone_number"
+                ),
+                MagicMock(
+                    return_value="1234",
+                ),
+            ),
+            patch(
+                "authentik.stages.authenticator_sms.models.AuthenticatorSMSStage.send",
+                sms_send_mock,
+            ),
+        ):
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            )
+            sms_send_mock.assert_called_once()
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-sms",
+            phone_number_required=False,
+        )
+
     def test_stage_submit_full(self):
         """test stage (submit)"""
         self.client.get(

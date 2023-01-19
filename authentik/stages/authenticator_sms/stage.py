@@ -12,6 +12,7 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
+    ErrorDetailSerializer,
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
@@ -46,15 +47,9 @@ class AuthenticatorSMSChallengeResponse(ChallengeResponse):
 
     def validate(self, attrs: dict) -> dict:
         """Check"""
-        stage: AuthenticatorSMSStage = self.device.stage
         if "code" not in attrs:
             self.device.phone_number = attrs["phone_number"]
-            hashed_number = hash_phone_number(self.device.phone_number)
-            query = Q(phone_number=hashed_number) | Q(phone_number=self.device.phone_number)
-            if SMSDevice.objects.filter(query, stage=self.stage.executor.current_stage.pk).exists():
-                raise ValidationError(_("Invalid phone number"))
-            # No code yet, but we have a phone number, so send a verification message
-            stage.send(self.device.token, self.device)
+            self.stage.validate_and_send(attrs["phone_number"])
             return super().validate(attrs)
         if not self.device.verify_token(str(attrs["code"])):
             raise ValidationError(_("Code does not match"))
@@ -66,6 +61,17 @@ class AuthenticatorSMSStageView(ChallengeStageView):
     """OTP sms Setup stage"""
 
     response_class = AuthenticatorSMSChallengeResponse
+
+    def validate_and_send(self, phone_number: str):
+        """Validate phone number and send message"""
+        stage: AuthenticatorSMSStage = self.executor.current_stage
+        hashed_number = hash_phone_number(phone_number)
+        query = Q(phone_number=hashed_number) | Q(phone_number=phone_number)
+        if SMSDevice.objects.filter(query, stage=stage.pk).exists():
+            raise ValidationError(_("Invalid phone number"))
+        # No code yet, but we have a phone number, so send a verification message
+        device: SMSDevice = self.request.session[SESSION_KEY_SMS_DEVICE]
+        stage.send(device.token, device)
 
     def _has_phone_number(self) -> Optional[str]:
         context = self.executor.plan.context
@@ -96,19 +102,21 @@ class AuthenticatorSMSStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = self.get_pending_user()
 
-        # Currently, this stage only supports one device per user. If the user already
-        # has a device, just skip to the next stage
-        if SMSDevice.objects.filter(user=user).exists():
-            return self.executor.stage_ok()
-
         stage: AuthenticatorSMSStage = self.executor.current_stage
 
         if SESSION_KEY_SMS_DEVICE not in self.request.session:
             device = SMSDevice(user=user, confirmed=False, stage=stage, name="SMS Device")
             device.generate_token(commit=False)
+            self.request.session[SESSION_KEY_SMS_DEVICE] = device
             if phone_number := self._has_phone_number():
                 device.phone_number = phone_number
-            self.request.session[SESSION_KEY_SMS_DEVICE] = device
+                try:
+                    self.validate_and_send(phone_number)
+                except ValidationError as exc:
+                    response = AuthenticatorSMSChallengeResponse()
+                    response._errors.setdefault("phone_number", [])
+                    response._errors["phone_number"].append(ErrorDetailSerializer(exc.detail))
+                    return self.challenge_invalid(response)
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
