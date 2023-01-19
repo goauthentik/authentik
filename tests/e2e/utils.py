@@ -103,7 +103,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         count = 0
         try:
             return webdriver.Chrome()
-        except WebDriverException as exc:
+        except WebDriverException:
             pass
         while count < RETRIES:
             try:

@@ -33,8 +33,8 @@ class LDAPSyncTests(TestCase):
         """Test Cached auth"""
         self.source.property_mappings.set(
             LDAPPropertyMapping.objects.filter(
-                Q(name__startswith="authentik default LDAP Mapping")
-                | Q(name__startswith="authentik default Active Directory Mapping")
+                Q(managed__startswith="goauthentik.io/sources/ldap/default-")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
             )
         )
         connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))

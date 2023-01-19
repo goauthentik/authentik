@@ -38,7 +38,6 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             try:
                 defaults = self.build_group_properties(group_dn, **attributes)
                 defaults["parent"] = self._source.sync_parent_group
-                self._logger.debug("Creating group with attributes", **defaults)
                 if "name" not in defaults:
                     raise IntegrityError("Name was not set by propertymappings")
                 # Special check for `users` field, as this is an M2M relation, and cannot be sync'd
@@ -51,6 +50,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                     },
                     defaults,
                 )
+                self._logger.debug("Created group with attributes", **defaults)
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
