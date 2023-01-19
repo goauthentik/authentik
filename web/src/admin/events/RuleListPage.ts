@@ -94,7 +94,9 @@ export class RuleListPage extends TablePage<NotificationRule> {
         return [
             html`${item.name}`,
             html`${SeverityToLabel(item.severity)}`,
-            html`${item.groupObj?.name || t`None (rule disabled)`}`,
+            html`${item.groupObj
+                ? html`<a href="#/identity/groups/${item.groupObj.pk}">${item.groupObj.name}</a>`
+                : t`None (rule disabled)`}`,
             html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update Notification Rule`} </span>
