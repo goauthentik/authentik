@@ -20,6 +20,7 @@ import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
+import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
@@ -153,6 +154,7 @@ export abstract class Table<T> extends AKElement {
             PFTable,
             PFBullseye,
             PFButton,
+            PFSwitch,
             PFToolbar,
             PFDropdown,
             PFPagination,

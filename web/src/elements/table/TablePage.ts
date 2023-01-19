@@ -11,7 +11,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
-import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 
 export abstract class TablePage<T> extends Table<T> {
     abstract pageTitle(): string;
@@ -19,7 +18,7 @@ export abstract class TablePage<T> extends Table<T> {
     abstract pageIcon(): string;
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFPage, PFContent, PFSwitch, PFSidebar);
+        return super.styles.concat(PFPage, PFContent, PFSidebar);
     }
 
     renderSidebarBefore(): TemplateResult {
