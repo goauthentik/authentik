@@ -380,9 +380,9 @@ msgstr "高级设置"
 msgid "Affected model:"
 msgstr "受影响的模型："
 
-#: src/admin/events/RuleForm.ts
-#~ msgid "Alert"
-#~ msgstr "注意"
+#: src/admin/events/RuleListPage.ts
+msgid "Alert"
+msgstr "注意"
 
 #~ msgid "Algorithm used to sign the JWT Tokens."
 #~ msgstr "用于签名 JWT 令牌的算法。"
@@ -3153,6 +3153,10 @@ msgstr "集成密钥"
 msgid "Intent"
 msgstr "意图"
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Intercept header authentication"
+msgstr ""
+
 #: src/admin/blueprints/BlueprintForm.ts
 msgid "Internal"
 msgstr ""
@@ -4062,6 +4066,7 @@ msgid "Not you?"
 msgstr "不是您？"
 
 #: src/admin/events/RuleForm.ts
+#: src/admin/events/RuleListPage.ts
 msgid "Notice"
 msgstr "通知"
 
@@ -6716,6 +6721,11 @@ msgstr ""
 msgid "Unknown proxy mode"
 msgstr ""
 
+#: src/admin/events/RuleListPage.ts
+#: src/admin/events/RuleListPage.ts
+msgid "Unknown severity"
+msgstr ""
+
 #: src/admin/outposts/OutpostListPage.ts
 msgid "Unknown type"
 msgstr ""
@@ -7295,6 +7305,7 @@ msgstr ""
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/events/RuleForm.ts
+#: src/admin/events/RuleListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
 msgstr "警告"
@@ -7396,6 +7407,10 @@ msgstr "使用 TLS 连接到 LDAP 服务器时，默认情况下不检查证书�
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "When connecting via SSH, this keypair is used for authentication."
 msgstr "通过 SSH 连接时，此密钥对用于身份验证。"
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "When enabled, authentik will intercept the Authorization header to authenticate the request."
+msgstr ""
 
 #: src/admin/stages/email/EmailStageForm.ts
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."

@@ -378,9 +378,9 @@ msgstr "Advanced settings"
 msgid "Affected model:"
 msgstr "Affected model:"
 
-#: src/admin/events/RuleForm.ts
-#~ msgid "Alert"
-#~ msgstr "Alert"
+#: src/admin/events/RuleListPage.ts
+msgid "Alert"
+msgstr "Alert"
 
 #: src/pages/providers/oauth2/OAuth2ProviderForm.ts
 #~ msgid "Algorithm used to sign the JWT Tokens."
@@ -3219,6 +3219,10 @@ msgstr "Integration key"
 msgid "Intent"
 msgstr "Intent"
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Intercept header authentication"
+msgstr "Intercept header authentication"
+
 #: src/admin/blueprints/BlueprintForm.ts
 msgid "Internal"
 msgstr "Internal"
@@ -4137,6 +4141,7 @@ msgid "Not you?"
 msgstr "Not you?"
 
 #: src/admin/events/RuleForm.ts
+#: src/admin/events/RuleListPage.ts
 msgid "Notice"
 msgstr "Notice"
 
@@ -6880,6 +6885,11 @@ msgstr "Unknown provider type"
 msgid "Unknown proxy mode"
 msgstr "Unknown proxy mode"
 
+#: src/admin/events/RuleListPage.ts
+#: src/admin/events/RuleListPage.ts
+msgid "Unknown severity"
+msgstr "Unknown severity"
+
 #: src/admin/outposts/OutpostListPage.ts
 msgid "Unknown type"
 msgstr "Unknown type"
@@ -7467,6 +7477,7 @@ msgstr "Waiting for authentication..."
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/events/RuleForm.ts
+#: src/admin/events/RuleListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
 msgstr "Warning"
@@ -7569,6 +7580,10 @@ msgstr "When connecting to an LDAP Server with TLS, certificates are not checked
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "When connecting via SSH, this keypair is used for authentication."
 msgstr "When connecting via SSH, this keypair is used for authentication."
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "When enabled, authentik will intercept the Authorization header to authenticate the request."
+msgstr "When enabled, authentik will intercept the Authorization header to authenticate the request."
 
 #: src/admin/stages/email/EmailStageForm.ts
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."

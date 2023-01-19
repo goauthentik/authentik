@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-13 14:37+0000\n"
+"POT-Creation-Date: 2023-01-19 11:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: authentik/admin/api/tasks.py:126
+#: authentik/admin/api/tasks.py:124
 #, python-format
 msgid "Successfully re-scheduled Task %(name)s!"
 msgstr ""
@@ -177,26 +177,26 @@ msgstr ""
 msgid "Authenticated Sessions"
 msgstr ""
 
-#: authentik/core/sources/flow_manager.py:198
+#: authentik/core/sources/flow_manager.py:197
 msgid "source"
 msgstr ""
 
-#: authentik/core/sources/flow_manager.py:250
+#: authentik/core/sources/flow_manager.py:248
 msgid "Configured flow does not exist."
 msgstr ""
 
-#: authentik/core/sources/flow_manager.py:281
-#: authentik/core/sources/flow_manager.py:333
+#: authentik/core/sources/flow_manager.py:278
+#: authentik/core/sources/flow_manager.py:330
 #, python-format
 msgid "Successfully authenticated with %(source)s!"
 msgstr ""
 
-#: authentik/core/sources/flow_manager.py:305
+#: authentik/core/sources/flow_manager.py:302
 #, python-format
 msgid "Successfully linked %(source)s!"
 msgstr ""
 
-#: authentik/core/sources/flow_manager.py:324
+#: authentik/core/sources/flow_manager.py:321
 msgid "Source is not configured for enrollment."
 msgstr ""
 
@@ -255,9 +255,9 @@ msgid "Powered by authentik"
 msgstr ""
 
 #: authentik/core/views/apps.py:48
-#: authentik/providers/oauth2/views/authorize.py:358
+#: authentik/providers/oauth2/views/authorize.py:357
 #: authentik/providers/oauth2/views/device_init.py:68
-#: authentik/providers/saml/views/sso.py:69
+#: authentik/providers/saml/views/sso.py:68
 #, python-format
 msgid "You're about to sign into %(application)s."
 msgstr ""
@@ -284,89 +284,89 @@ msgstr ""
 msgid "Certificate-Key Pairs"
 msgstr ""
 
-#: authentik/events/models.py:288
+#: authentik/events/models.py:287
 msgid "Event"
 msgstr ""
 
-#: authentik/events/models.py:289
+#: authentik/events/models.py:288
 msgid "Events"
 msgstr ""
 
-#: authentik/events/models.py:295
+#: authentik/events/models.py:294
 msgid "authentik inbuilt notifications"
 msgstr ""
 
-#: authentik/events/models.py:296
+#: authentik/events/models.py:295
 msgid "Generic Webhook"
 msgstr ""
 
-#: authentik/events/models.py:297
+#: authentik/events/models.py:296
 msgid "Slack Webhook (Slack/Discord)"
 msgstr ""
 
-#: authentik/events/models.py:298
+#: authentik/events/models.py:297
 msgid "Email"
 msgstr ""
 
-#: authentik/events/models.py:316
+#: authentik/events/models.py:315
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
 
-#: authentik/events/models.py:376
+#: authentik/events/models.py:375
 msgid "Severity"
 msgstr ""
 
-#: authentik/events/models.py:381
+#: authentik/events/models.py:380
 msgid "Dispatched for user"
 msgstr ""
 
-#: authentik/events/models.py:465
+#: authentik/events/models.py:464
 msgid "Notification Transport"
 msgstr ""
 
-#: authentik/events/models.py:466
+#: authentik/events/models.py:465
 msgid "Notification Transports"
 msgstr ""
 
-#: authentik/events/models.py:472
+#: authentik/events/models.py:471
 msgid "Notice"
 msgstr ""
 
-#: authentik/events/models.py:473
+#: authentik/events/models.py:472
 msgid "Warning"
 msgstr ""
 
-#: authentik/events/models.py:474
+#: authentik/events/models.py:473
 msgid "Alert"
 msgstr ""
 
-#: authentik/events/models.py:500
+#: authentik/events/models.py:499
 msgid "Notification"
 msgstr ""
 
-#: authentik/events/models.py:501
+#: authentik/events/models.py:500
 msgid "Notifications"
 msgstr ""
 
-#: authentik/events/models.py:521
+#: authentik/events/models.py:520
 msgid "Controls which severity level the created notifications will have."
 msgstr ""
 
-#: authentik/events/models.py:547
+#: authentik/events/models.py:546
 msgid "Notification Rule"
 msgstr ""
 
-#: authentik/events/models.py:548
+#: authentik/events/models.py:547
 msgid "Notification Rules"
 msgstr ""
 
-#: authentik/events/models.py:569
+#: authentik/events/models.py:568
 msgid "Webhook Mapping"
 msgstr ""
 
-#: authentik/events/models.py:570
+#: authentik/events/models.py:569
 msgid "Webhook Mappings"
 msgstr ""
 
@@ -374,7 +374,7 @@ msgstr ""
 msgid "Task has not been run yet."
 msgstr ""
 
-#: authentik/flows/api/flows.py:297
+#: authentik/flows/api/flows.py:292
 #, python-format
 msgid "Flow not applicable to current user/request: %(messages)s"
 msgstr ""
@@ -490,12 +490,12 @@ msgstr ""
 msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
 msgstr ""
 
-#: authentik/outposts/api/service_connections.py:132
+#: authentik/outposts/api/service_connections.py:131
 msgid ""
 "You can only use an empty kubeconfig when connecting to a local cluster."
 msgstr ""
 
-#: authentik/outposts/api/service_connections.py:140
+#: authentik/outposts/api/service_connections.py:139
 msgid "Invalid kubeconfig"
 msgstr ""
 
@@ -925,7 +925,7 @@ msgstr ""
 msgid "Device Tokens"
 msgstr ""
 
-#: authentik/providers/oauth2/views/authorize.py:412
+#: authentik/providers/oauth2/views/authorize.py:411
 #: authentik/providers/saml/views/flows.py:88
 #, python-format
 msgid "Redirecting to %(app)s..."
@@ -974,36 +974,42 @@ msgid ""
 "with internal_host."
 msgstr ""
 
-#: authentik/providers/proxy/models.py:79
+#: authentik/providers/proxy/models.py:80
+msgid ""
+"When enabled, this provider will intercept the authorization header and "
+"authenticate requests based on its value."
+msgstr ""
+
+#: authentik/providers/proxy/models.py:86
 msgid "Set HTTP-Basic Authentication"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:81
+#: authentik/providers/proxy/models.py:88
 msgid ""
 "Set a custom HTTP-Basic Authentication header based on values from authentik."
 msgstr ""
 
-#: authentik/providers/proxy/models.py:86
+#: authentik/providers/proxy/models.py:93
 msgid "HTTP-Basic Username Key"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:96
+#: authentik/providers/proxy/models.py:103
 msgid "HTTP-Basic Password Key"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:152
+#: authentik/providers/proxy/models.py:159
 msgid "Proxy Provider"
 msgstr ""
 
-#: authentik/providers/proxy/models.py:153
+#: authentik/providers/proxy/models.py:160
 msgid "Proxy Providers"
 msgstr ""
 
-#: authentik/providers/saml/api/providers.py:261
+#: authentik/providers/saml/api/providers.py:260
 msgid "Invalid XML Syntax"
 msgstr ""
 
-#: authentik/providers/saml/api/providers.py:271
+#: authentik/providers/saml/api/providers.py:270
 #, python-format
 msgid "Failed to import Metadata: %(message)s"
 msgstr ""
@@ -1174,7 +1180,7 @@ msgstr ""
 msgid "LDAP Property Mappings"
 msgstr ""
 
-#: authentik/sources/ldap/signals.py:58
+#: authentik/sources/ldap/signals.py:56
 msgid "Password does not match Active Directory Complexity."
 msgstr ""
 
@@ -1323,7 +1329,7 @@ msgstr ""
 msgid "User OAuth Source Connections"
 msgstr ""
 
-#: authentik/sources/oauth/views/callback.py:103
+#: authentik/sources/oauth/views/callback.py:100
 #, python-format
 msgid "Authentication failed: %(reason)s"
 msgstr ""

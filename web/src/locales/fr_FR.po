@@ -379,9 +379,9 @@ msgstr "Paramètres avancés"
 msgid "Affected model:"
 msgstr "Modèle affecté :"
 
-#: src/admin/events/RuleForm.ts
-#~ msgid "Alert"
-#~ msgstr "Alerte"
+#: src/admin/events/RuleListPage.ts
+msgid "Alert"
+msgstr "Alerte"
 
 #~ msgid "Algorithm used to sign the JWT Tokens."
 #~ msgstr "Algorithme de signature utilisé pour les jetons JWT"
@@ -3148,6 +3148,10 @@ msgstr "Clé d'intégration"
 msgid "Intent"
 msgstr "Intention"
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Intercept header authentication"
+msgstr ""
+
 #: src/admin/blueprints/BlueprintForm.ts
 msgid "Internal"
 msgstr ""
@@ -4055,6 +4059,7 @@ msgid "Not you?"
 msgstr "Pas vous ?"
 
 #: src/admin/events/RuleForm.ts
+#: src/admin/events/RuleListPage.ts
 msgid "Notice"
 msgstr "Note"
 
@@ -6699,6 +6704,11 @@ msgstr ""
 msgid "Unknown proxy mode"
 msgstr ""
 
+#: src/admin/events/RuleListPage.ts
+#: src/admin/events/RuleListPage.ts
+msgid "Unknown severity"
+msgstr ""
+
 #: src/admin/outposts/OutpostListPage.ts
 msgid "Unknown type"
 msgstr ""
@@ -7278,6 +7288,7 @@ msgstr ""
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/events/RuleForm.ts
+#: src/admin/events/RuleListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
 msgstr "Avertissement"
@@ -7376,6 +7387,10 @@ msgstr ""
 
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "When connecting via SSH, this keypair is used for authentication."
+msgstr ""
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "When enabled, authentik will intercept the Authorization header to authenticate the request."
 msgstr ""
 
 #: src/admin/stages/email/EmailStageForm.ts

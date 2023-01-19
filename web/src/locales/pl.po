@@ -378,9 +378,9 @@ msgstr "Zaawansowane ustawienia"
 msgid "Affected model:"
 msgstr "Model, którego dotyczy problem:"
 
-#: src/admin/events/RuleForm.ts
-#~ msgid "Alert"
-#~ msgstr "Alert"
+#: src/admin/events/RuleListPage.ts
+msgid "Alert"
+msgstr "Alert"
 
 #~ msgid "Algorithm used to sign the JWT Tokens."
 #~ msgstr "Algorytm używany do podpisywania tokenów JWT."
@@ -3153,6 +3153,10 @@ msgstr "Klucz integracji"
 msgid "Intent"
 msgstr "Przeznaczenie"
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Intercept header authentication"
+msgstr ""
+
 #: src/admin/blueprints/BlueprintForm.ts
 msgid "Internal"
 msgstr ""
@@ -4062,6 +4066,7 @@ msgid "Not you?"
 msgstr "Nie ty?"
 
 #: src/admin/events/RuleForm.ts
+#: src/admin/events/RuleListPage.ts
 msgid "Notice"
 msgstr "Uwaga"
 
@@ -6718,6 +6723,11 @@ msgstr ""
 msgid "Unknown proxy mode"
 msgstr ""
 
+#: src/admin/events/RuleListPage.ts
+#: src/admin/events/RuleListPage.ts
+msgid "Unknown severity"
+msgstr ""
+
 #: src/admin/outposts/OutpostListPage.ts
 msgid "Unknown type"
 msgstr ""
@@ -7297,6 +7307,7 @@ msgstr ""
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/events/RuleForm.ts
+#: src/admin/events/RuleListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
 msgstr "Ostrzeżenie"
@@ -7398,6 +7409,10 @@ msgstr "Podczas łączenia się z serwerem LDAP za pomocą TLS, certyfikaty nie 
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "When connecting via SSH, this keypair is used for authentication."
 msgstr "Podczas łączenia przez SSH ta para kluczy jest używana do uwierzytelniania."
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "When enabled, authentik will intercept the Authorization header to authenticate the request."
+msgstr ""
 
 #: src/admin/stages/email/EmailStageForm.ts
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
