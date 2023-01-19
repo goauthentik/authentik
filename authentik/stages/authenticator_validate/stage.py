@@ -376,7 +376,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
 
     def challenge_valid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
         # All validation is done by the serializer
-        user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
+        user = self.get_pending_user()
         if not user:
             if "webauthn" not in response.data:
                 return self.executor.stage_invalid()

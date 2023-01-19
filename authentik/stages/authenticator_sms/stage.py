@@ -14,7 +14,6 @@ from authentik.flows.challenge import (
     ChallengeTypes,
     WithUserInfoChallenge,
 )
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_sms.models import (
     AuthenticatorSMSStage,
@@ -95,10 +94,7 @@ class AuthenticatorSMSStageView(ChallengeStageView):
         return response
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
-        if not user:
-            self.logger.debug("No pending user, continuing")
-            return self.executor.stage_ok()
+        user = self.get_pending_user()
 
         # Currently, this stage only supports one device per user. If the user already
         # has a device, just skip to the next stage
