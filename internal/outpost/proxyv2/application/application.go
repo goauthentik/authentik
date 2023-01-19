@@ -77,9 +77,8 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	}.Encode()
 
 	managed := false
-	if ak.Outpost.Managed.IsSet() {
-		m := *ak.Outpost.Managed.Get()
-		managed = m == "goauthentik.io/outposts/embedded"
+	if m := ak.Outpost.Managed.Get(); m != nil {
+		managed = *m == "goauthentik.io/outposts/embedded"
 	}
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(
