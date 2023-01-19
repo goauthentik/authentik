@@ -25,7 +25,9 @@ class TestSourceLDAP(SeleniumTestCase):
             "image": "ghcr.io/beryju/test-samba-dc:latest",
             "detach": True,
             "cap_add": ["SYS_ADMIN"],
-            "network_mode": "host",
+            "ports": {
+                "389" : "389/tcp",
+            },
             "auto_remove": True,
             "environment": {
                 "SMB_DOMAIN": "test.goauthentik.io",

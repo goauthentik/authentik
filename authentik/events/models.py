@@ -448,7 +448,7 @@ class NotificationTransport(SerializerModel):
             # pyright: reportGeneralTypeIssues=false
             return send_mail(mail.__dict__)  # pylint: disable=no-value-for-parameter
         except (SMTPException, ConnectionError, OSError) as exc:
-            raise NotificationTransportError from exc
+            raise NotificationTransportError(exc) from exc
 
     @property
     def serializer(self) -> "Serializer":

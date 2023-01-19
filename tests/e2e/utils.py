@@ -77,7 +77,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def _start_container(self, specs: dict[str, Any]) -> Container:
         client: DockerClient = from_env()
         container = client.containers.run(**specs)
-        if "healthcheck" not in specs:
+        container.reload()
+        state = container.attrs.get("State", {})
+        if "Health" not in state:
             return container
         while True:
             container.reload()
