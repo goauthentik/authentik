@@ -95,7 +95,12 @@ func IncludeObjectClass(searchOC string, ocs map[string]bool) bool {
 		return true
 	}
 
-	return ocs[searchOC]
+	for key, value := range ocs {
+		if strings.EqualFold(key, searchOC) {
+			return value
+		}
+	}
+	return false
 }
 
 func GetContainerEntry(filterOC string, dn string, ou string) *ldap.Entry {
