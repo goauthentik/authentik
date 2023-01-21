@@ -373,10 +373,10 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                                 return flow?.pk;
                             }}
                             .selected=${(flow: Flow): boolean => {
-                                let selected = this.instance?.enrollmentFlow === flow.pk;
+                                let selected = this.instance?.authenticationFlow === flow.pk;
                                 if (
                                     !this.instance?.pk &&
-                                    !this.instance?.enrollmentFlow &&
+                                    !this.instance?.authenticationFlow &&
                                     flow.slug === "default-source-authentication"
                                 ) {
                                     selected = true;
