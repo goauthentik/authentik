@@ -2,6 +2,7 @@
 from typing import Optional
 
 from deepmerge import always_merger
+from django.core.exceptions import ValidationError
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext_lazy as _
 
@@ -41,7 +42,11 @@ class InvitationStageView(StageView):
         token = self.get_token()
         if not token:
             return None
-        invite: Invitation = Invitation.objects.filter(pk=token).first()
+        try:
+            invite: Invitation = Invitation.objects.filter(pk=token).first()
+        except ValidationError:
+            self.logger.debug("invalid invitation", token=token)
+            return None
         if not invite:
             self.logger.debug("invalid invitation", token=token)
             return None
