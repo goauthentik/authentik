@@ -1,7 +1,8 @@
 """TOTP Setup stage"""
+from urllib.parse import quote
+
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
-from urllib.parse import quote
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.fields import CharField, IntegerField
