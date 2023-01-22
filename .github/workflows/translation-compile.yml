@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run compile
@@ -27,7 +29,7 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         id: cpr
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
           branch: compile-backend-translation
           commit-message: "core: compile backend translations"
           title: "core: compile backend translations"
