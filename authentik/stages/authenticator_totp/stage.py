@@ -1,7 +1,7 @@
 """TOTP Setup stage"""
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
-from django.utils.text import slugify
+from urllib.parse import quote
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.fields import CharField, IntegerField
@@ -16,7 +16,6 @@ from authentik.flows.challenge import (
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 from authentik.stages.authenticator_totp.settings import OTP_TOTP_ISSUER
-from urllib.parse import quote
 
 SESSION_TOTP_DEVICE = "totp_device"
 
