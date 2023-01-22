@@ -31,7 +31,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: ${{ github.event_name == 'release' }}
-          secrets:
+          secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
             GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
           tags: |
@@ -88,9 +88,6 @@ jobs:
             ghcr.io/goauthentik/${{ matrix.type }}:latest
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
-          secrets: |
-            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
-            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
           build-args: |
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost-binary:
