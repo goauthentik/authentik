@@ -2366,6 +2366,7 @@ msgstr ""
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
+#: src/admin/events/EventInfo.ts
 msgid "Exception"
 msgstr "Ausnahme"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-19 11:06+0000\n"
+"POT-Creation-Date: 2023-01-23 09:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1466,30 +1466,35 @@ msgstr ""
 msgid "Optionally modify the payload being sent to custom providers."
 msgstr ""
 
-#: authentik/stages/authenticator_sms/models.py:176
+#: authentik/stages/authenticator_sms/models.py:81
+#, python-format
+msgid "Use this code to authenticate in authentik: %(token)s"
+msgstr ""
+
+#: authentik/stages/authenticator_sms/models.py:181
 msgid "SMS Authenticator Setup Stage"
 msgstr ""
 
-#: authentik/stages/authenticator_sms/models.py:177
+#: authentik/stages/authenticator_sms/models.py:182
 msgid "SMS Authenticator Setup Stages"
 msgstr ""
 
-#: authentik/stages/authenticator_sms/models.py:222
+#: authentik/stages/authenticator_sms/models.py:227
 msgid "SMS Device"
 msgstr ""
 
-#: authentik/stages/authenticator_sms/models.py:223
+#: authentik/stages/authenticator_sms/models.py:228
 msgid "SMS Devices"
 msgstr ""
 
-#: authentik/stages/authenticator_sms/stage.py:56
-msgid "Invalid phone number"
+#: authentik/stages/authenticator_sms/stage.py:55
+#: authentik/stages/authenticator_totp/stage.py:42
+#: authentik/stages/authenticator_totp/stage.py:45
+msgid "Code does not match"
 msgstr ""
 
-#: authentik/stages/authenticator_sms/stage.py:61
-#: authentik/stages/authenticator_totp/stage.py:41
-#: authentik/stages/authenticator_totp/stage.py:44
-msgid "Code does not match"
+#: authentik/stages/authenticator_sms/stage.py:71
+msgid "Invalid phone number"
 msgstr ""
 
 #: authentik/stages/authenticator_static/models.py:47
@@ -1700,7 +1705,7 @@ msgstr ""
 #: authentik/stages/email/templates/email/password_reset.html:19
 msgid ""
 "\n"
-"                    You recently requested to change your password for you "
+"                    You recently requested to change your password for your "
 "authentik account. Use the button below to set a new password.\n"
 "                    "
 msgstr ""
@@ -1800,7 +1805,7 @@ msgstr ""
 msgid "Invitations"
 msgstr ""
 
-#: authentik/stages/invitation/stage.py:61
+#: authentik/stages/invitation/stage.py:66
 msgid "Invalid invite/invite not found"
 msgstr ""
 
